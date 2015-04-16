@@ -39,6 +39,13 @@ FFW.Buttons = FFW.RPCObserver.create( {
         componentName: "Buttons"
     }),
 
+    onButtonSubscriptionSubscribeRequestID: -1,
+
+    onButtonSubscriptionUnsubscribeRequestID: -1,
+
+    // const
+    onButtonSubscriptionNotification: "Buttons.OnButtonSubscription",
+
     /**
      * Contains response codes for request that should be processed but there were some kind of errors
      * Error codes will be injected into response.
@@ -71,6 +78,9 @@ FFW.Buttons = FFW.RPCObserver.create( {
 
         Em.Logger.log("FFW.Buttons.onRPCRegistered");
         this._super();
+
+        // subscribe to notifications
+        this.onButtonSubscriptionSubscribeRequestID = this.client.subscribeToNotification(this.onButtonSubscriptionNotification);
     },
 
     /*
@@ -80,6 +90,9 @@ FFW.Buttons = FFW.RPCObserver.create( {
 
         Em.Logger.log("FFW.Buttons.onRPCUnregistered");
         this._super();
+
+        // unsubscribe from notifications
+        this.onButtonSubscriptionUnsubscribeRequestID = this.client.unsubscribeFromNotification(this.onButtonSubscriptionNotification);
     },
 
     /*
@@ -225,7 +238,7 @@ FFW.Buttons = FFW.RPCObserver.create( {
 
     /**
      * Send error response from onRPCRequest
-     * 
+     *
      * @param {Number}
      *            resultCode
      * @param {Number}
