@@ -56,6 +56,15 @@ SDL.ABSModel = Em.Object.extend({
 
     },
 
+    applicationStatusBar: function () {
+
+        if (this.data.limitedExist && SDL.SDLController.getApplicationModel(this.data.stateLimited)) {
+            return SDL.SDLController.getApplicationModel(this.data.stateLimited).statusText;
+        } else {
+            return '';
+        }
+    }.property("this.data.limitedExist"),
+
     /**
      * Method to set selected state of settings Info List
      */

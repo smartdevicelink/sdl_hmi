@@ -59,6 +59,10 @@ SDL.StatusMediaView = Em.ContainerView
             .extend( {
                 elementId: 'media_status_radio_container',
 
+                classNameBindings: [
+                    'SDL.States.home.active::visible'
+                ],
+
                 childViews: [
                     'info'
                 ],
@@ -77,14 +81,14 @@ SDL.StatusMediaView = Em.ContainerView
                                 + '<div class="station">'
                                 + '<span {{bindAttr class="SDL.CDModel.active:visible_display"}}>{{SDL.CDModel.statusBar}}</span>'
                                 + // title
-                                '<span {{bindAttr class="SDL.SDLModel.limitedExist:visible_display"}}>{{SDL.SDLModel.applicationStatusBar}}</span>'
+                                '<span {{bindAttr class="SDL.SDLModel.applicationStatusBar:visible_display SDL.SDLModel.data.limitedExist:visible_display"}}>{{SDL.SDLModel.applicationStatusBar}}</span>'
                                 + // SDL
                                 '</div>'
                                 + '<div class="icon cdIco"'
                                 + '{{bindAttr class="SDL.CDModel.active:cdIco"}}'
                                 + // CD
                                 // icon
-                                '{{bindAttr class="SDL.SDLModel.limitedExist:appIco"}}>'
+                                '{{bindAttr class="SDL.SDLModel.data.limitedExist:appIco"}}>'
                                 + // SDL
                                 '</div>' + '</div>')
                     })

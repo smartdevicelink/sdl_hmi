@@ -106,16 +106,7 @@ SDL.SDLModelData = Em.Object.create({
     /**
      * FLAG of any app in limited level exists
      */
-        limitedExist: false,
-
-        applicationStatusBar: function () {
-
-        if (this.limitedExist && SDL.SDLController.getApplicationModel(this.stateLimited)) {
-            return SDL.SDLController.getApplicationModel(this.stateLimited).statusText;
-        } else {
-            return '';
-        }
-    }.property("this.limitedExist"),
+    limitedExist: false,
 
     /**
      * IScroll object to manage scroll on PerformInteraction view

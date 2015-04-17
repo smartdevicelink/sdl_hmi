@@ -255,7 +255,7 @@ var StateManager = Em.StateManager.extend({
 
                 exit: function(){
                     this._super();
-                    SDL.MediaController.deactivateCD();
+                    SDL.MediaController.deactivateUSB();
                     SDL.MediaController.currentSelectedPlayer.pause();
                 },
 
@@ -280,7 +280,7 @@ var StateManager = Em.StateManager.extend({
             usb: Em.State.create({
                 exit: function(){
                     this._super();
-                    SDL.MediaController.deactivateUSB();
+                    SDL.MediaController.deactivateCD();
                     SDL.MediaController.currentSelectedPlayer.pause();
                     //SDL.MediaController.resetUpdatingMessage();
                 },
@@ -320,6 +320,8 @@ var StateManager = Em.StateManager.extend({
             enter: function () {
 
                 this._super();
+                SDL.MediaController.deactivateUSB();
+                SDL.MediaController.deactivateCD();
                 SDL.SDLController.activateTBT();
             },
 
@@ -346,7 +348,7 @@ var StateManager = Em.StateManager.extend({
             this._super();
 
             SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
-            SDL.SDLModel.data.set('limitedExist', true);
+            //SDL.SDLModel.data.set('limitedExist', true);
             SDL.SDLController.deactivateApp();
         }
     }),
