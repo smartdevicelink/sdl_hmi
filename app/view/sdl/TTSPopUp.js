@@ -150,12 +150,13 @@ SDL.TTSPopUp = Em.ContainerView.create( {
         this.set('active', false);
         this.appID = null;
         this.set('timerSeconds', 5);
-        this.checkBox.set('checked', true);
 
         if (this.checkBox.checked) {
             SDL.SDLController.TTSResponseHandler();
-            FFW.TTS.Stopped();
         }
+
+        FFW.TTS.Stopped();
+        this.checkBox.set('checked', true);
     },
 
     /**
