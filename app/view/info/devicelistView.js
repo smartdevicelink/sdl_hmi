@@ -87,6 +87,10 @@ SDL.DeviceListView = Em.ContainerView.create( {
         classNames: [
             'primaryDevice', 'button'
         ],
+        classNameBindings:
+            [
+                'SDL.FuncSwitcher.rev::is-disabled'
+            ],
         action: 'openPrimaryDeviceWindow',
         target: 'SDL.SDLController',
         text: 'Primary',
