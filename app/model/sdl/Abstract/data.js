@@ -492,21 +492,14 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type object
      */
-        unRegisteredApps: [],
+    unRegisteredApps: [],
 
     /**
      * List of objects with params for connected devices
      *
      * @type object
      */
-        connectedDevices: {},
-
-    /**
-     * List of devices with registered applications
-     *
-     * @type object
-     */
-    conectedDevices: [],
+    connectedDevices: {},
 
     /**
      * List of registered components

@@ -40,13 +40,44 @@ SDL.RController = SDL.ABSController.extend({
      */
     ControlAccessAction: function (appID, value) {
             if (value) {
-                FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode['SUCCESS'], SDL.SDLModel.controlRequestID, "VehicleInfo.GrantAccess");
+                FFW.VehicleInfo.sendVIResult(
+                    SDL.SDLModel.data.resultCode['SUCCESS'],
+                    SDL.SDLModel.controlRequestID,
+                    "VehicleInfo.GrantAccess"
+                );
                 SDL.SDLModel.set('givenControl', appID);
                 SDL.SDLModel.set('givenControlFlag', true);
                 FFW.CAN.OnRadioDetails({"radioStation": SDL.RadioModel.radioDetails.radioStation});
             } else {
-                FFW.VehicleInfo.sendError(SDL.SDLModel.data.resultCode['REJECTED'], SDL.SDLModel.controlRequestID, "VehicleInfo.GrantAccess", "Request cancelled.");
+                FFW.VehicleInfo.sendError(
+                    SDL.SDLModel.data.resultCode['REJECTED'],
+                    SDL.SDLModel.controlRequestID,
+                    "VehicleInfo.GrantAccess",
+                    "Request cancelled."
+                );
             }
             SDL.SDLModel.set('controlRequestID', null);
+    },
+
+    /**
+     * Send notification to SDL about changes of SDL functionality
+     * @param element
+     * @constructor
+     */
+    OnReverseAppsAllowing: function (element) {
+        element.toggleProperty('allowed');
+
+        FFW.VehicleInfo.OnReverseAppsAllowing(element.allowed);
+    },
+
+    openPrimaryDeviceWindow: function(element) {
+        SDL.PrimaryDevice.toggleProperty('active');
+    },
+
+    primaryDeviceWindowAction: function(device) {
+
+        this.openPrimaryDeviceWindow();
+
+        FFW.VehicleInfo.OnPrimaryDevice(device);
     }
 });

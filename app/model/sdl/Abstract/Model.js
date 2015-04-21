@@ -646,28 +646,31 @@ SDL.ABSModel = Em.Object.extend({
      */
     onGetDeviceList: function (params) {
 
-        var exist = false;
+        var exist = false,
+            listObj  = {};
+
+        for (var j in SDL.SDLModel.data.connectedDevices) {
+            listObj[j] = SDL.SDLModel.data.connectedDevices[j];
+        }
 
         for (var i = 0; i < params.deviceList.length; i++) {
 
-            if (params.deviceList[i].id in SDL.SDLModel.data.connectedDevices) {
+            if (params.deviceList[i].id in listObj) {
                 exist = true;
             }
 
             if (!exist) {
-                SDL.SDLModel.data.connectedDevices[params.deviceList[i].id] = {
+                listObj[params.deviceList[i].id] = {
                     "name": params.deviceList[i].name,
                     "id": params.deviceList[i].id,
-                    "sdlFunctionality": {
-                        "popUpId": null,
-                        "allowed": false
-                    }
+                    "isSDLAllowed": false
                 }
             } else {
 
                 exist = false;
             }
         }
+        SDL.SDLModel.data.set('connectedDevices', listObj);
 
         if (SDL.States.info.devicelist.active) {
             SDL.DeviceListView.ShowDeviceList(params);

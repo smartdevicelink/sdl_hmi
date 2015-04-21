@@ -104,6 +104,17 @@
     height: 200px;
 }
 
+#info_apps_deviceList_view .primaryDevice {
+    top: 154px;
+    width: 68px;
+    height: 49px;
+    border: 1px solid #333;
+    border-radius: 2px;
+    left: 5px;
+    line-height: 48px;
+    text-align: center;
+}
+
 #info_nonMedia {
 	z-index: 1001;
 }
@@ -548,7 +559,8 @@
 }
 
 #exitAppView,#tbtClientStateView,
-#VehicleInfo,#systemRequestView {
+#VehicleInfo,#systemRequestView,
+#PrimaryDevice{
 	opacity: 0;
 	left: 50px;
 	width: 700px;
@@ -565,7 +577,8 @@
 #exitAppView .exitAppViewLabel,
 #systemRequestView .systemRequestViewLabel,
 #tbtClientStateView .tbtClientStateLabel,
-#VehicleInfo .vehicleInfoLabel {
+#VehicleInfo .vehicleInfoLabel,
+#PrimaryDevice .primaryDeviceLabel{
 	top: 10px;
 	width: 600px;
 	left: 35px;
@@ -577,7 +590,8 @@
 #exitAppView.active,
 #systemRequestView.active,
 #tbtClientStateView.active,
-#VehicleInfo.active {
+#VehicleInfo.active,
+#PrimaryDevice.active{
 	opacity: 1;
 	display: block;
 }
@@ -586,7 +600,8 @@
 #systemRequestView .systemRequestViewTitle,
 #systemRequestView .appIDSelectTitle,
 #tbtClientStateView .tbtClientState,
-#VehicleInfo .prndl	{
+#VehicleInfo .prndl,
+#PrimaryDevice .chooseLabel{
 	top: 70px;
 	width: 600px;
 	left: 40px;
@@ -608,7 +623,8 @@
 #systemRequestView .systemRequestViewSelect,
 #tbtClientStateView .tbtClientStateSelect,
 #VehicleInfo .prndlSelect,
-#systemRequestView .appIDSelect	{
+#systemRequestView .appIDSelect,
+#PrimaryDevice .deviceSelect{
 	top: 125px;
 	position: absolute;
 	width: 150px;
@@ -616,6 +632,15 @@
 	height: 40px;
 	color: white;
 	background: #393939;
+}
+
+#PrimaryDevice .primaryButton{
+    top: 280px;
+    width: 160px;
+    left: 270px;
+    height: 48px;
+    line-height: 48px;
+    text-align: center;
 }
 
 #systemRequestView .systemRequestViewSelect{

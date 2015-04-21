@@ -283,9 +283,7 @@ SDL.SettingsController = Em.Object.create( {
 
         FFW.BasicCommunication.OnAllowSDLFunctionality(result, "GUI", SDL.SettingsController.currentDeviceAllowance);
 
-        SDL.SDLModel.data.connectedDevices[SDL.SettingsController.currentDeviceAllowance.id].sdlFunctionality.allowed = result;
-
-        SDL.SDLModel.data.connectedDevices[SDL.SettingsController.currentDeviceAllowance.id].sdlFunctionality.popUpId = null;
+        SDL.SDLModel.data.connectedDevices[SDL.SettingsController.currentDeviceAllowance.id].isSDLAllowed = result;
 
         SDL.SettingsController.currentDeviceAllowance = null;
     },

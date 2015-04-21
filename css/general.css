@@ -1052,6 +1052,8 @@ margin-top: 90px;
 }
 
 .button {
+    border: 1px solid #333;
+    border-radius: 2px;
     background-image: url(../images/list/list_item_bg.png);
     cursor: pointer;
 }

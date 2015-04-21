@@ -45,6 +45,30 @@ SDL.PoliciesView = Em.ContainerView.create( {
         'SettingsList'
     ],
 
+    afterRender: function() {
+
+        if (FLAGS.SimpleFunctionality === 2) { // R project
+            this.get('SettingsList.list.childViews').pushObject(SDL.Button.create( {
+                action: 'OnReverseAppsAllowing',
+                target: 'SDL.SDLController',
+                textBinding: 'this.allowedProp',
+                allowedProp: function () {
+                    var text;
+
+                    if (this.allowed) {
+                        text = "RSDL functionality - Allowed";
+                    } else {
+                        text = "RSDL functionality - Not allowed";
+                    }
+
+                    return text;
+                }.property('this.allowed'),
+                allowed: true,
+                classNames: 'list-item button'
+            }));
+        }
+    },
+
     SettingsList: SDL.List.extend( {
 
         elementId: 'policies_settings_list',

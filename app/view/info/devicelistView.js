@@ -53,7 +53,8 @@ SDL.DeviceListView = Em.ContainerView.create( {
         'backButton',
         'listOfDevices',
         'deviceListLabel',
-        'progress'
+        'progress',
+        'primaryDevice'
     ],
 
     /**
@@ -77,6 +78,19 @@ SDL.DeviceListView = Em.ContainerView.create( {
         action: 'turnChangeDeviceViewBack',
         target: 'SDL.SDLController',
         icon: 'images/media/ico_back.png'
+    }),
+
+    /**
+     * Button to open window to choose primary device
+     */
+    primaryDevice: SDL.Button.extend( {
+        classNames: [
+            'primaryDevice', 'button'
+        ],
+        action: 'openPrimaryDeviceWindow',
+        target: 'SDL.SDLController',
+        text: 'Primary',
+        templateName: 'text'
     }),
 
     /**

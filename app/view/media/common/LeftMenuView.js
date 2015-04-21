@@ -45,6 +45,7 @@ SDL.LeftMenuView = Em.ContainerView.extend( {
             'usbButton',
             'sdlButton'
         ],
+
     /** Border decoration */
     border: Em.View.extend( {
         elementId: 'media_left_menu_border',
