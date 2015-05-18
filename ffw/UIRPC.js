@@ -1374,12 +1374,12 @@ FFW.UI = FFW.RPCObserver.create({
                                 "audioType": "PCM"
                             },
                             "hmiZoneCapabilities": "FRONT",
-                            "softButtonCapabilities": {
+                            "softButtonCapabilities": [{
                                 "shortPressAvailable": true,
                                 "longPressAvailable": true,
                                 "upDownAvailable": true,
                                 "imageSupported": true
-                            },
+                            }],
                             "hmiCapabilities": {
                                 "navigation": true,
                                 "phoneCall": true
