@@ -77,7 +77,8 @@ SDL.InfoAppsView = Em.ContainerView
                         disabled: apps[i].disabledToActivate,
                         indexApp: appIndex,
                         fullAppName: function () {
-                            return SDL.SDLModel.data.registeredApps[this.appIndex].appIcon + SDL.SDLModel.data.registeredApps[this.appIndex].deviceName;
+                            return SDL.SDLModel.data.registeredApps[this.appIndex].appIcon
+                                + SDL.SDLModel.data.registeredApps[this.appIndex].deviceName;
                         }.property('SDL.SDLModel.data.registeredApps.' + appIndex
                             + '.appIcon', 'SDL.SDLModel.data.registeredApps.' + appIndex
                             + '.deviceName')

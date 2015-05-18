@@ -81,6 +81,10 @@ SDL.ABSController = Em.Object.extend( {
                     FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "USER_EXIT");
                     break;
                 }
+                case -3: {
+                    FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "UNAUTHORIZED_TRANSPORT_REGISTRATION");
+                    break;
+                }
                 default: {
                     console.log("Unknown command with ID: " + element.commandID);
                 }
@@ -816,6 +820,20 @@ SDL.ABSController = Em.Object.extend( {
                     "position": 0
                 },
                 cmdID: -2
+            }
+        };
+
+        SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
+
+        exitCommand = {
+            "id": -10,
+            "params": {
+                "menuParams":{
+                    "parentID": 0,
+                    "menuName": "Exit 'UNAUTHORIZED_TRANSPORT_REGISTRATION'",
+                    "position": 0
+                },
+                cmdID: -3
             }
         };
 
