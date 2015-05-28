@@ -390,6 +390,24 @@ FFW.VehicleInfo = FFW.RPCObserver.create( {
                     break;
                 }
 
+                case "VehicleInfo.ButtonPress": {
+
+                    Em.Logger.log("FFW." + request.method + "Response");
+
+                    // send repsonse
+                    var JSONMessage = {
+                        "jsonrpc": "2.0",
+                        "id": request.id,
+                        "result": {
+                            "code": SDL.SDLModel.data.resultCode["SUCCESS"],
+                            "method": request.method
+                        }
+                    };
+                    this.client.send(JSONMessage);
+
+                    break;
+                }
+
 
 
                 default: {
