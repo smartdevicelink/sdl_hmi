@@ -425,7 +425,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create( {
         // send repsonse
         var JSONMessage = {
             "jsonrpc": "2.0",
-            "method": method,
+            "method": "VehicleInfo.OnInteriorVehicleData",
             "params": {
                 "moduleType": "RADIO",
                 "moduleZone": {
