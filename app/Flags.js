@@ -63,11 +63,13 @@ FLAGS = Em.Object.create( {
 
     CAN: true,
 
+    RC: true,
+
     /**
      * 0 - G
      * 1 - P
      * 2 - R
      */
-    SimpleFunctionality: 1
+    SimpleFunctionality: 2
 
 });

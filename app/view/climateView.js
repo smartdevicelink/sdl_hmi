@@ -42,7 +42,8 @@ SDL.ClimateView = Em.ContainerView.create( {
     
     childViews:
         [
-            'windowText'
+            'windowText',
+            'button'
         ],
 
 
@@ -51,6 +52,17 @@ SDL.ClimateView = Em.ContainerView.create( {
         classNames: 'windowText',
     
         content: 'Climate'
-    } )
+    } ),
+
+    button: SDL.Button.create({
+        elementId: 'interiorVI',
+        classNames: 'interiorVI btnNotPressed',
+        text: 'OnInteriorVehicleData',
+        time: 0,
+        action: function(){
+            FFW.VehicleInfo.OnInteriorVehicleData();
+        },
+        templateName: 'text'
+    })
 
 } );
