@@ -55,6 +55,10 @@ SDL.RadioModel = Em.Object.create( {
         this.set('active', true);
     },
 
+    optionsEnabled: false,
+
+    tuneUpTimer: null,
+
     active: false,
 
     station: '87.9',
@@ -68,6 +72,26 @@ SDL.RadioModel = Em.Object.create( {
     scanState: false,
 
     tuneRadio: false,
+
+    bandStruct: [
+        'FM',
+        'AM',
+        'XM'
+    ],
+
+    band: "FM",
+
+    stateStruct: [
+        'ACQUIRING',
+        'ACQUIRED',
+        'MULTICAST',
+        'NOT_FOUND'
+    ],
+
+    boolStruct: [
+        true,
+        false
+    ],
 
     preset: [
         "87.9",
@@ -130,6 +154,155 @@ SDL.RadioModel = Em.Object.create( {
     directTuneFinished: false,
 
     directTuneKeypressed: false,
+    
+    radioControlStruct:{
+        frequencyInteger: 99,
+        frequencyFraction: 3,
+        band: 'FM',
+        rdsData: {
+            PS: 'PS',
+            RT: 'RT',
+            CT: 'CT',
+            PI: 'PI',
+            PTY: 100,
+            TP: true,
+            TA: false,
+            REG: 'REG'
+        },
+        availableHDs: 3,
+        hdChannel: 1,
+        signalStrength: 50,
+        signalChangeThreshold: 60,
+        radioEnable:  false,
+        state: "MULTICAST"
+    },
+
+    radioControlData: function(){
+
+        var result = {
+            frequencyInteger: SDL.RadioModel.radioControlStruct.frequencyInteger,
+            frequencyFraction: SDL.RadioModel.radioControlStruct.frequencyFraction,
+            band: SDL.RadioModel.radioControlStruct.band,
+            rdsData: {
+                PS: SDL.RadioModel.radioControlStruct.rdsData.PS,
+                RT: SDL.RadioModel.radioControlStruct.rdsData.RT,
+                CT: SDL.RadioModel.radioControlStruct.rdsData.CT,
+                PI: SDL.RadioModel.radioControlStruct.rdsData.PI,
+                PTY: parseInt(SDL.RadioModel.radioControlStruct.rdsData.PTY),
+                TP: SDL.RadioModel.radioControlStruct.rdsData.TP,
+                TA: SDL.RadioModel.radioControlStruct.rdsData.TA,
+                REG: SDL.RadioModel.radioControlStruct.rdsData.REG
+            },
+            availableHDs: parseInt(SDL.RadioModel.radioControlStruct.availableHDs),
+            hdChannel: parseInt(SDL.RadioModel.radioControlStruct.hdChannel),
+            signalStrength: parseInt(SDL.RadioModel.radioControlStruct.signalStrength),
+            signalChangeThreshold: parseInt(SDL.RadioModel.radioControlStruct.signalChangeThreshold),
+            radioEnable:  SDL.RadioModel.radioControlStruct.radioEnable,
+            state: SDL.RadioModel.radioControlStruct.state
+        };
+
+        this.set('station',
+            result.frequencyInteger + "." + result.frequencyFraction);
+
+        return result;
+    }.property(
+        'SDL.RadioModel.radioControlStruct.frequencyInteger',
+        'SDL.RadioModel.radioControlStruct.frequencyFraction',
+        'SDL.RadioModel.radioDetails.radioStation.availableHDs',
+        'SDL.RadioModel.radioDetails.radioStation.currentHD'
+    ),
+
+    radioZone:{
+        "col":0,
+        "row":0,
+        "level":0,
+        "colspan":2,
+        "rowspan":1,
+        "levelspan":1
+    },
+
+    stationsData: {
+        "1001": {
+            "radioStation": {
+                "frequency": 100,
+                "fraction": 1,
+                "availableHDs": 0,
+                "currentHD": 0
+            },
+            "songInfo": {
+                "name": "Song2",
+                "artist": "Artist2",
+                "genre": "Genre2",
+                "album": "Album2",
+                "year": 2002,
+                "duration": 20
+            }
+        },
+        "895":  {
+            "radioStation": {
+                "frequency": 89,
+                "fraction": 5,
+                "availableHDs": 0,
+                "currentHD": 0
+            },
+            "songInfo": {
+                "name": "Song1",
+                "artist": "Artist1",
+                "genre": "Genre1",
+                "album": "Album1",
+                "year": 2001,
+                "duration": 10
+            }
+        },
+        "953":  {
+            "radioStation": {
+                "frequency": 95,
+                "fraction": 3,
+                "availableHDs": 0,
+                "currentHD": 0
+            },
+            "songInfo": {
+                "name": "Song3",
+                "artist": "Artist3",
+                "genre": "Genre3",
+                "album": "Album3",
+                "year": 2003,
+                "duration": 30
+            }
+        },
+        "1035":  {
+            "radioStation": {
+                "frequency": 103,
+                "fraction": 5,
+                "availableHDs": 0,
+                "currentHD": 0
+            },
+            "songInfo": {
+                "name": "Song4",
+                "artist": "Artist4",
+                "genre": "Genre4",
+                "album": "Album4",
+                "year": 2004,
+                "duration": 40
+            }
+        },
+        "1053":  {
+            "radioStation": {
+                "frequency": 105,
+                "fraction": 3,
+                "availableHDs": 0,
+                "currentHD": 0
+            },
+            "songInfo": {
+                "name": "Song5",
+                "artist": "Artist5",
+                "genre": "Genre5",
+                "album": "Album5",
+                "year": 2005,
+                "duration": 50
+            }
+        }
+    },
 
     radioDetails:{
         radioStation:{
@@ -201,12 +374,59 @@ SDL.RadioModel = Em.Object.create( {
 
     statusBar: 'FM Radio',
 
+    setRadioData: function (data) {
+
+        if (data.frequencyInteger) {
+            this.set('radioControlStruct.frequencyInteger', data.frequencyInteger);
+        }
+
+        if (data.frequencyFraction) {
+            this.set('radioControlStruct.frequencyFraction', data.frequencyFraction);
+        }
+
+        if (data.band) {
+            this.set('radioControlStruct.band', data.band);
+        }
+
+        if (data.rdsData) {
+            this.set('radioControlStruct.rdsData', data.rdsData);
+        }
+
+        if (data.availableHDs) {
+            this.set('radioControlStruct.availableHDs', data.availableHDs);
+        }
+
+        if (data.hdChannel) {
+            this.set('radioControlStruct.hdChannel', data.hdChannel);
+        }
+
+        if (data.signalStrength) {
+            this.set('radioControlStruct.signalStrength', data.signalStrength);
+        }
+
+        if (data.signalChangeThreshold) {
+            this.set('radioControlStruct.signalChangeThreshold', data.signalChangeThreshold);
+        }
+
+        if (data.radioEnable) {
+            this.set('radioControlStruct.radioEnable', data.radioEnable);
+        }
+
+        if (data.state) {
+            this.set('radioControlStruct.state', data.state);
+        }
+    },
+
+    bandSelect: function(element){
+        SDL.RadioModel.band = element.selection.name;
+    },
+
     saveStationToPreset: function(element){
         element.set('text', this.station);
         this.preset[element.preset] = this.station;
 
         SDL.RadioModel.set('activePreset', element.preset);
-        FFW.CAN.OnPresetsChanged(this.preset);
+        //FFW.RC.OnPresetsChanged(this.preset);
     },
 
     directTune: function(){
@@ -266,29 +486,29 @@ SDL.RadioModel = Em.Object.create( {
             }
         }
     },
-
-    updateRadioFrequency: function(params) {
-        if (SDL.RadioModel.activeBand == 'fm') {
-
-            if (params.frequency != null) {
-                SDL.RadioModel.radioDetails.radioStation.frequency = params.frequency;
-            }
-            if (params.fraction != null) {
-                SDL.RadioModel.radioDetails.radioStation.fraction = params.fraction;
-            }
-            if (params.availableHDs != null) {
-                SDL.RadioModel.radioDetails.radioStation.availableHDs = params.availableHDs;
-            }
-            if (params.currentHD != null) {
-                SDL.RadioModel.radioDetails.radioStation.currentHD = params.currentHD;
-            }
-            SDL.RadioModel.set('station', SDL.RadioModel.radioDetails.radioStation.frequency
-                + '.'
-                + SDL.RadioModel.radioDetails.radioStation.fraction);
-
-            SDL.RadioModel.findStationPresets();
-        }
-    },
+    //
+    //updateRadioFrequency: function(params) {
+    //    if (SDL.RadioModel.activeBand == 'fm') {
+    //
+    //        if (params.frequency != null) {
+    //            SDL.RadioModel.radioControlStruct.frequencyInteger = params.frequency;
+    //        }
+    //        if (params.fraction != null) {
+    //            SDL.RadioModel.radioDetails.radioStation.fraction = params.fraction;
+    //        }
+    //        if (params.availableHDs != null) {
+    //            SDL.RadioModel.radioDetails.radioStation.availableHDs = params.availableHDs;
+    //        }
+    //        if (params.currentHD != null) {
+    //            SDL.RadioModel.radioDetails.radioStation.currentHD = params.currentHD;
+    //        }
+    //        SDL.RadioModel.set('station', SDL.RadioModel.radioControlStruct.frequencyInteger
+    //            + '.'
+    //            + SDL.RadioModel.radioDetails.radioStation.fraction);
+    //
+    //        SDL.RadioModel.findStationPresets();
+    //    }
+    //},
 
     /**
      * Keys for direct tune component
@@ -317,9 +537,9 @@ SDL.RadioModel = Em.Object.create( {
         this.set('station', this.preset[element.preset]);
 
         SDL.RadioModel.set('activePreset', element.preset);
-        SDL.RadioModel.radioDetails.radioStation.frequency = parseInt(SDL.RadioModel.station.slice(0, -1));
-        SDL.RadioModel.radioDetails.radioStation.fraction = parseInt(SDL.RadioModel.station.slice(-1));
-        FFW.CAN.OnRadioDetails({"radioStation": SDL.RadioModel.radioDetails.radioStation});
+        SDL.RadioModel.radioControlStruct.frequencyInteger = parseInt(SDL.RadioModel.station.slice(0, -1));
+        SDL.RadioModel.radioControlStruct.frequencyFraction = parseInt(SDL.RadioModel.station.slice(-1));
+        FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.radioControlData);
 
         SDL.SDLModel.resetControl();
     },
@@ -336,8 +556,8 @@ SDL.RadioModel = Em.Object.create( {
         }
         if (element.preset == 'Enter' && SDL.RadioModel.station.indexOf('.') < 0) {
             SDL.RadioModel.set('station', SDL.RadioModel.station.slice(0, -1) + '.' + SDL.RadioModel.station.slice(-1));
-            SDL.RadioModel.radioDetails.radioStation.frequency = parseInt(SDL.RadioModel.station.slice(0, -1));
-            SDL.RadioModel.radioDetails.radioStation.fraction = parseInt(SDL.RadioModel.station.slice(-1));
+            SDL.RadioModel.radioControlStruct.frequencyInteger = parseInt(SDL.RadioModel.station.slice(0, -1));
+            SDL.RadioModel.radioControlStruct.frequencyFraction = parseInt(SDL.RadioModel.station.slice(-1));
             this.set('temp', this.station);
             this.set('directTuneFinished', false);
             this.set('directTuneKeypressed', false);
@@ -345,7 +565,7 @@ SDL.RadioModel = Em.Object.create( {
 
             this.findStationPresets();
 
-            FFW.CAN.OnRadioDetails({"radioStation": SDL.RadioModel.radioDetails.radioStation});
+            FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.radioControlData);
 
             SDL.SDLModel.resetControl();
         }
@@ -362,6 +582,13 @@ SDL.RadioModel = Em.Object.create( {
 
     },
 
+    radioEnableKeyPress: function(){
+
+        SDL.RadioModel.toggleProperty('radioControlStruct.radioEnable');
+
+        SDL.SDLModel.resetControl();
+    },
+
     scanKeyPress: function(){
         if (!this.scanState) {
             this.startScan();
@@ -376,7 +603,17 @@ SDL.RadioModel = Em.Object.create( {
 
         this.toggleProperty('scanState');
 
-        FFW.CAN.StartScan();
+        if (this.tuneUpTimer === null){
+            this.tuneUpTimer = setInterval(function(){
+
+                if(SDL.RadioModel.tuneUpTimer != null){
+                    SDL.RadioModel.tuneUp();
+                }
+
+            }, 200);
+        }
+
+        //FFW.CAN.StartScan();
     },
 
     /*
@@ -388,20 +625,22 @@ SDL.RadioModel = Em.Object.create( {
 
         this.toggleProperty('scanState');
 
+        clearTimeout(this.tuneUpTimer);
+        this.tuneUpTimer = null;
 
-        FFW.CAN.StopScan();
+        //FFW.CAN.StopScan();
     },
 
     radioTune: function(params){
-        this.radioDetails.radioStation.frequency = params.radioStation.frequency;
-        this.radioDetails.radioStation.fraction = params.radioStation.fraction;
+        this.radioControlStruct.frequencyInteger = params.radioStation.frequency;
+        this.radioControlStruct.frequencyFraction = params.radioStation.fraction;
 
-        this.set('station', this.radioDetails.radioStation.frequency + '.' + this.radioDetails.radioStation.fraction);
+        this.set('station', this.radioControlStruct.frequencyInteger + '.' + this.radioControlStruct.frequencyFraction);
 
         this.findStationPresets();
 
-        FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode["SUCCESS"], FFW.VehicleInfo.VITuneRadioRequestID, "VehicleInfo.TuneRadio");
-        FFW.CAN.send('frequency_set_' + Number(SDL.RadioModel.station)*1000);
+        //FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode["SUCCESS"], FFW.VehicleInfo.VITuneRadioRequestID, "VehicleInfo.TuneRadio");
+        //FFW.CAN.send('frequency_set_' + Number(SDL.RadioModel.station)*1000);
     },
 
     tuneUpPress: function () {
@@ -417,11 +656,62 @@ SDL.RadioModel = Em.Object.create( {
     },
 
     tuneUp: function () {
-        FFW.CAN.TuneUp('step_up');
+        //FFW.CAN.TuneUp('step_up');
+        var data = this.radioControlStruct.frequencyFraction + this.radioControlStruct.frequencyInteger * 10;
+
+        data += 2;
+
+        if (data >= 1080) {
+            data = 879;
+        }
+
+        this.set('radioControlStruct.frequencyInteger', Math.floor(data / 10));
+        this.set('radioControlStruct.frequencyFraction', data % 10);
+
+        this.checkRadioDetailsSongInfo(data);
     },
 
     tuneDown: function () {
-        FFW.CAN.TuneDown('step_down');
+        //FFW.CAN.TuneDown('step_down');
+        var data = this.radioControlStruct.frequencyFraction + this.radioControlStruct.frequencyInteger * 10;
+
+        data -= 2;
+
+        if (data <= 877) {
+            data = 1079;
+        }
+
+        this.set('radioControlStruct.frequencyInteger', Math.floor(data / 10));
+        this.set('radioControlStruct.frequencyFraction', data % 10);
+
+        this.checkRadioDetailsSongInfo(data);
+    },
+
+    checkRadioDetailsSongInfo: function(data){
+
+        if (this.stationsData[data]) {
+
+            if (this.tuneUpTimer != null) {
+
+                clearInterval(this.tuneUpTimer);
+                this.tuneUpTimer = null;
+
+                setTimeout(function(){
+                    if (SDL.RadioModel.scanState === true && SDL.RadioModel.tuneUpTimer === null) {
+                        SDL.RadioModel.tuneUpTimer = setInterval(function(){
+                            SDL.RadioModel.tuneUp();
+                        }, 200);
+                    }
+                }, 2000);
+            }
+
+            this.updateSongInfo(this.stationsData[data].songInfo);
+
+            FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
+        } else {
+
+            FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
+        }
     },
 
     findStationPresets: function() {

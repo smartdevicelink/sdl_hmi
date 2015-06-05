@@ -35,6 +35,8 @@ SDL.StatusClimateView = Em.ContainerView.extend( {
 
     elementId: 'status_climate',
 
+    classNameBindings: 'SDL.States.climate.active:hide',
+
     classNames: [
         'status_bar'
     ],

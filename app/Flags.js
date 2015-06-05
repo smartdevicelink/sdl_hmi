@@ -61,9 +61,9 @@ FLAGS = Em.Object.create( {
 
     Navi: true,
 
-    CAN: true,
+    CAN: false,
 
-    RC: true,
+    RC: false,
 
     /**
      * 0 - G

@@ -48,8 +48,331 @@ SDL.RadioView = Em.ContainerView
         childViews: [
             'rightmenu',
             'info',
-            'tuneButtons'
+            'tuneButtons',
+            'optionsMenu'
         ],
+
+        optionsMenu: Em.ContainerView.create({
+
+            elementId: 'radio_options_view_container',
+
+            classNames: 'options',
+
+            classNameBindings: [
+                'SDL.RadioModel.optionsEnabled:active_state:inactive_state'
+            ],
+
+            /**
+             * View Components
+             */
+            childViews: [
+                'bandLabel',
+                'bandSelect',
+                'rdsDataLabel',
+                'PSLabel',
+                'PSInput',
+                'RTLabel',
+                'RTInput',
+                'CTLabel',
+                'CTInput',
+                'PILabel',
+                'PIInput',
+                'PTYLabel',
+                'PTYInput',
+                'TPLabel',
+                'TPSelect',
+                'TALabel',
+                'TASelect',
+                'REGLabel',
+                'REGInput',
+                'availableHDsLabel',
+                'availableHDsInput',
+                'hdChannelLabel',
+                'hdChannelInput',
+                'signalStrengthLabel',
+                'signalStrengthInput',
+                'signalChangeThresholdLabel',
+                'signalChangeThresholdInput',
+                'stateLabel',
+                'stateSelect'
+            ],
+
+            bandLabel: SDL.Label.extend( {
+
+                elementId: 'bandLabel',
+
+                classNames: 'bandLabel',
+
+                content: 'Band'
+            } ),
+
+            bandSelect: Em.Select.extend( {
+
+                elementId: 'bandSelect',
+
+                classNames: 'bandSelect',
+
+                contentBinding: 'SDL.RadioModel.bandStruct',
+
+                valueBinding: 'SDL.RadioModel.radioControlStruct.band'
+            } ),
+
+            rdsDataLabel: SDL.Label.extend( {
+
+                elementId: 'rdsDataLabel',
+
+                classNames: 'rdsDataLabel',
+
+                content: 'RDS Data list'
+            } ),
+
+            PSLabel: SDL.Label.extend( {
+
+                elementId: 'PSLabel',
+
+                classNames: 'PSLabel',
+
+                content: 'PS'
+            } ),
+
+            /**
+             * Input
+             */
+            PSInput: Ember.TextField.extend({
+                elementId: 'PSInput',
+                classNames: 'PSInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.PS'
+            }),
+
+            RTLabel: SDL.Label.extend( {
+
+                elementId: 'RTLabel',
+
+                classNames: 'RTLabel',
+
+                content: 'RT'
+            } ),
+
+            /**
+             * Input
+             */
+            RTInput: Ember.TextField.extend({
+                elementId: 'RTInput',
+                classNames: 'RTInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.RT'
+            }),
+
+            CTLabel: SDL.Label.extend( {
+
+                elementId: 'CTLabel',
+
+                classNames: 'CTLabel',
+
+                content: 'CT'
+            } ),
+
+            /**
+             * Input
+             */
+            CTInput: Ember.TextField.extend({
+                elementId: 'CTInput',
+                classNames: 'CTInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.CT'
+            }),
+
+            PILabel: SDL.Label.extend( {
+
+                elementId: 'PILabel',
+
+                classNames: 'PILabel',
+
+                content: 'PI'
+            } ),
+
+            /**
+             * Input
+             */
+            PIInput: Ember.TextField.extend({
+                elementId: 'PIInput',
+                classNames: 'PIInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.PI'
+            }),
+
+            PTYLabel: SDL.Label.extend( {
+
+                elementId: 'PTYLabel',
+
+                classNames: 'PTYLabel',
+
+                content: 'PTY'
+            } ),
+
+            /**
+             * Input
+             */
+            PTYInput: Ember.TextField.extend({
+                elementId: 'PTYInput',
+                classNames: 'PTYInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.PTY'
+            }),
+
+            TPLabel: SDL.Label.extend( {
+
+                elementId: 'TPLabel',
+
+                classNames: 'TPLabel',
+
+                content: 'TP'
+            } ),
+
+            /**
+             * Select
+             */
+            TPSelect: Em.Select.extend( {
+
+                elementId: 'TPSelect',
+
+                classNames: 'TPSelect',
+
+                contentBinding: 'SDL.RadioModel.boolStruct',
+
+                valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.TP'
+            } ),
+
+            TALabel: SDL.Label.extend( {
+
+                elementId: 'TALabel',
+
+                classNames: 'TALabel',
+
+                content: 'TA'
+            } ),
+
+            /**
+             * Select
+             */
+            TASelect: Em.Select.extend( {
+
+                elementId: 'TASelect',
+
+                classNames: 'TASelect',
+
+                contentBinding: 'SDL.RadioModel.boolStruct',
+
+                valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.TA'
+            } ),
+
+            REGLabel: SDL.Label.extend( {
+
+                elementId: 'REGLabel',
+
+                classNames: 'REGLabel',
+
+                content: 'REG'
+            } ),
+
+            /**
+             * Input
+             */
+            REGInput: Ember.TextField.extend({
+                elementId: 'REGInput',
+                classNames: 'REGInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.REG'
+            }),
+
+            availableHDsLabel: SDL.Label.extend( {
+
+                elementId: 'availableHDsLabel',
+
+                classNames: 'availableHDsLabel',
+
+                content: 'availableHDs'
+            } ),
+
+            /**
+             * Input
+             */
+            availableHDsInput: Ember.TextField.extend({
+                elementId: 'availableHDsInput',
+                classNames: 'availableHDsInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.availableHDs'
+            }),
+
+            hdChannelLabel: SDL.Label.extend( {
+
+                elementId: 'hdChannelLabel',
+
+                classNames: 'hdChannelLabel',
+
+                content: 'hdChannel'
+            } ),
+
+            /**
+             * Input
+             */
+            hdChannelInput: Ember.TextField.extend({
+                elementId: 'hdChannelInput',
+                classNames: 'hdChannelInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.hdChannel'
+            }),
+
+            signalStrengthLabel: SDL.Label.extend( {
+
+                elementId: 'signalStrengthLabel',
+
+                classNames: 'signalStrengthLabel',
+
+                content: 'signalStrength'
+            } ),
+
+            /**
+             * Input
+             */
+            signalStrengthInput: Ember.TextField.extend({
+                elementId: 'signalStrengthInput',
+                classNames: 'signalStrengthInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.signalStrength'
+            }),
+
+            signalChangeThresholdLabel: SDL.Label.extend( {
+
+                elementId: 'signalChangeThresholdLabel',
+
+                classNames: 'signalChangeThresholdLabel',
+
+                content: 'signalChangeThreshold'
+            } ),
+
+            /**
+             * Input
+             */
+            signalChangeThresholdInput: Ember.TextField.extend({
+                elementId: 'signalChangeThresholdInput',
+                classNames: 'signalChangeThresholdInput',
+                valueBinding: 'SDL.RadioModel.radioControlStruct.signalChangeThreshold'
+            }),
+
+            stateLabel: SDL.Label.extend( {
+
+                elementId: 'stateLabel',
+
+                classNames: 'stateLabel',
+
+                content: 'state'
+            } ),
+
+            stateSelect: Em.Select.extend( {
+
+                elementId: 'stateSelect',
+
+                classNames: 'stateSelect',
+
+                contentBinding: 'SDL.RadioModel.stateStruct',
+
+                valueBinding: 'SDL.RadioModel.radioControlStruct.state'
+            } )
+
+        }),
 
         songInfo: "",
 
@@ -83,7 +406,7 @@ SDL.RadioView = Em.ContainerView
                     + '<div class="STAName">{{STAName}}</div>'
                     + '<div class="station">{{SDL.RadioModel.station}}</div>'
                     + '<div class="divider_o"></div>'
-                    + '<div class="genre">{{SDL.RadioView.radioDetails.songInfo.genre}}</div>'
+                    + '<div class="genre">{{SDL.RadioModel.radioDetails.songInfo.genre}}</div>'
                     + '<div class="songInfo">{{songInfo}}</div>'
                     + '</div>' + '{{/with}}' )
         } ),
@@ -225,7 +548,7 @@ SDL.RadioView = Em.ContainerView
 
             /** View Components*/
             childViews: [
-                'hdButton',
+                'RadioEnable',
                 'scanButton',
                 'optionsButton',
                 'directTuneButton',
@@ -233,13 +556,24 @@ SDL.RadioView = Em.ContainerView
                 'tuneButtons'
             ],
 
-            hdButton:  SDL.Button.extend({
+            RadioEnable:  SDL.Button.extend({
                 elementId:  'media_fm_hdButton',
                 classNames:	['rs-item'],
-                text:		'HD Radio',
-                disabled:	true,
+                text:		'Enable Radio',
+                disabled:	false,
                 onDown:     false,
-                icon:       'images/media/passiv_horiz_led.png'
+                action: 'radioEnableKeyPress',
+                target: 'SDL.RadioModel',
+                icon:       'images/media/passiv_horiz_led.png',
+                // Change Icon for Frequency Scan
+                onIconChange: function(){
+
+                    if(SDL.RadioModel.radioControlStruct.radioEnable){
+                        this.set('icon', 'images/media/active_horiz_led.png');
+                    }else{
+                        this.set('icon', 'images/media/passiv_horiz_led.png');
+                    }
+                }.observes('SDL.RadioModel.radioControlStruct.radioEnable')
             }),
 
             scanButton:  SDL.Button.extend({
@@ -265,7 +599,11 @@ SDL.RadioView = Em.ContainerView
                 classNames:	['rs-item'],
                 icon:		'images/media/active_arrow.png',
                 text:		'Options',
-                disabled:	true
+                disabled:	false,
+                action: function(){
+                    SDL.SDLModel.resetControl();
+                    SDL.RadioModel.toggleProperty('optionsEnabled');
+                }
             }),
 
             directTuneButton: SDL.Button.extend({

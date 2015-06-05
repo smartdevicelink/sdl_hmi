@@ -134,6 +134,137 @@
 	background: #333333;
 }
 
+#radio_options_view_container.options{
+    width: 458px;
+    height: 300px;
+    background-color: black;
+    border: 1px solid white;
+    z-index: 1000;
+    padding: 10px;
+}
+
+#radio_options_view_container .bandSelect{
+    margin-left: 200px;
+}
+
+#radio_options_view_container .PSLabel{
+    top: 45px;
+}
+
+#radio_options_view_container .PSInput{
+    top: 45px;
+    position: absolute;
+}
+
+#radio_options_view_container .RTLabel{
+    top: 60px;
+}
+
+#radio_options_view_container .RTInput{
+    top: 60px;
+    position: absolute;
+}
+
+#radio_options_view_container .CTLabel{
+    top: 75px;
+}
+
+#radio_options_view_container .CTInput{
+    top: 75px;
+    position: absolute;
+}
+
+#radio_options_view_container .PILabel{
+    top: 90px;
+}
+
+#radio_options_view_container .PIInput{
+    top: 90px;
+    position: absolute;
+}
+
+#radio_options_view_container .PTYLabel{
+    top: 105px;
+}
+
+#radio_options_view_container .PTYInput{
+    top: 105px;
+    position: absolute;
+}
+
+#radio_options_view_container .TPLabel{
+    top: 120px;
+}
+
+#radio_options_view_container .TPSelect{
+    top: 120px;
+    position: absolute;
+}
+
+#radio_options_view_container .TALabel{
+    top: 135px;
+}
+
+#radio_options_view_container .TASelect{
+    top: 135px;
+    position: absolute;
+}
+
+#radio_options_view_container .REGLabel{
+    top: 150px;
+}
+
+#radio_options_view_container .REGInput{
+    top: 150px;
+    position: absolute;
+}
+
+#radio_options_view_container .availableHDsLabel{
+    top: 165px;
+}
+
+#radio_options_view_container .availableHDsInput{
+    top: 165px;
+    position: absolute;
+}
+
+#radio_options_view_container .hdChannelLabel{
+    top: 180px;
+}
+
+#radio_options_view_container .hdChannelInput{
+    top: 180px;
+    position: absolute;
+}
+
+#radio_options_view_container .signalStrengthLabel{
+    top: 195px;
+}
+
+#radio_options_view_container .signalStrengthInput{
+    top: 195px;
+    position: absolute;
+}
+
+#radio_options_view_container .signalChangeThresholdLabel{
+    top: 210px;
+}
+
+#radio_options_view_container .signalChangeThresholdInput{
+    top: 210px;
+    position: absolute;
+}
+
+#radio_options_view_container .stateLabel{
+    top: 225px;
+}
+
+#radio_options_view_container .stateSelect{
+    top: 225px;
+    position: absolute;
+}
+
+
 .main-preset-buttons-wraper {
 	position: relative;
 	width: 468px;
@@ -598,10 +729,10 @@
 }
 .track-info>.genre {
     position: absolute;
-    top: 30px;
-    right: 6px;
+    top: 133px;
+    left: 2px;
     width: 200px;
-    text-align: right;
+    text-align: left;
     font-size: 24px;
 }
 .track-info>.songInfo {

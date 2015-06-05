@@ -272,7 +272,7 @@ FFW.RPCClient = Em.Object
          */
         send: function(obj) {
 
-            if (this.socket.readyState == this.socket.OPEN) {
+            if (this.socket && this.socket.readyState == this.socket.OPEN) {
 
                 var strJson = JSON.stringify(obj);
                 Em.Logger.log(strJson);
