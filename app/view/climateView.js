@@ -72,6 +72,14 @@ SDL.ClimateView = Em.ContainerView.create( {
             'zoneSelection'
         ],
 
+        disabled: function(){
+            if (SDL.ClimateController.model.zoneSelect === 'Driver'){
+                return false;
+            } else {
+                return true;
+            }
+        }.property('SDL.ClimateController.model.zoneSelect'),
+
         desiredTemp: Em.ContainerView.extend({
 
             elementId: 'desiredTemp_container',
@@ -266,6 +274,8 @@ SDL.ClimateView = Em.ContainerView.create( {
 
                 onDown: false,
 
+                disabledBinding: 'parentView.parentView.disabled',
+
                 action: 'defrostRearEnable',
 
                 target: 'SDL.ClimateController.model'
@@ -288,6 +298,8 @@ SDL.ClimateView = Em.ContainerView.create( {
 
                 onDown: false,
 
+                disabledBinding: 'parentView.parentView.disabled',
+
                 action: 'defrostFrontEnable',
 
                 target: 'SDL.ClimateController.model'
@@ -307,6 +319,8 @@ SDL.ClimateView = Em.ContainerView.create( {
                 text: 'BOTH',
 
                 onDown: false,
+
+                disabledBinding: 'parentView.parentView.disabled',
 
                 action: 'defrostAllEnable',
 
@@ -343,6 +357,8 @@ SDL.ClimateView = Em.ContainerView.create( {
 
                 onDown: false,
 
+                disabledBinding: 'parentView.parentView.disabled',
+
                 action: 'temperatureUnitKelvinEnable',
 
                 target: 'SDL.ClimateController.model'
@@ -362,6 +378,8 @@ SDL.ClimateView = Em.ContainerView.create( {
                 text: 'F',
 
                 onDown: false,
+
+                disabledBinding: 'parentView.parentView.disabled',
 
                 action: 'temperatureUnitFahrenheitEnable',
 
@@ -383,6 +401,8 @@ SDL.ClimateView = Em.ContainerView.create( {
 
                 onDown: false,
 
+                disabledBinding: 'parentView.parentView.disabled',
+
                 action: 'temperatureUnitCelsiusEnable',
 
                 target: 'SDL.ClimateController.model'
@@ -393,6 +413,7 @@ SDL.ClimateView = Em.ContainerView.create( {
             elementId:		'acEnable',
             classNames:		'acEnable switcher',
             iconBinding:	'onIconChange',
+            disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function(){
                 if(SDL.ClimateController.model.currentSet.climateControlData.acEnable){
@@ -411,6 +432,7 @@ SDL.ClimateView = Em.ContainerView.create( {
             elementId:		'autoModeEnable',
             classNames:		'autoModeEnable switcher',
             iconBinding:	'onIconChange',
+            disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function(){
                 if(SDL.ClimateController.model.currentSet.climateControlData.autoModeEnable){
@@ -429,6 +451,7 @@ SDL.ClimateView = Em.ContainerView.create( {
             elementId:		'dualModeEnable',
             classNames:		'dualModeEnable switcher',
             iconBinding:	'onIconChange',
+            disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function(){
                 if(SDL.ClimateController.model.currentSet.climateControlData.dualModeEnable){
@@ -447,6 +470,7 @@ SDL.ClimateView = Em.ContainerView.create( {
             elementId:		'recirculateAirEnable',
             classNames:		'recirculateAirEnable switcher',
             iconBinding:	'onIconChange',
+            disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function(){
                 if(SDL.ClimateController.model.currentSet.climateControlData.circulateAirEnable){

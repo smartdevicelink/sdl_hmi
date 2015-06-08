@@ -73,6 +73,8 @@ SDL.RadioModel = Em.Object.create( {
 
     tuneRadio: false,
 
+    subscribedData: [],
+
     bandStruct: [
         'FM',
         'AM',

@@ -229,13 +229,23 @@ FFW.RC = FFW.RPCObserver.create( {
                     var radioControlData = null;
                     var climateControlData = null;
 
-                    if (request.params.subscribe && !(zone in SDL.ClimateController.model.subscribedData)) {
-                        SDL.ClimateController.model.subscribedData.push(zone);
+                    if (request.params.subscribe === true) {
+                        if (request.params.moduleDescription.moduleType === "CLIMATE" && SDL.ClimateController.model.subscribedData.indexOf(zone) === -1) {
+                            SDL.ClimateController.model.subscribedData.push(zone);
+                        } else if (request.params.moduleDescription.moduleType === "RADIO" && SDL.RadioModel.subscribedData.indexOf(zone) === -1) {
+                            SDL.RadioModel.subscribedData.push(zone);
+                        }
+                    } else if (request.params.subscribe === false) {
+                        if (request.params.moduleDescription.moduleType === "CLIMATE" && SDL.ClimateController.model.subscribedData.indexOf(zone) != -1) {
+                            SDL.ClimateController.model.subscribedData.pop(zone);
+                        } else if (request.params.moduleDescription.moduleType === "RADIO" && SDL.RadioModel.subscribedData.indexOf(zone) != -1) {
+                            SDL.RadioModel.subscribedData.pop(zone);
+                        }
                     }
 
                     if (request.params.moduleDescription.moduleType === "CLIMATE") {
                         climateControlData = SDL.ClimateController.model.climateSet[zone].climateControlData;
-                    } else if (moduleDescription.moduleType === "RADIO") {
+                    } else if (request.params.moduleDescription.moduleType === "RADIO") {
                         radioControlData = SDL.RadioModel.get('radioControlData');
                     }
 
@@ -340,7 +350,7 @@ FFW.RC = FFW.RPCObserver.create( {
 
         if (moduleZone === 'subscribed') {
 
-            for(var i = 0; i < SDL.ClimateController.model.subscribedData.length; i++){
+            for(var i = 0; i < SDL.RadioModel.subscribedData.length; i++){
 
                 // send repsonse
                 var JSONMessage = {
@@ -348,7 +358,7 @@ FFW.RC = FFW.RPCObserver.create( {
                     "method": "RC.OnInteriorVehicleData",
                     "params": {
                         "moduleType": moduleType,
-                        "moduleZone": SDL.ClimateController.model.subscribedData[i]
+                        "moduleZone": SDL.RadioModel.subscribedData[i]
                     }
                 };
 
@@ -378,15 +388,23 @@ FFW.RC = FFW.RPCObserver.create( {
 
             if (radioControlData) {
                 JSONMessage.params.radioControlData = radioControlData;
+
+                if (zone in SDL.RadioModel.subscribedData) {
+
+                    this.client.send(JSONMessage);
+                }
             }
             if (climateControlData) {
+
                 JSONMessage.params.climateControlData = climateControlData;
+
+                if (zone in SDL.ClimateController.model.subscribedData) {
+
+                    this.client.send(JSONMessage);
+                }
             }
 
-            if (zone in SDL.ClimateController.model.subscribedData) {
 
-                this.client.send(JSONMessage);
-            }
 
         }
     }
