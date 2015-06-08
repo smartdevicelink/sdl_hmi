@@ -34,13 +34,6 @@
 SDL.ABSAppModel = Em.Object.extend({
 
         /**
-         * List of subscribed data on VehicleInfo model
-         *
-         * @type {Object}
-         */
-        subscribedData: {},
-
-        /**
          * Application's container for current processed requests on HMI
          *
          * @type {Object}

@@ -369,13 +369,13 @@ SDL.SDLVehicleInfoModel = Em.Object
                         key = "clusterModes";
                     }
 
-                    if (key != 'appID' && SDL.SDLController.getApplicationModel(message.params.appID).subscribedData[key] === true) {
+                    if (SDL.SDLModel.subscribedData[key] === true) {
                         subscribeVIData[key] = {
                             dataType: this.eVehicleDataType[key],
                             resultCode: "DATA_ALREADY_SUBSCRIBED"
                         };
-                    } else if (key != 'appID' && key in SDL.SDLController.getApplicationModel(message.params.appID).subscribedData) {
-                        SDL.SDLController.getApplicationModel(message.params.appID).subscribedData[key] = true;
+                    } else if (SDL.SDLModel.subscribedData) {
+                        SDL.SDLModel.subscribedData[key] = true;
                         subscribeVIData[key] = {
                             dataType: this.eVehicleDataType[key],
                             resultCode: "SUCCESS"
@@ -475,7 +475,7 @@ SDL.SDLVehicleInfoModel = Em.Object
 
             for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
                 appID = SDL.SDLModel.data.registeredApps[i].appID;
-                if (SDL.SDLController.getApplicationModel(appID).subscribedData["prndl"]) {
+                if (SDL.SDLModel.subscribedData["prndl"]) {
 
                     var jsonData = {};
                     jsonData["prndl"] = this.vehicleData["prndl"];

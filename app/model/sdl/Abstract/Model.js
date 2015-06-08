@@ -56,6 +56,13 @@ SDL.ABSModel = Em.Object.extend({
 
     },
 
+    /**
+     * List of subscribed data on VehicleInfo model
+     *
+     * @type {Object}
+     */
+    subscribedData: {},
+
     applicationStatusBar: function () {
 
         if (this.data.limitedExist && SDL.SDLController.getApplicationModel(this.data.stateLimited)) {
