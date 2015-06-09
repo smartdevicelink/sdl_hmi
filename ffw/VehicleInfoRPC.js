@@ -224,20 +224,6 @@ FFW.VehicleInfo = FFW.RPCObserver.create( {
                     break;
                 }
 
-                case "VehicleInfo.GrantAccess": {
-
-                    SDL.SDLModel.giveControl(request);
-
-                    break;
-                }
-
-                case "VehicleInfo.CancelAccess": {
-
-                    SDL.SDLModel.cancelControl(request);
-
-                    break;
-                }
-
                 default: {
                     // statements_def
                     break;
@@ -305,24 +291,6 @@ FFW.VehicleInfo = FFW.RPCObserver.create( {
             };
             this.client.send(JSONMessage);
         }
-    },
-
-    /**
-     * Notification about trigered action by user touchstart
-     *
-     */
-    OnControlChanged: function() {
-
-        SDL.SDLModel.set('givenControlFlag', false);
-        Em.Logger.log("FFW.VehicleInfo.OnControlChanged Notification");
-
-        // send repsonse
-        var JSONMessage = {
-            "jsonrpc": "2.0",
-            "method": "VehicleInfo.OnControlChanged"
-        };
-        this.client.send(JSONMessage);
-
     },
 
     /**

@@ -162,20 +162,20 @@ SDL.RadioModel = Em.Object.create( {
         frequencyFraction: 3,
         band: 'FM',
         rdsData: {
-            PS: 'PS',
-            RT: 'RT',
-            CT: 'CT',
-            PI: 'PI',
-            PTY: 100,
+            PS: 'name',
+            RT: 'radio',
+            CT: 'YYYY-MM-DDThh:mm:ss.sTZD',
+            PI: 'Sign',
+            PTY: 1,
             TP: true,
-            TA: false,
-            REG: 'REG'
+            TA: true,
+            REG: 'Murica'
         },
         availableHDs: 3,
         hdChannel: 1,
         signalStrength: 50,
         signalChangeThreshold: 60,
-        radioEnable:  false,
+        radioEnable:  true,
         state: "MULTICAST"
     },
 

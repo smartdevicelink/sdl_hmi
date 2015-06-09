@@ -45,6 +45,10 @@ SDL.RPCController = Em.Object
                 FFW.CAN.connect();
             }
 
+            if (FLAGS.RC) {
+                FFW.RC.connect();
+            }
+
             if (FLAGS.Buttons) {
                 FFW.Buttons.connect();
             }
@@ -2444,104 +2448,123 @@ SDL.RPCController = Em.Object
          * Object that contains check methods that returns true if mandatory
          * fields is successful and returns false if not
          */
+        Buttons: Em.Object.create({
+
+            resultStruct: {},
+
+
+            ButtonPress: function (params) {
+
+                this.resultStruct = {
+                    "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
+                };
+
+                return this.resultStruct;
+            }
+        }),
+
+        /**
+         * Object that contains check methods that returns true if mandatory
+         * fields is successful and returns false if not
+         */
+        RC: Em.Object.create({
+
+            resultStruct: {},
+
+            GetInteriorVehicleDataCapabilities: function (params) {
+
+                this.resultStruct = {
+                    "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
+                };
+
+                return this.resultStruct;
+            },
+
+            SetInteriorVehicleData: function (params) {
+
+                this.resultStruct = {
+                    "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
+                };
+
+                return this.resultStruct;
+            },
+
+            GetInteriorVehicleData: function (params) {
+
+                this.resultStruct = {
+                    "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
+                };
+
+                return this.resultStruct;
+            },
+
+            /**
+             * Validate method for request GrantAccess
+             *
+             * @param {Object}
+             *            params
+             */
+            GrantAccess: function (params) {
+
+                if (params == null) {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Parameter 'params' does not exists!"
+                    };
+
+                    return this.resultStruct;
+                }
+                if (params.appID == null) {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Parameter 'appID' does not exists!"
+                    };
+
+                    return this.resultStruct;
+                }
+                if (typeof params.appID != 'number') {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Wrong type of parameter 'appID'!"
+                    };
+
+                    return this.resultStruct;
+                }
+
+                this.resultStruct = {
+                    "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
+                };
+
+                return this.resultStruct;
+            },
+
+            /**
+             * Validate method for request CancelAccess
+             *
+             * @param {Object}
+             *            params
+             */
+            CancelAccess: function (params) {
+
+                this.resultStruct = {
+                    "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
+                };
+
+                return this.resultStruct;
+            }
+        }),
+
+        /**
+         * Object that contains check methods that returns true if mandatory
+         * fields is successful and returns false if not
+         */
         VehicleInfo: Em.Object
             .create( {
 
                 resultStruct: {},
-
-                GetInteriorVehicleDataCapabilities: function(params) {
-
-                    this.resultStruct = {
-                        "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
-                    };
-
-                    return this.resultStruct;
-                },
-
-                SetInteriorVehicleData: function(params) {
-
-                    this.resultStruct = {
-                        "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
-                    };
-
-                    return this.resultStruct;
-                },
-
-                GetInteriorVehicleData: function(params) {
-
-                    this.resultStruct = {
-                        "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
-                    };
-
-                    return this.resultStruct;
-                },
-
-                ButtonPress: function(params) {
-
-                    this.resultStruct = {
-                        "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
-                    };
-
-                    return this.resultStruct;
-                },
-
-                /**
-                 * Validate method for request GrantAccess
-                 *
-                 * @param {Object}
-                 *            params
-                 */
-                GrantAccess: function(params) {
-
-                    if (params == null) {
-
-                        this.resultStruct = {
-                            "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
-                            "resultMessage": "Parameter 'params' does not exists!"
-                        };
-
-                        return this.resultStruct;
-                    }
-                    if (params.appID == null) {
-
-                        this.resultStruct = {
-                            "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
-                            "resultMessage": "Parameter 'appID' does not exists!"
-                        };
-
-                        return this.resultStruct;
-                    }
-                    if (typeof params.appID != 'number') {
-
-                        this.resultStruct = {
-                            "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
-                            "resultMessage": "Wrong type of parameter 'appID'!"
-                        };
-
-                        return this.resultStruct;
-                    }
-
-                    this.resultStruct = {
-                        "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
-                    };
-
-                    return this.resultStruct;
-                },
-
-                /**
-                 * Validate method for request CancelAccess
-                 *
-                 * @param {Object}
-                 *            params
-                 */
-                CancelAccess: function(params) {
-
-                    this.resultStruct = {
-                        "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
-                    };
-
-                    return this.resultStruct;
-                },
 
                 /**
                  * Validate method for request IsReady

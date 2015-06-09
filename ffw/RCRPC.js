@@ -52,7 +52,7 @@ FFW.RC = FFW.RPCObserver.create( {
      * access to basic RPC functionality
      */
     client: FFW.RPCClient.create( {
-        componentName: "RemoteControl"
+        componentName: "RC"
     }),
 
     /**
@@ -79,7 +79,7 @@ FFW.RC = FFW.RPCObserver.create( {
      */
     onRPCRegistered: function() {
 
-        Em.Logger.log("FFW.RemoteControl.onRPCRegistered");
+        Em.Logger.log("FFW.RC.onRPCRegistered");
         this._super();
     },
 
@@ -88,7 +88,7 @@ FFW.RC = FFW.RPCObserver.create( {
      */
     onRPCUnregistered: function() {
 
-        Em.Logger.log("FFW.RemoteControl.onRPCUnregistered");
+        Em.Logger.log("FFW.RC.onRPCUnregistered");
         this._super();
     },
 
@@ -107,7 +107,7 @@ FFW.RC = FFW.RPCObserver.create( {
      */
     onRPCResult: function(response) {
 
-        Em.Logger.log("FFW.RemoteControl.onRPCResult");
+        Em.Logger.log("FFW.RC.onRPCResult");
         this._super();
     },
 
@@ -116,7 +116,7 @@ FFW.RC = FFW.RPCObserver.create( {
      */
     onRPCError: function(error) {
 
-        Em.Logger.log("FFW.RemoteControl.onRPCError");
+        Em.Logger.log("FFW.RC.onRPCError");
         this._super();
     },
 
@@ -125,8 +125,69 @@ FFW.RC = FFW.RPCObserver.create( {
      */
     onRPCNotification: function(notification) {
 
-        Em.Logger.log("FFW.RemoteControl.onRPCNotification");
+        Em.Logger.log("FFW.RC.onRPCNotification");
         this._super();
+    },
+
+    unMapInteriorZone: function(moduleZone){
+
+        var zone = {};
+
+        switch (moduleZone){
+            case 'driver':{
+
+                zone = {
+                    "col": 0,
+                    "row": 0,
+                    "level": 0,
+                    "colspan": 2,
+                    "rowspan": 2,
+                    "levelspan": 1
+                };
+
+                return zone;
+                break;
+            }
+            case 'front_passenger':{
+
+                zone = {
+                    "col": 1,
+                    "row": 0,
+                    "level": 0,
+                    "colspan": 2,
+                    "rowspan": 2,
+                    "levelspan": 1
+                };
+                return zone;
+                break;
+            }
+            case 'back_left':{
+
+                zone = {
+                    "col": 0,
+                    "row": 1,
+                    "level": 0,
+                    "colspan": 2,
+                    "rowspan": 2,
+                    "levelspan": 1
+                };
+                return zone;
+                break;
+            }
+            case 'back_right':{
+
+                zone = {
+                    "col": 1,
+                    "row": 1,
+                    "level": 0,
+                    "colspan": 2,
+                    "rowspan": 2,
+                    "levelspan": 1
+                };
+                return zone;
+                break;
+            }
+        }
     },
 
     getInteriorZone: function(moduleZone){
@@ -161,7 +222,7 @@ FFW.RC = FFW.RPCObserver.create( {
      */
     onRPCRequest: function(request) {
 
-        Em.Logger.log("FFW.RemoteControl.onRPCRequest");
+        Em.Logger.log("FFW.RC.onRPCRequest");
         if (this.validationCheck(request)) {
 
             switch (request.method) {
@@ -187,6 +248,20 @@ FFW.RC = FFW.RPCObserver.create( {
                         }
                     };
                     this.client.send(JSONMessage);
+
+                    break;
+                }
+
+                case "RC.GrantAccess": {
+
+                    SDL.SDLModel.giveControl(request);
+
+                    break;
+                }
+
+                case "RC.CancelAccess": {
+
+                    SDL.SDLModel.cancelControl(request);
 
                     break;
                 }
@@ -264,10 +339,10 @@ FFW.RC = FFW.RPCObserver.create( {
                     };
 
                     if (radioControlData) {
-                        JSONMessage.params.radioControlData = radioControlData;
+                        JSONMessage.result.radioControlData = radioControlData;
                     }
                     if (climateControlData) {
-                        JSONMessage.params.climateControlData = climateControlData;
+                        JSONMessage.result.climateControlData = climateControlData;
                     }
 
                     this.client.send(JSONMessage);
@@ -344,9 +419,27 @@ FFW.RC = FFW.RPCObserver.create( {
         }
     },
 
+    /**
+     * Notification about trigered action by user touchstart
+     *
+     */
+    OnControlChanged: function() {
+
+        SDL.SDLModel.set('givenControlFlag', false);
+        Em.Logger.log("FFW.RC.OnControlChanged Notification");
+
+        // send repsonse
+        var JSONMessage = {
+            "jsonrpc": "2.0",
+            "method": "RC.OnControlChanged"
+        };
+        this.client.send(JSONMessage);
+
+    },
+
     onInteriorVehicleDataNotification: function(moduleType, moduleZone, radioControlData, climateControlData) {
 
-        Em.Logger.log("FFW.RemoteControl Notification");
+        Em.Logger.log("FFW.RC Notification");
 
         if (moduleZone === 'subscribed') {
 
@@ -358,7 +451,7 @@ FFW.RC = FFW.RPCObserver.create( {
                     "method": "RC.OnInteriorVehicleData",
                     "params": {
                         "moduleType": moduleType,
-                        "moduleZone": SDL.RadioModel.subscribedData[i]
+                        "moduleZone": this.unMapInteriorZone(SDL.RadioModel.subscribedData[i])
                     }
                 };
 
@@ -398,14 +491,13 @@ FFW.RC = FFW.RPCObserver.create( {
 
                 JSONMessage.params.climateControlData = climateControlData;
 
-                if (zone in SDL.ClimateController.model.subscribedData) {
-
-                    this.client.send(JSONMessage);
+                for (var i = 0; i < SDL.ClimateController.model.subscribedData.length; i++) {
+                    if (SDL.ClimateController.model.subscribedData[i] === zone) {
+                        this.client.send(JSONMessage);
+                        return;
+                    }
                 }
             }
-
-
-
         }
     }
 });

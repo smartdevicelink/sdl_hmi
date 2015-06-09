@@ -34,16 +34,16 @@
 SDL.RController = SDL.ABSController.extend({
 
     /**
-     * Button action to sent response for VehicleInfo.GrantAccess request
+     * Button action to sent response for RC.GrantAccess request
      *
      * @type {Object}
      */
     ControlAccessAction: function (appID, value) {
             if (value) {
-                FFW.VehicleInfo.sendVIResult(
+                FFW.RC.sendRCResult(
                     SDL.SDLModel.data.resultCode['SUCCESS'],
                     SDL.SDLModel.controlRequestID,
-                    "VehicleInfo.GrantAccess"
+                    "RC.GrantAccess"
                 );
                 SDL.SDLModel.set('givenControl', appID);
                 SDL.SDLModel.set('givenControlFlag', true);
@@ -51,10 +51,10 @@ SDL.RController = SDL.ABSController.extend({
 
                 FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', SDL.RadioModel.get('radioControlData'));
             } else {
-                FFW.VehicleInfo.sendError(
+                FFW.RC.sendError(
                     SDL.SDLModel.data.resultCode['REJECTED'],
                     SDL.SDLModel.controlRequestID,
-                    "VehicleInfo.GrantAccess",
+                    "RC.GrantAccess",
                     "Request cancelled."
                 );
             }
