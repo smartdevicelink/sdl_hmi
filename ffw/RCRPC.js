@@ -300,6 +300,11 @@ FFW.RC = FFW.RPCObserver.create( {
 
                     Em.Logger.log("FFW." + request.method + "Response");
 
+                    if (request.params.moduleDescription == undefined) {
+                        this.sendError(SDL.SDLModel.data.resultCode["REJECTED"], request.id, request.method, "ModuleDescription parameter missing!");
+                        return;
+                    }
+
                     var zone = this.getInteriorZone(request.params.moduleDescription.moduleZone);
                     var radioControlData = null;
                     var climateControlData = null;
