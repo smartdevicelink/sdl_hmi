@@ -231,6 +231,27 @@ FFW.RC = FFW.RPCObserver.create( {
 
                     Em.Logger.log("FFW." + request.method + "Response");
 
+                    var interiorVehicleDataCapabilities = [];
+
+                    if (request.params.moduleTypes) {
+                        for (var i = 0; i < request.params.moduleTypes.length; i++) {
+                            interiorVehicleDataCapabilities.push({
+                                "moduleZone": request.params.zone,
+                                "moduleType": request.params.moduleTypes[i]
+                            })
+                        }
+                    } else {
+                        interiorVehicleDataCapabilities.push({
+                            "moduleZone": request.params.zone,
+                            "moduleType":"CLIMATE"
+                        });
+
+                        interiorVehicleDataCapabilities.push({
+                            "moduleZone": request.params.zone,
+                            "moduleType":"RADIO"
+                        })
+                    }
+
                     // send repsonse
                     var JSONMessage = {
                         "jsonrpc": "2.0",
@@ -238,13 +259,7 @@ FFW.RC = FFW.RPCObserver.create( {
                         "result": {
                             "code": SDL.SDLModel.data.resultCode["SUCCESS"],
                             "method": request.method,
-                            "interiorVehicleDataCapabilities": {
-                                "moduleZone": request.params.zone,
-                                "moduleType": [
-                                    "CLIMATE",
-                                    "RADIO"
-                                ]
-                            }
+                            "interiorVehicleDataCapabilities": interiorVehicleDataCapabilities
                         }
                     };
                     this.client.send(JSONMessage);
