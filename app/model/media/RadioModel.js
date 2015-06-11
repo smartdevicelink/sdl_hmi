@@ -539,8 +539,8 @@ SDL.RadioModel = Em.Object.create( {
         this.set('station', this.preset[element.preset]);
 
         SDL.RadioModel.set('activePreset', element.preset);
-        SDL.RadioModel.radioControlStruct.frequencyInteger = parseInt(SDL.RadioModel.station.slice(0, -1));
-        SDL.RadioModel.radioControlStruct.frequencyFraction = parseInt(SDL.RadioModel.station.slice(-1));
+        SDL.RadioModel.set('radioControlStruct.frequencyInteger', parseInt(SDL.RadioModel.station.slice(0, -1)));
+        SDL.RadioModel.set('radioControlStruct.frequencyFraction', parseInt(SDL.RadioModel.station.slice(-1)));
         FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
 
         SDL.SDLModel.resetControl();
@@ -558,8 +558,8 @@ SDL.RadioModel = Em.Object.create( {
         }
         if (element.preset == 'Enter' && SDL.RadioModel.station.indexOf('.') < 0) {
             SDL.RadioModel.set('station', SDL.RadioModel.station.slice(0, -1) + '.' + SDL.RadioModel.station.slice(-1));
-            SDL.RadioModel.radioControlStruct.frequencyInteger = parseInt(SDL.RadioModel.station.slice(0, -1));
-            SDL.RadioModel.radioControlStruct.frequencyFraction = parseInt(SDL.RadioModel.station.slice(-1));
+            SDL.RadioModel.set('radioControlStruct.frequencyInteger', parseInt(SDL.RadioModel.station.slice(0, -1)));
+            SDL.RadioModel.set('radioControlStruct.frequencyFraction', parseInt(SDL.RadioModel.station.slice(-1)));
             this.set('temp', this.station);
             this.set('directTuneFinished', false);
             this.set('directTuneKeypressed', false);
