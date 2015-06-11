@@ -541,7 +541,7 @@ SDL.RadioModel = Em.Object.create( {
         SDL.RadioModel.set('activePreset', element.preset);
         SDL.RadioModel.radioControlStruct.frequencyInteger = parseInt(SDL.RadioModel.station.slice(0, -1));
         SDL.RadioModel.radioControlStruct.frequencyFraction = parseInt(SDL.RadioModel.station.slice(-1));
-        FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.radioControlData);
+        FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
 
         SDL.SDLModel.resetControl();
     },
@@ -567,7 +567,7 @@ SDL.RadioModel = Em.Object.create( {
 
             this.findStationPresets();
 
-            FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.radioControlData);
+            FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
 
             SDL.SDLModel.resetControl();
         }
