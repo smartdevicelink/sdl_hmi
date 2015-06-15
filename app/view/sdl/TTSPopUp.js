@@ -116,14 +116,16 @@ SDL.TTSPopUp = Em.ContainerView.create( {
         contentBinding: 'parentView.timerSeconds'
     }),
 
-
-
     resetTimeout: function () {
         this.set('timerSeconds', 10);
         FFW.TTS.OnResetTimeout(this.appID, "TTS.Speak");
     },
 
     ActivateTTS: function(msg, appID) {
+
+        if (this.timer || this.active) {
+            this.DeactivateTTS();
+        }
 
         var self = this;
 
