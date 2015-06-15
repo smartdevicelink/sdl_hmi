@@ -259,6 +259,13 @@ SDL.ABSModel = Em.Object.extend({
                 }
             }
 
+            for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp.length; i++) {
+                if (SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value === params.fileName) {
+                    SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value =
+                        SDL.SDLModel.data.defaultListOfIcons.command;
+                }
+            }
+
             SDL.VRHelpListView.helpList.list.refresh();
 
             var len = SDL.InteractionChoicesView.listOfChoices.items.length;
@@ -517,7 +524,7 @@ SDL.ABSModel = Em.Object.extend({
             }
             return;
         } else if (app != undefined && app.initialized == true) {
-            console.error("Application with appID " + params.appID + " already registered!");
+            console.log("Application with appID " + params.appID + " already registered!");
             return; // if application already registered and correctly initialized and BC.UpdateAppList came from SDL than nothing shoul happend
         }
 
