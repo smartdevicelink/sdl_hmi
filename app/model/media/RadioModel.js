@@ -210,6 +210,21 @@ SDL.RadioModel = Em.Object.create( {
     }.property(
         'SDL.RadioModel.radioControlStruct.frequencyInteger',
         'SDL.RadioModel.radioControlStruct.frequencyFraction',
+        'SDL.RadioModel.radioControlStruct.band',
+        'SDL.RadioModel.radioControlStruct.rdsData.PS',
+        'SDL.RadioModel.radioControlStruct.rdsData.RT',
+        'SDL.RadioModel.radioControlStruct.rdsData.CT',
+        'SDL.RadioModel.radioControlStruct.rdsData.PI',
+        'SDL.RadioModel.radioControlStruct.rdsData.PTY',
+        'SDL.RadioModel.radioControlStruct.rdsData.TP',
+        'SDL.RadioModel.radioControlStruct.rdsData.TA',
+        'SDL.RadioModel.radioControlStruct.rdsData.REG',
+        'SDL.RadioModel.radioControlStruct.availableHDs',
+        'SDL.RadioModel.radioControlStruct.hdChannel',
+        'SDL.RadioModel.radioControlStruct.signalStrength',
+        'SDL.RadioModel.radioControlStruct.signalChangeThreshold',
+        'SDL.RadioModel.radioControlStruct.radioEnable',
+        'SDL.RadioModel.radioControlStruct.state',
         'SDL.RadioModel.radioDetails.radioStation.availableHDs',
         'SDL.RadioModel.radioDetails.radioStation.currentHD'
     ),
@@ -385,6 +400,9 @@ SDL.RadioModel = Em.Object.create( {
         if (data.frequencyFraction) {
             this.set('radioControlStruct.frequencyFraction', data.frequencyFraction);
         }
+
+        this.set('station',
+            this.radioControlStruct.frequencyInteger + "." + this.radioControlStruct.frequencyFraction);
 
         if (data.band) {
             this.set('radioControlStruct.band', data.band);

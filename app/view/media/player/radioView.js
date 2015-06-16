@@ -94,7 +94,8 @@ SDL.RadioView = Em.ContainerView
                 'signalChangeThresholdLabel',
                 'signalChangeThresholdInput',
                 'stateLabel',
-                'stateSelect'
+                'stateSelect',
+                'send'
             ],
 
             bandLabel: SDL.Label.extend( {
@@ -370,7 +371,21 @@ SDL.RadioView = Em.ContainerView
                 contentBinding: 'SDL.RadioModel.stateStruct',
 
                 valueBinding: 'SDL.RadioModel.radioControlStruct.state'
-            } )
+            } ),
+
+            send: SDL.Button.extend({
+                elementId: 'sendButton',
+
+                classNames: 'sendButton button',
+
+                text: 'Send',
+
+                onDown: false,
+
+                action: function(){
+                    FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', SDL.RadioModel.get('radioControlData'));
+                }
+            })
 
         }),
 

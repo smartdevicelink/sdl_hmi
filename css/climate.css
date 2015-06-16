@@ -43,6 +43,21 @@
     right: 10px;
 }
 
+#desiredTempLabel.label{
+    top: 120px;
+    left: 54px;
+}
+
+#fanSpeedLabel.label{
+    top: 120px;
+    left: 363px;
+}
+
+#curentTempLabel.label{
+    top: 120px;
+    right: 60px;
+}
+
 #climate_control .acEnable{
     top: 340px;
     left: 170px;

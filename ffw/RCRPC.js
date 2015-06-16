@@ -129,6 +129,53 @@ FFW.RC = FFW.RPCObserver.create( {
         this._super();
     },
 
+    correctTemp: function(data, type){
+
+        var d = SDL.deepCopy(data);
+
+        if (type === 'get') {
+            switch (d.temperatureUnit) {
+                case 'KELVIN': {
+
+                    d.currentTemp += 273;
+                    d.desiredTemp += 273;
+
+                    return d;
+                }
+                case 'CELSIUS': {
+                    return d;
+                }
+                case 'FAHRENHEIT': {
+
+                    d.currentTemp = Math.round(d.currentTemp * 9 / 5 + 32);
+                    d.desiredTemp = Math.round(d.desiredTemp * 9 / 5 + 32);
+
+                    return d;
+                }
+            }
+        } else {
+            switch (d.temperatureUnit) {
+                case 'KELVIN': {
+
+                    d.currentTemp -= 273;
+                    d.desiredTemp -= 273;
+
+                    return d;
+                }
+                case 'CELSIUS': {
+                    return d;
+                }
+                case 'FAHRENHEIT': {
+
+                    d.currentTemp = Math.round((d.currentTemp - 32) * 5 / 9);
+                    d.desiredTemp = Math.round((d.currentTemp - 32) * 5 / 9);
+
+                    return d;
+                }
+            }
+        }
+    },
+
     unMapInteriorZone: function(moduleZone){
 
         var zone = {};
@@ -288,6 +335,8 @@ FFW.RC = FFW.RPCObserver.create( {
                     var zone = this.getInteriorZone(request.params.moduleData.moduleZone);
 
                     if (request.params.moduleData.climateControlData) {
+
+                        var climateControlData = this.correctTemp(request.params.moduleData.climateControlData, 'set');
                         SDL.ClimateController.model.setClimateData(request.params.moduleData.climateControlData, zone);
                     }
 
@@ -362,6 +411,8 @@ FFW.RC = FFW.RPCObserver.create( {
                         JSONMessage.result.moduleData.radioControlData = radioControlData;
                     }
                     if (climateControlData) {
+
+                        climateControlData = this.correctTemp(climateControlData, 'get');
                         JSONMessage.result.moduleData.climateControlData = climateControlData;
                     }
 
@@ -481,6 +532,7 @@ FFW.RC = FFW.RPCObserver.create( {
                     JSONMessage.params.moduleData.radioControlData = radioControlData;
                 }
                 if (climateControlData) {
+                    climateControlData = this.correctTemp(climateControlData, 'get');
                     JSONMessage.params.moduleData.climateControlData = climateControlData;
                 }
 
@@ -512,6 +564,8 @@ FFW.RC = FFW.RPCObserver.create( {
                 }
             }
             if (climateControlData) {
+
+                climateControlData = this.correctTemp(climateControlData, 'get');
 
                 JSONMessage.params.moduleData.climateControlData = climateControlData;
 

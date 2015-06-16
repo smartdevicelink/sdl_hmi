@@ -61,8 +61,11 @@ SDL.ClimateView = Em.ContainerView.create( {
 
         childViews: [
             'desiredTemp',
+            'desiredTempLabel',
             'fanSpeed',
+            'fanSpeedLabel',
             'currentTemp',
+            'curentTempLabel',
             'defrostZone',
             'temperatureUnit',
             'acEnable',
@@ -112,7 +115,23 @@ SDL.ClimateView = Em.ContainerView.create( {
 
                 elementId:'desiredTemp_label',
 
-                contentBinding: 'SDL.ClimateController.model.currentSet.climateControlData.desiredTemp'
+                temp: function(){
+                    switch (SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit) {
+                        case 'KELVIN': {
+                            return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp + 273;
+                        }
+                        case 'CELSIUS': {
+                            return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp;
+                        }
+                        case 'FAHRENHEIT': {
+                            return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp * 9 / 5 + 32;
+                        }
+                    }
+                }.property('SDL.ClimateController.model.currentSet.climateControlData.desiredTemp',
+                    'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit'
+                ),
+
+                contentBinding: 'temp'
             }),
 
             desiredTemp_plus: SDL.Button.extend({
@@ -132,6 +151,13 @@ SDL.ClimateView = Em.ContainerView.create( {
                 target: 'SDL.ClimateController.model'
             })
 
+        }),
+
+        desiredTempLabel: SDL.Label.extend({
+
+            elementId:'desiredTempLabel',
+
+            content: 'Desired temp'
         }),
 
         fanSpeed: Em.ContainerView.extend({
@@ -188,6 +214,13 @@ SDL.ClimateView = Em.ContainerView.create( {
 
         }),
 
+        fanSpeedLabel: SDL.Label.extend({
+
+            elementId:'fanSpeedLabel',
+
+            content: 'Fan speed'
+        }),
+
         currentTemp: Em.ContainerView.extend({
 
             elementId: 'currentTemp_container',
@@ -220,7 +253,23 @@ SDL.ClimateView = Em.ContainerView.create( {
 
                 elementId:'currentTemp_label',
 
-                contentBinding: 'SDL.ClimateController.model.currentSet.climateControlData.currentTemp'
+                temp: function(){
+                    switch (SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit) {
+                        case 'KELVIN': {
+                            return SDL.ClimateController.model.currentSet.climateControlData.currentTemp + 273;
+                        }
+                        case 'CELSIUS': {
+                            return SDL.ClimateController.model.currentSet.climateControlData.currentTemp;
+                        }
+                        case 'FAHRENHEIT': {
+                            return SDL.ClimateController.model.currentSet.climateControlData.currentTemp * 9 / 5 + 32;
+                        }
+                    }
+                }.property('SDL.ClimateController.model.currentSet.climateControlData.currentTemp',
+                    'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit'
+                ),
+
+                contentBinding: 'temp'
             }),
 
             currentTemp_plus: SDL.Button.extend({
@@ -240,6 +289,13 @@ SDL.ClimateView = Em.ContainerView.create( {
                 target: 'SDL.ClimateController.model'
             })
 
+        }),
+
+        curentTempLabel: SDL.Label.extend({
+
+            elementId:'curentTempLabel',
+
+            content: 'Current temp'
         }),
 
         defrostZone: Em.ContainerView.extend({
