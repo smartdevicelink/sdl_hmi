@@ -55,6 +55,20 @@ SDL.RModel = SDL.ABSModel.extend({
     controlRequestID: null,
 
     /**
+     * Current drivers device flag
+     *
+     * @param {Object}
+     */
+    driverDevice: false,
+
+    /**
+     * Current drivers device flag
+     *
+     * @param {Object}
+     */
+    driverDeviceInfo: null,
+
+    /**
      * SwitchPopUp activation
      *
      * @param {Object}

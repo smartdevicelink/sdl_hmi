@@ -492,6 +492,7 @@
 	z-index: 201;
 }
 
+#PrimaryDevice .backButton,
 #info_apps_deviceList_view .backButton {
 	top: 80px;
 	width: 48px;
@@ -501,6 +502,11 @@
 	left: 5px;
 }
 
+#PrimaryDevice .backButton{
+    top: 5px !important;
+}
+
+#PrimaryDevice .backButton .ico,
 #info_apps_deviceList_view .backButton .ico {
 	margin-top: 13px;
 	margin-left: 8px;

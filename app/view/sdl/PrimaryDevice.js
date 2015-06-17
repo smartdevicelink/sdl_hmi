@@ -48,13 +48,53 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
         'primaryDeviceLabel',
         'chooseLabel',
         'deviceSelect',
-        'primaryButton'
+        'primaryButton',
+        'firstDeviceLabel',
+        'firstDeviceCheckBox',
+        'backButton'
     ],
 
     /**
      * Property indicates the activity state of VehicleInfo PopUp
      */
     active: false,
+
+    /**
+     * Button to return to previous view
+     */
+    backButton: SDL.Button.extend( {
+        classNames: [
+            'backButton', 'button'
+        ],
+        action: 'toggleDriverDeviceWindow',
+        target: 'SDL.SDLController',
+        icon: 'images/media/ico_back.png'
+    }),
+
+    /**
+     * Label of first device setting chackbox
+     */
+    firstDeviceLabel: SDL.Label.extend( {
+
+        elementId: 'firstDeviceLabel',
+
+        classNames: 'firstDeviceLabel',
+
+        content: 'Set first device as Drivers'
+    } ),
+
+    /**
+     * Check box to enable functionality of setting first connected device as Drivers
+     */
+    firstDeviceCheckBox: Em.Checkbox.extend( {
+
+        elementId: 'firstDeviceCheckBox',
+
+        classNames: 'firstDeviceCheckBox',
+
+        checkedBinding: 'SDL.SDLModel.driverDevice'
+
+    }),
 
     /**
      * Title of VehicleInfo PopUp view
@@ -65,7 +105,7 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
 
         classNames: 'primaryDeviceLabel',
 
-        content: 'Primary Device Selection Window'
+        content: 'Drivers Device Selection Window'
     } ),
 
     /**
@@ -77,7 +117,7 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
 
         classNames: 'chooseLabel',
 
-        content: 'Select device to be set as primary'
+        content: 'Select device to be set as Drivers'
     } ),
 
     updatedList: function() {
@@ -119,15 +159,12 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
      */
     primaryButton: SDL.Button.extend( {
         classNames: 'button primaryButton',
-        textBinding: 'this.displayText',
+        text: 'Send',
         click: function() {
-            SDL.SDLController.primaryDeviceWindowAction(this._parentView.deviceSelect.selection)
+            SDL.SDLController.driverDeviceWindowAction(this._parentView.deviceSelect.selection)
         },
         enabled: false,
-        onDown: false,
-        displayText: function () {
-            return this.enabled ? 'Send OnEmergencyEvent On' : 'Send OnEmergencyEvent Off';
-        }.property('this.enabled')
+        onDown: false
     }),
 
     /**

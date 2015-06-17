@@ -72,14 +72,15 @@ SDL.RController = SDL.ABSController.extend({
         FFW.VehicleInfo.OnReverseAppsAllowing(element.allowed);
     },
 
-    openPrimaryDeviceWindow: function(element) {
+    toggleDriverDeviceWindow: function(element) {
         SDL.PrimaryDevice.toggleProperty('active');
     },
 
-    primaryDeviceWindowAction: function(device) {
+    driverDeviceWindowAction: function(device) {
 
-        this.openPrimaryDeviceWindow();
+        this.toggleDriverDeviceWindow();
 
-        FFW.VehicleInfo.OnPrimaryDevice(device);
+        SDL.SDLModel.driverDeviceInfo = device;
+        FFW.RC.OnSetDriversDevice(device);
     }
 });

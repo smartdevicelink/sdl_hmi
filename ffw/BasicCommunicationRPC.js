@@ -46,10 +46,6 @@ FFW.BasicCommunication = FFW.RPCObserver
          */
         errorResponsePull: {},
 
-
-        //OnPutFile
-
-
         onPutFileSubscribeRequestID: -1,
         onStatusUpdateSubscribeRequestID: -1,
         onAppPermissionChangedSubscribeRequestID: -1,

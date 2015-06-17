@@ -587,6 +587,11 @@
 	background: #393939;
 }
 
+#PrimaryDevice .primaryDeviceLabel{
+    left: 60px;
+    width: 595px;
+}
+
 #exitAppView.active,
 #systemRequestView.active,
 #tbtClientStateView.active,
@@ -608,6 +613,11 @@
 	height: 20px;
 	padding: 10px;
 	background: #535353;
+}
+
+#PrimaryDevice .chooseLabel {
+    left: 65px;
+    width: 595px;
 }
 
 #systemRequestView .systemRequestViewTitle{
@@ -641,6 +651,17 @@
     height: 48px;
     line-height: 48px;
     text-align: center;
+}
+
+#PrimaryDevice .firstDeviceLabel{
+    top: 197px;
+    left: 80px;
+}
+
+#PrimaryDevice .firstDeviceCheckBox{
+    top: 200px;
+    left: 50px;
+    position: absolute;
 }
 
 #systemRequestView .systemRequestViewSelect{

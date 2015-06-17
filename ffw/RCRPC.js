@@ -491,6 +491,28 @@ FFW.RC = FFW.RPCObserver.create( {
     },
 
     /**
+     * From HMI to RSDL
+     * notifies if User selected to disallow RSDL functionality or if he changed his mind and allowed it.
+     * @constructor
+     */
+    OnSetDriversDevice: function(device) {
+
+        if (device) {
+            Em.Logger.log("FFW.RC.OnPrimaryDevice Notification");
+
+            // send repsonse
+            var JSONMessage = {
+                "jsonrpc": "2.0",
+                "method": "RC.OnSetDriversDevice",
+                "params": {
+                    "device": device
+                }
+            };
+            this.client.send(JSONMessage);
+        }
+    },
+
+    /**
      * Notification about trigered action by user touchstart
      *
      */

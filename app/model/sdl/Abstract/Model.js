@@ -663,6 +663,12 @@ SDL.ABSModel = Em.Object.extend({
         var exist = false,
             listObj  = {};
 
+        if (SDL.SDLModel.driverDevice && SDL.SDLModel.driverDeviceInfo === null && params.deviceList.length > 0) {
+            SDL.SDLModel.driverDeviceInfo = params.deviceList[0];
+
+            FFW.RC.OnSetDriversDevice(params.deviceList[0]);
+        }
+
         for (var j in SDL.SDLModel.data.connectedDevices) {
             listObj[j] = SDL.SDLModel.data.connectedDevices[j];
         }

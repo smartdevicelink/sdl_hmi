@@ -315,27 +315,6 @@ FFW.VehicleInfo = FFW.RPCObserver.create( {
     },
 
     /**
-     * From HMI to RSDL
-     * notifies if User selected to disallow RSDL functionality or if he changed his mind and allowed it.
-     * @constructor
-     */
-    OnPrimaryDevice: function(device) {
-
-        Em.Logger.log("FFW.VehicleInfo.OnPrimaryDevice Notification");
-
-        // send repsonse
-        var JSONMessage = {
-            "jsonrpc": "2.0",
-            "method": "VehicleInfo.OnPrimaryDevice",
-            "params": {
-                "device": device
-            }
-        };
-        this.client.send(JSONMessage);
-
-    },
-
-    /**
      * Send response from onRPCRequest
      *
      * @param {Number} resultCode
