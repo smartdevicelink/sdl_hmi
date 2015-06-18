@@ -69,7 +69,7 @@ SDL.RController = SDL.ABSController.extend({
     OnReverseAppsAllowing: function (element) {
         element.toggleProperty('allowed');
 
-        FFW.VehicleInfo.OnReverseAppsAllowing(element.allowed);
+        FFW.RC.OnReverseAppsAllowing(element.allowed);
     },
 
     toggleDriverDeviceWindow: function(element) {
@@ -82,5 +82,49 @@ SDL.RController = SDL.ABSController.extend({
 
         SDL.SDLModel.driverDeviceInfo = device;
         FFW.RC.OnSetDriversDevice(device);
+    },
+
+    interiorDataConsent: function(request){
+
+        var appName = SDL.SDLController.getApplicationModel(request.params.appID).appName;
+        var req = request;
+        var popUp = null;
+
+        if (request.params.moduleType === "RADIO") {
+            if (SDL.RadioModel.consentedApp) {
+                FFW.RC.sendError(SDL.SDLModel.data.resultCode["REJECTED"], request.id, request.method, "Already consented!")
+            } else {
+                popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+                    "Would you like to grant access for " + appName + " application - moduleType: Radio?",
+                    function(result){
+                        FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
+                        if (result) {
+                            SDL.RadioModel.consentedApp = request.params.appID;
+                        }
+                    }
+                );
+            }
+        } else {
+            if (SDL.ClimateController.model.consentedApp) {
+                FFW.RC.sendError(SDL.SDLModel.data.resultCode["REJECTED"], request.id, request.method, "Already consented!")
+            } else {
+                popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+                    "Would you like to grant access for " + appName + " application - moduleType: Climate?",
+                    function(result){
+                        FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
+                        if (result) {
+                            SDL.ClimateController.model.consentedApp = request.params.appID;
+                        }
+                    }
+                );
+            }
+        }
+
+        setTimeout(function(){
+            if (popUp && popUp.active) {
+                popUp.deactivate();
+                FFW.RC.sendError(SDL.SDLModel.data.resultCode['TIMED_OUT'],req.id, req.method, "Timed out!")
+            }
+        }, 10000); //Magic number is timeout for RC consent popUp
     }
 });

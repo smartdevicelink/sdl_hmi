@@ -421,6 +421,13 @@ FFW.RC = FFW.RPCObserver.create( {
                     break;
                 }
 
+                case "RC.GetInteriorVehicleDataConsent": {
+
+                    SDL.SDLController.interiorDataConsent(request);
+
+                    break;
+                }
+
                 default: {
                     // statements_def
                     break;
@@ -490,6 +497,21 @@ FFW.RC = FFW.RPCObserver.create( {
         }
     },
 
+    GetInteriorVehicleDataConsentResponse: function(request, allowed){
+
+        // send repsonse
+        var JSONMessage = {
+            "jsonrpc": "2.0",
+            "id": request.id,
+            "result": {
+                "code": SDL.SDLModel.data.resultCode['SUCCESS'],
+                "method": request.method,
+                allowed: allowed
+            }
+        };
+        this.client.send(JSONMessage);
+    },
+
     /**
      * From HMI to RSDL
      * notifies if User selected to disallow RSDL functionality or if he changed his mind and allowed it.
@@ -510,6 +532,27 @@ FFW.RC = FFW.RPCObserver.create( {
             };
             this.client.send(JSONMessage);
         }
+    },
+
+    /**
+     * From HMI to RSDL
+     * notifies if User selected to disallow RSDL functionality or if he changed his mind and allowed it.
+     * @constructor
+     */
+    OnReverseAppsAllowing: function(allowed) {
+
+        Em.Logger.log("FFW.VehicleInfo.OnReverseAppsAllowing Notification");
+
+        // send repsonse
+        var JSONMessage = {
+            "jsonrpc": "2.0",
+            "method": "VehicleInfo.OnReverseAppsAllowing",
+            "params": {
+                "allowed": allowed
+            }
+        };
+        this.client.send(JSONMessage);
+
     },
 
     /**

@@ -55,6 +55,12 @@ SDL.RadioModel = Em.Object.create( {
         this.set('active', true);
     },
 
+    /**
+     * GetInteriorVehicleDataConsent
+     * Consented app for RADIO noduleType
+     */
+    consentedApp: null,
+
     optionsEnabled: false,
 
     tuneUpTimer: null,

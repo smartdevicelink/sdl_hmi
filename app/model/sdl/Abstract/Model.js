@@ -570,6 +570,9 @@ SDL.ABSModel = Em.Object.extend({
 
         if (SDL.SDLController.getApplicationModel(params.appID)) {
 
+            SDL.ClimateController.model.consentedApp = null;
+            SDL.RadioModel.consentedApp = null;
+
             if (params.unexpectedDisconnect) {
                 SDL.PopUp.create().appendTo('body').popupActivate("The connection with the " + SDL.SDLController.getApplicationModel(params.appID).appName + " was unexpectedly lost.");
                 this.data.unRegisteredApps.push(params.appID);

@@ -2554,6 +2554,84 @@ SDL.RPCController = Em.Object
                 };
 
                 return this.resultStruct;
+            },
+
+            /**
+             * Validate method for request CancelAccess
+             *
+             * @param {Object}
+             *            params
+             */
+            GetInteriorVehicleDataConsent: function (params) {
+
+                if (params == null) {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Parameter 'params' does not exists!"
+                    };
+
+                    return this.resultStruct;
+                }
+                if (params.appID == null) {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Parameter 'appID' does not exists!"
+                    };
+
+                    return this.resultStruct;
+                }
+                if (typeof params.appID != 'number') {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Wrong type of parameter 'appID'!"
+                    };
+
+                    return this.resultStruct;
+                }
+                if (params.moduleType == null) {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Parameter 'moduleType' does not exists!"
+                    };
+
+                    return this.resultStruct;
+                }
+                if (typeof params.moduleType != 'string') {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Wrong type of parameter 'moduleType'!"
+                    };
+
+                    return this.resultStruct;
+                }
+                if (params.zone == null) {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Parameter 'zone' does not exists!"
+                    };
+
+                    return this.resultStruct;
+                }
+                if (typeof params.zone != 'object') {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["INVALID_DATA"],
+                        "resultMessage": "Wrong type of parameter 'zone'!"
+                    };
+
+                    return this.resultStruct;
+                }
+                this.resultStruct = {
+                    "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
+                };
+
+                return this.resultStruct;
             }
         }),
 

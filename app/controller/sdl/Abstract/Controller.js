@@ -79,6 +79,8 @@ SDL.ABSController = Em.Object.extend( {
                 }
                 case -2: {
                     FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "USER_EXIT");
+                    SDL.RadioModel.consentedApp = null;
+                    SDL.ClimateController.model.consentedApp = null;
                     break;
                 }
                 case -3: {
