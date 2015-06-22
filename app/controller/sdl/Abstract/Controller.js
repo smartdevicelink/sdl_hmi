@@ -159,7 +159,16 @@ SDL.ABSController = Em.Object.extend( {
         if (SDL.SDLModel.data.VRActive) {
             SDL.SDLModel.data.toggleProperty('VRActive');
         }
-        FFW.VR.onCommand(element.commandID, element.appID, element.grammarID);
+        if (element.commandID === -2) { //Magic number if predefined VR command USER_EXIT
+            FFW.BasicCommunication.ExitApplication(element.appID, "USER_EXIT");
+            if (SDL.States.currentState.getPath('path') === "media.sdlmedia" || SDL.States.currentState.getPath('path') === "info.nonMedia") {
+
+                SDL.States.goToStates('info.apps');
+            }
+        } else {
+            FFW.VR.onCommand(element.commandID, element.appID, element.grammarID);
+        }
+
     },
 
     /**

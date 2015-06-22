@@ -512,6 +512,8 @@ SDL.ABSModel = Em.Object.extend({
      */
     onAppRegistered: function (params, vrSynonyms) {
 
+        var message = {};
+
         var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
             app = SDL.SDLController.getApplicationModel(params.appID);
 
@@ -528,12 +530,6 @@ SDL.ABSModel = Em.Object.extend({
             return; // if application already registered and correctly initialized and BC.UpdateAppList came from SDL than nothing shoul happend
         }
 
-        if (vrSynonyms) {
-
-            var message = {"cmdID": 0, "vrCommands": vrSynonyms, "appID": params.appID, "type": "Application"};
-            this.addCommandVR(message);
-        }
-
         if (params.isMediaApplication === true) {
 
             applicationType = 0;
@@ -547,6 +543,16 @@ SDL.ABSModel = Em.Object.extend({
         if (SDL.SDLModel.data.unRegisteredApps.indexOf(params.appID) >= 0) {
             setTimeout(function(){ SDL.PopUp.create().appendTo('body').popupActivate("Connection with " + params.appName + "  is re-established.")}, 1000);
             this.data.unRegisteredApps.pop(params.appID);
+        }
+
+        //Magic number if predefined VR command USER_EXIT
+        message = {"cmdID": -2, "vrCommands": ['USER_EXIT'], "appID": params.appID, "type": "Command"};
+        this.addCommandVR(message);
+
+        if (vrSynonyms) {
+
+            message = {"cmdID": 0, "vrCommands": vrSynonyms, "appID": params.appID, "type": "Application"};
+            this.addCommandVR(message);
         }
     },
 
@@ -667,7 +673,7 @@ SDL.ABSModel = Em.Object.extend({
             listObj  = {};
 
         if (SDL.SDLModel.driverDevice && SDL.SDLModel.driverDeviceInfo === null && params.deviceList.length > 0) {
-            SDL.SDLModel.driverDeviceInfo = params.deviceList[0];
+            SDL.SDLModel.set('driverDeviceInfo', params.deviceList[0]);
 
             FFW.RC.OnSetDriversDevice(params.deviceList[0]);
         }

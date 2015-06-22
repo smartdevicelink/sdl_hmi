@@ -72,6 +72,15 @@ SDL.RController = SDL.ABSController.extend({
         FFW.RC.OnReverseAppsAllowing(element.allowed);
     },
 
+    /**
+     * Change responses to error for GetInteriorVehicleDataCapabilities
+     * @param element
+     * @constructor
+     */
+    setRCCapabilitiesErrorResponse: function (element) {
+        SDL.SDLModel.toggleProperty('errorResponse');
+    },
+
     toggleDriverDeviceWindow: function(element) {
         SDL.PrimaryDevice.toggleProperty('active');
     },
@@ -80,7 +89,7 @@ SDL.RController = SDL.ABSController.extend({
 
         this.toggleDriverDeviceWindow();
 
-        SDL.SDLModel.driverDeviceInfo = device;
+        SDL.SDLModel.set('driverDeviceInfo', device);
         FFW.RC.OnSetDriversDevice(device);
     },
 

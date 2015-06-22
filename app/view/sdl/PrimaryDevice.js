@@ -117,7 +117,15 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
 
         classNames: 'chooseLabel',
 
-        content: 'Select device to be set as Drivers'
+        currentDevice: function(){
+            if (SDL.SDLModel.driverDeviceInfo) {
+                return 'Current drivers device is ' + SDL.SDLModel.driverDeviceInfo.name;
+            } else {
+                return 'No drivers device connected.'
+            }
+        }.property('SDL.SDLModel.driverDeviceInfo'),
+
+        contentBinding: 'currentDevice'
     } ),
 
     updatedList: function() {

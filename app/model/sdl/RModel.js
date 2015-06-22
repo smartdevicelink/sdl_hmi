@@ -69,6 +69,13 @@ SDL.RModel = SDL.ABSModel.extend({
     driverDeviceInfo: null,
 
     /**
+     * Flag to set ability to send error responses for GetInteriorVehicleDataCapabilities
+     *
+     * @param {Object}
+     */
+    errorResponse: false,
+
+    /**
      * SwitchPopUp activation
      *
      * @param {Object}

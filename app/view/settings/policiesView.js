@@ -66,6 +66,17 @@ SDL.PoliciesView = Em.ContainerView.create( {
                 allowed: true,
                 classNames: 'list-item button'
             }));
+
+            this.get('SettingsList.list.childViews').pushObject(SDL.Button.create( {
+                action: 'setRCCapabilitiesErrorResponse',
+                target: 'SDL.SDLController',
+                textBinding: 'this.allowedProp',
+                allowedProp: function () {
+
+                    return SDL.SDLModel.errorResponse ? "RC error resultCode - ON" : "RC error resultCode - OFF";
+                }.property('SDL.SDLModel.errorResponse'),
+                classNames: 'list-item button'
+            }));
         }
     },
 
