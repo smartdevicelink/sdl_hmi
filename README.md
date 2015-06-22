@@ -18,3 +18,6 @@ All dependencies are installed after the SDL Core is successfuly installed.
 
 ## Note
 SDL HMI utility is only for acquaintance with the SDL project.
+
+# HMI Initiated Policy Table Update
+Policy Update button located next to the vehicle info on the right side of the HMI emulator. This button initiates an OnPolicyTable received notification to core which updates the policy database from the file "/IVSU/POLICY_UPDATE_TEST". This file is a clone of the current PT json file located in the SDL core repo in the /src/appMain folder. Changes can be made to certain areas of the PTU, and changes will be refelected in the db upon using the HMI Policy Update button.
