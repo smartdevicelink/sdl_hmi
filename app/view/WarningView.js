@@ -108,7 +108,8 @@ SDL.warningView = Em.ContainerView
                         'UI',
                         'VI',
                         'VR',
-                        'CAN'
+                        //'CAN',
+                        'RC'
                     ],
 
                     BasicCommunication: Em.ContainerView.extend({
@@ -335,6 +336,38 @@ SDL.warningView = Em.ContainerView
                             classNames: 'canText item',
 
                             content: 'CAN'
+
+                        })
+                    }),
+
+                    RC: Em.ContainerView.extend({
+
+                        classNames: 'component',
+
+                        classNameBindings: [
+                            'SDL.FuncSwitcher.rev::not-visible'
+                        ],
+
+                        childViews: [
+                            'checkBox',
+                            'text'
+                        ],
+
+                        checkBox: Em.Checkbox.extend( {
+
+                            elementId: 'rcCheckBox',
+
+                            classNames: 'rcCheckBox item',
+
+                            checkedBinding: 'FLAGS.RC'
+
+                        }),
+
+                        text: SDL.Label.extend({
+
+                            classNames: 'canText item',
+
+                            content: 'RC'
 
                         })
                     })

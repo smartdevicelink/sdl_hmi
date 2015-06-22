@@ -56,6 +56,13 @@ SDL.ABSModel = Em.Object.extend({
 
     },
 
+    /**
+     * List of subscribed data on VehicleInfo model
+     *
+     * @type {Object}
+     */
+    subscribedData: {},
+
     applicationStatusBar: function () {
 
         if (this.data.limitedExist && SDL.SDLController.getApplicationModel(this.data.stateLimited)) {
@@ -249,6 +256,13 @@ SDL.ABSModel = Em.Object.extend({
                 if (SDL.VRHelpListView.helpList.items[i].params.icon.indexOf(params.fileName) != -1
                     && params.fileName.length == SDL.VRHelpListView.helpList.items[i].params.icon.length) {
                     SDL.VRHelpListView.helpList.items[i].params.icon = SDL.SDLModel.data.defaultListOfIcons.command;
+                }
+            }
+
+            for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp.length; i++) {
+                if (SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value === params.fileName) {
+                    SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value =
+                        SDL.SDLModel.data.defaultListOfIcons.command;
                 }
             }
 
@@ -510,7 +524,7 @@ SDL.ABSModel = Em.Object.extend({
             }
             return;
         } else if (app != undefined && app.initialized == true) {
-            console.error("Application with appID " + params.appID + " already registered!");
+            console.log("Application with appID " + params.appID + " already registered!");
             return; // if application already registered and correctly initialized and BC.UpdateAppList came from SDL than nothing shoul happend
         }
 
@@ -555,6 +569,9 @@ SDL.ABSModel = Em.Object.extend({
     onAppUnregistered: function (params) {
 
         if (SDL.SDLController.getApplicationModel(params.appID)) {
+
+            SDL.ClimateController.model.consentedApp = null;
+            SDL.RadioModel.consentedApp = null;
 
             if (params.unexpectedDisconnect) {
                 SDL.PopUp.create().appendTo('body').popupActivate("The connection with the " + SDL.SDLController.getApplicationModel(params.appID).appName + " was unexpectedly lost.");
@@ -648,6 +665,12 @@ SDL.ABSModel = Em.Object.extend({
 
         var exist = false,
             listObj  = {};
+
+        if (SDL.SDLModel.driverDevice && SDL.SDLModel.driverDeviceInfo === null && params.deviceList.length > 0) {
+            SDL.SDLModel.driverDeviceInfo = params.deviceList[0];
+
+            FFW.RC.OnSetDriversDevice(params.deviceList[0]);
+        }
 
         for (var j in SDL.SDLModel.data.connectedDevices) {
             listObj[j] = SDL.SDLModel.data.connectedDevices[j];

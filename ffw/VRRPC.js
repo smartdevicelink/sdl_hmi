@@ -322,31 +322,32 @@ FFW.VR = FFW.RPCObserver.create( {
 
         Em.Logger.log("FFW.VR.PerformInteractionResponse");
 
-        if (this.errorResponsePull[requestID]) {
+        if (resultCode === SDL.SDLModel.data.resultCode["SUCCESS"]) {
 
-            // send repsonse
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "id": requestID,
-                "error": {
-                    "code": this.errorResponsePull[requestID].code,
-                    "message": "Unsupported " + this.errorResponsePull[requestID].type + " type. Available data in request was processed.",
-                    "data": {
-                        "method": "VR.PerformInteraction"
+            if (this.errorResponsePull[requestID]) {
+
+                // send repsonse
+                var JSONMessage = {
+                    "jsonrpc": "2.0",
+                    "id": requestID,
+                    "error": {
+                        "code": this.errorResponsePull[requestID].code,
+                        "message": "Unsupported " + this.errorResponsePull[requestID].type + " type. Available data in request was processed.",
+                        "data": {
+                            "method": "VR.PerformInteraction"
+                        }
                     }
-                }
-            };
+                };
 
-            if (commandID) {
-                JSONMessage.error.data.choiceID = commandID;
+                if (commandID) {
+                    JSONMessage.error.data.choiceID = commandID;
+                }
+
+                this.client.send(JSONMessage);
+                this.errorResponsePull[requestID] = null;
+                return;
             }
 
-            this.client.send(JSONMessage);
-            this.errorResponsePull[requestID] = null;
-            return;
-        }
-
-        if (resultCode === SDL.SDLModel.data.resultCode["SUCCESS"]) {
             // send repsonse
             var JSONMessage = {
                 "jsonrpc": "2.0",

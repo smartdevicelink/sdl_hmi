@@ -91,9 +91,9 @@ SDL.DeviceListView = Em.ContainerView.create( {
             [
                 'SDL.FuncSwitcher.rev::is-disabled'
             ],
-        action: 'openPrimaryDeviceWindow',
+        action: 'toggleDriverDeviceWindow',
         target: 'SDL.SDLController',
-        text: 'Primary',
+        text: 'Driver',
         templateName: 'text'
     }),
 

@@ -1374,11 +1374,15 @@ FFW.UI = FFW.RPCObserver.create({
                                 "audioType": "PCM"
                             },
                             "hmiZoneCapabilities": "FRONT",
-                            "softButtonCapabilities": {
+                            "softButtonCapabilities": [{
                                 "shortPressAvailable": true,
                                 "longPressAvailable": true,
                                 "upDownAvailable": true,
                                 "imageSupported": true
+                            }],
+                            "hmiCapabilities": {
+                                "navigation": true,
+                                "phoneCall": true
                             },
                             "code": SDL.SDLModel.data.resultCode["SUCCESS"],
                             "method": "UI.GetCapabilities"
@@ -1701,7 +1705,8 @@ FFW.UI = FFW.RPCObserver.create({
 
         Em.Logger.log("FFW.UI.PerformInteractionResponse");
 
-        if (this.errorResponsePull[requestID] && resultCode === SDL.SDLModel.data.resultCode["SUCCESS"]) {
+        if (this.errorResponsePull[requestID]
+            && resultCode === SDL.SDLModel.data.resultCode["SUCCESS"]) {
 
             // send repsonse
             var JSONMessage = {

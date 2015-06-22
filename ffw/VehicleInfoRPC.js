@@ -60,7 +60,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create( {
      */
     connect: function() {
 
-        this.client.connect(this, 700); // Magic number is unique identifier for
+        this.client.connect(this, 100); // Magic number is unique identifier for
         // component
     },
 
@@ -140,110 +140,94 @@ FFW.VehicleInfo = FFW.RPCObserver.create( {
         if (this.validationCheck(request)) {
 
             switch (request.method) {
-            case "VehicleInfo.GetVehicleData": {
+                case "VehicleInfo.GetVehicleData": {
 
-                SDL.SDLVehicleInfoModel.getVehicleData(request);
+                    SDL.SDLVehicleInfoModel.getVehicleData(request);
 
-                break;
-            }
+                    break;
+                }
 
-            case "VehicleInfo.ReadDID": {
+                case "VehicleInfo.ReadDID": {
 
-                SDL.SDLVehicleInfoModel.vehicleInfoReadDID(request.params,
-                    request.id);
+                    SDL.SDLVehicleInfoModel.vehicleInfoReadDID(request.params,
+                        request.id);
 
-                break;
-            }
+                    break;
+                }
 
-            case "VehicleInfo.GetDTCs": {
+                case "VehicleInfo.GetDTCs": {
 
-                SDL.SDLVehicleInfoModel.vehicleInfoGetDTCs(request.params,
-                    request.id);
+                    SDL.SDLVehicleInfoModel.vehicleInfoGetDTCs(request.params,
+                        request.id);
 
-                break;
-            }
+                    break;
+                }
 
-            case "VehicleInfo.DiagnosticMessage": {
+                case "VehicleInfo.DiagnosticMessage": {
 
-                Em.Logger.log("FFW." + request.method + "Response");
+                    Em.Logger.log("FFW." + request.method + "Response");
 
-                // send repsonse
-                var JSONMessage = {
-                    "jsonrpc": "2.0",
-                    "id": request.id,
-                    "result": {
-                        "messageDataResult": [200],
-                        "code": SDL.SDLModel.data.resultCode["SUCCESS"],
-                        "method": "VehicleInfo.DiagnosticMessage"
-                    }
-                };
+                    // send repsonse
+                    var JSONMessage = {
+                        "jsonrpc": "2.0",
+                        "id": request.id,
+                        "result": {
+                            "messageDataResult": [200],
+                            "code": SDL.SDLModel.data.resultCode["SUCCESS"],
+                            "method": "VehicleInfo.DiagnosticMessage"
+                        }
+                    };
 
-                this.client.send(JSONMessage);
+                    this.client.send(JSONMessage);
 
-                break;
+                    break;
+                }
 
-                break;
-            }
+                case "VehicleInfo.SubscribeVehicleData": {
 
-            case "VehicleInfo.SubscribeVehicleData": {
+                    SDL.SDLVehicleInfoModel.SubscribeVehicleData(request);
 
-                SDL.SDLVehicleInfoModel.SubscribeVehicleData(request);
+                    break;
+                }
 
-                break;
-            }
+                case "VehicleInfo.UnsubscribeVehicleData": {
 
-            case "VehicleInfo.UnsubscribeVehicleData": {
+                    SDL.SDLVehicleInfoModel.UnsubscribeVehicleData(request);
 
-                SDL.SDLVehicleInfoModel.UnsubscribeVehicleData(request);
+                    break;
+                }
 
-                break;
-            }
+                case "VehicleInfo.GetVehicleType": {
 
-            case "VehicleInfo.GetVehicleType": {
+                    SDL.SDLVehicleInfoModel.getVehicleType(request.id);
 
-                SDL.SDLVehicleInfoModel.getVehicleType(request.id);
+                    break;
+                }
 
-                break;
-            }
+                case "VehicleInfo.IsReady": {
 
-            case "VehicleInfo.IsReady": {
+                    Em.Logger.log("FFW." + request.method + "Response");
 
-                Em.Logger.log("FFW." + request.method + "Response");
+                    // send response
+                    var JSONMessage = {
+                        "jsonrpc": "2.0",
+                        "id": request.id,
+                        "result": {
+                            "available": this.get('isReady'),
+                            "code": SDL.SDLModel.data.resultCode["SUCCESS"],
+                            "method": "VehicleInfo.IsReady"
+                        }
+                    };
 
-                // send response
-                var JSONMessage = {
-                    "jsonrpc": "2.0",
-                    "id": request.id,
-                    "result": {
-                        "available": this.get('isReady'),
-                        "code": SDL.SDLModel.data.resultCode["SUCCESS"],
-                        "method": "VehicleInfo.IsReady"
-                    }
-                };
+                    this.client.send(JSONMessage);
 
-                this.client.send(JSONMessage);
+                    break;
+                }
 
-                break;
-            }
-
-            case "VehicleInfo.GrantAccess": {
-
-                SDL.SDLModel.giveControl(request);
-
-                break;
-            }
-
-            case "VehicleInfo.CancelAccess": {
-
-                SDL.SDLModel.cancelControl(request);
-
-                break;
-            }
-
-            default: {
-                // statements_def
-                break;
-            }
+                default: {
+                    // statements_def
+                    break;
+                }
             }
         }
     },
@@ -307,66 +291,6 @@ FFW.VehicleInfo = FFW.RPCObserver.create( {
             };
             this.client.send(JSONMessage);
         }
-    },
-
-    /**
-     * Notification about trigered action by user touchstart
-     *
-     */
-    OnControlChanged: function() {
-
-        SDL.SDLModel.set('givenControlFlag', false);
-        Em.Logger.log("FFW.VehicleInfo.OnControlChanged Notification");
-
-        // send repsonse
-        var JSONMessage = {
-            "jsonrpc": "2.0",
-            "method": "VehicleInfo.OnControlChanged"
-        };
-        this.client.send(JSONMessage);
-
-    },
-
-    /**
-     * From HMI to RSDL
-     * notifies if User selected to disallow RSDL functionality or if he changed his mind and allowed it.
-     * @constructor
-     */
-    OnReverseAppsAllowing: function(allowed) {
-
-        Em.Logger.log("FFW.VehicleInfo.OnReverseAppsAllowing Notification");
-
-        // send repsonse
-        var JSONMessage = {
-            "jsonrpc": "2.0",
-            "method": "VehicleInfo.OnReverseAppsAllowing",
-            "params": {
-                "allowed": allowed
-            }
-        };
-        this.client.send(JSONMessage);
-
-    },
-
-    /**
-     * From HMI to RSDL
-     * notifies if User selected to disallow RSDL functionality or if he changed his mind and allowed it.
-     * @constructor
-     */
-    OnPrimaryDevice: function(device) {
-
-        Em.Logger.log("FFW.VehicleInfo.OnPrimaryDevice Notification");
-
-        // send repsonse
-        var JSONMessage = {
-            "jsonrpc": "2.0",
-            "method": "VehicleInfo.OnPrimaryDevice",
-            "params": {
-                "device": device
-            }
-        };
-        this.client.send(JSONMessage);
-
     },
 
     /**

@@ -34,25 +34,27 @@
 SDL.RController = SDL.ABSController.extend({
 
     /**
-     * Button action to sent response for VehicleInfo.GrantAccess request
+     * Button action to sent response for RC.GrantAccess request
      *
      * @type {Object}
      */
     ControlAccessAction: function (appID, value) {
             if (value) {
-                FFW.VehicleInfo.sendVIResult(
+                FFW.RC.sendRCResult(
                     SDL.SDLModel.data.resultCode['SUCCESS'],
                     SDL.SDLModel.controlRequestID,
-                    "VehicleInfo.GrantAccess"
+                    "RC.GrantAccess"
                 );
                 SDL.SDLModel.set('givenControl', appID);
                 SDL.SDLModel.set('givenControlFlag', true);
-                FFW.CAN.OnRadioDetails({"radioStation": SDL.RadioModel.radioDetails.radioStation});
+                //FFW.CAN.OnRadioDetails({"radioStation": SDL.RadioModel.radioDetails.radioStation});
+
+                FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', SDL.RadioModel.get('radioControlData'));
             } else {
-                FFW.VehicleInfo.sendError(
+                FFW.RC.sendError(
                     SDL.SDLModel.data.resultCode['REJECTED'],
                     SDL.SDLModel.controlRequestID,
-                    "VehicleInfo.GrantAccess",
+                    "RC.GrantAccess",
                     "Request cancelled."
                 );
             }
@@ -67,17 +69,62 @@ SDL.RController = SDL.ABSController.extend({
     OnReverseAppsAllowing: function (element) {
         element.toggleProperty('allowed');
 
-        FFW.VehicleInfo.OnReverseAppsAllowing(element.allowed);
+        FFW.RC.OnReverseAppsAllowing(element.allowed);
     },
 
-    openPrimaryDeviceWindow: function(element) {
+    toggleDriverDeviceWindow: function(element) {
         SDL.PrimaryDevice.toggleProperty('active');
     },
 
-    primaryDeviceWindowAction: function(device) {
+    driverDeviceWindowAction: function(device) {
 
-        this.openPrimaryDeviceWindow();
+        this.toggleDriverDeviceWindow();
 
-        FFW.VehicleInfo.OnPrimaryDevice(device);
+        SDL.SDLModel.driverDeviceInfo = device;
+        FFW.RC.OnSetDriversDevice(device);
+    },
+
+    interiorDataConsent: function(request){
+
+        var appName = SDL.SDLController.getApplicationModel(request.params.appID).appName;
+        var req = request;
+        var popUp = null;
+
+        if (request.params.moduleType === "RADIO") {
+            if (SDL.RadioModel.consentedApp) {
+                FFW.RC.sendError(SDL.SDLModel.data.resultCode["REJECTED"], request.id, request.method, "Already consented!")
+            } else {
+                popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+                    "Would you like to grant access for " + appName + " application - moduleType: Radio?",
+                    function(result){
+                        FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
+                        if (result) {
+                            SDL.RadioModel.consentedApp = request.params.appID;
+                        }
+                    }
+                );
+            }
+        } else {
+            if (SDL.ClimateController.model.consentedApp) {
+                FFW.RC.sendError(SDL.SDLModel.data.resultCode["REJECTED"], request.id, request.method, "Already consented!")
+            } else {
+                popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+                    "Would you like to grant access for " + appName + " application - moduleType: Climate?",
+                    function(result){
+                        FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
+                        if (result) {
+                            SDL.ClimateController.model.consentedApp = request.params.appID;
+                        }
+                    }
+                );
+            }
+        }
+
+        setTimeout(function(){
+            if (popUp && popUp.active) {
+                popUp.deactivate();
+                FFW.RC.sendError(SDL.SDLModel.data.resultCode['TIMED_OUT'],req.id, req.method, "Timed out!")
+            }
+        }, 10000); //Magic number is timeout for RC consent popUp
     }
 });

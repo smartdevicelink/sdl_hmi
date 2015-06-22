@@ -48,11 +48,25 @@ SDL.RModel = SDL.ABSModel.extend({
     givenControlFlag: false,
 
     /**
-     * Id of current processed VehicleInfo.GrantAccess request
+     * Id of current processed RC.GrantAccess request
      *
      * @param {Number}
      */
     controlRequestID: null,
+
+    /**
+     * Current drivers device flag
+     *
+     * @param {Object}
+     */
+    driverDevice: false,
+
+    /**
+     * Current drivers device flag
+     *
+     * @param {Object}
+     */
+    driverDeviceInfo: null,
 
     /**
      * SwitchPopUp activation
@@ -75,7 +89,7 @@ SDL.RModel = SDL.ABSModel.extend({
 
     resetControl: function () {
         if (SDL.SDLController && SDL.SDLModel.givenControl != null) {
-            FFW.VehicleInfo.OnControlChanged();
+            FFW.RC.OnControlChanged();
             SDL.SDLModel.givenControl = null;
         }
     },

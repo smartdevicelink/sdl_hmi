@@ -360,34 +360,33 @@ SDL.SDLVehicleInfoModel = Em.Object
          * @type {Object} message
          */
         SubscribeVehicleData: function(message) {
-            if (SDL.SDLController.getApplicationModel(message.params.appID)) {
 
-                var subscribeVIData = {};
-                for (var key in message.params) {
+            var subscribeVIData = {};
+            for (var key in message.params) {
 
-                    if (key === "clusterModeStatus") {
-                        key = "clusterModes";
-                    }
+                if (key === "clusterModeStatus") {
+                    key = "clusterModes";
+                }
 
-                    if (key != 'appID' && SDL.SDLController.getApplicationModel(message.params.appID).subscribedData[key] === true) {
-                        subscribeVIData[key] = {
-                            dataType: this.eVehicleDataType[key],
-                            resultCode: "DATA_ALREADY_SUBSCRIBED"
-                        };
-                    } else if (key != 'appID' && key in SDL.SDLController.getApplicationModel(message.params.appID).subscribedData) {
-                        SDL.SDLController.getApplicationModel(message.params.appID).subscribedData[key] = true;
-                        subscribeVIData[key] = {
-                            dataType: this.eVehicleDataType[key],
-                            resultCode: "SUCCESS"
-                        };
-                    } else if (key === "externalTemperature") {
-                        subscribeVIData[key] = {
-                            dataType: this.eVehicleDataType[key],
-                            resultCode: "VEHICLE_DATA_NOT_AVAILABLE"
-                        };
-                    }
+                if (SDL.SDLModel.subscribedData[key] === true) {
+                    subscribeVIData[key] = {
+                        dataType: this.eVehicleDataType[key],
+                        resultCode: "DATA_ALREADY_SUBSCRIBED"
+                    };
+                } else if (key === "externalTemperature") {
+                    subscribeVIData[key] = {
+                        dataType: this.eVehicleDataType[key],
+                        resultCode: "VEHICLE_DATA_NOT_AVAILABLE"
+                    };
+                } else {
+                    SDL.SDLModel.subscribedData[key] = true;
+                    subscribeVIData[key] = {
+                        dataType: this.eVehicleDataType[key],
+                        resultCode: "SUCCESS"
+                    };
                 }
             }
+
             FFW.VehicleInfo.sendVISubscribeVehicleDataResult(SDL.SDLModel.data.resultCode["SUCCESS"], message.id, message.method, subscribeVIData);
         },
 
@@ -397,35 +396,33 @@ SDL.SDLVehicleInfoModel = Em.Object
          * @type {Object} message
          */
         UnsubscribeVehicleData: function(message) {
-            if (SDL.SDLController.getApplicationModel(message.params.appID)) {
 
-                var subscribeVIData = {};
-                for (var key in message.params) {
+            var subscribeVIData = {};
+            for (var key in message.params) {
 
-                    if (key === "clusterModeStatus") {
-                        key = "clusterModes";
-                    }
+                if (key === "clusterModeStatus") {
+                    key = "clusterModes";
+                }
 
-                    if (key != 'appID' && SDL.SDLController.getApplicationModel(message.params.appID).subscribedData[key] === false) {
-                        SDL.SDLController.getApplicationModel(message.params.appID).subscribedData[key] = false;
-                        subscribeVIData[key] = {
-                            dataType: this.eVehicleDataType[key],
-                            resultCode: "DATA_NOT_SUBSCRIBED"
-                        };
-                    } else if (key != 'appID' && key in SDL.SDLController.getApplicationModel(message.params.appID).subscribedData) {
-                        SDL.SDLController.getApplicationModel(message.params.appID).subscribedData[key] = false;
-                        subscribeVIData[key] = {
-                            dataType: this.eVehicleDataType[key],
-                            resultCode: "SUCCESS"
-                        };
-                    } else if (key === "externalTemperature") {
-                        subscribeVIData[key] = {
-                            dataType: this.eVehicleDataType[key],
-                            resultCode: "VEHICLE_DATA_NOT_AVAILABLE"
-                        };
-                    }
+                if (SDL.SDLModel.subscribedData[key] === false) {
+                    subscribeVIData[key] = {
+                        dataType: this.eVehicleDataType[key],
+                        resultCode: "DATA_NOT_SUBSCRIBED"
+                    };
+                } else if (key === "externalTemperature") {
+                    subscribeVIData[key] = {
+                        dataType: this.eVehicleDataType[key],
+                        resultCode: "VEHICLE_DATA_NOT_AVAILABLE"
+                    };
+                } else {
+                    SDL.SDLModel.subscribedData[key] = false;
+                    subscribeVIData[key] = {
+                        dataType: this.eVehicleDataType[key],
+                        resultCode: "SUCCESS"
+                    };
                 }
             }
+
             FFW.VehicleInfo.sendVISubscribeVehicleDataResult(SDL.SDLModel.data.resultCode["SUCCESS"], message.id, message.method, subscribeVIData);
         },
 
@@ -475,7 +472,7 @@ SDL.SDLVehicleInfoModel = Em.Object
 
             for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
                 appID = SDL.SDLModel.data.registeredApps[i].appID;
-                if (SDL.SDLController.getApplicationModel(appID).subscribedData["prndl"]) {
+                if (SDL.SDLModel.subscribedData["prndl"]) {
 
                     var jsonData = {};
                     jsonData["prndl"] = this.vehicleData["prndl"];

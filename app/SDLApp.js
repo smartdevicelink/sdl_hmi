@@ -85,5 +85,16 @@ SDL = Em.Application.create( {
 
         /** container for all views */
         SDL.views = SDL.AppViews.create().appendTo('body');
+    },
+
+    deepCopy: function (obj) {
+
+        var copy = JSON.stringify(obj);
+
+        copy = JSON.parse(copy);
+
+        return copy;
+
     }
+
 });

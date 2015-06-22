@@ -1,0 +1,206 @@
+.interiorVI {
+    width: 440px;
+    height: 40px;
+    left: 180px;
+    top: 300px;
+    -webkit-transition: 0.2s;
+    border-radius: 8px;
+    background-color: #1D1D1D;
+    border: 1px solid #383737;
+    box-shadow: inset 5px 5px 10px #383737, inset -3px -3px 10px black;
+    -webkit-transition: 0.2s;
+    font-size: 38px;
+    line-height: 42px;
+    text-align: center;
+    position: relative;
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+#climate_control{
+    width: 800px;
+    height: 480px;
+    background: url(../images/climate/bg.png) no-repeat;
+}
+
+#climate_control .highlighted{
+    box-shadow: inset 0px 0px 20px #E8C515, inset 0px 0px 20px #E8C515;
+}
+
+#climate_control .switcher{
+    border: 1px solid #393939;
+    padding: 0;
+    width: 115px;
+    height: 50px;
+    line-height: 50px;
+    vertical-align: top;
+    font-size: 26px;
+    text-align: center;
+}
+
+#climate_control .switcher .ico{
+    position: absolute;
+    right: 10px;
+}
+
+#desiredTempLabel.label{
+    top: 120px;
+    left: 54px;
+}
+
+#fanSpeedLabel.label{
+    top: 120px;
+    left: 363px;
+}
+
+#curentTempLabel.label{
+    top: 120px;
+    right: 60px;
+}
+
+#climate_control .acEnable{
+    top: 340px;
+    left: 170px;
+}
+#climate_control .autoModeEnable{
+    top: 340px;
+    left: 286px;
+}
+#climate_control .dualModeEnable{
+    top: 340px;
+    left: 402px;
+}
+#climate_control .recirculateAirEnable{
+    top: 340px;
+    left: 518px;
+}
+
+#climate_control .zoneSelection {
+    bottom: 20px;
+    right: 50px;
+    position: absolute;
+    width: 150px;
+    height: 40px;
+    color: white;
+    background: #393939;
+}
+
+#desiredTemp_container.calc_container {
+    top: 71px;
+    left: 20px;
+}
+
+#fanSpeed_container.calc_container {
+    top: 71px;
+    left: 315px;
+}
+
+#currentTemp_container.calc_container {
+    top: 71px;
+    right: 20px;
+}
+
+.calc_container {
+    width: 170px;
+    height: 40px;
+    border-radius: 3px;
+    border: 1px solid #393939;
+}
+
+.calc_container .minus {
+    height: 24px;
+    width: 31px;
+    float: left;
+    padding: 8px;
+    padding-left: 14px;
+}
+
+.calc_container .label{
+    width: 100%;
+    text-align: center;
+    line-height: 40px;
+}
+
+.calc_container .plus{
+    float: right;
+    position: relative;
+    height: 24px;
+    width: 31px;
+    padding: 8px;
+    padding-left: 14px;
+}
+
+.quattro_container{
+    width: 140px;
+    height: 140px;
+    border-radius: 3px;
+    border: 1px solid #393939;
+    overflow: hidden;
+}
+
+#defrostZone.quattro_container{
+    top: 150px;
+    left: 200px;
+}
+
+.quattro_container .topRight{
+    width: 39px;
+    height: 29px;
+    border: 1px solid #393939;
+    margin-left: 70px;
+    padding: 15px;
+    padding-top: 25px;
+}
+
+.quattro_container .bottomLeft{
+    width: 49px;
+    height: 44px;
+    border: 1px solid #393939;
+    margin-top: 70px;
+    padding: 25px 0 0 20px;
+}
+
+.quattro_container .bottomRight{
+    width: 45px;
+    height: 45px;
+    border: 1px solid #393939;
+    margin-left: 70px;
+    padding: 12px;
+    margin-top: 70px;
+    line-height: 45px;
+}
+
+#temperatureUnit.quattro_container{
+    top: 150px;
+    right: 200px;
+    font-size: 35px;
+    line-height: 70px;
+}
+#temperatureUnit .topRight{
+    width: 69px;
+    height: 69px;
+    border: 1px solid #393939;
+    margin-left: 70px;
+    padding: 0;
+    text-align: center;
+}
+
+#temperatureUnit .bottomLeft{
+    width: 69px;
+    height: 69px;
+    border: 1px solid #393939;
+    margin-top: 70px;
+    padding: 0;
+    text-align: center;
+}
+
+#temperatureUnit .bottomRight{
+    width: 69px;
+    height: 69px;
+    border: 1px solid #393939;
+    padding: 0;
+    line-height: 70px;
+    margin-left: 70px;
+    margin-top: 70px;
+    text-align: center;
+}

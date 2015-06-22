@@ -51,6 +51,9 @@ SDL.Button = Em.View
             /** Button icon class */
             icon: null,
 
+            /** Button rightIcon class */
+            righticon: null,
+
             /** Button text */
             text: null,
 
