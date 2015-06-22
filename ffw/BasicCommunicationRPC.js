@@ -46,10 +46,6 @@ FFW.BasicCommunication = FFW.RPCObserver
          */
         errorResponsePull: {},
 
-
-        //OnPutFile
-
-
         onPutFileSubscribeRequestID: -1,
         onStatusUpdateSubscribeRequestID: -1,
         onAppPermissionChangedSubscribeRequestID: -1,
@@ -805,6 +801,27 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "method": "SDL.OnReceivedPolicyUpdate",
                 "params": {
                     "policyfile": policyfile
+                }
+            };
+
+            this.client.send(JSONMessage);
+        },
+        
+        /**
+         * Manunal Policy Table Update Triggered 
+         * From HMI
+         *
+         */        
+        OnHMIPolicyUpdate: function() {
+
+            Em.Logger.log("FFW.SDL.OnHMIPolicyUpdate");
+
+            // send repsonse
+            var JSONMessage = {
+                "jsonrpc": "2.0",
+                "method": "SDL.OnReceivedPolicyUpdate",
+                "params": {
+                    "policyfile": document.location.pathname.replace("index.html", "IVSU/POLICY_UPDATE_TEST")
                 }
             };
 
