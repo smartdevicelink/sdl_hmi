@@ -81,6 +81,94 @@ SDL.RController = SDL.ABSController.extend({
         SDL.SDLModel.toggleProperty('errorResponse');
     },
 
+
+    /**
+     * Register application method
+     *
+     * @param {Object}
+     *            params
+     * @param {Number}
+     *            applicationType
+     */
+    registerApplication: function(params, applicationType) {
+
+        if (applicationType === undefined || applicationType === null) {
+
+            SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[0].create( { //Magic number 0 - Default media model for not initialized applications
+                appID: params.appID,
+                appName: params.appName,
+                deviceName: params.deviceName,
+                appType: params.appType,
+                isMedia: 0,
+                disabledToActivate: params.disabled ? true : false
+            }));
+        } else if (applicationType === 2) {//Magic number 2 - Default RC application with non-media model
+
+            SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[1].create( {//Magic number 1 - Default non-media model
+                appID: params.appID,
+                appName: params.appName,
+                deviceName: params.deviceName,
+                appType: params.appType,
+                isMedia: false,
+                initialized: true,
+                disabledToActivate: params.disabled ? true : false
+            }));
+        } else {
+
+            SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[applicationType].create( {
+                appID: params.appID,
+                appName: params.appName,
+                deviceName: params.deviceName,
+                appType: params.appType,
+                isMedia: applicationType == 0 ? true : false,
+                initialized: true,
+                disabledToActivate: params.disabled ? true : false
+            }));
+        }
+
+        var exitCommand = {
+            "id": -10,
+            "params": {
+                "menuParams":{
+                    "parentID": 0,
+                    "menuName": "Exit 'DRIVER_DISTRACTION_VIOLATION'",
+                    "position": 0
+                },
+                cmdID: -1
+            }
+        };
+
+        SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
+
+        exitCommand = {
+            "id": -10,
+            "params": {
+                "menuParams":{
+                    "parentID": 0,
+                    "menuName": "Exit 'USER_EXIT'",
+                    "position": 0
+                },
+                cmdID: -2
+            }
+        };
+
+        SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
+
+        exitCommand = {
+            "id": -10,
+            "params": {
+                "menuParams":{
+                    "parentID": 0,
+                    "menuName": "Exit 'UNAUTHORIZED_TRANSPORT_REGISTRATION'",
+                    "position": 0
+                },
+                cmdID: -3
+            }
+        };
+
+        SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
+    },
+
     toggleDriverDeviceWindow: function(element) {
         SDL.PrimaryDevice.toggleProperty('active');
     },

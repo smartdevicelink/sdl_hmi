@@ -520,7 +520,18 @@ FFW.BasicCommunication = FFW.RPCObserver
                             SDL.SDLModel.data.set('limitedExist', false);
                         }
 
+                        if (SDL.SDLModel.listLimitedApps.indexesOf(request.params.appID) != -1) {
+                            SDL.SDLModel.listLimitedApps.pop(request.params.appID)
+                        }
+
                         SDL.SDLController.getApplicationModel(request.params.appID).turnOnSDL(request.params.appID);
+
+                        SDL.VRPopUp.updateVR();
+                    } else if (request.params.level === 'LIMITED') {
+                        if (SDL.SDLModel.listLimitedApps.indexesOf(request.params.appID) == -1) {
+                            SDL.SDLModel.listLimitedApps.push(request.params.appID)
+                        }
+                        SDL.VRPopUp.updateVR();
                     }
                     this.sendBCResult(SDL.SDLModel.data.resultCode["SUCCESS"], request.id, request.method);
                 }

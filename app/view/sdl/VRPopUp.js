@@ -151,6 +151,18 @@ SDL.VRPopUp = Em.ContainerView.create( {
             }
         }
 
+        var appIDs = SDL.SDLModel.listLimitedApps;
+        for (var i = 0; i < appIDs.length; i++) {
+
+            len = SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands.length;
+            for (var j = 0; j < len; j++) {
+                this.AddCommand(SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].cmdID,
+                    SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].vrCommands,
+                    SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].appID,
+                    SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].type,
+                    SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].grammarID);
+            }
+        }
     }.observes('SDL.SDLController.model'),
 
     DeleteCommand: function(commandID, appID) {

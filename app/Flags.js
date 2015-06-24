@@ -47,23 +47,23 @@ FLAGS = Em.Object.create( {
 
     TOUCH_EVENT_STARTED: false,
 
-    BC: true,
+    BC: null,
 
-    UI: true,
+    UI: null,
 
-    VI: true,
+    VI: null,
 
-    VR: true,
+    VR: null,
 
-    Buttons: true,
+    Buttons: null,
 
-    TTS: true,
+    TTS: null,
 
-    Navi: true,
+    Navi: null,
 
-    CAN: false,
+    CAN: null,
 
-    RC: false,
+    RC: null,
 
     /**
      * 0 - G

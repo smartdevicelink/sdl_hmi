@@ -34,6 +34,11 @@
 SDL.warningView = Em.ContainerView
     .extend( {
 
+        AfterRender: function() {
+
+
+        },
+
         classNameBindings: [
             'fade:fadeAnimation:fadeWarning', 'hide:inactive_state',
         ],
@@ -95,6 +100,46 @@ SDL.warningView = Em.ContainerView
 
                     self.set('isReady', true);
                 }, 2000);
+
+                var timer = null;
+
+                setInterval(function(){
+                    if (FLAGS.Buttons === null) {
+                        FLAGS.set('Buttons', true);
+                        return;
+                    }
+                    if (FLAGS.TTS === null) {
+                        FLAGS.set('TTS', true);
+                        return;
+                    }
+                    if (FLAGS.VI === null) {
+                        FLAGS.set('VI', true);
+                        return;
+                    }
+                    if (FLAGS.RC === null && FLAGS.SimpleFunctionality === 2) {
+                        FLAGS.set('RC', true);
+                        return;
+                    } else if (FLAGS.SimpleFunctionality != 2){
+                        FLAGS.set('RC', false);
+                    }
+                    if (FLAGS.BC === null) {
+                        FLAGS.set('BC', true);
+                        return;
+                    }
+                    if (FLAGS.Navi === null) {
+                        FLAGS.set('Navi', true);
+                        return;
+                    }
+                    if (FLAGS.UI === null) {
+                        FLAGS.set('UI', true);
+                        return;
+                    }
+                    if (FLAGS.VR === null) {
+                        FLAGS.set('VR', true);
+                        return;
+                    }
+                    clearInterval(timer);
+                }, 200);
 
                 var components = Em.ContainerView.create({
 
