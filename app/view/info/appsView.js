@@ -62,27 +62,53 @@ SDL.InfoAppsView = Em.ContainerView
 
             for (i = 0; i < apps.length; i++) {
 
-                appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+                if ((apps[i].appType.indexOf("REMOTE_CONTROL") === -1 )
+                    || (SDL.SDLModel.driverDeviceInfo && apps[i].appType.indexOf("REMOTE_CONTROL") != -1 && apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name)) {
+                    appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
-                this.get('listOfApplications.list.childViews')
-                    .pushObject(SDL.Button.create( {
-                        action: 'onActivateSDLApp',
-                        target: 'SDL.SDLController',
-                        text: apps[i].appName + " - " + apps[i].deviceName,
-                        appName: apps[i].appName,
-                        appID: apps[i].appID,
-                        classNames: 'list-item button',
-                        iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex
+                    this.get('listOfApplications.list.childViews')
+                        .pushObject(SDL.Button.create({
+                            action: 'onActivateSDLApp',
+                            target: 'SDL.SDLController',
+                            text: apps[i].appName + " - " + apps[i].deviceName,
+                            appName: apps[i].appName,
+                            appID: apps[i].appID,
+                            classNames: 'list-item button',
+                            iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex
                             + '.appIcon',
-                        disabled: apps[i].disabledToActivate,
-                        indexApp: appIndex,
-                        fullAppName: function () {
-                            return SDL.SDLModel.data.registeredApps[this.appIndex].appIcon
-                                + SDL.SDLModel.data.registeredApps[this.appIndex].deviceName;
-                        }.property('SDL.SDLModel.data.registeredApps.' + appIndex
-                            + '.appIcon', 'SDL.SDLModel.data.registeredApps.' + appIndex
-                            + '.deviceName')
-                    }));
+                            disabled: apps[i].disabledToActivate,
+                            indexApp: appIndex,
+                            fullAppName: function () {
+                                return SDL.SDLModel.data.registeredApps[this.appIndex].appIcon
+                                    + SDL.SDLModel.data.registeredApps[this.appIndex].deviceName;
+                            }.property('SDL.SDLModel.data.registeredApps.' + appIndex
+                                + '.appIcon', 'SDL.SDLModel.data.registeredApps.' + appIndex
+                                + '.deviceName')
+                        }));
+                } else if (apps[i].appType.indexOf("REMOTE_CONTROL") != -1
+                    && SDL.SDLModel.data.listLimitedApps.indexOf(apps[i].appID) != -1) {
+                    appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+
+                    this.get('listOfApplications.list.childViews')
+                        .pushObject(SDL.Button.create({
+                            action: 'onActivateSDLApp',
+                            target: 'SDL.SDLController',
+                            text: apps[i].appName + " - " + apps[i].deviceName,
+                            appName: apps[i].appName,
+                            appID: apps[i].appID,
+                            classNames: 'list-item button',
+                            iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex
+                            + '.appIcon',
+                            disabled: true,
+                            indexApp: appIndex,
+                            fullAppName: function () {
+                                return SDL.SDLModel.data.registeredApps[this.appIndex].appIcon
+                                    + SDL.SDLModel.data.registeredApps[this.appIndex].deviceName;
+                            }.property('SDL.SDLModel.data.registeredApps.' + appIndex
+                                + '.appIcon', 'SDL.SDLModel.data.registeredApps.' + appIndex
+                                + '.deviceName')
+                        }));
+                }
             }
 
         },

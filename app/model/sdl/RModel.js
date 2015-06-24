@@ -76,11 +76,6 @@ SDL.RModel = SDL.ABSModel.extend({
     errorResponse: false,
 
     /**
-     *
-     */
-    listLimitedApps: [],
-
-    /**
      * Method to add activation button to VR commands and set device
      * parameters to model
      *

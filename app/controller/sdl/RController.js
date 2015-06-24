@@ -177,8 +177,17 @@ SDL.RController = SDL.ABSController.extend({
 
         this.toggleDriverDeviceWindow();
 
+        var apps = SDL.SDLModel.data.registeredApps;
+
+        for (var i = 0; i < apps.length; i++) {
+            if (apps[i].deviceName === device.name) {
+                SDL.SDLModel.data.listLimitedApps.pop(apps[i].appID);
+            }
+        }
+
         SDL.SDLModel.set('driverDeviceInfo', device);
         FFW.RC.OnSetDriversDevice(device);
+        SDL.InfoAppsview.showAppList();
     },
 
     interiorDataConsent: function(request){

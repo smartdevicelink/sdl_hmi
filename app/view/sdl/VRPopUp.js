@@ -151,7 +151,7 @@ SDL.VRPopUp = Em.ContainerView.create( {
             }
         }
 
-        var appIDs = SDL.SDLModel.listLimitedApps;
+        var appIDs = SDL.SDLModel.data.listLimitedApps;
         for (var i = 0; i < appIDs.length; i++) {
 
             len = SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands.length;
