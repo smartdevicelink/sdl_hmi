@@ -187,7 +187,7 @@ SDL.RController = SDL.ABSController.extend({
 
         SDL.SDLModel.set('driverDeviceInfo', device);
         FFW.RC.OnSetDriversDevice(device);
-        SDL.InfoAppsview.showAppList();
+        SDL.InfoAppsView.showAppList();
     },
 
     interiorDataConsent: function(request){

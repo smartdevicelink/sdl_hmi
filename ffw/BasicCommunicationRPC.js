@@ -528,7 +528,7 @@ FFW.BasicCommunication = FFW.RPCObserver
 
                         SDL.VRPopUp.updateVR();
                     } else if (request.params.level === 'LIMITED') {
-                        if (SDL.SDLModel.data.listLimitedApps.indexesOf(request.params.appID) == -1) {
+                        if (SDL.SDLModel.data.listLimitedApps.indexOf(request.params.appID) == -1) {
                             SDL.SDLModel.data.listLimitedApps.push(request.params.appID)
                         }
                         SDL.VRPopUp.updateVR();
