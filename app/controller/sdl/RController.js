@@ -190,6 +190,57 @@ SDL.RController = SDL.ABSController.extend({
         SDL.InfoAppsView.showAppList();
     },
 
+    /**
+     * Handeler for command button press
+     *
+     * @param element
+     *            SDL.Button
+     */
+    onCommand: function (element) {
+
+        if (element.commandID < 0) {
+
+            switch (element.commandID) {
+                case -1: {
+                    FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "DRIVER_DISTRACTION_VIOLATION");
+                    break;
+                }
+                case -2: {
+                    FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "USER_EXIT");
+                    SDL.RadioModel.consentedApp = null;
+                    SDL.ClimateController.model.consentedApp = null;
+
+                    SDL.SDLModel.set('givenControlFlag', false);
+                    break;
+                }
+                case -3: {
+                    FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "UNAUTHORIZED_TRANSPORT_REGISTRATION");
+                    break;
+                }
+                default: {
+                    console.log("Unknown command with ID: " + element.commandID);
+                }
+            }
+
+            SDL.OptionsView.deactivate();
+            SDL.States.goToStates('info.apps');
+
+        } else if (element.menuID >= 0) {
+
+            // if subMenu
+            // activate driver destruction if necessary
+            if (SDL.SDLModel.data.driverDistractionState) {
+                SDL.DriverDistraction.activate();
+            } else {
+                this.onSubMenu(element.menuID);
+            }
+        } else {
+
+            FFW.UI.onCommand(element.commandID, this.model.appID);
+            SDL.OptionsView.deactivate();
+        }
+    },
+
     interiorDataConsent: function(request){
 
         var appName = SDL.SDLController.getApplicationModel(request.params.appID).appName;
@@ -205,6 +256,8 @@ SDL.RController = SDL.ABSController.extend({
                     function(result){
                         FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
                         if (result) {
+
+                            SDL.SDLModel.set('givenControlFlag', true);
                             SDL.RadioModel.consentedApp = request.params.appID;
                         }
                     }
@@ -219,6 +272,8 @@ SDL.RController = SDL.ABSController.extend({
                     function(result){
                         FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
                         if (result) {
+
+                            SDL.SDLModel.set('givenControlFlag', true);
                             SDL.ClimateController.model.consentedApp = request.params.appID;
                         }
                     }

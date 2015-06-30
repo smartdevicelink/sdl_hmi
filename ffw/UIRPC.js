@@ -893,7 +893,7 @@ FFW.UI = FFW.RPCObserver.create({
                         this.client.send(JSONMessage);
 
                     } else {
-                        this.sendError(SDL.SDLModel.data.resultCode["UNSUPPORTED_RESOURCE"], request.id, request.method, "Unsupported display layout!")
+                        this.sendError(SDL.SDLModel.data.resultCode["UNSUPPORTED_REQUEST"], request.id, request.method, "Unsupported display layout!")
                     }
 
                     break;
