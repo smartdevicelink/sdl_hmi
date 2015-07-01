@@ -149,6 +149,7 @@ SDL.TTSPopUp = Em.ContainerView.create( {
 
     DeactivateTTS: function() {
         clearInterval(this.timer);
+        this.timer = null;
         this.set('active', false);
         this.appID = null;
         this.set('timerSeconds', 5);
