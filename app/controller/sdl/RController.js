@@ -191,7 +191,7 @@ SDL.RController = SDL.ABSController.extend({
     },
 
     /**
-     * Handeler for command button press
+     * Handeler for OnKeyboardInputcommand button press
      *
      * @param element
      *            SDL.Button

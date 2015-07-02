@@ -52,7 +52,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create({
      * @param {Object}
      */
     activate: function( element ) {
-        if( element.tagName === 'input' ){
+        if(element){
 
             this.set( 'active', true );
             this.set('target', element);
@@ -257,7 +257,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create({
         classNameBindings: 'this.pQWERTY::hide',
 
         pQWERTY: function(){
-            if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == "QWERTY") {
+            if (!SDL.SDLController.model || SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == "QWERTY") {
                 return true;
             } else {
                 return false;

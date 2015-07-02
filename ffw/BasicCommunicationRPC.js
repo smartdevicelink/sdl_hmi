@@ -1243,7 +1243,7 @@ FFW.BasicCommunication = FFW.RPCObserver
          * @param {Number}
          *            appID
          */
-        OnDeviceChosen: function(deviceName, appID) {
+        OnDeviceChosen: function(deviceName, id) {
 
             Em.Logger.log("FFW.BasicCommunication.OnDeviceChosen");
 
@@ -1254,7 +1254,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "params": {
                     "deviceInfo": {
                         "name": deviceName,
-                        "id": appID
+                        "id": id
                     }
                 }
             };

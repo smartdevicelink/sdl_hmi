@@ -184,18 +184,11 @@ SDL.ABSController = Em.Object.extend( {
     },
 
     /**
-     * Handeler for Navigation preform interaction choice send response to device and
-     * deactivate interactions window
-     *
-     * @param element {Object}
+     * Call Keyboard view activation method
+     * params {Object}
      */
-    onChoiceNaviInteraction: function(element) {
-
-        SDL.SDLModel.uiShowKeyboard();
-
-        FFW.UI.interactionResponse(SDL.SDLModel.data.resultCode["SUCCESS"], element.choiceID);
-
-        SDL.InteractionChoicesView.deactivate("SUCCESS");
+    uiShowKeyboard: function(element){
+        SDL.SDLModel.uiShowKeyboard(element);
     },
 
     /**
@@ -899,7 +892,7 @@ SDL.ABSController = Em.Object.extend( {
 
             var str = SDL.SDLModel.data.keyboardInputValue;
 
-            if (SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
+            if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
                 switch (SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
                     case 'SINGLE_KEYPRESS':{
                         FFW.UI.OnKeyboardInput(str.charAt( str.length-1 ), "KEYPRESS");

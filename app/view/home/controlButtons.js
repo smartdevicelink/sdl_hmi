@@ -53,8 +53,20 @@ SDL.ControlButtons = Em.ContainerView
             'appTTSVRLanguagesLabel',
             'appUILang',
             'appTTSVRLang',
-            'phoneCall'
+            'phoneCall',
+            'keyboard'
         ],
+
+        keyboard: SDL.Button.extend( {
+            classNames: ['keyboard', 'button'],
+            elementId: 'activate_keyboard',
+            action: 'uiShowKeyboard',
+            text: 'KEYBOARD',
+            target: 'SDL.SDLController',
+            search: function(){
+                FFW.UI.OnKeyboardInput(SDL.SDLModel.data.keyboardInputValue, "ENTRY_SUBMITTED");
+            }
+        }),
 
         /**
          * Button to initiate phone call emulation on HMI

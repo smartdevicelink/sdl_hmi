@@ -528,6 +528,14 @@
 	width: 160px;
 }
 
+#app_controlButtons .keyboard{
+    left: 1137px;
+    top: 20px;
+    text-align: center;
+    width: 150px;
+    height: 40px;
+}
+
 #app_controlButtons .phone_call_button{
     height: 40px;
     width: 163px;
