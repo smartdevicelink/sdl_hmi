@@ -301,7 +301,7 @@ SDL.ControlButtons = Em.ContainerView
 
                         var str = '';
                         for (var i = 0; i < SDL.SDLModel.data.policyURLs.length; i++) {
-                            str += SDL.SDLModel.data.policyURLs[i] + '; ';
+                            str += JSON.stringify(SDL.SDLModel.data.policyURLs[i]) + '; ';
                         }
 
                         return str;

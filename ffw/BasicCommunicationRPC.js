@@ -473,6 +473,8 @@ FFW.BasicCommunication = FFW.RPCObserver
 
                     SDL.SettingsController.policyUpdateRetry("ABORT");
 
+                    Em.Logger.log(request.params);
+
                     this.OnReceivedPolicyUpdate(request.params.fileName);
 
                     SDL.SettingsController.policyUpdateFile = null;
@@ -800,7 +802,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "jsonrpc": "2.0",
                 "method": "SDL.OnReceivedPolicyUpdate",
                 "params": {
-                    "policyfile": policyfile
+                    "policyfile": document.location.pathname.replace("index.html", "IVSU/POLICY_UPDATE_TEST")
                 }
             };
 
@@ -1334,23 +1336,25 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "jsonrpc": "2.0",
                 "method": "BasicCommunication.OnSystemRequest",
                 "params":{
-                    "requestType": type,
+                    "requestType": 'PROPRIETARY',
                     "fileType": "JSON",
                     "offset": 1000,
                     "length": 10000,
                     "timeout": 500,
-                    "fileName": fileName
+                    "fileName": document.location.pathname.replace("index.html", "IVSU/PROPRIETARY_REQUEST")
                 }
             };
 
             if (url) {
-                JSONMessage.params.url = url;
+                JSONMessage.params.url = "http://192.168.0.124:3000/policies.json";
             }
-            if (policyAppID) {
-                JSONMessage.params.policyAppID = policyAppID;
-            }
+
+            //if (policyAppID) {
+            //    JSONMessage.params.policyAppID = policyAppID;
+            //}
+            
             if (appID) {
-                JSONMessage.params.appID = appID;
+                JSONMessage.params.appID = 'default';
             }
 
             this.client.send(JSONMessage);
