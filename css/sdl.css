@@ -653,6 +653,13 @@
     text-align: center;
 }
 
+#PrimaryDevice .resetDeviceButton{
+    top: 125px;
+    left: 70px;
+    width: 190px;
+    text-align: center;
+}
+
 #PrimaryDevice .firstDeviceLabel{
     top: 197px;
     left: 80px;

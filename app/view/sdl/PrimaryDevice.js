@@ -49,6 +49,7 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
         'chooseLabel',
         'deviceSelect',
         'primaryButton',
+        'resetDeviceButton',
         'firstDeviceLabel',
         'firstDeviceCheckBox',
         'backButton'
@@ -161,6 +162,17 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
             SDL.PrimaryDevice.deviceSelect.selection = SDL.PrimaryDevice.deviceSelect.content[0];
         }.observes('this.content')
     } ),
+
+    /**
+     * Button to discard current drivers device
+     */
+    resetDeviceButton: SDL.Button.extend( {
+        classNames: 'button resetDeviceButton',
+        text: 'Reset',
+        action: 'resetDriversDevice',
+        target: 'SDL.SDLController',
+        onDown: false
+    }),
 
     /**
      * Button to send OnEmergencyEvent to SDL

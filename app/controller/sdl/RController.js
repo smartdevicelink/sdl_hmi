@@ -287,5 +287,9 @@ SDL.RController = SDL.ABSController.extend({
                 FFW.RC.sendError(SDL.SDLModel.data.resultCode['TIMED_OUT'],req.id, req.method, "Timed out!")
             }
         }, 10000); //Magic number is timeout for RC consent popUp
+    },
+
+    resetDriversDevice: function(){
+        SDL.SDLModel.set('driverDeviceInfo', null);
     }
 });
