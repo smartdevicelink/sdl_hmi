@@ -291,5 +291,6 @@ SDL.RController = SDL.ABSController.extend({
 
     resetDriversDevice: function(){
         SDL.SDLModel.set('driverDeviceInfo', null);
+        SDL.InfoAppsView.showAppList();
     }
 });
