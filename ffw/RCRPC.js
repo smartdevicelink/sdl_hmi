@@ -579,8 +579,6 @@ FFW.RC = FFW.RPCObserver.create( {
 
     onInteriorVehicleDataNotification: function(moduleType, moduleZone, radioControlData, climateControlData) {
 
-        Em.Logger.log("FFW.RC Notification");
-
         if (moduleZone === 'subscribed') {
 
             for(var i = 0; i < SDL.RadioModel.subscribedData.length; i++){
@@ -605,6 +603,8 @@ FFW.RC = FFW.RPCObserver.create( {
                     JSONMessage.params.moduleData.climateControlData = climateControlData;
                 }
 
+
+                Em.Logger.log("FFW.RC.OnInteriorVehicleData Notification");
                 this.client.send(JSONMessage);
             }
 
@@ -629,6 +629,7 @@ FFW.RC = FFW.RPCObserver.create( {
 
                 if (zone in SDL.RadioModel.subscribedData) {
 
+                    Em.Logger.log("FFW.RC.OnInteriorVehicleData Notification");
                     this.client.send(JSONMessage);
                 }
             }
@@ -640,6 +641,8 @@ FFW.RC = FFW.RPCObserver.create( {
 
                 for (var i = 0; i < SDL.ClimateController.model.subscribedData.length; i++) {
                     if (SDL.ClimateController.model.subscribedData[i] === zone) {
+
+                        Em.Logger.log("FFW.RC.OnInteriorVehicleData Notification");
                         this.client.send(JSONMessage);
                         return;
                     }
