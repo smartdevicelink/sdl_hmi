@@ -520,17 +520,13 @@ FFW.BasicCommunication = FFW.RPCObserver
                             SDL.SDLModel.data.set('limitedExist', false);
                         }
 
-                        if (SDL.SDLModel.data.listLimitedApps.indexOf(request.params.appID) != -1) {
-                            SDL.SDLModel.data.listLimitedApps.pop(request.params.appID)
-                        }
+                        SDL.SDLController.getApplicationModel(request.params.appID).level = 'FULL';
 
                         SDL.SDLController.getApplicationModel(request.params.appID).turnOnSDL(request.params.appID);
 
                         SDL.VRPopUp.updateVR();
                     } else if (request.params.level === 'LIMITED') {
-                        if (SDL.SDLModel.data.listLimitedApps.indexOf(request.params.appID) == -1) {
-                            SDL.SDLModel.data.listLimitedApps.push(request.params.appID)
-                        }
+                        SDL.SDLController.getApplicationModel(request.params.appID).level = 'LIMITED';
                         SDL.VRPopUp.updateVR();
                         SDL.InfoAppsView.showAppList();
                     }
@@ -569,7 +565,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         },
 
         /********************* Requests *********************/
-
 
         /**
          * Send request if application was activated

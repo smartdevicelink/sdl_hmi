@@ -44,11 +44,6 @@ SDL.SDLModelData = Em.Object.create({
     },
 
     /**
-     * List of app in limited state, changed by SDL through BC.ActivateApp
-     */
-    listLimitedApps: [],
-
-    /**
      * Structure specified for PoliceUpdate retry sequence
      * contains timeout seconds param, array of retry seconds and counter of number of retries
      *

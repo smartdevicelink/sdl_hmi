@@ -86,7 +86,7 @@ SDL.InfoAppsView = Em.ContainerView
                                 + '.deviceName')
                         }));
                 } else if (apps[i].appType.indexOf("REMOTE_CONTROL") != -1
-                    && SDL.SDLModel.data.listLimitedApps.indexOf(apps[i].appID) != -1) {
+                    && SDL.SDLController.getApplicationModel(apps[i].appID).level == 'LIMITED') {
                     appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
                     this.get('listOfApplications.list.childViews')

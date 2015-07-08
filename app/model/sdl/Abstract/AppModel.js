@@ -63,6 +63,11 @@ SDL.ABSAppModel = Em.Object.extend({
         initialized: false,
 
         /**
+         * Current HMI level of registered application
+         */
+        level: 'NONE',
+
+        /**
          * Media application flag
          * If application was successfully initialized this flag it set into correct value
          *

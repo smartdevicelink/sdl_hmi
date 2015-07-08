@@ -151,16 +151,18 @@ SDL.VRPopUp = Em.ContainerView.create( {
             }
         }
 
-        var appIDs = SDL.SDLModel.data.listLimitedApps;
-        for (var i = 0; i < appIDs.length; i++) {
+        var apps = SDL.SDLModel.data.registeredApps;
+        for (var i = 0; i < apps.length; i++) {
 
-            len = SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands.length;
-            for (var j = 0; j < len; j++) {
-                this.AddCommand(SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].cmdID,
-                    SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].vrCommands,
-                    SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].appID,
-                    SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].type,
-                    SDL.SDLController.getApplicationModel(appIDs[i]).VRCommands[j].grammarID);
+            if (apps[i].level == 'LIMITED') {
+                var commands = apps[i].VRCommands;
+                for (var j = 0; j < commands.length; j++) {
+                    this.AddCommand(commands[j].cmdID,
+                        commands[j].vrCommands,
+                        commands[j].appID,
+                        commands[j].type,
+                        commands[j].grammarID);
+                }
             }
         }
     }.observes('SDL.SDLController.model'),

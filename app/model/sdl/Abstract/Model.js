@@ -594,7 +594,7 @@ SDL.ABSModel = Em.Object.extend({
 
             SDL.SDLController.unregisterApplication(params.appID);
 
-            SDL.SDLModel.data.listLimitedApps.pop(params.appID);
+            SDL.SDLController.getApplicationModel(params.appID).level = 'NONE';
         }
     },
 
