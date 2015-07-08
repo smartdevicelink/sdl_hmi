@@ -81,68 +81,112 @@ FFW.RPCObserver = Em.Object
          * @param params
          * @returns {boolean}
          */
-        checkImage: function(params){
-            if ("graphic" in params) {
-                if (params.graphic.imageType === "STATIC") {
-                    delete params.graphic;
-                    return false;
+        checkImage: function(params) {
+            if (params) {
+                if ("graphic" in params) {
+                    if (params.graphic.imageType === "STATIC") {
+                        delete params.graphic;
+                        return false;
+                    } else {
+                        params.graphic.value = params.graphic.value.replace(/\\/g, "%5C");
+                    }
                 }
-            }
-            if ("secondaryGraphic" in params) {
-                if (params.secondaryGraphic.imageType === "STATIC") {
-                    delete params.secondaryGraphic;
-                    return false;
+                if ("secondaryGraphic" in params) {
+                    if (params.secondaryGraphic.imageType === "STATIC") {
+                        delete params.secondaryGraphic;
+                        return false;
+                    } else {
+                        params.secondaryGraphic.value = params.secondaryGraphic.value.replace(/\\/g, "%5C");
+                    }
                 }
-            }
-            if ("image" in params) {
-                if (params.image.imageType === "STATIC") {
-                    delete params.image;
-                    return false;
+                if ("image" in params) {
+                    if (params.image.imageType === "STATIC") {
+                        delete params.image;
+                        return false;
+                    } else {
+                        params.image.value = params.image.value.replace(/\\/g, "%5C");
+                    }
                 }
-            }
-            if ("secondaryImage" in params) {
-                if (params.image.imageType === "STATIC") {
-                    delete params.image;
-                    return false;
+                if ("secondaryImage" in params) {
+                    if (params.secondaryImage.imageType === "STATIC") {
+                        delete params.secondaryImage;
+                        return false;
+                    } else {
+                        params.secondaryImage.value = params.secondaryImage.value.replace(/\\/g, "%5C");
+                    }
                 }
-            }
-            if ("turnIcon" in params) {
-                if (params.turnIcon.imageType === "STATIC") {
-                    delete params.turnIcon;
-                    return false;
+                if ("turnIcon" in params) {
+                    if (params.turnIcon.imageType === "STATIC") {
+                        delete params.turnIcon;
+                        return false;
+                    } else {
+                        params.turnIcon.value = params.turnIcon.value.replace(/\\/g, "%5C");
+                    }
                 }
-            }
-            if ("nextTurnIcon" in params) {
-                if (params.nextTurnIcon.imageType === "STATIC") {
-                    delete params.nextTurnIcon;
-                    return false;
+                if ("nextTurnIcon" in params) {
+                    if (params.nextTurnIcon.imageType === "STATIC") {
+                        delete params.nextTurnIcon;
+                        return false;
+                    } else {
+                        params.nextTurnIcon.value = params.nextTurnIcon.value.replace(/\\/g, "%5C");
+                    }
                 }
-            }
-            if ("cmdIcon" in params) {
-                if (params.cmdIcon.imageType === "STATIC") {
-                    delete params.cmdIcon;
-                    return false;
+                if ("cmdIcon" in params) {
+                    if (params.cmdIcon.imageType === "STATIC") {
+                        delete params.cmdIcon;
+                        return false;
+                    } else {
+                        params.cmdIcon.value = params.cmdIcon.value.replace(/\\/g, "%5C");
+                    }
                 }
-            }
-            if ("menuIcon" in params) {
-                if (params.menuIcon.imageType === "STATIC") {
-                    delete params.menuIcon;
-                    return false;
+                if ("menuIcon" in params) {
+                    if (params.menuIcon.imageType === "STATIC") {
+                        delete params.menuIcon;
+                        return false;
+                    } else {
+                        params.menuIcon.value = params.menuIcon.value.replace(/\\/g, "%5C");
+                    }
                 }
-            }
-            if ("syncFileName" in params) {
-                if (params.syncFileName.imageType === "STATIC") {
-                    delete params.syncFileName;
-                    return false;
+                if ("syncFileName" in params) {
+                    if (params.syncFileName.imageType === "STATIC") {
+                        delete params.syncFileName;
+                        return false;
+                    } else {
+                        params.syncFileName.value = params.syncFileName.value.replace(/\\/g, "%5C");
+                    }
                 }
-            }
-            if ("locationImage" in params) {
-                if (params.locationImage.imageType === "STATIC") {
-                    delete params.locationImage;
-                    return false;
+                if ("locationImage" in params) {
+                    if (params.locationImage.imageType === "STATIC") {
+                        delete params.locationImage;
+                        return false;
+                    } else {
+                        params.locationImage.value = params.locationImage.value.replace(/\\/g, "%5C");
+                    }
                 }
+                if ("vrHelp" in params) {
+                    for (var i = 0; i < params.vrHelp.length; i++) {
+
+                        if (params.vrHelp[i].image.imageType === "STATIC") {
+                            delete params.vrHelp[i].image;
+                            return false;
+                        } else {
+                            params.vrHelp[i].image.value = params.vrHelp[i].image.value.replace(/\\/g, "%5C");
+                        }
+                    }
+                }
+                if ("softButtons" in params) {
+                    for (var i = 0; i < params.softButtons.length; i++) {
+
+                        if (params.softButtons[i].image && params.softButtons[i].image.imageType === "STATIC") {
+                            delete params.softButtons[i].image;
+                            return false;
+                        } else if (params.softButtons[i].image){
+                            params.softButtons[i].image.value = params.softButtons[i].image.value.replace(/\\/g, "%5C");
+                        }
+                    }
+                }
+                return true;
             }
-            return true;
         },
 
         /**

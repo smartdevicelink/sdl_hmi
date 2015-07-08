@@ -131,10 +131,14 @@ FFW.RPCClient = Em.Object
 
             var jsonObj = JSON.parse(evt.data, SDL.RPCController.capabilitiesCheck);
 
+            //Verification of unsupported params and remove them from original request
+            //Changing filenames with backslash - escape the \ with %5C due to Issue 45051 in chromium
+            this.observer.checkImage(jsonObj.params);
+
+            // Verification of unsupported params and remove them from original request
             if (SDL.RPCController.capabilityCheckResult != null) {
                 this.observer.errorResponsePull[jsonObj.id] = SDL.RPCController.capabilityCheckResult;
                 SDL.RPCController.capabilityCheckResult = null;
-                this.observer.checkImage(jsonObj.params);
                 this.observer.checkSoftButtons(jsonObj.params);
                 this.observer.checkChoice(jsonObj.params);
                 this.observer.checkChunk(jsonObj.params);
