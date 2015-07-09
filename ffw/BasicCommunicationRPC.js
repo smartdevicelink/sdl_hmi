@@ -529,6 +529,10 @@ FFW.BasicCommunication = FFW.RPCObserver
                         SDL.SDLController.getApplicationModel(request.params.appID).level = 'LIMITED';
                         SDL.VRPopUp.updateVR();
                         SDL.InfoAppsView.showAppList();
+                    } else if (request.params.level === 'NONE') {
+                        SDL.SDLController.getApplicationModel(request.params.appID).level = 'NONE';
+                        SDL.VRPopUp.updateVR();
+                        SDL.InfoAppsView.showAppList();
                     }
                     this.sendBCResult(SDL.SDLModel.data.resultCode["SUCCESS"], request.id, request.method);
                 }
