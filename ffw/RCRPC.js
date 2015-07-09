@@ -524,7 +524,7 @@ FFW.RC = FFW.RPCObserver.create( {
     OnSetDriversDevice: function(device) {
 
         if (device) {
-            Em.Logger.log("FFW.RC.OnPrimaryDevice Notification");
+            Em.Logger.log("FFW.RC.OnSetDriversDevice Notification");
 
             // send repsonse
             var JSONMessage = {
