@@ -101,7 +101,7 @@ SDL.SDLModelData = Em.Object.create({
     /**
      * Active state of phone call on HMI for Deactivate app to handle event
      */
-        phoneCallActive: false,
+    phoneCallActive: false,
 
     /**
      * FLAG of any app in limited level exists
@@ -113,26 +113,26 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {Object}
      */
-        interactionListWrapper: null,
+    interactionListWrapper: null,
 
     /**
      * TimeStamp of current started HMI session
      *
      * @type {Number}
      */
-        timeStamp: null,
+    timeStamp: null,
 
     /**
      * List of VR commands
      */
-        VRCommands: [],
+    VRCommands: [],
 
     /**
      * Video player object for navigationApp
      *
      * @type {Object}
      */
-        naviVideo: {},
+    naviVideo: {},
 
     /**
      * Array of strings came in SDL.GetURLS response
@@ -146,14 +146,14 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {String}
      */
-        settingsInfoListState: 'iAPP_BUFFER_FULL',
+    settingsInfoListState: 'iAPP_BUFFER_FULL',
 
     /**
      * Policy Settings Info list
      *
      * @type {Object}
      */
-        settingsInfoList: [
+    settingsInfoList: [
         'iAPP_BUFFER_FULL',
         'blah'
     ],
@@ -163,14 +163,14 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {String}
      */
-        systemErrorListState: 'SYNC_REBOOTED',
+    systemErrorListState: 'SYNC_REBOOTED',
 
     /**
      * Policy Settings Info list
      *
      * @type {Object}
      */
-        systemErrorList: [
+    systemErrorList: [
         'SYNC_REBOOTED',
         'SYNC_OUT_OF_MEMMORY'
     ],
@@ -180,14 +180,14 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {Boolean}
      */
-        AudioPassThruState: false,
+    AudioPassThruState: false,
 
     /**
      * Current device information
      *
      * @type {Object}
      */
-        CurrDeviceInfo: {
+    CurrDeviceInfo: {
         "name": null,
             "id": null
     },
@@ -204,47 +204,47 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {Boolean}
      */
-        sendDataExtend: false,
+    sendDataExtend: false,
 
     /**
      * VR active status
      *
      * @type {Boolean}
      */
-        VRActive: false,
+    VRActive: false,
 
     /**
      * Flag to be set true when phone call is initialised
      *
      * @type {Boolean}
      */
-        phoneCall: false,
+    phoneCall: false,
 
     /**
      * Device list search progress flag
      *
      * @param {Boolean}
      */
-        deviceSearchProgress: false,
+    deviceSearchProgress: false,
 
     /**
      * Flag to be set true when VRHelpList are activated
      *
      * @param {Boolean}
      */
-        VRHelpListActivated: false,
+    VRHelpListActivated: false,
 
     /**
      * Flag to be set true when VRHelpList are activated
      *
      * @type {String}
      */
-        keyboardInputValue: "",
+    keyboardInputValue: "",
 
     /**
      * List of states for OnTBTClientState notification
      */
-        tbtClientStates: [
+    tbtClientStates: [
         {
             name: "ROUTE_UPDATE_REQUEST",
             id: 0
@@ -281,7 +281,7 @@ SDL.SDLModelData = Em.Object.create({
     /**
      * List of states for ExitApplication notification
      */
-        exitAppState: [
+    exitAppState: [
         {
             name: "IGNITION_OFF",
             id  : 0
@@ -303,7 +303,7 @@ SDL.SDLModelData = Em.Object.create({
     /**
      * List of states for OnSystemRequest notification
      */
-        systemRequestState: [
+    systemRequestState: [
         {
             name: "HTTP",
             id  : 0
@@ -391,7 +391,7 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {Object}
      */
-        AudioPassThruData: {},
+    AudioPassThruData: {},
 
     /**
      * Enum with result codes for RPC
@@ -455,7 +455,7 @@ SDL.SDLModelData = Em.Object.create({
                 "fieldText": "mainField6"
             }
         ],
-            "softButtons": [
+        "softButtons": [
             {
                 "text" : "Menu",
                 "isHighlighted" : true,
@@ -506,7 +506,7 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type object
      */
-        registeredComponents: [
+    registeredComponents: [
         {
             type: "UI",
             state: false
@@ -536,7 +536,7 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {Object}
      */
-        defaultListOfIcons: {
+    defaultListOfIcons: {
         // appID: syncFileName
         //0: "images/media/ico_li.png"
         'app': 'images/info/info_leftMenu_apps_ico.png',
@@ -556,21 +556,21 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {Array}
      */
-        devicesList: [],
+    devicesList: [],
 
     /**
      * TTS + VR language
      *
      * @type {String}
      */
-        hmiTTSVRLanguage: 'EN-US',
+    hmiTTSVRLanguage: 'EN-US',
 
     /**
      * UI language
      *
      * @type {String}
      */
-        hmiUILanguage: 'EN-US',
+    hmiUILanguage: 'EN-US',
 
     /**
      * Parameter describes if performInteraction session was started on HMI
@@ -579,7 +579,7 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {Boolean}
      */
-        performInteractionSession: [],
+    performInteractionSession: [],
 
     /**
      * Array with app permissions
@@ -587,14 +587,14 @@ SDL.SDLModelData = Em.Object.create({
      *
      * @type {Object}
      */
-        appPermissions: [],
+    appPermissions: [],
 
     /**
      * List of supported languages
      *
      * @type {Array}
      */
-        sdlLanguagesList: [
+    sdlLanguagesList: [
         'EN-US',
         'ES-MX',
         'FR-CA',
@@ -616,6 +616,11 @@ SDL.SDLModelData = Em.Object.create({
         'PT-BR',
         'CS-CZ',
         'DA-DK',
-        'NO-NO'
+        'NO-NO',
+        'NL-BE',
+        'EL-GR',
+        'HU-HU',
+        'FI-FI',
+        'SK-SK'
     ]
 });

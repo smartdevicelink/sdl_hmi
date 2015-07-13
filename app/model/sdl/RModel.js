@@ -121,7 +121,7 @@ SDL.RModel = SDL.ABSModel.extend({
             this.data.unRegisteredApps.pop(params.appID);
         }
 
-        message = {"cmdID": -2, "vrCommands": ['USER_EXIT'], "appID": params.appID, "type": "Command"};
+        message = {"cmdID": -2, "vrCommands": ['USER_EXIT ' + params.appName], "appID": params.appID, "type": "Command"};
         this.addCommandVR(message);
 
         if (vrSynonyms) {
