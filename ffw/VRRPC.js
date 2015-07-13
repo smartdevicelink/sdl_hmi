@@ -165,7 +165,7 @@ FFW.VR = FFW.RPCObserver.create( {
                         // (enum)
                         // from SDL
                         "method": "VR.GetSupportedLanguages",
-                        "languages": SDL.SDLModel.sdlLanguagesList
+                        "languages": SDL.SDLModel.data.sdlLanguagesList
                     }
                 };
                 this.client.send(JSONMessage);
