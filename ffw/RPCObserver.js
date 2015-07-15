@@ -166,10 +166,10 @@ FFW.RPCObserver = Em.Object
                 if ("vrHelp" in params) {
                     for (var i = 0; i < params.vrHelp.length; i++) {
 
-                        if (params.vrHelp[i].image.imageType === "STATIC") {
+                        if (params.vrHelp[i].image && params.vrHelp[i].image.imageType === "STATIC") {
                             delete params.vrHelp[i].image;
                             return false;
-                        } else {
+                        } else if (params.vrHelp[i].image) {
                             params.vrHelp[i].image.value = params.vrHelp[i].image.value.replace(/\\/g, "%5C");
                         }
                     }
