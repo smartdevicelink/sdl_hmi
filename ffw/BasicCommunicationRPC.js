@@ -802,7 +802,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "jsonrpc": "2.0",
                 "method": "SDL.OnReceivedPolicyUpdate",
                 "params": {
-                    "policyfile": document.location.pathname.replace("index.html", "IVSU/POLICY_UPDATE_TEST")
+                    "policyfile": policyfile//document.location.pathname.replace("index.html", "IVSU/POLICY_UPDATE_TEST")
                 }
             };
 
@@ -1328,7 +1328,7 @@ FFW.BasicCommunication = FFW.RPCObserver
          */
         OnSystemRequest: function(type, fileName, url, appID, policyAppID) {
 
-            Em.Logger.log("FFW.BasicCommunication.OnSystemRequest");
+            Em.Logger.log("FFW.BasicCommunication.OnSystemRequest url: " + url);
 
             // send request
 
@@ -1336,7 +1336,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "jsonrpc": "2.0",
                 "method": "BasicCommunication.OnSystemRequest",
                 "params":{
-                    "requestType": 'PROPRIETARY',
+                    "requestType": type,
                     "fileType": "JSON",
                     "offset": 1000,
                     "length": 10000,
@@ -1346,12 +1346,8 @@ FFW.BasicCommunication = FFW.RPCObserver
             };
 
             if (url) {
-                JSONMessage.params.url = "http://192.168.0.124:3000/policies.json";
+                JSONMessage.params.url = url;//"http://192.168.0.124:3000/policies.json";
             }
-
-            //if (policyAppID) {
-            //    JSONMessage.params.policyAppID = policyAppID;
-            //}
             
             if (appID) {
                 JSONMessage.params.appID = 'default';

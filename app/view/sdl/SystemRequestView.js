@@ -119,10 +119,19 @@ SDL.SystemRequest = Em.ContainerView.create( {
     /**
      * Input for urls value changes
      */
-    urlsInput: Ember.TextField.extend({
+    urlsInput: SDL.Label.extend({
         elementId: "urlsInput",
         classNames: "urlsInput",
-        value: document.location.pathname.replace("index.html", "IVSU/PROPRIETARY_REQUEST")
+        contentBinding: 'this.returnUrls',
+        returnUrls: function(){
+            var str = '';
+            for (var i = 0; i < SDL.SDLModel.data.policyURLs.length; i++) {
+                str += JSON.stringify(SDL.SDLModel.data.policyURLs[i]) + '; ';
+            }
+
+            return str;
+        }.property('SDL.SDLModel.data.policyURLs')
+        //value: document.location.pathname.replace("index.html", "IVSU/PROPRIETARY_REQUEST")
     }),
 
     /**
@@ -221,7 +230,7 @@ SDL.SystemRequest = Em.ContainerView.create( {
             FFW.BasicCommunication.OnSystemRequest(
                 element._parentView.systemRequestViewSelect.selection.name,
                 element._parentView.fileNameInput.value,
-                element._parentView.urlsInput.value,
+                SDL.SDLModel.data.policyURLs[0].url,
                 element._parentView.appIDSelect.selection,
                 element._parentView.policyAppIdInput.value
             );

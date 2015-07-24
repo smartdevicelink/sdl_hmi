@@ -295,7 +295,7 @@ SDL.SettingsController = Em.Object.create( {
      * @param {Object} urls
      */
     GetUrlsHandler: function(urls) {
-
+        Em.Logger.log("GetUrlsHandler urls: "+JSON.stringify(urls));
         var url;
 
         for (i in urls) {
