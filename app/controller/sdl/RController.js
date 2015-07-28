@@ -187,6 +187,7 @@ SDL.RController = SDL.ABSController.extend({
             for (var i = 0; i < apps.length; i++) {
                 if (apps[i].deviceName === device.name) {
                     SDL.SDLController.getApplicationModel(apps[i].appID).level = 'NONE';
+                    SDL.SDLModel.set('driverDeviceInfo', null);
                 }
             }
 

@@ -61,9 +61,11 @@ SDL.InfoAppsView = Em.ContainerView
             var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
 
             for (i = 0; i < apps.length; i++) {
+                if ((apps[i].appType.indexOf("REMOTE_CONTROL") != -1
+                    && SDL.SDLModel.driverDeviceInfo
+                    && apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name)
 
-                if ((apps[i].appType.indexOf("REMOTE_CONTROL") === -1 )
-                    || (SDL.SDLModel.driverDeviceInfo && apps[i].appType.indexOf("REMOTE_CONTROL") != -1 && apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name)) {
+                    || apps[i].appType.indexOf("REMOTE_CONTROL") === -1) {
                     appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
                     this.get('listOfApplications.list.childViews')
@@ -86,7 +88,11 @@ SDL.InfoAppsView = Em.ContainerView
                                 + '.deviceName')
                         }));
                 } else if (apps[i].appType.indexOf("REMOTE_CONTROL") != -1
-                    && SDL.SDLController.getApplicationModel(apps[i].appID).level == 'LIMITED') {
+                    && apps[i].level === 'LIMITED'
+                    && (SDL.SDLModel.driverDeviceInfo
+                        && apps[i].deviceName != SDL.SDLModel.driverDeviceInfo.name
+                        || !SDL.SDLModel.driverDeviceInfo
+                    )) {
                     appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
                     this.get('listOfApplications.list.childViews')
