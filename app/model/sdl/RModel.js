@@ -76,6 +76,14 @@ SDL.RModel = SDL.ABSModel.extend({
     errorResponse: false,
 
     /**
+     * Map for OnDeviceRankChanged notification param 'deviceRank'
+     */
+    deviceRank: {
+        0: "DRIVER",
+        1: "PASSENGER"
+    },
+
+    /**
      * Method to add activation button to VR commands and set device
      * parameters to model
      *

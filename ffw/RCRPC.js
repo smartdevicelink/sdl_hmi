@@ -521,17 +521,18 @@ FFW.RC = FFW.RPCObserver.create( {
      * notifies if User selected to disallow RSDL functionality or if he changed his mind and allowed it.
      * @constructor
      */
-    OnSetDriversDevice: function(device) {
+    OnDeviceRankChanged: function(device, rank) {
 
         if (device) {
-            Em.Logger.log("FFW.RC.OnSetDriversDevice Notification");
+            Em.Logger.log("FFW.RC.OnDeviceRankChanged Notification");
 
             // send repsonse
             var JSONMessage = {
                 "jsonrpc": "2.0",
-                "method": "RC.OnSetDriversDevice",
+                "method": "RC.OnDeviceRankChanged",
                 "params": {
-                    "device": device
+                    "device": device,
+                    "deviceRank": SDL.SDLModel.deviceRank[rank]
                 }
             };
             this.client.send(JSONMessage);

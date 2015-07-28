@@ -173,21 +173,31 @@ SDL.RController = SDL.ABSController.extend({
         SDL.PrimaryDevice.toggleProperty('active');
     },
 
-    driverDeviceWindowAction: function(device) {
+    driverDeviceWindowClose: function(device, rank) {
 
         this.toggleDriverDeviceWindow();
 
-        var apps = SDL.SDLModel.data.registeredApps;
-
-        for (var i = 0; i < apps.length; i++) {
-            if (apps[i].deviceName === device.name) {
-                SDL.SDLController.getApplicationModel(apps[i].appID).level = 'NONE';
-            }
+        if (!device) {
+            return;
         }
 
-        SDL.SDLModel.set('driverDeviceInfo', device);
-        FFW.RC.OnSetDriversDevice(device);
-        SDL.InfoAppsView.showAppList();
+        if (rank === 1 && SDL.SDLModel.driverDeviceInfo) { //Magic number 1 means passenger's device
+            var apps = SDL.SDLModel.data.registeredApps;
+
+            for (var i = 0; i < apps.length; i++) {
+                if (apps[i].deviceName === device.name) {
+                    SDL.SDLController.getApplicationModel(apps[i].appID).level = 'NONE';
+                }
+            }
+
+            SDL.InfoAppsView.showAppList();
+            FFW.RC.OnDeviceRankChanged(device, rank);
+        } else if (rank === 0) {  //Magic number 1 means driver's device
+
+            SDL.SDLModel.set('driverDeviceInfo', device);
+            SDL.InfoAppsView.showAppList();
+            FFW.RC.OnDeviceRankChanged(device, rank);
+        }
     },
 
     /**
@@ -287,10 +297,5 @@ SDL.RController = SDL.ABSController.extend({
                 FFW.RC.sendError(SDL.SDLModel.data.resultCode['TIMED_OUT'],req.id, req.method, "Timed out!")
             }
         }, 10000); //Magic number is timeout for RC consent popUp
-    },
-
-    resetDriversDevice: function(){
-        SDL.SDLModel.set('driverDeviceInfo', null);
-        SDL.InfoAppsView.showAppList();
     }
 });

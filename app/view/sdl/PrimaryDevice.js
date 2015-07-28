@@ -168,9 +168,10 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
      */
     resetDeviceButton: SDL.Button.extend( {
         classNames: 'button resetDeviceButton',
-        text: 'Reset',
-        action: 'resetDriversDevice',
-        target: 'SDL.SDLController',
+        text: "Set as Passenger's",
+        click: function() {
+            SDL.SDLController.driverDeviceWindowClose(this._parentView.deviceSelect.selection, 1); //Magick number 1 is SDL.RModel.deviceRank enum value
+        },
         onDown: false
     }),
 
@@ -179,11 +180,10 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
      */
     primaryButton: SDL.Button.extend( {
         classNames: 'button primaryButton',
-        text: 'Send',
+        text: "Set as Driver's",
         click: function() {
-            SDL.SDLController.driverDeviceWindowAction(this._parentView.deviceSelect.selection)
+            SDL.SDLController.driverDeviceWindowClose(this._parentView.deviceSelect.selection, 0); //Magick number 0 is SDL.RModel.deviceRank enum value
         },
-        enabled: false,
         onDown: false
     }),
 

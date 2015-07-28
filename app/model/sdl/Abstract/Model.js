@@ -592,9 +592,9 @@ SDL.ABSModel = Em.Object.extend({
                 SDL.SDLController.performAudioPassThruResponse(this.data.resultCode["ABORTED"]);
             }
 
-            SDL.SDLController.unregisterApplication(params.appID);
-
             SDL.SDLController.getApplicationModel(params.appID).level = 'NONE';
+
+            SDL.SDLController.unregisterApplication(params.appID);
         }
     },
 
@@ -677,7 +677,7 @@ SDL.ABSModel = Em.Object.extend({
         if (SDL.SDLModel.driverDevice && SDL.SDLModel.driverDeviceInfo === null && params.deviceList.length > 0) {
             SDL.SDLModel.set('driverDeviceInfo', params.deviceList[0]);
 
-            FFW.RC.OnSetDriversDevice(params.deviceList[0]);
+            FFW.RC.OnDeviceRankChanged(params.deviceList[0]);
         }
 
         for (var j in SDL.SDLModel.data.connectedDevices) {

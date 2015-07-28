@@ -645,11 +645,11 @@
 }
 
 #PrimaryDevice .primaryButton{
-    top: 280px;
+    top: 125px;
     width: 160px;
-    left: 270px;
-    height: 48px;
-    line-height: 48px;
+    left: 470px;
+    height: 38px;
+    line-height: 38px;
     text-align: center;
 }
 
