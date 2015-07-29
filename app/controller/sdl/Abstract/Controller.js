@@ -79,8 +79,12 @@ SDL.ABSController = Em.Object.extend( {
                 }
                 case -2: {
                     FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "USER_EXIT");
-                    SDL.RadioModel.consentedApp = null;
-                    SDL.ClimateController.model.consentedApp = null;
+                    if (SDL.RadioModel.consentedApp === SDL.SDLController.model.appID) {
+                        SDL.RadioModel.consentedApp = null;
+                    }
+                    if (SDL.ClimateController.model.consentedApp = SDL.SDLController.model.appID) {
+                        SDL.ClimateController.model.consentedApp = null;
+                    }
                     break;
                 }
                 case -3: {
@@ -160,6 +164,15 @@ SDL.ABSController = Em.Object.extend( {
             SDL.SDLModel.data.toggleProperty('VRActive');
         }
         if (element.commandID === -2) { //Magic number if predefined VR command USER_EXIT
+
+
+            if (SDL.RadioModel.consentedApp === element.appID) {
+                SDL.RadioModel.consentedApp = null;
+            }
+            if (SDL.ClimateController.model.consentedApp = element.appID) {
+                SDL.ClimateController.model.consentedApp = null;
+            }
+
             FFW.BasicCommunication.ExitApplication(element.appID, "USER_EXIT");
             if (SDL.States.currentState.getPath('path') === "media.sdlmedia" || SDL.States.currentState.getPath('path') === "info.nonMedia") {
 
