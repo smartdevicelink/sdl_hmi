@@ -46,6 +46,30 @@ SDL.OptionsView = SDL.SDLAbstractView.create({
     // Menu caption text
     captionBinding: 'SDL.SDLController.model.currentSubMenuLabel',
 
+    activate: function(text) {
+        this._super();
+
+        SDL.SDLController.buttonsSort('top', SDL.SDLController.model.appID);
+        SDL.OptionsView.commands.refreshItems();
+
+        SDL.SDLController.onSystemContextChange();
+    },
+
+    // Extend deactivate window
+    deactivate: function() {
+
+        if (SDL.SDLController.model) {
+
+            if (SDL.SDLController.model.get('currentSubMenuId') >= 0) {
+                SDL.SDLController.onSubMenu('top');
+            }else{
+                this._super();
+            }
+        }
+
+        SDL.SDLController.onSystemContextChange();
+    },
+
     commands: SDL.List.extend({
 
         elementId: 'info_nonMedia_options_list',
@@ -104,29 +128,5 @@ SDL.OptionsView = SDL.SDLAbstractView.create({
             }
 
         }.observes('SDL.SDLController.model.currentSubMenuId', 'SDL.SDLController.model.currentCommandsList.@each')
-    }),
-
-    activate: function(text) {
-        this._super();
-
-        SDL.SDLController.buttonsSort('top', SDL.SDLController.model.appID);
-        SDL.OptionsView.commands.refreshItems();
-
-        SDL.SDLController.onSystemContextChange();
-    },
-
-    // Extend deactivate window
-    deactivate: function() {
-
-        if (SDL.SDLController.model) {
-
-            if (SDL.SDLController.model.get('currentSubMenuId') >= 0) {
-                SDL.SDLController.onSubMenu('top');
-            }else{
-                this._super();
-                SDL.SDLController.onSystemContextChange();
-            }
-        }
-
-    }
+    })
 });

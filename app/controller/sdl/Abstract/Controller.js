@@ -279,7 +279,10 @@ SDL.ABSController = Em.Object.extend( {
         'SDL.ScrollableMessage.active',
         'SDL.InteractionChoicesView.active',
         'SDL.VRHelpListView.active',
-        'SDL.Keyboard.active'),
+        'SDL.Keyboard.active',
+        'SDL.States.media.sdlmedia.active',
+        'SDL.States.info.nonMedia.active'
+    ),
 
     /**
      * Flag consider that previously alert request was received from SDL for app in BACKGROUND HMI level

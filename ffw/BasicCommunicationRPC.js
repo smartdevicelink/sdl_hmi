@@ -510,8 +510,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                 if (request.method == "BasicCommunication.ActivateApp") {
 
                     if (!request.params.level || request.params.level == "FULL") {
-                        if ((SDL.SDLController.model && SDL.SDLController.model.appID != request.params.appID)
-                            || (request.params.level == "NONE" || request.params.level == "BACKGROUND")) {
+                        if (SDL.SDLController.model && SDL.SDLController.model.appID != request.params.appID) {
                             SDL.States.goToStates('info.apps');
                         }
 
@@ -528,10 +527,17 @@ FFW.BasicCommunication = FFW.RPCObserver
                     } else if (request.params.level === 'LIMITED') {
                         SDL.SDLController.getApplicationModel(request.params.appID).level = 'LIMITED';
                         SDL.VRPopUp.updateVR();
+                        SDL.States.goToStates('info.apps');
                         SDL.InfoAppsView.showAppList();
                     } else if (request.params.level === 'NONE') {
                         SDL.SDLController.getApplicationModel(request.params.appID).level = 'NONE';
                         SDL.VRPopUp.updateVR();
+                        SDL.States.goToStates('info.apps');
+                        SDL.InfoAppsView.showAppList();
+                    } else if (request.params.level === 'BACKGROUND') {
+                        SDL.SDLController.getApplicationModel(request.params.appID).level = 'BACKGROUND';
+                        SDL.VRPopUp.updateVR();
+                        SDL.States.goToStates('info.apps');
                         SDL.InfoAppsView.showAppList();
                     }
                     this.sendBCResult(SDL.SDLModel.data.resultCode["SUCCESS"], request.id, request.method);

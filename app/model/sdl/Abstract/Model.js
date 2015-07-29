@@ -1013,7 +1013,7 @@ SDL.ABSModel = Em.Object.extend({
              * Close Options menu if opened
              */
             if (SDL.OptionsView.active) {
-                SDL.OptionsView.set('active', false);
+                SDL.OptionsView.deactivate();
             }
 
             var dest = target.split('.'), reason;
