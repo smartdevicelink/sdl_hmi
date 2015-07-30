@@ -1114,12 +1114,12 @@ SDL.ABSController = Em.Object.extend( {
 
         var sysContextValue = this.get('sysContext');
 
-        if ((appID && SDL.SDLController.getApplicationModel(appID) != SDL.SDLController.model)
-            || this.backgroundAlertAppID){
+        if ((appID
+                && SDL.SDLController.getApplicationModel(appID) != SDL.SDLController.model)
+            || (this.backgroundAlertAppID
+                && SDL.SDLController.getApplicationModel(this.backgroundAlertAppID) != SDL.SDLController.model)){
 
-            if (SDL.SDLController.model == null
-                || (SDL.SDLController.model.appID != appID
-                && this.backgroundAlertAppID == null)) {
+            if (appID) {
 
                 this.backgroundAlertAppID = appID;
                 FFW.UI.OnSystemContext(sysContextValue, appID);
@@ -1127,13 +1127,12 @@ SDL.ABSController = Em.Object.extend( {
                     FFW.UI.OnSystemContext('HMI_OBSCURED', SDL.SDLController.model.appID);
                 }
 
-            } else if (SDL.SDLController.model != null
-                && SDL.SDLController.model.appID != appID
-                && this.backgroundAlertAppID != null
-                && SDL.SDLController.model.appID != this.backgroundAlertAppID) {
+            } else if (this.backgroundAlertAppID) {
 
                 FFW.UI.OnSystemContext('MAIN', this.backgroundAlertAppID);
-                FFW.UI.OnSystemContext(sysContextValue, appID);
+                if (SDL.SDLController.model) {
+                    FFW.UI.OnSystemContext(sysContextValue, SDL.SDLController.model.appID);
+                }
             }
         } else {
             if (SDL.SDLController.model) {
