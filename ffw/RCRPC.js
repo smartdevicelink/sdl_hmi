@@ -532,7 +532,7 @@ FFW.RC = FFW.RPCObserver.create( {
                 "method": "RC.OnDeviceRankChanged",
                 "params": {
                     "device": device,
-                    "deviceRank": SDL.SDLModel.deviceRank[rank]
+                    "deviceRank": rank
                 }
             };
             this.client.send(JSONMessage);

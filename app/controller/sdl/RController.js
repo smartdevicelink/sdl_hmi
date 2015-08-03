@@ -185,19 +185,21 @@ SDL.RController = SDL.ABSController.extend({
             var apps = SDL.SDLModel.data.registeredApps;
 
             for (var i = 0; i < apps.length; i++) {
-                if (apps[i].deviceName === device.name) {
-                    SDL.SDLController.getApplicationModel(apps[i].appID).level = 'NONE';
+                if (apps[i].deviceName === device.name
+                    && device.name === SDL.SDLModel.driverDeviceInfo.name) {
+
+                    apps[i].level = 'NONE';
                     SDL.SDLModel.set('driverDeviceInfo', null);
                 }
             }
 
             SDL.InfoAppsView.showAppList();
-            FFW.RC.OnDeviceRankChanged(device, rank);
+            FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
         } else if (rank === 0) {  //Magic number 1 means driver's device
 
             SDL.SDLModel.set('driverDeviceInfo', device);
             SDL.InfoAppsView.showAppList();
-            FFW.RC.OnDeviceRankChanged(device, rank);
+            FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
         }
     },
 
