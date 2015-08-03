@@ -239,6 +239,11 @@ FFW.Buttons = FFW.RPCObserver.create( {
                             "shortPressAvailable": true,
                             "longPressAvailable": true,
                             "upDownAvailable": true
+                        }, {
+                            "name": "CUSTOM_BUTTON",
+                            "shortPressAvailable": true,
+                            "longPressAvailable": true,
+                            "upDownAvailable": true
                         }
                     ],
                     "presetBankCapabilities": {
