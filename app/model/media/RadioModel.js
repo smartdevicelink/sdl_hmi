@@ -441,6 +441,9 @@ SDL.RadioModel = Em.Object.create( {
         if (data.state) {
             this.set('radioControlStruct.state', data.state);
         }
+
+
+        FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
     },
 
     bandSelect: function(element){
