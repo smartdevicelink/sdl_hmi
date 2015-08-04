@@ -1052,7 +1052,10 @@ SDL.ABSModel = Em.Object.extend({
                 }
             }
 
-            if (SDL.SDLModel.data.stateLimited && reason === 'AUDIO') {
+            if (SDL.SDLModel.data.stateLimited
+                && reason === 'AUDIO'
+                && SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited)
+                    .appType.indexOf("NAVIGATION") < 0) {
 
                 SDL.SDLModel.data.stateLimited = null;
                 SDL.SDLModel.data.set('limitedExist', false);
