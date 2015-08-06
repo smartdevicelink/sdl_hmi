@@ -69,6 +69,11 @@ SDL.RController = SDL.ABSController.extend({
     OnReverseAppsAllowing: function (element) {
         element.toggleProperty('allowed');
 
+        if (!element.allowed) {
+            SDL.RadioModel.consentedApp = null;
+            SDL.ClimateController.model.consentedApp = null;
+        }
+
         FFW.RC.OnReverseAppsAllowing(element.allowed);
     },
 
