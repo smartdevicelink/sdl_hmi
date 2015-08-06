@@ -294,6 +294,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
                     case 'statusBar':
                     {
                         this.set('statusText', params.showStrings[i].fieldText);
+                        SDL.SDLModel.updateStatusBar();
                         break;
                     }
                     case 'mediaClock':

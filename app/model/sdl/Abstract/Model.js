@@ -63,14 +63,16 @@ SDL.ABSModel = Em.Object.extend({
      */
     subscribedData: {},
 
-    applicationStatusBar: function () {
+    applicationStatusBar: '',
+
+    updateStatusBar: function () {
 
         if (this.data.limitedExist && SDL.SDLController.getApplicationModel(this.data.stateLimited)) {
-            return SDL.SDLController.getApplicationModel(this.data.stateLimited).statusText;
+            this.set('applicationStatusBar', SDL.SDLController.getApplicationModel(this.data.stateLimited).statusText);
         } else {
-            return '';
+            this.set('applicationStatusBar', "");
         }
-    }.property("this.data.limitedExist"),
+    }.observes("this.data.limitedExist"),
 
     /**
      * Method to set selected state of settings Info List

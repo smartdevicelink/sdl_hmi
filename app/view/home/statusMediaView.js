@@ -81,7 +81,7 @@ SDL.StatusMediaView = Em.ContainerView
                                 + '<div class="station">'
                                 + '<span {{bindAttr class="SDL.CDModel.active:visible_display"}}>{{SDL.CDModel.statusBar}}</span>'
                                 + // title
-                                '<span {{bindAttr class="SDL.SDLModel.applicationStatusBar:visible_display SDL.SDLModel.data.limitedExist:visible_display"}}>{{SDL.SDLModel.applicationStatusBar}}</span>'
+                                '<span {{bindAttr class="SDL.SDLModel.data.limitedExist:visible_display"}}>{{SDL.SDLModel.applicationStatusBar}}</span>'
                                 + // SDL
                                 '</div>'
                                 + '<div class="icon cdIco"'
