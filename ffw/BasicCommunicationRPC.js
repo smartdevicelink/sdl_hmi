@@ -571,6 +571,10 @@ FFW.BasicCommunication = FFW.RPCObserver
 
                     this.sendBCResult(SDL.SDLModel.data.resultCode["SUCCESS"], request.id, request.method);
                 }
+                if (request.method == "BasicCommunication.DecryptCertificate") {
+
+                    this.sendBCResult(SDL.SDLModel.data.resultCode["SUCCESS"], request.id, request.method);
+                }
             }
         },
 

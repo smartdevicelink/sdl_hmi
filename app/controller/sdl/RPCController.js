@@ -107,6 +107,21 @@ SDL.RPCController = Em.Object
                 resultStruct: {},
 
                 /**
+                 * Validate method for request DecryptCertificate
+                 *
+                 * @param {Object}
+                 *            params
+                 */
+                DecryptCertificate: function(params) {
+
+                    this.resultStruct = {
+                        "resultCode": SDL.SDLModel.data.resultCode["SUCCESS"]
+                    };
+
+                    return this.resultStruct;
+                },
+
+                /**
                  * Validate method for request UpdateAppList
                  *
                  * @param {Object}
