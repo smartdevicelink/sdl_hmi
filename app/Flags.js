@@ -47,11 +47,11 @@ FLAGS = Em.Object.create( {
 
     TOUCH_EVENT_STARTED: false,
 
-    BC: null,
+    BasicCommunication: null,
 
     UI: null,
 
-    VI: null,
+    VehicleInfo: null,
 
     VR: null,
 
@@ -59,7 +59,7 @@ FLAGS = Em.Object.create( {
 
     TTS: null,
 
-    Navi: null,
+    Navigation: null,
 
     CAN: null,
 

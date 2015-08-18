@@ -363,7 +363,7 @@ SDL.ABSController = Em.Object.extend( {
     componentsReadiness: function(component) {
 
         for ( var i = 0; i < SDL.SDLModel.data.registeredComponents.length; i++) {
-            if (!SDL.SDLModel.data.registeredComponents[i].state) {
+            if (FLAGS[SDL.SDLModel.data.registeredComponents[i].type] != SDL.SDLModel.data.registeredComponents[i].state) {
                 return;
             }
         }

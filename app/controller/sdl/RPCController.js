@@ -61,7 +61,7 @@ SDL.RPCController = Em.Object
                 FFW.VR.connect();
             }
 
-            if (FLAGS.BC) {
+            if (FLAGS.BasicCommunication) {
                 FFW.BasicCommunication.connect();
             }
 
@@ -69,11 +69,11 @@ SDL.RPCController = Em.Object
                 FFW.UI.connect();
             }
 
-            if (FLAGS.VI) {
+            if (FLAGS.VehicleInfo) {
                 FFW.VehicleInfo.connect();
             }
 
-            if (FLAGS.Navi) {
+            if (FLAGS.Navigation) {
                 FFW.Navigation.connect();
             }
         },

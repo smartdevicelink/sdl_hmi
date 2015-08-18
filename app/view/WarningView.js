@@ -112,8 +112,8 @@ SDL.warningView = Em.ContainerView
                         FLAGS.set('TTS', true);
                         return;
                     }
-                    if (FLAGS.VI === null) {
-                        FLAGS.set('VI', true);
+                    if (FLAGS.VehicleInfo === null) {
+                        FLAGS.set('VehicleInfo', true);
                         return;
                     }
                     if (FLAGS.RC === null && FLAGS.SimpleFunctionality === 2) {
@@ -122,12 +122,12 @@ SDL.warningView = Em.ContainerView
                     } else if (FLAGS.SimpleFunctionality != 2){
                         FLAGS.set('RC', false);
                     }
-                    if (FLAGS.BC === null) {
-                        FLAGS.set('BC', true);
+                    if (FLAGS.BasicCommunication === null) {
+                        FLAGS.set('BasicCommunication', true);
                         return;
                     }
-                    if (FLAGS.Navi === null) {
-                        FLAGS.set('Navi', true);
+                    if (FLAGS.Navigation === null) {
+                        FLAGS.set('Navigation', true);
                         return;
                     }
                     if (FLAGS.UI === null) {
@@ -172,7 +172,7 @@ SDL.warningView = Em.ContainerView
 
                             classNames: 'basicCommunicationCheckBox item',
 
-                            checkedBinding: 'FLAGS.BC'
+                            checkedBinding: 'FLAGS.BasicCommunication'
 
                         }),
 
@@ -228,7 +228,7 @@ SDL.warningView = Em.ContainerView
 
                             classNames: 'navigationCheckBox item',
 
-                            checkedBinding: 'FLAGS.Navi'
+                            checkedBinding: 'FLAGS.Navigation'
 
                         }),
 
@@ -312,7 +312,7 @@ SDL.warningView = Em.ContainerView
 
                             classNames: 'viCheckBox item',
 
-                            checkedBinding: 'FLAGS.VI'
+                            checkedBinding: 'FLAGS.VehicleInfo'
 
                         }),
 
