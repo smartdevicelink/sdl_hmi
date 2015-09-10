@@ -775,7 +775,7 @@ SDL.ABSController = Em.Object.extend( {
      *            applicationType
      */
     registerApplication: function(params, applicationType) {
-
+        console.log("Register Application: "+JSON.stringify(params));
         if (applicationType === undefined || applicationType === null) {
 
             SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[0].create( { //Magic number 0 - Default media model for not initialized applications

@@ -662,7 +662,7 @@ SDL.ABSModel = Em.Object.extend({
      *            params
      */
     onGetDeviceList: function (params) {
-
+        console.log("On Get Device List : " + JSON.stringify(params));
         var exist = false,
             listObj  = {};
 

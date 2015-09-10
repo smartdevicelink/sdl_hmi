@@ -802,7 +802,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "jsonrpc": "2.0",
                 "method": "SDL.OnReceivedPolicyUpdate",
                 "params": {
-                    "policyfile": policyfile//document.location.pathname.replace("index.html", "IVSU/POLICY_UPDATE_TEST")
+                    "policyfile": document.location.pathname.replace("index.html", "IVSU/POLICY_UPDATE_TEST")
                 }
             };
 
