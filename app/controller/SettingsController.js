@@ -84,12 +84,12 @@ SDL.SettingsController = Em.Object.create( {
                 FFW.BasicCommunication.OnPhoneCall(false);
                 SDL.SDLController.getApplicationModel(appID).turnOnSDL(appID);
                 SDL.SDLModel.data.phoneCallActive = false;
-            }, 5000); //Magic number - 5 seconds timeout for emulating conversation call
+            }, 20000); //Magic number - 5 seconds timeout for emulating conversation call
         } else {
             setTimeout(function () {
                 FFW.BasicCommunication.OnPhoneCall(false);
                 SDL.SDLModel.data.phoneCallActive = false;
-            }, 5000); //Magic number - 5 seconds timeout for emulating conversation call
+            }, 20000); //Magic number - 5 seconds timeout for emulating conversation call
         }
     },
 
