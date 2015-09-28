@@ -84,6 +84,18 @@ SDL.RModel = SDL.ABSModel.extend({
     },
 
     /**
+     * Radio app indetificator
+     * HMI must reject the second passenger's app's request for the radio module
+     */
+    radioConsentedApp: null,
+
+    /**
+     * Climate app indetificator
+     * HMI must reject the second passenger's app's request for the climate module
+     */
+    climateConsentedApp: null,
+
+    /**
      * Method to add activation button to VR commands and set device
      * parameters to model
      *

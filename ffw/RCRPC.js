@@ -318,23 +318,41 @@ FFW.RC = FFW.RPCObserver.create( {
                     break;
                 }
 
-                case "RC.GrantAccess": {
-
-                    SDL.SDLModel.giveControl(request);
-
-                    break;
-                }
-
-                case "RC.CancelAccess": {
-
-                    SDL.SDLModel.cancelControl(request);
-
-                    break;
-                }
+                //case "RC.GrantAccess": {
+                //
+                //    SDL.SDLModel.giveControl(request);
+                //
+                //    break;
+                //}
+                //
+                //case "RC.CancelAccess": {
+                //
+                //    SDL.SDLModel.cancelControl(request);
+                //
+                //    break;
+                //}
 
                 case "RC.SetInteriorVehicleData": {
 
                     Em.Logger.log("FFW." + request.method + "Response");
+
+                    if (request.params.moduleDescription.moduleType === "CLIMATE") {
+
+                        if (SDL.SDLModel.data.climateConsentedApp === null) {
+                            SDL.SDLModel.data.climateConsentedApp = request.params.appID;
+                        } else if (SDL.SDLModel.data.climateConsentedApp != request.params.appID) {
+                            this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, "To many unconsented requests!");
+                            return;
+                        }
+
+                    } else {
+                        if (SDL.SDLModel.data.radioConsentedApp === null) {
+                            SDL.SDLModel.data.radioConsentedApp = request.params.appID;
+                        } else if (SDL.SDLModel.data.radioConsentedApp != request.params.appID) {
+                            this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, "To many unconsented requests!");
+                            return;
+                        }
+                    }
 
                     var zone = this.getInteriorZone(request.params.moduleData.moduleZone);
 
