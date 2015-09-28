@@ -383,7 +383,7 @@ SDL.RadioView = Em.ContainerView
                 onDown: false,
 
                 action: function(){
-                    FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', SDL.RadioModel.get('radioControlData'));
+                    FFW.RC.onInteriorVehicleDataNotification("RADIO", null, SDL.RadioModel.get('radioControlData'));
                 }
             })
 

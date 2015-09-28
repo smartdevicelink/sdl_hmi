@@ -49,7 +49,7 @@ SDL.RController = SDL.ABSController.extend({
                 SDL.SDLModel.set('givenControlFlag', true);
                 //FFW.CAN.OnRadioDetails({"radioStation": SDL.RadioModel.radioDetails.radioStation});
 
-                FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', SDL.RadioModel.get('radioControlData'));
+                FFW.RC.onInteriorVehicleDataNotification("RADIO", null, SDL.RadioModel.get('radioControlData'));
             } else {
                 FFW.RC.sendError(
                     SDL.SDLModel.data.resultCode['REJECTED'],

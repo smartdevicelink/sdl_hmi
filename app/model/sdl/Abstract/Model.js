@@ -63,6 +63,11 @@ SDL.ABSModel = Em.Object.extend({
      */
     subscribedData: {},
 
+    /**
+     * List of maps of AppID and subscribed module for REVSDL app
+     */
+    moduleSubscriptions:[],
+
     applicationStatusBar: '',
 
     updateStatusBar: function () {

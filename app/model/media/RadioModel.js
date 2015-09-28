@@ -79,8 +79,6 @@ SDL.RadioModel = Em.Object.create( {
 
     tuneRadio: false,
 
-    subscribedData: [],
-
     bandStruct: [
         'FM',
         'AM',
@@ -443,7 +441,7 @@ SDL.RadioModel = Em.Object.create( {
         }
 
 
-        FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
+        FFW.RC.onInteriorVehicleDataNotification("RADIO", null, this.get('radioControlData'));
     },
 
     bandSelect: function(element){
@@ -568,7 +566,7 @@ SDL.RadioModel = Em.Object.create( {
         SDL.RadioModel.set('activePreset', element.preset);
         SDL.RadioModel.set('radioControlStruct.frequencyInteger', parseInt(SDL.RadioModel.station.slice(0, -1)));
         SDL.RadioModel.set('radioControlStruct.frequencyFraction', parseInt(SDL.RadioModel.station.slice(-1)));
-        FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
+        FFW.RC.onInteriorVehicleDataNotification("RADIO", null, this.get('radioControlData'));
 
         SDL.SDLModel.resetControl();
     },
@@ -594,7 +592,7 @@ SDL.RadioModel = Em.Object.create( {
 
             this.findStationPresets();
 
-            FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
+            FFW.RC.onInteriorVehicleDataNotification("RADIO", null, this.get('radioControlData'));
 
             SDL.SDLModel.resetControl();
         }
@@ -736,10 +734,10 @@ SDL.RadioModel = Em.Object.create( {
 
             this.updateSongInfo(this.stationsData[data].songInfo);
 
-            FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
+            FFW.RC.onInteriorVehicleDataNotification("RADIO", null, this.get('radioControlData'));
         } else {
 
-            FFW.RC.onInteriorVehicleDataNotification("RADIO", 'subscribed', this.get('radioControlData'));
+            FFW.RC.onInteriorVehicleDataNotification("RADIO", null, this.get('radioControlData'));
         }
     },
 

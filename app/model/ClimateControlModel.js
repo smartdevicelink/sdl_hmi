@@ -4,7 +4,6 @@ SDL.ClimateControlModel = Em.Object.create({
         this.set('currentSet', this.climateSet.driver);
     },
 
-    subscribedData: [],
 	currentFanSpeed: 0,
 	autoModeEnableString: 'OFF',
 	dualModeEnableString: 'OFF',
