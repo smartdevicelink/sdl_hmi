@@ -597,6 +597,14 @@ SDL.ABSModel = Em.Object.extend({
             SDL.SDLController.getApplicationModel(params.appID).level = 'NONE';
 
             SDL.SDLController.unregisterApplication(params.appID);
+
+            if (SDL.SDLModel.data.climateConsentedApp == params.appID) {
+                SDL.SDLModel.data.climateConsentedApp = null;
+            }
+
+            if (SDL.SDLModel.data.radioConsentedApp == params.appID) {
+                SDL.SDLModel.data.radioConsentedApp = null;
+            }
         }
     },
 
