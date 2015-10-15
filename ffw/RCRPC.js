@@ -708,6 +708,14 @@ FFW.RC = FFW.RPCObserver.create( {
             }
         };
 
+        if(SDL.SDLController.getApplicationModel(SDL.ClimateController.model.consentedApp).deviceName === device.name){
+            SDL.ClimateController.model.consentedApp = null;
+        }
+
+        if(SDL.SDLController.getApplicationModel(SDL.RadioModel.consentedApp).deviceName === device.name){
+            SDL.RadioModel.consentedApp = null;
+        }
+
         FFW.RC.client.send(JSONMessage);
     }
 });
