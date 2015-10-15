@@ -49,7 +49,9 @@ SDL.ExitApp = Em.ContainerView.create( {
             'exitAppViewTitle',
             'exitAppViewSelect',
             'onAwakeSDLLabel',
-            'onAwakeSDLButton'
+            'onAwakeSDLButton',
+            'onDeactivateSelect',
+            'onDeactivateLabel'
         ],
 
     /**
@@ -122,6 +124,36 @@ SDL.ExitApp = Em.ContainerView.create( {
         target: 'SDL.SDLController',
         buttonAction: true,
         onDown: false
+    }),
+
+    onDeactivateLabel: SDL.Label.extend( {
+
+        elementId: 'onDeactivateLabel',
+
+        classNames: 'onDeactivateLabel',
+
+        content: 'OnDeactivateLabel notification send'
+    } ),
+
+    /**
+     * HMI element Select with parameters of TBTClientStates
+     */
+    onDeactivateSelect: Em.Select.extend( {
+
+        elementId: 'onDeactivateSelect',
+
+        classNames: 'onDeactivateSelect',
+
+        content: [true, false],
+
+        /**
+         * Selected data sent on model for further processing
+         */
+        click: function() {
+
+            FFW.BasicCommunication.OnDeactivateHMI(this.selection);
+
+        }
     }),
 
     /**

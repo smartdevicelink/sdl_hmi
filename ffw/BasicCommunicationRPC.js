@@ -1356,6 +1356,28 @@ FFW.BasicCommunication = FFW.RPCObserver
             }
 
             this.client.send(JSONMessage);
+        },
+
+        /**
+         * OnDeactivateHMI notification sender
+         * @param value
+         * @constructor
+         */
+        OnDeactivateHMI: function(value) {
+
+            Em.Logger.log("FFW.BasicCommunication.OnDeactivateHMI");
+
+            // send request
+
+            var JSONMessage = {
+                "jsonrpc": "2.0",
+                "method": "BasicCommunication.OnDeactivateHMI",
+                "params":{
+                    "isDeactivated": value
+                }
+            };
+
+            this.client.send(JSONMessage);
         }
 
     });

@@ -631,6 +631,7 @@
 }
 
 #exitAppView .exitAppViewSelect,
+#exitAppView .onDeactivateSelect,
 #systemRequestView .systemRequestViewSelect,
 #tbtClientStateView .tbtClientStateSelect,
 #VehicleInfo .prndlSelect,
@@ -708,20 +709,36 @@
 }
 
 #exitAppView .onAwakeSDLLabel{
-    top: 200px;
-    width: 600px;
-    left: 40px;
-    height: 20px;
-    padding: 10px;
-    background: #535353;
+	top: 200px;
+	width: 280px;
+	left: 40px;
+	height: 20px;
+	padding: 10px;
+	background: #535353;
+}
+
+#exitAppView .onDeactivateSelect {
+	top: 250px;
+	left: 435px;
+}
+
+#exitAppView .onDeactivateLabel{
+	top: 200px;
+	width: 280px;
+	left: 360px;
+	height: 20px;
+	padding: 10px;
+	background: #535353;
 }
 
 #exitAppView .onAwakeSDLButton{
     right: 268px;
     top: 250px;
     width: 150px;
+	left: 100px;
     height: 19px;
     padding: 10px;
+	line-height: 22px;
     border-radius: 4px;
     border: 1px solid white;
 }
