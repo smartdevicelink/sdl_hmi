@@ -708,11 +708,11 @@ FFW.RC = FFW.RPCObserver.create( {
             }
         };
 
-        if(SDL.SDLController.getApplicationModel(SDL.ClimateController.model.consentedApp).deviceName === device.name){
+        if(SDL.ClimateController.model.consentedApp && SDL.SDLController.getApplicationModel(SDL.ClimateController.model.consentedApp).deviceName === device.name){
             SDL.ClimateController.model.consentedApp = null;
         }
 
-        if(SDL.SDLController.getApplicationModel(SDL.RadioModel.consentedApp).deviceName === device.name){
+        if(SDL.RadioModel.consentedApp && SDL.SDLController.getApplicationModel(SDL.RadioModel.consentedApp).deviceName === device.name){
             SDL.RadioModel.consentedApp = null;
         }
 
