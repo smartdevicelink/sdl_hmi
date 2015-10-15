@@ -501,6 +501,19 @@ SDL.SDLModelData = Em.Object.create({
      */
     connectedDevices: {},
 
+    connectedDevicesArray: function() {
+        var temArray = [];
+
+        for (var key in SDL.SDLModel.data.connectedDevices) {
+            if (SDL.SDLModel.data.connectedDevices.hasOwnProperty(key)) {
+
+                temArray.push(SDL.SDLModel.data.connectedDevices[key]);
+            }
+        }
+
+        return temArray;
+    }.property('SDL.SDLModel.data.connectedDevices'),
+
     /**
      * List of registered components
      *

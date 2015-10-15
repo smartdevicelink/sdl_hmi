@@ -142,6 +142,17 @@ var StateManager = Em.StateManager.extend({
             }
         }),
 
+        devicelocation: Em.State.create({
+            /**
+             * Calls function to clear device list on DeviceListView
+             */
+            enter: function () {
+
+                this._super();
+                FFW.BasicCommunication.OnStartDeviceDiscovery();
+            }
+        }),
+
         nonMedia: Em.State.create({
 
             enter: function () {

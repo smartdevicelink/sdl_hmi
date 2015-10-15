@@ -84,6 +84,16 @@ SDL.RModel = SDL.ABSModel.extend({
     },
 
     /**
+     * Interior zones for OnDeviceLocationChanged notification
+     */
+    interiorZone: [
+        'driver',
+        'back_left',
+        'front_passenger',
+        'back_right'
+    ],
+
+    /**
      * Radio app indetificator
      * HMI must reject the second passenger's app's request for the radio module
      */

@@ -129,19 +129,6 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
         contentBinding: 'currentDevice'
     } ),
 
-    updatedList: function() {
-        var temArray = [];
-
-        for (var key in SDL.SDLModel.data.connectedDevices) {
-            if (SDL.SDLModel.data.connectedDevices.hasOwnProperty(key)) {
-
-                temArray.push(SDL.SDLModel.data.connectedDevices[key]);
-            }
-        }
-
-        return temArray;
-    }.property('SDL.SDLModel.data.connectedDevices'),
-
     /**
      * HMI element Select with parameters of transmission state from VehicleInfo
      * Model
@@ -152,7 +139,7 @@ SDL.PrimaryDevice = Em.ContainerView.create( {
 
         classNames: 'deviceSelect',
 
-        contentBinding: 'this.parentView.updatedList',
+        contentBinding: 'SDL.SDLModel.data.connectedDevicesArray',
 
         optionValuePath: 'content.id',
 

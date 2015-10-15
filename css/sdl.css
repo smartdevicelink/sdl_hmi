@@ -83,7 +83,8 @@
 	margin-left: 8px;
 }
 
-#info_apps_deviceList_view .deviceListLabel,.sdl-window .caption-text {
+#info_apps_deviceList_view .deviceListLabel,
+.sdl-window .caption-text {
 	top: 80px;
 	left: 75px;
 	width: 620px;
@@ -633,6 +634,8 @@
 #systemRequestView .systemRequestViewSelect,
 #tbtClientStateView .tbtClientStateSelect,
 #VehicleInfo .prndlSelect,
+#info_apps_deviceLocation_view .devicesSelect,
+#info_apps_deviceLocation_view .locationSelect,
 #systemRequestView .appIDSelect,
 #PrimaryDevice .deviceSelect{
 	top: 125px;
@@ -642,6 +645,24 @@
 	height: 40px;
 	color: white;
 	background: #393939;
+}
+
+#info_apps_deviceLocation_view .devicesSelect{
+	left: 100px;
+	top: 170px;
+	width: 280px;
+}
+
+#info_apps_deviceLocation_view .locationSelect{
+	left: 400px;
+	top: 170px;
+}
+
+#info_apps_deviceLocation_view .sendLocationButton {
+	top: 171px;
+	left: 600px;
+	width: 100px;
+	text-align: center;
 }
 
 #PrimaryDevice .primaryButton{

@@ -53,7 +53,8 @@ SDL.InfoView = Em.ContainerView.create( {
             SDL.InfoCalendarView,
             SDL.InfoAppsView,
             SDL.InfoNonMedia,
-            SDL.DeviceListView
+            SDL.DeviceListView,
+            SDL.DeviceLocationView
         ],
 
     /** Left menu */

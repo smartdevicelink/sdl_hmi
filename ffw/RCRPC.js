@@ -695,5 +695,19 @@ FFW.RC = FFW.RPCObserver.create( {
                 })
             }
         });
+    },
+
+    OnDeviceLocationChanged: function(device, deviceLocation) {
+        // send repsonse
+        var JSONMessage = {
+            "jsonrpc": "2.0",
+            "method": "RC.OnDeviceLocationChanged",
+            "params": {
+                "device": device,
+                "deviceLocation": this.unMapInteriorZone(deviceLocation)
+            }
+        };
+
+        FFW.RC.client.send(JSONMessage);
     }
 });

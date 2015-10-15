@@ -43,7 +43,7 @@ SDL.InfoAppsView = Em.ContainerView
         childViews: [
             'vehicleHealthReport',
             'Asist911',
-            'installButton',
+            'DeviceLocationButton',
             'findNewApps',
             'getDeviceList',
             'listOfApplications'
@@ -119,16 +119,15 @@ SDL.InfoAppsView = Em.ContainerView
 
         },
 
-        vehicleHealthReport: SDL.Button
-            .extend( {
-                goToState: 'vehicle.healthReport',
-                classNames: 'button vehicleHealthReport leftButtons',
-                icon: 'images/info/ico_vehicle.png',
-                textBinding: 'SDL.locale.label.view_info_apps_vehicle_VehicleHealthReport',
-                elementId: 'infoAppsVehicleHealthReport',
-                arrow: true,
-                onDown: false
-            }),
+        vehicleHealthReport: SDL.Button.extend( {
+            goToState: 'vehicle.healthReport',
+            classNames: 'button vehicleHealthReport leftButtons',
+            icon: 'images/info/ico_vehicle.png',
+            textBinding: 'SDL.locale.label.view_info_apps_vehicle_VehicleHealthReport',
+            elementId: 'infoAppsVehicleHealthReport',
+            arrow: true,
+            onDown: false
+        }),
 
         Asist911: SDL.Button.extend( {
             goToState: 'help.helpAssist',
@@ -140,41 +139,40 @@ SDL.InfoAppsView = Em.ContainerView
             onDown: false
         }),
 
-        installButton: SDL.Button
-            .extend( {
-                goToState: 'settings.system.installApplications',
-                icon: 'images/info/ico_info_install.png',
-                textBinding: 'SDL.locale.label.view_info_apps_vehicle_InstallApplicationsUp',
-                elementId: 'infoAppsInstallButton',
-                classNames: 'button installButton leftButtons',
-                arrow: true,
-                onDown: false
-            }),
+        DeviceLocationButton: SDL.Button.extend( {
+            goToState: 'settings.system.installApplications',
+            icon: 'images/info/location.png',
+            textBinding: 'SDL.locale.label.view_info_apps_vehicle_DeviceLocation',
+            elementId: 'infoAppsLocationButton',
+            classNames: 'button deviceLocation leftButtons',
+            arrow: true,
+            action: 'onGetDeviceLocation',
+            target: 'SDL.SDLController',
+            onDown: false
+        }),
 
-        findNewApps: SDL.Button
-            .extend( {
-                goToState: 'settings.system.installApplications',
-                icon: 'images/sdl/new_apps.png',
-                textBinding: 'SDL.locale.label.view_info_apps_vehicle_FindNewApplications',
-                elementId: 'infoAppsFindNewApps',
-                classNames: 'button findNewApps leftButtons',
-                arrow: true,
-                action: 'findNewApps',
-                target: 'SDL.SDLController',
-                onDown: false
-            }),
+        findNewApps: SDL.Button.extend( {
+            goToState: 'settings.system.installApplications',
+            icon: 'images/sdl/new_apps.png',
+            textBinding: 'SDL.locale.label.view_info_apps_vehicle_FindNewApplications',
+            elementId: 'infoAppsFindNewApps',
+            classNames: 'button findNewApps leftButtons',
+            arrow: true,
+            action: 'findNewApps',
+            target: 'SDL.SDLController',
+            onDown: false
+        }),
 
-        getDeviceList: SDL.Button
-            .extend( {
-                icon: 'images/sdl/devices.png',
-                textBinding: 'SDL.locale.label.view_info_apps_vehicle_GetDeviceList',
-                elementId: 'infoAppsGetDeviceList',
-                classNames: 'button getDeviceList leftButtons',
-                arrow: true,
-                action: 'onGetDeviceList',
-                target: 'SDL.SDLController',
-                onDown: false
-            }),
+        getDeviceList: SDL.Button.extend( {
+            icon: 'images/sdl/devices.png',
+            textBinding: 'SDL.locale.label.view_info_apps_vehicle_GetDeviceList',
+            elementId: 'infoAppsGetDeviceList',
+            classNames: 'button getDeviceList leftButtons',
+            arrow: true,
+            action: 'onGetDeviceList',
+            target: 'SDL.SDLController',
+            onDown: false
+        }),
 
         listOfApplications: SDL.List.extend( {
 
