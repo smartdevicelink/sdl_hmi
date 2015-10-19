@@ -77,7 +77,7 @@ SDL.SliderView = SDL.SDLAbstractView.create( {
         this.timer = null;
 
         if (timeout === true) {
-                FFW.UI.sendSliderResult(SDL.SDLModel.data.resultCode["TIMED_OUT"], this.get('sliderRequestId'));
+                FFW.UI.sendSliderResult(SDL.SDLModel.data.resultCode["TIMED_OUT"], this.get('sliderRequestId'), this.get('adjustControl.sliderValue.value'));
         } else if (timeout === false) {
             FFW.UI.sendSliderResult(SDL.SDLModel.data.resultCode["SUCCESS"], this.get('sliderRequestId'), this.get('adjustControl.sliderValue.value'));
         } else {
