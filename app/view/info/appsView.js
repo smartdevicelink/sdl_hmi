@@ -61,11 +61,7 @@ SDL.InfoAppsView = Em.ContainerView
             var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
 
             for (i = 0; i < apps.length; i++) {
-                if ((apps[i].appType.indexOf("REMOTE_CONTROL") != -1
-                    && SDL.SDLModel.driverDeviceInfo
-                    && apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name)
-
-                    || apps[i].appType.indexOf("REMOTE_CONTROL") === -1) {
+                if (apps[i].appType.indexOf("REMOTE_CONTROL") === -1) {
                     appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
                     this.get('listOfApplications.list.childViews')
@@ -87,19 +83,20 @@ SDL.InfoAppsView = Em.ContainerView
                                 + '.appIcon', 'SDL.SDLModel.data.registeredApps.' + appIndex
                                 + '.deviceName')
                         }));
-                } else if (apps[i].appType.indexOf("REMOTE_CONTROL") != -1
-                    && apps[i].level === 'LIMITED'
-                    && (SDL.SDLModel.driverDeviceInfo
-                        && apps[i].deviceName != SDL.SDLModel.driverDeviceInfo.name
-                        || !SDL.SDLModel.driverDeviceInfo
-                    )) {
+                } else if (apps[i].appType.indexOf("REMOTE_CONTROL") != -1) {
+
+                   var driverDevice = (SDL.SDLModel.driverDeviceInfo
+                   && apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
+
+                    var ovnerMarker = driverDevice ? '"D" ' : '"P" ';
+
                     appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
                     this.get('listOfApplications.list.childViews')
                         .pushObject(SDL.Button.create({
-                            action: 'onActivateSDLApp',
+                            action: driverDevice ? 'onActivateSDLApp' : 'onDeactivatePassengerApp',
                             target: 'SDL.SDLController',
-                            text: apps[i].appName + " - " + apps[i].deviceName,
+                            text: ovnerMarker + apps[i].appName + " - " + apps[i].deviceName,
                             appName: apps[i].appName,
                             appID: apps[i].appID,
                             classNames: 'list-item button',

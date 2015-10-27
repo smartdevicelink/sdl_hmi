@@ -259,6 +259,11 @@ SDL.RController = SDL.ABSController.extend({
         }
     },
 
+    /**
+     * PopUp appears on screen when SDL need response from user
+     * to allow or disallow app get access to manage radio or climate module
+     * @param request
+     */
     interiorDataConsent: function(request){
 
         var appName = SDL.SDLController.getApplicationModel(request.params.appID).appName;
@@ -305,5 +310,18 @@ SDL.RController = SDL.ABSController.extend({
                 FFW.RC.sendError(SDL.SDLModel.data.resultCode['TIMED_OUT'],req.id, req.method, "Timed out!")
             }
         }, 10000); //Magic number is timeout for RC consent popUp
+    },
+
+    /**
+     *
+     */
+    onDeactivatePassengerApp: function(button){
+        SDL.PopUp.create().appendTo('body').popupActivate("Exit application?",
+            function(){
+                if (result) {
+                    SDL.SDLController.userExitAction(button.appID);
+                }
+            }
+        )
     }
 });

@@ -165,23 +165,28 @@ SDL.ABSController = Em.Object.extend( {
         }
         if (element.commandID === -2) { //Magic number if predefined VR command USER_EXIT
 
+        this.userExitAction(element.appID);
 
-            if (SDL.RadioModel.consentedApp === element.appID) {
-                SDL.RadioModel.consentedApp = null;
-            }
-            if (SDL.ClimateController.model.consentedApp = element.appID) {
-                SDL.ClimateController.model.consentedApp = null;
-            }
-
-            FFW.BasicCommunication.ExitApplication(element.appID, "USER_EXIT");
-            if (SDL.States.currentState.getPath('path') === "media.sdlmedia" || SDL.States.currentState.getPath('path') === "info.nonMedia") {
-
-                SDL.States.goToStates('info.apps');
-            }
         } else {
             FFW.VR.onCommand(element.commandID, element.appID, element.grammarID);
         }
 
+    },
+
+    userExitAction: function(appID){
+        if (SDL.RadioModel.consentedApp === appID) {
+            SDL.RadioModel.consentedApp = null;
+        }
+        if (SDL.ClimateController.model.consentedApp = appID) {
+            SDL.ClimateController.model.consentedApp = null;
+        }
+
+        FFW.BasicCommunication.ExitApplication(appID, "USER_EXIT");
+        if (SDL.States.currentState.getPath('path') === "media.sdlmedia"
+            || SDL.States.currentState.getPath('path') === "info.nonMedia") {
+
+            SDL.States.goToStates('info.apps');
+        }
     },
 
     /**
