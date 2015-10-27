@@ -144,6 +144,24 @@ FFW.Buttons = FFW.RPCObserver.create( {
 
             Em.Logger.log("FFW." + request.method + "Response");
 
+            if (request.params.moduleData.moduleType === "CLIMATE") {
+
+                if (SDL.SDLModel.data.climateConsentedApp == null) {
+                    SDL.SDLModel.data.climateConsentedApp = request.params.appID;
+                } else if (SDL.SDLModel.data.climateConsentedApp != request.params.appID) {
+                    this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, "To many unconsented requests!");
+                    return;
+                }
+
+            } else {
+                if (SDL.SDLModel.data.radioConsentedApp == null) {
+                    SDL.SDLModel.data.radioConsentedApp = request.params.appID;
+                } else if (SDL.SDLModel.data.radioConsentedApp != request.params.appID) {
+                    this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, "To many unconsented requests!");
+                    return;
+                }
+            }
+
             // send repsonse
             var JSONMessage = {
                 "jsonrpc": "2.0",
