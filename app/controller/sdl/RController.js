@@ -317,7 +317,7 @@ SDL.RController = SDL.ABSController.extend({
      */
     onDeactivatePassengerApp: function(button){
         SDL.PopUp.create().appendTo('body').popupActivate("Exit application?",
-            function(){
+            function(result){
                 if (result) {
                     SDL.SDLController.userExitAction(button.appID);
                 }

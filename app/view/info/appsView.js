@@ -102,7 +102,7 @@ SDL.InfoAppsView = Em.ContainerView
                             classNames: 'list-item button',
                             iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex
                             + '.appIcon',
-                            disabled: true,
+                            disabled: false,
                             indexApp: appIndex,
                             fullAppName: function () {
                                 return SDL.SDLModel.data.registeredApps[this.appIndex].appIcon

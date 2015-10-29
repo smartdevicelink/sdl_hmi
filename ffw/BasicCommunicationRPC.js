@@ -596,7 +596,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "popUp": SDL.PopUp.create().appendTo('body').popupActivate("Activation in progress...", null, true)
             };
 
-            Em.Logger.log("FFW.SDL.OnAppActivated: Request from HMI!");
+            Em.Logger.log("SDL.ActivateApp: Request from HMI!");
 
             // send notification
             var JSONMessage = {
