@@ -205,6 +205,15 @@ SDL.RController = SDL.ABSController.extend({
             SDL.SDLModel.set('driverDeviceInfo', device);
             SDL.InfoAppsView.showAppList();
             FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
+
+            if (SDL.SDLController.getApplicationModel(SDL.RadioModel.consentedApp).deviceName === SDL.SDLModel.driverDeviceInfo.name) {
+
+                SDL.RadioModel.consentedApp = null;
+            }
+            if (SDL.SDLController.getApplicationModel(SDL.ClimateController.model.consentedApp).deviceName === SDL.SDLModel.driverDeviceInfo.name) {
+
+                SDL.ClimateController.model.consentedApp = null;
+            }
         }
     },
 
