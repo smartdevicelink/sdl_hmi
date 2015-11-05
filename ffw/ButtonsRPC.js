@@ -144,7 +144,15 @@ FFW.Buttons = FFW.RPCObserver.create( {
 
             Em.Logger.log("FFW." + request.method + "Response");
 
-            if (request.params.moduleData.moduleType === "CLIMATE") {
+            var deviceName = SDL.SDLController.getApplicationModel(request.params.appID).deviceName;
+
+            if (SDL.SDLModel.driverDeviceInfo
+                && deviceName == SDL.SDLModel.driverDeviceInfo.name) {
+                this.sendButtonsResult(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method);
+                return;
+            }
+
+            if (request.params.moduleType === "CLIMATE") {
 
                 if (SDL.SDLModel.data.climateConsentedApp == null) {
                     SDL.SDLModel.data.climateConsentedApp = request.params.appID;
@@ -162,16 +170,7 @@ FFW.Buttons = FFW.RPCObserver.create( {
                 }
             }
 
-            // send repsonse
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "id": request.id,
-                "result": {
-                    "code": SDL.SDLModel.data.resultCode["SUCCESS"],
-                    "method": request.method
-                }
-            };
-            this.client.send(JSONMessage);
+            this.sendButtonsResult(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method);
         }
 
         if (request.method == "Buttons.GetCapabilities") {
@@ -269,6 +268,36 @@ FFW.Buttons = FFW.RPCObserver.create( {
                     },
                     "code": 0,
                     "method": "Buttons.GetCapabilities"
+                }
+            };
+            this.client.send(JSONMessage);
+        }
+    },
+
+
+    /**
+     * Send response from onRPCRequest
+     *
+     * @param {Number}
+     *            resultCode
+     * @param {Number}
+     *            id
+     * @param {String}
+     *            method
+     */
+    sendButtonsResult: function(resultCode, id, method) {
+
+        Em.Logger.log("FFW." + method + "Response");
+
+        if (resultCode === SDL.SDLModel.data.resultCode["SUCCESS"]) {
+
+            // send repsonse
+            var JSONMessage = {
+                "jsonrpc": "2.0",
+                "id": id,
+                "result": {
+                    "code": resultCode,
+                    "method": method
                 }
             };
             this.client.send(JSONMessage);
