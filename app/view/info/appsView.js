@@ -83,7 +83,9 @@ SDL.InfoAppsView = Em.ContainerView
                                 + '.appIcon', 'SDL.SDLModel.data.registeredApps.' + appIndex
                                 + '.deviceName')
                         }));
-                } else if (apps[i].appType.indexOf("REMOTE_CONTROL") != -1) {
+                } else if (apps[i].appType.indexOf("REMOTE_CONTROL") != -1
+                            && apps[i].level != "NONE"
+                            && apps[i].level != "BACKGROUND") {
 
                    var driverDevice = (SDL.SDLModel.driverDeviceInfo
                    && apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
