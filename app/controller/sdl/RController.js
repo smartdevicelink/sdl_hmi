@@ -72,6 +72,8 @@ SDL.RController = SDL.ABSController.extend({
         if (!element.allowed) {
             SDL.RadioModel.consentedApp = null;
             SDL.ClimateController.model.consentedApp = null;
+            SDL.SDLModel.data.radioFirstConsentedApp = null;
+            SDL.SDLModel.data.climateFirstConsentedApp = null;
         }
 
         FFW.RC.OnReverseAppsAllowing(element.allowed);

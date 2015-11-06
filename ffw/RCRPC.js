@@ -726,10 +726,10 @@ FFW.RC = FFW.RPCObserver.create( {
         if (request.params.moduleDescription) {
             if (request.params.moduleDescription.moduleType === "CLIMATE") {
 
-                if (SDL.SDLModel.data.climateConsentedApp == null) {
-                    SDL.SDLModel.data.climateConsentedApp = request.params.appID;
+                if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
+                    SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
                     return true;
-                } else if (SDL.SDLModel.data.climateConsentedApp != request.params.appID) {
+                } else if (SDL.SDLModel.data.climateFirstConsentedApp != request.params.appID) {
                     this.sendError(SDL.SDLModel.data.resultCode['REJECTED'],
                         request.id,
                         request.method,
@@ -739,10 +739,10 @@ FFW.RC = FFW.RPCObserver.create( {
                 }
 
             } else {
-                if (SDL.SDLModel.data.radioConsentedApp == null) {
-                    SDL.SDLModel.data.radioConsentedApp = request.params.appID;
+                if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
+                    SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
                     return true;
-                } else if (SDL.SDLModel.data.radioConsentedApp != request.params.appID) {
+                } else if (SDL.SDLModel.data.radioFirstConsentedApp != request.params.appID) {
                     this.sendError(SDL.SDLModel.data.resultCode['REJECTED'],
                         request.id,
                         request.method,
@@ -754,10 +754,10 @@ FFW.RC = FFW.RPCObserver.create( {
         } else {
             if (request.params.moduleData.moduleType === "CLIMATE") {
 
-                if (SDL.SDLModel.data.climateConsentedApp == null) {
-                    SDL.SDLModel.data.climateConsentedApp = request.params.appID;
+                if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
+                    SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
                     return true;
-                } else if (SDL.SDLModel.data.climateConsentedApp != request.params.appID) {
+                } else if (SDL.SDLModel.data.climateFirstConsentedApp != request.params.appID) {
                     this.sendError(SDL.SDLModel.data.resultCode['REJECTED'],
                         request.id,
                         request.method,
@@ -767,10 +767,10 @@ FFW.RC = FFW.RPCObserver.create( {
                 }
 
             } else {
-                if (SDL.SDLModel.data.radioConsentedApp == null) {
-                    SDL.SDLModel.data.radioConsentedApp = request.params.appID;
+                if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
+                    SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
                     return true;
-                } else if (SDL.SDLModel.data.radioConsentedApp != request.params.appID) {
+                } else if (SDL.SDLModel.data.radioFirstConsentedApp != request.params.appID) {
                     this.sendError(SDL.SDLModel.data.resultCode['REJECTED'],
                         request.id,
                         request.method,
@@ -780,5 +780,6 @@ FFW.RC = FFW.RPCObserver.create( {
                 }
             }
         }
+        return true;
     }
 });

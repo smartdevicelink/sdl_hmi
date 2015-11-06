@@ -180,6 +180,13 @@ SDL.ABSController = Em.Object.extend( {
         if (SDL.ClimateController.model.consentedApp = appID) {
             SDL.ClimateController.model.consentedApp = null;
         }
+        if (SDL.SDLModel.data.radioFirstConsentedApp === appID) {
+            SDL.SDLModel.data.radioFirstConsentedApp = null;
+        }
+        if (SDL.SDLModel.data.climateFirstConsentedApp = appID) {
+            SDL.SDLModel.data.climateFirstConsentedApp = null;
+        }
+
 
         FFW.BasicCommunication.ExitApplication(appID, "USER_EXIT");
         if (SDL.States.currentState.getPath('path') === "media.sdlmedia"

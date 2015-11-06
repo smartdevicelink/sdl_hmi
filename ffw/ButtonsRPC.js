@@ -154,23 +154,23 @@ FFW.Buttons = FFW.RPCObserver.create( {
 
             if (request.params.moduleType === "CLIMATE") {
 
-                if (SDL.SDLModel.data.climateConsentedApp == null) {
-                    SDL.SDLModel.data.climateConsentedApp = request.params.appID;
-                } else if (SDL.SDLModel.data.climateConsentedApp != request.params.appID) {
+                if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
+                    SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
+                } else if (SDL.SDLModel.data.climateFirstConsentedApp != request.params.appID) {
                     this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, "To many unconsented requests!");
                     return;
                 }
 
             } else {
-                if (SDL.SDLModel.data.radioConsentedApp == null) {
-                    SDL.SDLModel.data.radioConsentedApp = request.params.appID;
-                } else if (SDL.SDLModel.data.radioConsentedApp != request.params.appID) {
+                if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
+                    SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
+                } else if (SDL.SDLModel.data.radioFirstConsentedApp != request.params.appID) {
                     this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, "To many unconsented requests!");
                     return;
                 }
             }
 
-            this.sendButtonsResult(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method);
+            this.sendButtonsResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
         }
 
         if (request.method == "Buttons.GetCapabilities") {
