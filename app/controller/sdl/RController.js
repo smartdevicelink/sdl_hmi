@@ -107,7 +107,7 @@ SDL.RController = SDL.ABSController.extend({
                 deviceName: params.deviceName,
                 appType: params.appType,
                 isMedia: 0,
-                disabledToActivate: params.disabled ? true : false
+                disabledToActivate: params.greyOut ? true : false
             }));
         } else if (applicationType === 2) {//Magic number 2 - Default RC application with non-media model
 
@@ -118,7 +118,7 @@ SDL.RController = SDL.ABSController.extend({
                 appType: params.appType,
                 isMedia: false,
                 initialized: true,
-                disabledToActivate: params.disabled ? true : false
+                disabledToActivate: params.greyOut ? true : false
             }));
         } else {
 
@@ -129,7 +129,7 @@ SDL.RController = SDL.ABSController.extend({
                 appType: params.appType,
                 isMedia: applicationType == 0 ? true : false,
                 initialized: true,
-                disabledToActivate: params.disabled ? true : false
+                disabledToActivate: params.greyOut ? true : false
             }));
         }
 

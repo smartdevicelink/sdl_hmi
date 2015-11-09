@@ -800,7 +800,7 @@ SDL.ABSController = Em.Object.extend( {
                 deviceName: params.deviceName,
                 appType: params.appType,
                 isMedia: 0,
-                disabledToActivate: params.disabled ? true : false
+                disabledToActivate: params.greyOut ? true : false
             }));
         } else {
 
@@ -811,7 +811,7 @@ SDL.ABSController = Em.Object.extend( {
                 appType: params.appType,
                 isMedia: applicationType == 0 ? true : false,
                 initialized: true,
-                disabledToActivate: params.disabled ? true : false
+                disabledToActivate: params.greyOut ? true : false
             }));
         }
 

@@ -123,7 +123,7 @@ SDL.RModel = SDL.ABSModel.extend({
             if (app.isMedia != params.isMediaApplication) { // If current not initialized model doe not matches the registered application type
                 this.convertModel(params);                   // then model should be changed
             } else {
-                app.disabledToActivate = params.disabled;
+                app.disabledToActivate = params.greyOut;
             }
             return;
         } else if (app != undefined && app.initialized == true) {
