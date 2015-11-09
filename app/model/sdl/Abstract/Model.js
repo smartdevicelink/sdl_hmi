@@ -825,8 +825,10 @@ SDL.ABSModel = Em.Object.extend({
 
             setTimeout(function(){
                 if (SDL.SDLModel.data.VRActive) {
-                    if (SDL.SDLController.model && SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
+                    if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
                         SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode['TIMED_OUT']);
+                    } else {
+                        console.error("SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction is empty!");
                     }
 
                     SDL.SDLModel.data.set('VRActive', false);
@@ -896,8 +898,8 @@ SDL.ABSModel = Em.Object.extend({
     /**
      * Prompt activation
      *
-     * @param {Object}
-     * @param {Number}
+     * @param {Object} ttsChunks
+     * @param {Number} appID
      */
     onPrompt: function (ttsChunks, appID) {
 
