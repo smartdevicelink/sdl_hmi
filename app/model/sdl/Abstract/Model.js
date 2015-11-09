@@ -578,9 +578,6 @@ SDL.ABSModel = Em.Object.extend({
 
         if (SDL.SDLController.getApplicationModel(params.appID)) {
 
-            //SDL.ClimateController.model.consentedApp = null;
-            //SDL.RadioModel.consentedApp = null;
-
             if (params.unexpectedDisconnect) {
                 SDL.PopUp.create().appendTo('body').popupActivate("The connection with the " + SDL.SDLController.getApplicationModel(params.appID).appName + " was unexpectedly lost.");
                 this.data.unRegisteredApps.push(params.appID);
@@ -598,13 +595,7 @@ SDL.ABSModel = Em.Object.extend({
 
             SDL.SDLController.unregisterApplication(params.appID);
 
-            if (SDL.SDLModel.data.climateFirstConsentedApp == params.appID) {
-                SDL.SDLModel.data.climateFirstConsentedApp = null;
-            }
-
-            if (SDL.SDLModel.data.radioFirstConsentedApp == params.appID) {
-                SDL.SDLModel.data.radioFirstConsentedApp = null;
-            }
+            SDL.SDLController.removeConsentForApp(params.appID);
         }
     },
 

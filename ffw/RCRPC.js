@@ -698,13 +698,7 @@ FFW.RC = FFW.RPCObserver.create( {
             }
         };
 
-        if(SDL.ClimateController.model.consentedApp && SDL.SDLController.getApplicationModel(SDL.ClimateController.model.consentedApp).deviceName === device.name){
-            SDL.ClimateController.model.consentedApp = null;
-        }
-
-        if(SDL.RadioModel.consentedApp && SDL.SDLController.getApplicationModel(SDL.RadioModel.consentedApp).deviceName === device.name){
-            SDL.RadioModel.consentedApp = null;
-        }
+        SDL.SDLController.removeConsentForDevice(device.name);
 
         FFW.RC.client.send(JSONMessage);
     },

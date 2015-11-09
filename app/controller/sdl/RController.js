@@ -208,16 +208,7 @@ SDL.RController = SDL.ABSController.extend({
             SDL.InfoAppsView.showAppList();
             FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
 
-            if (SDL.RadioModel.consentedApp
-                && SDL.SDLController.getApplicationModel(SDL.RadioModel.consentedApp).deviceName === SDL.SDLModel.driverDeviceInfo.name) {
-
-                SDL.RadioModel.consentedApp = null;
-            }
-            if (SDL.ClimateController.model.consentedApp
-                && SDL.SDLController.getApplicationModel(SDL.ClimateController.model.consentedApp).deviceName === SDL.SDLModel.driverDeviceInfo.name) {
-
-                SDL.ClimateController.model.consentedApp = null;
-            }
+            SDL.SDLController.removeConsentForDevice(SDL.SDLModel.driverDeviceInfo.name);
         }
     },
 
@@ -238,8 +229,7 @@ SDL.RController = SDL.ABSController.extend({
                 }
                 case -2: {
                     FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "USER_EXIT");
-                    SDL.RadioModel.consentedApp = null;
-                    SDL.ClimateController.model.consentedApp = null;
+                    SDL.SDLController.removeConsentForApp(SDL.SDLController.model.appID);
 
                     SDL.SDLModel.set('givenControlFlag', false);
                     break;
@@ -336,5 +326,47 @@ SDL.RController = SDL.ABSController.extend({
                 }
             }
         )
+    },
+
+    removeConsentForApp: function(appID){
+
+        if (SDL.RadioModel.consentedApp === appID) {
+            SDL.RadioModel.consentedApp = null;
+        }
+        if (SDL.ClimateController.model.consentedApp === appID) {
+            SDL.ClimateController.model.consentedApp = null;
+        }
+
+        if (SDL.SDLModel.data.radioFirstConsentedApp === appID) {
+            SDL.SDLModel.data.radioFirstConsentedApp = null;
+        }
+        if (SDL.SDLModel.data.climateFirstConsentedApp === appID) {
+            SDL.SDLModel.data.climateFirstConsentedApp = null;
+        }
+    },
+
+    removeConsentForDevice: function(deviceName){
+
+        if (SDL.RadioModel.consentedApp
+            && SDL.SDLController.getApplicationModel(SDL.RadioModel.consentedApp).deviceName === deviceName) {
+
+            SDL.RadioModel.consentedApp = null;
+        }
+        if (SDL.ClimateController.model.consentedApp
+            && SDL.SDLController.getApplicationModel(SDL.ClimateController.model.consentedApp).deviceName === deviceName) {
+
+            SDL.ClimateController.model.consentedApp = null;
+        }
+
+        if (SDL.SDLModel.data.radioFirstConsentedApp
+            && SDL.SDLController.getApplicationModel(SDL.SDLModel.data.radioFirstConsentedApp).deviceName === deviceName) {
+
+            SDL.SDLModel.data.radioFirstConsentedApp = null;
+        }
+        if (SDL.SDLModel.data.climateFirstConsentedApp
+            && SDL.SDLController.getApplicationModel(SDL.SDLModel.data.climateFirstConsentedApp).deviceName === deviceName) {
+
+            SDL.SDLModel.data.climateFirstConsentedApp = null;
+        }
     }
 });

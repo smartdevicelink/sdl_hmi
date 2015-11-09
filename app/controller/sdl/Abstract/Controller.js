@@ -79,12 +79,9 @@ SDL.ABSController = Em.Object.extend( {
                 }
                 case -2: {
                     FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "USER_EXIT");
-                    if (SDL.RadioModel.consentedApp === SDL.SDLController.model.appID) {
-                        SDL.RadioModel.consentedApp = null;
-                    }
-                    if (SDL.ClimateController.model.consentedApp = SDL.SDLController.model.appID) {
-                        SDL.ClimateController.model.consentedApp = null;
-                    }
+
+                    SDL.SDLController.removeConsentForApp(SDL.SDLController.model.appID);
+
                     break;
                 }
                 case -3: {
@@ -174,19 +171,8 @@ SDL.ABSController = Em.Object.extend( {
     },
 
     userExitAction: function(appID){
-        if (SDL.RadioModel.consentedApp === appID) {
-            SDL.RadioModel.consentedApp = null;
-        }
-        if (SDL.ClimateController.model.consentedApp = appID) {
-            SDL.ClimateController.model.consentedApp = null;
-        }
-        if (SDL.SDLModel.data.radioFirstConsentedApp === appID) {
-            SDL.SDLModel.data.radioFirstConsentedApp = null;
-        }
-        if (SDL.SDLModel.data.climateFirstConsentedApp = appID) {
-            SDL.SDLModel.data.climateFirstConsentedApp = null;
-        }
 
+        SDL.SDLController.removeConsentForApp(appID);
 
         FFW.BasicCommunication.ExitApplication(appID, "USER_EXIT");
         if (SDL.States.currentState.getPath('path') === "media.sdlmedia"
