@@ -261,10 +261,12 @@ SDL.ABSModel = Em.Object.extend({
                 }
             }
 
-            for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp.length; i++) {
-                if (SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value === params.fileName) {
-                    SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value =
-                        SDL.SDLModel.data.defaultListOfIcons.command;
+            if (SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp) {
+                for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp.length; i++) {
+                    if (SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value === params.fileName) {
+                        SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value =
+                            SDL.SDLModel.data.defaultListOfIcons.command;
+                    }
                 }
             }
 
