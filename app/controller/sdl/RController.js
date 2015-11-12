@@ -188,18 +188,21 @@ SDL.RController = SDL.ABSController.extend({
             return;
         }
 
-        if (rank === 1 && SDL.SDLModel.driverDeviceInfo) { //Magic number 1 means passenger's device
+        if (rank === 1
+            && SDL.SDLModel.driverDeviceInfo //Magic number 1 means passenger's device
+            && device.name === SDL.SDLModel.driverDeviceInfo.name) {
+
             var apps = SDL.SDLModel.data.registeredApps;
 
             for (var i = 0; i < apps.length; i++) {
-                if (apps[i].deviceName === device.name
-                    && device.name === SDL.SDLModel.driverDeviceInfo.name) {
+                if (apps[i].deviceName === device.name) {
 
                     apps[i].level = 'NONE';
-                    SDL.SDLModel.set('driverDeviceInfo', null);
+
                 }
             }
 
+            SDL.SDLModel.set('driverDeviceInfo', null);
             SDL.InfoAppsView.showAppList();
             FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
         } else if (rank === 0) {  //Magic number 1 means driver's device

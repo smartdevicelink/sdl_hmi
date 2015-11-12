@@ -220,13 +220,6 @@ FFW.BasicCommunication = FFW.RPCObserver
 
                     popUp.deactivate();
 
-                    if (response.error
-                        && response.error.code === SDL.SDLModel.data.resultCode["APPLICATION_NOT_REGISTERED"]) {
-
-                        SDL.PopUp.create().appendTo('body').popupActivate("Activation FAILED!");
-                        return;
-                    }
-
                     if (!response.result.isSDLAllowed) {
 
                         SDL.SettingsController.currentDeviceAllowance = response.result.device;
@@ -310,10 +303,28 @@ FFW.BasicCommunication = FFW.RPCObserver
         /**
          * handle RPC erros here
          */
-        onRPCError: function(error) {
+        onRPCError: function(response) {
 
             Em.Logger.log("FFW.BasicCommunicationRPC.onRPCError");
             this._super();
+
+            if (response.error.data.method === "SDL.ActivateApp") {
+
+                var appID = SDL.SDLModel.data.activateAppRequestsList[response.id].appID,
+                    popUp = SDL.SDLModel.data.activateAppRequestsList[response.id].popUp;
+
+                popUp.deactivate();
+
+                if (response.error.code === SDL.SDLModel.data.resultCode["APPLICATION_NOT_REGISTERED"]) {
+
+                    SDL.PopUp.create().appendTo('body').popupActivate("Activation FAILED! Application NOT registered.");
+                    return;
+                } else if (response.error.code === SDL.SDLModel.data.resultCode["REJECTED"]) {
+
+                    SDL.PopUp.create().appendTo('body').popupActivate("Activation FAILED! SDL rejected activation.");
+                    return;
+                }
+            }
         },
 
         /**
@@ -916,26 +927,6 @@ FFW.BasicCommunication = FFW.RPCObserver
             var JSONMessage = {
                 "jsonrpc": "2.0",
                 "method": "BasicCommunication.OnIgnitionCycleOver"
-            };
-            this.client.send(JSONMessage);
-        },
-
-        /**
-         * Send request if application was activated
-         *
-         * @param {number} appID
-         */
-        OnAppActivated: function(appID) {
-
-            Em.Logger.log("FFW.BasicCommunication.OnAppActivated");
-
-            // send notification
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "method": "BasicCommunication.OnAppActivated",
-                "params": {
-                    "appID": appID
-                }
             };
             this.client.send(JSONMessage);
         },

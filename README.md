@@ -14,7 +14,7 @@ A quick guide to installing, configuring, and running HMI.
 ```
 
 ## A quick note about dependencies
-All dependencies are installed after the SDL Core is successfuly installed.
+All dependencies are installed after the SDL Core is successfully installed.
 
 ## Note
 SDL HMI utility is only for acquaintance with the SDL project.

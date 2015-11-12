@@ -761,7 +761,7 @@ SDL.ABSController = Em.Object.extend( {
         FFW.UI.sendError(element.responseResult,
             FFW.UI.performAudioPassThruRequestID,
             "UI.PerformAudioPassThru",
-            "PerformAudioPassThru was not completed successfuly!");
+            "PerformAudioPassThru was not completed successfully!");
         FFW.UI.performAudioPassThruRequestID = -1;
     },
     /**

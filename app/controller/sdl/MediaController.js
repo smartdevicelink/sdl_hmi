@@ -90,7 +90,7 @@ SDL.SDLMediaController = Em.Object.create( {
      */
     activateCurrentApp: function() {
 
-        FFW.BasicCommunication.OnAppActivated(this.currentAppId);
+        FFW.BasicCommunication.ActivateApp(this.currentAppId);
     },
 
     /** SDL perform interaction action from VR */
