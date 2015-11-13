@@ -174,6 +174,10 @@ FFW.TTS = FFW.RPCObserver.create( {
             } else {
                 this.requestId = request.id;
                 SDL.SDLModel.onPrompt(request.params.ttsChunks, request.params.appID);
+
+                if (request.params.playTone) {
+                    SDL.SDLModel.onPlayTone();
+                }
             }
 
             break;
