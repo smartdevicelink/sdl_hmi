@@ -148,7 +148,7 @@ FFW.Buttons = FFW.RPCObserver.create( {
 
             if (SDL.SDLModel.driverDeviceInfo
                 && deviceName == SDL.SDLModel.driverDeviceInfo.name) {
-                this.sendButtonsResult(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method);
+                this.sendButtonsResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
                 return;
             }
 
