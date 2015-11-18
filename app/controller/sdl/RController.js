@@ -33,6 +33,8 @@
 
 SDL.RController = SDL.ABSController.extend({
 
+    reverseAppsAllowed: true,
+
     /**
      * Button action to sent response for RC.GrantAccess request
      *
@@ -75,6 +77,8 @@ SDL.RController = SDL.ABSController.extend({
             SDL.SDLModel.data.radioFirstConsentedApp = null;
             SDL.SDLModel.data.climateFirstConsentedApp = null;
         }
+
+        this.set('reverseAppsAllowed', element.allowed);
 
         FFW.RC.OnReverseAppsAllowing(element.allowed);
     },

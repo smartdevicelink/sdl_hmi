@@ -712,8 +712,10 @@ FFW.RC = FFW.RPCObserver.create( {
 
         var deviceName = SDL.SDLController.getApplicationModel(request.params.appID).deviceName;
 
-        if(SDL.SDLModel.driverDeviceInfo
-            && deviceName == SDL.SDLModel.driverDeviceInfo.name){
+        if((SDL.SDLModel.driverDeviceInfo
+            && deviceName == SDL.SDLModel.driverDeviceInfo.name)
+            || !SDL.SDLController.reverseAppsAllowed){
+
             return true;
         }
 
