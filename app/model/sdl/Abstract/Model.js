@@ -682,6 +682,7 @@ SDL.ABSModel = Em.Object.extend({
 
             // According to SDL.SDLModel.deviceRank enum 0 - is driver's device
             FFW.RC.OnDeviceRankChanged(params.deviceList[0], SDL.SDLModel.deviceRank[0]);
+            SDL.InfoAppsView.showAppList();
         }
 
         for (var j in SDL.SDLModel.data.connectedDevices) {
