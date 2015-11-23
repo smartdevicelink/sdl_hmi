@@ -241,7 +241,7 @@ FFW.RC = FFW.RPCObserver.create( {
 
         var zone;
 
-        zone = '';
+        zone = null;
 
         if (moduleZone.col === 0) {
 
@@ -387,6 +387,12 @@ FFW.RC = FFW.RPCObserver.create( {
                     }
 
                     var newModuleZone = this.getInteriorZone(request.params.moduleDescription.moduleZone);
+
+                    if (newModuleZone === null) {
+                        this.sendError(SDL.SDLModel.data.resultCode["UNSUPPORTED_RESOURCE"], request.id, request.method, "Unsupported interior zone!");
+                        return;
+                    }
+
                     var radioControlData = null;
                     var climateControlData = null;
                     var app = SDL.SDLController.getApplicationModel(request.params.appID);
