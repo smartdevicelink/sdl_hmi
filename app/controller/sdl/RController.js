@@ -375,5 +375,138 @@ SDL.RController = SDL.ABSController.extend({
 
             SDL.SDLModel.data.climateFirstConsentedApp = null;
         }
+    },
+
+    correctTemp: function(data, type){
+
+        var d = SDL.deepCopy(data);
+
+        if (type === 'get') {
+            switch (d.temperatureUnit) {
+                case 'KELVIN': {
+
+                    d.currentTemp += 273;
+                    d.desiredTemp += 273;
+
+                    return d;
+                }
+                case 'CELSIUS': {
+                    return d;
+                }
+                case 'FAHRENHEIT': {
+
+                    d.currentTemp = Math.round(d.currentTemp * 9 / 5 + 32);
+                    d.desiredTemp = Math.round(d.desiredTemp * 9 / 5 + 32);
+
+                    return d;
+                }
+            }
+        } else {
+            switch (d.temperatureUnit) {
+                case 'KELVIN': {
+
+                    d.currentTemp -= 273;
+                    d.desiredTemp -= 273;
+
+                    return d;
+                }
+                case 'CELSIUS': {
+                    return d;
+                }
+                case 'FAHRENHEIT': {
+
+                    d.currentTemp = Math.round((d.currentTemp - 32) * 5 / 9);
+                    d.desiredTemp = Math.round((d.currentTemp - 32) * 5 / 9);
+
+                    return d;
+                }
+            }
+        }
+    },
+
+    unMapInteriorZone: function(moduleZone){
+
+        var zone = {};
+
+        switch (moduleZone){
+            case 'driver':{
+
+                zone = {
+                    "col": 0,
+                    "row": 0,
+                    "level": 0,
+                    "colspan": 2,
+                    "rowspan": 2,
+                    "levelspan": 1
+                };
+
+                return zone;
+                break;
+            }
+            case 'front_passenger':{
+
+                zone = {
+                    "col": 1,
+                    "row": 0,
+                    "level": 0,
+                    "colspan": 2,
+                    "rowspan": 2,
+                    "levelspan": 1
+                };
+                return zone;
+                break;
+            }
+            case 'back_left':{
+
+                zone = {
+                    "col": 0,
+                    "row": 1,
+                    "level": 0,
+                    "colspan": 2,
+                    "rowspan": 2,
+                    "levelspan": 1
+                };
+                return zone;
+                break;
+            }
+            case 'back_right':{
+
+                zone = {
+                    "col": 1,
+                    "row": 1,
+                    "level": 0,
+                    "colspan": 2,
+                    "rowspan": 2,
+                    "levelspan": 1
+                };
+                return zone;
+                break;
+            }
+        }
+    },
+
+    getInteriorZone: function(moduleZone){
+
+        var zone;
+
+        zone = null;
+
+        if (moduleZone.col === 0) {
+
+            if (moduleZone.row === 0) {
+                zone = 'driver';
+            } else if (moduleZone.row === 1) {
+                zone = 'back_left';
+            }
+        } else if (moduleZone.col === 1) {
+
+            if (moduleZone.row === 0) {
+                zone = 'front_passenger';
+            } else if (moduleZone.row === 1) {
+                zone = 'back_right';
+            }
+        }
+
+        return zone;
     }
 });

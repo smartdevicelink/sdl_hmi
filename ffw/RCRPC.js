@@ -129,139 +129,6 @@ FFW.RC = FFW.RPCObserver.create( {
         this._super();
     },
 
-    correctTemp: function(data, type){
-
-        var d = SDL.deepCopy(data);
-
-        if (type === 'get') {
-            switch (d.temperatureUnit) {
-                case 'KELVIN': {
-
-                    d.currentTemp += 273;
-                    d.desiredTemp += 273;
-
-                    return d;
-                }
-                case 'CELSIUS': {
-                    return d;
-                }
-                case 'FAHRENHEIT': {
-
-                    d.currentTemp = Math.round(d.currentTemp * 9 / 5 + 32);
-                    d.desiredTemp = Math.round(d.desiredTemp * 9 / 5 + 32);
-
-                    return d;
-                }
-            }
-        } else {
-            switch (d.temperatureUnit) {
-                case 'KELVIN': {
-
-                    d.currentTemp -= 273;
-                    d.desiredTemp -= 273;
-
-                    return d;
-                }
-                case 'CELSIUS': {
-                    return d;
-                }
-                case 'FAHRENHEIT': {
-
-                    d.currentTemp = Math.round((d.currentTemp - 32) * 5 / 9);
-                    d.desiredTemp = Math.round((d.currentTemp - 32) * 5 / 9);
-
-                    return d;
-                }
-            }
-        }
-    },
-
-    unMapInteriorZone: function(moduleZone){
-
-        var zone = {};
-
-        switch (moduleZone){
-            case 'driver':{
-
-                zone = {
-                    "col": 0,
-                    "row": 0,
-                    "level": 0,
-                    "colspan": 2,
-                    "rowspan": 2,
-                    "levelspan": 1
-                };
-
-                return zone;
-                break;
-            }
-            case 'front_passenger':{
-
-                zone = {
-                    "col": 1,
-                    "row": 0,
-                    "level": 0,
-                    "colspan": 2,
-                    "rowspan": 2,
-                    "levelspan": 1
-                };
-                return zone;
-                break;
-            }
-            case 'back_left':{
-
-                zone = {
-                    "col": 0,
-                    "row": 1,
-                    "level": 0,
-                    "colspan": 2,
-                    "rowspan": 2,
-                    "levelspan": 1
-                };
-                return zone;
-                break;
-            }
-            case 'back_right':{
-
-                zone = {
-                    "col": 1,
-                    "row": 1,
-                    "level": 0,
-                    "colspan": 2,
-                    "rowspan": 2,
-                    "levelspan": 1
-                };
-                return zone;
-                break;
-            }
-        }
-    },
-
-    getInteriorZone: function(moduleZone){
-
-        var zone;
-
-        zone = null;
-
-        if (moduleZone.col === 0) {
-
-            if (moduleZone.row === 0) {
-                zone = 'driver';
-            } else if (moduleZone.row === 1) {
-                zone = 'back_left';
-            }
-        } else if (moduleZone.col === 1) {
-
-            if (moduleZone.row === 0) {
-                zone = 'front_passenger';
-            } else if (moduleZone.row === 1) {
-                zone = 'back_right';
-            }
-        }
-
-        return zone;
-    },
-
     /**
      * handle RPC requests here
      * 
@@ -277,6 +144,16 @@ FFW.RC = FFW.RPCObserver.create( {
                 case "RC.GetInteriorVehicleDataCapabilities": {
 
                     Em.Logger.log("FFW." + request.method + "Response");
+
+                    if (SDL.SDLController.getInteriorZone(request.params.zone) === null) {
+                        this.sendError(
+                            SDL.SDLModel.data.resultCode["UNSUPPORTED_RESOURCE"],
+                            request.id,
+                            request.method,
+                            "Unsupported interior zone!"
+                        );
+                        return;
+                    }
 
                     if (!SDL.SDLModel.errorResponse) {
                         var interiorVehicleDataCapabilities = [];
@@ -312,7 +189,12 @@ FFW.RC = FFW.RPCObserver.create( {
                         };
                         this.client.send(JSONMessage);
                     } else {
-                        this.sendError(SDL.SDLModel.data.resultCode["DATA_NOT_AVAILABLE"], request.id, request.method, "Error response example.")
+                        this.sendError(
+                            SDL.SDLModel.data.resultCode["DATA_NOT_AVAILABLE"],
+                            request.id,
+                            request.method,
+                            "Error response example."
+                        )
                     }
 
                     break;
@@ -345,11 +227,21 @@ FFW.RC = FFW.RPCObserver.create( {
                         return;
                     }
 
-                    var zone = this.getInteriorZone(request.params.moduleData.moduleZone);
+                    var zone = SDL.SDLController.getInteriorZone(request.params.moduleData.moduleZone);
+
+                    if (zone === null) {
+                        this.sendError(
+                            SDL.SDLModel.data.resultCode["UNSUPPORTED_RESOURCE"],
+                            request.id,
+                            request.method,
+                            "Unsupported interior zone!"
+                        );
+                        return;
+                    }
 
                     if (request.params.moduleData.climateControlData) {
 
-                        var climateControlData = this.correctTemp(request.params.moduleData.climateControlData, 'set');
+                        var climateControlData = SDL.SDLController.correctTemp(request.params.moduleData.climateControlData, 'set');
                         SDL.ClimateController.model.setClimateData(request.params.moduleData.climateControlData, zone);
                     }
 
@@ -386,7 +278,7 @@ FFW.RC = FFW.RPCObserver.create( {
                         return;
                     }
 
-                    var newModuleZone = this.getInteriorZone(request.params.moduleDescription.moduleZone);
+                    var newModuleZone = SDL.SDLController.getInteriorZone(request.params.moduleDescription.moduleZone);
 
                     if (newModuleZone === null) {
                         this.sendError(SDL.SDLModel.data.resultCode["UNSUPPORTED_RESOURCE"], request.id, request.method, "Unsupported interior zone!");
@@ -448,7 +340,7 @@ FFW.RC = FFW.RPCObserver.create( {
                     }
                     if (climateControlData) {
 
-                        climateControlData = this.correctTemp(climateControlData, 'get');
+                        climateControlData = SDL.SDLController.correctTemp(climateControlData, 'get');
                         JSONMessage.result.moduleData.climateControlData = climateControlData;
                     }
 
@@ -639,13 +531,13 @@ FFW.RC = FFW.RPCObserver.create( {
                         "params": {
                             "moduleData": {
                                 "moduleType": moduleType,
-                                "moduleZone": FFW.RC.unMapInteriorZone(app.moduleSubscriptions[moduleType].zone[i])
+                                "moduleZone": SDL.SDLController.unMapInteriorZone(app.moduleSubscriptions[moduleType].zone[i])
                             }
                         }
                     };
 
                     if (moduleType === "CLIMATE") {
-                        climateControlData = FFW.RC.correctTemp(SDL.ClimateController.model
+                        climateControlData = SDL.SDLController.correctTemp(SDL.ClimateController.model
                             .climateSet[zone].climateControlData, 'get');
                         JSONMessage.params.moduleData.climateControlData = climateControlData;
                     } else {
@@ -657,7 +549,7 @@ FFW.RC = FFW.RPCObserver.create( {
                 }
             } else {
 
-                var unmappedZone = FFW.RC.getInteriorZone(moduleZone);
+                var unmappedZone = SDL.SDLController.getInteriorZone(moduleZone);
 
                 app.moduleSubscriptions[moduleType].zone.forEach(function(zone, index) {
                     if (zone === unmappedZone) {
@@ -675,7 +567,7 @@ FFW.RC = FFW.RPCObserver.create( {
                         };
 
                         if (moduleType === "CLIMATE") {
-                            climateControlData = FFW.RC.correctTemp(SDL.ClimateController.model
+                            climateControlData = SDL.SDLController.correctTemp(SDL.ClimateController.model
                                 .climateSet[unmappedZone].climateControlData, 'get');
                             JSONMessage.params.moduleData.climateControlData = climateControlData;
                         } else {
@@ -700,7 +592,7 @@ FFW.RC = FFW.RPCObserver.create( {
             "method": "RC.OnDeviceLocationChanged",
             "params": {
                 "device": device,
-                "deviceLocation": this.unMapInteriorZone(deviceLocation)
+                "deviceLocation": SDL.SDLController.unMapInteriorZone(deviceLocation)
             }
         };
 
