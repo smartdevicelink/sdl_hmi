@@ -491,6 +491,11 @@ SDL.RController = SDL.ABSController.extend({
 
         zone = null;
 
+        if (moduleZone == null) {
+
+            return zone;
+        }
+
         if (moduleZone.col === 0) {
 
             if (moduleZone.row === 0) {
