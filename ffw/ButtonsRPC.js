@@ -144,7 +144,7 @@ FFW.Buttons = FFW.RPCObserver.create( {
 
             Em.Logger.log("FFW." + request.method + "Response");
 
-            if (SDL.SDLController.getInteriorZone(request.params.interiorZone) === null) {
+            if (SDL.SDLController.getInteriorZone(request.params.zone) === null) {
                 this.sendError(
                     SDL.SDLModel.data.resultCode["UNSUPPORTED_RESOURCE"],
                     request.id,
