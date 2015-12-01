@@ -541,14 +541,14 @@ FFW.RC = FFW.RPCObserver.create( {
 
                     if (moduleType === "RADIO") {
 
+                        JSONMessage.params.moduleData.radioControlData = SDL.RadioModel.get('radioControlData');
+                    } else {
+
                         climateControlData = SDL.SDLController.correctTemp(
                             SDL.ClimateController.model.climateSet[zone].climateControlData,
                             'get'
                         );
                         JSONMessage.params.moduleData.climateControlData = climateControlData;
-
-                    } else {
-                        JSONMessage.params.moduleData.radioControlData = SDL.RadioModel.get('radioControlData');
                     }
 
                     Em.Logger.log("FFW.RC.OnInteriorVehicleData Notification");
