@@ -162,6 +162,22 @@ SDL.RModel = SDL.ABSModel.extend({
     },
 
     /**
+     * Method to delete activation button from VR commands and delete device
+     * parameters from model
+     *
+     * @param {Object}
+     */
+    onAppUnregistered: function (params) {
+
+        if (SDL.SDLController.getApplicationModel(params.appID)) {
+
+            this._super();
+
+            SDL.SDLController.removeConsentForApp(params.appID);
+        }
+    },
+
+    /**
      * SwitchPopUp activation
      *
      * @param {Object}

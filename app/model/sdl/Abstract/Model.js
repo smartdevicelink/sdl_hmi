@@ -516,6 +516,12 @@ SDL.ABSModel = Em.Object.extend({
      */
     onAppRegistered: function (params, vrSynonyms) {
 
+        for(var i=0; i < params.appType.length; i++) {
+            if("NAVIGATION" === params.appType[i]) {
+                FFW.BasicCommunication.ExitApplication(params.appID, "UNSUPPORTED_HMI_RESOURCE");
+            }
+        }
+
         var message = {};
 
         var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
@@ -596,8 +602,6 @@ SDL.ABSModel = Em.Object.extend({
             SDL.SDLController.getApplicationModel(params.appID).level = 'NONE';
 
             SDL.SDLController.unregisterApplication(params.appID);
-
-            SDL.SDLController.removeConsentForApp(params.appID);
         }
     },
 
