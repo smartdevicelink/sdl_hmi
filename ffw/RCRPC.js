@@ -517,13 +517,14 @@ FFW.RC = FFW.RPCObserver.create( {
 
         var apps = SDL.SDLModel.data.registeredApps;
         var zoneFilter = {};
+        var changedInteriorZone = SDL.SDLController.getInteriorZone(moduleZone);
 
         apps.forEach(function(app, index){
             //search for app subscribed for module the data changed for
 
                 app.moduleSubscriptions[moduleType].zone.forEach(function(zone, index) {
 
-                    if(zone in zoneFilter){
+                    if(zone in zoneFilter || (zone != changedInteriorZone && moduleType === "CLIMATE")){
                         return;
                     }
 
