@@ -6,13 +6,8 @@ HTML5 based utility to see how the SDL works. It connects via WebSocket to [SDLC
 A quick guide to installing, configuring, and running HMI.
 
 	1. In app/FLAGS.js configure SimpleFunctionality flag for your project
-	2. run ./smartDeviceLinkCore
-	3. run chromium-browser [path_to_index.html]
-
-```
-%cd [root of cloned sdl_hmi repo]
-% chromium-browser index.html
-```
+	2. run SmartDeviceLinkCore
+	3. run chromium-browser [root_of_cloned_sdl_hmi_repo/index.html]
 
 ## A quick note about dependencies
 All dependencies are installed after the SDL Core is successfully installed.
