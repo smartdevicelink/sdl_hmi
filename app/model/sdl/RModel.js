@@ -171,7 +171,7 @@ SDL.RModel = SDL.ABSModel.extend({
 
         if (SDL.SDLController.getApplicationModel(params.appID)) {
 
-            this._super();
+            this._super(params);
 
             SDL.SDLController.removeConsentForApp(params.appID);
         }

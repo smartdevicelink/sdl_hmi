@@ -517,7 +517,7 @@ SDL.ABSModel = Em.Object.extend({
     onAppRegistered: function (params, vrSynonyms) {
 
         for(var i=0; i < params.appType.length; i++) {
-            if("NAVIGATION" === params.appType[i]) {
+            if("NAVIGATION" === params.appType[i] && !FLAGS.Navigation) {
                 FFW.BasicCommunication.ExitApplication(params.appID, "UNSUPPORTED_HMI_RESOURCE");
             }
         }
