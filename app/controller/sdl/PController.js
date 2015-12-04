@@ -32,9 +32,4 @@
  */
 
 SDL.PController = SDL.ABSController.extend({
-
-    onEventChanged: function(reason, status){
-
-        FFW.BasicCommunication.OnEventChanged(reason, status);
-    }
 });

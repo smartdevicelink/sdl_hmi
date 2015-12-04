@@ -1366,13 +1366,7 @@ FFW.BasicCommunication = FFW.RPCObserver
          * @param status
          * @constructor
          */
-        OnEventChanged: function (reason, status) {
-
-            var eventName = SDL.SDLModel.onEventChangedEnum[reason];
-
-            if (!eventName) {
-                return;
-            }
+        OnEventChanged: function (eventName, status) {
 
             Em.Logger.log("FFW.BasicCommunication.OnEventChanged");
 

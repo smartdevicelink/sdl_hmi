@@ -132,7 +132,7 @@ SDL.ExitApp = Em.ContainerView.create( {
 
         classNames: 'onDeactivateLabel',
 
-        content: 'OnDeactivateLabel notification send'
+        content: 'OnDeactivate notification send'
     } ),
 
     /**
@@ -151,8 +151,7 @@ SDL.ExitApp = Em.ContainerView.create( {
          */
         click: function() {
 
-            FFW.BasicCommunication.OnDeactivateHMI(this.selection);
-
+            SDL.SDLController.onEventChanged("onDeactivateHMI", this.selection);
         }
     }),
 

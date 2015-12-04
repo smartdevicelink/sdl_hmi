@@ -63,6 +63,30 @@ SDL.RController = SDL.ABSController.extend({
             SDL.SDLModel.set('controlRequestID', null);
     },
 
+    onEventChanged: function(reason, status){
+
+        switch (reason) {
+            case "phoneCall": {
+
+                FFW.BasicCommunication.OnPhoneCall(status);
+                break;
+            }
+            case "emergencyEvent": {
+
+                FFW.BasicCommunication.OnEmergencyEvent(status);
+                break;
+            }
+            case "onDeactivateHMI": {
+
+                FFW.BasicCommunication.OnDeactivateHMI(status);
+                break;
+            }
+            default:{
+                return;
+            }
+        }
+    },
+
     /**
      * Send notification to SDL about changes of SDL functionality
      * @param element

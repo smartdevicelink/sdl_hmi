@@ -51,7 +51,7 @@ SDL.PhoneController = Em.Object.create( {
      */
     onEndCall: function() {
 
-        FFW.BasicCommunication.OnPhoneCall(false);
+        SDL.SDLController.onEventChanged("phoneCall", false);
         this.model.endCall();
     },
 
@@ -60,7 +60,7 @@ SDL.PhoneController = Em.Object.create( {
      */
     onDialCall: function() {
 
-        FFW.BasicCommunication.OnPhoneCall(true);
+        SDL.SDLController.onEventChanged("phoneCall", true);
         this.model.dialCall();
     },
 

@@ -394,6 +394,17 @@ SDL.SDLModelData = Em.Object.create({
     AudioPassThruData: {},
 
     /**
+     * Enum to unmap state manager names into HMI API EventTypes enum
+     */
+    onEventChangedEnum:{
+        'player': 'AUDIO_SOURCE',
+        'navigation': 'EMBEDDED_NAVI',
+        'phoneCall': 'PHONE_CALL',
+        'emergencyEvent': 'EMERGENCY_EVENT',
+        'onDeactivateHMI': 'DEACTIVATE_HMI'
+    },
+
+    /**
      * Enum with result codes for RPC
      */
     resultCode: {

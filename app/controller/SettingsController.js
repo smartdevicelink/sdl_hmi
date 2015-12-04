@@ -65,7 +65,7 @@ SDL.SettingsController = Em.Object.create( {
 
     phoneCall: function() {
 
-        FFW.BasicCommunication.OnPhoneCall(true);
+        SDL.SDLController.onEventChanged("phoneCall", true);
 
         SDL.SDLModel.data.phoneCallActive = true;
 
@@ -81,13 +81,13 @@ SDL.SettingsController = Em.Object.create( {
             SDL.States.goToStates('phone.dialpad');
 
             setTimeout(function () {
-                FFW.BasicCommunication.OnPhoneCall(false);
+                SDL.SDLController.onEventChanged("phoneCall", false);
                 SDL.SDLController.getApplicationModel(appID).turnOnSDL(appID);
                 SDL.SDLModel.data.phoneCallActive = false;
             }, 20000); //Magic number - 5 seconds timeout for emulating conversation call
         } else {
             setTimeout(function () {
-                FFW.BasicCommunication.OnPhoneCall(false);
+                SDL.SDLController.onEventChanged("phoneCall", false);
                 SDL.SDLModel.data.phoneCallActive = false;
             }, 20000); //Magic number - 5 seconds timeout for emulating conversation call
         }

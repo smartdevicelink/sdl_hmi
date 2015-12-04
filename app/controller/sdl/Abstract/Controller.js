@@ -232,6 +232,13 @@ SDL.ABSController = Em.Object.extend( {
      */
     onEventChanged: function(reason, status){
 
+        var eventName = SDL.SDLModel.data.onEventChangedEnum[reason];
+
+        if (!eventName) {
+            return;
+        }
+
+        FFW.BasicCommunication.OnEventChanged(eventName, status);
     },
 
     /**
@@ -1102,7 +1109,7 @@ SDL.ABSController = Em.Object.extend( {
      */
     OnEmergencyEventNotificationSend: function(element) {
 
-        FFW.BasicCommunication.OnEmergencyEvent(element.enabled);
+        SDL.SDLController.onEventChanged("emergencyEvent", element.enabled);
         element.set('enabled', !element.enabled);
     },
     /**
