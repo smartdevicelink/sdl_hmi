@@ -33,4 +33,11 @@
 
 SDL.PModel = SDL.ABSModel.extend({
 
+    /**
+     * Enum to unmap state manager names into HMI API EventTypes enum
+     */
+    onEventChangedEnum:{
+        'player': 'AUDIO_SOURCE',
+        'navigation': 'EMBEDDED_NAVI'
+    }
 });

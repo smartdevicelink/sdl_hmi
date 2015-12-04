@@ -1358,6 +1358,34 @@ FFW.BasicCommunication = FFW.RPCObserver
             };
 
             this.client.send(JSONMessage);
+        },
+
+        /**
+         * OnEventChanged notification sender
+         * @param reason
+         * @param status
+         * @constructor
+         */
+        OnEventChanged: function (reason, status) {
+
+            var eventName = SDL.SDLModel.onEventChangedEnum[reason];
+
+            if (!eventName) {
+                return;
+            }
+
+            Em.Logger.log("FFW.BasicCommunication.OnEventChanged");
+
+            var JSONMessage = {
+                "jsonrpc": "2.0",
+                "method": "BasicCommunication.OnEventChanged",
+                "params":{
+                    "eventName": eventName,
+                    "isActive": status
+                }
+            };
+
+            this.client.send(JSONMessage);
         }
 
     });

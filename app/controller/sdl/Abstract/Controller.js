@@ -226,6 +226,15 @@ SDL.ABSController = Em.Object.extend( {
     },
 
     /**
+     * Notification to SDL about triggered events on HMI
+     * @param reason
+     * @param status
+     */
+    onEventChanged: function(reason, status){
+
+    },
+
+    /**
      * Method clears all applications data and unregister models
      */
     onSDLDisconected: function () {

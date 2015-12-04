@@ -243,6 +243,15 @@ var StateManager = Em.StateManager.extend({
                 }
 
                 this._super();
+
+                SDL.SDLController.onEventChanged(this.name, true);
+            },
+
+            exit: function() {
+
+                this._super();
+
+                SDL.SDLController.onEventChanged(this.name, false);
             },
 
 
@@ -361,6 +370,19 @@ var StateManager = Em.StateManager.extend({
     /** Navigation state */
     navigation: Em.State.create({
 
+        exit: function () {
+
+            this._super();
+
+            SDL.SDLController.onEventChanged(this.name, false);
+        },
+
+        enter: function () {
+
+            this._super();
+
+            SDL.SDLController.onEventChanged(this.name, true);
+        }
     }),
 
     /** Phone state */
