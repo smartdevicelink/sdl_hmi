@@ -1028,7 +1028,7 @@ FFW.BasicCommunication = FFW.RPCObserver
          * @params {String}
          * @params {Number}
          */
-        OnAppDeactivated: function(reason, appID) {
+        OnAppDeactivated: function(appID) {
 
             Em.Logger.log("FFW.BasicCommunication.OnAppDeactivated");
 
@@ -1038,8 +1038,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "jsonrpc": "2.0",
                 "method": "BasicCommunication.OnAppDeactivated",
                 "params": {
-                    "appID": appID,
-                    "reason": reason
+                    "appID": appID
                 }
             };
             this.client.send(JSONMessage);

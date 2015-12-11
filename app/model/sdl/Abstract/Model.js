@@ -1076,7 +1076,7 @@ SDL.ABSModel = Em.Object.extend({
             if (!SDL.SDLModel.data.phoneCallActive) {
 
                 if ('GENERAL' === reason) {
-                    FFW.BasicCommunication.OnAppDeactivated(reason, appID);
+                    FFW.BasicCommunication.OnAppDeactivated(appID);
                 }
 
             }
