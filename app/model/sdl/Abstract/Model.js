@@ -516,6 +516,11 @@ SDL.ABSModel = Em.Object.extend({
      */
     onAppRegistered: function (params, vrSynonyms) {
 
+        if (!params.appType) {              // According to APPLINK-19979 if appType parameter is empty
+            params.appType = [];            // HMI should use "DEFAULT" value from AppHMIType enum of
+            params.appType.push("DEFAULT"); // HMI_API documentation
+        }
+
         for(var i=0; i < params.appType.length; i++) {
             if("NAVIGATION" === params.appType[i] && !FLAGS.Navigation) {
                 FFW.BasicCommunication.ExitApplication(params.appID, "UNSUPPORTED_HMI_RESOURCE");
@@ -541,10 +546,10 @@ SDL.ABSModel = Em.Object.extend({
         }
 
         if (params.isMediaApplication === true) {
-
+            //Magic number 0 - Default media model
             applicationType = 0;
         } else if (params.isMediaApplication === false) {
-
+            //Magic number 1 - Default non-media model
             applicationType = 1;
         }
 

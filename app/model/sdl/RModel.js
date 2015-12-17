@@ -113,6 +113,11 @@ SDL.RModel = SDL.ABSModel.extend({
      */
     onAppRegistered: function (params, vrSynonyms) {
 
+        if (!params.appType) {              // According to APPLINK-19979 if appType parameter is empty
+            params.appType = [];            // HMI should use "DEFAULT" value from AppHMIType enum of
+            params.appType.push("DEFAULT"); // HMI_API documentation
+        }
+
         var message = {};
 
         var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
@@ -151,6 +156,7 @@ SDL.RModel = SDL.ABSModel.extend({
             this.data.unRegisteredApps.pop(params.appID);
         }
 
+        //Magic number if predefined VR command USER_EXIT
         message = {"cmdID": -2, "vrCommands": ['USER_EXIT ' + params.appName], "appID": params.appID, "type": "Command"};
         this.addCommandVR(message);
 
