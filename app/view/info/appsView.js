@@ -74,14 +74,7 @@ SDL.InfoAppsView = Em.ContainerView
                             classNames: 'list-item button',
                             iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex
                             + '.appIcon',
-                            disabled: apps[i].disabledToActivate,
-                            indexApp: appIndex,
-                            fullAppName: function () {
-                                return SDL.SDLModel.data.registeredApps[this.appIndex].appIcon
-                                    + SDL.SDLModel.data.registeredApps[this.appIndex].deviceName;
-                            }.property('SDL.SDLModel.data.registeredApps.' + appIndex
-                                + '.appIcon', 'SDL.SDLModel.data.registeredApps.' + appIndex
-                                + '.deviceName')
+                            disabled: apps[i].disabledToActivate
                         }));
                 } else if (apps[i].appType.indexOf("REMOTE_CONTROL") != -1
                             && apps[i].level != "NONE"
@@ -105,14 +98,7 @@ SDL.InfoAppsView = Em.ContainerView
                             classNames: 'list-item button',
                             iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex
                             + '.appIcon',
-                            disabled: false,
-                            indexApp: appIndex,
-                            fullAppName: function () {
-                                return SDL.SDLModel.data.registeredApps[this.appIndex].appIcon
-                                    + SDL.SDLModel.data.registeredApps[this.appIndex].deviceName;
-                            }.property('SDL.SDLModel.data.registeredApps.' + appIndex
-                                + '.appIcon', 'SDL.SDLModel.data.registeredApps.' + appIndex
-                                + '.deviceName')
+                            disabled: false
                         }));
                 }
             }

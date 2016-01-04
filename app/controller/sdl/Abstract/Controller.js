@@ -909,6 +909,33 @@ SDL.ABSController = Em.Object.extend( {
             SDL.SDLNonMediaModel.set('currentAppId', null);
         }
     },
+
+    /**
+     *
+     * @param params
+     * @constructor
+     */
+    UpdateAppList: function(params) {
+
+        var message = "Was found " + params.applications.length + " apps";
+
+        SDL.PopUp.create().appendTo('body').popupActivate(message);
+
+        for (var i = SDL.SDLModel.data.registeredApps.length - 1; i >= 0; i--) {
+
+            if (params.applications.filterProperty("appID", SDL.SDLModel.data.registeredApps[i].appID).length === 0) {
+                SDL.SDLModel.onAppUnregistered(SDL.SDLModel.data.registeredApps[i]);
+            }
+        }
+
+        for (var i = 0; i < params.applications.length; i++) {
+
+            if (SDL.SDLModel.data.registeredApps.filterProperty("appID", params.applications[i].appID).length === 0) {
+                SDL.SDLModel.onAppRegistered(params.applications[i]);
+            }
+        }
+    },
+
     /**
      * SDL Driver Distraction ON/OFF switcher
      */
