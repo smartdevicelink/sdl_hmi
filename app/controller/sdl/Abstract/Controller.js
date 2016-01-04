@@ -900,6 +900,14 @@ SDL.ABSController = Em.Object.extend( {
         if (SDL.VRHelpListView.active) {
             this.showVRHelpItems();
         }
+
+        if (appID === SDL.SDLMediaController.currentAppId) {
+            SDL.SDLMediaController.set('currentAppId', null);
+        }
+
+        if (appID === SDL.SDLNonMediaModel.currentAppId) {
+            SDL.SDLNonMediaModel.set('currentAppId', null);
+        }
     },
     /**
      * SDL Driver Distraction ON/OFF switcher
