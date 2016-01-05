@@ -132,7 +132,7 @@ SDL.RController = SDL.ABSController.extend({
             SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[0].create( { //Magic number 0 - Default media model for not initialized applications
                 appID: params.appID,
                 appName: params.appName,
-                deviceName: params.deviceName,
+                deviceName: params.deviceInfo.name,
                 appType: params.appType,
                 isMedia: 0,
                 disabledToActivate: params.greyOut ? true : false
@@ -142,7 +142,7 @@ SDL.RController = SDL.ABSController.extend({
             SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[1].create( {//Magic number 1 - Default non-media model
                 appID: params.appID,
                 appName: params.appName,
-                deviceName: params.deviceName,
+                deviceName: params.deviceInfo.name,
                 appType: params.appType,
                 isMedia: false,
                 initialized: true,
@@ -153,7 +153,7 @@ SDL.RController = SDL.ABSController.extend({
             SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[applicationType].create( {
                 appID: params.appID,
                 appName: params.appName,
-                deviceName: params.deviceName,
+                deviceName: params.deviceInfo.name,
                 appType: params.appType,
                 isMedia: applicationType == 0 ? true : false,
                 initialized: true,
