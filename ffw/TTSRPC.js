@@ -280,7 +280,7 @@ FFW.TTS = FFW.RPCObserver.create( {
                     "code": SDL.SDLModel.data.resultCode["SUCCESS"], // type (enum)
                     // from SDL
                     "method": "TTS.GetLanguage",
-                    "language": SDL.SDLModel.hmiTTSVRLanguage
+                    "language": SDL.SDLModel.data.hmiTTSVRLanguage
                 }
             };
             this.client.send(JSONMessage);

@@ -71,13 +71,13 @@ FFW.BasicCommunication = FFW.RPCObserver
         // const
         onStatusUpdateNotification: "SDL.OnStatusUpdate",
         onAppPermissionChangedNotification: "SDL.OnAppPermissionChanged",
+        onSDLConsentNeededNotification: "SDL.OnSDLConsentNeeded",
         onSDLPersistenceCompleteNotification: "BasicCommunication.OnSDLPersistenceComplete",
         onPutFileNotification: "BasicCommunication.OnPutFile",
         onFileRemovedNotification: "BasicCommunication.OnFileRemoved",
         onAppRegisteredNotification: "BasicCommunication.OnAppRegistered",
         onAppUnregisteredNotification: "BasicCommunication.OnAppUnregistered",
         onSDLCloseNotification: "BasicCommunication.OnSDLClose",
-        onSDLConsentNeededNotification: "SDL.OnSDLConsentNeeded",
         onResumeAudioSourceNotification: "BasicCommunication.OnResumeAudioSource",
 
 
@@ -436,13 +436,13 @@ FFW.BasicCommunication = FFW.RPCObserver
                     this.MixingAudioSupported(request.id, true);
                 }
                 if (request.method == "BasicCommunication.AllowAllApps") {
-                    this.AllowAllApps(true);
+                    this.AllowAllApps(request.id, true);
                 }
                 if (request.method == "BasicCommunication.AllowApp") {
                     this.AllowApp(request);
                 }
                 if (request.method == "BasicCommunication.AllowDeviceToConnect") {
-                    this.AllowDeviceToConnect(request.id, request.method, allow);
+                    this.AllowDeviceToConnect(request.id, request.method, true);
                 }
                 if (request.method == "BasicCommunication.UpdateDeviceList") {
                     SDL.SDLModel.onGetDeviceList(request.params);
@@ -518,12 +518,16 @@ FFW.BasicCommunication = FFW.RPCObserver
                     } else if (request.params.level === 'LIMITED') {
                         SDL.SDLController.getApplicationModel(request.params.appID).level = 'LIMITED';
                         SDL.VRPopUp.updateVR();
-                        SDL.States.goToStates('info.apps');
+                        if (SDL.SDLController.model && SDL.SDLController.model.appID === request.params.appID) {
+                            SDL.States.goToStates('info.apps');
+                        }
                         SDL.InfoAppsView.showAppList();
                     } else if (request.params.level === 'NONE') {
                         SDL.SDLController.getApplicationModel(request.params.appID).level = 'NONE';
                         SDL.VRPopUp.updateVR();
-                        SDL.States.goToStates('info.apps');
+                        if (SDL.SDLController.model && SDL.SDLController.model.appID === request.params.appID) {
+                            SDL.States.goToStates('info.apps');
+                        }
                         SDL.InfoAppsView.showAppList();
                     } else if (request.params.level === 'BACKGROUND') {
                         SDL.SDLController.getApplicationModel(request.params.appID).level = 'BACKGROUND';
@@ -571,7 +575,7 @@ FFW.BasicCommunication = FFW.RPCObserver
             }
         },
 
-        /********************* Requests *********************/
+        /********************* Requests BEGIN *********************/
 
         /**
          * Send request if application was activated
@@ -597,62 +601,6 @@ FFW.BasicCommunication = FFW.RPCObserver
                 "params": {
                     "appID": appID
                 }
-            };
-            this.client.send(JSONMessage);
-        },
-
-        /**
-         * Send request if application was activated
-         *
-         * @param {Number} type
-         */
-        GetURLS: function(type) {
-
-            Em.Logger.log("FFW.SDL.GetURLS: Request from HMI!");
-
-            // send notification
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "id": this.client.generateId(),
-                "method": "SDL.GetURLS",
-                "params": {
-                }
-            };
-
-            if (type) {
-                JSONMessage.params.service = type;
-            }
-
-            this.client.send(JSONMessage);
-        },
-
-        /**
-         * Request from HMI to find out Policy Table status
-         */
-        GetStatusUpdate: function() {
-
-            Em.Logger.log("SDL.GetStatusUpdate: Request from HMI!");
-
-            // send repsonse
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "id": this.client.generateId(),
-                "method": "SDL.GetStatusUpdate",
-                "params": {}
-            };
-            this.client.send(JSONMessage);
-        },
-
-        UpdateSDL: function() {
-
-            Em.Logger.log("SDL.UpdateSDL: Request from HMI!");
-
-            // send repsonse
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "id": this.client.generateId(),
-                "method": "SDL.UpdateSDL",
-                "params": {}
             };
             this.client.send(JSONMessage);
         },
@@ -715,7 +663,114 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.client.send(JSONMessage);
         },
 
-        /********************* Responses *********************/
+        /**
+         * Send request if application was activated
+         *
+         * @param {Number} type
+         */
+        GetURLS: function(type) {
+
+            Em.Logger.log("FFW.SDL.GetURLS: Request from HMI!");
+
+            // send notification
+            var JSONMessage = {
+                "jsonrpc": "2.0",
+                "id": this.client.generateId(),
+                "method": "SDL.GetURLS",
+                "params": {
+                }
+            };
+
+            if (type) {
+                JSONMessage.params.service = type;
+            }
+
+            this.client.send(JSONMessage);
+        },
+
+        /**
+         * Request from HMI to find out Policy Table status
+         */
+        GetStatusUpdate: function() {
+
+            Em.Logger.log("SDL.GetStatusUpdate: Request from HMI!");
+
+            // send repsonse
+            var JSONMessage = {
+                "jsonrpc": "2.0",
+                "id": this.client.generateId(),
+                "method": "SDL.GetStatusUpdate",
+                "params": {}
+            };
+            this.client.send(JSONMessage);
+        },
+
+        UpdateSDL: function() {
+
+            Em.Logger.log("SDL.UpdateSDL: Request from HMI!");
+
+            // send repsonse
+            var JSONMessage = {
+                "jsonrpc": "2.0",
+                "id": this.client.generateId(),
+                "method": "SDL.UpdateSDL",
+                "params": {}
+            };
+            this.client.send(JSONMessage);
+        },
+
+        /**
+         * Request for list of avaliable devices
+         */
+        getDeviceList: function() {
+
+            Em.Logger.log("FFW.BasicCommunication.GetDeviceList");
+
+            this.getDeviceListRequestID = this.client.generateID();
+
+            var JSONMessage = {
+                "id": this.getDeviceListRequestID,
+                "jsonrpc": "2.0",
+                "method": "BasicCommunication.GetDeviceList"
+            };
+            this.client.send(JSONMessage);
+        },
+
+        /********************* Requests END *********************/
+
+        /********************* Responses BEGIN *********************/
+
+        /**
+         * Send error response from onRPCRequest
+         *
+         * @param {Number}
+         *            resultCode
+         * @param {Number}
+         *            id
+         * @param {String}
+         *            method
+         */
+        sendError: function(resultCode, id, method, message) {
+
+            Em.Logger.log("FFW." + method + "Response");
+
+            if (resultCode != SDL.SDLModel.data.resultCode["SUCCESS"]) {
+
+                // send repsonse
+                var JSONMessage = {
+                    "jsonrpc": "2.0",
+                    "id": id,
+                    "error": {
+                        "code": resultCode, // type (enum) from SDL protocol
+                        "message": message,
+                        "data": {
+                            "method": method
+                        }
+                    }
+                };
+                this.client.send(JSONMessage);
+            }
+        },
 
         /**
          * send response from onRPCRequest
@@ -745,6 +800,122 @@ FFW.BasicCommunication = FFW.RPCObserver
                 this.client.send(JSONMessage);
             }
         },
+
+        /**
+         * send response from onRPCRequest
+         *
+         * @param {Number}
+         *            id
+         * @param {String}
+         *            method
+         * @param {Boolean}
+         *            allow
+         */
+        AllowDeviceToConnect: function(id, method, allow) {
+
+            Em.Logger.log("FFW." + method + "Response");
+
+            // send repsonse
+            var JSONMessage = {
+                "jsonrpc": "2.0",
+                "id": id,
+                "result": {
+                    "code": SDL.SDLModel.data.resultCode["SUCCESS"], // type (enum)
+                    // from SDL
+                    // protocol
+                    "method": method,
+                    "allow": allow
+                }
+            };
+            this.client.send(JSONMessage);
+
+        },
+
+        /**
+         * Response with params of the last one supports mixing audio (ie
+         * recording TTS command and playing audio).
+         *
+         * @params {Number}
+         */
+        MixingAudioSupported: function(requestid, attenuatedSupported) {
+
+            Em.Logger.log("FFW.BasicCommunication.MixingAudioSupported Response");
+
+            // send request
+
+            var JSONMessage = {
+                "id": requestid,
+                "jsonrpc": "2.0",
+                "result": {
+                    "code": SDL.SDLModel.data.resultCode["SUCCESS"],
+                    "attenuatedSupported": attenuatedSupported,
+                    "method": "BasicCommunication.MixingAudioSupported"
+                }
+            };
+            this.client.send(JSONMessage);
+        },
+
+        /**
+         * Response with Results by user/HMI allowing SDL functionality or
+         * disallowing access to all mobile apps.
+         *
+         * @params {Number}
+         */
+        AllowAllApps: function(request, allowed) {
+
+            Em.Logger.log("FFW.BasicCommunication.AllowAllApps Response");
+
+            // send request
+
+            var JSONMessage = {
+                "id": request.id,
+                "jsonrpc": "2.0",
+                "result": {
+                    "code": SDL.SDLModel.data.resultCode["SUCCESS"],
+                    "method": request.method,
+                    "allowed": allowed
+                }
+            };
+            this.client.send(JSONMessage);
+        },
+
+        /**
+         * Response with result of allowed application
+         *
+         * @params {Number}
+         */
+        AllowApp: function(request) {
+
+            Em.Logger.log("FFW.BasicCommunication.AllowAppResponse");
+
+            var allowedFunctions = [];
+            request.params.appPermissions.forEach(function(entry) {
+                    allowedFunctions.push(
+                        {
+                            name: entry,
+                            allowed: true
+                        }
+                    )
+                }
+            );
+
+            // send request
+
+            var JSONMessage = {
+                "id": request.id,
+                "jsonrpc": "2.0",
+                "result": {
+                    "code": SDL.SDLModel.data.resultCode["SUCCESS"],
+                    "method": "BasicCommunication.AllowApp",
+                    "allowedFunctions": allowedFunctions
+                }
+            };
+            this.client.send(JSONMessage);
+        },
+
+        /********************* Responses end *********************/
+
+        /********************* Notifications BEGIN *********************/
 
         /**
          * Notifies if functionality was changed
@@ -852,35 +1023,6 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.client.send(JSONMessage);
         },
 
-        /**
-         * send response from onRPCRequest
-         *
-         * @param {Number}
-         *            id
-         * @param {String}
-         *            method
-         * @param {Boolean}
-         *            allow
-         */
-        AllowDeviceToConnect: function(id, method, allow) {
-
-            Em.Logger.log("FFW." + method + "Response");
-
-            // send repsonse
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "id": id,
-                "result": {
-                    "code": SDL.SDLModel.data.resultCode["SUCCESS"], // type (enum)
-                    // from SDL
-                    // protocol
-                    "method": method,
-                    "allow": true
-                }
-            };
-            this.client.send(JSONMessage);
-
-        },
 
         /**
          * notification that UI is ready BasicCommunication should be sunscribed
@@ -897,7 +1039,7 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.client.send(JSONMessage);
         },
 
-/**
+        /**
          * Sent notification to SDL when HMI closes
          */
         OnIgnitionCycleOver: function() {
@@ -995,22 +1137,6 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.client.send(JSONMessage);
         },
 
-        /**
-         * Request for list of avaliable devices
-         */
-        getDeviceList: function() {
-
-            Em.Logger.log("FFW.BasicCommunication.GetDeviceList");
-
-            this.getDeviceListRequestID = this.client.generateID();
-
-            var JSONMessage = {
-                "id": this.getDeviceListRequestID,
-                "jsonrpc": "2.0",
-                "method": "BasicCommunication.GetDeviceList"
-            };
-            this.client.send(JSONMessage);
-        },
 
         /**
          * Invoked by UI component when user switches to any functionality which
@@ -1135,88 +1261,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         },
 
         /**
-         * Response with params of the last one supports mixing audio (ie
-         * recording TTS command and playing audio).
-         *
-         * @params {Number}
-         */
-        MixingAudioSupported: function(requestid, attenuatedSupported) {
-
-            Em.Logger.log("FFW.BasicCommunication.MixingAudioSupportedResponse");
-
-            // send request
-
-            var JSONMessage = {
-                "id": requestid,
-                "jsonrpc": "2.0",
-                "result": {
-                    "code": 0,
-                    "attenuatedSupported": attenuatedSupported,
-                    "method": "BasicCommunication.MixingAudioSupported"
-                }
-            };
-            this.client.send(JSONMessage);
-        },
-
-        /**
-         * Response with Results by user/HMI allowing SDL functionality or
-         * disallowing access to all mobile apps.
-         *
-         * @params {Number}
-         */
-        AllowAllApps: function(allowed) {
-
-            Em.Logger.log("FFW.BasicCommunication.AllowAllAppsResponse");
-
-            // send request
-
-            var JSONMessage = {
-                "id": this.client.idStart,
-                "jsonrpc": "2.0",
-                "result": {
-                    "code": 0,
-                    "method": "BasicCommunication.AllowAllApps",
-                    "allowed": allowed
-                }
-            };
-            this.client.send(JSONMessage);
-        },
-
-        /**
-         * Response with result of allowed application
-         *
-         * @params {Number}
-         */
-        AllowApp: function(request) {
-
-            Em.Logger.log("FFW.BasicCommunication.AllowAppResponse");
-
-            var allowedFunctions = [];
-            request.params.appPermissions.forEach(function(entry) {
-                    allowedFunctions.push(
-                        {
-                            name: entry,
-                            allowed: true
-                        }
-                    )
-                }
-            );
-
-            // send request
-
-            var JSONMessage = {
-                "id": request.id,
-                "jsonrpc": "2.0",
-                "result": {
-                    "code": 0,
-                    "method": "BasicCommunication.AllowApp",
-                    "allowedFunctions": allowedFunctions
-                }
-            };
-            this.client.send(JSONMessage);
-        },
-
-        /**
          * Notifies if device was choosed
          *
          * @param {String}
@@ -1260,37 +1304,6 @@ FFW.BasicCommunication = FFW.RPCObserver
                 }
             };
             this.client.send(JSONMessage);
-        },
-        /**
-         * Send error response from onRPCRequest
-         *
-         * @param {Number}
-         *            resultCode
-         * @param {Number}
-         *            id
-         * @param {String}
-         *            method
-         */
-        sendError: function(resultCode, id, method, message) {
-
-            Em.Logger.log("FFW." + method + "Response");
-
-            if (resultCode != SDL.SDLModel.data.resultCode["SUCCESS"]) {
-
-                // send repsonse
-                var JSONMessage = {
-                    "jsonrpc": "2.0",
-                    "id": id,
-                    "error": {
-                        "code": resultCode, // type (enum) from SDL protocol
-                        "message": message,
-                        "data": {
-                            "method": method
-                        }
-                    }
-                };
-                this.client.send(JSONMessage);
-            }
         },
 
         /**
@@ -1371,5 +1384,7 @@ FFW.BasicCommunication = FFW.RPCObserver
 
             this.client.send(JSONMessage);
         }
+
+        /********************* Notifications END *********************/
 
     });

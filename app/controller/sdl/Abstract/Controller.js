@@ -663,8 +663,6 @@ SDL.ABSController = Em.Object.extend( {
 
         FFW.VR.interactionResponse(SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction, result, choiceID);
 
-        SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = null;
-
         SDL.SDLModel.data.set('VRActive', false);
 
         SDL.InteractionChoicesView.timerUpdate();
@@ -674,6 +672,8 @@ SDL.ABSController = Em.Object.extend( {
         }
 
         SDL.SDLModel.data.interactionData.helpPrompt = null;
+
+        SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = null;
     },
     /**
      * Method to sent notification for Alert

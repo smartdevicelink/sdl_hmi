@@ -93,26 +93,6 @@ SDL.SDLMediaController = Em.Object.create( {
         FFW.BasicCommunication.ActivateApp(this.currentAppId);
     },
 
-    /** SDL perform interaction action from VR */
-    onVRPerformInteractionChoosed: function(element) {
-
-        if (SDL.States.media.sdl.sdlperforminteractionchoise.active) {
-            FFW.VR.onChoise(element.choiceID);
-            SDL.States.back();
-        }
-
-    },
-
-    /** SDL perform interaction action */
-    onPerformInteractionChoosed: function(element) {
-
-        if (SDL.States.media.sdl.sdlperforminteractionchoise.active) {
-            FFW.UI.interactionResponse("SUCCESS", element.choiceID);
-            SDL.States.back();
-        }
-
-    },
-
     /**
      * Method hides sdl activation button and sdl application
      * 

@@ -820,10 +820,17 @@ SDL.ABSModel = Em.Object.extend({
             return;
         }
 
+        var appID = message.params.appID;
+
         setTimeout(function(){
-            if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
+            if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
+                SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
+            } else if (!message.params.grammarID
+            && SDL.SDLController.getApplicationModel(message.params.appID).activeRequests.uiPerformInteraction) {
+                // If UI PerformInteraction session is still active and PerformInteraction mode is MANUAL only
                 SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
             }
+
         }, message.params.timeout - 2000); //Magic numer is a platform depended HMI behavior: -2 seconds for timeout prompt
 
         SDL.SDLModel.onPrompt(message.params.initialPrompt);
