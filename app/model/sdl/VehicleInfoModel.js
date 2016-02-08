@@ -37,7 +37,7 @@ SDL.SDLVehicleInfoModel = Em.Object
 
         /**
          * Stored VehicleInfo transmission state Data
-         * 
+         *
          * @type {Array}
          */
         vehicleInfoPRNDL: [
@@ -58,9 +58,23 @@ SDL.SDLVehicleInfoModel = Em.Object
         /**
          * Data changed in Odometr Input in VehicleInfo popUp
          *
-         * @type {String}
+         * @type {Number}
          */
         odometrInputBinding: 'this.vehicleData.odometer',
+
+        /**
+         * Data changed in fuelLevel Input in VehicleInfo popUp
+         *
+         * @type {Number}
+         */
+        fuelLevelInputBinding: 'this.vehicleData.fuelLevel',
+
+        /**
+         * Data changed in speed Input in VehicleInfo popUp
+         *
+         * @type {Number}
+         */
+        speedInputBinding: 'this.vehicleData.speed',
 
         /**
          * PRNDL state value
@@ -494,5 +508,31 @@ SDL.SDLVehicleInfoModel = Em.Object
             jsonData["odometer"] = parseInt(this.odometrInput);
             FFW.VehicleInfo.OnVehicleData(jsonData);
 
-        }.observes('this.odometrInput')
+        }.observes('this.odometrInput'),
+
+        /**
+         * Function send all vehicle conditions on FFW.VehicleInfo.OnVehicleData
+         * for notification when data changes
+         */
+        onFuelLevelDataChanged: function() {
+
+            var jsonData = {};
+
+            jsonData["fuelLevel"] = parseInt(this.fuelLevelInput);
+            FFW.VehicleInfo.OnVehicleData(jsonData);
+
+        }.observes('this.fuelLevelInput'),
+
+        /**
+         * Function send all vehicle conditions on FFW.VehicleInfo.OnVehicleData
+         * for notification when data changes
+         */
+        onSpeedDataChanged: function() {
+
+            var jsonData = {};
+
+            jsonData["speed"] = parseInt(this.speedInput);
+            FFW.VehicleInfo.OnVehicleData(jsonData);
+
+        }.observes('this.speedInput')
     });

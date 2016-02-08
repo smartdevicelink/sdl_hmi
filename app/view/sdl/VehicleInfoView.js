@@ -45,9 +45,13 @@ SDL.VehicleInfo = Em.ContainerView.create( {
 
     childViews:
         [
-            'prndl',
+            'prndlLabel',
             'vehicleInfoLabel',
             'prndlSelect',
+            'fuelLevelInput',
+            'fuelLevelLabel',
+            'speedInput',
+            'speedLabel',
             'ecu1Title',
             'ecu1',
             'ecu2',
@@ -163,13 +167,37 @@ SDL.VehicleInfo = Em.ContainerView.create( {
     /**
      * Title of prndl group of parameters stored in VehicleInfo model
      */
-    prndl: SDL.Label.extend( {
+    prndlLabel: SDL.Label.extend( {
 
-        elementId: 'prndl',
+        elementId: 'prndlLabel',
 
-        classNames: 'prndl',
+        classNames: 'prndlLabel',
 
         content: 'PRNDL'
+    } ),
+
+    /**
+     * Title of fuel level group of parameters stored in VehicleInfo model
+     */
+    fuelLevelLabel: SDL.Label.extend( {
+
+        elementId: 'fuelLevelLabel',
+
+        classNames: 'fuelLevelLabel',
+
+        content: 'Fuel Level'
+    } ),
+
+    /**
+     * Title of peed group of parameters stored in VehicleInfo model
+     */
+    speedLabel: SDL.Label.extend( {
+
+        elementId: 'speedLabel',
+
+        classNames: 'speedLabel',
+
+        content: 'Speed'
     } ),
 
     /**
@@ -186,6 +214,32 @@ SDL.VehicleInfo = Em.ContainerView.create( {
 
         valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState'
     } ),
+
+    /**
+     * Input for fuel level value changes
+     */
+    fuelLevelInput: Ember.TextField.extend({
+        elementId: "fuelLevelInput",
+        classNames: "fuelLevelInput",
+        keyUp: function(event, view) {
+            if(event.which == 13){
+                SDL.SDLVehicleInfoModel.set('fuelLevelInput', parseInt(this.value));
+            }
+        }
+    }),
+
+    /**
+     * Input for speed value changes
+     */
+    speedInput: Ember.TextField.extend({
+        elementId: "speedInput",
+        classNames: "speedInput",
+        keyUp: function(event, view) {
+            if(event.which == 13){
+                SDL.SDLVehicleInfoModel.set('speedInput', parseInt(this.value));
+            }
+        }
+    }),
 
     /**
      * Button to send OnEmergencyEvent to SDL

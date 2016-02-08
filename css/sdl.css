@@ -606,7 +606,9 @@
 #systemRequestView .systemRequestViewTitle,
 #systemRequestView .appIDSelectTitle,
 #tbtClientStateView .tbtClientState,
-#VehicleInfo .prndl,
+#VehicleInfo .prndlLabel,
+#VehicleInfo .fuelLevelLabel,
+#VehicleInfo .speedLabel,
 #PrimaryDevice .chooseLabel{
 	top: 70px;
 	width: 600px;
@@ -614,6 +616,20 @@
 	height: 20px;
 	padding: 10px;
 	background: #535353;
+}
+
+#VehicleInfo .prndlLabel{
+	width: 140px;
+}
+
+#VehicleInfo .speedLabel{
+	width: 140px;
+	left: 507px;
+}
+
+#VehicleInfo .fuelLevelLabel{
+	width: 140px;
+	left: 271px;
 }
 
 #PrimaryDevice .chooseLabel {
@@ -635,6 +651,8 @@
 #systemRequestView .systemRequestViewSelect,
 #tbtClientStateView .tbtClientStateSelect,
 #VehicleInfo .prndlSelect,
+#VehicleInfo .fuelLevelInput,
+#VehicleInfo .speedInput,
 #info_apps_deviceLocation_view .devicesSelect,
 #info_apps_deviceLocation_view .locationSelect,
 #systemRequestView .appIDSelect,
@@ -646,6 +664,22 @@
 	height: 40px;
 	color: white;
 	background: #393939;
+}
+
+#VehicleInfo .prndlSelect{
+	left: 45px;
+}
+
+#VehicleInfo .fuelLevelInput{
+	left: 281px !important;
+	width: 120px !important;
+	top: 125px !important;
+}
+
+#VehicleInfo .speedInput{
+	left: 517px !important;
+	width: 120px !important;
+	top: 125px !important;
 }
 
 #info_apps_deviceLocation_view .devicesSelect{
@@ -753,6 +787,8 @@
 }
 
 #VehicleInfo .odometrInput,
+#VehicleInfo .speedInput,
+#VehicleInfo .fuelLevelInput,
 #systemRequestView .urlsInput,
 #systemRequestView .policyAppIdInput,
 #systemRequestView .fileNameInput,
@@ -761,7 +797,7 @@
     position: absolute;
     top: 242px;
     left: 373px;
-    height: 48px;
+    /*height: 48px;*/
     border: 1px solid #333;
     border-radius: 2px;
     background: rgba(119, 119, 119, 0.42);
