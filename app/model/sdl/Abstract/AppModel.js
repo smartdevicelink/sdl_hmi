@@ -409,7 +409,7 @@ SDL.ABSAppModel = Em.Object.extend({
 
         if (this.commandsList['top'].filterProperty('commandID', menuID)) {
             this.get('commandsList.top').removeObjects(this.get('commandsList.top').filterProperty('menuID', menuID));
-            delete(this.commandsList[menuID]);
+            //delete(this.commandsList[menuID]);
         }
 
         return SDL.SDLModel.data.resultCode['SUCCESS'];
