@@ -516,10 +516,19 @@ SDL.SDLVehicleInfoModel = Em.Object
          */
         onFuelLevelDataChanged: function() {
 
-            var jsonData = {};
+            var fuelLevel = parseInt(this.fuelLevelInput);
 
-            jsonData["fuelLevel"] = parseInt(this.fuelLevelInput);
-            FFW.VehicleInfo.OnVehicleData(jsonData);
+            Em.Logger.log("FFW.VehicleInfo.OnVehicleData");
+
+            // send repsonse
+            var JSONMessage = '{"jsonrpc": "2.0","method": "VehicleInfo.OnVehicleData","params": {"fuelLevel":'+fuelLevel+'.0}}';
+
+            Em.Logger.log(JSONMessage);
+
+            var logTime = new Date();
+            console.log(logTime.getHours() + ":" + logTime.getMinutes() + ":" + logTime.getSeconds() + ":" + logTime.getMilliseconds());
+
+            FFW.VehicleInfo.client.socket.send(JSONMessage);
 
         }.observes('this.fuelLevelInput'),
 
@@ -529,10 +538,19 @@ SDL.SDLVehicleInfoModel = Em.Object
          */
         onSpeedDataChanged: function() {
 
-            var jsonData = {};
+            var speed = parseInt(this.speedInput);
 
-            jsonData["speed"] = parseInt(this.speedInput);
-            FFW.VehicleInfo.OnVehicleData(jsonData);
+            Em.Logger.log("FFW.VehicleInfo.OnVehicleData");
+
+            // send repsonse
+            var JSONMessage = '{"jsonrpc": "2.0","method": "VehicleInfo.OnVehicleData","params": {"speed":'+speed+'.0}}';
+
+            Em.Logger.log(JSONMessage);
+
+            var logTime = new Date();
+            console.log(logTime.getHours() + ":" + logTime.getMinutes() + ":" + logTime.getSeconds() + ":" + logTime.getMilliseconds());
+
+            FFW.VehicleInfo.client.socket.send(JSONMessage);
 
         }.observes('this.speedInput')
     });
