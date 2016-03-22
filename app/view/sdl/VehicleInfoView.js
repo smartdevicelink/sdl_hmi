@@ -223,7 +223,7 @@ SDL.VehicleInfo = Em.ContainerView.create( {
         classNames: "fuelLevelInput",
         keyUp: function(event, view) {
             if(event.which == 13){
-                SDL.SDLVehicleInfoModel.set('fuelLevelInput', parseInt(this.value));
+                SDL.SDLVehicleInfoModel.set('fuelLevelInput', parseFloat(this.value));
             }
         }
     }),
@@ -236,7 +236,7 @@ SDL.VehicleInfo = Em.ContainerView.create( {
         classNames: "speedInput",
         keyUp: function(event, view) {
             if(event.which == 13){
-                SDL.SDLVehicleInfoModel.set('speedInput', parseInt(this.value));
+                SDL.SDLVehicleInfoModel.set('speedInput', parseFloat(this.value));
             }
         }
     }),
