@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -25,416 +25,415 @@
  */
 /*
  * Reference implementation of Buttons component.
- * 
+ *
  * Buttons sends to SDLCore press and hold events of soft buttons, presets and
  * some hard keys.
  */
 
-FFW.Buttons = FFW.RPCObserver.create( {
+FFW.Buttons = FFW.RPCObserver.create({
 
-    /*
-     * access to basic RPC functionality
-     */
-    client: FFW.RPCClient.create( {
-        componentName: "Buttons"
-    }),
+  /*
+   * access to basic RPC functionality
+   */
+  client: FFW.RPCClient.create({
+    componentName: 'Buttons'
+  }),
 
-    onButtonSubscriptionSubscribeRequestID: -1,
+  onButtonSubscriptionSubscribeRequestID: -1,
 
-    onButtonSubscriptionUnsubscribeRequestID: -1,
+  onButtonSubscriptionUnsubscribeRequestID: -1,
 
-    // const
-    onButtonSubscriptionNotification: "Buttons.OnButtonSubscription",
+  // const
+  onButtonSubscriptionNotification: 'Buttons.OnButtonSubscription',
 
-    /**
-     * Contains response codes for request that should be processed but there were some kind of errors
-     * Error codes will be injected into response.
-     */
-    errorResponsePull: {},
+  /**
+   * Contains response codes for request that should be processed but there were some kind of errors
+   * Error codes will be injected into response.
+   */
+  errorResponsePull: {},
 
-    /*
-     * connect to RPC bus
-     */
-    connect: function() {
+  /*
+   * connect to RPC bus
+   */
+  connect: function() {
 
-        this.client.connect(this, 200); // Magic number is unique identifier for
-        // component
-    },
+    this.client.connect(this, 200); // Magic number is unique identifier for
+    // component
+  },
 
-    /*
-     * disconnect from RPC bus
-     */
-    disconnect: function() {
+  /*
+   * disconnect from RPC bus
+   */
+  disconnect: function() {
 
-        this.onRPCUnregistered();
-        this.client.disconnect();
-    },
+    this.onRPCUnregistered();
+    this.client.disconnect();
+  },
 
-    /*
-     * Client is registered - we can send request starting from this point of
-     * time
-     */
-    onRPCRegistered: function() {
+  /*
+   * Client is registered - we can send request starting from this point of
+   * time
+   */
+  onRPCRegistered: function() {
 
-        Em.Logger.log("FFW.Buttons.onRPCRegistered");
-        this._super();
+    Em.Logger.log('FFW.Buttons.onRPCRegistered');
+    this._super();
 
-        // subscribe to notifications
-        this.onButtonSubscriptionSubscribeRequestID = this.client.subscribeToNotification(this.onButtonSubscriptionNotification);
-    },
+    // subscribe to notifications
+    this.onButtonSubscriptionSubscribeRequestID = this.client.subscribeToNotification(this.onButtonSubscriptionNotification);
+  },
 
-    /*
-     * Client is unregistered - no more requests
-     */
-    onRPCUnregistered: function() {
+  /*
+   * Client is unregistered - no more requests
+   */
+  onRPCUnregistered: function() {
 
-        Em.Logger.log("FFW.Buttons.onRPCUnregistered");
-        this._super();
+    Em.Logger.log('FFW.Buttons.onRPCUnregistered');
+    this._super();
 
-        // unsubscribe from notifications
-        this.onButtonSubscriptionUnsubscribeRequestID = this.client.unsubscribeFromNotification(this.onButtonSubscriptionNotification);
-    },
+    // unsubscribe from notifications
+    this.onButtonSubscriptionUnsubscribeRequestID = this.client.unsubscribeFromNotification(this.onButtonSubscriptionNotification);
+  },
 
-    /*
-     * Client disconnected.
-     */
-    onRPCDisconnected: function() {
+  /*
+   * Client disconnected.
+   */
+  onRPCDisconnected: function() {
 
-    },
+  },
 
-    /*
-     * when result is received from RPC component this function is called It is
-     * the propriate place to check results of reuqest execution Please use
-     * previously store reuqestID to determine to which request repsonse belongs
-     * to
-     */
-    onRPCResult: function(response) {
+  /*
+   * when result is received from RPC component this function is called It is
+   * the propriate place to check results of reuqest execution Please use
+   * previously store reuqestID to determine to which request repsonse belongs
+   * to
+   */
+  onRPCResult: function(response) {
 
-        Em.Logger.log("FFW.Buttons.onRPCResult");
-        this._super();
-    },
+    Em.Logger.log('FFW.Buttons.onRPCResult');
+    this._super();
+  },
 
-    /*
-     * handle RPC erros here
-     */
-    onRPCError: function(error) {
+  /*
+   * handle RPC erros here
+   */
+  onRPCError: function(error) {
 
-        Em.Logger.log("FFW.Buttons.onRPCError");
-        this._super();
-    },
+    Em.Logger.log('FFW.Buttons.onRPCError');
+    this._super();
+  },
 
-    /*
-     * handle RPC notifications here
-     */
-    onRPCNotification: function(notification) {
+  /*
+   * handle RPC notifications here
+   */
+  onRPCNotification: function(notification) {
 
-        Em.Logger.log("FFW.Buttons.onRPCNotification");
-        this._super();
-    },
+    Em.Logger.log('FFW.Buttons.onRPCNotification');
+    this._super();
+  },
 
-    /*
-     * handle RPC requests here
-     */
-    onRPCRequest: function(request) {
+  /*
+   * handle RPC requests here
+   */
+  onRPCRequest: function(request) {
 
-        Em.Logger.log("FFW.Buttons.onRPCRequest");
-        this._super();
+    Em.Logger.log('FFW.Buttons.onRPCRequest');
+    this._super();
 
-        if (request.method == "Buttons.ButtonPress") {
+    if (request.method == 'Buttons.ButtonPress') {
 
-            Em.Logger.log("FFW." + request.method + "Response");
+      Em.Logger.log('FFW.' + request.method + 'Response');
 
-            if (SDL.SDLController.getInteriorZone(request.params.zone) === null) {
-                this.sendError(
-                    SDL.SDLModel.data.resultCode["UNSUPPORTED_RESOURCE"],
-                    request.id,
-                    request.method,
-                    "Unsupported interior zone!"
-                );
-                return;
-            }
+      if (SDL.SDLController.getInteriorZone(request.params.zone) === null) {
+        this.sendError(
+            SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+            request.id,
+            request.method,
+            'Unsupported interior zone!'
+        );
+        return;
+      }
 
-            var deviceName = SDL.SDLController.getApplicationModel(request.params.appID).deviceName;
+      var deviceName = SDL.SDLController.getApplicationModel(request.params.appID).deviceName;
 
-            if ((SDL.SDLModel.driverDeviceInfo
-                && deviceName == SDL.SDLModel.driverDeviceInfo.name)
-                || !SDL.SDLController.reverseAppsAllowed) {
+      if ((SDL.SDLModel.driverDeviceInfo          &&
+                deviceName == SDL.SDLModel.driverDeviceInfo.name)          ||
+                !SDL.SDLController.reverseAppsAllowed) {
 
-                this.sendButtonsResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
-                return;
-            }
+        this.sendButtonsResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
+        return;
+      }
 
-            if (request.params.moduleType === "CLIMATE") {
+      if (request.params.moduleType === 'CLIMATE') {
 
-                if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
-                    SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
-                } else if (SDL.SDLModel.data.climateFirstConsentedApp != request.params.appID) {
-                    this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, "To many unconsented requests!");
-                    return;
-                }
-
-            } else {
-                if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
-                    SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
-                } else if (SDL.SDLModel.data.radioFirstConsentedApp != request.params.appID) {
-                    this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, "To many unconsented requests!");
-                    return;
-                }
-            }
-
-            this.sendButtonsResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+        if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
+          SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
+        } else if (SDL.SDLModel.data.climateFirstConsentedApp != request.params.appID) {
+          this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'To many unconsented requests!');
+          return;
         }
 
-        if (request.method == "Buttons.GetCapabilities") {
+      } else {
+        if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
+          SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
+        } else if (SDL.SDLModel.data.radioFirstConsentedApp != request.params.appID) {
+          this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'To many unconsented requests!');
+          return;
+        }
+      }
 
-            // send repsonse
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "id": request.id,
-                "result": {
-                    "capabilities": [
+      this.sendButtonsResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+    }
+
+    if (request.method == 'Buttons.GetCapabilities') {
+
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': request.id,
+        'result': {
+          'capabilities': [
                         {
-                            "name": "PRESET_0",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_0',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "PRESET_1",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_1',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "PRESET_2",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_2',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "PRESET_3",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_3',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "PRESET_4",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_4',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "PRESET_5",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_5',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "PRESET_6",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_6',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "PRESET_7",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_7',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "PRESET_8",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_8',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "PRESET_9",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'PRESET_9',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "OK",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'OK',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "SEEKLEFT",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'SEEKLEFT',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "SEEKRIGHT",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'SEEKRIGHT',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "TUNEUP",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'TUNEUP',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "TUNEDOWN",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'TUNEDOWN',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }, {
-                            "name": "CUSTOM_BUTTON",
-                            "shortPressAvailable": true,
-                            "longPressAvailable": true,
-                            "upDownAvailable": true
+                          'name': 'CUSTOM_BUTTON',
+                          'shortPressAvailable': true,
+                          'longPressAvailable': true,
+                          'upDownAvailable': true
                         }
                     ],
-                    "presetBankCapabilities": {
-                        "onScreenPresetsAvailable": true
-                    },
-                    "code": 0,
-                    "method": "Buttons.GetCapabilities"
-                }
-            };
-            this.client.send(JSONMessage);
+          'presetBankCapabilities': {
+            'onScreenPresetsAvailable': true
+          },
+          'code': 0,
+          'method': 'Buttons.GetCapabilities'
         }
-    },
-
-
-    /**
-     * Send response from onRPCRequest
-     *
-     * @param {Number}
-     *            resultCode
-     * @param {Number}
-     *            id
-     * @param {String}
-     *            method
-     */
-    sendButtonsResult: function(resultCode, id, method) {
-
-        Em.Logger.log("FFW." + method + "Response");
-
-        if (resultCode === SDL.SDLModel.data.resultCode["SUCCESS"]) {
-
-            // send repsonse
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "id": id,
-                "result": {
-                    "code": resultCode,
-                    "method": method
-                }
-            };
-            this.client.send(JSONMessage);
-        }
-    },
-
-    /**
-     * Send error response from onRPCRequest
-     *
-     * @param {Number}
-     *            resultCode
-     * @param {Number}
-     *            id
-     * @param {String}
-     *            method
-     */
-    sendError: function(resultCode, id, method, message) {
-
-        Em.Logger.log("FFW." + method + "Response");
-
-        if (resultCode) {
-
-            // send repsonse
-            var JSONMessage = {
-                "jsonrpc": "2.0",
-                "id": id,
-                "error": {
-                    "code": resultCode, // type (enum) from SDL protocol
-                    "message": message,
-                    "data": {
-                        "method": method
-                    }
-                }
-            };
-            this.client.send(JSONMessage);
-        }
-    },
-
-    /*
-     * Notifies the ButtonsRPC that the web is all set. Should be called twice:
-     * when the RPC link is up or failed to connect and all the views are
-     * rendered.
-     */
-    buttonPressed: function(id, type) {
-
-        Em.Logger.log("FFW.Buttons.buttonPressed " + type);
-
-        var JSONMessage = {
-            "jsonrpc": "2.0",
-            "method": "Buttons.OnButtonPress",
-            "params": {
-                "name": id,
-                "mode": type
-            }
-        };
-
-        this.client.send(JSONMessage);
-    },
-
-    /*
-     * Notifies the ButtonsRPC that the web is all set. Should be called twice:
-     * when the RPC link is up or failed to connect and all the views are
-     * rendered.
-     */
-    buttonEvent: function(id, type) {
-
-        Em.Logger.log("FFW.Buttons.OnButtonEvent " + type);
-
-        var JSONMessage = {
-            "jsonrpc": "2.0",
-            "method": "Buttons.OnButtonEvent",
-            "params": {
-                "name": id,
-                "mode": type
-            }
-        };
-
-        this.client.send(JSONMessage);
-
-    },
-
-    /*
-     * Notifies the ButtonsRPC that the web is all set. Should be called twice:
-     * when the RPC link is up or failed to connect and all the views are
-     * rendered.
-     */
-    buttonPressedCustom: function(name, type, softButtonID, appID) {
-
-        Em.Logger.log("FFW.Buttons.OnButtonPress " + type);
-
-        var JSONMessage = {
-            "jsonrpc": "2.0",
-            "method": "Buttons.OnButtonPress",
-            "params": {
-                "name": name,
-                "mode": type,
-                "customButtonID": softButtonID,
-                "appID": appID
-            }
-        };
-
-        this.client.send(JSONMessage);
-    },
-
-    /*
-     * Notifies the ButtonsRPC that the web is all set. Should be called twice:
-     * when the RPC link is up or failed to connect and all the views are
-     * rendered.
-     */
-    buttonEventCustom: function(name, type, softButtonID, appID) {
-
-        Em.Logger.log("FFW.Buttons.OnButtonEvent " + type);
-
-        var JSONMessage = {
-            "jsonrpc": "2.0",
-            "method": "Buttons.OnButtonEvent",
-            "params": {
-                "name": name,
-                "mode": type,
-                "customButtonID": softButtonID,
-                "appID": appID
-            }
-        };
-
-        this.client.send(JSONMessage);
-
+      };
+      this.client.send(JSONMessage);
     }
+  },
+
+  /**
+   * Send response from onRPCRequest
+   *
+   * @param {Number}
+   *            resultCode
+   * @param {Number}
+   *            id
+   * @param {String}
+   *            method
+   */
+  sendButtonsResult: function(resultCode, id, method) {
+
+    Em.Logger.log('FFW.' + method + 'Response');
+
+    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'result': {
+          'code': resultCode,
+          'method': method
+        }
+      };
+      this.client.send(JSONMessage);
+    }
+  },
+
+  /**
+   * Send error response from onRPCRequest
+   *
+   * @param {Number}
+   *            resultCode
+   * @param {Number}
+   *            id
+   * @param {String}
+   *            method
+   */
+  sendError: function(resultCode, id, method, message) {
+
+    Em.Logger.log('FFW.' + method + 'Response');
+
+    if (resultCode) {
+
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'error': {
+          'code': resultCode, // type (enum) from SDL protocol
+          'message': message,
+          'data': {
+            'method': method
+          }
+        }
+      };
+      this.client.send(JSONMessage);
+    }
+  },
+
+  /*
+   * Notifies the ButtonsRPC that the web is all set. Should be called twice:
+   * when the RPC link is up or failed to connect and all the views are
+   * rendered.
+   */
+  buttonPressed: function(id, type) {
+
+    Em.Logger.log('FFW.Buttons.buttonPressed ' + type);
+
+    var JSONMessage = {
+      'jsonrpc': '2.0',
+      'method': 'Buttons.OnButtonPress',
+      'params': {
+        'name': id,
+        'mode': type
+      }
+    };
+
+    this.client.send(JSONMessage);
+  },
+
+  /*
+   * Notifies the ButtonsRPC that the web is all set. Should be called twice:
+   * when the RPC link is up or failed to connect and all the views are
+   * rendered.
+   */
+  buttonEvent: function(id, type) {
+
+    Em.Logger.log('FFW.Buttons.OnButtonEvent ' + type);
+
+    var JSONMessage = {
+      'jsonrpc': '2.0',
+      'method': 'Buttons.OnButtonEvent',
+      'params': {
+        'name': id,
+        'mode': type
+      }
+    };
+
+    this.client.send(JSONMessage);
+
+  },
+
+  /*
+   * Notifies the ButtonsRPC that the web is all set. Should be called twice:
+   * when the RPC link is up or failed to connect and all the views are
+   * rendered.
+   */
+  buttonPressedCustom: function(name, type, softButtonID, appID) {
+
+    Em.Logger.log('FFW.Buttons.OnButtonPress ' + type);
+
+    var JSONMessage = {
+      'jsonrpc': '2.0',
+      'method': 'Buttons.OnButtonPress',
+      'params': {
+        'name': name,
+        'mode': type,
+        'customButtonID': softButtonID,
+        'appID': appID
+      }
+    };
+
+    this.client.send(JSONMessage);
+  },
+
+  /*
+   * Notifies the ButtonsRPC that the web is all set. Should be called twice:
+   * when the RPC link is up or failed to connect and all the views are
+   * rendered.
+   */
+  buttonEventCustom: function(name, type, softButtonID, appID) {
+
+    Em.Logger.log('FFW.Buttons.OnButtonEvent ' + type);
+
+    var JSONMessage = {
+      'jsonrpc': '2.0',
+      'method': 'Buttons.OnButtonEvent',
+      'params': {
+        'name': name,
+        'mode': type,
+        'customButtonID': softButtonID,
+        'appID': appID
+      }
+    };
+
+    this.client.send(JSONMessage);
+
+  }
 });

@@ -31,83 +31,83 @@
  * @version 1.0
  */
 
-SDL.DeviceStateChangeView = Em.ContainerView.create( {
+SDL.DeviceStateChangeView = Em.ContainerView.create({
 
-    elementId: 'policies_settings_deviceStateChange',
+  elementId: 'policies_settings_deviceStateChange',
 
-    classNames: 'in_settings_separate_view',
+  classNames: 'in_settings_separate_view',
 
-    classNameBindings: [
-        'SDL.States.settings.policies.deviceStateChange.active:active_state:inactive_state'
-    ],
+  classNameBindings: [
+      'SDL.States.settings.policies.deviceStateChange.active:active_state:inactive_state'
+  ],
 
-    childViews: [
-        'backButton',
-        'listOfDevices',
-        'label'
-    ],
+  childViews: [
+      'backButton',
+      'listOfDevices',
+      'label'
+  ],
 
-    /**
-     * Label in title
-     */
-    label: SDL.Label.extend( {
+  /**
+   * Label in title
+   */
+  label: SDL.Label.extend({
 
-        elementId: 'label',
+    elementId: 'label',
 
-        classNames: 'label',
+    classNames: 'label',
 
-        content: 'Choose devices to be Unpaired:'
-    }),
+    content: 'Choose devices to be Unpaired:'
+  }),
 
-    backButton: SDL.Button.extend( {
-        classNames:
-            [
-                'backButton'
-            ],
-        action: 'onState',
-        target: 'SDL.SettingsController',
-        goToState: 'policies',
-        icon: 'images/media/ico_back.png',
-        onDown: false
-    } ),
+  backButton: SDL.Button.extend({
+    classNames:
+        [
+            'backButton'
+        ],
+    action: 'onState',
+    target: 'SDL.SettingsController',
+    goToState: 'policies',
+    icon: 'images/media/ico_back.png',
+    onDown: false
+  }),
 
-    /**
-     * Function to add application to application list
-     */
-    showDeviceList: function() {
+  /**
+   * Function to add application to application list
+   */
+  showDeviceList: function() {
 
-        this.listOfDevices.items = [];
+    this.listOfDevices.items = [];
 
-        var dev = SDL.SDLModel.data.connectedDevices;
+    var dev = SDL.SDLModel.data.connectedDevices;
 
-        for (var key in dev) {
+    for (var key in dev) {
 
-            if (dev.hasOwnProperty(key)) {
+      if (dev.hasOwnProperty(key)) {
 
-                this.listOfDevices.items.push({
-                    type: SDL.Button,
-                    params: {
-                        action: 'OnDeviceStateChanged',
-                        target: 'FFW.BasicCommunication',
-                        text: dev[key].name,
-                        deviceName: dev[key].name,
-                        deviceID: dev[key].id
-                    }
-                });
-            }
-        }
+        this.listOfDevices.items.push({
+          type: SDL.Button,
+          params: {
+            action: 'OnDeviceStateChanged',
+            target: 'FFW.BasicCommunication',
+            text: dev[key].name,
+            deviceName: dev[key].name,
+            deviceID: dev[key].id
+          }
+        });
+      }
+    }
 
-        this.listOfDevices.list.refresh();
+    this.listOfDevices.list.refresh();
 
-    },
+  },
 
-    listOfDevices: SDL.List.extend( {
+  listOfDevices: SDL.List.extend({
 
-        elementId: 'polocies_device_list',
+    elementId: 'polocies_device_list',
 
-        itemsOnPage: 5,
+    itemsOnPage: 5,
 
-        /** Items */
-        items: new Array()
-    })
+    /** Items */
+    items: new Array()
+  })
 });

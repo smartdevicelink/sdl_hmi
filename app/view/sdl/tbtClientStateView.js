@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,82 +32,82 @@
  * @version 1.0
  */
 
-SDL.TBTClientStateView = Em.ContainerView.create( {
+SDL.TBTClientStateView = Em.ContainerView.create({
 
-    elementId: 'tbtClientStateView',
+  elementId: 'tbtClientStateView',
 
-    classNames: 'tbtClientStateView',
+  classNames: 'tbtClientStateView',
 
-    classNameBindings:
-        [
-            'active'
-        ],
+  classNameBindings:
+      [
+          'active'
+      ],
 
-    childViews:
-        [
-            'tbtClientStateLabel',
-            'tbtClientState',
-            'tbtClientStateSelect'
-        ],
+  childViews:
+      [
+          'tbtClientStateLabel',
+          'tbtClientState',
+          'tbtClientStateSelect'
+      ],
 
-    /**
-     * Title of VehicleInfo PopUp view
-     */
-    tbtClientStateLabel: SDL.Label.extend( {
+  /**
+   * Title of VehicleInfo PopUp view
+   */
+  tbtClientStateLabel: SDL.Label.extend({
 
-        elementId: 'tbtClientStateLabel',
+    elementId: 'tbtClientStateLabel',
 
-        classNames: 'tbtClientStateLabel',
+    classNames: 'tbtClientStateLabel',
 
-        content: 'TBT Client State'
-    } ),
+    content: 'TBT Client State'
+  }),
 
-    /**
-     * Property indicates the activity state of TBTClientStateView
-     */
-    active: false,
+  /**
+   * Property indicates the activity state of TBTClientStateView
+   */
+  active: false,
 
-    /**
-     * Title of tbtClientState group of parameters
-     */
-    tbtClientState: SDL.Label.extend( {
+  /**
+   * Title of tbtClientState group of parameters
+   */
+  tbtClientState: SDL.Label.extend({
 
-        elementId: 'tbtClientState',
+    elementId: 'tbtClientState',
 
-        classNames: 'tbtClientState',
+    classNames: 'tbtClientState',
 
-        content: 'Client State'
-    } ),
+    content: 'Client State'
+  }),
 
-    /**
-     * HMI element Select with parameters of TBTClientStates
-     */
-    tbtClientStateSelect: Em.Select.extend( {
+  /**
+   * HMI element Select with parameters of TBTClientStates
+   */
+  tbtClientStateSelect: Em.Select.extend({
 
-        elementId: 'tbtClientStateSelect',
+    elementId: 'tbtClientStateSelect',
 
-        classNames: 'tbtClientStateSelect',
+    classNames: 'tbtClientStateSelect',
 
-        contentBinding: 'SDL.SDLModel.data.tbtClientStates',
+    contentBinding: 'SDL.SDLModel.data.tbtClientStates',
 
-        optionValuePath: 'content.id',
+    optionValuePath: 'content.id',
 
-        optionLabelPath: 'content.name',
-
-        /**
-         * Selected data sent on model for further processing
-         */
-        click: function() {
-
-            SDL.SDLController.tbtClientStateSelected( this.selection.name );
-
-        }
-    } ),
+    optionLabelPath: 'content.name',
 
     /**
-     * Trigger function that activates and deactivates tbtClientStateView
+     * Selected data sent on model for further processing
      */
-    toggleActivity: function() {
-        this.toggleProperty( 'active' );
+    click: function() {
+
+      SDL.SDLController.tbtClientStateSelected(this.selection.name);
+
     }
-} );
+  }),
+
+  /**
+   * Trigger function that activates and deactivates tbtClientStateView
+   */
+  toggleActivity: function() {
+    this.toggleProperty('active');
+  }
+});

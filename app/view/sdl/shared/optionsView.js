@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,99 +34,99 @@
 
 SDL.OptionsView = SDL.SDLAbstractView.create({
 
-    elementId: 'sdl_options',
+  elementId: 'sdl_options',
 
-    childViews:
-        [
-            'backButton',
-            'captionText',
-            'commands'
-        ],
+  childViews:
+      [
+          'backButton',
+          'captionText',
+          'commands'
+      ],
 
-    // Menu caption text
-    captionBinding: 'SDL.SDLController.model.currentSubMenuLabel',
+  // Menu caption text
+  captionBinding: 'SDL.SDLController.model.currentSubMenuLabel',
 
-    activate: function(text) {
+  activate: function(text) {
+    this._super();
+
+    SDL.SDLController.buttonsSort('top', SDL.SDLController.model.appID);
+    SDL.OptionsView.commands.refreshItems();
+
+    SDL.SDLController.onSystemContextChange();
+  },
+
+  // Extend deactivate window
+  deactivate: function() {
+
+    if (SDL.SDLController.model) {
+
+      if (SDL.SDLController.model.get('currentSubMenuId') >= 0) {
+        SDL.SDLController.onSubMenu('top');
+      }else {
         this._super();
+      }
+    }
 
-        SDL.SDLController.buttonsSort('top', SDL.SDLController.model.appID);
-        SDL.OptionsView.commands.refreshItems();
+    SDL.SDLController.onSystemContextChange();
+  },
 
-        SDL.SDLController.onSystemContextChange();
-    },
+  commands: SDL.List.extend({
 
-    // Extend deactivate window
-    deactivate: function() {
+    elementId: 'info_nonMedia_options_list',
 
-        if (SDL.SDLController.model) {
+    itemsOnPage: 5,
 
-            if (SDL.SDLController.model.get('currentSubMenuId') >= 0) {
-                SDL.SDLController.onSubMenu('top');
-            }else{
-                this._super();
+    items: [],
+
+    /*
+     * itemsDefault: [ { type: SDL.Button,
+     *
+     * params: { templateName: 'text', text: 'Exit', target:
+     * 'this.parentView.parentView.parentView', action: 'deactivate',
+     * onDown: false } }, { type: SDL.Button,
+     *
+     * params: { templateName: 'arrow', text: 'Device Information', } } ],
+     */
+
+    refreshItems: function() {
+
+      if (SDL.SDLController.model) {
+
+        var commands = SDL.SDLController.model.get('currentCommandsList'),
+            i,
+            len,
+            template;
+
+        this.items = [];
+
+        len = commands.length;
+
+        for (i = 0; i < len; i++) {
+
+          if (commands[i].menuID >= 0) {
+            template = 'arrow';
+          }else {
+            template = commands[i].icon ? 'rightText' : 'text';
+          }
+
+          this.items.push({
+            type: SDL.Button,
+            params: {
+              templateName: template,
+              text: commands[i].name,
+              commandID: commands[i].commandID,
+              menuID: commands[i].menuID,
+              icon: commands[i].icon,
+              target: 'SDL.SDLController',
+              action: 'onCommand',
+              onDown: false
             }
+          });
         }
 
-        SDL.SDLController.onSystemContextChange();
-    },
+        this.list.refresh();
+      }
 
-    commands: SDL.List.extend({
-
-        elementId: 'info_nonMedia_options_list',
-
-        itemsOnPage: 5,
-
-        items: [],
-
-        /*
-         * itemsDefault: [ { type: SDL.Button,
-         * 
-         * params: { templateName: 'text', text: 'Exit', target:
-         * 'this.parentView.parentView.parentView', action: 'deactivate',
-         * onDown: false } }, { type: SDL.Button,
-         * 
-         * params: { templateName: 'arrow', text: 'Device Information', } } ],
-         */
-
-        refreshItems: function() {
-
-            if (SDL.SDLController.model) {
-
-                var commands = SDL.SDLController.model.get('currentCommandsList'),
-                    i,
-                    len,
-                    template;
-
-                this.items = [];
-
-                len = commands.length;
-
-                for(i = 0; i < len; i++){
-
-                    if(commands[i].menuID >= 0){
-                        template = 'arrow';
-                    }else{
-                        template = commands[i].icon ? 'rightText' : 'text';
-                    }
-
-                    this.items.push({
-                        type: SDL.Button,
-                        params: {
-                            templateName: template,
-                            text: commands[i].name,
-                            commandID: commands[i].commandID,
-                            menuID: commands[i].menuID,
-                            icon: commands[i].icon,
-                            target: 'SDL.SDLController',
-                            action: 'onCommand',
-                            onDown: false
-                        }
-                    })
-                }
-
-                this.list.refresh();
-            }
-
-        }.observes('SDL.SDLController.model.currentSubMenuId', 'SDL.SDLController.model.currentCommandsList.@each')
-    })
+    }.observes('SDL.SDLController.model.currentSubMenuId', 'SDL.SDLController.model.currentCommandsList.@each')
+  })
 });

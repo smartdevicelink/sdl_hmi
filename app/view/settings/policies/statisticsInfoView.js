@@ -31,58 +31,58 @@
  * @version 1.0
  */
 
-SDL.StatisticsInfoView = Em.ContainerView.create( {
+SDL.StatisticsInfoView = Em.ContainerView.create({
 
-    elementId: 'policies_settings_status_info',
+  elementId: 'policies_settings_status_info',
 
-    classNames: 'in_settings_separate_view',
+  classNames: 'in_settings_separate_view',
 
-    classNameBindings: [
-        'SDL.States.settings.policies.statisticsInfo.active:active_state:inactive_state'
-    ],
+  classNameBindings: [
+      'SDL.States.settings.policies.statisticsInfo.active:active_state:inactive_state'
+  ],
 
-    childViews: [
-        'backButton',
-        'label',
-        'listSelect'
-    ],
+  childViews: [
+      'backButton',
+      'label',
+      'listSelect'
+  ],
 
-    /**
-     * HMI element Select with parameters of transmission state from VehicleInfo
-     * Model
-     */
-    listSelect: Em.Select.extend( {
+  /**
+   * HMI element Select with parameters of transmission state from VehicleInfo
+   * Model
+   */
+  listSelect: Em.Select.extend({
 
-        elementId: 'listSelect',
+    elementId: 'listSelect',
 
-        classNames: 'listSelect',
+    classNames: 'listSelect',
 
-        contentBinding: 'SDL.SDLModel.data.settingsInfoList',
+    contentBinding: 'SDL.SDLModel.data.settingsInfoList',
 
-        valueBinding: 'SDL.SDLModel.data.settingsInfoListState'
-    } ),
+    valueBinding: 'SDL.SDLModel.data.settingsInfoListState'
+  }),
 
-    /**
-     * Label in title
-     */
-    label: SDL.Label.extend( {
+  /**
+   * Label in title
+   */
+  label: SDL.Label.extend({
 
-        elementId: 'label',
+    elementId: 'label',
 
-        classNames: 'label',
+    classNames: 'label',
 
-        content: 'Choose devices to be allowed for SDL functionality:'
-    }),
+    content: 'Choose devices to be allowed for SDL functionality:'
+  }),
 
-    backButton: SDL.Button.extend( {
-        classNames:
-            [
-                'backButton'
-            ],
-        action: 'onState',
-        target: 'SDL.SettingsController',
-        goToState: 'policies',
-        icon: 'images/media/ico_back.png',
-        onDown: false
-    } )
+  backButton: SDL.Button.extend({
+    classNames:
+        [
+            'backButton'
+        ],
+    action: 'onState',
+    target: 'SDL.SettingsController',
+    goToState: 'policies',
+    icon: 'images/media/ico_back.png',
+    onDown: false
+  })
 });

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,219 +32,219 @@
  * @version 1.0
  */
 
-SDL.VRPopUp = Em.ContainerView.create( {
+SDL.VRPopUp = Em.ContainerView.create({
 
-    elementId: 'VRPopUp',
+  elementId: 'VRPopUp',
 
-    classNames: 'VRPopUp',
+  classNames: 'VRPopUp',
 
-    classNameBindings:
-        [
-            'SDL.SDLModel.data.VRActive:active',
-            'SDL.SDLModel.data.VRHelpListActivated:move'
-        ],
+  classNameBindings:
+      [
+          'SDL.SDLModel.data.VRActive:active',
+          'SDL.SDLModel.data.VRHelpListActivated:move'
+      ],
 
-    childViews:
-        [
-            'popUp',
-            'VRLabel',
-            'VRImage',
-            'listOfCommands'
-        ],
+  childViews:
+      [
+          'popUp',
+          'VRLabel',
+          'VRImage',
+          'listOfCommands'
+      ],
 
-    VRImage: Em.View.extend( {
+  VRImage: Em.View.extend({
 
-        elementId: 'VRImage',
+    elementId: 'VRImage',
 
-        classNames: 'VRImage'
-    } ),
+    classNames: 'VRImage'
+  }),
 
-    VRLabel: SDL.Label.extend( {
+  VRLabel: SDL.Label.extend({
 
-        elementId: 'VRLabel',
+    elementId: 'VRLabel',
 
-        classNames: 'VRLabel',
+    classNames: 'VRLabel',
 
-        content: 'Speak the command'
-    } ),
+    content: 'Speak the command'
+  }),
 
-    VRActiveBinding: 'SDL.SDLModel.data.VRActive',
+  VRActiveBinding: 'SDL.SDLModel.data.VRActive',
 
-    popUp: Em.View.extend( {
+  popUp: Em.View.extend({
 
-        elementId: 'popUp',
+    elementId: 'popUp',
 
-        classNames: 'popUp'
-    } ),
+    classNames: 'popUp'
+  }),
 
-    AddCommand: function(cmdID, vrCommands, appID, type, grammarID) {
+  AddCommand: function(cmdID, vrCommands, appID, type, grammarID) {
 
-        if (type == "Application") {
-            for( var i = 0; i < vrCommands.length; i++ ){
-                this.get( 'listOfCommands.list.childViews' ).pushObject( SDL.Button.create( {
-                    action: 'onActivateSDLApp',
-                    target: 'SDL.SDLController',
-                    appID: appID,
-                    text: vrCommands[i],
-                    classNames: 'list-item',
-                    templateName: 'text'
-                } ) );
+    if (type == 'Application') {
+      for (var i = 0; i < vrCommands.length; i++) {
+        this.get('listOfCommands.list.childViews').pushObject(SDL.Button.create({
+          action: 'onActivateSDLApp',
+          target: 'SDL.SDLController',
+          appID: appID,
+          text: vrCommands[i],
+          classNames: 'list-item',
+          templateName: 'text'
+        }));
+      }
+    } else {
+      for (var j = 0; j < vrCommands.length; j++) {
+
+        this.get('listOfCommands.list.childViews').pushObject(SDL.Button.create({
+          action: type == 'Command' ? 'onVRCommand' : 'VRPerformAction',
+          target: 'SDL.SDLController',
+          appID: appID,
+          grammarID: grammarID,
+          commandID: cmdID,
+          text: vrCommands[j],
+          type: type,
+          hideButtons: function() {
+            if (this.type == 'Command' && SDL.SDLModel.data.performInteractionSession.length == 0) {
+              return false;
+            } else if (SDL.SDLModel.data.performInteractionSession && SDL.SDLModel.data.performInteractionSession.indexOf(this.grammarID) >= 0) {
+              return false;
+            } else {
+              return true;
             }
-        } else {
-            for( var j = 0; j < vrCommands.length; j++ ){
+          }.property('SDL.SDLModel.data.performInteractionSession'),
+          classNameBindings: ['this.hideButtons:hide'],
+          classNames: 'list-item',
+          templateName: 'text'
+        }));
+      }
+    }
+  },
 
-                this.get( 'listOfCommands.list.childViews' ).pushObject( SDL.Button.create( {
-                    action: type == 'Command' ? 'onVRCommand' : 'VRPerformAction',
-                    target: 'SDL.SDLController',
-                    appID: appID,
-                    grammarID: grammarID,
-                    commandID: cmdID,
-                    text: vrCommands[j],
-                    type: type,
-                    hideButtons: function() {
-                        if (this.type == "Command" && SDL.SDLModel.data.performInteractionSession.length == 0) {
-                            return false;
-                        } else if (SDL.SDLModel.data.performInteractionSession && SDL.SDLModel.data.performInteractionSession.indexOf(this.grammarID) >= 0) {
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    }.property('SDL.SDLModel.data.performInteractionSession'),
-                    classNameBindings: ['this.hideButtons:hide'],
-                    classNames: 'list-item',
-                    templateName: 'text'
-                } ) );
-            }
+  updateVR: function() {
+
+    this.listOfCommands.list.removeAllChildren();
+    this.listOfCommands.list.refresh();
+
+    var len = SDL.SDLModel.data.VRCommands.length;
+    for (var i = 0; i < len; i++) {
+      this.AddCommand(SDL.SDLModel.data.VRCommands[i].cmdID, SDL.SDLModel.data.VRCommands[i].vrCommands, SDL.SDLModel.data.VRCommands[i].appID, SDL.SDLModel.data.VRCommands[i].type);
+    }
+
+    if (SDL.SDLController.model) {
+
+      len = SDL.SDLController.model.VRCommands.length;
+      for (var i = 0; i < len; i++) {
+        this.AddCommand(SDL.SDLController.model.VRCommands[i].cmdID,
+            SDL.SDLController.model.VRCommands[i].vrCommands,
+            SDL.SDLController.model.VRCommands[i].appID,
+            SDL.SDLController.model.VRCommands[i].type,
+            SDL.SDLController.model.VRCommands[i].grammarID);
+      }
+    }
+
+    if (SDL.SDLModel.data.stateLimited) {
+      len = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands.length;
+      for (var i = 0; i < len; i++) {
+        this.AddCommand(SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].cmdID,
+            SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].vrCommands,
+            SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].appID,
+            SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].type,
+            SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].grammarID);
+      }
+    }
+
+    var apps = SDL.SDLModel.data.registeredApps;
+    for (var i = 0; i < apps.length; i++) {
+
+      if (apps[i].level == 'LIMITED') {
+        var commands = apps[i].VRCommands;
+        for (var j = 0; j < commands.length; j++) {
+          this.AddCommand(commands[j].cmdID,
+              commands[j].vrCommands,
+              commands[j].appID,
+              commands[j].type,
+              commands[j].grammarID);
         }
-    },
+      }
+    }
+  }.observes('SDL.SDLController.model'),
 
-    updateVR: function(){
+  DeleteCommand: function(commandID, appID) {
 
-        this.listOfCommands.list.removeAllChildren();
-        this.listOfCommands.list.refresh();
+    if (commandID != 0) {
+      var t = this.get('listOfCommands.list.childViews').filterProperty('commandID', commandID);
+      for (var i = 0; i < t.length; i++) {
+        t[i].remove();
+        t[i].destroy();
+      }
+    } else {
+      var t = this.get('listOfCommands.list.childViews').filterProperty('appID', appID);
+      for (var i = 0; i < t.length; i++) {
+        t[i].remove();
+        t[i].destroy();
+      }
+    }
+  },
 
-        var len = SDL.SDLModel.data.VRCommands.length;
-        for (var i = 0; i < len; i++) {
-            this.AddCommand(SDL.SDLModel.data.VRCommands[i].cmdID, SDL.SDLModel.data.VRCommands[i].vrCommands, SDL.SDLModel.data.VRCommands[i].appID, SDL.SDLModel.data.VRCommands[i].type);
-        }
+  DeleteActivateApp: function(appID) {
 
-        if (SDL.SDLController.model) {
+    var t = this.get('listOfCommands.list.childViews').filterProperty('appID', appID);
+    for (var i = 0; i < t.length; i++) {
+      t[i].remove();
+      t[i].destroy();
+    }
+  },
 
-            len = SDL.SDLController.model.VRCommands.length;
-            for (var i = 0; i < len; i++) {
-                this.AddCommand(SDL.SDLController.model.VRCommands[i].cmdID,
-                    SDL.SDLController.model.VRCommands[i].vrCommands,
-                    SDL.SDLController.model.VRCommands[i].appID,
-                    SDL.SDLController.model.VRCommands[i].type,
-                    SDL.SDLController.model.VRCommands[i].grammarID);
-            }
-        }
+  /**
+   * List for option on SDLOptionsView screen
+   */
+  listOfCommands: SDL.List.extend({
 
-        if (SDL.SDLModel.data.stateLimited) {
-            len = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands.length;
-            for (var i = 0; i < len; i++) {
-                this.AddCommand(SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].cmdID,
-                    SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].vrCommands,
-                    SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].appID,
-                    SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].type,
-                    SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).VRCommands[i].grammarID);
-            }
-        }
+    elementId: 'VR_list',
 
-        var apps = SDL.SDLModel.data.registeredApps;
-        for (var i = 0; i < apps.length; i++) {
+    itemsOnPage: 5,
 
-            if (apps[i].level == 'LIMITED') {
-                var commands = apps[i].VRCommands;
-                for (var j = 0; j < commands.length; j++) {
-                    this.AddCommand(commands[j].cmdID,
-                        commands[j].vrCommands,
-                        commands[j].appID,
-                        commands[j].type,
-                        commands[j].grammarID);
-                }
-            }
-        }
-    }.observes('SDL.SDLController.model'),
-
-    DeleteCommand: function(commandID, appID) {
-
-        if (commandID != 0) {
-            var t = this.get('listOfCommands.list.childViews').filterProperty('commandID', commandID);
-            for (var i = 0; i < t.length; i++) {
-                t[i].remove();
-                t[i].destroy();
-            }
-        } else {
-            var t = this.get('listOfCommands.list.childViews').filterProperty('appID', appID);
-            for (var i = 0; i < t.length; i++) {
-                t[i].remove();
-                t[i].destroy();
-            }
-        }
-    },
-
-    DeleteActivateApp: function(appID) {
-
-        var t = this.get('listOfCommands.list.childViews').filterProperty('appID', appID);
-        for (var i = 0; i < t.length; i++) {
-            t[i].remove();
-            t[i].destroy();
-        }
-    },
-
-    /**
-     * List for option on SDLOptionsView screen
-     */
-    listOfCommands: SDL.List.extend( {
-
-        elementId: 'VR_list',
-
-        itemsOnPage: 5,
-
-        /** Items array */
-        items: [
+    /** Items array */
+    items: [
             {
-                type: SDL.Button,
-                params: {
-                    //templateName: template,
-                    text: 'Help',
-                    target: 'SDL.SDLController',
-                    action: 'vrHelpAction',
-                    onDown: false
-                }
+              type: SDL.Button,
+              params: {
+                //templateName: template,
+                text: 'Help',
+                target: 'SDL.SDLController',
+                action: 'vrHelpAction',
+                onDown: false
+              }
             }
         ]
-    } ),
+  }),
 
-    // deactivate VR on change application state
-    onStateChange: function() {
-        if (this.VRActive) {
-    		FFW.VR.Started();
-    		this.set( 'VRActive', false );
+  // deactivate VR on change application state
+  onStateChange: function() {
+    if (this.VRActive) {
+      FFW.VR.Started();
+      this.set('VRActive', false);
     	} else {
-    		FFW.VR.Stopped();
+      FFW.VR.Stopped();
     	}
-    }.observes('SDL.TransitionIterator.ready'),
+  }.observes('SDL.TransitionIterator.ready'),
 
-    onActivate: function() {
-        SDL.SDLController.VRMove();
+  onActivate: function() {
+    SDL.SDLController.VRMove();
     	if (this.VRActive) {
 
-    		FFW.VR.Started();
-            SDL.SDLController.onSystemContextChange();
+      FFW.VR.Started();
+      SDL.SDLController.onSystemContextChange();
     	} else {
 
-    		FFW.VR.Stopped();
-            SDL.SDLController.onSystemContextChange();
+      FFW.VR.Stopped();
+      SDL.SDLController.onSystemContextChange();
     	}
-    }.observes('this.VRActive'),
-    
-    /**
-     * This event triggered when component is placed to
-     * document DOM structure
-     */
-    didInsertElement: function() {
-        this._super();
-    }
-} );
+  }.observes('this.VRActive'),
+
+  /**
+ * This event triggered when component is placed to
+ * document DOM structure
+ */
+  didInsertElement: function() {
+    this._super();
+  }
+});

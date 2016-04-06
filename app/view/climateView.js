@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,527 +31,526 @@
  * @filesource app/view/player/PlayerView.js
  * @version 1.0
  */
-SDL.ClimateView = Em.ContainerView.create( {
-    /** View Id */
-    elementId: 'climateView',
+SDL.ClimateView = Em.ContainerView.create({
+  /** View Id */
+  elementId: 'climateView',
 
-    classNameBindings:
-        [
-            'SDL.States.climate.active:active_state:inactive_state'
-        ],
+  classNameBindings:
+      [
+          'SDL.States.climate.active:active_state:inactive_state'
+      ],
 
-    childViews:
-        [
-            'windowText',
-            'climateView'
-        ],
+  childViews:
+      [
+          'windowText',
+          'climateView'
+      ],
 
-    windowText: SDL.Label.extend( {
+  windowText: SDL.Label.extend({
 
-        classNames: 'windowText',
+    classNames: 'windowText',
 
-        content: 'Climate'
-    } ),
+    content: 'Climate'
+  }),
 
-    climateView: Em.ContainerView.extend({
+  climateView: Em.ContainerView.extend({
 
-        elementId: 'climate_control',
+    elementId: 'climate_control',
 
-        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+    classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
 
-        childViews: [
-            'desiredTemp',
-            'desiredTempLabel',
-            'fanSpeed',
-            'fanSpeedLabel',
-            'currentTemp',
-            'curentTempLabel',
-            'defrostZone',
-            'temperatureUnit',
-            'acEnable',
-            'autoModeEnable',
-            'dualModeEnable',
-            'recirculateAirEnable',
-            'zoneSelection'
-        ],
+    childViews: [
+        'desiredTemp',
+        'desiredTempLabel',
+        'fanSpeed',
+        'fanSpeedLabel',
+        'currentTemp',
+        'curentTempLabel',
+        'defrostZone',
+        'temperatureUnit',
+        'acEnable',
+        'autoModeEnable',
+        'dualModeEnable',
+        'recirculateAirEnable',
+        'zoneSelection'
+    ],
 
-        disabled: function(){
-            if (SDL.ClimateController.model.zoneSelect === 'Driver'){
-                return false;
-            } else {
-                return true;
+    disabled: function() {
+      if (SDL.ClimateController.model.zoneSelect === 'Driver') {
+        return false;
+      } else {
+        return true;
+      }
+    }.property('SDL.ClimateController.model.zoneSelect'),
+
+    desiredTemp: Em.ContainerView.extend({
+
+      elementId: 'desiredTemp_container',
+
+      classNames: 'calc_container',
+
+      childViews: [
+          'desiredTemp_label',
+          'desiredTemp_minus',
+          'desiredTemp_plus'
+      ],
+
+      desiredTemp_minus: SDL.Button.extend({
+        elementId: 'desiredTemp_minus',
+
+        classNames: 'minus',
+
+        templateName: 'icon',
+
+        icon: 'images/climate/minus_ico.png',
+
+        onDown: false,
+
+        action: 'desiredTempDown',
+
+        target: 'SDL.ClimateController.model'
+      }),
+
+      desiredTemp_label: SDL.Label.extend({
+
+        elementId: 'desiredTemp_label',
+
+        temp: function() {
+          switch (SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit) {
+            case 'KELVIN': {
+              return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp + 273;
             }
-        }.property('SDL.ClimateController.model.zoneSelect'),
+            case 'CELSIUS': {
+              return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp;
+            }
+            case 'FAHRENHEIT': {
+              return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp * 9 / 5 + 32;
+            }
+          }
+        }.property('SDL.ClimateController.model.currentSet.climateControlData.desiredTemp',
+            'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit'
+        ),
 
-        desiredTemp: Em.ContainerView.extend({
+        contentBinding: 'temp'
+      }),
 
-            elementId: 'desiredTemp_container',
+      desiredTemp_plus: SDL.Button.extend({
 
-            classNames: 'calc_container',
+        elementId: 'desiredTemp_plus',
 
-            childViews: [
-                'desiredTemp_label',
-                'desiredTemp_minus',
-                'desiredTemp_plus'
-            ],
+        classNames: 'plus',
 
-            desiredTemp_minus: SDL.Button.extend({
-                elementId: 'desiredTemp_minus',
+        templateName: 'icon',
 
-                classNames: 'minus',
+        icon: 'images/climate/plus_ico.png',
 
-                templateName: 'icon',
+        onDown: false,
 
-                icon: 'images/climate/minus_ico.png',
+        action: 'desiredTempUp',
 
-                onDown: false,
+        target: 'SDL.ClimateController.model'
+      })
 
-                action: 'desiredTempDown',
+    }),
 
-                target: 'SDL.ClimateController.model'
-            }),
+    desiredTempLabel: SDL.Label.extend({
 
-            desiredTemp_label: SDL.Label.extend({
+      elementId: 'desiredTempLabel',
 
-                elementId:'desiredTemp_label',
+      content: 'Desired temp'
+    }),
 
-                temp: function(){
-                    switch (SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit) {
-                        case 'KELVIN': {
-                            return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp + 273;
-                        }
-                        case 'CELSIUS': {
-                            return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp;
-                        }
-                        case 'FAHRENHEIT': {
-                            return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp * 9 / 5 + 32;
-                        }
-                    }
-                }.property('SDL.ClimateController.model.currentSet.climateControlData.desiredTemp',
-                    'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit'
-                ),
+    fanSpeed: Em.ContainerView.extend({
 
-                contentBinding: 'temp'
-            }),
+      elementId: 'fanSpeed_container',
 
-            desiredTemp_plus: SDL.Button.extend({
+      classNames: 'calc_container',
 
-                elementId: 'desiredTemp_plus',
+      childViews: [
+          'fanSpeed_label',
+          'fanSpeed_minus',
+          'fanSpeed_plus'
+      ],
 
-                classNames: 'plus',
+      fanSpeed_minus: SDL.Button.extend({
+        elementId: 'fanSpeed_minus',
 
-                templateName: 'icon',
+        classNames: 'minus',
 
-                icon: 'images/climate/plus_ico.png',
+        templateName: 'icon',
 
-                onDown: false,
+        icon: 'images/climate/minus_ico.png',
 
-                action: 'desiredTempUp',
+        onDown: false,
 
-                target: 'SDL.ClimateController.model'
-            })
+        action: 'fanSpeedDown',
 
-        }),
+        target: 'SDL.ClimateController.model'
+      }),
 
-        desiredTempLabel: SDL.Label.extend({
+      fanSpeed_label: SDL.Label.extend({
 
-            elementId:'desiredTempLabel',
+        elementId: 'fanSpeed_label',
 
-            content: 'Desired temp'
-        }),
+        contentBinding: 'SDL.ClimateController.model.currentSet.climateControlData.fanSpeed'
+      }),
 
-        fanSpeed: Em.ContainerView.extend({
+      fanSpeed_plus: SDL.Button.extend({
 
-            elementId: 'fanSpeed_container',
+        elementId: 'fanSpeed_plus',
 
-            classNames: 'calc_container',
+        classNames: 'plus',
 
-            childViews: [
-                'fanSpeed_label',
-                'fanSpeed_minus',
-                'fanSpeed_plus'
-            ],
+        templateName: 'icon',
 
-            fanSpeed_minus: SDL.Button.extend({
-                elementId: 'fanSpeed_minus',
+        icon: 'images/climate/plus_ico.png',
 
-                classNames: 'minus',
+        onDown: false,
 
-                templateName: 'icon',
+        action: 'fanSpeedUp',
 
-                icon: 'images/climate/minus_ico.png',
+        target: 'SDL.ClimateController.model'
+      })
 
-                onDown: false,
+    }),
 
-                action: 'fanSpeedDown',
+    fanSpeedLabel: SDL.Label.extend({
 
-                target: 'SDL.ClimateController.model'
-            }),
+      elementId: 'fanSpeedLabel',
 
-            fanSpeed_label: SDL.Label.extend({
+      content: 'Fan speed'
+    }),
 
-                elementId:'fanSpeed_label',
+    currentTemp: Em.ContainerView.extend({
 
-                contentBinding: 'SDL.ClimateController.model.currentSet.climateControlData.fanSpeed'
-            }),
+      elementId: 'currentTemp_container',
 
-            fanSpeed_plus: SDL.Button.extend({
+      classNames: 'calc_container',
 
-                elementId: 'fanSpeed_plus',
+      childViews: [
+          'currentTemp_label',
+          'currentTemp_minus',
+          'currentTemp_plus'
+      ],
 
-                classNames: 'plus',
+      currentTemp_minus: SDL.Button.extend({
+        elementId: 'currentTemp_minus',
 
-                templateName: 'icon',
+        classNames: 'minus',
 
-                icon: 'images/climate/plus_ico.png',
+        templateName: 'icon',
 
-                onDown: false,
+        icon: 'images/climate/minus_ico.png',
 
-                action: 'fanSpeedUp',
+        onDown: false,
 
-                target: 'SDL.ClimateController.model'
-            })
+        action: 'currentTempDown',
 
-        }),
+        target: 'SDL.ClimateController.model'
+      }),
 
-        fanSpeedLabel: SDL.Label.extend({
+      currentTemp_label: SDL.Label.extend({
 
-            elementId:'fanSpeedLabel',
+        elementId: 'currentTemp_label',
 
-            content: 'Fan speed'
-        }),
+        temp: function() {
+          switch (SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit) {
+            case 'KELVIN': {
+              return SDL.ClimateController.model.currentSet.climateControlData.currentTemp + 273;
+            }
+            case 'CELSIUS': {
+              return SDL.ClimateController.model.currentSet.climateControlData.currentTemp;
+            }
+            case 'FAHRENHEIT': {
+              return SDL.ClimateController.model.currentSet.climateControlData.currentTemp * 9 / 5 + 32;
+            }
+          }
+        }.property('SDL.ClimateController.model.currentSet.climateControlData.currentTemp',
+            'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit'
+        ),
 
-        currentTemp: Em.ContainerView.extend({
+        contentBinding: 'temp'
+      }),
 
-            elementId: 'currentTemp_container',
+      currentTemp_plus: SDL.Button.extend({
 
-            classNames: 'calc_container',
+        elementId: 'currentTemp_plus',
 
-            childViews: [
-                'currentTemp_label',
-                'currentTemp_minus',
-                'currentTemp_plus'
-            ],
+        classNames: 'plus',
 
-            currentTemp_minus: SDL.Button.extend({
-                elementId: 'currentTemp_minus',
+        templateName: 'icon',
 
-                classNames: 'minus',
+        icon: 'images/climate/plus_ico.png',
 
-                templateName: 'icon',
+        onDown: false,
 
-                icon: 'images/climate/minus_ico.png',
+        action: 'currentTempUp',
 
-                onDown: false,
+        target: 'SDL.ClimateController.model'
+      })
 
-                action: 'currentTempDown',
+    }),
 
-                target: 'SDL.ClimateController.model'
-            }),
+    curentTempLabel: SDL.Label.extend({
 
-            currentTemp_label: SDL.Label.extend({
+      elementId: 'curentTempLabel',
 
-                elementId:'currentTemp_label',
+      content: 'Current temp'
+    }),
 
-                temp: function(){
-                    switch (SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit) {
-                        case 'KELVIN': {
-                            return SDL.ClimateController.model.currentSet.climateControlData.currentTemp + 273;
-                        }
-                        case 'CELSIUS': {
-                            return SDL.ClimateController.model.currentSet.climateControlData.currentTemp;
-                        }
-                        case 'FAHRENHEIT': {
-                            return SDL.ClimateController.model.currentSet.climateControlData.currentTemp * 9 / 5 + 32;
-                        }
-                    }
-                }.property('SDL.ClimateController.model.currentSet.climateControlData.currentTemp',
-                    'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit'
-                ),
+    defrostZone: Em.ContainerView.extend({
 
-                contentBinding: 'temp'
-            }),
+      elementId: 'defrostZone',
 
-            currentTemp_plus: SDL.Button.extend({
+      classNames: 'quattro_container',
 
-                elementId: 'currentTemp_plus',
+      childViews: [
+          'defrostZone_Rear',
+          'defrostZone_Front',
+          'defrostZone_All'
+      ],
 
-                classNames: 'plus',
+      selectedBinding: 'SDL.ClimateController.model.currentSet.climateControlData.defrostZone',
 
-                templateName: 'icon',
+      defrostZone_Rear: SDL.Button.extend({
+        elementId: 'defrostZoneRear',
 
-                icon: 'images/climate/plus_ico.png',
+        classNames: 'defrostZoneRear topRight',
 
-                onDown: false,
+        classNameBindings: 'highlighted',
 
-                action: 'currentTempUp',
+        highlighted: function() {
+          return this._parentView.selected === 'REAR';
+        }.property('parentView.selected'),
 
-                target: 'SDL.ClimateController.model'
-            })
+        templateName: 'icon',
 
-        }),
+        icon: 'images/climate/defrost_ico.png',
 
-        curentTempLabel: SDL.Label.extend({
+        onDown: false,
 
-            elementId:'curentTempLabel',
+        disabledBinding: 'parentView.parentView.disabled',
 
-            content: 'Current temp'
-        }),
+        action: 'defrostRearEnable',
 
-        defrostZone: Em.ContainerView.extend({
+        target: 'SDL.ClimateController.model'
+      }),
 
-            elementId: 'defrostZone',
+      defrostZone_Front: SDL.Button.extend({
+        elementId: 'defrostZoneFront',
 
-            classNames: 'quattro_container',
+        classNames: 'defrostZoneFront bottomLeft',
 
-            childViews: [
-                'defrostZone_Rear',
-                'defrostZone_Front',
-                'defrostZone_All'
-            ],
+        classNameBindings: 'highlighted',
 
-            selectedBinding: 'SDL.ClimateController.model.currentSet.climateControlData.defrostZone',
+        highlighted: function() {
+          return this._parentView.selected === 'FRONT';
+        }.property('parentView.selected'),
 
-            defrostZone_Rear: SDL.Button.extend({
-                elementId: 'defrostZoneRear',
+        templateName: 'icon',
 
-                classNames: 'defrostZoneRear topRight',
+        icon: 'images/climate/windsheald_ico.png',
 
-                classNameBindings: 'highlighted',
+        onDown: false,
 
-                highlighted: function(){
-                    return this._parentView.selected === 'REAR';
-                }.property('parentView.selected'),
+        disabledBinding: 'parentView.parentView.disabled',
 
+        action: 'defrostFrontEnable',
 
-                templateName: 'icon',
+        target: 'SDL.ClimateController.model'
+      }),
 
-                icon: 'images/climate/defrost_ico.png',
+      defrostZone_All: SDL.Button.extend({
+        elementId: 'defrostZoneAll',
 
-                onDown: false,
+        classNames: 'defrostZoneAll bottomRight',
 
-                disabledBinding: 'parentView.parentView.disabled',
+        classNameBindings: 'highlighted',
 
-                action: 'defrostRearEnable',
+        highlighted: function() {
+          return this._parentView.selected === 'ALL';
+        }.property('parentView.selected'),
 
-                target: 'SDL.ClimateController.model'
-            }),
+        text: 'BOTH',
 
-            defrostZone_Front: SDL.Button.extend({
-                elementId: 'defrostZoneFront',
+        onDown: false,
 
-                classNames: 'defrostZoneFront bottomLeft',
+        disabledBinding: 'parentView.parentView.disabled',
 
-                classNameBindings: 'highlighted',
+        action: 'defrostAllEnable',
 
-                highlighted: function(){
-                    return this._parentView.selected === 'FRONT';
-                }.property('parentView.selected'),
+        target: 'SDL.ClimateController.model'
+      })
+    }),
 
-                templateName: 'icon',
+    temperatureUnit: Em.ContainerView.extend({
 
-                icon: 'images/climate/windsheald_ico.png',
+      elementId: 'temperatureUnit',
 
-                onDown: false,
+      classNames: 'quattro_container',
 
-                disabledBinding: 'parentView.parentView.disabled',
+      childViews: [
+          'kelvin',
+          'fahrenheit',
+          'celsius'
+      ],
 
-                action: 'defrostFrontEnable',
+      selectedBinding: 'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit',
 
-                target: 'SDL.ClimateController.model'
-            }),
+      kelvin: SDL.Button.extend({
+        elementId: 'kelvin',
 
-            defrostZone_All: SDL.Button.extend({
-                elementId: 'defrostZoneAll',
+        classNames: 'kelvin topRight',
 
-                classNames: 'defrostZoneAll bottomRight',
+        classNameBindings: 'highlighted',
 
-                classNameBindings: 'highlighted',
+        highlighted: function() {
+          return this._parentView.selected === 'KELVIN';
+        }.property('parentView.selected'),
 
-                highlighted: function(){
-                    return this._parentView.selected === 'ALL';
-                }.property('parentView.selected'),
+        text: 'K',
 
-                text: 'BOTH',
+        onDown: false,
 
-                onDown: false,
+        disabledBinding: 'parentView.parentView.disabled',
 
-                disabledBinding: 'parentView.parentView.disabled',
+        action: 'temperatureUnitKelvinEnable',
 
-                action: 'defrostAllEnable',
+        target: 'SDL.ClimateController.model'
+      }),
 
-                target: 'SDL.ClimateController.model'
-            })
-        }),
+      fahrenheit: SDL.Button.extend({
+        elementId: 'fahrenheit',
 
-        temperatureUnit: Em.ContainerView.extend({
+        classNames: 'fahrenheit bottomLeft',
 
-            elementId: 'temperatureUnit',
+        classNameBindings: 'highlighted',
 
-            classNames: 'quattro_container',
+        highlighted: function() {
+          return this._parentView.selected === 'FAHRENHEIT';
+        }.property('parentView.selected'),
 
-            childViews: [
-                'kelvin',
-                'fahrenheit',
-                'celsius'
-            ],
+        text: 'F',
 
-            selectedBinding: 'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit',
+        onDown: false,
 
-            kelvin: SDL.Button.extend({
-                elementId: 'kelvin',
+        disabledBinding: 'parentView.parentView.disabled',
 
-                classNames: 'kelvin topRight',
+        action: 'temperatureUnitFahrenheitEnable',
 
-                classNameBindings: 'highlighted',
+        target: 'SDL.ClimateController.model'
+      }),
 
-                highlighted: function(){
-                    return this._parentView.selected === 'KELVIN';
-                }.property('parentView.selected'),
+      celsius: SDL.Button.extend({
+        elementId: 'celsius',
 
-                text: 'K',
+        classNames: 'celsius bottomRight',
 
-                onDown: false,
+        classNameBindings: 'highlighted',
 
-                disabledBinding: 'parentView.parentView.disabled',
+        highlighted: function() {
+          return this._parentView.selected === 'CELSIUS';
+        }.property('parentView.selected'),
 
-                action: 'temperatureUnitKelvinEnable',
+        text: 'C',
 
-                target: 'SDL.ClimateController.model'
-            }),
+        onDown: false,
 
-            fahrenheit: SDL.Button.extend({
-                elementId: 'fahrenheit',
+        disabledBinding: 'parentView.parentView.disabled',
 
-                classNames: 'fahrenheit bottomLeft',
+        action: 'temperatureUnitCelsiusEnable',
 
-                classNameBindings: 'highlighted',
+        target: 'SDL.ClimateController.model'
+      })
+    }),
 
-                highlighted: function(){
-                    return this._parentView.selected === 'FAHRENHEIT';
-                }.property('parentView.selected'),
+    acEnable:  SDL.Button.extend({
+      elementId:		'acEnable',
+      classNames:		'acEnable switcher',
+      iconBinding:	'onIconChange',
+      disabledBinding: 'parentView.disabled',
+      // Change Icon for Frequency Scan
+      onIconChange: function() {
+        if (SDL.ClimateController.model.currentSet.climateControlData.acEnable) {
+          return 'images/media/active_horiz_led.png';
+        }else {
+          return 'images/media/passiv_horiz_led.png';
+        }
+      }.property('SDL.ClimateController.model.currentSet.climateControlData.acEnable'),
+      action: 'toggleAcEnable',
+      target: 'SDL.ClimateController.model',
+      onDown: false,
+      text: 	'AC'
+    }),
 
-                text: 'F',
+    autoModeEnable:  SDL.Button.extend({
+      elementId:		'autoModeEnable',
+      classNames:		'autoModeEnable switcher',
+      iconBinding:	'onIconChange',
+      disabledBinding: 'parentView.disabled',
+      // Change Icon for Frequency Scan
+      onIconChange: function() {
+        if (SDL.ClimateController.model.currentSet.climateControlData.autoModeEnable) {
+          return 'images/media/active_horiz_led.png';
+        }else {
+          return 'images/media/passiv_horiz_led.png';
+        }
+      }.property('SDL.ClimateController.model.currentSet.climateControlData.autoModeEnable'),
+      action: 'toggleAutoModeEnable',
+      target: 'SDL.ClimateController.model',
+      onDown: false,
+      text: 	'Auto'
+    }),
 
-                onDown: false,
+    dualModeEnable:  SDL.Button.extend({
+      elementId:		'dualModeEnable',
+      classNames:		'dualModeEnable switcher',
+      iconBinding:	'onIconChange',
+      disabledBinding: 'parentView.disabled',
+      // Change Icon for Frequency Scan
+      onIconChange: function() {
+        if (SDL.ClimateController.model.currentSet.climateControlData.dualModeEnable) {
+          return 'images/media/active_horiz_led.png';
+        }else {
+          return 'images/media/passiv_horiz_led.png';
+        }
+      }.property('SDL.ClimateController.model.currentSet.climateControlData.dualModeEnable'),
+      action: 'toggleDualMode',
+      target: 'SDL.ClimateController.model',
+      onDown: false,
+      text: 	'Dual'
+    }),
 
-                disabledBinding: 'parentView.parentView.disabled',
+    recirculateAirEnable:  SDL.Button.extend({
+      elementId:		'recirculateAirEnable',
+      classNames:		'recirculateAirEnable switcher',
+      iconBinding:	'onIconChange',
+      disabledBinding: 'parentView.disabled',
+      // Change Icon for Frequency Scan
+      onIconChange: function() {
+        if (SDL.ClimateController.model.currentSet.climateControlData.circulateAirEnable) {
+          return 'images/media/active_horiz_led.png';
+        }else {
+          return 'images/media/passiv_horiz_led.png';
+        }
+      }.property('SDL.ClimateController.model.currentSet.climateControlData.circulateAirEnable'),
+      righticon: 'images/climate/recycle_ico.png',
+      action: 'toggleRecirculateAir',
+      target: 'SDL.ClimateController.model',
+      templateName: 'rightIcon',
+      onDown: false
+    }),
 
-                action: 'temperatureUnitFahrenheitEnable',
+    zoneSelection: Em.Select.extend({
 
-                target: 'SDL.ClimateController.model'
-            }),
+      elementId: 'zoneSelection',
 
-            celsius: SDL.Button.extend({
-                elementId: 'celsius',
+      classNames: 'zoneSelection',
 
-                classNames: 'celsius bottomRight',
+      contentBinding: 'SDL.ClimateController.model.zoneSet',
 
-                classNameBindings: 'highlighted',
-
-                highlighted: function(){
-                    return this._parentView.selected === 'CELSIUS';
-                }.property('parentView.selected'),
-
-                text: 'C',
-
-                onDown: false,
-
-                disabledBinding: 'parentView.parentView.disabled',
-
-                action: 'temperatureUnitCelsiusEnable',
-
-                target: 'SDL.ClimateController.model'
-            })
-        }),
-
-        acEnable:  SDL.Button.extend({
-            elementId:		'acEnable',
-            classNames:		'acEnable switcher',
-            iconBinding:	'onIconChange',
-            disabledBinding: 'parentView.disabled',
-            // Change Icon for Frequency Scan
-            onIconChange: function(){
-                if(SDL.ClimateController.model.currentSet.climateControlData.acEnable){
-                    return 'images/media/active_horiz_led.png';
-                }else{
-                    return 'images/media/passiv_horiz_led.png';
-                }
-            }.property('SDL.ClimateController.model.currentSet.climateControlData.acEnable'),
-            action: 'toggleAcEnable',
-            target: 'SDL.ClimateController.model',
-            onDown: false,
-            text: 	'AC'
-        }),
-
-        autoModeEnable:  SDL.Button.extend({
-            elementId:		'autoModeEnable',
-            classNames:		'autoModeEnable switcher',
-            iconBinding:	'onIconChange',
-            disabledBinding: 'parentView.disabled',
-            // Change Icon for Frequency Scan
-            onIconChange: function(){
-                if(SDL.ClimateController.model.currentSet.climateControlData.autoModeEnable){
-                    return 'images/media/active_horiz_led.png';
-                }else{
-                    return 'images/media/passiv_horiz_led.png';
-                }
-            }.property('SDL.ClimateController.model.currentSet.climateControlData.autoModeEnable'),
-            action: 'toggleAutoModeEnable',
-            target: 'SDL.ClimateController.model',
-            onDown: false,
-            text: 	'Auto'
-        }),
-
-        dualModeEnable:  SDL.Button.extend({
-            elementId:		'dualModeEnable',
-            classNames:		'dualModeEnable switcher',
-            iconBinding:	'onIconChange',
-            disabledBinding: 'parentView.disabled',
-            // Change Icon for Frequency Scan
-            onIconChange: function(){
-                if(SDL.ClimateController.model.currentSet.climateControlData.dualModeEnable){
-                    return 'images/media/active_horiz_led.png';
-                }else{
-                    return 'images/media/passiv_horiz_led.png';
-                }
-            }.property('SDL.ClimateController.model.currentSet.climateControlData.dualModeEnable'),
-            action: 'toggleDualMode',
-            target: 'SDL.ClimateController.model',
-            onDown: false,
-            text: 	'Dual'
-        }),
-
-        recirculateAirEnable:  SDL.Button.extend({
-            elementId:		'recirculateAirEnable',
-            classNames:		'recirculateAirEnable switcher',
-            iconBinding:	'onIconChange',
-            disabledBinding: 'parentView.disabled',
-            // Change Icon for Frequency Scan
-            onIconChange: function(){
-                if(SDL.ClimateController.model.currentSet.climateControlData.circulateAirEnable){
-                    return 'images/media/active_horiz_led.png';
-                }else{
-                    return 'images/media/passiv_horiz_led.png';
-                }
-            }.property('SDL.ClimateController.model.currentSet.climateControlData.circulateAirEnable'),
-            righticon: 'images/climate/recycle_ico.png',
-            action: 'toggleRecirculateAir',
-            target: 'SDL.ClimateController.model',
-            templateName: 'rightIcon',
-            onDown: false
-        }),
-
-        zoneSelection: Em.Select.extend( {
-
-            elementId: 'zoneSelection',
-
-            classNames: 'zoneSelection',
-
-            contentBinding: 'SDL.ClimateController.model.zoneSet',
-
-            valueBinding: 'SDL.ClimateController.model.zoneSelect'
-        } )
+      valueBinding: 'SDL.ClimateController.model.zoneSelect'
     })
+  })
 
-} );
+});

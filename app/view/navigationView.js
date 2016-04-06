@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,24 +30,24 @@
  * @filesource app/view/navigationView.js
  * @version 1.0
  */
-SDL.NavigationView = Em.ContainerView.create( {
-    /** View Id */
-    elementId: 'navigationView',
+SDL.NavigationView = Em.ContainerView.create({
+  /** View Id */
+  elementId: 'navigationView',
 
-    classNameBindings: [
-        'SDL.States.navigation.active:active_state:inactive_state'
-    ],
+  classNameBindings: [
+      'SDL.States.navigation.active:active_state:inactive_state'
+  ],
 
-    childViews:
-        [
-            'windowText'
-        ],
+  childViews:
+      [
+          'windowText'
+      ],
 
-    windowText: SDL.Label.extend( {
+  windowText: SDL.Label.extend({
 
-        classNames: 'windowText',
+    classNames: 'windowText',
 
-        content: 'Navigation'
-    } )
+    content: 'Navigation'
+  })
 
 });

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,362 +34,361 @@
     // Extend base Em.State object
 Em.State.reopen({
 
-    // used for determine display status
-    active: false,
+  // used for determine display status
+  active: false,
 
-    enter: function () {
+  enter: function() {
 
-        this.set('active', true);
-    },
+    this.set('active', true);
+  },
 
-    exit: function () {
+  exit: function() {
 
-        this.set('active', false);
-        SDL.SDLController.triggerState();
-    }
+    this.set('active', false);
+    SDL.SDLController.triggerState();
+  }
 });
 
 // State Manager class
 var StateManager = Em.StateManager.extend({
 
-    // default state
-    initialState: 'home',
+  // default state
+  initialState: 'home',
 
-    /**
-     * Name of the next state to which at the moment is a transition
-     */
-    nextState: 'home',
+  /**
+   * Name of the next state to which at the moment is a transition
+   */
+  nextState: 'home',
 
-    /**
-     * Method used for determine previous currentState and make
-     */
-    goToStates: function (stateName) {
+  /**
+   * Method used for determine previous currentState and make
+   */
+  goToStates: function(stateName) {
 
-        SDL.SDLController.userStateAction();
-        this.set('nextState', stateName);
-        this.transitionTo(stateName);
+    SDL.SDLController.userStateAction();
+    this.set('nextState', stateName);
+    this.transitionTo(stateName);
+  },
+
+  /** Go to parent state */
+  back: function() {
+
+    if (this.currentState.parentState.hasOwnProperty('name')) {
+      this.goToStates(this.currentState.parentState.get('path'));
+    } else {
+      this.goToStates('home');
+    }
+
+    SDL.StateVisitor.visit(this.currentState);
+  },
+
+  /** Home state */
+  home: Em.State.create({
+
+  }),
+
+  /** Climate state */
+  climate: Em.State.create({
+
+  }),
+
+  /** info state */
+  info: Em.State.create({
+
+    exit: function() {
+
+      SDL.InfoController.set('activeState', SDL.States.currentState.get('path'));
+      this._super();
     },
 
-    /** Go to parent state */
-    back: function () {
-
-        if (this.currentState.parentState.hasOwnProperty('name')) {
-            this.goToStates(this.currentState.parentState.get('path'));
-        } else {
-            this.goToStates('home');
-        }
-
-        SDL.StateVisitor.visit(this.currentState);
-    },
-
-    /** Home state */
-    home: Em.State.create({
+    services: Em.State.create({
 
     }),
 
-    /** Climate state */
-    climate: Em.State.create({
+    travelLink: Em.State.create({
 
     }),
 
-    /** info state */
-    info: Em.State.create({
+    alerts: Em.State.create({
 
-        exit: function () {
-
-            SDL.InfoController.set('activeState', SDL.States.currentState.get('path'));
-            this._super();
-        },
-
-        services: Em.State.create({
-
-        }),
-
-        travelLink: Em.State.create({
-
-        }),
-
-        alerts: Em.State.create({
-
-        }),
-
-        calendar: Em.State.create({
-
-        }),
-
-        apps: Em.State.create({
-
-            /**
-             * Calls function from BasicCommunicationRPC to get new list of
-             * applications
-             */
-            enter: function () {
-
-                this._super();
-                FFW.BasicCommunication.OnFindApplications();
-            }
-        }),
-
-        devicelist: Em.State.create({
-            /**
-             * Calls function to clear device list on DeviceListView
-             */
-            enter: function () {
-
-                this._super();
-                SDL.DeviceListView.clearDeviceList();
-                FFW.BasicCommunication.OnStartDeviceDiscovery();
-            }
-        }),
-
-        devicelocation: Em.State.create({
-            /**
-             * Calls function to clear device list on DeviceListView
-             */
-            enter: function () {
-
-                this._super();
-                FFW.BasicCommunication.OnStartDeviceDiscovery();
-            }
-        }),
-
-        nonMedia: Em.State.create({
-
-            enter: function () {
-
-                this._super();
-                SDL.SDLController.activateTBT();
-            },
-
-            exit: function () {
-
-                this._super();
-
-                SDL.SDLController.deactivateApp();
-            }
-        })
     }),
 
-    /** settings state */
-    settings: Em.State.create({
+    calendar: Em.State.create({
 
-        exit: function () {
-
-            SDL.SettingsController.set('activeState', SDL.States.currentState.get('path'));
-            this._super();
-        },
-
-        policies: Em.State.create({
-            statisticsInfo: Em.State.create({
-
-            }),
-
-            getUrls: Em.State.create({
-
-            }),
-
-            deviceConfig: Em.State.create({
-
-                enter: function () {
-
-                    this._super();
-                    SDL.DeviceConfigView.showDeviceList();
-                }
-            }),
-
-            appPermissionsList: Em.State.create({
-
-                enter: function () {
-
-                    this._super();
-
-                }
-            }),
-
-            appPermissions: Em.State.create({
-
-            }),
-
-            systemError: Em.State.create({
-
-            }),
-
-            deviceStateChange: Em.State.create({
-
-                enter: function () {
-
-                    this._super();
-                    SDL.DeviceStateChangeView.showDeviceList();
-                }
-            })
-        })
     }),
 
-    /** Media state */
-    media: Em.State.create({
+    apps: Em.State.create({
 
-        exit: function () {
+      /**
+       * Calls function from BasicCommunicationRPC to get new list of
+       * applications
+       */
+      enter: function() {
 
-            SDL.MediaController.set('activeState', SDL.States.currentState.get('path'));
-            this._super();
-        },
-
-        player: Em.State.create({
-
-            enter: function () {
-
-                if (SDL.SDLController.model) {
-                    SDL.SDLController.model.set('active', false);
-                }
-
-                this._super();
-
-                SDL.SDLController.onEventChanged(this.name, true);
-            },
-
-            exit: function() {
-
-                this._super();
-
-                SDL.SDLController.onEventChanged(this.name, false);
-            },
-
-
-            radio: Em.State.create({
-
-                exit: function() {
-
-                    this._super();
-
-                    SDL.MediaController.deactivateRadio();
-                }
-            }),
-
-            cd: Em.State.create({
-
-                exit: function(){
-                    this._super();
-                    SDL.MediaController.deactivateUSB();
-                    SDL.MediaController.currentSelectedPlayer.pause();
-                },
-
-                options: Em.State.create({
-
-                }),
-
-                browse: Em.State.create({
-                    browseall: Em.State.create({
-                        enter: function(){
-                            this._super();
-                            // SDL.MediaController.resetDirectTune();
-                        }
-                    })
-                }),
-
-                moreinfo:Em.State.create({
-                })
-
-            }),
-
-            usb: Em.State.create({
-                exit: function(){
-                    this._super();
-                    SDL.MediaController.deactivateCD();
-                    SDL.MediaController.currentSelectedPlayer.pause();
-                    //SDL.MediaController.resetUpdatingMessage();
-                },
-
-                options: Em.State.create({
-                    deviceInformation: Em.State.create({
-                    })
-
-                }),
-
-                browse: Em.State.create({
-                    enter: function() {
-                        this._super();
-                        // reset Messages
-                        //SDL.MediaController.resetUpdatingMessage();
-                    },
-                    browseall: Em.State.create({
-                        enter: function(){
-                            this._super();
-                            //SDL.MediaController.resetDirectTune();
-                        }
-                    })
-                }),
-
-                moreinfo:Em.State.create({
-                    enter: function() {
-                        this._super();
-                        // reset Messages
-                        //SDL.MediaController.resetUpdatingMessage();
-                    }
-                })
-            })
-        }),
-
-        sdlmedia: Em.State.create({
-
-            enter: function () {
-
-                this._super();
-                SDL.MediaController.deactivateUSB();
-                SDL.MediaController.deactivateCD();
-                SDL.SDLController.activateTBT();
-            },
-
-            exit: function () {
-
-                this._super();
-
-                SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
-                SDL.SDLModel.data.set('limitedExist', true);
-                SDL.SDLController.deactivateApp();
-            }
-
-        })
+        this._super();
+        FFW.BasicCommunication.OnFindApplications();
+      }
     }),
 
-    navigationApp: Em.State.create({
+    devicelist: Em.State.create({
+      /**
+       * Calls function to clear device list on DeviceListView
+       */
+      enter: function() {
 
-        baseNavigation: Em.State.create({
-
-        }),
-
-        exit: function () {
-
-            this._super();
-
-            SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
-            //SDL.SDLModel.data.set('limitedExist', true);
-            SDL.SDLController.deactivateApp();
-        }
+        this._super();
+        SDL.DeviceListView.clearDeviceList();
+        FFW.BasicCommunication.OnStartDeviceDiscovery();
+      }
     }),
 
-    /** Navigation state */
-    navigation: Em.State.create({
+    devicelocation: Em.State.create({
+      /**
+       * Calls function to clear device list on DeviceListView
+       */
+      enter: function() {
 
-        exit: function () {
-
-            this._super();
-
-            SDL.SDLController.onEventChanged(this.name, false);
-        },
-
-        enter: function () {
-
-            this._super();
-
-            SDL.SDLController.onEventChanged(this.name, true);
-        }
+        this._super();
+        FFW.BasicCommunication.OnStartDeviceDiscovery();
+      }
     }),
 
-    /** Phone state */
-    phone: Em.State.create({
+    nonMedia: Em.State.create({
 
-        dialpad: Em.State.create({
+      enter: function() {
 
-        })
+        this._super();
+        SDL.SDLController.activateTBT();
+      },
+
+      exit: function() {
+
+        this._super();
+
+        SDL.SDLController.deactivateApp();
+      }
     })
+  }),
+
+  /** settings state */
+  settings: Em.State.create({
+
+    exit: function() {
+
+      SDL.SettingsController.set('activeState', SDL.States.currentState.get('path'));
+      this._super();
+    },
+
+    policies: Em.State.create({
+      statisticsInfo: Em.State.create({
+
+      }),
+
+      getUrls: Em.State.create({
+
+      }),
+
+      deviceConfig: Em.State.create({
+
+        enter: function() {
+
+          this._super();
+          SDL.DeviceConfigView.showDeviceList();
+        }
+      }),
+
+      appPermissionsList: Em.State.create({
+
+        enter: function() {
+
+          this._super();
+
+        }
+      }),
+
+      appPermissions: Em.State.create({
+
+      }),
+
+      systemError: Em.State.create({
+
+      }),
+
+      deviceStateChange: Em.State.create({
+
+        enter: function() {
+
+          this._super();
+          SDL.DeviceStateChangeView.showDeviceList();
+        }
+      })
+    })
+  }),
+
+  /** Media state */
+  media: Em.State.create({
+
+    exit: function() {
+
+      SDL.MediaController.set('activeState', SDL.States.currentState.get('path'));
+      this._super();
+    },
+
+    player: Em.State.create({
+
+      enter: function() {
+
+        if (SDL.SDLController.model) {
+          SDL.SDLController.model.set('active', false);
+        }
+
+        this._super();
+
+        SDL.SDLController.onEventChanged(this.name, true);
+      },
+
+      exit: function() {
+
+        this._super();
+
+        SDL.SDLController.onEventChanged(this.name, false);
+      },
+
+      radio: Em.State.create({
+
+        exit: function() {
+
+          this._super();
+
+          SDL.MediaController.deactivateRadio();
+        }
+      }),
+
+      cd: Em.State.create({
+
+        exit: function() {
+          this._super();
+          SDL.MediaController.deactivateUSB();
+          SDL.MediaController.currentSelectedPlayer.pause();
+        },
+
+        options: Em.State.create({
+
+        }),
+
+        browse: Em.State.create({
+          browseall: Em.State.create({
+            enter: function() {
+              this._super();
+              // SDL.MediaController.resetDirectTune();
+            }
+          })
+        }),
+
+        moreinfo: Em.State.create({
+        })
+
+      }),
+
+      usb: Em.State.create({
+        exit: function() {
+          this._super();
+          SDL.MediaController.deactivateCD();
+          SDL.MediaController.currentSelectedPlayer.pause();
+          //SDL.MediaController.resetUpdatingMessage();
+        },
+
+        options: Em.State.create({
+          deviceInformation: Em.State.create({
+          })
+
+        }),
+
+        browse: Em.State.create({
+          enter: function() {
+            this._super();
+            // reset Messages
+            //SDL.MediaController.resetUpdatingMessage();
+          },
+          browseall: Em.State.create({
+            enter: function() {
+              this._super();
+              //SDL.MediaController.resetDirectTune();
+            }
+          })
+        }),
+
+        moreinfo: Em.State.create({
+          enter: function() {
+            this._super();
+            // reset Messages
+            //SDL.MediaController.resetUpdatingMessage();
+          }
+        })
+      })
+    }),
+
+    sdlmedia: Em.State.create({
+
+      enter: function() {
+
+        this._super();
+        SDL.MediaController.deactivateUSB();
+        SDL.MediaController.deactivateCD();
+        SDL.SDLController.activateTBT();
+      },
+
+      exit: function() {
+
+        this._super();
+
+        SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
+        SDL.SDLModel.data.set('limitedExist', true);
+        SDL.SDLController.deactivateApp();
+      }
+
+    })
+  }),
+
+  navigationApp: Em.State.create({
+
+    baseNavigation: Em.State.create({
+
+    }),
+
+    exit: function() {
+
+      this._super();
+
+      SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
+      //SDL.SDLModel.data.set('limitedExist', true);
+      SDL.SDLController.deactivateApp();
+    }
+  }),
+
+  /** Navigation state */
+  navigation: Em.State.create({
+
+    exit: function() {
+
+      this._super();
+
+      SDL.SDLController.onEventChanged(this.name, false);
+    },
+
+    enter: function() {
+
+      this._super();
+
+      SDL.SDLController.onEventChanged(this.name, true);
+    }
+  }),
+
+  /** Phone state */
+  phone: Em.State.create({
+
+    dialpad: Em.State.create({
+
+    })
+  })
 });

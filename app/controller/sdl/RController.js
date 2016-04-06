@@ -33,509 +33,508 @@
 
 SDL.RController = SDL.ABSController.extend({
 
-    reverseAppsAllowed: true,
+  reverseAppsAllowed: true,
 
-    /**
-     * Button action to sent response for RC.GrantAccess request
-     *
-     * @type {Object}
-     */
-    ControlAccessAction: function (appID, value) {
-            if (value) {
-                FFW.RC.sendRCResult(
-                    SDL.SDLModel.data.resultCode['SUCCESS'],
-                    SDL.SDLModel.controlRequestID,
-                    "RC.GrantAccess"
-                );
-                SDL.SDLModel.set('givenControl', appID);
-                SDL.SDLModel.set('givenControlFlag', true);
-                //FFW.CAN.OnRadioDetails({"radioStation": SDL.RadioModel.radioDetails.radioStation});
+  /**
+   * Button action to sent response for RC.GrantAccess request
+   *
+   * @type {Object}
+   */
+  ControlAccessAction: function(appID, value) {
+    if (value) {
+      FFW.RC.sendRCResult(
+          SDL.SDLModel.data.resultCode['SUCCESS'],
+          SDL.SDLModel.controlRequestID,
+          'RC.GrantAccess'
+      );
+      SDL.SDLModel.set('givenControl', appID);
+      SDL.SDLModel.set('givenControlFlag', true);
+      //FFW.CAN.OnRadioDetails({"radioStation": SDL.RadioModel.radioDetails.radioStation});
 
-                FFW.RC.onInteriorVehicleDataNotification("RADIO", null, SDL.RadioModel.get('radioControlData'));
-            } else {
-                FFW.RC.sendError(
-                    SDL.SDLModel.data.resultCode['REJECTED'],
-                    SDL.SDLModel.controlRequestID,
-                    "RC.GrantAccess",
-                    "Request cancelled."
-                );
-            }
-            SDL.SDLModel.set('controlRequestID', null);
-    },
+      FFW.RC.onInteriorVehicleDataNotification('RADIO', null, SDL.RadioModel.get('radioControlData'));
+    } else {
+      FFW.RC.sendError(
+          SDL.SDLModel.data.resultCode['REJECTED'],
+          SDL.SDLModel.controlRequestID,
+          'RC.GrantAccess',
+          'Request cancelled.'
+      );
+    }
+    SDL.SDLModel.set('controlRequestID', null);
+  },
 
-    onEventChanged: function(reason, status){
+  onEventChanged: function(reason, status) {
 
-        switch (reason) {
-            case "phoneCall": {
+    switch (reason) {
+      case 'phoneCall': {
 
-                FFW.BasicCommunication.OnPhoneCall(status);
-                break;
-            }
-            case "emergencyEvent": {
+        FFW.BasicCommunication.OnPhoneCall(status);
+        break;
+      }
+      case 'emergencyEvent': {
 
-                FFW.BasicCommunication.OnEmergencyEvent(status);
-                break;
-            }
-            case "onDeactivateHMI": {
+        FFW.BasicCommunication.OnEmergencyEvent(status);
+        break;
+      }
+      case 'onDeactivateHMI': {
 
-                FFW.BasicCommunication.OnDeactivateHMI(status);
-                break;
-            }
-            default:{
-                return;
-            }
+        FFW.BasicCommunication.OnDeactivateHMI(status);
+        break;
+      }
+      default: {
+        return;
+      }
+    }
+  },
+
+  /**
+   * Send notification to SDL about changes of SDL functionality
+   * @param element
+   * @constructor
+   */
+  OnReverseAppsAllowing: function(element) {
+    element.toggleProperty('allowed');
+
+    if (!element.allowed) {
+      SDL.RadioModel.consentedApp = null;
+      SDL.ClimateController.model.consentedApp = null;
+      SDL.SDLModel.data.radioFirstConsentedApp = null;
+      SDL.SDLModel.data.climateFirstConsentedApp = null;
+    }
+
+    this.set('reverseAppsAllowed', element.allowed);
+
+    FFW.RC.OnReverseAppsAllowing(element.allowed);
+  },
+
+  /**
+   * Change responses to error for GetInteriorVehicleDataCapabilities
+   * @param element
+   * @constructor
+   */
+  setRCCapabilitiesErrorResponse: function(element) {
+    SDL.SDLModel.toggleProperty('errorResponse');
+  },
+
+  /**
+   * Register application method
+   *
+   * @param {Object}
+   *            params
+   * @param {Number}
+   *            applicationType
+   */
+  registerApplication: function(params, applicationType) {
+
+    if (applicationType === undefined || applicationType === null) {
+
+      SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[0].create({ //Magic number 0 - Default media model for not initialized applications
+        appID: params.appID,
+        appName: params.appName,
+        deviceName: params.deviceName,
+        appType: params.appType,
+        isMedia: 0,
+        disabledToActivate: params.greyOut ? true : false
+      }));
+    } else if (applicationType === 2) {//Magic number 2 - Default RC application with non-media model
+
+      SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[1].create({//Magic number 1 - Default non-media model
+        appID: params.appID,
+        appName: params.appName,
+        deviceName: params.deviceName,
+        appType: params.appType,
+        isMedia: false,
+        initialized: true,
+        disabledToActivate: params.greyOut ? true : false
+      }));
+    } else {
+
+      SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[applicationType].create({
+        appID: params.appID,
+        appName: params.appName,
+        deviceName: params.deviceName,
+        appType: params.appType,
+        isMedia: applicationType == 0 ? true : false,
+        initialized: true,
+        disabledToActivate: params.greyOut ? true : false
+      }));
+    }
+
+    var exitCommand = {
+      'id': -10,
+      'params': {
+        'menuParams': {
+          'parentID': 0,
+          'menuName': 'Exit \'DRIVER_DISTRACTION_VIOLATION\'',
+          'position': 0
+        },
+        cmdID: -1
+      }
+    };
+
+    SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
+
+    exitCommand = {
+      'id': -10,
+      'params': {
+        'menuParams': {
+          'parentID': 0,
+          'menuName': 'Exit \'USER_EXIT\'',
+          'position': 0
+        },
+        cmdID: -2
+      }
+    };
+
+    SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
+
+    exitCommand = {
+      'id': -10,
+      'params': {
+        'menuParams': {
+          'parentID': 0,
+          'menuName': 'Exit \'UNAUTHORIZED_TRANSPORT_REGISTRATION\'',
+          'position': 0
+        },
+        cmdID: -3
+      }
+    };
+
+    SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
+  },
+
+  toggleDriverDeviceWindow: function(element) {
+    SDL.PrimaryDevice.toggleProperty('active');
+  },
+
+  driverDeviceWindowClose: function(device, rank) {
+
+    this.toggleDriverDeviceWindow();
+
+    if (!device) {
+      return;
+    }
+
+    if (rank === 1        &&
+            SDL.SDLModel.driverDeviceInfo //Magic number 1 means passenger's device
+        && device.name === SDL.SDLModel.driverDeviceInfo.name) {
+
+      var apps = SDL.SDLModel.data.registeredApps;
+
+      for (var i = 0; i < apps.length; i++) {
+        if (apps[i].deviceName === device.name) {
+
+          apps[i].level = 'NONE';
+
         }
-    },
+      }
 
-    /**
-     * Send notification to SDL about changes of SDL functionality
-     * @param element
-     * @constructor
-     */
-    OnReverseAppsAllowing: function (element) {
-        element.toggleProperty('allowed');
+      SDL.SDLModel.set('driverDeviceInfo', null);
+      SDL.InfoAppsView.showAppList();
+      FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
+    } else if (rank === 0) {  //Magic number 1 means driver's device
 
-        if (!element.allowed) {
-            SDL.RadioModel.consentedApp = null;
-            SDL.ClimateController.model.consentedApp = null;
-            SDL.SDLModel.data.radioFirstConsentedApp = null;
-            SDL.SDLModel.data.climateFirstConsentedApp = null;
+      SDL.SDLModel.set('driverDeviceInfo', device);
+      SDL.InfoAppsView.showAppList();
+      FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
+
+      SDL.SDLController.removeConsentForDevice(SDL.SDLModel.driverDeviceInfo.name);
+    }
+  },
+
+  /**
+   * Handeler for OnKeyboardInputcommand button press
+   *
+   * @param element
+   *            SDL.Button
+   */
+  onCommand: function(element) {
+
+    if (element.commandID < 0) {
+
+      switch (element.commandID) {
+        case -1: {
+          FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, 'DRIVER_DISTRACTION_VIOLATION');
+          break;
         }
+        case -2: {
+          FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, 'USER_EXIT');
+          SDL.SDLController.removeConsentForApp(SDL.SDLController.model.appID);
 
-        this.set('reverseAppsAllowed', element.allowed);
-
-        FFW.RC.OnReverseAppsAllowing(element.allowed);
-    },
-
-    /**
-     * Change responses to error for GetInteriorVehicleDataCapabilities
-     * @param element
-     * @constructor
-     */
-    setRCCapabilitiesErrorResponse: function (element) {
-        SDL.SDLModel.toggleProperty('errorResponse');
-    },
-
-
-    /**
-     * Register application method
-     *
-     * @param {Object}
-     *            params
-     * @param {Number}
-     *            applicationType
-     */
-    registerApplication: function(params, applicationType) {
-
-        if (applicationType === undefined || applicationType === null) {
-
-            SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[0].create( { //Magic number 0 - Default media model for not initialized applications
-                appID: params.appID,
-                appName: params.appName,
-                deviceName: params.deviceName,
-                appType: params.appType,
-                isMedia: 0,
-                disabledToActivate: params.greyOut ? true : false
-            }));
-        } else if (applicationType === 2) {//Magic number 2 - Default RC application with non-media model
-
-            SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[1].create( {//Magic number 1 - Default non-media model
-                appID: params.appID,
-                appName: params.appName,
-                deviceName: params.deviceName,
-                appType: params.appType,
-                isMedia: false,
-                initialized: true,
-                disabledToActivate: params.greyOut ? true : false
-            }));
-        } else {
-
-            SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[applicationType].create( {
-                appID: params.appID,
-                appName: params.appName,
-                deviceName: params.deviceName,
-                appType: params.appType,
-                isMedia: applicationType == 0 ? true : false,
-                initialized: true,
-                disabledToActivate: params.greyOut ? true : false
-            }));
+          SDL.SDLModel.set('givenControlFlag', false);
+          break;
         }
-
-        var exitCommand = {
-            "id": -10,
-            "params": {
-                "menuParams":{
-                    "parentID": 0,
-                    "menuName": "Exit 'DRIVER_DISTRACTION_VIOLATION'",
-                    "position": 0
-                },
-                cmdID: -1
-            }
-        };
-
-        SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
-
-        exitCommand = {
-            "id": -10,
-            "params": {
-                "menuParams":{
-                    "parentID": 0,
-                    "menuName": "Exit 'USER_EXIT'",
-                    "position": 0
-                },
-                cmdID: -2
-            }
-        };
-
-        SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
-
-        exitCommand = {
-            "id": -10,
-            "params": {
-                "menuParams":{
-                    "parentID": 0,
-                    "menuName": "Exit 'UNAUTHORIZED_TRANSPORT_REGISTRATION'",
-                    "position": 0
-                },
-                cmdID: -3
-            }
-        };
-
-        SDL.SDLController.getApplicationModel(params.appID).addCommand(exitCommand);
-    },
-
-    toggleDriverDeviceWindow: function(element) {
-        SDL.PrimaryDevice.toggleProperty('active');
-    },
-
-    driverDeviceWindowClose: function(device, rank) {
-
-        this.toggleDriverDeviceWindow();
-
-        if (!device) {
-            return;
+        case -3: {
+          FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, 'UNAUTHORIZED_TRANSPORT_REGISTRATION');
+          break;
         }
-
-        if (rank === 1
-            && SDL.SDLModel.driverDeviceInfo //Magic number 1 means passenger's device
-            && device.name === SDL.SDLModel.driverDeviceInfo.name) {
-
-            var apps = SDL.SDLModel.data.registeredApps;
-
-            for (var i = 0; i < apps.length; i++) {
-                if (apps[i].deviceName === device.name) {
-
-                    apps[i].level = 'NONE';
-
-                }
-            }
-
-            SDL.SDLModel.set('driverDeviceInfo', null);
-            SDL.InfoAppsView.showAppList();
-            FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
-        } else if (rank === 0) {  //Magic number 1 means driver's device
-
-            SDL.SDLModel.set('driverDeviceInfo', device);
-            SDL.InfoAppsView.showAppList();
-            FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
-
-            SDL.SDLController.removeConsentForDevice(SDL.SDLModel.driverDeviceInfo.name);
+        default: {
+          console.log('Unknown command with ID: ' + element.commandID);
         }
-    },
+      }
 
-    /**
-     * Handeler for OnKeyboardInputcommand button press
-     *
-     * @param element
-     *            SDL.Button
-     */
-    onCommand: function (element) {
+      SDL.OptionsView.deactivate();
+      SDL.States.goToStates('info.apps');
 
-        if (element.commandID < 0) {
+    } else if (element.menuID >= 0) {
 
-            switch (element.commandID) {
-                case -1: {
-                    FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "DRIVER_DISTRACTION_VIOLATION");
-                    break;
-                }
-                case -2: {
-                    FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "USER_EXIT");
-                    SDL.SDLController.removeConsentForApp(SDL.SDLController.model.appID);
+      // if subMenu
+      // activate driver destruction if necessary
+      if (SDL.SDLModel.data.driverDistractionState) {
+        SDL.DriverDistraction.activate();
+      } else {
+        this.onSubMenu(element.menuID);
+      }
+    } else {
 
-                    SDL.SDLModel.set('givenControlFlag', false);
-                    break;
-                }
-                case -3: {
-                    FFW.BasicCommunication.ExitApplication(SDL.SDLController.model.appID, "UNAUTHORIZED_TRANSPORT_REGISTRATION");
-                    break;
-                }
-                default: {
-                    console.log("Unknown command with ID: " + element.commandID);
-                }
-            }
+      FFW.UI.onCommand(element.commandID, this.model.appID);
+      SDL.OptionsView.deactivate();
+    }
+  },
 
-            SDL.OptionsView.deactivate();
-            SDL.States.goToStates('info.apps');
+  /**
+   * PopUp appears on screen when SDL need response from user
+   * to allow or disallow app get access to manage radio or climate module
+   * @param request
+   */
+  interiorDataConsent: function(request) {
 
-        } else if (element.menuID >= 0) {
+    var appName = SDL.SDLController.getApplicationModel(request.params.appID).appName;
+    var req = request;
+    var popUp = null;
 
-            // if subMenu
-            // activate driver destruction if necessary
-            if (SDL.SDLModel.data.driverDistractionState) {
-                SDL.DriverDistraction.activate();
-            } else {
-                this.onSubMenu(element.menuID);
-            }
-        } else {
+    if (request.params.moduleType === 'RADIO') {
+      if (SDL.RadioModel.consentedApp) {
+        FFW.RC.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'Already consented!');
+      } else {
+        popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+            'Would you like to grant access for ' + appName + ' application - moduleType: Radio?',
+                    function(result) {
+                      FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
+                      if (result) {
 
-            FFW.UI.onCommand(element.commandID, this.model.appID);
-            SDL.OptionsView.deactivate();
-        }
-    },
-
-    /**
-     * PopUp appears on screen when SDL need response from user
-     * to allow or disallow app get access to manage radio or climate module
-     * @param request
-     */
-    interiorDataConsent: function(request){
-
-        var appName = SDL.SDLController.getApplicationModel(request.params.appID).appName;
-        var req = request;
-        var popUp = null;
-
-        if (request.params.moduleType === "RADIO") {
-            if (SDL.RadioModel.consentedApp) {
-                FFW.RC.sendError(SDL.SDLModel.data.resultCode["REJECTED"], request.id, request.method, "Already consented!")
-            } else {
-                popUp = SDL.PopUp.create().appendTo('body').popupActivate(
-                    "Would you like to grant access for " + appName + " application - moduleType: Radio?",
-                    function(result){
-                        FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
-                        if (result) {
-
-                            SDL.SDLModel.set('givenControlFlag', true);
-                            SDL.RadioModel.consentedApp = request.params.appID;
-                        }
+                        SDL.SDLModel.set('givenControlFlag', true);
+                        SDL.RadioModel.consentedApp = request.params.appID;
+                      }
                     }
                 );
-            }
-        } else {
-            if (SDL.ClimateController.model.consentedApp) {
-                FFW.RC.sendError(SDL.SDLModel.data.resultCode["REJECTED"], request.id, request.method, "Already consented!")
-            } else {
-                popUp = SDL.PopUp.create().appendTo('body').popupActivate(
-                    "Would you like to grant access for " + appName + " application - moduleType: Climate?",
-                    function(result){
-                        FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
-                        if (result) {
+      }
+    } else {
+      if (SDL.ClimateController.model.consentedApp) {
+        FFW.RC.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'Already consented!');
+      } else {
+        popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+            'Would you like to grant access for ' + appName + ' application - moduleType: Climate?',
+                    function(result) {
+                      FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
+                      if (result) {
 
-                            SDL.SDLModel.set('givenControlFlag', true);
-                            SDL.ClimateController.model.consentedApp = request.params.appID;
-                        }
+                        SDL.SDLModel.set('givenControlFlag', true);
+                        SDL.ClimateController.model.consentedApp = request.params.appID;
+                      }
                     }
                 );
+      }
+    }
+
+    setTimeout(function() {
+      if (popUp && popUp.active) {
+        popUp.deactivate();
+        FFW.RC.sendError(SDL.SDLModel.data.resultCode['TIMED_OUT'],req.id, req.method, 'Timed out!');
+      }
+    }, 10000); //Magic number is timeout for RC consent popUp
+  },
+
+  /**
+   *
+   */
+  onDeactivatePassengerApp: function(button) {
+    SDL.PopUp.create().appendTo('body').popupActivate('Exit application?',
+            function(result) {
+              if (result) {
+                SDL.SDLController.userExitAction(button.appID);
+              }
             }
+        );
+  },
+
+  removeConsentForApp: function(appID) {
+
+    if (SDL.RadioModel.consentedApp === appID) {
+      SDL.RadioModel.consentedApp = null;
+    }
+    if (SDL.ClimateController.model.consentedApp === appID) {
+      SDL.ClimateController.model.consentedApp = null;
+    }
+
+    if (SDL.SDLModel.data.radioFirstConsentedApp === appID) {
+      SDL.SDLModel.data.radioFirstConsentedApp = null;
+    }
+    if (SDL.SDLModel.data.climateFirstConsentedApp === appID) {
+      SDL.SDLModel.data.climateFirstConsentedApp = null;
+    }
+  },
+
+  removeConsentForDevice: function(deviceName) {
+
+    if (SDL.RadioModel.consentedApp        &&
+            SDL.SDLController.getApplicationModel(SDL.RadioModel.consentedApp).deviceName === deviceName) {
+
+      SDL.RadioModel.consentedApp = null;
+    }
+    if (SDL.ClimateController.model.consentedApp        &&
+            SDL.SDLController.getApplicationModel(SDL.ClimateController.model.consentedApp).deviceName === deviceName) {
+
+      SDL.ClimateController.model.consentedApp = null;
+    }
+
+    if (SDL.SDLModel.data.radioFirstConsentedApp        &&
+            SDL.SDLController.getApplicationModel(SDL.SDLModel.data.radioFirstConsentedApp).deviceName === deviceName) {
+
+      SDL.SDLModel.data.radioFirstConsentedApp = null;
+    }
+    if (SDL.SDLModel.data.climateFirstConsentedApp        &&
+            SDL.SDLController.getApplicationModel(SDL.SDLModel.data.climateFirstConsentedApp).deviceName === deviceName) {
+
+      SDL.SDLModel.data.climateFirstConsentedApp = null;
+    }
+  },
+
+  correctTemp: function(data, type) {
+
+    var d = SDL.deepCopy(data);
+
+    if (type === 'get') {
+      switch (d.temperatureUnit) {
+        case 'KELVIN': {
+
+          d.currentTemp += 273;
+          d.desiredTemp += 273;
+
+          return d;
         }
-
-        setTimeout(function(){
-            if (popUp && popUp.active) {
-                popUp.deactivate();
-                FFW.RC.sendError(SDL.SDLModel.data.resultCode['TIMED_OUT'],req.id, req.method, "Timed out!")
-            }
-        }, 10000); //Magic number is timeout for RC consent popUp
-    },
-
-    /**
-     *
-     */
-    onDeactivatePassengerApp: function(button){
-        SDL.PopUp.create().appendTo('body').popupActivate("Exit application?",
-            function(result){
-                if (result) {
-                    SDL.SDLController.userExitAction(button.appID);
-                }
-            }
-        )
-    },
-
-    removeConsentForApp: function(appID){
-
-        if (SDL.RadioModel.consentedApp === appID) {
-            SDL.RadioModel.consentedApp = null;
+        case 'CELSIUS': {
+          return d;
         }
-        if (SDL.ClimateController.model.consentedApp === appID) {
-            SDL.ClimateController.model.consentedApp = null;
+        case 'FAHRENHEIT': {
+
+          d.currentTemp = Math.round(d.currentTemp * 9 / 5 + 32);
+          d.desiredTemp = Math.round(d.desiredTemp * 9 / 5 + 32);
+
+          return d;
         }
+      }
+    } else {
+      switch (d.temperatureUnit) {
+        case 'KELVIN': {
 
-        if (SDL.SDLModel.data.radioFirstConsentedApp === appID) {
-            SDL.SDLModel.data.radioFirstConsentedApp = null;
+          d.currentTemp -= 273;
+          d.desiredTemp -= 273;
+
+          return d;
         }
-        if (SDL.SDLModel.data.climateFirstConsentedApp === appID) {
-            SDL.SDLModel.data.climateFirstConsentedApp = null;
+        case 'CELSIUS': {
+          return d;
         }
-    },
+        case 'FAHRENHEIT': {
 
-    removeConsentForDevice: function(deviceName){
+          d.currentTemp = Math.round((d.currentTemp - 32) * 5 / 9);
+          d.desiredTemp = Math.round((d.currentTemp - 32) * 5 / 9);
 
-        if (SDL.RadioModel.consentedApp
-            && SDL.SDLController.getApplicationModel(SDL.RadioModel.consentedApp).deviceName === deviceName) {
-
-            SDL.RadioModel.consentedApp = null;
+          return d;
         }
-        if (SDL.ClimateController.model.consentedApp
-            && SDL.SDLController.getApplicationModel(SDL.ClimateController.model.consentedApp).deviceName === deviceName) {
+      }
+    }
+  },
 
-            SDL.ClimateController.model.consentedApp = null;
-        }
+  unMapInteriorZone: function(moduleZone) {
 
-        if (SDL.SDLModel.data.radioFirstConsentedApp
-            && SDL.SDLController.getApplicationModel(SDL.SDLModel.data.radioFirstConsentedApp).deviceName === deviceName) {
+    var zone = {};
 
-            SDL.SDLModel.data.radioFirstConsentedApp = null;
-        }
-        if (SDL.SDLModel.data.climateFirstConsentedApp
-            && SDL.SDLController.getApplicationModel(SDL.SDLModel.data.climateFirstConsentedApp).deviceName === deviceName) {
+    switch (moduleZone){
+      case 'driver': {
 
-            SDL.SDLModel.data.climateFirstConsentedApp = null;
-        }
-    },
-
-    correctTemp: function(data, type){
-
-        var d = SDL.deepCopy(data);
-
-        if (type === 'get') {
-            switch (d.temperatureUnit) {
-                case 'KELVIN': {
-
-                    d.currentTemp += 273;
-                    d.desiredTemp += 273;
-
-                    return d;
-                }
-                case 'CELSIUS': {
-                    return d;
-                }
-                case 'FAHRENHEIT': {
-
-                    d.currentTemp = Math.round(d.currentTemp * 9 / 5 + 32);
-                    d.desiredTemp = Math.round(d.desiredTemp * 9 / 5 + 32);
-
-                    return d;
-                }
-            }
-        } else {
-            switch (d.temperatureUnit) {
-                case 'KELVIN': {
-
-                    d.currentTemp -= 273;
-                    d.desiredTemp -= 273;
-
-                    return d;
-                }
-                case 'CELSIUS': {
-                    return d;
-                }
-                case 'FAHRENHEIT': {
-
-                    d.currentTemp = Math.round((d.currentTemp - 32) * 5 / 9);
-                    d.desiredTemp = Math.round((d.currentTemp - 32) * 5 / 9);
-
-                    return d;
-                }
-            }
-        }
-    },
-
-    unMapInteriorZone: function(moduleZone){
-
-        var zone = {};
-
-        switch (moduleZone){
-            case 'driver':{
-
-                zone = {
-                    "col": 0,
-                    "row": 0,
-                    "level": 0,
-                    "colspan": 2,
-                    "rowspan": 2,
-                    "levelspan": 1
-                };
-
-                return zone;
-                break;
-            }
-            case 'front_passenger':{
-
-                zone = {
-                    "col": 1,
-                    "row": 0,
-                    "level": 0,
-                    "colspan": 2,
-                    "rowspan": 2,
-                    "levelspan": 1
-                };
-                return zone;
-                break;
-            }
-            case 'back_left':{
-
-                zone = {
-                    "col": 0,
-                    "row": 1,
-                    "level": 0,
-                    "colspan": 2,
-                    "rowspan": 2,
-                    "levelspan": 1
-                };
-                return zone;
-                break;
-            }
-            case 'back_right':{
-
-                zone = {
-                    "col": 1,
-                    "row": 1,
-                    "level": 0,
-                    "colspan": 2,
-                    "rowspan": 2,
-                    "levelspan": 1
-                };
-                return zone;
-                break;
-            }
-        }
-    },
-
-    getInteriorZone: function(moduleZone){
-
-        var zone;
-
-        zone = null;
-
-        if (moduleZone == null) {
-
-            return zone;
-        }
-
-        if (moduleZone.col === 0) {
-
-            if (moduleZone.row === 0) {
-                zone = 'driver';
-            } else if (moduleZone.row === 1) {
-                zone = 'back_left';
-            }
-        } else if (moduleZone.col === 1) {
-
-            if (moduleZone.row === 0) {
-                zone = 'front_passenger';
-            } else if (moduleZone.row === 1) {
-                zone = 'back_right';
-            }
-        }
+        zone = {
+          'col': 0,
+          'row': 0,
+          'level': 0,
+          'colspan': 2,
+          'rowspan': 2,
+          'levelspan': 1
+        };
 
         return zone;
+        break;
+      }
+      case 'front_passenger': {
+
+        zone = {
+          'col': 1,
+          'row': 0,
+          'level': 0,
+          'colspan': 2,
+          'rowspan': 2,
+          'levelspan': 1
+        };
+        return zone;
+        break;
+      }
+      case 'back_left': {
+
+        zone = {
+          'col': 0,
+          'row': 1,
+          'level': 0,
+          'colspan': 2,
+          'rowspan': 2,
+          'levelspan': 1
+        };
+        return zone;
+        break;
+      }
+      case 'back_right': {
+
+        zone = {
+          'col': 1,
+          'row': 1,
+          'level': 0,
+          'colspan': 2,
+          'rowspan': 2,
+          'levelspan': 1
+        };
+        return zone;
+        break;
+      }
     }
+  },
+
+  getInteriorZone: function(moduleZone) {
+
+    var zone;
+
+    zone = null;
+
+    if (moduleZone == null) {
+
+      return zone;
+    }
+
+    if (moduleZone.col === 0) {
+
+      if (moduleZone.row === 0) {
+        zone = 'driver';
+      } else if (moduleZone.row === 1) {
+        zone = 'back_left';
+      }
+    } else if (moduleZone.col === 1) {
+
+      if (moduleZone.row === 0) {
+        zone = 'front_passenger';
+      } else if (moduleZone.row === 1) {
+        zone = 'back_right';
+      }
+    }
+
+    return zone;
+  }
 });

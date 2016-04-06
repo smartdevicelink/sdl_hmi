@@ -33,50 +33,50 @@
 
 SDL.FuncSwitcher = Em.Object.create({
 
-    init: function() {
+  init: function() {
 
-        switch (FLAGS.SimpleFunctionality) {
-            case 0:{
+    switch (FLAGS.SimpleFunctionality) {
+      case 0: {
 
-                SDL.set('SDLModel', SDL.GModel.create());
-                SDL.set('SDLController', SDL.GController.create());
-                FLAGS.CAN = false;
+        SDL.set('SDLModel', SDL.GModel.create());
+        SDL.set('SDLController', SDL.GController.create());
+        FLAGS.CAN = false;
 
-                break;
-            }
-            case 1:{
+        break;
+      }
+      case 1: {
 
-                SDL.set('SDLModel', SDL.PModel.create());
-                SDL.set('SDLController', SDL.PController.create());
-                FLAGS.CAN = false;
+        SDL.set('SDLModel', SDL.PModel.create());
+        SDL.set('SDLController', SDL.PController.create());
+        FLAGS.CAN = false;
 
-                break;
-            }
-            case 2:{
+        break;
+      }
+      case 2: {
 
-                SDL.set('SDLModel', SDL.RModel.create());
-                SDL.set('SDLController', SDL.RController.create());
+        SDL.set('SDLModel', SDL.RModel.create());
+        SDL.set('SDLController', SDL.RController.create());
 
-                break;
-            }
-        }
-    },
+        break;
+      }
+    }
+  },
 
-    gen: function() {
+  gen: function() {
 
-        return FLAGS.SimpleFunctionality === 0;
+    return FLAGS.SimpleFunctionality === 0;
 
-    }.property('FLAGS.SimpleFunctionality'),
+  }.property('FLAGS.SimpleFunctionality'),
 
-    pan: function() {
+  pan: function() {
 
-        return FLAGS.SimpleFunctionality === 1;
+    return FLAGS.SimpleFunctionality === 1;
 
-    }.property('FLAGS.SimpleFunctionality'),
+  }.property('FLAGS.SimpleFunctionality'),
 
-    rev: function() {
+  rev: function() {
 
-        return FLAGS.SimpleFunctionality === 2;
+    return FLAGS.SimpleFunctionality === 2;
 
-    }.property('FLAGS.SimpleFunctionality')
+  }.property('FLAGS.SimpleFunctionality')
 });

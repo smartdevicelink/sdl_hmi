@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,70 +31,69 @@
  * @version 1.0
  */
 
-SDL = Em.Application.create( {
+SDL = Em.Application.create({
 
-    /** Override for mouse/touch events */
-    customEvents: ('ontouchstart' in document.documentElement) ? {
-        touchstart: 'actionDown',
-        touchend: 'actionUp',
-        touchmove: 'actionMove'
-    } : {
-        mousedown: 'actionDown',
-        mouseup: 'actionUp',
-        mousemove: 'actionMove'
-    },
+  /** Override for mouse/touch events */
+  customEvents: ('ontouchstart' in document.documentElement) ? {
+    touchstart: 'actionDown',
+    touchend: 'actionUp',
+    touchmove: 'actionMove'
+  } : {
+    mousedown: 'actionDown',
+    mouseup: 'actionUp',
+    mousemove: 'actionMove'
+  },
 
-    /** Help mode flag {boolean} */
-    helpMode: false,
+  /** Help mode flag {boolean} */
+  helpMode: false,
 
-    // determine home view {string}
-    homeView: 'home',
+  // determine home view {string}
+  homeView: 'home',
 
-    /** Set language for localization */
-    localization: 'eng',
+  /** Set language for localization */
+  localization: 'eng',
 
-    // Application ready flag
-    appReady: false,
+  // Application ready flag
+  appReady: false,
 
-    // Debug text
-    debugText: 'debug&nbsp;mode',
+  // Debug text
+  debugText: 'debug&nbsp;mode',
 
-    SDLModel: null,
+  SDLModel: null,
 
-    SDLController: null,
+  SDLController: null,
 
-    init: function() {
+  init: function() {
 
-        Em.Logger.log('SDL: Application init!');
+    Em.Logger.log('SDL: Application init!');
 
-        this._super();
-    },
+    this._super();
+  },
 
-    afterRender: function() {
+  afterRender: function() {
 
+  },
 
-    },
+  /** Application ready event */
+  ready: function() {
 
-    /** Application ready event */
-    ready: function() {
+    Em.Logger.log('SDL: Application ready!');
 
-        Em.Logger.log('SDL: Application ready!');
+    /** State manager init */
+    SDL.States = StateManager.create();
 
-        /** State manager init */
-        SDL.States = StateManager.create();
+    /** container for all views */
+    SDL.views = SDL.AppViews.create().appendTo('body');
+  },
 
-        /** container for all views */
-        SDL.views = SDL.AppViews.create().appendTo('body');
-    },
+  deepCopy: function(obj) {
 
-    deepCopy: function (obj) {
+    var copy = JSON.stringify(obj);
 
-        var copy = JSON.stringify(obj);
+    copy = JSON.parse(copy);
 
-        copy = JSON.parse(copy);
+    return copy;
 
-        return copy;
-
-    }
+  }
 
 });

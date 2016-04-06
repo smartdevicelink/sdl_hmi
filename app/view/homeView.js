@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,24 +32,24 @@
  * @version 1.0
  */
 
-SDL.HomeView = Em.ContainerView.create( {
+SDL.HomeView = Em.ContainerView.create({
 
-    classNameBindings: 'SDL.States.home.active:active_state:inactive_state',
+  classNameBindings: 'SDL.States.home.active:active_state:inactive_state',
 
-    elementId: 'home',
+  elementId: 'home',
 
-    childViews: [
-        'widgetPhone',
-        'widgetNavigation',
-        'widgetMedia',
-        'widgetClimate'
-    ],
+  childViews: [
+      'widgetPhone',
+      'widgetNavigation',
+      'widgetMedia',
+      'widgetClimate'
+  ],
 
-    widgetPhone:		SDL.WidgetPhoneView,
+  widgetPhone:		SDL.WidgetPhoneView,
 
-    widgetNavigation:	SDL.WidgetNavigationView,
+  widgetNavigation:	SDL.WidgetNavigationView,
 
-    widgetMedia:		SDL.WidgetMediaView,
+  widgetMedia:		SDL.WidgetMediaView,
 
-    widgetClimate:		SDL.WidgetClimateView
-} );
+  widgetClimate:		SDL.WidgetClimateView
+});

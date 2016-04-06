@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,206 +31,206 @@
  * @version 1.0
  */
 
-SDL.TurnByTurnView = SDL.SDLAbstractView.create( {
+SDL.TurnByTurnView = SDL.SDLAbstractView.create({
 
-    elementId: 'TurnByTurnView',
+  elementId: 'TurnByTurnView',
 
-    classNames: 'TurnByTurnView',
+  classNames: 'TurnByTurnView',
 
-    classNameBindings: [
-        'activeTBT:active_state:inactive_state'
-    ],
+  classNameBindings: [
+      'activeTBT:active_state:inactive_state'
+  ],
 
-    active: false,
+  active: false,
 
-    activeTBT: false,
+  activeTBT: false,
 
-    childViews: [
-        'captionText',
-        'softButtons',
-        'totalDistanceLabel',
-        'etaLabel',
-        'turnList',
-        'homeScreen',
-        'navigationText2',
-        'turnIconImage',
-        'nextTurnIconImage',
-        'distanceToManeuver',
-        'distanceToManeuverScale',
-        'timeToDestination'
-    ],
+  childViews: [
+      'captionText',
+      'softButtons',
+      'totalDistanceLabel',
+      'etaLabel',
+      'turnList',
+      'homeScreen',
+      'navigationText2',
+      'turnIconImage',
+      'nextTurnIconImage',
+      'distanceToManeuver',
+      'distanceToManeuverScale',
+      'timeToDestination'
+  ],
 
-    appID: -1,
-    navigationText2text: null,
-    eta: null,
-    totalDistance: null,
-    turnIcon: null,
-    nextturnIcon: null,
-    distanceToManeuvertext: null,
-    distanceToManeuverScaletext: null,
-    timeToDestinationtext: null,
-    maneuverComplete: null,
+  appID: -1,
+  navigationText2text: null,
+  eta: null,
+  totalDistance: null,
+  turnIcon: null,
+  nextturnIcon: null,
+  distanceToManeuvertext: null,
+  distanceToManeuverScaletext: null,
+  timeToDestinationtext: null,
+  maneuverComplete: null,
 
-    activate: function(appID) {
+  activate: function(appID) {
 
-        var naviParams = SDL.SDLController.getApplicationModel(appID).constantTBTParams;
+    var naviParams = SDL.SDLController.getApplicationModel(appID).constantTBTParams;
 
-        if (naviParams) {
+    if (naviParams) {
 
-            for ( var i = 0; i < naviParams.navigationTexts.length; i++) {
-                switch (naviParams.navigationTexts[i].fieldName) {
-                    case 'navigationText1': {
-                        this.set('captionText.content',
-                            naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                    case 'navigationText2': {
-                        this.set('navigationText2text',
-                            naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                    case 'ETA': {
-                        this.set('eta', naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                    case 'totalDistance': {
-                        this.set('totalDistance',
-                            naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                }
-            }
-
-            this.softButtons.addItems(naviParams.softButtons, appID);
-
-            if (naviParams.maneuverComplete) {
-                this.set('maneuverComplete', naviParams.maneuverComplete);
-            }
-
-            this.set('appID', naviParams.appID);
-
-            if (naviParams.turnIcon) {
-
-                this.set('turnIcon', naviParams.turnIcon.value);
-            }
-
-            if (naviParams.nextTurnIcon) {
-
-                this.set('nextTurnIcon', naviParams.nextTurnIcon.value);
-            }
-            this.set('distanceToManeuvertext', naviParams.distanceToManeuver);
-            this.set('distanceToManeuverScaletext', naviParams.distanceToManeuverScale);
-            this.set('timeToDestinationtext', naviParams.timeToDestination);
-
-            this.set('activeTBT', true);
+      for (var i = 0; i < naviParams.navigationTexts.length; i++) {
+        switch (naviParams.navigationTexts[i].fieldName) {
+          case 'navigationText1': {
+            this.set('captionText.content',
+                naviParams.navigationTexts[i].fieldText);
+            break;
+          }
+          case 'navigationText2': {
+            this.set('navigationText2text',
+                naviParams.navigationTexts[i].fieldText);
+            break;
+          }
+          case 'ETA': {
+            this.set('eta', naviParams.navigationTexts[i].fieldText);
+            break;
+          }
+          case 'totalDistance': {
+            this.set('totalDistance',
+                naviParams.navigationTexts[i].fieldText);
+            break;
+          }
         }
+      }
+
+      this.softButtons.addItems(naviParams.softButtons, appID);
+
+      if (naviParams.maneuverComplete) {
+        this.set('maneuverComplete', naviParams.maneuverComplete);
+      }
+
+      this.set('appID', naviParams.appID);
+
+      if (naviParams.turnIcon) {
+
+        this.set('turnIcon', naviParams.turnIcon.value);
+      }
+
+      if (naviParams.nextTurnIcon) {
+
+        this.set('nextTurnIcon', naviParams.nextTurnIcon.value);
+      }
+      this.set('distanceToManeuvertext', naviParams.distanceToManeuver);
+      this.set('distanceToManeuverScaletext', naviParams.distanceToManeuverScale);
+      this.set('timeToDestinationtext', naviParams.timeToDestination);
+
+      this.set('activeTBT', true);
+    }
+  },
+
+  /**
+   * Deactivate View
+   */
+  deactivate: function() {
+
+    this.set('activeTBT', false);
+  },
+
+  totalDistanceLabel: SDL.Label.extend({
+    classNames: 'totalDistanceLabel',
+    contentBinding: 'parentView.totalDistance'
+  }),
+
+  distanceToManeuverScale: SDL.Label.extend({
+    classNames: 'distanceToManeuverScale',
+    contentBinding: 'parentView.distanceToManeuverScaletext'
+  }),
+
+  distanceToManeuver: SDL.Label.extend({
+    classNames: 'distanceToManeuver',
+    contentBinding: 'parentView.distanceToManeuvertext'
+  }),
+
+  timeToDestination: SDL.Label.extend({
+    classNames: 'timeToDestination',
+    contentBinding: 'parentView.timeToDestinationtext'
+  }),
+
+  etaLabel: SDL.Label.extend({
+    classNames: 'etaLabel',
+    contentBinding: 'parentView.eta'
+  }),
+
+  turnList: SDL.Button.create({
+    elementID: 'turnList',
+    classNames: 'turnList btn',
+    text: 'Turn List',
+    action: function() {
+
+      SDL.SDLController.tbtTurnList(this._parentView.appID);
     },
+    target: '',
+    onDown: false,
+    templateName: 'arrow'
+  }),
 
-    /**
-     * Deactivate View
-     */
-    deactivate: function() {
+  turnIconImage: Em.View.create({
+    classNames: 'turnIcon btn',
+    attributeBindings: [
+        'style'
+    ],
+    style: function() {
 
-        this.set('activeTBT', false);
-    },
+      if (this._parentView.turnIcon) {
+        return 'background-image: URL(' + this._parentView.turnIcon            +
+                    ');';
+      } else {
+        return '';
+      }
+    }.property('this.parentView.turnIcon')
+  }),
 
-    totalDistanceLabel: SDL.Label.extend( {
-        classNames: 'totalDistanceLabel',
-        contentBinding: 'parentView.totalDistance'
-    }),
+  nextTurnIconImage: Em.View.create({
+    classNames: 'nextTurnIcon btn',
+    attributeBindings: [
+        'style'
+    ],
+    style: function() {
 
-    distanceToManeuverScale: SDL.Label.extend( {
-        classNames: 'distanceToManeuverScale',
-        contentBinding: 'parentView.distanceToManeuverScaletext'
-    }),
+      if (this._parentView.nextTurnIcon) {
+        return 'background-image: URL(' + this._parentView.nextTurnIcon            +
+                    ');';
+      } else {
+        return '';
+      }
+    }.property('this.parentView.nextTurnIcon')
+  }),
 
-    distanceToManeuver: SDL.Label.extend( {
-        classNames: 'distanceToManeuver',
-        contentBinding: 'parentView.distanceToManeuvertext'
-    }),
+  navigationText2: SDL.Label.extend({
+    classNames: 'navigationText2',
+    contentBinding: 'parentView.navigationText2text'
+  }),
 
-    timeToDestination: SDL.Label.extend( {
-        classNames: 'timeToDestination',
-        contentBinding: 'parentView.timeToDestinationtext'
-    }),
+  homeScreen: SDL.Button.create({
+    elementId: 'homeScreen',
+    classNames: 'homeScreen btn',
+    text: 'Home Screen',
+    iconBinding: 'SDL.SDLController.model.appIcon',
+    target: 'this.parentView',
+    action: 'deactivate',
+    onDown: false
+  }),
 
-    etaLabel: SDL.Label.extend( {
-        classNames: 'etaLabel',
-        contentBinding: 'parentView.eta'
-    }),
+  softButtons: SDL.MenuList.extend({
 
-    turnList: SDL.Button.create( {
-        elementID: 'turnList',
-        classNames: 'turnList btn',
-        text: 'Turn List',
-        action: function() {
+    itemsOnPage: 3,
 
-            SDL.SDLController.tbtTurnList(this._parentView.appID);
-        },
-        target: '',
-        onDown: false,
-        templateName: 'arrow'
-    }),
+    groupName: 'TurnByTurnView',
 
-    turnIconImage: Em.View.create( {
-        classNames: 'turnIcon btn',
-        attributeBindings: [
-            'style'
-        ],
-        style: function() {
+    content: Em.ContainerView.extend({
 
-            if (this._parentView.turnIcon) {
-                return 'background-image: URL(' + this._parentView.turnIcon
-                    + ');';
-            } else {
-                return '';
-            }
-        }.property('this.parentView.turnIcon')
-    }),
+      classNames: [
+          'content'
+      ]
 
-    nextTurnIconImage: Em.View.create( {
-        classNames: 'nextTurnIcon btn',
-        attributeBindings: [
-            'style'
-        ],
-        style: function() {
-
-            if (this._parentView.nextTurnIcon) {
-                return 'background-image: URL(' + this._parentView.nextTurnIcon
-                    + ');';
-            } else {
-                return '';
-            }
-        }.property('this.parentView.nextTurnIcon')
-    }),
-
-    navigationText2: SDL.Label.extend( {
-        classNames: 'navigationText2',
-        contentBinding: 'parentView.navigationText2text'
-    }),
-
-    homeScreen: SDL.Button.create( {
-        elementId: 'homeScreen',
-        classNames: 'homeScreen btn',
-        text: 'Home Screen',
-        iconBinding: 'SDL.SDLController.model.appIcon',
-        target: 'this.parentView',
-        action: 'deactivate',
-        onDown: false
-    }),
-
-    softButtons: SDL.MenuList.extend( {
-
-        itemsOnPage: 3,
-
-        groupName: "TurnByTurnView",
-
-        content: Em.ContainerView.extend( {
-
-            classNames: [
-                'content'
-            ]
-
-        })
     })
+  })
 });

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,64 +32,64 @@
  * @version 1.0
  */
 
-SDL.SDLAbstractView = Em.ContainerView.extend( {
+SDL.SDLAbstractView = Em.ContainerView.extend({
 
+  classNames:
+      [
+          'sdl-window'
+      ],
+
+  classNameBindings:
+      [
+          'active:active_state:inactive_state'
+      ],
+
+  active: false,
+
+  caption: 'Caption Text',
+
+  /**
+   * Activate window and set caption text
+   *
+   * @param text: String
+   */
+  activate: function(text) {
+    if (text) {
+      this.set('caption', text);
+    }
+    this.set('active', true);
+  },
+
+  /**
+   * Deactivate window
+   */
+  deactivate: function() {
+    this.set('active', false);
+  },
+
+  onStateChange: function() {
+    if (this.active) {
+      this.deactivate();
+    }
+  }.observes('SDL.TransitionIterator.ready'),
+
+  backButton: SDL.Button.extend({
     classNames:
         [
-            'sdl-window'
+            'back-button'
         ],
+    target: 'this.parentView',
+    action: 'deactivate',
+    icon: 'images/media/ico_back.png',
+    onDown: false
+  }),
 
-    classNameBindings:
+  captionText: SDL.Label.extend({
+    classNames:
         [
-            'active:active_state:inactive_state'
+            'caption-text'
         ],
 
-    active: false,
-
-    caption: 'Caption Text',
-
-    /**
-     * Activate window and set caption text
-     * 
-     * @param text: String
-     */
-    activate: function( text ) {
-        if( text ){
-            this.set( 'caption', text );
-        }
-        this.set( 'active', true );
-    },
-
-    /**
-     * Deactivate window
-     */
-    deactivate: function() {
-        this.set( 'active', false );
-    },
-
-    onStateChange: function() {
-        if( this.active ){
-            this.deactivate();
-        }
-    }.observes( 'SDL.TransitionIterator.ready' ),
-
-    backButton: SDL.Button.extend( {
-        classNames:
-            [
-                'back-button'
-            ],
-        target: 'this.parentView',
-        action: 'deactivate',
-        icon: 'images/media/ico_back.png',
-        onDown: false
-    } ),
-
-    captionText: SDL.Label.extend( {
-        classNames:
-            [
-                'caption-text'
-            ],
-
-        contentBinding: 'this.parentView.caption'
-    } )
-} );
+    contentBinding: 'this.parentView.caption'
+  })
+});

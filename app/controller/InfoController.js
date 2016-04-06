@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,50 +31,50 @@
  * @version 1.0
  */
 
-SDL.InfoController = Em.Object.create( {
+SDL.InfoController = Em.Object.create({
 
-    activeState: 'info.apps',
+  activeState: 'info.apps',
 
-    hiddenLeftMenu: false,
+  hiddenLeftMenu: false,
 
-    onState: function(event) {
+  onState: function(event) {
 
-        SDL.States.goToStates('info.' + event.goToState);
-    },
+    SDL.States.goToStates('info.' + event.goToState);
+  },
 
-    onChildState: function(event) {
+  onChildState: function(event) {
 
-        SDL.States.goToStates(SDL.States.currentState.get('path') + '.'
-            + event.goToState);
-    },
+    SDL.States.goToStates(SDL.States.currentState.get('path') + '.'        +
+            event.goToState);
+  },
 
+  /**
+   * Switching on Application
+   */
+  turnOnSDL: function() {
+
+    //SDL.CDModel.set('active', false);
     /**
-     * Switching on Application
+     * Set SDL Data active, flag for status bar
      */
-    turnOnSDL: function () {
-
-        //SDL.CDModel.set('active', false);
-        /**
-         * Set SDL Data active, flag for status bar
-         */
-        if (SDL.SDLController.model) {
-            SDL.SDLController.model.set('active', true);
-        }
-        /**
-         * Go to SDL state
-         */
-        if (SDL.SDLController.model.appType) {
-            for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
-                if (SDL.SDLController.model.appType[i] == "NAVIGATION") {
-                    SDL.BaseNavigationView.update();
-                    SDL.States.goToStates('navigationApp.baseNavigation');
-                    return;
-                }
-            }
-        }
-
-        SDL.States.goToStates('info.nonMedia');
-        //SDL.States.goToStates('media.sdlmedia');
-
+    if (SDL.SDLController.model) {
+      SDL.SDLController.model.set('active', true);
     }
+    /**
+     * Go to SDL state
+     */
+    if (SDL.SDLController.model.appType) {
+      for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
+        if (SDL.SDLController.model.appType[i] == 'NAVIGATION') {
+          SDL.BaseNavigationView.update();
+          SDL.States.goToStates('navigationApp.baseNavigation');
+          return;
+        }
+      }
+    }
+
+    SDL.States.goToStates('info.nonMedia');
+    //SDL.States.goToStates('media.sdlmedia');
+
+  }
 });

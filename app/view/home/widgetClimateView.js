@@ -35,9 +35,9 @@
 
 SDL.WidgetClimateView = Em.ContainerView.extend({
 
-    elementId:	'home_widgetClimate',
+  elementId:	'home_widgetClimate',
 
-    classNameBindings: [
-        'SDL.FuncSwitcher.rev::is-disabled'
-    ]
+  classNameBindings: [
+      'SDL.FuncSwitcher.rev::is-disabled'
+  ]
 });

@@ -35,9 +35,9 @@
 
 SDL.WidgetNavigationView = Em.ContainerView.extend({
 
-    elementId:	'home_widgetNavigation',
+  elementId:	'home_widgetNavigation',
 
-    classNameBindings: [
-        'SDL.FuncSwitcher.rev::is-disabled'
-    ]
+  classNameBindings: [
+      'SDL.FuncSwitcher.rev::is-disabled'
+  ]
 });

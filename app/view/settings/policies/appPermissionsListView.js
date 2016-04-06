@@ -31,96 +31,96 @@
  * @version 1.0
  */
 
-SDL.AppPermissionsListView = Em.ContainerView.create( {
+SDL.AppPermissionsListView = Em.ContainerView.create({
 
-    elementId: 'policies_settings_appPermissionsList',
+  elementId: 'policies_settings_appPermissionsList',
 
-    classNames: 'in_settings_separate_view',
+  classNames: 'in_settings_separate_view',
 
-    classNameBindings: [
-        'SDL.States.settings.policies.appPermissionsList.active:active_state:inactive_state'
-    ],
+  classNameBindings: [
+      'SDL.States.settings.policies.appPermissionsList.active:active_state:inactive_state'
+  ],
 
-    childViews: [
-        'backButton',
-        'appList',
-        'label'
-    ],
+  childViews: [
+      'backButton',
+      'appList',
+      'label'
+  ],
 
-    globalConfigurationValue: false,
+  globalConfigurationValue: false,
 
-    globalConfigurationMessage: function() {
-        if (this.globalConfigurationValue === true) {
-            return "All devices Allowed";
-        } else if (this.globalConfigurationValue === false) {
-            return "All devices Not Allowed";
-        } else {
-            return "All devices manual Configuration";
-        }
-    }.property('this.globalConfigurationValue'),
+  globalConfigurationMessage: function() {
+    if (this.globalConfigurationValue === true) {
+      return 'All devices Allowed';
+    } else if (this.globalConfigurationValue === false) {
+      return 'All devices Not Allowed';
+    } else {
+      return 'All devices manual Configuration';
+    }
+  }.property('this.globalConfigurationValue'),
 
-    /**
-     * Label in title
-     */
-    label: SDL.Label.extend( {
+  /**
+   * Label in title
+   */
+  label: SDL.Label.extend({
 
-        classNames: 'label',
+    classNames: 'label',
 
-        content: 'Choose devices to be allowed for SDL functionality:'
-    }),
+    content: 'Choose devices to be allowed for SDL functionality:'
+  }),
 
-    backButton: SDL.Button.extend( {
-        classNames:
-            [
-                'backButton'
-            ],
-        action: 'onState',
+  backButton: SDL.Button.extend({
+    classNames:
+        [
+            'backButton'
+        ],
+    action: 'onState',
+    target: 'SDL.SettingsController',
+    goToState: 'policies',
+    icon: 'images/media/ico_back.png',
+    onDown: false
+  }),
+
+  /**
+   * Function to add application to application list
+   */
+  showAppList: function() {
+
+    this.get('appList.list').removeAllChildren();
+
+    this.appList.list.refresh();
+
+    var i,
+        appIndex,
+        apps = SDL.SDLModel.data.registeredApps;
+    len = apps.length;
+
+    for (i = 0; i < len; i++) {
+
+      appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+
+      this.get('appList.list.childViews').pushObject(SDL.Button.create({
+        action: 'GetListOfPermissions',
         target: 'SDL.SettingsController',
-        goToState: 'policies',
-        icon: 'images/media/ico_back.png',
-        onDown: false
-    } ),
+        text: apps[i].appName,
+        appID: apps[i].appID,
+        classNames: 'list-item button',
+        iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex            +
+                    '.appIcon'
+      }));
+    }
 
-    /**
-     * Function to add application to application list
-     */
-    showAppList: function() {
+    this.appList.list.refresh();
 
-        this.get('appList.list').removeAllChildren();
+  },
 
-        this.appList.list.refresh();
+  appList: SDL.List.extend({
 
-        var i,
-            appIndex,
-            apps = SDL.SDLModel.data.registeredApps
-            len = apps.length;
+    elementId: 'polocies_app_permissions_list',
 
-        for (i = 0; i < len; i++) {
+    itemsOnPage: 5,
 
-            appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
-
-            this.get('appList.list.childViews').pushObject(SDL.Button.create( {
-                action: 'GetListOfPermissions',
-                target: 'SDL.SettingsController',
-                text: apps[i].appName,
-                appID: apps[i].appID,
-                classNames: 'list-item button',
-                iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex
-                    + '.appIcon'
-            }));
-        }
-
-        this.appList.list.refresh();
-
-    },
-
-    appList: SDL.List.extend( {
-
-        elementId: 'polocies_app_permissions_list',
-
-        itemsOnPage: 5,
-
-        /** Items */
-        items: new Array()
-    })
+    /** Items */
+    items: new Array()
+  })
 });

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,47 +30,47 @@
  * @filesource app/view/navigationAppView.js
  * @version 1.0
  */
-SDL.NavigationAppView = Em.ContainerView.create( {
-    /** View Id */
-    elementId: 'NavigationAppView',
+SDL.NavigationAppView = Em.ContainerView.create({
+  /** View Id */
+  elementId: 'NavigationAppView',
 
-    classNameBindings: [
-        'this.activeState:active_state:inactive_state'
-    ],
+  classNameBindings: [
+      'this.activeState:active_state:inactive_state'
+  ],
 
-    activeState: function(){
-        if (SDL.TurnByTurnView.activeTBT) {
-            return false;
-        } else if (SDL.States.navigationApp.active) {
-            return true;
-        } else {
-            return false;
-        }
-    }.property('SDL.States.navigationApp.active', 'SDL.TurnByTurnView.activeTBT'),
+  activeState: function() {
+    if (SDL.TurnByTurnView.activeTBT) {
+      return false;
+    } else if (SDL.States.navigationApp.active) {
+      return true;
+    } else {
+      return false;
+    }
+  }.property('SDL.States.navigationApp.active', 'SDL.TurnByTurnView.activeTBT'),
 
-    childViews: [
-        'videoView',
-        SDL.BaseNavigationView
-    ],
+  childViews: [
+      'videoView',
+      SDL.BaseNavigationView
+  ],
 
-    actionMove:function(event){
+  actionMove: function(event) {
 
-        SDL.SDLModel.onTouchEvent(event);
-    },
+    SDL.SDLModel.onTouchEvent(event);
+  },
 
-    actionUp:function(event){
+  actionUp: function(event) {
 
-        SDL.SDLModel.onTouchEvent(event);
-    },
+    SDL.SDLModel.onTouchEvent(event);
+  },
 
-    actionDown:function(event){
+  actionDown: function(event) {
 
-        SDL.SDLModel.onTouchEvent(event);
-    },
+    SDL.SDLModel.onTouchEvent(event);
+  },
 
-    videoView: Ember.View.create({
-        templateName: "video",
-        template: Ember.Handlebars.compile('<video id="html5Player"></video>')
-    })
+  videoView: Ember.View.create({
+    templateName: 'video',
+    template: Ember.Handlebars.compile('<video id="html5Player"></video>')
+  })
 
 });

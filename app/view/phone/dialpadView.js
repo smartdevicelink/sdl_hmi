@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,230 +32,230 @@
  * @version 1.0
  */
 
-SDL.DialpadPhoneView = Em.ContainerView.create( {
+SDL.DialpadPhoneView = Em.ContainerView.create({
 
-    elementId: 'phone_dialpad',
+  elementId: 'phone_dialpad',
 
-    classNameBindings: 'SDL.States.phone.dialpad.active:active_state:inactive_state',
+  classNameBindings: 'SDL.States.phone.dialpad.active:active_state:inactive_state',
+
+  childViews:
+      [
+          'number',
+          'keypad',
+          'deleteButton',
+          'dialButton',
+          'endButton'
+      ],
+
+  /** Number area */
+  number: SDL.Label.extend({
+    elementId: 'phone_dialpad_number',
+
+    contentBinding: Em.Binding.oneWay('SDL.PhoneController.model.dialpadNumber')
+  }),
+
+  /** Keypad block */
+  keypad: Em.ContainerView.extend({
+    elementId: 'phone_dialpad_keypad',
 
     childViews:
         [
-            'number',
-            'keypad',
-            'deleteButton',
-            'dialButton',
-            'endButton'
+            'key1',
+            'key2',
+            'key3',
+            'key4',
+            'key5',
+            'key6',
+            'key7',
+            'key8',
+            'key9',
+            'key0',
+            'keyStar',
+            'keyDiez'
         ],
 
-    /** Number area */
-    number: SDL.Label.extend( {
-        elementId: 'phone_dialpad_number',
+    key1: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key1',
 
-        contentBinding: Em.Binding.oneWay( 'SDL.PhoneController.model.dialpadNumber' )
-    } ),
+      classNames: 'left',
 
-    /** Keypad block */
-    keypad: Em.ContainerView.extend( {
-        elementId: 'phone_dialpad_keypad',
+      text: '1',
 
-        childViews:
-            [
-                'key1',
-                'key2',
-                'key3',
-                'key4',
-                'key5',
-                'key6',
-                'key7',
-                'key8',
-                'key9',
-                'key0',
-                'keyStar',
-                'keyDiez'
-            ],
+      action: 'keyPress',
 
-        key1: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key1',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'left',
+    key2: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key2',
 
-            text: '1',
+      classNames: 'center',
 
-            action: "keyPress",
+      text: '2',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        key2: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key2',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'center',
+    key3: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key3',
 
-            text: '2',
+      classNames: 'right',
 
-            action: "keyPress",
+      text: '3',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        key3: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key3',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'right',
+    key4: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key4',
 
-            text: '3',
+      classNames: 'left',
 
-            action: "keyPress",
+      text: '4',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        key4: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key4',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'left',
+    key5: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key5',
 
-            text: '4',
+      classNames: 'center',
 
-            action: "keyPress",
+      text: '5',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        key5: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key5',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'center',
+    key6: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key6',
 
-            text: '5',
+      classNames: 'right',
 
-            action: "keyPress",
+      text: '6',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        key6: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key6',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'right',
+    key7: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key7',
 
-            text: '6',
+      classNames: 'left',
 
-            action: "keyPress",
+      text: '7',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        key7: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key7',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'left',
+    key8: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key8',
 
-            text: '7',
+      classNames: 'center',
 
-            action: "keyPress",
+      text: '8',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        key8: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key8',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'center',
+    key9: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key9',
 
-            text: '8',
+      classNames: 'right',
 
-            action: "keyPress",
+      text: '9',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        key9: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key9',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'right',
+    key0: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_key0',
 
-            text: '9',
+      classNames: 'center',
 
-            action: "keyPress",
+      text: '0',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        key0: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_key0',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'center',
+    keyStar: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_keyStar',
 
-            text: '0',
+      classNames: 'left',
 
-            action: "keyPress",
+      text: '*',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        keyStar: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_keyStar',
+      target: 'SDL.PhoneController'
+    }),
 
-            classNames: 'left',
+    keyDiez: SDL.Button.extend({
+      elementId: 'phone_dialpad_keypad_keyDiez',
 
-            text: '*',
+      classNames: 'right',
 
-            action: "keyPress",
+      text: '#',
 
-            target: "SDL.PhoneController"
-        } ),
+      action: 'keyPress',
 
-        keyDiez: SDL.Button.extend( {
-            elementId: 'phone_dialpad_keypad_keyDiez',
+      target: 'SDL.PhoneController'
+    })
+  }),
 
-            classNames: 'right',
+  deleteButton: SDL.Button.extend({
+    elementId: 'phone_dialpad_deleteButton',
 
-            text: '#',
+    classNameBindings:
+        [
+            'SDL.PhoneController.model.dialpadNumber.length:show'
+        ],
 
-            action: "keyPress",
+    icon: 'images/phone/del.png',
 
-            target: "SDL.PhoneController"
-        } )
-    } ),
+    action: 'onDelete',
+    target: 'SDL.PhoneController',
 
-    deleteButton: SDL.Button.extend( {
-        elementId: 'phone_dialpad_deleteButton',
+    disabledBinding: Em.Binding.oneWay('SDL.PhoneController.model.onCall')
+  }),
 
-        classNameBindings:
-            [
-                'SDL.PhoneController.model.dialpadNumber.length:show'
-            ],
+  dialButton: SDL.Button.extend({
+    elementId: 'phone_dialpad_dialButton',
 
-        icon: 'images/phone/del.png',
+    textBinding: Em.Binding.oneWay('SDL.locale.label.view_phone_dial'),
+    icon: 'images/phone/dial.png',
 
-        action: 'onDelete',
-        target: 'SDL.PhoneController',
+    action: 'onDialCall',
+    target: 'SDL.PhoneController',
 
-        disabledBinding: Em.Binding.oneWay( 'SDL.PhoneController.model.onCall' )
-    } ),
+    disabledBinding: Em.Binding.oneWay('SDL.PhoneController.model.onCall')
+  }),
 
-    dialButton: SDL.Button.extend( {
-        elementId: 'phone_dialpad_dialButton',
+  endButton: SDL.Button.extend({
+    elementId: 'phone_dialpad_endButton',
 
-        textBinding: Em.Binding.oneWay( 'SDL.locale.label.view_phone_dial' ),
-        icon: 'images/phone/dial.png',
+    textBinding: Em.Binding.oneWay('SDL.locale.label.view_phone_end'),
+    icon: 'images/phone/end.png',
 
-        action: 'onDialCall',
-        target: 'SDL.PhoneController',
+    action: 'onEndCall',
+    target: 'SDL.PhoneController',
 
-        disabledBinding: Em.Binding.oneWay( 'SDL.PhoneController.model.onCall' )
-    } ),
-
-    endButton: SDL.Button.extend( {
-        elementId: 'phone_dialpad_endButton',
-
-        textBinding: Em.Binding.oneWay( 'SDL.locale.label.view_phone_end' ),
-        icon: 'images/phone/end.png',
-
-        action: 'onEndCall',
-        target: 'SDL.PhoneController',
-
-        disabledBinding: Em.Binding.oneWay( 'SDL.PhoneController.model.readyForCall' )
-    } )
-} );
+    disabledBinding: Em.Binding.oneWay('SDL.PhoneController.model.readyForCall')
+  })
+});

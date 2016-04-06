@@ -31,132 +31,132 @@
  * @version 1.0
  */
 SDL.BaseNavigationView = Em.ContainerView.create({
-    /** View Id */
-    elementId: 'baseNavigation',
+  /** View Id */
+  elementId: 'baseNavigation',
 
-    classNameBindings: [
-        'SDL.States.navigationApp.baseNavigation.active:active_state:inactive_state'
-    ],
+  classNameBindings: [
+      'SDL.States.navigationApp.baseNavigation.active:active_state:inactive_state'
+  ],
 
-    childViews: [
-        'mainField1',
-        'mainField2',
-        'mainField3',
-        'mainField4',
-        'mainField5',
-        'mainField6',
-        'optionsBtn'
-    ],
+  childViews: [
+      'mainField1',
+      'mainField2',
+      'mainField3',
+      'mainField4',
+      'mainField5',
+      'mainField6',
+      'optionsBtn'
+  ],
 
-    update: function(){
+  update: function() {
 
-        var naviParams = SDL.SDLModel.data.constantTBTParams;
+    var naviParams = SDL.SDLModel.data.constantTBTParams;
 
-        if (naviParams) {
+    if (naviParams) {
 
-            for ( var i = 0; i < naviParams.navigationTexts.length; i++) {
-                switch (naviParams.navigationTexts[i].fieldName) {
-                    case 'navigationText1': {
-                        this.set('mainField1',
-                            naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                    case 'navigationText2': {
-                        this.set('mainField2',
-                            naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                    case 'ETA': {
-                        this.set('mainField4', naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                    case 'totalDistance': {
-                        this.set('mainField5',
-                            naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                    case 'navigationText': {
-                        this.set('mainField6',
-                            naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                    case 'timeToDestination': {
-                        this.set('mainField3',
-                            naviParams.navigationTexts[i].fieldText);
-                        break;
-                    }
-                    default :{
-                        break;
-                    }
-                }
-            }
-
-            if (naviParams.softButtons) {
-                for ( var i = 0; i < naviParams.softButtons.length; i++) {
-                    this.get('childViews').pushObject(SDL.Button.create(SDL.PresetEventsCustom, {
-                            text: naviParams.softButtons[i].text,
-                            icon: naviParams.softButtons[i].image ? naviParams.softButtons[i].image.value : "",
-                            templateName: naviParams.softButtons[i].image ? 'rightText' : 'text',
-                            groupName: "NaviBase",
-                            classNameBindings: ['isHighlighted:isHighlighted'],
-                            isHighlighted: naviParams.softButtons[i].isHighlighted ? true : false,
-                            softButtonID: naviParams.softButtons[i].softButtonID,
-                            systemAction: naviParams.softButtons[i].systemAction,
-                            classNames: 'navButton softButton softButton'  + (i + 1),
-                            appID: SDL.SDLController.model.appID
-                        }));
-                }
-            }
+      for (var i = 0; i < naviParams.navigationTexts.length; i++) {
+        switch (naviParams.navigationTexts[i].fieldName) {
+          case 'navigationText1': {
+            this.set('mainField1',
+                naviParams.navigationTexts[i].fieldText);
+            break;
+          }
+          case 'navigationText2': {
+            this.set('mainField2',
+                naviParams.navigationTexts[i].fieldText);
+            break;
+          }
+          case 'ETA': {
+            this.set('mainField4', naviParams.navigationTexts[i].fieldText);
+            break;
+          }
+          case 'totalDistance': {
+            this.set('mainField5',
+                naviParams.navigationTexts[i].fieldText);
+            break;
+          }
+          case 'navigationText': {
+            this.set('mainField6',
+                naviParams.navigationTexts[i].fieldText);
+            break;
+          }
+          case 'timeToDestination': {
+            this.set('mainField3',
+                naviParams.navigationTexts[i].fieldText);
+            break;
+          }
+          default : {
+            break;
+          }
         }
-    },
+      }
 
-    mainField1: SDL.Label.extend({
+      if (naviParams.softButtons) {
+        for (var i = 0; i < naviParams.softButtons.length; i++) {
+          this.get('childViews').pushObject(SDL.Button.create(SDL.PresetEventsCustom, {
+            text: naviParams.softButtons[i].text,
+            icon: naviParams.softButtons[i].image ? naviParams.softButtons[i].image.value : '',
+            templateName: naviParams.softButtons[i].image ? 'rightText' : 'text',
+            groupName: 'NaviBase',
+            classNameBindings: ['isHighlighted:isHighlighted'],
+            isHighlighted: naviParams.softButtons[i].isHighlighted ? true : false,
+            softButtonID: naviParams.softButtons[i].softButtonID,
+            systemAction: naviParams.softButtons[i].systemAction,
+            classNames: 'navButton softButton softButton'  + (i + 1),
+            appID: SDL.SDLController.model.appID
+          }));
+        }
+      }
+    }
+  },
 
-        classNames: 'mainField1 mainField',
+  mainField1: SDL.Label.extend({
 
-        contentBinding: 'SDL.SDLController.model.appInfo.field1'
-    }),
+    classNames: 'mainField1 mainField',
 
-    mainField2: SDL.Label.extend({
+    contentBinding: 'SDL.SDLController.model.appInfo.field1'
+  }),
 
-        classNames: 'mainField2 mainField',
+  mainField2: SDL.Label.extend({
 
-        contentBinding: 'SDL.SDLController.model.appInfo.field2'
-    }),
+    classNames: 'mainField2 mainField',
 
-    mainField3: SDL.Label.extend({
+    contentBinding: 'SDL.SDLController.model.appInfo.field2'
+  }),
 
-        classNames: 'mainField3 mainField',
+  mainField3: SDL.Label.extend({
 
-        contentBinding: 'SDL.SDLController.model.appInfo.field3'
-    }),
+    classNames: 'mainField3 mainField',
 
-    mainField4: SDL.Label.extend({
+    contentBinding: 'SDL.SDLController.model.appInfo.field3'
+  }),
 
-        classNames: 'mainField4 mainField',
+  mainField4: SDL.Label.extend({
 
-        contentBinding: 'SDL.SDLController.model.appInfo.field4'
-    }),
+    classNames: 'mainField4 mainField',
 
-    mainField5: SDL.Label.extend({
+    contentBinding: 'SDL.SDLController.model.appInfo.field4'
+  }),
 
-        classNames: 'mainField5 mainField',
+  mainField5: SDL.Label.extend({
 
-        contentBinding: 'parentView.mainField5'
-    }),
+    classNames: 'mainField5 mainField',
 
-    mainField6: SDL.Label.extend({
+    contentBinding: 'parentView.mainField5'
+  }),
 
-        classNames: 'mainField6 mainField',
+  mainField6: SDL.Label.extend({
 
-        contentBinding: 'parentView.mainField6'
-    }),
+    classNames: 'mainField6 mainField',
 
-    optionsBtn: SDL.Button.extend({
-        classNames: 'naviOptionsBtn navButton',
-        text : "Options",
-        action: 'openCommandsList',
-        target: 'SDL.SDLController'
-    })
+    contentBinding: 'parentView.mainField6'
+  }),
+
+  optionsBtn: SDL.Button.extend({
+    classNames: 'naviOptionsBtn navButton',
+    text: 'Options',
+    action: 'openCommandsList',
+    target: 'SDL.SDLController'
+  })
 
 });

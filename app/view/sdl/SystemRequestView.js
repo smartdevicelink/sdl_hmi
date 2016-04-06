@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,207 +32,206 @@
  * @version 1.0
  */
 
-SDL.SystemRequest = Em.ContainerView.create( {
+SDL.SystemRequest = Em.ContainerView.create({
 
-	elementId: 'systemRequestView',
+  elementId: 'systemRequestView',
 
-    classNames: 'systemRequestView',
+  classNames: 'systemRequestView',
 
-    classNameBindings:
-        [
-            'active'
-        ],
+  classNameBindings:
+      [
+          'active'
+      ],
 
-    childViews:
-        [
-            'systemRequestViewLabel',
-            'systemRequestViewTitle',
-            'systemRequestViewSelect',
-            'urlsLabel',
-            'urlsInput',
-            'policyAppIdLabel',
-            'policyAppIdInput',
-            'appIDSelect',
-            'appIDSelectTitle',
-            'sendButton',
-            'fileNameLabel',
-            'fileNameInput'
-        ],
+  childViews:
+      [
+          'systemRequestViewLabel',
+          'systemRequestViewTitle',
+          'systemRequestViewSelect',
+          'urlsLabel',
+          'urlsInput',
+          'policyAppIdLabel',
+          'policyAppIdInput',
+          'appIDSelect',
+          'appIDSelectTitle',
+          'sendButton',
+          'fileNameLabel',
+          'fileNameInput'
+      ],
 
-    /**
-     * Title of systemRequest PopUp view
-     */
-    systemRequestViewLabel: SDL.Label.extend( {
+  /**
+   * Title of systemRequest PopUp view
+   */
+  systemRequestViewLabel: SDL.Label.extend({
 
-        elementId: 'systemRequestViewLabel',
+    elementId: 'systemRequestViewLabel',
 
-        classNames: 'systemRequestViewLabel',
+    classNames: 'systemRequestViewLabel',
 
-        content: 'System Request'
-    } ),
+    content: 'System Request'
+  }),
 
-    /**
-     * Property indicates the activity state of SystemRequest View
-     */
-    active: false,
+  /**
+   * Property indicates the activity state of SystemRequest View
+   */
+  active: false,
 
-    /**
-     * Title of systemRequest group of parameters
-     */
-    systemRequestViewTitle: SDL.Label.extend( {
+  /**
+   * Title of systemRequest group of parameters
+   */
+  systemRequestViewTitle: SDL.Label.extend({
 
-        elementId: 'systemRequestViewTitle',
+    elementId: 'systemRequestViewTitle',
 
-        classNames: 'systemRequestViewTitle',
+    classNames: 'systemRequestViewTitle',
 
-        content: 'System Request reason'
-    } ),
+    content: 'System Request reason'
+  }),
 
-    /**
-     * HMI element Select with parameters of systemRequest requestType's
-     */
-    systemRequestViewSelect: Em.Select.extend( {
+  /**
+   * HMI element Select with parameters of systemRequest requestType's
+   */
+  systemRequestViewSelect: Em.Select.extend({
 
-        elementId: 'systemRequestViewSelect',
+    elementId: 'systemRequestViewSelect',
 
-        classNames: 'systemRequestViewSelect',
+    classNames: 'systemRequestViewSelect',
 
-        contentBinding: 'SDL.SDLModel.data.systemRequestState',
+    contentBinding: 'SDL.SDLModel.data.systemRequestState',
 
-        optionValuePath: 'content.id',
+    optionValuePath: 'content.id',
 
-        optionLabelPath: 'content.name'
-    } ),
+    optionLabelPath: 'content.name'
+  }),
 
-    /**
-     * Label for URLs Input
-     */
-    urlsLabel: SDL.Label.extend( {
+  /**
+   * Label for URLs Input
+   */
+  urlsLabel: SDL.Label.extend({
 
-        elementId: 'urlsLabel',
+    elementId: 'urlsLabel',
 
-        classNames: 'urlsLabel',
+    classNames: 'urlsLabel',
 
-        content: 'URL'
-    } ),
+    content: 'URL'
+  }),
 
-    /**
-     * Input for urls value changes
-     */
-    urlsInput: Ember.TextField.extend({
-        elementId: "urlsInput",
-        classNames: "urlsInput",
-        value: document.location.pathname.replace("index.html", "IVSU/PROPRIETARY_REQUEST")
-    }),
+  /**
+   * Input for urls value changes
+   */
+  urlsInput: Ember.TextField.extend({
+    elementId: 'urlsInput',
+    classNames: 'urlsInput',
+    value: document.location.pathname.replace('index.html', 'IVSU/PROPRIETARY_REQUEST')
+  }),
 
-    /**
-     * Label for policyAppId Input
-     */
-    policyAppIdLabel: SDL.Label.extend( {
+  /**
+   * Label for policyAppId Input
+   */
+  policyAppIdLabel: SDL.Label.extend({
 
-        elementId: 'policyAppIdLabel',
+    elementId: 'policyAppIdLabel',
 
-        classNames: 'policyAppIdLabel',
+    classNames: 'policyAppIdLabel',
 
-        content: 'policyAppId'
-    } ),
+    content: 'policyAppId'
+  }),
 
-    /**
-     * Input for policyAppId value changes
-     */
-    policyAppIdInput: Ember.TextField.extend({
-        elementId: "policyAppIdInput",
-        classNames: "policyAppIdInput",
-        value: "default"
-    }),
+  /**
+   * Input for policyAppId value changes
+   */
+  policyAppIdInput: Ember.TextField.extend({
+    elementId: 'policyAppIdInput',
+    classNames: 'policyAppIdInput',
+    value: 'default'
+  }),
 
+  /**
+   * Title of appID group of parameters
+   */
+  appIDSelectTitle: SDL.Label.extend({
 
-    /**
-     * Title of appID group of parameters
-     */
-    appIDSelectTitle: SDL.Label.extend( {
+    elementId: 'appIDSelectTitle',
 
-        elementId: 'appIDSelectTitle',
+    classNames: 'appIDSelectTitle',
 
-        classNames: 'appIDSelectTitle',
+    content: 'appID'
+  }),
 
-        content: 'appID'
-    } ),
+  /**
+   * HMI element Select with parameters of registered applications id's
+   */
+  appIDSelect: Em.Select.extend({
 
-    /**
-     * HMI element Select with parameters of registered applications id's
-     */
-    appIDSelect: Em.Select.extend( {
+    elementId: 'appIDSelect',
 
-        elementId: 'appIDSelect',
+    classNames: 'appIDSelect',
 
-        classNames: 'appIDSelect',
+    contentBinding: 'this.appIDList',
 
-        contentBinding: 'this.appIDList',
+    appIDList: function() {
 
-        appIDList: function() {
+      var list = [];
 
-            var list = [];
+      for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
 
-            for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
+        list.addObject(SDL.SDLModel.data.registeredApps[i].appID);
+        this.selection = list[0];
+      }
 
-                list.addObject(SDL.SDLModel.data.registeredApps[i].appID);
-                this.selection = list[0];
-            }
+      list.addObject('');
 
-            list.addObject("");
+      return list;
 
-            return list;
+    }.property('SDL.SDLModel.data.registeredApps.@each'),
 
-        }.property('SDL.SDLModel.data.registeredApps.@each'),
+    valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState'
+  }),
 
-        valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState'
-    } ),
+  /**
+   * Label for fileName Input
+   */
+  fileNameLabel: SDL.Label.extend({
 
-    /**
-     * Label for fileName Input
-     */
-    fileNameLabel: SDL.Label.extend( {
+    elementId: 'fileNameLabel',
 
-        elementId: 'fileNameLabel',
+    classNames: 'fileNameLabel',
 
-        classNames: 'fileNameLabel',
+    content: 'fileName'
+  }),
 
-        content: 'fileName'
-    } ),
+  /**
+   * Input for fileName value changes
+   */
+  fileNameInput: Ember.TextField.extend({
+    elementId: 'fileNameInput',
+    classNames: 'fileNameInput',
+    value: document.location.pathname.replace('index.html', 'IVSU/PROPRIETARY_REQUEST')
+  }),
 
-    /**
-     * Input for fileName value changes
-     */
-    fileNameInput: Ember.TextField.extend({
-        elementId: "fileNameInput",
-        classNames: "fileNameInput",
-        value: document.location.pathname.replace("index.html", "IVSU/PROPRIETARY_REQUEST")
-    }),
+  /**
+   * Button to send OnSystemRequest notification to SDL
+   */
+  sendButton: SDL.Button.extend({
+    classNames: 'button sendButton',
+    text: 'Send OnSystemRequest',
+    action: function(element) {
 
-    /**
-     * Button to send OnSystemRequest notification to SDL
-     */
-    sendButton: SDL.Button.extend( {
-        classNames: 'button sendButton',
-        text: 'Send OnSystemRequest',
-        action: function (element) {
+      FFW.BasicCommunication.OnSystemRequest(
+          element._parentView.systemRequestViewSelect.selection.name,
+          element._parentView.fileNameInput.value,
+          element._parentView.urlsInput.value,
+          element._parentView.appIDSelect.selection,
+          element._parentView.policyAppIdInput.value
+      );
+    },
+    onDown: false
+  }),
 
-            FFW.BasicCommunication.OnSystemRequest(
-                element._parentView.systemRequestViewSelect.selection.name,
-                element._parentView.fileNameInput.value,
-                element._parentView.urlsInput.value,
-                element._parentView.appIDSelect.selection,
-                element._parentView.policyAppIdInput.value
-            );
-        },
-        onDown: false
-    }),
-
-    /**
-     * Trigger function that activates and deactivates tbtClientStateView
-     */
-    toggleActivity: function() {
-        this.toggleProperty( 'active' );
-    }
-} );
+  /**
+   * Trigger function that activates and deactivates tbtClientStateView
+   */
+  toggleActivity: function() {
+    this.toggleProperty('active');
+  }
+});

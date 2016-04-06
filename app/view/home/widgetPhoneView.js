@@ -35,9 +35,9 @@
 
 SDL.WidgetPhoneView = Em.ContainerView.extend({
 
-    elementId:	'home_widgetPhone',
+  elementId:	'home_widgetPhone',
 
-    classNameBindings: [
-        'SDL.FuncSwitcher.rev::is-disabled'
-    ]
+  classNameBindings: [
+      'SDL.FuncSwitcher.rev::is-disabled'
+  ]
 });

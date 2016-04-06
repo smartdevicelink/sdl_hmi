@@ -34,141 +34,141 @@
  */
 SDL.WidgetMediaView = Em.ContainerView.extend({
 
-    elementId:	'home_widgetMedia',
+  elementId:	'home_widgetMedia',
 
-    classNameBindings: [
-        'SDL.FuncSwitcher.rev::is-disabled'
+  classNameBindings: [
+      'SDL.FuncSwitcher.rev::is-disabled'
+  ],
+
+  /** Media components */
+  childViews: [
+  'radio'
+  ],
+  /** AM , FM , Sirius modules */
+  radio:  Em.ContainerView.extend({
+    /** Element Id */
+    elementId: 'home_widgetMedia_radio',
+
+    /** View components*/
+    childViews: [
+    'presets',
+    'info',
+    'tuneButtons'
     ],
 
-	/** Media components */
-	childViews: [
-		'radio'
-	],
-	/** AM , FM , Sirius modules */
-	radio:  Em.ContainerView.extend({
-		/** Element Id */
-		elementId: 'home_widgetMedia_radio',
+    /** Info */
+    info: Em.View.extend({
+      /** Element Id*/
+      elementId: 'home_widgetMedia_radio_info',
 
-		/** View components*/
-		childViews: [
-			'presets',
-			'info',
-			'tuneButtons'
-		],
+      /** Template */
+      template:  Em.Handlebars.compile(
+          '<div class="stationInfo">' +
+              '<div id="others_cont">' +
+                  '<div class="stationimg"></div>' +
+              '</div>' +
+              '<span class="station">' +
+              '{{SDL.RadioModel.station}}' +
+              '</span>' +
+          '</div>'
+      )
+    }),
 
-		/** Info */
-		info: Em.View.extend({
-			/** Element Id*/
-			elementId: 'home_widgetMedia_radio_info',
+    tuneButtons: Em.ContainerView.extend({
+      elementId:	'home_widgetMedia_tuneButtons',
 
-            /** Template */
-            template:  Em.Handlebars.compile(
-                '<div class="stationInfo">'+
-                    '<div id="others_cont">'+
-                        '<div class="stationimg"></div>'+
-                    '</div>'+
-                    '<span class="station">' +
-                    '{{SDL.RadioModel.station}}' +
-                    '</span>'+
-                '</div>'
-            )
-		}),
+      childViews: [
+          'tuneDown',
+          'tuneUp'
+      ],
 
-        tuneButtons: Em.ContainerView.extend({
-            elementId:	'home_widgetMedia_tuneButtons',
+      tuneUp: SDL.Button.extend({
+        elementId: 'radio_media_tuneUp_button',
+        target: 'SDL.RadioModel',
+        action: 'tuneUpPress',
+        text: '>>'
+      }),
 
-            childViews: [
-                'tuneDown',
-                'tuneUp'
-            ],
+      tuneDown: SDL.Button.extend({
+        elementId: 'radio_media_tuneDown_button',
+        target: 'SDL.RadioModel',
+        action: 'tuneDownPress',
+        text: '<<'
+      })
 
-            tuneUp: SDL.Button.extend({
-                elementId: 'radio_media_tuneUp_button',
-                target: 'SDL.RadioModel',
-                action: 'tuneUpPress',
-                text: '>>'
-            }),
+    }),
 
-            tuneDown: SDL.Button.extend({
-                elementId: 'radio_media_tuneDown_button',
-                target: 'SDL.RadioModel',
-                action: 'tuneDownPress',
-                text: '<<'
-            })
+    /** Preset Buttons*/
+    presets: Em.ContainerView.extend({
 
-        }),
+      elementId: 'radio_media_home_presetButtons_wrapper',
 
-		/** Preset Buttons*/
-        presets: Em.ContainerView.extend({
+      classNames: 'preset-items',
 
-            elementId: 'radio_media_home_presetButtons_wrapper',
+      childViews: [
+          '1',
+          '2',
+          '3',
+          '4',
+          '5',
+          '6'
+      ],
 
-            classNames: 'preset-items',
-
-            childViews:[
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-                '6'
-            ],
-
-            1: SDL.RadioPresetButton.extend( {
-                elementId: 'radio_media_home_preset_button1',
-                classNames: 'a0',
-                textBinding: 'SDL.RadioModel.preset.0',
-                templateName: 'text',
-                homePreset: true,
-                preset: 0,
-                presetName: 'PRESET_1'
-            }),
-            2: SDL.RadioPresetButton.extend( {
-                elementId: 'radio_media_home_preset_button2',
-                classNames: 'a1',
-                textBinding: 'SDL.RadioModel.preset.1',
-                templateName: 'text',
-                homePreset: true,
-                preset: 1,
-                presetName: 'PRESET_2'
-            }),
-            3: SDL.RadioPresetButton.extend( {
-                elementId: 'radio_media_home_preset_button3',
-                classNames: 'a2',
-                textBinding: 'SDL.RadioModel.preset.2',
-                templateName: 'text',
-                homePreset: true,
-                preset: 2,
-                presetName: 'PRESET_3'
-            }),
-            4: SDL.RadioPresetButton.extend( {
-                elementId: 'radio_media_home_preset_button4',
-                classNames: 'a3',
-                textBinding: 'SDL.RadioModel.preset.3',
-                templateName: 'text',
-                homePreset: true,
-                preset: 3,
-                presetName: 'PRESET_4'
-            }),
-            5: SDL.RadioPresetButton.extend( {
-                elementId: 'radio_media_home_preset_button5',
-                classNames: 'a4',
-                textBinding: 'SDL.RadioModel.preset.4',
-                templateName: 'text',
-                homePreset: true,
-                preset: 4,
-                presetName: 'PRESET_5'
-            }),
-            6: SDL.RadioPresetButton.extend( {
-                elementId: 'radio_media_home_preset_button6',
-                classNames: 'a5',
-                textBinding: 'SDL.RadioModel.preset.5',
-                templateName: 'text',
-                homePreset: true,
-                preset: 5,
-                presetName: 'PRESET_6'
-            } )
-        })
-	})
+      1: SDL.RadioPresetButton.extend({
+        elementId: 'radio_media_home_preset_button1',
+        classNames: 'a0',
+        textBinding: 'SDL.RadioModel.preset.0',
+        templateName: 'text',
+        homePreset: true,
+        preset: 0,
+        presetName: 'PRESET_1'
+      }),
+      2: SDL.RadioPresetButton.extend({
+        elementId: 'radio_media_home_preset_button2',
+        classNames: 'a1',
+        textBinding: 'SDL.RadioModel.preset.1',
+        templateName: 'text',
+        homePreset: true,
+        preset: 1,
+        presetName: 'PRESET_2'
+      }),
+      3: SDL.RadioPresetButton.extend({
+        elementId: 'radio_media_home_preset_button3',
+        classNames: 'a2',
+        textBinding: 'SDL.RadioModel.preset.2',
+        templateName: 'text',
+        homePreset: true,
+        preset: 2,
+        presetName: 'PRESET_3'
+      }),
+      4: SDL.RadioPresetButton.extend({
+        elementId: 'radio_media_home_preset_button4',
+        classNames: 'a3',
+        textBinding: 'SDL.RadioModel.preset.3',
+        templateName: 'text',
+        homePreset: true,
+        preset: 3,
+        presetName: 'PRESET_4'
+      }),
+      5: SDL.RadioPresetButton.extend({
+        elementId: 'radio_media_home_preset_button5',
+        classNames: 'a4',
+        textBinding: 'SDL.RadioModel.preset.4',
+        templateName: 'text',
+        homePreset: true,
+        preset: 4,
+        presetName: 'PRESET_5'
+      }),
+      6: SDL.RadioPresetButton.extend({
+        elementId: 'radio_media_home_preset_button6',
+        classNames: 'a5',
+        textBinding: 'SDL.RadioModel.preset.5',
+        templateName: 'text',
+        homePreset: true,
+        preset: 5,
+        presetName: 'PRESET_6'
+      })
+    })
+  })
 
 });

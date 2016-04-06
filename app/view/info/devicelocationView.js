@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,104 +31,103 @@
  * @version 1.0
  */
 
-SDL.DeviceLocationView = Em.ContainerView.create( {
+SDL.DeviceLocationView = Em.ContainerView.create({
 
+  classNames: [
+      'info_apps_deviceLocation_view',
+      'sdl-window'
+  ],
+
+  classNameBindings: [
+      'SDL.States.info.devicelocation.active:active_state:inactive_state'
+  ],
+
+  /**
+   * View Id
+   */
+  elementId: 'info_apps_deviceLocation_view',
+
+  /**
+   * View Components
+   */
+  childViews: [
+      'backButton',
+      'deviceLocationLabel',
+      'devicesSelect',
+      'locationSelect',
+      'setButton'
+  ],
+
+  /**
+   * Button to return to previous view
+   */
+  backButton: SDL.Button.extend({
     classNames: [
-        'info_apps_deviceLocation_view',
-        'sdl-window'
+        'backButton', 'button'
     ],
+    action: 'turnChangeDeviceViewBack',
+    target: 'SDL.SDLController',
+    icon: 'images/media/ico_back.png'
+  }),
 
-    classNameBindings: [
-        'SDL.States.info.devicelocation.active:active_state:inactive_state'
-    ],
+  /**
+   * Label in title
+   */
+  deviceLocationLabel: SDL.Label.extend({
 
-    /**
-     * View Id
-     */
-    elementId: 'info_apps_deviceLocation_view',
+    elementId: 'deviceLocationLabel',
 
-    /**
-     * View Components
-     */
-    childViews: [
-        'backButton',
-        'deviceLocationLabel',
-        'devicesSelect',
-        'locationSelect',
-        'setButton'
-    ],
+    classNames: 'caption-text',
 
+    content: 'Devices Location Manage Window'
+  }),
 
-    /**
-     * Button to return to previous view
-     */
-    backButton: SDL.Button.extend( {
-        classNames: [
-            'backButton', 'button'
-        ],
-        action: 'turnChangeDeviceViewBack',
-        target: 'SDL.SDLController',
-        icon: 'images/media/ico_back.png'
-    }),
+  /**
+   * HMI element Select with parameters of transmission state from VehicleInfo
+   * Model
+   */
+  devicesSelect: Em.Select.extend({
 
-    /**
-     * Label in title
-     */
-    deviceLocationLabel: SDL.Label.extend( {
+    elementId: 'devicesSelect',
 
-        elementId: 'deviceLocationLabel',
+    classNames: 'devicesSelect',
 
-        classNames: 'caption-text',
+    contentBinding: 'SDL.SDLModel.data.connectedDevicesArray',
 
-        content: 'Devices Location Manage Window'
-    }),
+    optionValuePath: 'content.id',
 
-    /**
-     * HMI element Select with parameters of transmission state from VehicleInfo
-     * Model
-     */
-    devicesSelect: Em.Select.extend( {
+    optionLabelPath: 'content.name',
 
-        elementId: 'devicesSelect',
+    selectUpdate: function() {
+      this.selection = this.content[0];
+    }.observes('this.content')
+  }),
 
-        classNames: 'devicesSelect',
+  /**
+   * HMI element Select with parameters of transmission state from VehicleInfo
+   * Model
+   */
+  locationSelect: Em.Select.extend({
 
-        contentBinding: 'SDL.SDLModel.data.connectedDevicesArray',
+    elementId: 'locationSelect',
 
-        optionValuePath: 'content.id',
+    classNames: 'locationSelect',
 
-        optionLabelPath: 'content.name',
+    contentBinding: 'SDL.SDLModel.interiorZone',
 
-        selectUpdate: function() {
-            this.selection = this.content[0];
-        }.observes('this.content')
-    } ),
+    valueBinding: 'this._parentView.location'
+  }),
 
-    /**
-     * HMI element Select with parameters of transmission state from VehicleInfo
-     * Model
-     */
-    locationSelect: Em.Select.extend( {
-
-        elementId: 'locationSelect',
-
-        classNames: 'locationSelect',
-
-        contentBinding: 'SDL.SDLModel.interiorZone',
-
-        valueBinding: 'this._parentView.location'
-    } ),
-
-    /**
-     * Button to set device location
-     */
-    setButton: SDL.Button.extend( {
-        classNames: 'button sendLocationButton',
-        text: 'Set location',
-        click: function(){
-            FFW.RC.OnDeviceLocationChanged(this._parentView.devicesSelect.selection, this._parentView.location);
-        },
-        enabled: false,
-        onDown: false
-    })
+  /**
+   * Button to set device location
+   */
+  setButton: SDL.Button.extend({
+    classNames: 'button sendLocationButton',
+    text: 'Set location',
+    click: function() {
+      FFW.RC.OnDeviceLocationChanged(this._parentView.devicesSelect.selection, this._parentView.location);
+    },
+    enabled: false,
+    onDown: false
+  })
 });

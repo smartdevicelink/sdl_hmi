@@ -32,160 +32,160 @@
  * @version 1.0
  */
 
-SDL.PrimaryDevice = Em.ContainerView.create( {
+SDL.PrimaryDevice = Em.ContainerView.create({
 
-    elementId: 'PrimaryDevice',
+  elementId: 'PrimaryDevice',
 
-    classNames: 'PrimaryDevice',
+  classNames: 'PrimaryDevice',
 
-    classNameBindings:
-        [
-            'active'
-        ],
+  classNameBindings:
+      [
+          'active'
+      ],
 
-    childViews:
-    [
-        'primaryDeviceLabel',
-        'chooseLabel',
-        'deviceSelect',
-        'primaryButton',
-        'resetDeviceButton',
-        'firstDeviceLabel',
-        'firstDeviceCheckBox',
-        'backButton'
+  childViews:
+  [
+      'primaryDeviceLabel',
+      'chooseLabel',
+      'deviceSelect',
+      'primaryButton',
+      'resetDeviceButton',
+      'firstDeviceLabel',
+      'firstDeviceCheckBox',
+      'backButton'
+  ],
+
+  /**
+   * Property indicates the activity state of VehicleInfo PopUp
+   */
+  active: false,
+
+  /**
+   * Button to return to previous view
+   */
+  backButton: SDL.Button.extend({
+    classNames: [
+        'backButton', 'button'
     ],
+    action: 'toggleDriverDeviceWindow',
+    target: 'SDL.SDLController',
+    icon: 'images/media/ico_back.png'
+  }),
 
-    /**
-     * Property indicates the activity state of VehicleInfo PopUp
-     */
-    active: false,
+  /**
+   * Label of first device setting chackbox
+   */
+  firstDeviceLabel: SDL.Label.extend({
 
-    /**
-     * Button to return to previous view
-     */
-    backButton: SDL.Button.extend( {
-        classNames: [
-            'backButton', 'button'
-        ],
-        action: 'toggleDriverDeviceWindow',
-        target: 'SDL.SDLController',
-        icon: 'images/media/ico_back.png'
-    }),
+    elementId: 'firstDeviceLabel',
 
-    /**
-     * Label of first device setting chackbox
-     */
-    firstDeviceLabel: SDL.Label.extend( {
+    classNames: 'firstDeviceLabel',
 
-        elementId: 'firstDeviceLabel',
+    content: 'Set first device as Drivers'
+  }),
 
-        classNames: 'firstDeviceLabel',
+  /**
+   * Check box to enable functionality of setting first connected device as Drivers
+   */
+  firstDeviceCheckBox: Em.Checkbox.extend({
 
-        content: 'Set first device as Drivers'
-    } ),
+    elementId: 'firstDeviceCheckBox',
 
-    /**
-     * Check box to enable functionality of setting first connected device as Drivers
-     */
-    firstDeviceCheckBox: Em.Checkbox.extend( {
+    classNames: 'firstDeviceCheckBox',
 
-        elementId: 'firstDeviceCheckBox',
+    checkedBinding: 'SDL.SDLModel.driverDevice'
 
-        classNames: 'firstDeviceCheckBox',
+  }),
 
-        checkedBinding: 'SDL.SDLModel.driverDevice'
+  /**
+   * Title of VehicleInfo PopUp view
+   */
+  primaryDeviceLabel: SDL.Label.extend({
 
-    }),
+    elementId: 'primaryDeviceLabel',
 
-    /**
-     * Title of VehicleInfo PopUp view
-     */
-    primaryDeviceLabel: SDL.Label.extend( {
+    classNames: 'primaryDeviceLabel',
 
-        elementId: 'primaryDeviceLabel',
+    content: 'Drivers Device Selection Window'
+  }),
 
-        classNames: 'primaryDeviceLabel',
+  /**
+   * Title of prndl group of parameters stored in VehicleInfo model
+   */
+  chooseLabel: SDL.Label.extend({
 
-        content: 'Drivers Device Selection Window'
-    } ),
+    elementId: 'chooseLabel',
 
-    /**
-     * Title of prndl group of parameters stored in VehicleInfo model
-     */
-    chooseLabel: SDL.Label.extend( {
+    classNames: 'chooseLabel',
 
-        elementId: 'chooseLabel',
+    currentDevice: function() {
+      if (SDL.SDLModel.driverDeviceInfo) {
+        return 'Current drivers device is ' + SDL.SDLModel.driverDeviceInfo.name;
+      } else {
+        return 'No drivers device connected.';
+      }
+    }.property('SDL.SDLModel.driverDeviceInfo'),
 
-        classNames: 'chooseLabel',
+    contentBinding: 'currentDevice'
+  }),
 
-        currentDevice: function(){
-            if (SDL.SDLModel.driverDeviceInfo) {
-                return 'Current drivers device is ' + SDL.SDLModel.driverDeviceInfo.name;
-            } else {
-                return 'No drivers device connected.'
-            }
-        }.property('SDL.SDLModel.driverDeviceInfo'),
+  /**
+   * HMI element Select with parameters of transmission state from VehicleInfo
+   * Model
+   */
+  deviceSelect: Em.Select.extend({
 
-        contentBinding: 'currentDevice'
-    } ),
+    elementId: 'deviceSelect',
 
-    /**
-     * HMI element Select with parameters of transmission state from VehicleInfo
-     * Model
-     */
-    deviceSelect: Em.Select.extend( {
+    classNames: 'deviceSelect',
 
-        elementId: 'deviceSelect',
+    contentBinding: 'SDL.SDLModel.data.connectedDevicesArray',
 
-        classNames: 'deviceSelect',
+    optionValuePath: 'content.id',
 
-        contentBinding: 'SDL.SDLModel.data.connectedDevicesArray',
+    optionLabelPath: 'content.name',
 
-        optionValuePath: 'content.id',
+    selectUpdate: function() {
+      SDL.PrimaryDevice.deviceSelect.selection = SDL.PrimaryDevice.deviceSelect.content[0];
+    }.observes('this.content')
+  }),
 
-        optionLabelPath: 'content.name',
-
-        selectUpdate: function() {
-            SDL.PrimaryDevice.deviceSelect.selection = SDL.PrimaryDevice.deviceSelect.content[0];
-        }.observes('this.content')
-    } ),
-
-    /**
-     * Button to discard current drivers device
-     */
-    resetDeviceButton: SDL.Button.extend( {
-        classNames: 'button resetDeviceButton',
-        text: "Set as Passenger's",
-        click: function() {
-            SDL.SDLController.driverDeviceWindowClose(this._parentView.deviceSelect.selection, 1); //Magick number 1 is SDL.RModel.deviceRank enum value
-        },
-        onDown: false
-    }),
-
-    /**
-     * Button to send OnEmergencyEvent to SDL
-     */
-    primaryButton: SDL.Button.extend( {
-        classNames: 'button primaryButton',
-        text: "Set as Driver's",
-        click: function() {
-            SDL.SDLController.driverDeviceWindowClose(this._parentView.deviceSelect.selection, 0); //Magick number 0 is SDL.RModel.deviceRank enum value
-        },
-        onDown: false
-    }),
-
-    /**
-     * Trigger function that activates and deactivates VehicleInfo PopUp
-     */
-    toggleActivity: function() {
-        this.set( 'active', !this.active );
+  /**
+   * Button to discard current drivers device
+   */
+  resetDeviceButton: SDL.Button.extend({
+    classNames: 'button resetDeviceButton',
+    text: 'Set as Passenger\'s',
+    click: function() {
+      SDL.SDLController.driverDeviceWindowClose(this._parentView.deviceSelect.selection, 1); //Magick number 1 is SDL.RModel.deviceRank enum value
     },
+    onDown: false
+  }),
 
-    /**
-     * This event triggered when component is placed to
-     * document DOM structure
-     */
-    didInsertElement: function() {
-        this._super();
-    }
-} );
+  /**
+   * Button to send OnEmergencyEvent to SDL
+   */
+  primaryButton: SDL.Button.extend({
+    classNames: 'button primaryButton',
+    text: 'Set as Driver\'s',
+    click: function() {
+      SDL.SDLController.driverDeviceWindowClose(this._parentView.deviceSelect.selection, 0); //Magick number 0 is SDL.RModel.deviceRank enum value
+    },
+    onDown: false
+  }),
+
+  /**
+   * Trigger function that activates and deactivates VehicleInfo PopUp
+   */
+  toggleActivity: function() {
+    this.set('active', !this.active);
+  },
+
+  /**
+   * This event triggered when component is placed to
+   * document DOM structure
+   */
+  didInsertElement: function() {
+    this._super();
+  }
+});

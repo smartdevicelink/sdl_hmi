@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,127 +34,127 @@
 
 SDL.PopUp = Em.ContainerView.extend({
 
-    classNames: 'PopUp',
+  classNames: 'PopUp',
 
-    childViews:
-    [
-        'message',
-        'buttonOk',
-        'buttonCancel',
-        'backButton'
-    ],
+  childViews:
+  [
+      'message',
+      'buttonOk',
+      'buttonCancel',
+      'backButton'
+  ],
 
-    classNameBindings: [
-        'this.active:active_state:inactive_state'
-    ],
+  classNameBindings: [
+      'this.active:active_state:inactive_state'
+  ],
 
-    popUpId: 0,
+  popUpId: 0,
 
-    /**
-     * Callback function to return result of made action by user
-     */
-    callback: null,
+  /**
+   * Callback function to return result of made action by user
+   */
+  callback: null,
 
-    content: 'Title',
+  content: 'Title',
 
-    active: false,
+  active: false,
 
-    timer: null,
+  timer: null,
 
-    backButton: SDL.Button.extend( {
-        classNames: 'button backButton',
-        text: 'X',
-        click: function () {
-            this._parentView.deactivate();
-        },
-        buttonAction: true,
-        onDown: false,
-        disabledBinding: 'parentView.buttons'
-    }),
-
-    buttons: true,
-
-    buttonOk: SDL.Button.extend( {
-        classNames: 'button vehicleHealthReport OkButton',
-        text: 'Ok',
-        action: 'deactivate',
-        target: 'parentView',
-        buttonAction: true,
-        onDown: false,
-        disabledBinding: 'parentView.buttons'
-    }),
-
-    buttonCancel: SDL.Button.extend( {
-        classNames: 'button vehicleHealthReport CancelButton',
-        text: 'Cancel',
-        action: 'deactivate',
-        target: 'parentView',
-        buttonAction: false,
-        onDown: false,
-        disabledBinding: 'parentView.buttons'
-    }),
-
-    message: SDL.Label.extend({
-
-        elementId: 'text',
-
-        classNames: 'text',
-
-        contentBinding: 'parentView.content'
-    }),
-
-    /**
-     * Deactivate PopUp
-     */
-    deactivate: function(event) {
-        this.set('active', false);
-
-        if (this.callback && event) {
-            this.callback(event.buttonAction);
-        }
-
-        this.set('callback', null);
-        this.set('content', '');
-        this.remove();
+  backButton: SDL.Button.extend({
+    classNames: 'button backButton',
+    text: 'X',
+    click: function() {
+      this._parentView.deactivate();
     },
+    buttonAction: true,
+    onDown: false,
+    disabledBinding: 'parentView.buttons'
+  }),
 
-    /**
-     * HMI modal window popUp Activation method
-     * @param textBody - main text to be displayes on PopUp
-     * @param callback - Callback function handled result parameter made by user action, if null - popUp will be closed by timer
-     * @param indicator - popUp will not be closed by timer and
-     * should be deactivated manually by developer in code using method's returned parameter this.
-     * callback shuld be null if indicator is true
-     * @param label
-     * @param line1
-     * @param line2
-     * @returns {SDL.PopUp} - returns current instance of PopUp
-     */
-    popupActivate: function(textBody, callback, indicator, label, line1, line2) {
-        this.set('active', true);
+  buttons: true,
 
-        clearTimeout(this.timer);
-        this.timer = null;
+  buttonOk: SDL.Button.extend({
+    classNames: 'button vehicleHealthReport OkButton',
+    text: 'Ok',
+    action: 'deactivate',
+    target: 'parentView',
+    buttonAction: true,
+    onDown: false,
+    disabledBinding: 'parentView.buttons'
+  }),
 
-        if (indicator) {
-            this.set('buttons', true);
-        } else if (callback) {
-            this.set('callback', callback);
-            this.set('buttons', false);
-        } else {
-            this.set('buttons', true);
-            var self = this;
-            this.timer = setTimeout(function(){
-                self.deactivate();
-            },
-            5000);
-        }
+  buttonCancel: SDL.Button.extend({
+    classNames: 'button vehicleHealthReport CancelButton',
+    text: 'Cancel',
+    action: 'deactivate',
+    target: 'parentView',
+    buttonAction: false,
+    onDown: false,
+    disabledBinding: 'parentView.buttons'
+  }),
 
-        this.set('content', textBody);
-        this.set('label', label);
-        this.set('line1', line1);
-        this.set('line2', line2);
+  message: SDL.Label.extend({
 
-        return this;
+    elementId: 'text',
+
+    classNames: 'text',
+
+    contentBinding: 'parentView.content'
+  }),
+
+  /**
+   * Deactivate PopUp
+   */
+  deactivate: function(event) {
+    this.set('active', false);
+
+    if (this.callback && event) {
+      this.callback(event.buttonAction);
     }
+
+    this.set('callback', null);
+    this.set('content', '');
+    this.remove();
+  },
+
+  /**
+   * HMI modal window popUp Activation method
+   * @param textBody - main text to be displayes on PopUp
+   * @param callback - Callback function handled result parameter made by user action, if null - popUp will be closed by timer
+   * @param indicator - popUp will not be closed by timer and
+   * should be deactivated manually by developer in code using method's returned parameter this.
+   * callback shuld be null if indicator is true
+   * @param label
+   * @param line1
+   * @param line2
+   * @returns {SDL.PopUp} - returns current instance of PopUp
+   */
+  popupActivate: function(textBody, callback, indicator, label, line1, line2) {
+    this.set('active', true);
+
+    clearTimeout(this.timer);
+    this.timer = null;
+
+    if (indicator) {
+      this.set('buttons', true);
+    } else if (callback) {
+      this.set('callback', callback);
+      this.set('buttons', false);
+    } else {
+      this.set('buttons', true);
+      var self = this;
+      this.timer = setTimeout(function() {
+        self.deactivate();
+      },
+      5000);
+    }
+
+    this.set('content', textBody);
+    this.set('label', label);
+    this.set('line1', line1);
+    this.set('line2', line2);
+
+    return this;
+  }
 });

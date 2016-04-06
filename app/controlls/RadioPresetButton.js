@@ -25,62 +25,62 @@
  */
 /**
  * @name SDL.RadioPresetButton
- * 
+ *
  * @desc Media view component for preset Button
- * 
+ *
  * @category	view
  * @filesource	app/view/media/RadioPresetButton.js
  * @version		1.0
  */
 
 SDL.RadioPresetButton = SDL.Button.extend({
-	
-	/** Bind class for visual representation of active button */
-	classNameBindings: ['highlight:active'],
-	
-	classNames: 'preset-item',
 
-    homePreset: false,
-	
-    highlight: function() {
-        return (this.preset == SDL.RadioModel.activePreset);
-    }.property('SDL.RadioModel.activePreset'),
+  /** Bind class for visual representation of active button */
+  classNameBindings: ['highlight:active'],
 
-    presetNum: function() {
-        return this.preset + 1;
-    }.property(),
+  classNames: 'preset-item',
 
-        /** Define button template */
-    template: Ember.Handlebars.compile(
-		'{{#unless view.homePreset}}<span>{{view.presetNum}}</span>{{/unless}}'+
+  homePreset: false,
+
+  highlight: function() {
+    return (this.preset == SDL.RadioModel.activePreset);
+  }.property('SDL.RadioModel.activePreset'),
+
+  presetNum: function() {
+    return this.preset + 1;
+  }.property(),
+
+  /** Define button template */
+  template: Ember.Handlebars.compile(
+		'{{#unless view.homePreset}}<span>{{view.presetNum}}</span>{{/unless}}' +
 		'<p>{{view.text}}</p>'
 	),
 
-    actionDown: function() {
+  actionDown: function() {
 
-        this._super();
-        SDL.SDLController.onSoftButtonActionDown(this);
+    this._super();
+    SDL.SDLController.onSoftButtonActionDown(this);
 
-        var self = this;
-        this.timerPreset = null;
-        this.saveToPreset = false;
-        this.timerPreset = setTimeout(function() {
-            self.saveToPreset = true;
-            SDL.RadioModel.saveStationToPreset(self);
-        }, 1000);
-    },
+    var self = this;
+    this.timerPreset = null;
+    this.saveToPreset = false;
+    this.timerPreset = setTimeout(function() {
+      self.saveToPreset = true;
+      SDL.RadioModel.saveStationToPreset(self);
+    }, 1000);
+  },
 
-    actionUp: function() {
+  actionUp: function() {
 
-        this._super();
-        SDL.SDLController.onSoftButtonActionUp(this);
+    this._super();
+    SDL.SDLController.onSoftButtonActionUp(this);
 
-        if (!this.saveToPreset) {
-            SDL.RadioModel.setStation(this);
-        }
-        clearTimeout(this.timerPreset);
-        this.timerPreset = null;
-        this.saveToPreset = false;
+    if (!this.saveToPreset) {
+      SDL.RadioModel.setStation(this);
     }
+    clearTimeout(this.timerPreset);
+    this.timerPreset = null;
+    this.saveToPreset = false;
+  }
 
 });
