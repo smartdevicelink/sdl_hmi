@@ -151,7 +151,7 @@ FFW.TTS = FFW.RPCObserver.create({
     switch (request.method) {
     case 'TTS.Speak': {
 
-      // Werify if there is an ansupported data in request
+      // Verify if there is an unsupported data in request
       if (this.errorResponsePull[request.id] != null) {
         //
         ////Check if there is any available data to  process the request
@@ -170,7 +170,7 @@ FFW.TTS = FFW.RPCObserver.create({
       }
 
       if (SDL.TTSPopUp.active) {
-        FFW.TTS.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, 'TTS.Speak', 'TTS in progress. Rejected.');
+        FFW.TTS.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, 'TTS.Speak', 'TTS in progress. Rejected.');
       } else {
         this.requestId = request.id;
         SDL.SDLModel.onPrompt(request.params.ttsChunks, request.params.appID);
@@ -184,7 +184,7 @@ FFW.TTS = FFW.RPCObserver.create({
     }
     case 'TTS.SetGlobalProperties': {
 
-      // Werify if there is an ansupported data in request
+      // Verify if there is an unsupported data in request
       //if (this.errorResponsePull[request.id] != null) {
       //
       ////Check if there is any available data to  process the request
@@ -205,7 +205,7 @@ FFW.TTS = FFW.RPCObserver.create({
 
       SDL.SDLModel.setProperties(request.params);
 
-      this.sendTTSResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+      this.sendTTSResult(SDL.SDLModel.data.resultCode.SUCCESS,
           request.id,
           request.method);
 
@@ -215,7 +215,7 @@ FFW.TTS = FFW.RPCObserver.create({
 
       SDL.SDLModel.TTSStopSpeaking();
 
-      this.sendTTSResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+      this.sendTTSResult(SDL.SDLModel.data.resultCode.SUCCESS,
           request.id,
           request.method);
 
@@ -241,7 +241,7 @@ FFW.TTS = FFW.RPCObserver.create({
               'POSITIVE_JINGLE',
               'NEGATIVE_JINGLE'
           ],
-          'code': SDL.SDLModel.data.resultCode['SUCCESS'], // type (enum)
+          'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum)
           // from SDL
           // protocol
           'method': 'TTS.GetCapabilities'
@@ -259,7 +259,7 @@ FFW.TTS = FFW.RPCObserver.create({
         'jsonrpc': '2.0',
         'id': request.id,
         'result': {
-          'code': SDL.SDLModel.data.resultCode['SUCCESS'], // type (enum)
+          'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum)
           // from SDL
           'method': 'TTS.GetSupportedLanguages',
           'languages': SDL.SDLModel.data.sdlLanguagesList
@@ -277,7 +277,7 @@ FFW.TTS = FFW.RPCObserver.create({
         'jsonrpc': '2.0',
         'id': request.id,
         'result': {
-          'code': SDL.SDLModel.data.resultCode['SUCCESS'], // type (enum)
+          'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum)
           // from SDL
           'method': 'TTS.GetLanguage',
           'language': SDL.SDLModel.data.hmiTTSVRLanguage
@@ -289,7 +289,7 @@ FFW.TTS = FFW.RPCObserver.create({
     }
     case 'TTS.ChangeRegistration': {
 
-      // Werify if there is an ansupported data in request
+      // Verify if there is an unsupported data in request
       //if (this.errorResponsePull[request.id] != null) {
       //
       ////Check if there is any available data to  process the request
@@ -310,7 +310,7 @@ FFW.TTS = FFW.RPCObserver.create({
 
       SDL.SDLModel.changeRegistrationTTSVR(request.params.language, request.params.appID);
 
-      this.sendTTSResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+      this.sendTTSResult(SDL.SDLModel.data.resultCode.SUCCESS,
           request.id,
           request.method);
 
@@ -327,7 +327,7 @@ FFW.TTS = FFW.RPCObserver.create({
         'id': request.id,
         'result': {
           'available': this.get('isReady'),
-          'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+          'code': SDL.SDLModel.data.resultCode.SUCCESS,
           'method': 'TTS.IsReady'
         }
       };
@@ -358,7 +358,7 @@ FFW.TTS = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode != SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -398,7 +398,7 @@ FFW.TTS = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {

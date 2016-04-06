@@ -143,7 +143,7 @@ SDL.AlertPopUp = Em.ContainerView.create({
     if ((reason == 'timeout' && this.softbuttons.buttons._childViews.length > 0) || reason === 'ABORTED') {
       SDL.SDLController.alertResponse(SDL.SDLModel.data.resultCode['ABORTED'], this.alertRequestId);
     } else {
-      SDL.SDLController.alertResponse(SDL.SDLModel.data.resultCode['SUCCESS'], this.alertRequestId);
+      SDL.SDLController.alertResponse(SDL.SDLModel.data.resultCode.SUCCESS, this.alertRequestId);
     }
 
     SDL.SDLController.onSystemContextChange();

@@ -141,7 +141,7 @@ FFW.VR = FFW.RPCObserver.create({
 
         SDL.SDLModel.addCommandVR(request.params);
 
-        this.sendVRResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+        this.sendVRResult(SDL.SDLModel.data.resultCode.SUCCESS,
             request.id,
             request.method);
 
@@ -161,7 +161,7 @@ FFW.VR = FFW.RPCObserver.create({
           'jsonrpc': '2.0',
           'id': request.id,
           'result': {
-            'code': SDL.SDLModel.data.resultCode['SUCCESS'], // type
+            'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
             // (enum)
             // from SDL
             'method': 'VR.GetSupportedLanguages',
@@ -180,7 +180,7 @@ FFW.VR = FFW.RPCObserver.create({
           'jsonrpc': '2.0',
           'id': request.id,
           'result': {
-            'code': SDL.SDLModel.data.resultCode['SUCCESS'], // type
+            'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
             // (enum)
             // from SDL
             'method': 'VR.GetLanguage',
@@ -200,7 +200,7 @@ FFW.VR = FFW.RPCObserver.create({
           SDL.VRPopUp.AddCommand(0, request.params.vrSynonyms, request.params.appID, 'Application');
         }
 
-        this.sendVRResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+        this.sendVRResult(SDL.SDLModel.data.resultCode.SUCCESS,
             request.id,
             request.method);
 
@@ -227,7 +227,7 @@ FFW.VR = FFW.RPCObserver.create({
       }
       case 'VR.PerformInteraction': {
 
-        // Werify if there is an ansupported data in request
+        // Verify if there is an unsupported data in request
         //if (this.errorResponsePull[request.id] != null) {
         //
         ////Check if there is any available data to  process the request
@@ -260,7 +260,7 @@ FFW.VR = FFW.RPCObserver.create({
           'jsonrpc': '2.0',
           'id': request.id,
           'result': {
-            'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+            'code': SDL.SDLModel.data.resultCode.SUCCESS,
             'method': 'VR.GetCapabilities',
             'vrCapabilities': ['TEXT']
           }
@@ -292,7 +292,7 @@ FFW.VR = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode != SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -321,7 +321,7 @@ FFW.VR = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.VR.PerformInteractionResponse');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       if (this.errorResponsePull[requestID]) {
 
@@ -402,7 +402,7 @@ FFW.VR = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {

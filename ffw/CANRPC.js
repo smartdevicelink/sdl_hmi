@@ -206,7 +206,7 @@ FFW.CAN = FFW.RPCObserver.create({
    */
   sendError: function(resultCode, id, method, message) {
 
-    if (resultCode != SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -236,7 +236,7 @@ FFW.CAN = FFW.RPCObserver.create({
    */
   sendCANResult: function(resultCode, id, method) {
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {

@@ -366,7 +366,7 @@ FFW.RPCObserver = Em.Object
             validateFunc = SDL.RPCController[parsedMethod[0]][parsedMethod[1]];
             result = validateFunc(request.params);
 
-            if (result.resultCode != SDL.SDLModel.data.resultCode['SUCCESS']) {
+            if (result.resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
               this.sendError(result.resultCode,
                   request.id,
                   request.method,

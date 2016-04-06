@@ -210,7 +210,7 @@ SDL.RModel = SDL.ABSModel.extend({
   },
 
   cancelControl: function(request) {
-    FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, 'VehicleInfo.CancelAccess');
+    FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, 'VehicleInfo.CancelAccess');
     SDL.SDLModel.givenControl = null;
     SDL.SDLModel.set('givenControlFlag', false);
   }

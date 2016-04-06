@@ -311,7 +311,7 @@ FFW.BasicCommunication = FFW.RPCObserver
 
             SDL.PopUp.create().appendTo('body').popupActivate('Activation FAILED! Application NOT registered.');
             return;
-          } else if (response.error.code === SDL.SDLModel.data.resultCode['REJECTED']) {
+          } else if (response.error.code === SDL.SDLModel.data.resultCode.REJECTED) {
 
             SDL.PopUp.create().appendTo('body').popupActivate('Activation FAILED! SDL rejected activation.');
             return;
@@ -445,7 +445,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.UpdateDeviceList') {
             SDL.SDLModel.onGetDeviceList(request.params);
-            this.sendBCResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS,
                 request.id,
                 request.method);
           }
@@ -453,7 +453,7 @@ FFW.BasicCommunication = FFW.RPCObserver
 
             SDL.SDLController.UpdateAppList(request.params);
 
-            this.sendBCResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS,
                 request.id,
                 request.method);
 
@@ -467,7 +467,7 @@ FFW.BasicCommunication = FFW.RPCObserver
 
             SDL.SettingsController.policyUpdateFile = null;
 
-            this.sendBCResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS,
                 request.id,
                 request.method);
           }
@@ -478,7 +478,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                         function(result) {
                           if (result) {
 
-                            FFW.BasicCommunication.sendBCResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+                            FFW.BasicCommunication.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS,
                                 request.id,
                                 request.method);
 
@@ -487,7 +487,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                             SDL.PhoneController.incomingCall(request);
                           } else {
 
-                            FFW.BasicCommunication.sendError(SDL.SDLModel.data.resultCode['REJECTED'],
+                            FFW.BasicCommunication.sendError(SDL.SDLModel.data.resultCode.REJECTED,
                                 request.id,
                                 request.method,
                                 'No paired device!'
@@ -535,7 +535,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               }
               SDL.InfoAppsView.showAppList();
             }
-            this.sendBCResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
           }
           if (request.method == 'BasicCommunication.GetSystemInfo') {
 
@@ -546,7 +546,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               'jsonrpc': '2.0',
               'id': request.id,
               'result': {
-                'code': SDL.SDLModel.data.resultCode['SUCCESS'], // type (enum) from SDL protocol
+                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
                 'method': request.method,
                 'ccpu_version': 'ccpu_version',
                 'language': SDL.SDLModel.data.hmiUILanguage,
@@ -564,11 +564,11 @@ FFW.BasicCommunication = FFW.RPCObserver
 
             this.GetURLS(7); //Service type for policies
 
-            this.sendBCResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
           }
           if (request.method == 'BasicCommunication.DecryptCertificate') {
 
-            this.sendBCResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
           }
         }
       },
@@ -752,7 +752,7 @@ FFW.BasicCommunication = FFW.RPCObserver
 
         Em.Logger.log('FFW.' + method + 'Response');
 
-        if (resultCode != SDL.SDLModel.data.resultCode['SUCCESS']) {
+        if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
           // send repsonse
           var JSONMessage = {
@@ -784,7 +784,7 @@ FFW.BasicCommunication = FFW.RPCObserver
 
         Em.Logger.log('FFW.' + method + 'Response');
 
-        if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+        if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
           // send repsonse
           var JSONMessage = {
@@ -818,7 +818,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           'jsonrpc': '2.0',
           'id': id,
           'result': {
-            'code': SDL.SDLModel.data.resultCode['SUCCESS'], // type (enum)
+            'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum)
             // from SDL
             // protocol
             'method': method,
@@ -845,7 +845,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           'id': requestid,
           'jsonrpc': '2.0',
           'result': {
-            'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+            'code': SDL.SDLModel.data.resultCode.SUCCESS,
             'attenuatedSupported': attenuatedSupported,
             'method': 'BasicCommunication.MixingAudioSupported'
           }
@@ -869,7 +869,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           'id': request.id,
           'jsonrpc': '2.0',
           'result': {
-            'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+            'code': SDL.SDLModel.data.resultCode.SUCCESS,
             'method': request.method,
             'allowed': allowed
           }
@@ -903,7 +903,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           'id': request.id,
           'jsonrpc': '2.0',
           'result': {
-            'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+            'code': SDL.SDLModel.data.resultCode.SUCCESS,
             'method': 'BasicCommunication.AllowApp',
             'allowedFunctions': allowedFunctions
           }

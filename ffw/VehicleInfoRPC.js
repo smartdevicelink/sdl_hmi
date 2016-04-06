@@ -173,7 +173,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create({
             'id': request.id,
             'result': {
               'messageDataResult': [200],
-              'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+              'code': SDL.SDLModel.data.resultCode.SUCCESS,
               'method': 'VehicleInfo.DiagnosticMessage'
             }
           };
@@ -214,7 +214,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create({
             'id': request.id,
             'result': {
               'available': this.get('isReady'),
-              'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+              'code': SDL.SDLModel.data.resultCode.SUCCESS,
               'method': 'VehicleInfo.IsReady'
             }
           };
@@ -246,7 +246,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode != SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -278,7 +278,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -305,7 +305,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -335,7 +335,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode != SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -410,7 +410,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create({
       'jsonrpc': '2.0',
       'id': id,
       'result': {
-        'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+        'code': SDL.SDLModel.data.resultCode.SUCCESS,
         'method': 'VehicleInfo.GetVehicleType',
         'vehicleType': vehicleType
       }

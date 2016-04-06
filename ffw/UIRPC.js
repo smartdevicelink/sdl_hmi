@@ -167,7 +167,7 @@ FFW.UI = FFW.RPCObserver.create({
       switch (request.method) {
         case 'UI.Alert': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           //if (this.errorResponsePull[request.id] != null) {
           //
           ////Check if there is any available data to  process the request
@@ -194,7 +194,7 @@ FFW.UI = FFW.RPCObserver.create({
         }
         case 'UI.Show': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           if (this.errorResponsePull[request.id] != null) {
 
             //Check if there is any available data to  process the request
@@ -218,13 +218,13 @@ FFW.UI = FFW.RPCObserver.create({
 
           SDL.TurnByTurnView.deactivate();
           SDL.SDLController.getApplicationModel(request.params.appID).onSDLUIShow(request.params);
-          this.sendUIResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+          this.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
 
           break;
         }
         case 'UI.SetGlobalProperties': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           //if (this.errorResponsePull[request.id] != null) {
           //
           ////Check if there is any available data to  process the request
@@ -247,13 +247,13 @@ FFW.UI = FFW.RPCObserver.create({
 
           SDL.SDLModel.setProperties(request.params);
 
-          this.sendUIResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+          this.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
 
           break;
         }
         case 'UI.AddCommand': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           //if (this.errorResponsePull[request.id] != null) {
           //
           ////Check if there is any available data to  process the request
@@ -297,7 +297,7 @@ FFW.UI = FFW.RPCObserver.create({
         }
         case 'UI.PerformInteraction': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           //if (this.errorResponsePull[request.id] != null) {
           //
           ////Check if there is any available data to  process the request
@@ -328,7 +328,7 @@ FFW.UI = FFW.RPCObserver.create({
         case 'UI.SetMediaClockTimer': {
 
           var resultCode = SDL.SDLController.getApplicationModel(request.params.appID).sdlSetMediaClockTimer(request.params);
-          if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+          if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
             this.sendUIResult(resultCode, request.id, request.method);
           } else {
             this.sendError(resultCode,
@@ -367,7 +367,7 @@ FFW.UI = FFW.RPCObserver.create({
           SDL.SDLModel.changeRegistrationUI(request.params.language,
               request.params.appID,
               request.params.appName);
-          this.sendUIResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+          this.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
 
           break;
         }
@@ -872,7 +872,7 @@ FFW.UI = FFW.RPCObserver.create({
                         'presetBankCapabilities': {
                           'onScreenPresetsAvailable': true
                         },
-                        'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+                        'code': SDL.SDLModel.data.resultCode.SUCCESS,
                         'method': 'UI.SetDisplayLayout'
                       }
                     };
@@ -887,7 +887,7 @@ FFW.UI = FFW.RPCObserver.create({
         }
         case 'UI.SetAppIcon': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           //if (this.errorResponsePull[request.id] != null) {
           //
           ////Check if there is any available data to  process the request
@@ -909,7 +909,7 @@ FFW.UI = FFW.RPCObserver.create({
 
           if (this.performAudioPassThruRequestID > 0) {
             this.sendError(
-                SDL.SDLModel.data.resultCode['REJECTED'],
+                SDL.SDLModel.data.resultCode.REJECTED,
                 request.id,
                 request.method,
                 'PerformAudioPassThru request aborted!');
@@ -939,7 +939,7 @@ FFW.UI = FFW.RPCObserver.create({
                     'id': request.id,
                     'jsonrpc': '2.0',
                     'result': {
-                      'code': SDL.SDLModel.data.resultCode['SUCCESS'], // type
+                      'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
                       // (enum)
                       // from
                       // SDL
@@ -959,7 +959,7 @@ FFW.UI = FFW.RPCObserver.create({
                     'jsonrpc': '2.0',
                     'id': request.id,
                     'result': {
-                      'code': SDL.SDLModel.data.resultCode['SUCCESS'], // type
+                      'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
                       // (enum)
                       // from
                       // SDL
@@ -1365,7 +1365,7 @@ FFW.UI = FFW.RPCObserver.create({
                         'navigation': true,
                         'phoneCall': true
                       },
-                      'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+                      'code': SDL.SDLModel.data.resultCode.SUCCESS,
                       'method': 'UI.GetCapabilities'
                     }
                   };
@@ -1383,7 +1383,7 @@ FFW.UI = FFW.RPCObserver.create({
                     'id': request.id,
                     'result': {
                       'available': this.get('isReady'),
-                      'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+                      'code': SDL.SDLModel.data.resultCode.SUCCESS,
                       'method': 'UI.IsReady'
                     }
                   };
@@ -1402,7 +1402,7 @@ FFW.UI = FFW.RPCObserver.create({
                     'jsonrpc': '2.0',
                     'id': request.id,
                     'result': {
-                      'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+                      'code': SDL.SDLModel.data.resultCode.SUCCESS,
                       'method': 'UI.ClosePopUp'
                     }
                   };
@@ -1415,7 +1415,7 @@ FFW.UI = FFW.RPCObserver.create({
 
           //SDL.SDLModel.ShowVrHelp(request.params);
 
-          this.sendUIResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+          this.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
 
           break;
         }
@@ -1481,7 +1481,7 @@ FFW.UI = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -1509,7 +1509,7 @@ FFW.UI = FFW.RPCObserver.create({
     Em.Logger.log('FFW.UI.AlertResponse');
 
     switch (resultCode) {
-      case SDL.SDLModel.data.resultCode['SUCCESS']: {
+      case SDL.SDLModel.data.resultCode.SUCCESS: {
 
         this.sendUIResult(resultCode, id, 'UI.Alert');
 
@@ -1520,7 +1520,7 @@ FFW.UI = FFW.RPCObserver.create({
         this.sendError(resultCode, id, 'UI.Alert', 'Alert request aborted.');
         break;
       }
-      case SDL.SDLModel.data.resultCode['REJECTED']: {
+      case SDL.SDLModel.data.resultCode.REJECTED: {
 
         this.sendError(resultCode, id, 'UI.Alert', 'Another Alert is active.');
         break;
@@ -1542,7 +1542,7 @@ FFW.UI = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.UI.SliderResponse');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -1681,7 +1681,7 @@ FFW.UI = FFW.RPCObserver.create({
     Em.Logger.log('FFW.UI.PerformInteractionResponse');
 
     if (this.errorResponsePull[requestID]        &&
-            resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+            resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -1710,7 +1710,7 @@ FFW.UI = FFW.RPCObserver.create({
       return;
     }
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',

@@ -337,10 +337,10 @@ SDL.ABSAppModel = Em.Object.extend({
 
       console.log(commands.length);
       if (request.id >= 0) {
-        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
       }
     } else {
-      FFW.UI.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'Adding more than 1000 item to the top menu or to submenu is not allowed.');
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'Adding more than 1000 item to the top menu or to submenu is not allowed.');
     }
 
   },
@@ -356,7 +356,7 @@ SDL.ABSAppModel = Em.Object.extend({
       if (this.commandsList[i].filterProperty('commandID', commandID).length) {
         if (i != this.currentSubMenuId || this.currentSubMenuId == 'top') {
           this.get('commandsList.' + i).removeObjects(this.get('commandsList.' + i).filterProperty('commandID', commandID));
-          SDL.SDLModel.deleteCommandResponse(SDL.SDLModel.data.resultCode['SUCCESS'], requestID);
+          SDL.SDLModel.deleteCommandResponse(SDL.SDLModel.data.resultCode.SUCCESS, requestID);
           return;
         } else {
           SDL.SDLModel.deleteCommandResponse(SDL.SDLModel.data.resultCode['IN_USE'], requestID);
@@ -394,9 +394,9 @@ SDL.ABSAppModel = Em.Object.extend({
         SDL.OptionsView.commands.refreshItems();
       }
 
-      FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+      FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
     } else {
-      FFW.UI.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'Adding more than 1000 item to the top menu or to submenu is not allowed.');
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'Adding more than 1000 item to the top menu or to submenu is not allowed.');
     }
   },
 
@@ -412,7 +412,7 @@ SDL.ABSAppModel = Em.Object.extend({
       //delete(this.commandsList[menuID]);
     }
 
-    return SDL.SDLModel.data.resultCode['SUCCESS'];
+    return SDL.SDLModel.data.resultCode.SUCCESS;
   },
 
   /**

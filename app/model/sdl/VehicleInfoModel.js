@@ -401,7 +401,7 @@ SDL.SDLVehicleInfoModel = Em.Object
           }
         }
 
-        FFW.VehicleInfo.sendVISubscribeVehicleDataResult(SDL.SDLModel.data.resultCode['SUCCESS'], message.id, message.method, subscribeVIData);
+        FFW.VehicleInfo.sendVISubscribeVehicleDataResult(SDL.SDLModel.data.resultCode.SUCCESS, message.id, message.method, subscribeVIData);
       },
 
       /**
@@ -437,7 +437,7 @@ SDL.SDLVehicleInfoModel = Em.Object
           }
         }
 
-        FFW.VehicleInfo.sendVISubscribeVehicleDataResult(SDL.SDLModel.data.resultCode['SUCCESS'], message.id, message.method, subscribeVIData);
+        FFW.VehicleInfo.sendVISubscribeVehicleDataResult(SDL.SDLModel.data.resultCode.SUCCESS, message.id, message.method, subscribeVIData);
       },
 
       /**
@@ -470,7 +470,7 @@ SDL.SDLVehicleInfoModel = Em.Object
         text += ' are not available';
 
         if (result) {
-          FFW.VehicleInfo.sendGetVehicleDataResut(SDL.SDLModel.data.resultCode['SUCCESS'], message.id, message.method, data);
+          FFW.VehicleInfo.sendGetVehicleDataResut(SDL.SDLModel.data.resultCode.SUCCESS, message.id, message.method, data);
         } else {
           FFW.VehicleInfo.sendGetVehicleDataError(SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'], message.id, message.method, text, data);
         }

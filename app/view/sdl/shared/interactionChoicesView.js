@@ -278,7 +278,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create({
           break;
         }
         case 'SUCCESS': {
-          SDL.SDLController.interactionChoiseCloseResponse(this.appID, SDL.SDLModel.data.resultCode['SUCCESS'], choiceID, this.input.value);
+          SDL.SDLController.interactionChoiseCloseResponse(this.appID, SDL.SDLModel.data.resultCode.SUCCESS, choiceID, this.input.value);
           break;
         }
         default: {
