@@ -219,7 +219,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     if (params.updateMode == 'CLEAR') {
       this.stopTimer();
-      return SDL.SDLModel.data.resultCode['SUCCESS'];
+      return SDL.SDLModel.data.resultCode.SUCCESS;
     }
 
     if (params.updateMode == 'PAUSE') {
@@ -235,7 +235,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       this.set('pause', false);
     }
 
-    return SDL.SDLModel.data.resultCode['SUCCESS'];
+    return SDL.SDLModel.data.resultCode.SUCCESS;
   },
 
   /**

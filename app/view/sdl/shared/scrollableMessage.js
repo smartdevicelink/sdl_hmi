@@ -74,7 +74,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create({
 
     this.timeout = null;
 
-    SDL.SDLController.scrollableMessageResponse(ABORTED ? SDL.SDLModel.data.resultCode['ABORTED'] : SDL.SDLModel.data.resultCode['SUCCESS'], this.messageRequestId);
+    SDL.SDLController.scrollableMessageResponse(ABORTED ? SDL.SDLModel.data.resultCode['ABORTED'] : SDL.SDLModel.data.resultCode.SUCCESS, this.messageRequestId);
 
     SDL.SDLController.onSystemContextChange();
   },

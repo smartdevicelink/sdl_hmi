@@ -182,7 +182,7 @@ FFW.RC = FFW.RPCObserver.create({
               'jsonrpc': '2.0',
               'id': request.id,
               'result': {
-                'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+                'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
                 'interiorVehicleDataCapabilities': interiorVehicleDataCapabilities
               }
@@ -254,7 +254,7 @@ FFW.RC = FFW.RPCObserver.create({
             'jsonrpc': '2.0',
             'id': request.id,
             'result': {
-              'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+              'code': SDL.SDLModel.data.resultCode.SUCCESS,
               'method': request.method,
               'moduleData': request.params.moduleData
             }
@@ -273,7 +273,7 @@ FFW.RC = FFW.RPCObserver.create({
           }
 
           if (request.params.moduleDescription == undefined) {
-            this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'ModuleDescription parameter missing!');
+            this.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'ModuleDescription parameter missing!');
             return;
           }
 
@@ -324,7 +324,7 @@ FFW.RC = FFW.RPCObserver.create({
             'jsonrpc': '2.0',
             'id': request.id,
             'result': {
-              'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+              'code': SDL.SDLModel.data.resultCode.SUCCESS,
               'method': request.method,
               'moduleData': {
                 'moduleType': request.params.moduleDescription.moduleType,
@@ -380,7 +380,7 @@ FFW.RC = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode != SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -412,7 +412,7 @@ FFW.RC = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -434,7 +434,7 @@ FFW.RC = FFW.RPCObserver.create({
       'jsonrpc': '2.0',
       'id': request.id,
       'result': {
-        'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+        'code': SDL.SDLModel.data.resultCode.SUCCESS,
         'method': request.method,
         allowed: allowed
       }
@@ -598,7 +598,7 @@ FFW.RC = FFW.RPCObserver.create({
           SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
           return true;
         } else if (SDL.SDLModel.data.climateFirstConsentedApp != request.params.appID) {
-          this.sendError(SDL.SDLModel.data.resultCode['REJECTED'],
+          this.sendError(SDL.SDLModel.data.resultCode.REJECTED,
               request.id,
               request.method,
               'To many unconsented requests!'
@@ -611,7 +611,7 @@ FFW.RC = FFW.RPCObserver.create({
           SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
           return true;
         } else if (SDL.SDLModel.data.radioFirstConsentedApp != request.params.appID) {
-          this.sendError(SDL.SDLModel.data.resultCode['REJECTED'],
+          this.sendError(SDL.SDLModel.data.resultCode.REJECTED,
               request.id,
               request.method,
               'To many unconsented requests!'
@@ -626,7 +626,7 @@ FFW.RC = FFW.RPCObserver.create({
           SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
           return true;
         } else if (SDL.SDLModel.data.climateFirstConsentedApp != request.params.appID) {
-          this.sendError(SDL.SDLModel.data.resultCode['REJECTED'],
+          this.sendError(SDL.SDLModel.data.resultCode.REJECTED,
               request.id,
               request.method,
               'To many unconsented requests!'
@@ -639,7 +639,7 @@ FFW.RC = FFW.RPCObserver.create({
           SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
           return true;
         } else if (SDL.SDLModel.data.radioFirstConsentedApp != request.params.appID) {
-          this.sendError(SDL.SDLModel.data.resultCode['REJECTED'],
+          this.sendError(SDL.SDLModel.data.resultCode.REJECTED,
               request.id,
               request.method,
               'To many unconsented requests!'

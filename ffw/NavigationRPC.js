@@ -43,7 +43,8 @@ FFW.Navigation = FFW.RPCObserver.create({
   isReady: true,
 
   /**
-   * Contains response codes for request that should be processed but there were some kind of errors
+   * Contains response codes for request that should be processed but there
+   * were some kind of errors
    * Error codes will be injected into response.
    */
   errorResponsePull: {},
@@ -124,10 +125,13 @@ FFW.Navigation = FFW.RPCObserver.create({
   },
 
   /**
+   *
    * when result is received from RPC component this function is called It is
-   * the propriate place to check results of request execution Please use
-   * previously store reuqestID to determine to which request repsonse belongs
+   * the proper place to check results of request execution Please use
+   * previously store requestID to determine to which request response belongs
    * to
+   *
+   * @param {Object} response
    */
   onRPCResult: function(response) {
 
@@ -137,6 +141,8 @@ FFW.Navigation = FFW.RPCObserver.create({
 
   /**
    * handle RPC erros here
+   *
+   * @param {Object} error
    */
   onRPCError: function(error) {
 
@@ -179,8 +185,6 @@ FFW.Navigation = FFW.RPCObserver.create({
     Em.Logger.log('FFW.Navigation.onRPCRequest');
     if (this.validationCheck(request)) {
 
-      var resultCode = null;
-
       switch (request.method) {
         case 'Navigation.IsReady': {
 
@@ -192,7 +196,7 @@ FFW.Navigation = FFW.RPCObserver.create({
             'id': request.id,
             'result': {
               'available': this.get('isReady'),
-              'code': SDL.SDLModel.data.resultCode['SUCCESS'],
+              'code': SDL.SDLModel.data.resultCode.SUCCESS,
               'method': 'Navigation.IsReady'
             }
           };
@@ -201,9 +205,17 @@ FFW.Navigation = FFW.RPCObserver.create({
 
           break;
         }
+        case 'Navigation.GetWayPoints': {
+
+          Em.Logger.log('FFW.' + request.method + 'Response');
+
+          SDL.NavigationController.getWayPoint(request);
+
+          break;
+        }
         case 'Navigation.AlertManeuver': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           if (this.errorResponsePull[request.id] != null) {
             //
             ////Check if there is any available data to  process the request
@@ -213,15 +225,19 @@ FFW.Navigation = FFW.RPCObserver.create({
             //} else {
             //If no available data sent error response and stop process current request
 
-            this.sendError(this.errorResponsePull[request.id].code, request.id, request.method,
-                    'Unsupported ' + this.errorResponsePull[request.id].type + ' type. Request was not processed.');
+            this.sendError(this.errorResponsePull[
+                request.id].code,
+                request.id,
+                request.method,
+                'Unsupported ' + this.errorResponsePull[request.id].type +
+                ' type. Request was not processed.');
             this.errorResponsePull[request.id] = null;
 
             return;
             //}
           }
 
-          this.sendNavigationResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+          this.sendNavigationResult(SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,
               request.method);
 
@@ -229,18 +245,20 @@ FFW.Navigation = FFW.RPCObserver.create({
         }
         case 'Navigation.ShowConstantTBT': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           if (this.errorResponsePull[request.id] != null) {
 
-            this.sendError(this.errorResponsePull[request.id].code, request.id, request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type + ' type. Request was not processed.');
+            this.sendError(this.errorResponsePull[
+                request.id].code,
+                request.id,
+                request.method,
+                'Unsupported ' + this.errorResponsePull[request.id].type +
+                ' type. Request was not processed.');
             this.errorResponsePull[request.id] = null;
-
-            //this.errorResponsePull[request.id].code = SDL.SDLModel.data.resultCode["WARNINGS"];
           } else {
 
             SDL.SDLModel.tbtActivate(request.params);
-            this.sendNavigationResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+            this.sendNavigationResult(SDL.SDLModel.data.resultCode.SUCCESS,
                 request.id,
                 request.method);
           }
@@ -249,7 +267,7 @@ FFW.Navigation = FFW.RPCObserver.create({
         }
         case 'Navigation.UpdateTurnList': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           if (this.errorResponsePull[request.id] != null) {
             //
             ////Check if there is any available data to  process the request
@@ -259,15 +277,19 @@ FFW.Navigation = FFW.RPCObserver.create({
             //} else {
             //If no available data sent error response and stop process current request
 
-            this.sendError(this.errorResponsePull[request.id].code, request.id, request.method,
-                    'Unsupported ' + this.errorResponsePull[request.id].type + ' type. Request was not processed.');
+            this.sendError(this.errorResponsePull[
+                request.id].code,
+                request.id,
+                request.method,
+                'Unsupported ' + this.errorResponsePull[request.id].type +
+                ' type. Request was not processed.');
             this.errorResponsePull[request.id] = null;
 
             //}
           }
 
           SDL.SDLModel.tbtTurnListUpdate(request.params);
-          this.sendNavigationResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+          this.sendNavigationResult(SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,
               request.method);
 
@@ -277,11 +299,12 @@ FFW.Navigation = FFW.RPCObserver.create({
 
           var text = 'Would you like to start Audio stream?';
 
-          SDL.PopUp.create().appendTo('body').popupActivate(text, function(result) {
+          SDL.PopUp.create().appendTo('body').
+          popupActivate(text, function(result) {
             if (result) {
 
               FFW.Navigation.sendNavigationResult(
-                  SDL.SDLModel.data.resultCode['SUCCESS'],
+                  SDL.SDLModel.data.resultCode.SUCCESS,
                   request.id,
                   request.method
               );
@@ -289,7 +312,7 @@ FFW.Navigation = FFW.RPCObserver.create({
             } else if (result === false) {
 
               FFW.Navigation.sendError(
-                  SDL.SDLModel.data.resultCode['REJECTED'],
+                  SDL.SDLModel.data.resultCode.REJECTED,
                   request.id,
                   request.method,
                   'Ignored by USER!'
@@ -297,15 +320,17 @@ FFW.Navigation = FFW.RPCObserver.create({
             }
           });
 
-          SDL.SDLController.getApplicationModel(request.params.appID).navigationAudioStream = request.params.url;
+          SDL.SDLController.getApplicationModel(request.params.appID).
+              navigationAudioStream = request.params.url;
 
           break;
         }
         case 'Navigation.StopAudioStream': {
 
-          SDL.SDLController.getApplicationModel(request.params.appID).navigationAudioStream = null;
+          SDL.SDLController.getApplicationModel(request.params.appID).
+              navigationAudioStream = null;
 
-          this.sendNavigationResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+          this.sendNavigationResult(SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,
               request.method);
 
@@ -315,13 +340,15 @@ FFW.Navigation = FFW.RPCObserver.create({
 
           var text = 'Would you like to start Video stream?';
 
-          SDL.PopUp.create().appendTo('body').popupActivate(text, function(result) {
+          SDL.PopUp.create().appendTo('body').
+          popupActivate(text, function(result) {
             if (result) {
 
-              SDL.SDLController.getApplicationModel(request.params.appID).set('navigationStream', request.params.url);
+              SDL.SDLController.getApplicationModel(request.params.appID).
+              set('navigationStream', request.params.url);
 
               FFW.Navigation.sendNavigationResult(
-                  SDL.SDLModel.data.resultCode['SUCCESS'],
+                  SDL.SDLModel.data.resultCode.SUCCESS,
                   request.id,
                   request.method
               );
@@ -329,7 +356,7 @@ FFW.Navigation = FFW.RPCObserver.create({
             } else if (result === false) {
 
               FFW.Navigation.sendError(
-                  SDL.SDLModel.data.resultCode['REJECTED'],
+                  SDL.SDLModel.data.resultCode.REJECTED,
                   request.id,
                   request.method,
                   'Ignored by USER!'
@@ -337,15 +364,17 @@ FFW.Navigation = FFW.RPCObserver.create({
             }
           });
 
-          SDL.SDLController.getApplicationModel(request.params.appID).navigationStream = request.params.url;
+          SDL.SDLController.getApplicationModel(request.params.appID).
+              navigationStream = request.params.url;
 
           break;
         }
         case 'Navigation.StopStream': {
 
-          SDL.SDLController.getApplicationModel(request.params.appID).navigationStream = null;
+          SDL.SDLController.getApplicationModel(request.params.appID).
+              navigationStream = null;
 
-          this.sendNavigationResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+          this.sendNavigationResult(SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,
               request.method);
 
@@ -353,17 +382,21 @@ FFW.Navigation = FFW.RPCObserver.create({
         }
         case 'Navigation.SendLocation': {
 
-          // Werify if there is an ansupported data in request
+          // Verify if there is an unsupported data in request
           if (this.errorResponsePull[request.id] != null) {
 
-            this.sendError(this.errorResponsePull[request.id].code, request.id, request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type + ' type. Request was not processed.');
+            this.sendError(this.errorResponsePull[
+                request.id].code,
+                request.id,
+                request.method,
+                'Unsupported ' + this.errorResponsePull[request.id].type +
+                ' type. Request was not processed.');
             this.errorResponsePull[request.id] = null;
 
             //this.errorResponsePull[request.id].code = SDL.SDLModel.data.resultCode["WARNINGS"];
           } else {
 
-            this.sendNavigationResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+            this.sendNavigationResult(SDL.SDLModel.data.resultCode.SUCCESS,
                 request.id,
                 request.method);
           }
@@ -375,20 +408,18 @@ FFW.Navigation = FFW.RPCObserver.create({
   },
 
   /**
-   * Send error response from onRPCRequest
+   *  Send error response from onRPCRequest
    *
-   * @param {Number}
-   *            resultCode
-   * @param {Number}
-   *            id
-   * @param {String}
-   *            method
+   * @param {Number} resultCode
+   * @param {Number} id
+   * @param {String} method
+   * @param {String} message
    */
   sendError: function(resultCode, id, method, message) {
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode != SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -409,26 +440,27 @@ FFW.Navigation = FFW.RPCObserver.create({
   /**
    * send response from onRPCRequest
    *
-   * @param {Number}
-   *            resultCode
-   * @param {Number}
-   *            id
-   * @param {String}
-   *            method
+   * @param {Number} resultCode
+   * @param {Number} id
+   * @param {String} method
    */
   sendNavigationResult: function(resultCode, id, method) {
 
     if (this.errorResponsePull[id] != null) {
 
-      this.sendError(this.errorResponsePull[id].code, id, method,
-              'Unsupported ' + this.errorResponsePull[id].type + ' type. Available data in request was processed.');
+      this.sendError(
+          this.errorResponsePull[id].code,
+          id,
+          method,
+          'Unsupported ' + this.errorResponsePull[id].type +
+          ' type. Available data in request was processed.');
       this.errorResponsePull[id] = null;
       return;
     }
 
     Em.Logger.log('FFW.UI.' + method + 'Response');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {
@@ -444,12 +476,38 @@ FFW.Navigation = FFW.RPCObserver.create({
   },
 
   /**
+   * Response sender for GetWayPoints request
+   *
+   * @param {Number} resultCode
+   * @param {Object} data
+   * @param {number} id
+   */
+  wayPointSend: function(resultCode, data, id) {
+
+    if (resultCode == SDL.SDLModel.data.resultCode.SUCCESS &&
+      data && id) {
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'result': {
+          'wayPoints': data,
+          'method': 'Navigation.GetWayPoints'
+        }
+      };
+
+      this.client.send(JSONMessage);
+    } else if (resultCode == SDL.SDLModel.data.resultCode.IN_USE) {
+      FFW.Navigation.sendError(resultCode, id, 'Navigation.GetWayPoints',
+        'Current WayPoint is under processing');
+    }
+  },
+
+  /**
    * Notifies if TBTClientState was activated
    *
-   * @param {String}
-   *            state
-   * @param {Number}
-   *            appID
+   * @param {String} state
+   * @param {Number} appID
    */
   onTBTClientState: function(state, appID) {
 

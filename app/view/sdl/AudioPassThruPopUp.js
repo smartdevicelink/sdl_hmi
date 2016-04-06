@@ -122,7 +122,7 @@ SDL.AudioPassThruPopUp = Em.ContainerView.create({
     elementId: 'AudioPassThruPopUpButtonDone',
     classNames: 'buttonDone softButton',
     text: 'Done',
-    responseResult: SDL.SDLModel.data.resultCode['SUCCESS'],
+    responseResult: SDL.SDLModel.data.resultCode.SUCCESS,
     actionUp: function() {
       SDL.SDLController.callPerformAudioPassThruPopUpResponse(this);
     }
@@ -144,7 +144,7 @@ SDL.AudioPassThruPopUp = Em.ContainerView.create({
   StartAudioPassThruTimer: function() {
     clearTimeout(this.timer);
     this.timer = setTimeout(function() {
-      SDL.SDLController.performAudioPassThruResponse(SDL.SDLModel.data.resultCode['SUCCESS']);
+      SDL.SDLController.performAudioPassThruResponse(SDL.SDLModel.data.resultCode.SUCCESS);
     }, SDL.SDLModel.data.AudioPassThruData.maxDuration);
   },
 

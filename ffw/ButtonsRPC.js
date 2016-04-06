@@ -169,7 +169,7 @@ FFW.Buttons = FFW.RPCObserver.create({
         if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
           SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
         } else if (SDL.SDLModel.data.climateFirstConsentedApp != request.params.appID) {
-          this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'To many unconsented requests!');
+          this.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'To many unconsented requests!');
           return;
         }
 
@@ -177,12 +177,12 @@ FFW.Buttons = FFW.RPCObserver.create({
         if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
           SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
         } else if (SDL.SDLModel.data.radioFirstConsentedApp != request.params.appID) {
-          this.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'To many unconsented requests!');
+          this.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'To many unconsented requests!');
           return;
         }
       }
 
-      this.sendButtonsResult(SDL.SDLModel.data.resultCode['SUCCESS'], request.id, request.method);
+      this.sendButtonsResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
     }
 
     if (request.method == 'Buttons.GetCapabilities') {
@@ -300,7 +300,7 @@ FFW.Buttons = FFW.RPCObserver.create({
 
     Em.Logger.log('FFW.' + method + 'Response');
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       // send repsonse
       var JSONMessage = {

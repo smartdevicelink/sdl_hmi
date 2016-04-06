@@ -118,7 +118,7 @@ SDL.ABSController = Em.Object.extend({
    */
   VRPerformAction: function(element) {
 
-    SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode['SUCCESS'], element.commandID);
+    SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode.SUCCESS, element.commandID);
 
     if (SDL.SDLModel.data.VRActive) {
       SDL.SDLModel.data.toggleProperty('VRActive');
@@ -438,7 +438,7 @@ SDL.ABSController = Em.Object.extend({
       if (FFW.TTS.aborted) {
         FFW.TTS.sendError(SDL.SDLModel.data.resultCode['ABORTED'], FFW.TTS.requestId, 'TTS.Speak', 'TTS Speak request aborted');
       } else {
-        FFW.TTS.sendTTSResult(SDL.SDLModel.data.resultCode['SUCCESS'], FFW.TTS.requestId, 'TTS.Speak');
+        FFW.TTS.sendTTSResult(SDL.SDLModel.data.resultCode.SUCCESS, FFW.TTS.requestId, 'TTS.Speak');
       }
       FFW.TTS.requestId = null;
       FFW.TTS.aborted = false;
@@ -567,7 +567,7 @@ SDL.ABSController = Em.Object.extend({
     }
     if (methodName == 'UI.PerformAudioPassThru') {
       SDL.AudioPassThruPopUp.deactivate();
-      this.performAudioPassThruResponse(SDL.SDLModel.data.resultCode['SUCCESS']);
+      this.performAudioPassThruResponse(SDL.SDLModel.data.resultCode.SUCCESS);
     }
     if (methodName == 'UI.PerformInteraction') {
       SDL.InteractionChoicesView.deactivate('ABORTED');
@@ -696,7 +696,7 @@ SDL.ABSController = Em.Object.extend({
    */
   scrollableMessageResponse: function(result, messageRequestId) {
 
-    if (result == SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (result == SDL.SDLModel.data.resultCode.SUCCESS) {
       FFW.UI.sendUIResult(result,
           messageRequestId,
           'UI.ScrollableMessage');
@@ -748,7 +748,7 @@ SDL.ABSController = Em.Object.extend({
   performAudioPassThruResponse: function(result) {
 
     SDL.SDLModel.data.set('AudioPassThruState', false);
-    if (result === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (result === SDL.SDLModel.data.resultCode.SUCCESS) {
 
       FFW.UI.sendUIResult(result,
           FFW.UI.performAudioPassThruRequestID,

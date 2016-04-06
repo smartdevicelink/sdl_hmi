@@ -115,7 +115,7 @@ SDL.RPCController = Em.Object
               DecryptCertificate: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -130,7 +130,7 @@ SDL.RPCController = Em.Object
               UpdateAppList: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -195,7 +195,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -238,7 +238,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -317,7 +317,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -369,7 +369,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -412,7 +412,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -455,7 +455,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -489,7 +489,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -504,7 +504,7 @@ SDL.RPCController = Em.Object
               GetSystemInfo: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -519,7 +519,7 @@ SDL.RPCController = Em.Object
               MixingAudioSupported: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -534,7 +534,7 @@ SDL.RPCController = Em.Object
               AllowAllApps: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -595,7 +595,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -621,7 +621,7 @@ SDL.RPCController = Em.Object
               IsReady: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -636,7 +636,7 @@ SDL.RPCController = Em.Object
               GetLanguage: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -679,7 +679,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -694,7 +694,7 @@ SDL.RPCController = Em.Object
               GetSupportedLanguages: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -709,7 +709,7 @@ SDL.RPCController = Em.Object
               StopSpeaking: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -770,7 +770,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -831,7 +831,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -874,7 +874,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -899,7 +899,7 @@ SDL.RPCController = Em.Object
               IsReady: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -914,7 +914,7 @@ SDL.RPCController = Em.Object
               SendLocation: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -929,7 +929,7 @@ SDL.RPCController = Em.Object
               AlertManeuver: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -990,7 +990,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1033,7 +1033,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1094,7 +1094,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1137,7 +1137,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1216,7 +1216,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1258,7 +1258,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1284,7 +1284,7 @@ SDL.RPCController = Em.Object
               SetDisplayLayout: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1299,7 +1299,7 @@ SDL.RPCController = Em.Object
               IsReady: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1369,7 +1369,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1503,7 +1503,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1609,7 +1609,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1670,7 +1670,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1740,7 +1740,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1812,7 +1812,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1873,7 +1873,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1934,7 +1934,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1977,7 +1977,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -1992,7 +1992,7 @@ SDL.RPCController = Em.Object
               GetCapabilities: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2053,7 +2053,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2068,7 +2068,7 @@ SDL.RPCController = Em.Object
               GetSupportedLanguages: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2083,7 +2083,7 @@ SDL.RPCController = Em.Object
               GetLanguage: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2153,7 +2153,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2268,7 +2268,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2347,7 +2347,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2391,7 +2391,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2406,7 +2406,7 @@ SDL.RPCController = Em.Object
               EndAudioPassThru: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2421,7 +2421,7 @@ SDL.RPCController = Em.Object
               ClosePopUp: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2451,7 +2451,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2469,7 +2469,7 @@ SDL.RPCController = Em.Object
         ButtonPress: function(params) {
 
           this.resultStruct = {
-            'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
 
           return this.resultStruct;
@@ -2487,7 +2487,7 @@ SDL.RPCController = Em.Object
         GetInteriorVehicleDataCapabilities: function(params) {
 
           this.resultStruct = {
-            'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
 
           return this.resultStruct;
@@ -2496,7 +2496,7 @@ SDL.RPCController = Em.Object
         SetInteriorVehicleData: function(params) {
 
           this.resultStruct = {
-            'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
 
           return this.resultStruct;
@@ -2505,7 +2505,7 @@ SDL.RPCController = Em.Object
         GetInteriorVehicleData: function(params) {
 
           this.resultStruct = {
-            'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
 
           return this.resultStruct;
@@ -2548,7 +2548,7 @@ SDL.RPCController = Em.Object
           }
 
           this.resultStruct = {
-            'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
 
           return this.resultStruct;
@@ -2563,7 +2563,7 @@ SDL.RPCController = Em.Object
         CancelAccess: function(params) {
 
           this.resultStruct = {
-            'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
 
           return this.resultStruct;
@@ -2641,7 +2641,7 @@ SDL.RPCController = Em.Object
             return this.resultStruct;
           }
           this.resultStruct = {
-            'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
 
           return this.resultStruct;
@@ -2666,7 +2666,7 @@ SDL.RPCController = Em.Object
               IsReady: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2681,7 +2681,7 @@ SDL.RPCController = Em.Object
               DiagnosticMessage: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2696,7 +2696,7 @@ SDL.RPCController = Em.Object
               GetVehicleType: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2775,7 +2775,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2836,7 +2836,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2879,7 +2879,7 @@ SDL.RPCController = Em.Object
                 }*/
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2904,7 +2904,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2929,7 +2929,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2954,7 +2954,7 @@ SDL.RPCController = Em.Object
               IsReady: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -2997,7 +2997,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -3012,7 +3012,7 @@ SDL.RPCController = Em.Object
               GetCapabilities: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -3027,7 +3027,7 @@ SDL.RPCController = Em.Object
               GetLanguage: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -3042,7 +3042,7 @@ SDL.RPCController = Em.Object
               GetSupportedLanguages: function(params) {
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -3114,7 +3114,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -3175,7 +3175,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;
@@ -3236,7 +3236,7 @@ SDL.RPCController = Em.Object
                 }
 
                 this.resultStruct = {
-                  'resultCode': SDL.SDLModel.data.resultCode['SUCCESS']
+                  'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
                 };
 
                 return this.resultStruct;

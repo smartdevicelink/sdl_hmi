@@ -621,13 +621,13 @@ SDL.ABSModel = Em.Object.extend({
     if (!SDL.ScrollableMessage.active) {
       if (SDL.SDLModel.data.driverDistractionState) {
         SDL.DriverDistraction.activate();
-        FFW.UI.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'DD mode is active!');
+        FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'DD mode is active!');
       } else {
         SDL.ScrollableMessage.activate(SDL.SDLController.getApplicationModel(request.params.appID).appName, request.params, messageRequestId);
       }
       return true;
     } else {
-      FFW.UI.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'Higher priority request is being processed on HMI!');
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'Higher priority request is being processed on HMI!');
       return false;
     }
   },
@@ -742,7 +742,7 @@ SDL.ABSModel = Em.Object.extend({
 
         // code to set the src on success
         SDL.SDLController.getApplicationModel(message.appID).set('appIcon', message.syncFileName.value);
-        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode['SUCCESS'], id, method);
+        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, id, method);
       };
       img.onerror = function(event) {
 
@@ -769,7 +769,7 @@ SDL.ABSModel = Em.Object.extend({
       SDL.AlertPopUp.AlertActive(message, alertRequestId);
       return true;
     } else {
-      SDL.SDLController.alertResponse(this.data.resultCode['REJECTED'], alertRequestId);
+      SDL.SDLController.alertResponse(this.data.resultCode.REJECTED, alertRequestId);
       return false;
     }
   },
@@ -797,7 +797,7 @@ SDL.ABSModel = Em.Object.extend({
       return true;
     } else {
 
-      FFW.UI.sendError(SDL.SDLModel.data.resultCode['REJECTED'], message.id, message.method, 'UI PerformInterection REJECTED on HMI');
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id, message.method, 'UI PerformInterection REJECTED on HMI');
       return false;
     }
   },
@@ -813,7 +813,7 @@ SDL.ABSModel = Em.Object.extend({
     if (!SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = message.id;
     } else {
-      FFW.VR.sendError(SDL.SDLModel.data.resultCode['REJECTED'], message.id, message.method, 'VR PerformInterection REJECTED on HMI');
+      FFW.VR.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id, message.method, 'VR PerformInterection REJECTED on HMI');
       return;
     }
 
@@ -854,7 +854,7 @@ SDL.ABSModel = Em.Object.extend({
       SDL.InteractionChoicesView.timerUpdate();
     } else {
 
-      SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode['SUCCESS']);
+      SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode.SUCCESS);
     }
   },
 
@@ -870,7 +870,7 @@ SDL.ABSModel = Em.Object.extend({
       SDL.SDLController.getApplicationModel(message.params.appID).onSlider(message);
       return true;
     } else {
-      FFW.UI.sendSliderResult(this.data.resultCode['REJECTED'], message.id);
+      FFW.UI.sendSliderResult(this.data.resultCode.REJECTED, message.id);
       return false;
     }
   },
@@ -904,10 +904,10 @@ SDL.ABSModel = Em.Object.extend({
   UIEndAudioPassThru: function() {
 
     if (this.data.AudioPassThruState) {
-      FFW.UI.sendUIResult(this.data.resultCode['SUCCESS'], FFW.UI.endAudioPassThruRequestID, 'UI.EndAudioPassThru');
-      SDL.SDLController.performAudioPassThruResponse(this.data.resultCode['SUCCESS']);
+      FFW.UI.sendUIResult(this.data.resultCode.SUCCESS, FFW.UI.endAudioPassThruRequestID, 'UI.EndAudioPassThru');
+      SDL.SDLController.performAudioPassThruResponse(this.data.resultCode.SUCCESS);
     } else {
-      FFW.UI.sendError(this.data.resultCode['REJECTED'], FFW.UI.endAudioPassThruRequestID, 'UI.EndAudioPassThru', 'UI.PerformAudioPassThru are not processed at the moment!');
+      FFW.UI.sendError(this.data.resultCode.REJECTED, FFW.UI.endAudioPassThruRequestID, 'UI.EndAudioPassThru', 'UI.PerformAudioPassThru are not processed at the moment!');
     }
   },
 
@@ -953,7 +953,7 @@ SDL.ABSModel = Em.Object.extend({
    */
   deleteCommandResponse: function(resultCode, requestID) {
 
-    if (resultCode === SDL.SDLModel.data.resultCode['SUCCESS']) {
+    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
       FFW.UI.sendUIResult(resultCode, requestID, 'UI.DeleteCommand');
     } else {
       FFW.UI.sendError(resultCode, requestID, 'UI.DeleteCommand', 'SubMenu is opened');
@@ -1019,7 +1019,7 @@ SDL.ABSModel = Em.Object.extend({
       }
     }
 
-    FFW.VR.sendVRResult(SDL.SDLModel.data.resultCode['SUCCESS'],
+    FFW.VR.sendVRResult(SDL.SDLModel.data.resultCode.SUCCESS,
         request.id,
         request.method);
 

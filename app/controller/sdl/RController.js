@@ -43,7 +43,7 @@ SDL.RController = SDL.ABSController.extend({
   ControlAccessAction: function(appID, value) {
     if (value) {
       FFW.RC.sendRCResult(
-          SDL.SDLModel.data.resultCode['SUCCESS'],
+          SDL.SDLModel.data.resultCode.SUCCESS,
           SDL.SDLModel.controlRequestID,
           'RC.GrantAccess'
       );
@@ -51,10 +51,14 @@ SDL.RController = SDL.ABSController.extend({
       SDL.SDLModel.set('givenControlFlag', true);
       //FFW.CAN.OnRadioDetails({"radioStation": SDL.RadioModel.radioDetails.radioStation});
 
-      FFW.RC.onInteriorVehicleDataNotification('RADIO', null, SDL.RadioModel.get('radioControlData'));
+      FFW.RC.onInteriorVehicleDataNotification(
+          'RADIO',
+          null,
+          SDL.RadioModel.get('radioControlData')
+      );
     } else {
       FFW.RC.sendError(
-          SDL.SDLModel.data.resultCode['REJECTED'],
+          SDL.SDLModel.dataresultCode.REJECTED,
           SDL.SDLModel.controlRequestID,
           'RC.GrantAccess',
           'Request cancelled.'
@@ -89,7 +93,7 @@ SDL.RController = SDL.ABSController.extend({
 
   /**
    * Send notification to SDL about changes of SDL functionality
-   * @param element
+   * @param {Object} element
    * @constructor
    */
   OnReverseAppsAllowing: function(element) {
@@ -118,46 +122,50 @@ SDL.RController = SDL.ABSController.extend({
 
   /**
    * Register application method
-   *
-   * @param {Object}
-   *            params
-   * @param {Number}
-   *            applicationType
+   * @param {Object} params
+   * @param {Object} applicationType
    */
   registerApplication: function(params, applicationType) {
 
     if (applicationType === undefined || applicationType === null) {
 
-      SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[0].create({ //Magic number 0 - Default media model for not initialized applications
-        appID: params.appID,
-        appName: params.appName,
-        deviceName: params.deviceName,
-        appType: params.appType,
-        isMedia: 0,
-        disabledToActivate: params.greyOut ? true : false
-      }));
-    } else if (applicationType === 2) {//Magic number 2 - Default RC application with non-media model
+      SDL.SDLModel.data.get('registeredApps').pushObject(
+          this.applicationModels[0].create({
+            //Magic number 0 - Default media model
+            // for not initialized applications
+            appID: params.appID,
+            appName: params.appName,
+            deviceName: params.deviceName,
+            appType: params.appType,
+            isMedia: 0,
+            disabledToActivate: params.greyOut ? true : false
+          }));
+    } else if (applicationType === 2) {
+      //Magic number 2 - Default RC application with non-media model
 
-      SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[1].create({//Magic number 1 - Default non-media model
-        appID: params.appID,
-        appName: params.appName,
-        deviceName: params.deviceName,
-        appType: params.appType,
-        isMedia: false,
-        initialized: true,
-        disabledToActivate: params.greyOut ? true : false
-      }));
+      SDL.SDLModel.data.get('registeredApps').pushObject(
+        this.applicationModels[1].create({
+          //Magic number 1 - Default non-media model
+          appID: params.appID,
+          appName: params.appName,
+          deviceName: params.deviceName,
+          appType: params.appType,
+          isMedia: false,
+          initialized: true,
+          disabledToActivate: params.greyOut ? true : false
+        }));
     } else {
 
-      SDL.SDLModel.data.get('registeredApps').pushObject(this.applicationModels[applicationType].create({
-        appID: params.appID,
-        appName: params.appName,
-        deviceName: params.deviceName,
-        appType: params.appType,
-        isMedia: applicationType == 0 ? true : false,
-        initialized: true,
-        disabledToActivate: params.greyOut ? true : false
-      }));
+      SDL.SDLModel.data.get('registeredApps').pushObject(
+        this.applicationModels[applicationType].create({
+          appID: params.appID,
+          appName: params.appName,
+          deviceName: params.deviceName,
+          appType: params.appType,
+          isMedia: applicationType == 0,
+          initialized: true,
+          disabledToActivate: params.greyOut ? true : false
+        }));
     }
 
     var exitCommand = {
@@ -305,7 +313,7 @@ SDL.RController = SDL.ABSController.extend({
 
     if (request.params.moduleType === 'RADIO') {
       if (SDL.RadioModel.consentedApp) {
-        FFW.RC.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'Already consented!');
+        FFW.RC.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'Already consented!');
       } else {
         popUp = SDL.PopUp.create().appendTo('body').popupActivate(
             'Would you like to grant access for ' + appName + ' application - moduleType: Radio?',
@@ -321,7 +329,7 @@ SDL.RController = SDL.ABSController.extend({
       }
     } else {
       if (SDL.ClimateController.model.consentedApp) {
-        FFW.RC.sendError(SDL.SDLModel.data.resultCode['REJECTED'], request.id, request.method, 'Already consented!');
+        FFW.RC.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'Already consented!');
       } else {
         popUp = SDL.PopUp.create().appendTo('body').popupActivate(
             'Would you like to grant access for ' + appName + ' application - moduleType: Climate?',
