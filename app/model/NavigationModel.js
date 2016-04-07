@@ -40,6 +40,11 @@ SDL.NavigationModel = Em.Object.create({
   appReqPull: [],
 
   /**
+   * flag changed by SubscribeWayPoints and UnsubscribeWayPoints requests
+   */
+  isSubscribedOnWayPoints: false,
+
+  /**
    * Delay Time in ms
    * used to set the delay of GetWayPoints response
    */

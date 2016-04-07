@@ -58,5 +58,52 @@ SDL.NavigationController = Em.Object.create({
     } else {
       FFW.Navigation.wayPointSend(SDL.SDLModel.data.resultCode.IN_USE);
     }
+  },
+
+  /**
+   * SubscribeWayPoints request handler method
+   *
+   * @param {Object} request
+   */
+  subscribeWayPoints: function(request) {
+    if (model.isSubscribedOnWayPoints) {
+      model.set('isSubscribedOnWayPoints', true);
+      FFW.Navigation.sendNavigationResult(
+          SDL.SDLModel.data.resultCode.SUCCESS,
+          request.id,
+          request.method
+      );
+    } else {
+      FFW.Navigation.sendError(
+          SDL.SDLModel.data.resultCode.REJECTED,
+          request.id,
+          request.method,
+          'SDL Should not send this request more than once'
+      );
+    }
+  },
+
+  /**
+   * SubscribeWayPoints request handler method
+   *
+   * @param {Object} request
+   */
+  unsubscribeWayPoints: function(request) {
+    if (!model.isSubscribedOnWayPoints) {
+      model.set('isSubscribedOnWayPoints', false);
+      FFW.Navigation.sendNavigationResult(
+          SDL.SDLModel.data.resultCode.SUCCESS,
+          request.id,
+          request.method
+      );
+    } else {
+      FFW.Navigation.sendError(
+          SDL.SDLModel.data.resultCode.REJECTED,
+          request.id,
+          request.method,
+          'SDL Should not send this request more than once'
+      );
+    }
   }
+
 });

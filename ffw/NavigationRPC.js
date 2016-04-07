@@ -213,6 +213,22 @@ FFW.Navigation = FFW.RPCObserver.create({
 
           break;
         }
+        case 'Navigation.SubscribeWayPoints': {
+
+          Em.Logger.log('FFW.' + request.method + 'Response');
+
+          SDL.NavigationController.subscribeWayPoints(request);
+
+          break;
+        }
+        case 'Navigation.UnsubscribeWayPoints': {
+
+          Em.Logger.log('FFW.' + request.method + 'Response');
+
+          SDL.NavigationController.unsubscribeWayPoints(request);
+
+          break;
+        }
         case 'Navigation.AlertManeuver': {
 
           // Verify if there is an unsupported data in request
