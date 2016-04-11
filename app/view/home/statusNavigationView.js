@@ -36,6 +36,11 @@ SDL.StatusNavigationView = Em.ContainerView.extend({
 
   classNames: 'status_bar',
 
+  /** Bind class for visual representation */
+  classNameBindings: [
+    'SDL.States.navigation.active:selected'
+  ],
+
   /** Navigation components */
   childViews: [
       'statusHome'

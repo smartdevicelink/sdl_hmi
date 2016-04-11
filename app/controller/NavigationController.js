@@ -39,6 +39,56 @@ SDL.NavigationController = Em.Object.create({
   modelBinding: 'SDL.NavigationModel',
 
   /**
+   * Navigation.SendLocation request handler
+   *
+   * @param {Object} request
+   */
+  sendLocation: function(request) {
+    model.push({
+      coordinate: {
+        latitudeDegrees: request.params.latitudeDegrees,
+        longitudeDegrees: request.params.longitudeDegrees
+      },
+      locationName: request.params.locationName,
+      addressLines: request.params.addressLines,
+      locationDescription: request.params.locationDescription,
+      phoneNumber: request.params.phoneNumber,
+      locationImage: request.params.locationImage,
+      searchAddress: request.params.address
+    });
+
+    FFW.Navigation.sendNavigationResult(SDL.SDLModel.data.resultCode.SUCCESS,
+        request.id,
+        request.method
+    );
+  },
+
+  /**
+   * Navigation view List Button action handler
+   * Opens selected WayPoint structure
+   *
+   * @param {Object} element
+   */
+  openWayPoint: function(element) {
+
+    var itemID = element.itemID;
+
+    this.model.set('currentWayPointData',
+        JSON.stringify(SDL.NavigationModel.LocationDetails[itemID], null, 2)
+    );
+    SDL.NavigationView.codeEditor.activate(function(data, isDeleted) {
+      if (isDeleted) {
+        SDL.NavigationModel.get('LocationDetails').removeObject(
+            SDL.NavigationModel.LocationDetails[itemID]
+        );
+      } else {
+        SDL.NavigationModel.LocationDetails[itemID] = JSON.parse(data);
+        FFW.Navigation.onWayPointChange([SDL.NavigationModel.LocationDetails[itemID]]);
+      }
+    });
+  },
+
+  /**
    * GetWayPoints request handler method
    *
    * @param {Object} request

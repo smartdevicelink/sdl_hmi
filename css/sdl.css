@@ -942,13 +942,13 @@
     left: 5px;
     width: 190px;
     border: 1px solid #393939;
+	text-align: center;
 }
 
 .PopUp .OkButton span{
     font-size: 20px;
     line-height: 50px;
     cursor: pointer;
-    margin-left: 82px;
 }
 
 .PopUp .CancelButton{
@@ -956,13 +956,13 @@
     left: 205px;
     width: 190px;
     border: 1px solid #393939;
+	text-align: center;
 }
 
 .PopUp .CancelButton span{
     font-size: 20px;
     line-height: 50px;
     cursor: pointer;
-    margin-left: 65px;
 }
 
 /* Alert, AudioPassThruPopUp popup*/

@@ -146,7 +146,7 @@ SDL.Button = Em.View
 
           // component default template
           defaultTemplate: Em.Handlebars
-              .compile('<img class="ico" {{bindAttr src="view.icon"}} />'                  +
+              .compile('<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />'                  +
                     '<span>{{view.text}}</span>'),
 
           templates: {
@@ -156,16 +156,16 @@ SDL.Button = Em.View
                 .compile('<img class="ico" {{bindAttr src="view.icon"}} />'),
 
             rightText: Em.Handlebars
-                .compile('<img class="ico" {{bindAttr src="view.icon"}} />'                    +
+                .compile('<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
                         '<span class="right_text">{{view.text}}</span>'),
 
             arrow: Em.Handlebars
-                .compile('<img class="ico" {{bindAttr src="view.icon"}} />'                    +
+                .compile('<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
                         '<span>{{view.text}}</span>'                    +
                         '<img class="arrow-ico" src="images/common/arrow_ico.png" />'),
 
             rightIcon: Em.Handlebars
-                .compile('<img class="ico" {{bindAttr src="view.icon"}} />'                    +
+                .compile('<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
                         '<span>{{view.text}}</span>'                    +
                         '<img class="right_ico" {{bindAttr src="view.righticon"}} />')
           }

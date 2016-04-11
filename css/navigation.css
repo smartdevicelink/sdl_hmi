@@ -1,4 +1,17 @@
 /*NAVIGATION CSS*/
+
+#navigationView.navigationView{
+    width: 800px;
+    height: 480px;
+    background: url(../images/nav/bg.png) no-repeat;
+    background-position: top;
+}
+
+#poiList{
+    top: 70px;
+    left: 15px;
+}
+
 #baseNavigation{
     z-index: 2;
     position: absolute;

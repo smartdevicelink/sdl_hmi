@@ -40,6 +40,11 @@ SDL.NavigationModel = Em.Object.create({
   appReqPull: [],
 
   /**
+   * Content for code editor view to display current waypoint data
+   */
+  currentWayPointData: '',
+
+  /**
    * flag changed by SubscribeWayPoints and UnsubscribeWayPoints requests
    */
   isSubscribedOnWayPoints: false,
@@ -50,30 +55,107 @@ SDL.NavigationModel = Em.Object.create({
    */
   wpProcessTime: 4000,
 
-  LocationDetails: [{
-    coordinate: {
-      latitudeDegrees: 0,
-      longitudeDegrees: 0
+  LocationDetails: [
+    {
+      coordinate: {
+        latitudeDegrees: 0,
+        longitudeDegrees: 0
+      },
+      locationName: 'locationName',
+      addressLines: 'addressLines',
+      locationDescription: 'locationDescription',
+      phoneNumber: 'phoneNumber',
+      locationImage: {
+        value: '',
+        imageType: 'DYNAMIC'
+      },
+      searchAddress: {
+        countryName: 'countryName',
+        countryCode: 'countryCode',
+        postalCode: 'postalCode',
+        administrativeArea: 'administrativeArea',
+        subAdministrativeArea: 'subAdministrativeArea',
+        locality: 'locality',
+        subLocality: 'subLocality',
+        thoroughfare: 'thoroughfare',
+        subThoroughfare: 'subThoroughfare'
+      }
     },
-    locationName: '',
-    addressLines: '',
-    locationDescription: '',
-    phoneNumber: '',
-    locationImage: {
-      value: '',
-      imageType: 'DYNAMIC'
+    {
+      coordinate: {
+        latitudeDegrees: 0,
+        longitudeDegrees: 0
+      },
+      locationName: 'locationName',
+      addressLines: 'addressLines',
+      locationDescription: 'locationDescription',
+      phoneNumber: 'phoneNumber',
+      locationImage: {
+        value: 'images/common/defaultButtonImage.png',
+        imageType: 'DYNAMIC'
+      },
+      searchAddress: {
+        countryName: 'countryName',
+        countryCode: 'countryCode',
+        postalCode: 'postalCode',
+        administrativeArea: 'administrativeArea',
+        subAdministrativeArea: 'subAdministrativeArea',
+        locality: 'locality',
+        subLocality: 'subLocality',
+        thoroughfare: 'thoroughfare',
+        subThoroughfare: 'subThoroughfare'
+      }
     },
-    searchAddress: {
-      countryName: '',
-      countryCode: '',
-      postalCode: '',
-      administrativeArea: '',
-      subAdministrativeArea: '',
-      locality: '',
-      subLocality: '',
-      thoroughfare: '',
-      subThoroughfare: ''
+    {
+      coordinate: {
+        latitudeDegrees: 0,
+        longitudeDegrees: 0
+      },
+      locationName: 'locationName',
+      addressLines: 'addressLines',
+      locationDescription: 'locationDescription',
+      phoneNumber: 'phoneNumber',
+      locationImage: {
+        value: '',
+        imageType: 'DYNAMIC'
+      },
+      searchAddress: {
+        countryName: 'countryName',
+        countryCode: 'countryCode',
+        postalCode: 'postalCode',
+        administrativeArea: 'administrativeArea',
+        subAdministrativeArea: 'subAdministrativeArea',
+        locality: 'locality',
+        subLocality: 'subLocality',
+        thoroughfare: 'thoroughfare',
+        subThoroughfare: 'subThoroughfare'
+      }
+    },
+    {
+      coordinate: {
+        latitudeDegrees: 0,
+        longitudeDegrees: 0
+      },
+      locationName: 'locationName',
+      addressLines: 'addressLines',
+      locationDescription: 'locationDescription',
+      phoneNumber: 'phoneNumber',
+      locationImage: {
+        value: 'images/common/defaultButtonImage.png',
+        imageType: 'DYNAMIC'
+      },
+      searchAddress: {
+        countryName: 'countryName',
+        countryCode: 'countryCode',
+        postalCode: 'postalCode',
+        administrativeArea: 'administrativeArea',
+        subAdministrativeArea: 'subAdministrativeArea',
+        locality: 'locality',
+        subLocality: 'subLocality',
+        thoroughfare: 'thoroughfare',
+        subThoroughfare: 'subThoroughfare'
+      }
     }
-  }]
+  ]
 
 });

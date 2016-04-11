@@ -801,12 +801,15 @@ margin-top: 90px;
 .list {
     position: relative;
     overflow: hidden;
+    width: 329px;
+    height: 251px;
 }
 
 .list-content {
     border-top: 1px solid #393939;
     border-left: 1px solid #393939;
     border-right: 1px solid #393939;
+    width: 279px;
 }
 
 /* List item */
@@ -822,10 +825,15 @@ margin-top: 90px;
 .list-item .ico {
     height: 49px;
     float: left;
+    width: 50px;
+    position: relative;
+
 }
 
 .list-item span {
-    /*position: absolute*/
+    position: relative;
+    margin-left: 5px;
+    float: left;
 }
 
 /* List item background */
@@ -854,7 +862,7 @@ margin-top: 90px;
 .scrollbar {
     position: absolute;
     top: 0px;
-    right: 0px;
+    right: 1px;
     width: 48px;
     background: black;
     border: 1px solid #393939;
@@ -909,7 +917,7 @@ margin-top: 90px;
     border-top: #393939 1px solid;
     position: absolute;
     cursor: pointer;
-    bottom: 0px;
+    bottom: -1px;
 }
 
 /* Buttons image position */

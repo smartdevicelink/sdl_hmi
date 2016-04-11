@@ -33,21 +33,43 @@
 SDL.NavigationView = Em.ContainerView.create({
   /** View Id */
   elementId: 'navigationView',
-
+  classNames: ['navigationView'],
   classNameBindings: [
       'SDL.States.navigation.active:active_state:inactive_state'
   ],
+  childViews: [
+      'POIList',
+      'codeEditor'
+  ],
+  POIList: SDL.List.extend({
+    elementId: 'poiList', //info_apps_list
+    itemsOnPage: 5,
+    itemsBinding: 'this.itemGenerator',
+    itemGenerator: function() {
 
-  childViews:
-      [
-          'windowText'
-      ],
-
-  windowText: SDL.Label.extend({
-
-    classNames: 'windowText',
-
-    content: 'Navigation'
+      var items = [];
+      for (var i = 0; i < SDL.NavigationModel.LocationDetails.length; i++) {
+        items.push(
+          {
+            type: SDL.Button,
+            params: {
+              itemID: i,
+              className: 'button',
+              text: SDL.NavigationModel.LocationDetails[i].locationName,
+              disabled: false,
+              icon: SDL.NavigationModel.LocationDetails[i].locationImage.value,
+              templateName: SDL.NavigationModel.LocationDetails[i].locationImage
+                  ? '' : 'text',
+              action: 'openWayPoint',
+              target: 'SDL.NavigationController'
+            }
+          }
+        );
+      }
+      return items;
+    }.property('SDL.NavigationModel.LocationDetails.@each')
+  }),
+  codeEditor: SDL.CodeEditor.extend({
+    contentBinding: 'SDL.NavigationModel.currentWayPointData'
   })
-
 });

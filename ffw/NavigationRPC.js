@@ -412,9 +412,7 @@ FFW.Navigation = FFW.RPCObserver.create({
             //this.errorResponsePull[request.id].code = SDL.SDLModel.data.resultCode["WARNINGS"];
           } else {
 
-            this.sendNavigationResult(SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method);
+            SDL.NavigationController.sendLocation(request);
           }
 
           break;
@@ -517,6 +515,23 @@ FFW.Navigation = FFW.RPCObserver.create({
       FFW.Navigation.sendError(resultCode, id, 'Navigation.GetWayPoints',
         'Current WayPoint is under processing');
     }
+  },
+
+  /**
+   * Notification sender for onWayPointChange
+   *
+   * @param {Object} data
+   */
+  onWayPointChange: function(data) {
+    var JSONMessage = {
+      'jsonrpc': '2.0',
+      'method': 'Navigation.OnWayPointChange',
+      'params': {
+        'wayPoints': data
+      }
+    };
+
+    this.client.send(JSONMessage);
   },
 
   /**
