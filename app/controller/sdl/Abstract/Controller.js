@@ -381,9 +381,6 @@ SDL.ABSController = Em.Object.extend({
       }
     }
     FFW.BasicCommunication.onReady();
-    SDL.SDLModel.data.timeStamp = new Date().getTime();
-
-    console.log(SDL.SDLModel.data.timeStamp);
 
   }.observes('SDL.SDLModel.data.registeredComponents.@each.state'),
 
