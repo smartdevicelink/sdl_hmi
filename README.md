@@ -20,5 +20,5 @@ SDL HMI utility is only for acquaintance with the SDL project.
 WEBSOCKET_URL
  - CAN WebSocket connection string -
 CAN_WEBSOCKET_URL (REVSDL project)
- - New important ability to switch functionality between SDL Panasonic, SDL Genivi, Reverse SDL Projects
-    You should just configure "SimpleFunctionality" flag into apropriate state (0 - Genivi, 1 - Panasonic, 2 - Reverse) and after that run command "chromium-browser [path_to_index.html]"
+ - New important ability to switch functionality between OpenSDL, RCPlugin SDL Projects
+    You should just configure "SimpleFunctionality" flag into apropriate state (0 - OpenSDL, 1 - RCPlugin, 2 - Other) and after that run command "chromium-browser [path_to_index.html]"
