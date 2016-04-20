@@ -31,27 +31,28 @@
  * @version 1.0
  */
 SDL.PresetEventsCustom = Ember.Mixin.create({
-  actionDown: function() {
+    actionDown: function() {
 
-    this._super();
-    SDL.SDLController.onSoftButtonActionDownCustom(this);
-  },
-  actionUp: function() {
+      this._super();
+      SDL.SDLController.onSoftButtonActionDownCustom(this);
+    },
+    actionUp: function() {
 
-    this._super();
-    SDL.SDLController.onSoftButtonActionUpCustom(this);
-    if (this.systemAction == 'DEFAULT_ACTION') {
+      this._super();
+      SDL.SDLController.onSoftButtonActionUpCustom(this);
+      if (this.systemAction == 'DEFAULT_ACTION') {
 
-      SDL.SDLController.defaultActionSoftButton(this);
+        SDL.SDLController.defaultActionSoftButton(this);
 
-    } else if (this.systemAction == 'STEAL_FOCUS') {
+      } else if (this.systemAction == 'STEAL_FOCUS') {
 
-      SDL.SDLController.stealFocusSoftButton(this);
+        SDL.SDLController.stealFocusSoftButton(this);
 
-    } else if (this.systemAction == 'KEEP_CONTEXT') {
+      } else if (this.systemAction == 'KEEP_CONTEXT') {
 
-      SDL.SDLController.keepContextSoftButton(this);
+        SDL.SDLController.keepContextSoftButton(this);
 
+      }
     }
   }
-});
+);

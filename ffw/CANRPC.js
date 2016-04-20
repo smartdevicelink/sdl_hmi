@@ -23,416 +23,367 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-FFW.CAN = FFW.RPCObserver.create({
-
-  /**
-   * If true then CAN is present and ready to communicate with SDL.
-   *
-   * @type {Boolean}
-   */
-  isReady: true,
-
-  /**
-   * Contains response codes for request that should be processed but there were some kind of errors
-   * Error codes will be injected into response.
-   */
-  errorResponsePull: {},
-
-  /**
-   * access to basic RPC functionality
-   */
-  client: FFW.RPCClient.create({
-    componentName: 'CAN',
-    url: FLAGS.CAN_WEBSOCKET_URL,
-
-    /*
-     * Overriding RPCClient send method
-     * stringify object and send via socket connection
+FFW.CAN = FFW.RPCObserver.create(
+  {
+    /**
+     * If true then CAN is present and ready to communicate with SDL.
+     *
+     * @type {Boolean}
      */
-    send: function(obj) {
-
-      if (FLAGS.SimpleFunctionality === 2 && FLAGS.CAN) {
-
-        if (this.socket.readyState == this.socket.OPEN) {
-
-          var strJson = JSON.stringify(obj);
-
-          var logTime = new Date();
-          console.log(logTime.getHours() + ':' + logTime.getMinutes() + ':' + logTime.getSeconds() + ':' + logTime.getMilliseconds());
-
-          this.socket.send(strJson);
-
-          if (obj.method) {
-            Em.Logger.log('FFW.' + obj.method + ' Notification send.');
-          } else if (obj.result) {
-            Em.Logger.log('FFW.' + obj.method + ' Response send.');
-          } else if (obj.params) {
-            Em.Logger.log('FFW.' + obj.method + ' Request send.');
-          } else {
-            Em.Logger.error('FFW.' + obj.method + ' Error Response send.');
+    isReady: true,
+    /**
+     * Contains response codes for request that should be processed but there
+     * were some kind of errors Error codes will be injected into response.
+     */
+    errorResponsePull: {},
+    /**
+     * access to basic RPC functionality
+     */
+    client: FFW.RPCClient.create(
+      {
+        componentName: 'CAN',
+        url: FLAGS.CAN_WEBSOCKET_URL,
+        /*
+         * Overriding RPCClient send method
+         * stringify object and send via socket connection
+         */
+        send: function(obj) {
+          if (FLAGS.SimpleFunctionality === 2 && FLAGS.CAN) {
+            if (this.socket.readyState == this.socket.OPEN) {
+              var strJson = JSON.stringify(obj);
+              var logTime = new Date();
+              console.log(
+                logTime.getHours() + ':' + logTime.getMinutes() + ':' +
+                logTime.getSeconds() + ':' + logTime.getMilliseconds()
+              );
+              this.socket.send(strJson);
+              if (obj.method) {
+                Em.Logger.log('FFW.' + obj.method + ' Notification send.');
+              } else if (obj.result) {
+                Em.Logger.log('FFW.' + obj.method + ' Response send.');
+              } else if (obj.params) {
+                Em.Logger.log('FFW.' + obj.method + ' Request send.');
+              } else {
+                Em.Logger.error('FFW.' + obj.method + ' Error Response send.');
+              }
+              Em.Logger.log(strJson);
+            } else {
+              Em.Logger.error(
+                'RPCClient: Can\'t send message since socket is not ready'
+              );
+            }
           }
-
-          Em.Logger.log(strJson);
-        } else {
-          Em.Logger.error('RPCClient: Can\'t send message since socket is not ready');
         }
       }
-    }
-  }),
-
-  /**
-   * connect to RPC bus
-   */
-  connect: function() {
-
-    this.client.connect(this, 700); // Magic number is unique identifier for
-    // component
-  },
-
-  /**
-   * disconnect from RPC bus
-   */
-  disconnect: function() {
-
-    this.onRPCUnregistered();
-    this.client.disconnect();
-  },
-
-  /**
-   * Client is registered - we can send request starting from this point of
-   * time
-   */
-  onRPCRegistered: function() {
-
-    Em.Logger.log('FFW.CAN.onRPCRegistered');
-    this._super();
-  },
-
-  /**
-   * Client is unregistered - no more requests
-   */
-  onRPCUnregistered: function() {
-
-    Em.Logger.log('FFW.CAN.onRPCUnregistered');
-    this._super();
-  },
-
-  /**
-   * Client disconnected.
-   */
-  onRPCDisconnected: function() {
-
-  },
-
-  /**
-   * when result is received from RPC component this function is called It is
-   * the propriate place to check results of reuqest execution Please use
-   * previously store reuqestID to determine to which request repsonse belongs
-   * to
-   */
-  onRPCResult: function(response) {
-
-    Em.Logger.log('FFW.CAN.onRPCResult');
-    this._super();
-  },
-
-  /**
-   * handle RPC erros here
-   */
-  onRPCError: function(error) {
-
-    Em.Logger.log('FFW.CAN.onRPCError');
-    this._super();
-  },
-
-  /**
-   * handle RPC notifications here
-   */
-  onRPCNotification: function(notification) {
-
-    Em.Logger.log('FFW.CAN.onRPCNotification');
-
-    switch (notification.method) {
-      case 'CAN.OnRadioDetails': {
-
-        if ('radioStation' in notification.params) {
-          SDL.RadioModel.updateRadioFrequency(notification.params.radioStation);
+    ),
+    /**
+     * connect to RPC bus
+     */
+    connect: function() {
+      this.client.connect(this, 700); // Magic number is unique identifier for
+      // component
+    },
+    /**
+     * disconnect from RPC bus
+     */
+    disconnect: function() {
+      this.onRPCUnregistered();
+      this.client.disconnect();
+    },
+    /**
+     * Client is registered - we can send request starting from this point of
+     * time
+     */
+    onRPCRegistered: function() {
+      Em.Logger.log('FFW.CAN.onRPCRegistered');
+      this._super();
+    },
+    /**
+     * Client is unregistered - no more requests
+     */
+    onRPCUnregistered: function() {
+      Em.Logger.log('FFW.CAN.onRPCUnregistered');
+      this._super();
+    },
+    /**
+     * Client disconnected.
+     */
+    onRPCDisconnected: function() {
+    },
+    /**
+     * when result is received from RPC component this function is called It is
+     * the propriate place to check results of reuqest execution Please use
+     * previously store reuqestID to determine to which request repsonse belongs
+     * to
+     */
+    onRPCResult: function(response) {
+      Em.Logger.log('FFW.CAN.onRPCResult');
+      this._super();
+    },
+    /**
+     * handle RPC erros here
+     */
+    onRPCError: function(error) {
+      Em.Logger.log('FFW.CAN.onRPCError');
+      this._super();
+    },
+    /**
+     * handle RPC notifications here
+     */
+    onRPCNotification: function(notification) {
+      Em.Logger.log('FFW.CAN.onRPCNotification');
+      switch (notification.method) {
+        case 'CAN.OnRadioDetails':
+        {
+          if ('radioStation' in notification.params) {
+            SDL.RadioModel.updateRadioFrequency(
+              notification.params.radioStation
+            );
+          }
+          SDL.RadioModel.updateSongInfo(notification.params.songInfo);
+          break;
         }
-        SDL.RadioModel.updateSongInfo(notification.params.songInfo);
-
-        break;
+        case 'CAN.StartScan':
+        {
+          SDL.RadioModel.toggleProperty('scanState');
+          break;
+        }
+        case 'CAN.StopScan':
+        {
+          SDL.RadioModel.toggleProperty('scanState');
+          break;
+        }
+        default:
+        {
+          // statements_def
+          break;
+        }
       }
-      case 'CAN.StartScan': {
+      this._super();
+    },
+    /**
+     * handle RPC requests here
+     *
+     * @type {Object} request
+     */
+    onRPCRequest: function(request) {
+      Em.Logger.log('FFW.CAN.onRPCRequest');
+    },
+    /**
+     * Send error response from onRPCRequest
+     *
+     * @param {Number}
+     *            resultCode
+     * @param {Number}
+     *            id
+     * @param {String}
+     *            method
+     */
+    sendError: function(resultCode, id, method, message) {
+      if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
-        SDL.RadioModel.toggleProperty('scanState');
-
-        break;
+        // send repsonse
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': id,
+          'error': {
+            'code': resultCode, // type (enum) from SDL protocol
+            'message': message,
+            'data': {
+              'method': method
+            }
+          }
+        };
+        this.client.send(JSONMessage);
       }
-      case 'CAN.StopScan': {
+    },
+    /**
+     * Send response from onRPCRequest
+     *
+     * @param {Number}
+     *            resultCode
+     * @param {Number}
+     *            id
+     * @param {String}
+     *            method
+     */
+    sendCANResult: function(resultCode, id, method) {
+      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
-        SDL.RadioModel.toggleProperty('scanState');
-
-        break;
+        // send repsonse
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': id,
+          'result': {
+            'code': resultCode, // type (enum) from SDL protocol
+            'method': method
+          }
+        };
+        this.client.send(JSONMessage);
       }
-      default: {
-        // statements_def
-        break;
-      }
-    }
-
-    this._super();
-  },
-
-  /**
-   * handle RPC requests here
-   *
-   * @type {Object} request
-   */
-  onRPCRequest: function(request) {
-
-    Em.Logger.log('FFW.CAN.onRPCRequest');
-  },
-
-  /**
-   * Send error response from onRPCRequest
-   *
-   * @param {Number}
-   *            resultCode
-   * @param {Number}
-   *            id
-   * @param {String}
-   *            method
-   */
-  sendError: function(resultCode, id, method, message) {
-
-    if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
+    },
+    /**
+     * Send notification to CAN to tune radio
+     *
+     */
+    TuneUp: function() {
 
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
-        'id': id,
-        'error': {
-          'code': resultCode, // type (enum) from SDL protocol
-          'message': message,
-          'data': {
-            'method': method
-          }
+        'method': 'CAN.TuneUp'
+      };
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Send notification to CAN to tune radio
+     *
+     */
+    TuneDown: function() {
+
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'CAN.TuneDown'
+      };
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Send notification to CAN to Start Scan logic
+     *
+     */
+    StartScan: function() {
+
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'CAN.StartScan'
+      };
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Send notification to CAN to Start Scan logic
+     *
+     */
+    StopScan: function() {
+
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'CAN.StopScan'
+      };
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Notification about changed on HMI screen radio presets send to SDL
+     *
+     * @param {Object}
+     */
+    OnPresetsChanged: function(presets) {
+
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'CAN.OnPresetsChanged',
+        'params': {
+          'customPresets': presets
         }
       };
       this.client.send(JSONMessage);
-    }
-  },
-
-  /**
-   * Send response from onRPCRequest
-   *
-   * @param {Number}
-   *            resultCode
-   * @param {Number}
-   *            id
-   * @param {String}
-   *            method
-   */
-  sendCANResult: function(resultCode, id, method) {
-
-    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+    },
+    /**
+     * Send response for request GetRadioDetails
+     *
+     * @param {Object}
+     */
+    GetRadioDetails: function(request) {
 
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
         'id': id,
+        'method': 'CAN.GetRadioDetails',
         'result': {
-          'code': resultCode, // type (enum) from SDL protocol
+          'code': resultCode,
           'method': method
         }
       };
+      for (var key in SDL.RadioModel.radioDetails) {
+        JSONMessage.result[key] = SDL.RadioModel.radioDetails[key];
+      }
       this.client.send(JSONMessage);
-    }
-  },
+    },
+    /**
+     * Notification When any of current radio tuner details are changed
+     *
+     * @param {Object}
+     */
+    OnRadioDetails: function(data) {
 
-  /**
-   * Send notification to CAN to tune radio
-   *
-   */
-  TuneUp: function() {
-
-    // send repsonse
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'CAN.TuneUp'
-    };
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * Send notification to CAN to tune radio
-   *
-   */
-  TuneDown: function() {
-
-    // send repsonse
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'CAN.TuneDown'
-    };
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * Send notification to CAN to Start Scan logic
-   *
-   */
-  StartScan: function() {
-
-    // send repsonse
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'CAN.StartScan'
-    };
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * Send notification to CAN to Start Scan logic
-   *
-   */
-  StopScan: function() {
-
-    // send repsonse
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'CAN.StopScan'
-    };
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * Notification about changed on HMI screen radio presets send to SDL
-   *
-   * @param {Object}
-   */
-  OnPresetsChanged: function(presets) {
-
-    // send repsonse
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'CAN.OnPresetsChanged',
-      'params': {
-        'customPresets': presets
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'CAN.OnRadioDetails',
+        'params': {}
+      };
+      for (var key in data) {
+        JSONMessage.params[key] = data[key];
       }
-    };
-    this.client.send(JSONMessage);
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Notification when have action in player
+     *
+     * @param {Object}
+     */
+    OnPlayerDetails: function(data) {
 
-  },
-
-  /**
-   * Send response for request GetRadioDetails
-   *
-   * @param {Object}
-   */
-  GetRadioDetails: function(request) {
-
-    // send repsonse
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'id': id,
-      'method': 'CAN.GetRadioDetails',
-      'result': {
-        'code': resultCode,
-        'method': method
+      // send response
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'CAN.OnPlayerDetails',
+        'params': {}
+      };
+      for (var key in data) {
+        JSONMessage.params[key] = data[key];
       }
-    };
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Notification about changed on HMI screen radio presets send to SDL
+     *
+     * @param {Object}
+     */
+    OnPresetsChanged: function(presets) {
 
-    for (var key in SDL.RadioModel.radioDetails) {
-      JSONMessage.result[key] = SDL.RadioModel.radioDetails[key];
-    }
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * Notification When any of current radio tuner details are changed
-   *
-   * @param {Object}
-   */
-  OnRadioDetails: function(data) {
-
-    // send repsonse
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'CAN.OnRadioDetails',
-      'params': {
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'CAN.OnPresetsChanged',
+        'params': {
+          'customPresets': presets
+        }
+      };
+      this.client.send(JSONMessage);
+    },
+    sendPlayerDetails: function() {
+      var player = SDL.MediaController.get('currentSelectedPlayer');
+      if (player) {
+        var media = player.data.get('selectedItem'),
+          params = {
+            'songInfo': {
+              'name': media.name,
+              'artist': media.artist,
+              'genre': media.genre,
+              'album': media.album,
+              'year': media.year,
+              'duration': media.duration,
+              'currentTime': player.get('currentTime')
+            },
+            'model': player.name
+          };
+        FFW.CAN.OnPlayerDetails(params);
       }
-    };
-
-    for (var key in data) {
-      JSONMessage.params[key] = data[key];
-    }
-    this.client.send(JSONMessage);
-
-  },
-
-  /**
-   * Notification when have action in player
-   *
-   * @param {Object}
-   */
-  OnPlayerDetails: function(data) {
-
-    // send response
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'CAN.OnPlayerDetails',
-      'params': {
-      }
-    };
-
-    for (var key in data) {
-      JSONMessage.params[key] = data[key];
-    }
-
-    this.client.send(JSONMessage);
-
-  },
-
-  /**
-   * Notification about changed on HMI screen radio presets send to SDL
-   *
-   * @param {Object}
-   */
-  OnPresetsChanged: function(presets) {
-
-    // send repsonse
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'CAN.OnPresetsChanged',
-      'params': {
-        'customPresets': presets
-      }
-    };
-    this.client.send(JSONMessage);
-
-  },
-
-  sendPlayerDetails: function() {
-    var player = SDL.MediaController.get('currentSelectedPlayer');
-
-    if (player) {
-      var media = player.data.get('selectedItem'),
-                params = {
-                  'songInfo': {
-                    'name': media.name,
-                    'artist': media.artist,
-                    'genre': media.genre,
-                    'album': media.album,
-                    'year': media.year,
-                    'duration': media.duration,
-                    'currentTime': player.get('currentTime')
-                  },
-                  'model': player.name
-                };
-
-      FFW.CAN.OnPlayerDetails(params);
     }
   }
-});
+);

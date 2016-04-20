@@ -31,68 +31,68 @@
  * @version 1.0
  */
 
-SDL.InfoCalendarView = Em.View
-    .create({
-      /** Bind class for visual representation */
-      classNameBindings: [
-          'SDL.States.info.calendar.active:active_state:inactive_state'
-      ],
+SDL.InfoCalendarView = Em.View.create({
+    /** Bind class for visual representation */
+    classNameBindings: [
+      'SDL.States.info.calendar.active:active_state:inactive_state'
+    ],
 
-      elementId: 'info_calendar',
+    elementId: 'info_calendar',
 
-      template: Ember.Handlebars
-          .compile('<div class="inner-wrapper">'              +
-                '<div class="label-20 disabled date">{{SDL.locale.label.view_info_calendar_date}}</div>'              +
-              '{{view SDL.Button '              +
-                'class= "today button" '              +
-                'textBinding="SDL.locale.label.view_info_calendar_today" '              +
-                'disabled=true '              +
-                '}}'              +
-              '<div class="day day-1">{{SDL.locale.label.view_info_calendar_day1}}</div>'              +
-                '<div class="day day-2">{{SDL.locale.label.view_info_calendar_day2}}</div>'              +
-                '<div class="day day-3">{{SDL.locale.label.view_info_calendar_day3}}</div>'              +
-                '<div class="day day-4">{{SDL.locale.label.view_info_calendar_day4}}</div>'              +
-                '<div class="day day-5">{{SDL.locale.label.view_info_calendar_day5}}</div>'              +
-                '<div class="day day-6">{{SDL.locale.label.view_info_calendar_day6}}</div>'              +
-                '<div class="day day-7 active">{{SDL.locale.label.view_info_calendar_day7}}</div>'              +
-              '<div class="c-btn disabled btn-1">1</div>'              +
-                '<div class="c-btn disabled btn-8">8</div>'              +
-                '<div class="c-btn disabled btn-15">15</div>'              +
-                '<div class="c-btn disabled btn-22">22</div>'              +
-                '<div class="c-btn disabled btn-29">29</div>' +
+    template: Ember.Handlebars.compile('<div class="inner-wrapper">' +
+      '<div class="label-20 disabled date">{{SDL.locale.label.view_info_calendar_date}}</div>' +
+      '{{view SDL.Button ' +
+      'class= "today button" ' +
+      'textBinding="SDL.locale.label.view_info_calendar_today" ' +
+      'disabled=true ' +
+      '}}' +
+      '<div class="day day-1">{{SDL.locale.label.view_info_calendar_day1}}</div>' +
+      '<div class="day day-2">{{SDL.locale.label.view_info_calendar_day2}}</div>' +
+      '<div class="day day-3">{{SDL.locale.label.view_info_calendar_day3}}</div>' +
+      '<div class="day day-4">{{SDL.locale.label.view_info_calendar_day4}}</div>' +
+      '<div class="day day-5">{{SDL.locale.label.view_info_calendar_day5}}</div>' +
+      '<div class="day day-6">{{SDL.locale.label.view_info_calendar_day6}}</div>' +
+      '<div class="day day-7 active">{{SDL.locale.label.view_info_calendar_day7}}</div>' +
+      '<div class="c-btn disabled btn-1">1</div>' +
+      '<div class="c-btn disabled btn-8">8</div>' +
+      '<div class="c-btn disabled btn-15">15</div>' +
+      '<div class="c-btn disabled btn-22">22</div>' +
+      '<div class="c-btn disabled btn-29">29</div>' +
 
-              '<div class="c-btn disabled btn-7">7</div>'              +
-                '<div class="c-btn disabled btn-14">14</div>'              +
-                '<div class="c-btn disabled btn-21">21</div>'              +
-                '<div class="c-btn disabled active btn-28">28</div>' +
+      '<div class="c-btn disabled btn-7">7</div>' +
+      '<div class="c-btn disabled btn-14">14</div>' +
+      '<div class="c-btn disabled btn-21">21</div>' +
+      '<div class="c-btn disabled active btn-28">28</div>' +
 
-              '<div class="c-btn disabled btn-6">6</div>'              +
-                '<div class="c-btn disabled btn-13">13</div>'              +
-                '<div class="c-btn disabled btn-20">20</div>'              +
-                '<div class="c-btn disabled btn-27">27</div>' +
+      '<div class="c-btn disabled btn-6">6</div>' +
+      '<div class="c-btn disabled btn-13">13</div>' +
+      '<div class="c-btn disabled btn-20">20</div>' +
+      '<div class="c-btn disabled btn-27">27</div>' +
 
-              '<div class="c-btn disabled btn-5">5</div>'              +
-                '<div class="c-btn disabled btn-12">12</div>'              +
-                '<div class="c-btn disabled btn-19">19</div>'              +
-                '<div class="c-btn disabled btn-26">26</div>' +
+      '<div class="c-btn disabled btn-5">5</div>' +
+      '<div class="c-btn disabled btn-12">12</div>' +
+      '<div class="c-btn disabled btn-19">19</div>' +
+      '<div class="c-btn disabled btn-26">26</div>' +
 
-              '<div class="c-btn disabled btn-4">4</div>'              +
-                '<div class="c-btn disabled btn-11">11</div>'              +
-                '<div class="c-btn disabled btn-18">18</div>'              +
-                '<div class="c-btn disabled btn-25">25</div>' +
+      '<div class="c-btn disabled btn-4">4</div>' +
+      '<div class="c-btn disabled btn-11">11</div>' +
+      '<div class="c-btn disabled btn-18">18</div>' +
+      '<div class="c-btn disabled btn-25">25</div>' +
 
-              '<div class="c-btn disabled btn-3">3</div>'              +
-                '<div class="c-btn disabled btn-10">10</div>'              +
-                '<div class="c-btn disabled btn-17">17</div>'              +
-                '<div class="c-btn disabled btn-24">24</div>'              +
-                '<div class="c-btn disabled btn-31">31</div>' +
+      '<div class="c-btn disabled btn-3">3</div>' +
+      '<div class="c-btn disabled btn-10">10</div>' +
+      '<div class="c-btn disabled btn-17">17</div>' +
+      '<div class="c-btn disabled btn-24">24</div>' +
+      '<div class="c-btn disabled btn-31">31</div>' +
 
-              '<div class="c-btn disabled btn-2">2</div>'              +
-                '<div class="c-btn disabled btn-9">9</div>'              +
-                '<div class="c-btn disabled btn-16">16</div>'              +
-                '<div class="c-btn disabled btn-23">23</div>'              +
-                '<div class="c-btn disabled btn-30">30</div>' +
+      '<div class="c-btn disabled btn-2">2</div>' +
+      '<div class="c-btn disabled btn-9">9</div>' +
+      '<div class="c-btn disabled btn-16">16</div>' +
+      '<div class="c-btn disabled btn-23">23</div>' +
+      '<div class="c-btn disabled btn-30">30</div>' +
 
-              '</div>')
+      '</div>'
+    )
 
-    });
+  }
+);

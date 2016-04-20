@@ -31,67 +31,64 @@
  * @version 1.0
  */
 
-SDL.PhoneView = Em.ContainerView.create({
-
-  elementId: 'phone',
-
-  /** Bind class for visual representation */
-  classNameBindings: [
+SDL.PhoneView = Em.ContainerView.create(
+  {
+    elementId: 'phone',
+    /** Bind class for visual representation */
+    classNameBindings: [
       'SDL.States.phone.active:active_state:inactive_state'
-  ],
-
-  /** Initial phone components */
-  childViews: [
-      'menu', SDL.DialpadPhoneView
-  ],
-
-  /** Left menu */
-  menu: Em.ContainerView.extend({
-    elementId: 'phone_menu',
-
-    // classNameBindings: ['SDL.PhoneController.hideMenu:hide'],
-
-    childViews: [
-        'border', 'items'
     ],
-
-    border: Em.View.extend({
-      classNames: 'ls_border',
-
-      template: Ember.Handlebars
-          .compile('<img class="bg" src="images/common/ls_border.png">')
-    }),
-
-    items: Em.ContainerView.extend({
-      classNames: 'ls-items',
-
-      childViews: [
-          'dialpadButton'
-      ],
-
-      dialpadButton: SDL.Button.extend({
-        elementId: 'phone_menu_dialpadButton',
-
-        classNames: 'ls-item lsp1_p active_in_helpmode',
-        classNameBindings: [
-            'SDL.States.phone.dialpad.active:phone_active'
+    /** Initial phone components */
+    childViews: [
+      'menu', SDL.DialpadPhoneView
+    ],
+    /** Left menu */
+    menu: Em.ContainerView.extend(
+      {
+        elementId: 'phone_menu',
+        // classNameBindings: ['SDL.PhoneController.hideMenu:hide'],
+        childViews: [
+          'border', 'items'
         ],
-        textBinding: Em.Binding
-            .oneWay('SDL.locale.label.view_phone_phone'),
-        icon: 'images/phone/ico_phone.png',
-        action: 'subState',
-        target: 'SDL.PhoneController',
-
-        stateName: 'dialpad'
-      })
-    })
-  }),
-
-  /** End call message window */
-  endCallMessage: SDL.Label.extend({
-    elementId: 'phone_endCallMessage',
-
-    contentBinding: Em.Binding
-        .oneWay('SDL.locale.label.view_phone_popUp_callEnded')
-  })
-});
+        border: Em.View.extend(
+          {
+            classNames: 'ls_border',
+            template: Ember.Handlebars
+              .compile('<img class="bg" src="images/common/ls_border.png">')
+          }
+        ),
+        items: Em.ContainerView.extend(
+          {
+            classNames: 'ls-items',
+            childViews: [
+              'dialpadButton'
+            ],
+            dialpadButton: SDL.Button.extend(
+              {
+                elementId: 'phone_menu_dialpadButton',
+                classNames: 'ls-item lsp1_p active_in_helpmode',
+                classNameBindings: [
+                  'SDL.States.phone.dialpad.active:phone_active'
+                ],
+                textBinding: Em.Binding
+                  .oneWay('SDL.locale.label.view_phone_phone'),
+                icon: 'images/phone/ico_phone.png',
+                action: 'subState',
+                target: 'SDL.PhoneController',
+                stateName: 'dialpad'
+              }
+            )
+          }
+        )
+      }
+    ),
+    /** End call message window */
+    endCallMessage: SDL.Label.extend(
+      {
+        elementId: 'phone_endCallMessage',
+        contentBinding: Em.Binding
+          .oneWay('SDL.locale.label.view_phone_popUp_callEnded')
+      }
+    )
+  }
+);

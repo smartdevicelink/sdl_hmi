@@ -31,69 +31,48 @@
  * @version 1.0
  */
 
-SDL = Em.Application.create({
-
-  /** Override for mouse/touch events */
-  customEvents: ('ontouchstart' in document.documentElement) ? {
-    touchstart: 'actionDown',
-    touchend: 'actionUp',
-    touchmove: 'actionMove'
-  } : {
-    mousedown: 'actionDown',
-    mouseup: 'actionUp',
-    mousemove: 'actionMove'
-  },
-
-  /** Help mode flag {boolean} */
-  helpMode: false,
-
-  // determine home view {string}
-  homeView: 'home',
-
-  /** Set language for localization */
-  localization: 'eng',
-
-  // Application ready flag
-  appReady: false,
-
-  // Debug text
-  debugText: 'debug&nbsp;mode',
-
-  SDLModel: null,
-
-  SDLController: null,
-
-  init: function() {
-
-    Em.Logger.log('SDL: Application init!');
-
-    this._super();
-  },
-
-  afterRender: function() {
-
-  },
-
-  /** Application ready event */
-  ready: function() {
-
-    Em.Logger.log('SDL: Application ready!');
-
-    /** State manager init */
-    SDL.States = StateManager.create();
-
-    /** container for all views */
-    SDL.views = SDL.AppViews.create().appendTo('body');
-  },
-
-  deepCopy: function(obj) {
-
-    var copy = JSON.stringify(obj);
-
-    copy = JSON.parse(copy);
-
-    return copy;
-
+SDL = Em.Application.create(
+  {
+    /** Override for mouse/touch events */
+    customEvents: ('ontouchstart' in document.documentElement) ? {
+      touchstart: 'actionDown',
+      touchend: 'actionUp',
+      touchmove: 'actionMove'
+    } : {
+      mousedown: 'actionDown',
+      mouseup: 'actionUp',
+      mousemove: 'actionMove'
+    },
+    /** Help mode flag {boolean} */
+    helpMode: false,
+    // determine home view {string}
+    homeView: 'home',
+    /** Set language for localization */
+    localization: 'eng',
+    // Application ready flag
+    appReady: false,
+    // Debug text
+    debugText: 'debug&nbsp;mode',
+    SDLModel: null,
+    SDLController: null,
+    init: function() {
+      Em.Logger.log('SDL: Application init!');
+      this._super();
+    },
+    afterRender: function() {
+    },
+    /** Application ready event */
+    ready: function() {
+      Em.Logger.log('SDL: Application ready!');
+      /** State manager init */
+      SDL.States = StateManager.create();
+      /** container for all views */
+      SDL.views = SDL.AppViews.create().appendTo('body');
+    },
+    deepCopy: function(obj) {
+      var copy = JSON.stringify(obj);
+      copy = JSON.parse(copy);
+      return copy;
+    }
   }
-
-});
+);

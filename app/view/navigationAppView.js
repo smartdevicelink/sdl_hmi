@@ -30,47 +30,42 @@
  * @filesource app/view/navigationAppView.js
  * @version 1.0
  */
-SDL.NavigationAppView = Em.ContainerView.create({
-  /** View Id */
-  elementId: 'NavigationAppView',
-
-  classNameBindings: [
+SDL.NavigationAppView = Em.ContainerView.create(
+  {
+    /** View Id */
+    elementId: 'NavigationAppView',
+    classNameBindings: [
       'this.activeState:active_state:inactive_state'
-  ],
-
-  activeState: function() {
-    if (SDL.TurnByTurnView.activeTBT) {
-      return false;
-    } else if (SDL.States.navigationApp.active) {
-      return true;
-    } else {
-      return false;
-    }
-  }.property('SDL.States.navigationApp.active', 'SDL.TurnByTurnView.activeTBT'),
-
-  childViews: [
+    ],
+    activeState: function() {
+      if (SDL.TurnByTurnView.activeTBT) {
+        return false;
+      } else if (SDL.States.navigationApp.active) {
+        return true;
+      } else {
+        return false;
+      }
+    }.property(
+      'SDL.States.navigationApp.active', 'SDL.TurnByTurnView.activeTBT'
+    ),
+    childViews: [
       'videoView',
       SDL.BaseNavigationView
-  ],
-
-  actionMove: function(event) {
-
-    SDL.SDLModel.onTouchEvent(event);
-  },
-
-  actionUp: function(event) {
-
-    SDL.SDLModel.onTouchEvent(event);
-  },
-
-  actionDown: function(event) {
-
-    SDL.SDLModel.onTouchEvent(event);
-  },
-
-  videoView: Ember.View.create({
-    templateName: 'video',
-    template: Ember.Handlebars.compile('<video id="html5Player"></video>')
-  })
-
-});
+    ],
+    actionMove: function(event) {
+      SDL.SDLModel.onTouchEvent(event);
+    },
+    actionUp: function(event) {
+      SDL.SDLModel.onTouchEvent(event);
+    },
+    actionDown: function(event) {
+      SDL.SDLModel.onTouchEvent(event);
+    },
+    videoView: Ember.View.create(
+      {
+        templateName: 'video',
+        template: Ember.Handlebars.compile('<video id="html5Player"></video>')
+      }
+    )
+  }
+);

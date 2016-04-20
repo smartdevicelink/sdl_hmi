@@ -32,64 +32,56 @@
  * @version 1.0
  */
 
-SDL.SDLAbstractView = Em.ContainerView.extend({
-
-  classNames:
-      [
-          'sdl-window'
-      ],
-
-  classNameBindings:
-      [
-          'active:active_state:inactive_state'
-      ],
-
-  active: false,
-
-  caption: 'Caption Text',
-
-  /**
-   * Activate window and set caption text
-   *
-   * @param text: String
-   */
-  activate: function(text) {
-    if (text) {
-      this.set('caption', text);
-    }
-    this.set('active', true);
-  },
-
-  /**
-   * Deactivate window
-   */
-  deactivate: function() {
-    this.set('active', false);
-  },
-
-  onStateChange: function() {
-    if (this.active) {
-      this.deactivate();
-    }
-  }.observes('SDL.TransitionIterator.ready'),
-
-  backButton: SDL.Button.extend({
-    classNames:
-        [
-            'back-button'
+SDL.SDLAbstractView = Em.ContainerView.extend(
+  {
+    classNames: [
+      'sdl-window'
+    ],
+    classNameBindings: [
+      'active:active_state:inactive_state'
+    ],
+    active: false,
+    caption: 'Caption Text',
+    /**
+     * Activate window and set caption text
+     *
+     * @param text: String
+     */
+    activate: function(text) {
+      if (text) {
+        this.set('caption', text);
+      }
+      this.set('active', true);
+    },
+    /**
+     * Deactivate window
+     */
+    deactivate: function() {
+      this.set('active', false);
+    },
+    onStateChange: function() {
+      if (this.active) {
+        this.deactivate();
+      }
+    }.observes('SDL.TransitionIterator.ready'),
+    backButton: SDL.Button.extend(
+      {
+        classNames: [
+          'back-button'
         ],
-    target: 'this.parentView',
-    action: 'deactivate',
-    icon: 'images/media/ico_back.png',
-    onDown: false
-  }),
-
-  captionText: SDL.Label.extend({
-    classNames:
-        [
-            'caption-text'
+        target: 'this.parentView',
+        action: 'deactivate',
+        icon: 'images/media/ico_back.png',
+        onDown: false
+      }
+    ),
+    captionText: SDL.Label.extend(
+      {
+        classNames: [
+          'caption-text'
         ],
-
-    contentBinding: 'this.parentView.caption'
-  })
-});
+        contentBinding: 'this.parentView.caption'
+      }
+    )
+  }
+);

@@ -31,81 +31,87 @@
  * @version 1.0
  */
 
-SDL.InfoAppsView = Em.ContainerView
-    .create({
+SDL.InfoAppsView = Em.ContainerView.create({
 
-      elementId: 'info_apps',
+  elementId: 'info_apps',
 
-      classNameBindings: [
-          'SDL.States.info.apps.active:active_state:inactive_state'
-      ],
+  classNameBindings: [
+    'SDL.States.info.apps.active:active_state:inactive_state'
+  ],
 
-      childViews: [
-          'vehicleHealthReport',
-          'Asist911',
-          'DeviceLocationButton',
-          'findNewApps',
-          'getDeviceList',
-          'listOfApplications'
-      ],
+  childViews: [
+    'vehicleHealthReport',
+    'Asist911',
+    'DeviceLocationButton',
+    'findNewApps',
+    'getDeviceList',
+    'listOfApplications'
+  ],
 
-      /**
-       * Function to add application to application list
-       */
-      showAppList: function() {
+  /**
+   * Function to add application to application list
+   */
+  showAppList: function() {
 
-        this.get('listOfApplications.list').removeAllChildren();
+    this.get('listOfApplications.list').removeAllChildren();
 
-        this.listOfApplications.list.refresh();
+    this.listOfApplications.list.refresh();
 
-        var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
+    var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
 
-        for (i = 0; i < apps.length; i++) {
-          if (apps[i].appType.indexOf('REMOTE_CONTROL') === -1) {
-            appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+    for (i = 0; i < apps.length; i++) {
+      if (apps[i].appType.indexOf('REMOTE_CONTROL') === -1) {
+        appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
-            this.get('listOfApplications.list.childViews')
-                        .pushObject(SDL.Button.create({
-                          action: 'onActivateSDLApp',
-                          target: 'SDL.SDLController',
-                          text: apps[i].appName + ' - ' + apps[i].deviceName,
-                          appName: apps[i].appName,
-                          appID: apps[i].appID,
-                          classNames: 'list-item button',
-                          iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex                          +
-                            '.appIcon',
-                          disabled: apps[i].disabledToActivate
-                        }));
-          } else if (apps[i].appType.indexOf('REMOTE_CONTROL') != -1                      &&
-                            apps[i].level != 'NONE'                      &&
-                            apps[i].level != 'BACKGROUND'                      ||
-                            SDL.SDLModel.driverDeviceInfo && apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name) {
+        this.get('listOfApplications.list.childViews').
+               pushObject(SDL.Button.create({
+                   action: 'onActivateSDLApp',
+                   target: 'SDL.SDLController',
+                   text: apps[i].appName + ' - ' + apps[i].deviceName,
+                   appName: apps[i].appName,
+                   appID: apps[i].appID,
+                   classNames: 'list-item button',
+                   iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
+                   '.appIcon',
+                   disabled: apps[i].disabledToActivate
+                 }
+                 )
+               );
+      } else if (apps[i].appType.indexOf('REMOTE_CONTROL') != -1 &&
+        apps[i].level != 'NONE' &&
+        apps[i].level != 'BACKGROUND' ||
+        SDL.SDLModel.driverDeviceInfo &&
+        apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name) {
 
-            var driverDevice = (SDL.SDLModel.driverDeviceInfo            &&
-                   apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
+        var driverDevice = (
+        SDL.SDLModel.driverDeviceInfo &&
+        apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
 
-            var ownerMarker = driverDevice ? '"D" ' : '"P" ';
+        var ownerMarker = driverDevice ? '"D" ' : '"P" ';
 
-            appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+        appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
-            this.get('listOfApplications.list.childViews')
-                        .pushObject(SDL.Button.create({
-                          action: driverDevice ? 'onActivateSDLApp' : 'onDeactivatePassengerApp',
-                          target: 'SDL.SDLController',
-                          text: ownerMarker + apps[i].appName + ' - ' + apps[i].deviceName,
-                          appName: apps[i].appName,
-                          appID: apps[i].appID,
-                          classNames: 'list-item button',
-                          iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex                          +
-                            '.appIcon',
-                          disabled: false
-                        }));
-          }
-        }
+        this.get('listOfApplications.list.childViews').
+               pushObject(SDL.Button.create({
+                   action: driverDevice ? 'onActivateSDLApp' :
+                     'onDeactivatePassengerApp',
+                   target: 'SDL.SDLController',
+                   text: ownerMarker + apps[i].appName + ' - ' + apps[i].deviceName,
+                   appName: apps[i].appName,
+                   appID: apps[i].appID,
+                   classNames: 'list-item button',
+                   iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
+                   '.appIcon',
+                   disabled: false
+                 }
+                 )
+               );
+      }
+    }
 
-      },
+  },
 
-      vehicleHealthReport: SDL.Button.extend({
+  vehicleHealthReport: SDL.Button.extend({
         goToState: 'vehicle.healthReport',
         classNames: 'button vehicleHealthReport leftButtons',
         icon: 'images/info/ico_vehicle.png',
@@ -113,9 +119,10 @@ SDL.InfoAppsView = Em.ContainerView
         elementId: 'infoAppsVehicleHealthReport',
         arrow: true,
         onDown: false
-      }),
+      }
+    ),
 
-      Asist911: SDL.Button.extend({
+  Asist911: SDL.Button.extend({
         goToState: 'help.helpAssist',
         classNames: 'button Asist911 leftButtons',
         icon: 'images/info/ico_assist.png',
@@ -123,9 +130,10 @@ SDL.InfoAppsView = Em.ContainerView
         elementId: 'infoAppsAsist911',
         arrow: true,
         onDown: false
-      }),
+      }
+    ),
 
-      DeviceLocationButton: SDL.Button.extend({
+  DeviceLocationButton: SDL.Button.extend({
         goToState: 'settings.system.installApplications',
         icon: 'images/info/location.png',
         textBinding: 'SDL.locale.label.view_info_apps_vehicle_DeviceLocation',
@@ -135,9 +143,10 @@ SDL.InfoAppsView = Em.ContainerView
         action: 'onGetDeviceLocation',
         target: 'SDL.SDLController',
         onDown: false
-      }),
+      }
+    ),
 
-      findNewApps: SDL.Button.extend({
+  findNewApps: SDL.Button.extend({
         goToState: 'settings.system.installApplications',
         icon: 'images/sdl/new_apps.png',
         textBinding: 'SDL.locale.label.view_info_apps_vehicle_FindNewApplications',
@@ -147,9 +156,10 @@ SDL.InfoAppsView = Em.ContainerView
         action: 'findNewApps',
         target: 'SDL.SDLController',
         onDown: false
-      }),
+      }
+    ),
 
-      getDeviceList: SDL.Button.extend({
+  getDeviceList: SDL.Button.extend({
         icon: 'images/sdl/devices.png',
         textBinding: 'SDL.locale.label.view_info_apps_vehicle_GetDeviceList',
         elementId: 'infoAppsGetDeviceList',
@@ -158,15 +168,18 @@ SDL.InfoAppsView = Em.ContainerView
         action: 'onGetDeviceList',
         target: 'SDL.SDLController',
         onDown: false
-      }),
+      }
+    ),
 
-      listOfApplications: SDL.List.extend({
+  listOfApplications: SDL.List.extend({
 
-        elementId: 'info_apps_list',
+    elementId: 'info_apps_list',
 
-        itemsOnPage: 5,
+    itemsOnPage: 5,
 
-        /** Items */
-        items: new Array()
-      })
-    });
+    /** Items */
+    items: new Array()
+  }
+)
+}
+);

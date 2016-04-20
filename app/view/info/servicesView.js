@@ -31,24 +31,24 @@
  * @version 1.0
  */
 
-SDL.InfoServicesView = Em.View
-    .create({
+SDL.InfoServicesView = Em.View.create({
 
-      elementId: 'info_services_view',
+  elementId: 'info_services_view',
 
-      classNameBindings: [
-          'SDL.States.info.services.active:active_state:inactive_state'
-      ],
+  classNameBindings: [
+    'SDL.States.info.services.active:active_state:inactive_state'
+  ],
 
-      /** Define module template */
-      template: Ember.Handlebars
-          .compile('<div class="inner-content">'              +
-                '<div id="info_sync_services" class="info-text">{{SDL.locale.label.view_info_services_syncServices}}</div>'              +
-                '<div id="info_traff" class="info-text">{{SDL.locale.label.view_info_services_trafficDirectionsAndInformation}}</div>'              +
-                '<div id="info_traffic_report" class="info-text">{{SDL.locale.label.view_info_services_getTheLatestTrafficRreport}}</div>'              +
-                '<div id="info_traffic_pts" class="info-text">{{SDL.locale.label.view_info_services_findBusinessesAndDownloadSaved}}<br>{{SDL.locale.label.view_info_services_Pts}}</div>'              +
-                '<div id="info_traffic_hear" class="info-text">{{SDL.locale.label.view_info_services_hearPersonalizedInformationMore}}</div>'              +
-                '<div id="info_connect" class="info-text">{{SDL.locale.label.view_info_services_connecttoServices}}</div>'              +
-                '<div id="info_log" class="info-text">{{SDL.locale.label.view_info_services_toActivate}}</div>'              +
-                '</div>')
-    });
+  /** Define module template */
+  template: Ember.Handlebars.compile('<div class="inner-content">' +
+    '<div id="info_sync_services" class="info-text">{{SDL.locale.label.view_info_services_syncServices}}</div>' +
+    '<div id="info_traff" class="info-text">{{SDL.locale.label.view_info_services_trafficDirectionsAndInformation}}</div>' +
+    '<div id="info_traffic_report" class="info-text">{{SDL.locale.label.view_info_services_getTheLatestTrafficRreport}}</div>' +
+    '<div id="info_traffic_pts" class="info-text">{{SDL.locale.label.view_info_services_findBusinessesAndDownloadSaved}}<br>{{SDL.locale.label.view_info_services_Pts}}</div>' +
+    '<div id="info_traffic_hear" class="info-text">{{SDL.locale.label.view_info_services_hearPersonalizedInformationMore}}</div>' +
+    '<div id="info_connect" class="info-text">{{SDL.locale.label.view_info_services_connecttoServices}}</div>' +
+    '<div id="info_log" class="info-text">{{SDL.locale.label.view_info_services_toActivate}}</div>' +
+    '</div>'
+  )
+}
+);

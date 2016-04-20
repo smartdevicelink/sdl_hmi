@@ -30,46 +30,87 @@
  * @filesource app/view/navigationView.js
  * @version 1.0
  */
-SDL.NavigationView = Em.ContainerView.create({
-  /** View Id */
-  elementId: 'navigationView',
-  classNames: ['navigationView'],
-  classNameBindings: [
+SDL.NavigationView = Em.ContainerView.create(
+  {
+    /** View Id */
+    elementId: 'navigationView',
+    classNames: ['navigationView'],
+    classNameBindings: [
       'SDL.States.navigation.active:active_state:inactive_state'
-  ],
-  childViews: [
+    ],
+    childViews: [
       'POIList',
-      'codeEditor'
-  ],
-  POIList: SDL.List.extend({
-    elementId: 'poiList', //info_apps_list
-    itemsOnPage: 5,
-    itemsBinding: 'this.itemGenerator',
-    itemGenerator: function() {
-
-      var items = [];
-      for (var i = 0; i < SDL.NavigationModel.LocationDetails.length; i++) {
-        items.push(
-          {
-            type: SDL.Button,
-            params: {
-              itemID: i,
-              className: 'button',
-              text: SDL.NavigationModel.LocationDetails[i].locationName,
-              disabled: false,
-              icon: SDL.NavigationModel.LocationDetails[i].locationImage.value,
-              templateName: SDL.NavigationModel.LocationDetails[i].locationImage
-                  ? '' : 'text',
-              action: 'openWayPoint',
-              target: 'SDL.NavigationController'
-            }
+      'codeEditor',
+      'POIButton',
+      'map',
+      'navigate'
+    ],
+    POIList: SDL.List.extend(
+      {
+        elementId: 'poiList', //info_apps_list
+        itemsOnPage: 5,
+        classNameBindings: ['SDL.NavigationModel.poi::hidden'],
+        itemsBinding: 'this.itemGenerator',
+        itemGenerator: function() {
+          var items = [];
+          for (var i = 0; i < SDL.NavigationModel.LocationDetails.length; i++) {
+            items.push(
+              {
+                type: SDL.Button,
+                params: {
+                  itemID: i,
+                  className: 'button',
+                  text: SDL.NavigationModel.LocationDetails[i].locationName,
+                  disabled: false,
+                  icon: SDL.NavigationModel.LocationDetails[i].locationImage.value,
+                  templateName: SDL.NavigationModel.LocationDetails[i].locationImage
+                    ? '' : 'text',
+                  action: 'openWayPoint',
+                  target: 'SDL.NavigationController'
+                }
+              }
+            );
           }
-        );
+          return items;
+        }.property('SDL.NavigationModel.LocationDetails.@each')
       }
-      return items;
-    }.property('SDL.NavigationModel.LocationDetails.@each')
-  }),
-  codeEditor: SDL.CodeEditor.extend({
-    contentBinding: 'SDL.NavigationModel.currentWayPointData'
-  })
-});
+    ),
+    codeEditor: SDL.CodeEditor.extend(
+      {
+        contentBinding: 'SDL.NavigationModel.currentWayPointData'
+      }
+    ),
+    POIButton: SDL.Button.extend(
+      {
+        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+        elementId: 'POIButton',
+        disabledBinding: Em.Binding.oneWay(
+          'SDL.NavigationController.isRouteSet'
+        ),
+        classNames: 'POIButton button',
+        text: 'POI',
+        action: 'showPoiList',
+        target: 'SDL.NavigationController'
+      }
+    ),
+    map: Em.View.extend(
+      {
+        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+        elementId: 'map'
+      }
+    ),
+    navigate: SDL.Button.extend(
+      {
+        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+        elementId: 'navigationButton',
+        disabledBinding: Em.Binding.oneWay(
+          'SDL.NavigationController.isRouteSet'
+        ),
+        classNames: 'navigationButton button',
+        text: 'Navigate',
+        action: 'setRoutes',
+        target: 'SDL.NavigationController'
+      }
+    )
+  }
+);

@@ -47,12 +47,16 @@ SDL.ABSModel = Em.Object.extend({
     var messageCodes = [];
 
     permissions.forEach(function(x) {
-      messageCodes.push(x.name);
-    });
+          messageCodes.push(x.name);
+        }
+      );
 
     messageCodes.push('AppPermissionsRevoked');
 
-    FFW.BasicCommunication.GetUserFriendlyMessage(SDL.SettingsController.simpleParseUserFriendlyMessageData, appID, messageCodes);
+    FFW.BasicCommunication.GetUserFriendlyMessage(
+      SDL.SettingsController.simpleParseUserFriendlyMessageData, appID,
+      messageCodes
+    );
 
   },
 
@@ -67,8 +71,11 @@ SDL.ABSModel = Em.Object.extend({
 
   updateStatusBar: function() {
 
-    if (this.data.limitedExist && SDL.SDLController.getApplicationModel(this.data.stateLimited)) {
-      this.set('applicationStatusBar', SDL.SDLController.getApplicationModel(this.data.stateLimited).statusText);
+    if (this.data.limitedExist &&
+      SDL.SDLController.getApplicationModel(this.data.stateLimited)) {
+      this.set('applicationStatusBar',
+        SDL.SDLController.getApplicationModel(this.data.stateLimited).statusText
+      );
     } else {
       this.set('applicationStatusBar', '');
     }
@@ -110,12 +117,14 @@ SDL.ABSModel = Em.Object.extend({
    */
   onTouchEvent: function(event) {
 
-    if (event.target.parentElement.className.indexOf('navButton') >= 0 || event.target.className.indexOf('navButton') >= 0) {
+    if (event.target.parentElement.className.indexOf('navButton') >= 0 ||
+      event.target.className.indexOf('navButton') >= 0) {
       return;
     }
 
     var type = '',
-        changedTouches = event.originalEvent.changedTouches ? event.originalEvent.changedTouches.length : 1;
+      changedTouches = event.originalEvent.changedTouches ?
+        event.originalEvent.changedTouches.length : 1;
 
     switch (event.originalEvent.type) {
       case 'touchstart': {
@@ -151,17 +160,26 @@ SDL.ABSModel = Em.Object.extend({
       var events = [];
       for (var i = 0; i < changedTouches; i++) {
 
-        if (event.originalEvent.changedTouches && (event.originalEvent.changedTouches[i].pageX > SDL.SDLVehicleInfoModel.vehicleData.displayResolution.width || event.originalEvent.changedTouches[i].pageY > SDL.SDLVehicleInfoModel.vehicleData.displayResolution.height)) {
+        if (event.originalEvent.changedTouches && (
+          event.originalEvent.changedTouches[i].pageX >
+          SDL.SDLVehicleInfoModel.vehicleData.displayResolution.width ||
+          event.originalEvent.changedTouches[i].pageY >
+          SDL.SDLVehicleInfoModel.vehicleData.displayResolution.height)) {
           return;
         }
 
         events[i] = {};
         events[i].c = [{}];
 
-        events[i].id  = event.originalEvent.changedTouches ? event.originalEvent.changedTouches[i].identifier : 0;
-        events[i].c[0].x = event.originalEvent.changedTouches ? event.originalEvent.changedTouches[i].pageX : event.originalEvent.pageX;
-        events[i].c[0].y = event.originalEvent.changedTouches ? event.originalEvent.changedTouches[i].pageY : event.originalEvent.pageY;
-        events[i].ts  = [parseInt(event.timeStamp)];
+        events[i].id = event.originalEvent.changedTouches ?
+          event.originalEvent.changedTouches[i].identifier : 0;
+        events[i].c[0].x = event.originalEvent.changedTouches ?
+          event.originalEvent.changedTouches[i].pageX :
+          event.originalEvent.pageX;
+        events[i].c[0].y = event.originalEvent.changedTouches ?
+          event.originalEvent.changedTouches[i].pageY :
+          event.originalEvent.pageY;
+        events[i].ts = [parseInt(event.timeStamp)];
 
       }
       FFW.UI.onTouchEvent(type, events);
@@ -183,63 +201,107 @@ SDL.ABSModel = Em.Object.extend({
 
     var result = false;
 
-    if ((params.fileType === 'GRAPHIC_PNG' || params.fileType === 'GRAPHIC_BMP' || params.fileType === 'GRAPHIC_JPEG') && SDL.SDLController.getApplicationModel(params.appID)) {
-      result = SDL.SDLController.getApplicationModel(params.appID).onImageRemoved(params.fileName);
+    if ((
+      params.fileType === 'GRAPHIC_PNG' || params.fileType === 'GRAPHIC_BMP' ||
+      params.fileType === 'GRAPHIC_JPEG') &&
+      SDL.SDLController.getApplicationModel(params.appID)) {
+      result = SDL.SDLController.getApplicationModel(params.appID).
+                   onImageRemoved(params.fileName);
 
-      if (SDL.SDLController.getApplicationModel(params.appID).appIcon.indexOf(params.fileName) != -1          &&
-                params.fileName.length == SDL.SDLController.getApplicationModel(params.appID).appIcon.length) {
-        SDL.SDLController.getApplicationModel(params.appID).set('appIcon', SDL.SDLModel.data.defaultListOfIcons.app);
+      if (SDL.SDLController.getApplicationModel(params.appID).appIcon.
+              indexOf(params.fileName) != -1 &&
+        params.fileName.length ==
+        SDL.SDLController.getApplicationModel(params.appID).appIcon.length) {
+        SDL.SDLController.getApplicationModel(params.appID).
+            set('appIcon', SDL.SDLModel.data.defaultListOfIcons.app);
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID).constantTBTParams) {
+      if (SDL.SDLController.getApplicationModel(params.appID
+        ).constantTBTParams) {
 
-        if (SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.turnIcon            &&
-                    SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.turnIcon.value.indexOf(params.fileName) != -1            &&
-                    params.fileName.length == SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.turnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.turnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
+        if (SDL.SDLController.getApplicationModel(params.appID
+          ).constantTBTParams.turnIcon &&
+          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
+              turnIcon.value.indexOf(params.fileName) != -1 &&
+          params.fileName.length == SDL.SDLController.getApplicationModel(
+            params.appID
+          ).constantTBTParams.turnIcon.value.length) {
+          SDL.SDLController.getApplicationModel(params.appID
+          ).constantTBTParams.turnIcon.value            =
+              SDL.SDLModel.data.defaultListOfIcons.command;
           SDL.TurnByTurnView.activate(params.appID);
         }
 
-        if (SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.nextTurnIcon            &&
-                    SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.nextTurnIcon.value.indexOf(params.fileName) != -1            &&
-                    params.fileName.length == SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.nextTurnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.nextTurnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
+        if (SDL.SDLController.getApplicationModel(params.appID
+          ).constantTBTParams.nextTurnIcon &&
+          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
+              nextTurnIcon.value.indexOf(params.fileName) != -1 &&
+          params.fileName.length == SDL.SDLController.getApplicationModel(
+            params.appID
+          ).constantTBTParams.nextTurnIcon.value.length) {
+          SDL.SDLController.getApplicationModel(params.appID
+          ).constantTBTParams.nextTurnIcon.value            =
+              SDL.SDLModel.data.defaultListOfIcons.command;
           SDL.TurnByTurnView.activate(params.appID);
         }
       }
 
-      if (SDL.SDLController.model.appInfo.trackIcon && SDL.SDLController.model.appInfo.trackIcon.indexOf(params.fileName) != -1          &&
-                params.fileName.length == SDL.SDLController.model.appInfo.trackIcon.length) {
-        SDL.SDLController.model.appInfo.set('trackIcon', SDL.SDLModel.data.defaultListOfIcons.trackIcon);
+      if (SDL.SDLController.model.appInfo.trackIcon &&
+        SDL.SDLController.model.appInfo.trackIcon.indexOf(params.fileName) !=
+        -1 &&
+        params.fileName.length ==
+        SDL.SDLController.model.appInfo.trackIcon.length) {
+        SDL.SDLController.model.appInfo.set('trackIcon',
+          SDL.SDLModel.data.defaultListOfIcons.trackIcon
+        );
       }
 
-      if (SDL.SDLController.model.appInfo.mainImage && SDL.SDLController.model.appInfo.mainImage.indexOf(params.fileName) != -1          &&
-                params.fileName.length == SDL.SDLController.model.appInfo.mainImage.length) {
-        SDL.SDLController.model.appInfo.set('mainImage', SDL.SDLModel.data.defaultListOfIcons.trackIcon);
+      if (SDL.SDLController.model.appInfo.mainImage &&
+        SDL.SDLController.model.appInfo.mainImage.indexOf(params.fileName) !=
+        -1 &&
+        params.fileName.length ==
+        SDL.SDLController.model.appInfo.mainImage.length) {
+        SDL.SDLController.model.appInfo.set('mainImage',
+          SDL.SDLModel.data.defaultListOfIcons.trackIcon
+        );
       }
 
-      var len = SDL.SDLController.getApplicationModel(params.appID).turnList.length;
+      var len = SDL.SDLController.getApplicationModel(params.appID
+      ).turnList.length;
       for (var i = 0; i < len; i++) {
-        if (!SDL.SDLController.getApplicationModel(params.appID).turnList[i].turnIcon) {
+        if (!SDL.SDLController.getApplicationModel(params.appID
+          ).turnList[i].turnIcon) {
           continue;
         }
-        if (SDL.SDLController.getApplicationModel(params.appID).turnList[i].turnIcon.value.indexOf(params.fileName) != -1            &&
-                    params.fileName.length == SDL.SDLController.getApplicationModel(params.appID).turnList[i].turnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID).turnList[i].turnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
+        if (SDL.SDLController.getApplicationModel(params.appID
+          ).turnList[i].turnIcon.value.indexOf(params.fileName) != -1 &&
+          params.fileName.length == SDL.SDLController.getApplicationModel(
+            params.appID
+          ).turnList[i].turnIcon.value.length) {
+          SDL.SDLController.getApplicationModel(params.appID
+          ).turnList[i].turnIcon.value            =
+              SDL.SDLModel.data.defaultListOfIcons.command;
         }
       }
 
       SDL.TBTTurnList.updateList(params.appID);
 
       if (SDL.SDLController.getApplicationModel(params.appID).softButtons) {
-        var len = SDL.SDLController.getApplicationModel(params.appID).softButtons.length;
+        var len = SDL.SDLController.getApplicationModel(params.appID
+        ).softButtons.length;
         for (var i = 0; i < len; i++) {
-          if (!SDL.SDLController.getApplicationModel(params.appID).softButtons[i].image) {
+          if (!SDL.SDLController.getApplicationModel(params.appID
+            ).softButtons[i].image) {
             continue;
           }
-          if (SDL.SDLController.getApplicationModel(params.appID).softButtons[i].image.value.indexOf(params.fileName) != -1              &&
-                        params.fileName.length == SDL.SDLController.getApplicationModel(params.appID).softButtons[i].image.value.length) {
-            SDL.SDLController.getApplicationModel(params.appID).softButtons[i].image.value = SDL.SDLModel.data.defaultListOfIcons.command;
+          if (SDL.SDLController.getApplicationModel(params.appID
+            ).softButtons[i].image.value.indexOf(params.fileName) != -1 &&
+            params.fileName.length == SDL.SDLController.getApplicationModel(
+              params.appID
+            ).softButtons[i].image.value.length) {
+            SDL.SDLController.getApplicationModel(params.appID
+            ).softButtons[i].image.value              =
+                SDL.SDLModel.data.defaultListOfIcons.command;
           }
         }
 
@@ -253,17 +315,25 @@ SDL.ABSModel = Em.Object.extend({
         if (!SDL.VRHelpListView.helpList.items[i].params.icon) {
           continue;
         }
-        if (SDL.VRHelpListView.helpList.items[i].params.icon.indexOf(params.fileName) != -1            &&
-                    params.fileName.length == SDL.VRHelpListView.helpList.items[i].params.icon.length) {
-          SDL.VRHelpListView.helpList.items[i].params.icon = SDL.SDLModel.data.defaultListOfIcons.command;
+        if (SDL.VRHelpListView.helpList.items[i].params.icon.indexOf(
+            params.fileName
+          ) != -1 &&
+          params.fileName.length ==
+          SDL.VRHelpListView.helpList.items[i].params.icon.length) {
+          SDL.VRHelpListView.helpList.items[i].params.icon            =
+              SDL.SDLModel.data.defaultListOfIcons.command;
         }
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp) {
-        for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp.length; i++) {
-          if (SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value === params.fileName) {
-            SDL.SDLController.getApplicationModel(params.appID).globalProperties.vrHelp[i].image.value =
-                SDL.SDLModel.data.defaultListOfIcons.command;
+      if (SDL.SDLController.getApplicationModel(params.appID
+        ).globalProperties.vrHelp) {
+        for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID
+        ).globalProperties.vrHelp.length; i++) {
+          if (SDL.SDLController.getApplicationModel(params.appID
+            ).globalProperties.vrHelp[i].image.value === params.fileName) {
+            SDL.SDLController.getApplicationModel(params.appID
+            ).globalProperties.vrHelp[i].image.value =
+              SDL.SDLModel.data.defaultListOfIcons.command;
           }
         }
       }
@@ -275,9 +345,13 @@ SDL.ABSModel = Em.Object.extend({
         if (!SDL.InteractionChoicesView.listOfChoices.items[i].params.icon) {
           continue;
         }
-        if (SDL.InteractionChoicesView.listOfChoices.items[i].params.icon.indexOf(params.fileName) != -1            &&
-                    params.fileName.length == SDL.InteractionChoicesView.listOfChoices.items[i].params.icon.length) {
-          SDL.InteractionChoicesView.listOfChoices.items[i].params.icon = SDL.SDLModel.data.defaultListOfIcons.command;
+        if (SDL.InteractionChoicesView.listOfChoices.items[i].params.icon.indexOf(
+            params.fileName
+          ) != -1 &&
+          params.fileName.length ==
+          SDL.InteractionChoicesView.listOfChoices.items[i].params.icon.length) {
+          SDL.InteractionChoicesView.listOfChoices.items[i].params.icon            =
+              SDL.SDLModel.data.defaultListOfIcons.command;
         }
       }
 
@@ -288,9 +362,13 @@ SDL.ABSModel = Em.Object.extend({
         if (!SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon) {
           continue;
         }
-        if (SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon.indexOf(params.fileName) != -1            &&
-                    params.fileName.length == SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon.length) {
-          SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon = SDL.SDLModel.data.defaultListOfIcons.command;
+        if (SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon.indexOf(
+            params.fileName
+          ) != -1 &&
+          params.fileName.length ==
+          SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon.length) {
+          SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon            =
+              SDL.SDLModel.data.defaultListOfIcons.command;
         }
       }
 
@@ -298,7 +376,8 @@ SDL.ABSModel = Em.Object.extend({
 
     }
 
-    if (result && SDL.OptionsView.active && SDL.SDLController.model.appID == params.appID) {
+    if (result && SDL.OptionsView.active &&
+      SDL.SDLController.model.appID == params.appID) {
       SDL.OptionsView.commands.refreshItems();
     }
   },
@@ -313,12 +392,15 @@ SDL.ABSModel = Em.Object.extend({
 
     var appID = null;
 
-    if (SDL.SDLController.model        &&
-            this.appTypeComparison(SDL.SDLController.model, 'NAVIGATION')) {
+    if (SDL.SDLController.model &&
+      this.appTypeComparison(SDL.SDLController.model, 'NAVIGATION')) {
 
       appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited        &&
-            this.appTypeComparison(SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited), 'NAVIGATION')) {
+    } else if (SDL.SDLModel.data.stateLimited &&
+      this.appTypeComparison(
+        SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited),
+        'NAVIGATION'
+      )) {
 
       appID = SDL.SDLModel.data.stateLimited;
     }
@@ -338,10 +420,11 @@ SDL.ABSModel = Em.Object.extend({
     var result = false;
 
     model.appType.forEach(function(item) {
-      if (item == type) {
-        result = true;
-      }
-    });
+          if (item == type) {
+            result = true;
+          }
+        }
+      );
 
     return result;
   },
@@ -353,11 +436,12 @@ SDL.ABSModel = Em.Object.extend({
    */
   stopStream: function(appID) {
 
-    var createVideoView =  Ember.View.create({
-      templateName: 'video',
-      template: Ember.Handlebars.compile('<video id="html5Player"></video>')
-    }),
-    videoChild = null;
+    var createVideoView = Ember.View.create({
+          templateName: 'video',
+          template: Ember.Handlebars.compile('<video id="html5Player"></video>')
+        }
+        ),
+        videoChild = null;
 
     SDL.NavigationAppView.videoView.remove();
     SDL.NavigationAppView.videoView.destroy();
@@ -378,17 +462,22 @@ SDL.ABSModel = Em.Object.extend({
 
     var appID = null;
 
-    if (SDL.SDLController.model        &&
-            this.appTypeComparison(SDL.SDLController.model, 'NAVIGATION')) {
+    if (SDL.SDLController.model &&
+      this.appTypeComparison(SDL.SDLController.model, 'NAVIGATION')) {
 
       appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited        &&
-            this.appTypeComparison(SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited), 'NAVIGATION')) {
+    } else if (SDL.SDLModel.data.stateLimited &&
+      this.appTypeComparison(
+        SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited),
+        'NAVIGATION'
+      )) {
 
       appID = SDL.SDLModel.data.stateLimited;
     }
 
-    SDL.StreamAudio.play(SDL.SDLController.getApplicationModel(appID).navigationAudioStream);
+    SDL.StreamAudio.play(
+      SDL.SDLController.getApplicationModel(appID).navigationAudioStream
+    );
   },
 
   /**
@@ -400,12 +489,13 @@ SDL.ABSModel = Em.Object.extend({
 
     var appID = null;
 
-    if (SDL.SDLController.model        &&
-            SDL.SDLController.model.appType == 'NAVIGATION') {
+    if (SDL.SDLController.model &&
+      SDL.SDLController.model.appType == 'NAVIGATION') {
 
       appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited        &&
-            SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).appType == 'NAVIGATION') {
+    } else if (SDL.SDLModel.data.stateLimited &&
+      SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited
+      ).appType == 'NAVIGATION') {
 
       appID = SDL.SDLModel.data.stateLimited;
     }
@@ -417,33 +507,51 @@ SDL.ABSModel = Em.Object.extend({
    * Method to reset navigationApp streaming url from current app model
    */
   playVideo: function(appID) {
-    if (SDL.SDLController.getApplicationModel(appID).navigationStream !== null) {
+      if (SDL.SDLController.getApplicationModel(appID).navigationStream !==
+        null) {
 
-      SDL.SDLModel.data.naviVideo = document.getElementById('html5Player');
-      SDL.SDLModel.data.naviVideo.src = SDL.SDLController.getApplicationModel(appID).navigationStream;
-      SDL.SDLModel.data.naviVideo.play();
-    }
-  },
+        SDL.SDLModel.data.naviVideo = document.getElementById('html5Player');
+        SDL.SDLModel.data.naviVideo.src = SDL.SDLController.getApplicationModel(
+          appID
+        ).navigationStream;
+        SDL.SDLModel.data.naviVideo.play();
+      }
+    },
 
   /**
    * Video player trigger to stop playing video
    */
   pauseVideo: function() {
-    if (SDL.SDLModel.data.naviVideo != null) {
+      if (SDL.SDLModel.data.naviVideo != null) {
 
-      SDL.SDLModel.data.naviVideo.pause();
-    }
-  },
+        SDL.SDLModel.data.naviVideo.pause();
+      }
+    },
 
   /**
    * Method to open Turn By Turn view
    *
-   * @param {Object}
+   * @param {Object} params
    */
   tbtActivate: function(params) {
 
-    SDL.SDLController.getApplicationModel(params.appID).set('constantTBTParams', params);
-    SDL.SDLController.getApplicationModel(params.appID).set('tbtActivate', true);
+    if (SDL.SDLModel.driverDeviceInfo.name ==
+      SDL.SDLController.getApplicationModel(params.appID).deviceName
+    ) {
+      var text1 = params.navigationTexts.
+                         filterProperty('fieldName', 'navigationText1'
+                         )[0].fieldText;
+      var text2 = params.navigationTexts.
+                         filterProperty('fieldName', 'navigationText2'
+                         )[0].fieldText;
+
+      SDL.NavigationModel.set('startLoc', text1);
+      SDL.NavigationModel.set('endLoc', text2);
+    }
+    SDL.SDLController.getApplicationModel(params.appID).
+        set('constantTBTParams', params);
+    SDL.SDLController.getApplicationModel(params.appID).
+        set('tbtActivate', true);
 
     if (SDL.SDLController.model) {
       SDL.SDLController.activateTBT();
@@ -457,8 +565,10 @@ SDL.ABSModel = Em.Object.extend({
    */
   tbtTurnListUpdate: function(params) {
 
-    SDL.SDLController.getApplicationModel(params.appID).turnList = params.turnList ? params.turnList : [];
-    SDL.SDLController.getApplicationModel(params.appID).turnListSoftButtons = params.softButtons ? params.softButtons : [];
+    SDL.SDLController.getApplicationModel(params.appID).turnList      =
+        params.turnList ? params.turnList : [];
+    SDL.SDLController.getApplicationModel(params.appID).turnListSoftButtons      =
+        params.softButtons ? params.softButtons : [];
     SDL.TBTTurnList.updateList(params.appID);
   },
 
@@ -520,14 +630,16 @@ SDL.ABSModel = Em.Object.extend({
 
     for (var i = 0; i < params.appType.length; i++) {
       if ('NAVIGATION' === params.appType[i] && !FLAGS.Navigation) {
-        FFW.BasicCommunication.ExitApplication(params.appID, 'UNSUPPORTED_HMI_RESOURCE');
+        FFW.BasicCommunication.ExitApplication(params.appID,
+          'UNSUPPORTED_HMI_RESOURCE'
+        );
       }
     }
 
     var message = {};
 
     var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
-        app = SDL.SDLController.getApplicationModel(params.appID);
+      app = SDL.SDLController.getApplicationModel(params.appID);
 
     if (app != undefined && app.initialized == false) {
 
@@ -538,7 +650,9 @@ SDL.ABSModel = Em.Object.extend({
       }
       return;
     } else if (app != undefined && app.initialized == true) {
-      console.log('Application with appID ' + params.appID + ' already registered!');
+      console.log(
+        'Application with appID ' + params.appID + ' already registered!'
+      );
       return; // if application already registered and correctly initialized and BC.UpdateAppList came from SDL than nothing shoul happend
     }
 
@@ -553,17 +667,32 @@ SDL.ABSModel = Em.Object.extend({
     SDL.SDLController.registerApplication(params, applicationType);
 
     if (SDL.SDLModel.data.unRegisteredApps.indexOf(params.appID) >= 0) {
-      setTimeout(function() { SDL.PopUp.create().appendTo('body').popupActivate('Connection with ' + params.appName + '  is re-established.');}, 1000);
+      setTimeout(function() {
+            SDL.PopUp.create().appendTo('body').popupActivate(
+              'Connection with ' + params.appName + '  is re-established.'
+            );
+          }, 1000
+        );
       this.data.unRegisteredApps.pop(params.appID);
     }
 
     //Magic number if predefined VR command USER_EXIT
-    message = {'cmdID': -2, 'vrCommands': ['USER_EXIT'], 'appID': params.appID, 'type': 'Command'};
+    message = {
+        'cmdID': -2,
+        'vrCommands': ['USER_EXIT'],
+        'appID': params.appID,
+        'type': 'Command'
+      };
     this.addCommandVR(message);
 
     if (vrSynonyms) {
 
-      message = {'cmdID': 0, 'vrCommands': vrSynonyms, 'appID': params.appID, 'type': 'Application'};
+      message = {
+          'cmdID': 0,
+          'vrCommands': vrSynonyms,
+          'appID': params.appID,
+          'type': 'Application'
+        };
       this.addCommandVR(message);
     }
   },
@@ -573,7 +702,10 @@ SDL.ABSModel = Em.Object.extend({
    */
   convertModel: function(params) {
 
-    SDL.SDLModel.data.get('registeredApps').removeObjects(SDL.SDLModel.data.get('registeredApps').filterProperty('appID', params.appID));
+    SDL.SDLModel.data.get('registeredApps').removeObjects(
+      SDL.SDLModel.data.get('registeredApps').
+          filterProperty('appID', params.appID)
+    );
 
     this.onAppRegistered(params);
   },
@@ -589,16 +721,24 @@ SDL.ABSModel = Em.Object.extend({
     if (SDL.SDLController.getApplicationModel(params.appID)) {
 
       if (params.unexpectedDisconnect) {
-        SDL.PopUp.create().appendTo('body').popupActivate('The connection with the ' + SDL.SDLController.getApplicationModel(params.appID).appName + ' was unexpectedly lost.');
+        SDL.PopUp.create().appendTo('body').popupActivate(
+          'The connection with the ' +
+          SDL.SDLController.getApplicationModel(params.appID).appName +
+          ' was unexpectedly lost.'
+        );
         this.data.unRegisteredApps.push(params.appID);
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID).activeRequests.uiPerformInteraction) {
+      if (SDL.SDLController.getApplicationModel(params.appID
+        ).activeRequests.uiPerformInteraction) {
         SDL.InteractionChoicesView.deactivate('ABORTED');
       }
 
-      if (FFW.UI.performAudioPassThruRequestID != -1 || SDL.SDLModel.data.AudioPassThruState) {
-        SDL.SDLController.performAudioPassThruResponse(this.data.resultCode['ABORTED']);
+      if (FFW.UI.performAudioPassThruRequestID != -1 ||
+        SDL.SDLModel.data.AudioPassThruState) {
+        SDL.SDLController.performAudioPassThruResponse(
+          this.data.resultCode['ABORTED']
+        );
       }
 
       SDL.SDLController.getApplicationModel(params.appID).level = 'NONE';
@@ -621,13 +761,20 @@ SDL.ABSModel = Em.Object.extend({
     if (!SDL.ScrollableMessage.active) {
       if (SDL.SDLModel.data.driverDistractionState) {
         SDL.DriverDistraction.activate();
-        FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'DD mode is active!');
+        FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id,
+          request.method, 'DD mode is active!'
+        );
       } else {
-        SDL.ScrollableMessage.activate(SDL.SDLController.getApplicationModel(request.params.appID).appName, request.params, messageRequestId);
+        SDL.ScrollableMessage.activate(
+          SDL.SDLController.getApplicationModel(request.params.appID).appName,
+          request.params, messageRequestId
+        );
       }
       return true;
     } else {
-      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'Higher priority request is being processed on HMI!');
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id,
+        request.method, 'Higher priority request is being processed on HMI!'
+      );
       return false;
     }
   },
@@ -644,26 +791,46 @@ SDL.ABSModel = Em.Object.extend({
       for (var i in params) {
         if (i === 'keyboardProperties') {
           if (params[i].language) {
-            SDL.SDLController.getApplicationModel(params.appID).set('globalProperties.keyboardProperties.language', params[i].language);
+            SDL.SDLController.getApplicationModel(params.appID).
+                set('globalProperties.keyboardProperties.language',
+                  params[i].language
+                );
           }
           if (params[i].keyboardLayout) {
-            SDL.SDLController.getApplicationModel(params.appID).set('globalProperties.keyboardProperties.keyboardLayout', params[i].keyboardLayout);
+            SDL.SDLController.getApplicationModel(params.appID).
+                set('globalProperties.keyboardProperties.keyboardLayout',
+                  params[i].keyboardLayout
+                );
           }
           if (params[i].keypressMode) {
-            SDL.SDLController.getApplicationModel(params.appID).set('globalProperties.keyboardProperties.keypressMode', params[i].keypressMode);
+            SDL.SDLController.getApplicationModel(params.appID).
+                set('globalProperties.keyboardProperties.keypressMode',
+                  params[i].keypressMode
+                );
           }
           if (params[i].limitedCharacterList) {
-            SDL.SDLController.getApplicationModel(params.appID).set('globalProperties.keyboardProperties.limitedCharacterList', params[i].limitedCharacterList);
+            SDL.SDLController.getApplicationModel(params.appID).
+                set('globalProperties.keyboardProperties.limitedCharacterList',
+                  params[i].limitedCharacterList
+                );
           } else {
-            SDL.SDLController.getApplicationModel(params.appID).set('globalProperties.keyboardProperties.limitedCharacterList', []);
+            SDL.SDLController.getApplicationModel(params.appID).
+                set('globalProperties.keyboardProperties.limitedCharacterList',
+                  []
+                );
           }
           if (params[i].autoCompleteText) {
-            SDL.SDLController.getApplicationModel(params.appID).set('globalProperties.keyboardProperties.autoCompleteText', params[i].autoCompleteText);
+            SDL.SDLController.getApplicationModel(params.appID).
+                set('globalProperties.keyboardProperties.autoCompleteText',
+                  params[i].autoCompleteText
+                );
           } else {
-            SDL.SDLController.getApplicationModel(params.appID).set('globalProperties.keyboardProperties.autoCompleteText', '');
+            SDL.SDLController.getApplicationModel(params.appID).
+                set('globalProperties.keyboardProperties.autoCompleteText', '');
           }
         } else {
-          SDL.SDLController.getApplicationModel(params.appID).set('globalProperties.' + i, params[i]);
+          SDL.SDLController.getApplicationModel(params.appID).
+              set('globalProperties.' + i, params[i]);
         }
       }
     } else {
@@ -681,13 +848,16 @@ SDL.ABSModel = Em.Object.extend({
   onGetDeviceList: function(params) {
 
     var exist = false,
-        listObj  = {};
+      listObj = {};
 
-    if (SDL.SDLModel.driverDevice && SDL.SDLModel.driverDeviceInfo === null && params.deviceList.length > 0) {
+    if (SDL.SDLModel.driverDevice && SDL.SDLModel.driverDeviceInfo === null &&
+      params.deviceList.length > 0) {
       SDL.SDLModel.set('driverDeviceInfo', params.deviceList[0]);
 
       // According to SDL.SDLModel.deviceRank enum 0 - is driver's device
-      FFW.RC.OnDeviceRankChanged(params.deviceList[0], SDL.SDLModel.deviceRank[0]);
+      FFW.RC.OnDeviceRankChanged(params.deviceList[0],
+        SDL.SDLModel.deviceRank[0]
+      );
       SDL.InfoAppsView.showAppList();
     }
 
@@ -703,10 +873,10 @@ SDL.ABSModel = Em.Object.extend({
 
       if (!exist) {
         listObj[params.deviceList[i].id] = {
-          'name': params.deviceList[i].name,
-          'id': params.deviceList[i].id,
-          'isSDLAllowed': false
-        };
+            'name': params.deviceList[i].name,
+            'id': params.deviceList[i].id,
+            'isSDLAllowed': false
+          };
       } else {
 
         exist = false;
@@ -734,20 +904,25 @@ SDL.ABSModel = Em.Object.extend({
   onSDLSetAppIcon: function(message, id, method) {
 
     if (!SDL.SDLController.getApplicationModel(message.appID)) {
-      FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode['APPLICATION_NOT_REGISTERED'], id, method);
+      FFW.UI.sendUIResult(
+        SDL.SDLModel.data.resultCode['APPLICATION_NOT_REGISTERED'], id, method
+      );
     } else {
 
       var img = new Image();
       img.onload = function() {
 
         // code to set the src on success
-        SDL.SDLController.getApplicationModel(message.appID).set('appIcon', message.syncFileName.value);
+        SDL.SDLController.getApplicationModel(message.appID).
+            set('appIcon', message.syncFileName.value);
         FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, id, method);
       };
       img.onerror = function(event) {
 
         // doesn't exist or error loading
-        FFW.UI.sendError(SDL.SDLModel.data.resultCode['INVALID_DATA'], id, method, 'Image does not exist!');
+        FFW.UI.sendError(SDL.SDLModel.data.resultCode['INVALID_DATA'], id,
+          method, 'Image does not exist!'
+        );
         return false;
       };
 
@@ -769,7 +944,9 @@ SDL.ABSModel = Em.Object.extend({
       SDL.AlertPopUp.AlertActive(message, alertRequestId);
       return true;
     } else {
-      SDL.SDLController.alertResponse(this.data.resultCode.REJECTED, alertRequestId);
+      SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
+        alertRequestId
+      );
       return false;
     }
   },
@@ -782,12 +959,17 @@ SDL.ABSModel = Em.Object.extend({
    */
   uiPerformInteraction: function(message) {
 
-    if (!SDL.SDLController.getApplicationModel(message.params.appID).activeRequests.uiPerformInteraction) {
-      SDL.SDLController.getApplicationModel(message.params.appID).activeRequests.uiPerformInteraction = message.id;
+    if (!SDL.SDLController.getApplicationModel(message.params.appID
+      ).activeRequests.uiPerformInteraction) {
+      SDL.SDLController.getApplicationModel(message.params.appID
+      ).activeRequests.uiPerformInteraction = message.id;
 
-      if (message.params && message.params.vrHelpTitle && message.params.vrHelp) {
+      if (message.params && message.params.vrHelpTitle &&
+        message.params.vrHelp) {
 
-        SDL.SDLModel.data.set('interactionData.vrHelpTitle', message.params.vrHelpTitle);
+        SDL.SDLModel.data.set('interactionData.vrHelpTitle',
+          message.params.vrHelpTitle
+        );
         SDL.SDLModel.data.set('interactionData.vrHelp', message.params.vrHelp);
       }
 
@@ -797,7 +979,9 @@ SDL.ABSModel = Em.Object.extend({
       return true;
     } else {
 
-      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id, message.method, 'UI PerformInterection REJECTED on HMI');
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
+        message.method, 'UI PerformInterection REJECTED on HMI'
+      );
       return false;
     }
   },
@@ -813,22 +997,26 @@ SDL.ABSModel = Em.Object.extend({
     if (!SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = message.id;
     } else {
-      FFW.VR.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id, message.method, 'VR PerformInterection REJECTED on HMI');
+      FFW.VR.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
+        message.method, 'VR PerformInterection REJECTED on HMI'
+      );
       return;
     }
 
     var appID = message.params.appID;
 
     setTimeout(function() {
-      if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
-        SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
-      } else if (!message.params.grammarID      &&
-            SDL.SDLController.getApplicationModel(message.params.appID).activeRequests.uiPerformInteraction) {
-        // If UI PerformInteraction session is still active and PerformInteraction mode is MANUAL only
-        SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
-      }
+        if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
+          SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
+        } else if (!message.params.grammarID &&
+          SDL.SDLController.getApplicationModel(message.params.appID
+          ).activeRequests.uiPerformInteraction) {
+          // If UI PerformInteraction session is still active and PerformInteraction mode is MANUAL only
+          SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
+        }
 
-    }, message.params.timeout - 2000); //Magic numer is a platform depended HMI behavior: -2 seconds for timeout prompt
+      }, message.params.timeout - 2000
+      ); //Magic numer is a platform depended HMI behavior: -2 seconds for timeout prompt
 
     SDL.SDLModel.onPrompt(message.params.initialPrompt);
 
@@ -840,21 +1028,28 @@ SDL.ABSModel = Em.Object.extend({
       SDL.SDLModel.data.set('VRActive', true);
 
       setTimeout(function() {
-        if (SDL.SDLModel.data.VRActive) {
-          if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
-            SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode['TIMED_OUT']);
-          } else {
-            console.error('SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction is empty!');
-          }
+            if (SDL.SDLModel.data.VRActive) {
+              if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
+                SDL.SDLController.vrInteractionResponse(
+                  SDL.SDLModel.data.resultCode['TIMED_OUT']
+                );
+              } else {
+                console.error(
+                  'SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction is empty!'
+                );
+              }
 
-          SDL.SDLModel.data.set('VRActive', false);
-        }
-      }, message.params.timeout);
+              SDL.SDLModel.data.set('VRActive', false);
+            }
+          }, message.params.timeout
+        );
 
       SDL.InteractionChoicesView.timerUpdate();
     } else {
 
-      SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode.SUCCESS);
+      SDL.SDLController.vrInteractionResponse(
+        SDL.SDLModel.data.resultCode.SUCCESS
+      );
     }
   },
 
@@ -867,7 +1062,8 @@ SDL.ABSModel = Em.Object.extend({
   uiSlider: function(message) {
 
     if (!SDL.SliderView.active) {
-      SDL.SDLController.getApplicationModel(message.params.appID).onSlider(message);
+      SDL.SDLController.getApplicationModel(message.params.appID).
+          onSlider(message);
       return true;
     } else {
       FFW.UI.sendSliderResult(this.data.resultCode.REJECTED, message.id);
@@ -882,8 +1078,8 @@ SDL.ABSModel = Em.Object.extend({
    *            message Object with parameters come from SDLCore
    */
   uiShowKeyboard: function(element) {
-    SDL.Keyboard.activate(element);
-  },
+      SDL.Keyboard.activate(element);
+    },
 
   /**
    * SDL UI AudioPassThru response handler show popup window
@@ -904,10 +1100,17 @@ SDL.ABSModel = Em.Object.extend({
   UIEndAudioPassThru: function() {
 
     if (this.data.AudioPassThruState) {
-      FFW.UI.sendUIResult(this.data.resultCode.SUCCESS, FFW.UI.endAudioPassThruRequestID, 'UI.EndAudioPassThru');
-      SDL.SDLController.performAudioPassThruResponse(this.data.resultCode.SUCCESS);
+      FFW.UI.sendUIResult(this.data.resultCode.SUCCESS,
+        FFW.UI.endAudioPassThruRequestID, 'UI.EndAudioPassThru'
+      );
+      SDL.SDLController.performAudioPassThruResponse(
+        this.data.resultCode.SUCCESS
+      );
     } else {
-      FFW.UI.sendError(this.data.resultCode.REJECTED, FFW.UI.endAudioPassThruRequestID, 'UI.EndAudioPassThru', 'UI.PerformAudioPassThru are not processed at the moment!');
+      FFW.UI.sendError(this.data.resultCode.REJECTED,
+        FFW.UI.endAudioPassThruRequestID, 'UI.EndAudioPassThru',
+        'UI.PerformAudioPassThru are not processed at the moment!'
+      );
     }
   },
 
@@ -940,10 +1143,10 @@ SDL.ABSModel = Em.Object.extend({
    * Prompt deactivation
    */
   TTSStopSpeaking: function() {
-    //true parameter makes send error response ABORTED
-    FFW.TTS.set('aborted', true);
-    SDL.TTSPopUp.DeactivateTTS();
-  },
+      //true parameter makes send error response ABORTED
+      FFW.TTS.set('aborted', true);
+      SDL.TTSPopUp.DeactivateTTS();
+    },
 
   /**
    * SDL DeleteCommand response handler to sent delete command error or normal result
@@ -956,7 +1159,9 @@ SDL.ABSModel = Em.Object.extend({
     if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
       FFW.UI.sendUIResult(resultCode, requestID, 'UI.DeleteCommand');
     } else {
-      FFW.UI.sendError(resultCode, requestID, 'UI.DeleteCommand', 'SubMenu is opened');
+      FFW.UI.sendError(resultCode, requestID, 'UI.DeleteCommand',
+        'SubMenu is opened'
+      );
     }
   },
 
@@ -971,19 +1176,27 @@ SDL.ABSModel = Em.Object.extend({
     if (message.type == 'Application') {
 
       SDL.SDLModel.data.VRCommands.push(message);
-      SDL.VRPopUp.AddCommand(message.cmdID, message.vrCommands, message.appID, message.type);
+      SDL.VRPopUp.AddCommand(message.cmdID, message.vrCommands, message.appID,
+        message.type
+      );
     } else if ('appID' in message) {
 
-      SDL.SDLController.getApplicationModel(message.appID).VRCommands.push(message);
+      SDL.SDLController.getApplicationModel(message.appID).VRCommands.
+          push(message);
 
-      if (SDL.SDLController.model && SDL.SDLController.model.appID == message.appID) {
+      if (SDL.SDLController.model &&
+        SDL.SDLController.model.appID == message.appID) {
 
-        SDL.VRPopUp.AddCommand(message.cmdID, message.vrCommands, message.appID, message.type, message.grammarID);
+        SDL.VRPopUp.AddCommand(message.cmdID, message.vrCommands, message.appID,
+          message.type, message.grammarID
+        );
       }
     } else {
 
       SDL.SDLModel.data.VRCommands.push(message);
-      SDL.VRPopUp.AddCommand(message.cmdID, message.vrCommands, 0, message.type, message.grammarID);
+      SDL.VRPopUp.AddCommand(message.cmdID, message.vrCommands, 0, message.type,
+        message.grammarID
+      );
     }
   },
 
@@ -999,10 +1212,14 @@ SDL.ABSModel = Em.Object.extend({
 
     if (appModel.currentSubMenuId != 'top') {
       for (var i in appModel.commandsList) {
-        if (appModel.commandsList[i].filterProperty('commandID', request.params.cmdID).length) {
+        if (appModel.commandsList[i].filterProperty('commandID',
+            request.params.cmdID
+          ).length) {
           if (i == appModel.currentSubMenuId) {
 
-            FFW.VR.sendError(SDL.SDLModel.data.resultCode['IN_USE'], request.id, request.method, 'SubMenu is currently opened on UI!');
+            FFW.VR.sendError(SDL.SDLModel.data.resultCode['IN_USE'], request.id,
+              request.method, 'SubMenu is currently opened on UI!'
+            );
             return;
           }
         }
@@ -1012,16 +1229,17 @@ SDL.ABSModel = Em.Object.extend({
     SDL.VRPopUp.DeleteCommand(request.params.cmdID, request.params.appID);
     var len = appModel.VRCommands.length;
 
-    for (var i = len - 1; i >= 0 ; i--) {
+    for (var i = len - 1; i >= 0; i--) {
       if (appModel.VRCommands[i].appID == request.params.appID &&
-          appModel.VRCommands[i].cmdID == request.params.cmdID) {
+        appModel.VRCommands[i].cmdID == request.params.cmdID) {
         appModel.VRCommands.splice(i, 1);
       }
     }
 
     FFW.VR.sendVRResult(SDL.SDLModel.data.resultCode.SUCCESS,
-        request.id,
-        request.method);
+      request.id,
+      request.method
+    );
 
   },
 
@@ -1064,10 +1282,10 @@ SDL.ABSModel = Em.Object.extend({
         }
       }
 
-      if (SDL.SDLModel.data.stateLimited          &&
-                reason === 'AUDIO'          &&
-                SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited)
-              .appType.indexOf('NAVIGATION') < 0) {
+      if (SDL.SDLModel.data.stateLimited &&
+        reason === 'AUDIO' &&
+        SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).
+            appType.indexOf('NAVIGATION') < 0) {
 
         SDL.SDLModel.data.stateLimited = null;
         SDL.SDLModel.data.set('limitedExist', false);
@@ -1084,4 +1302,5 @@ SDL.ABSModel = Em.Object.extend({
       }
     }
   }
-});
+}
+);

@@ -28,16 +28,17 @@
  *
  * @desc Component for Navigation Home Widget
  *
- * @category	view
- * @filesource	app/view/home/widgetNavigationView.js
- * @version		1.0
+ * @category  view
+ * @filesource  app/view/home/widgetNavigationView.js
+ * @version    1.0
  */
 
 SDL.WidgetNavigationView = Em.ContainerView.extend({
 
-  elementId:	'home_widgetNavigation',
+  elementId: 'home_widgetNavigation',
 
   classNameBindings: [
-      'SDL.FuncSwitcher.rev::is-disabled'
+    'SDL.FuncSwitcher.rev::is-disabled'
   ]
-});
+}
+);

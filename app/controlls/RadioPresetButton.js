@@ -28,9 +28,9 @@
  *
  * @desc Media view component for preset Button
  *
- * @category	view
- * @filesource	app/view/media/RadioPresetButton.js
- * @version		1.0
+ * @category  view
+ * @filesource  app/view/media/RadioPresetButton.js
+ * @version    1.0
  */
 
 SDL.RadioPresetButton = SDL.Button.extend({
@@ -43,18 +43,19 @@ SDL.RadioPresetButton = SDL.Button.extend({
   homePreset: false,
 
   highlight: function() {
-    return (this.preset == SDL.RadioModel.activePreset);
-  }.property('SDL.RadioModel.activePreset'),
+      return (
+      this.preset == SDL.RadioModel.activePreset);
+    }.property('SDL.RadioModel.activePreset'),
 
   presetNum: function() {
-    return this.preset + 1;
-  }.property(),
+      return this.preset + 1;
+    }.property(),
 
   /** Define button template */
   template: Ember.Handlebars.compile(
-		'{{#unless view.homePreset}}<span>{{view.presetNum}}</span>{{/unless}}' +
-		'<p>{{view.text}}</p>'
-	),
+    '{{#unless view.homePreset}}<span>{{view.presetNum}}</span>{{/unless}}' +
+    '<p>{{view.text}}</p>'
+  ),
 
   actionDown: function() {
 
@@ -65,9 +66,10 @@ SDL.RadioPresetButton = SDL.Button.extend({
     this.timerPreset = null;
     this.saveToPreset = false;
     this.timerPreset = setTimeout(function() {
-      self.saveToPreset = true;
-      SDL.RadioModel.saveStationToPreset(self);
-    }, 1000);
+          self.saveToPreset = true;
+          SDL.RadioModel.saveStationToPreset(self);
+        }, 1000
+      );
   },
 
   actionUp: function() {
@@ -83,4 +85,5 @@ SDL.RadioPresetButton = SDL.Button.extend({
     this.saveToPreset = false;
   }
 
-});
+}
+);

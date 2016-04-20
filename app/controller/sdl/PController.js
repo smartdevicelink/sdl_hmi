@@ -31,5 +31,6 @@
  * @version 1.0
  */
 
-SDL.PController = SDL.ABSController.extend({
-});
+SDL.PController = SDL.ABSController.extend(
+  {}
+);

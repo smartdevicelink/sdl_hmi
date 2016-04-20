@@ -32,82 +32,65 @@
  * @version 1.0
  */
 
-SDL.TBTClientStateView = Em.ContainerView.create({
-
-  elementId: 'tbtClientStateView',
-
-  classNames: 'tbtClientStateView',
-
-  classNameBindings:
-      [
-          'active'
-      ],
-
-  childViews:
-      [
-          'tbtClientStateLabel',
-          'tbtClientState',
-          'tbtClientStateSelect'
-      ],
-
-  /**
-   * Title of VehicleInfo PopUp view
-   */
-  tbtClientStateLabel: SDL.Label.extend({
-
-    elementId: 'tbtClientStateLabel',
-
-    classNames: 'tbtClientStateLabel',
-
-    content: 'TBT Client State'
-  }),
-
-  /**
-   * Property indicates the activity state of TBTClientStateView
-   */
-  active: false,
-
-  /**
-   * Title of tbtClientState group of parameters
-   */
-  tbtClientState: SDL.Label.extend({
-
-    elementId: 'tbtClientState',
-
-    classNames: 'tbtClientState',
-
-    content: 'Client State'
-  }),
-
-  /**
-   * HMI element Select with parameters of TBTClientStates
-   */
-  tbtClientStateSelect: Em.Select.extend({
-
-    elementId: 'tbtClientStateSelect',
-
-    classNames: 'tbtClientStateSelect',
-
-    contentBinding: 'SDL.SDLModel.data.tbtClientStates',
-
-    optionValuePath: 'content.id',
-
-    optionLabelPath: 'content.name',
-
+SDL.TBTClientStateView = Em.ContainerView.create(
+  {
+    elementId: 'tbtClientStateView',
+    classNames: 'tbtClientStateView',
+    classNameBindings: [
+      'active'
+    ],
+    childViews: [
+      'tbtClientStateLabel',
+      'tbtClientState',
+      'tbtClientStateSelect'
+    ],
     /**
-     * Selected data sent on model for further processing
+     * Title of VehicleInfo PopUp view
      */
-    click: function() {
-
-      SDL.SDLController.tbtClientStateSelected(this.selection.name);
-
+    tbtClientStateLabel: SDL.Label.extend(
+      {
+        elementId: 'tbtClientStateLabel',
+        classNames: 'tbtClientStateLabel',
+        content: 'TBT Client State'
+      }
+    ),
+    /**
+     * Property indicates the activity state of TBTClientStateView
+     */
+    active: false,
+    /**
+     * Title of tbtClientState group of parameters
+     */
+    tbtClientState: SDL.Label.extend(
+      {
+        elementId: 'tbtClientState',
+        classNames: 'tbtClientState',
+        content: 'Client State'
+      }
+    ),
+    /**
+     * HMI element Select with parameters of TBTClientStates
+     */
+    tbtClientStateSelect: Em.Select.extend(
+      {
+        elementId: 'tbtClientStateSelect',
+        classNames: 'tbtClientStateSelect',
+        contentBinding: 'SDL.SDLModel.data.tbtClientStates',
+        optionValuePath: 'content.id',
+        optionLabelPath: 'content.name',
+        /**
+         * Selected data sent on model for further processing
+         */
+        click: function() {
+          SDL.SDLController.tbtClientStateSelected(this.selection.name);
+        }
+      }
+    ),
+    /**
+     * Trigger function that activates and deactivates tbtClientStateView
+     */
+    toggleActivity: function() {
+      this.toggleProperty('active');
     }
-  }),
-
-  /**
-   * Trigger function that activates and deactivates tbtClientStateView
-   */
-  toggleActivity: function() {
-    this.toggleProperty('active');
   }
-});
+);

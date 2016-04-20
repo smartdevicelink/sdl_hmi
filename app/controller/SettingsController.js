@@ -55,13 +55,14 @@ SDL.SettingsController = Em.Object.create({
 
   onChildState: function(event) {
 
-    SDL.States.goToStates(SDL.States.currentState.get('path') + '.'        +
-            event.goToState);
+    SDL.States.goToStates(SDL.States.currentState.get('path') + '.' +
+      event.goToState
+    );
   },
 
   getStatusUpdate: function() {
-    FFW.BasicCommunication.GetStatusUpdate();
-  },
+      FFW.BasicCommunication.GetStatusUpdate();
+    },
 
   phoneCall: function() {
 
@@ -80,15 +81,17 @@ SDL.SettingsController = Em.Object.create({
       SDL.States.goToStates('phone.dialpad');
 
       setTimeout(function() {
-        SDL.SDLController.onEventChanged('phoneCall', false);
-        SDL.SDLController.getApplicationModel(appID).turnOnSDL(appID);
-        SDL.SDLModel.data.phoneCallActive = false;
-      }, 20000); //Magic number - 5 seconds timeout for emulating conversation call
+            SDL.SDLController.onEventChanged('phoneCall', false);
+            SDL.SDLController.getApplicationModel(appID).turnOnSDL(appID);
+            SDL.SDLModel.data.phoneCallActive = false;
+          }, 20000
+        ); //Magic number - 5 seconds timeout for emulating conversation call
     } else {
       setTimeout(function() {
-        SDL.SDLController.onEventChanged('phoneCall', false);
-        SDL.SDLModel.data.phoneCallActive = false;
-      }, 20000); //Magic number - 5 seconds timeout for emulating conversation call
+            SDL.SDLController.onEventChanged('phoneCall', false);
+            SDL.SDLModel.data.phoneCallActive = false;
+          }, 20000
+        ); //Magic number - 5 seconds timeout for emulating conversation call
     }
   },
 
@@ -138,13 +141,15 @@ SDL.SettingsController = Em.Object.create({
           }
 
           var device = {
-            'name': dev[key].name,
-            'id': dev[key].id
-          };
+              'name': dev[key].name,
+              'id': dev[key].id
+            };
 
           SDL.DeviceConfigView.set('globalConfigurationValue', null);
 
-          FFW.BasicCommunication.OnAllowSDLFunctionality(dev[key].allowed, 'GUI', device);
+          FFW.BasicCommunication.OnAllowSDLFunctionality(dev[key].allowed,
+            'GUI', device
+          );
           break;
         }
       }
@@ -171,8 +176,8 @@ SDL.SettingsController = Em.Object.create({
    *
    */
   GetListOfPermissions: function(element) {
-    FFW.BasicCommunication.GetListOfPermissions(element.appID);
-  },
+      FFW.BasicCommunication.GetListOfPermissions(element.appID);
+    },
 
   /**
    * Method to update array with app permissions which came from SDL
@@ -185,13 +190,16 @@ SDL.SettingsController = Em.Object.create({
     if (message.id in SDL.SDLModel.data.getListOfPermissionsPull) {
 
       var appID = SDL.SDLModel.data.getListOfPermissionsPull[message.id],
-          messageCodes = [];
+        messageCodes = [];
 
       for (var i = 0; i < message.result.allowedFunctions.length; i++) {
         messageCodes.push(message.result.allowedFunctions[i].name);
       }
 
-      FFW.BasicCommunication.GetUserFriendlyMessage(SDL.SettingsController.permissionsFriendlyMessageUpdate, appID, messageCodes);
+      FFW.BasicCommunication.GetUserFriendlyMessage(
+        SDL.SettingsController.permissionsFriendlyMessageUpdate, appID,
+        messageCodes
+      );
 
       SDL.AppPermissionsView.update(message.result.allowedFunctions, appID);
 
@@ -214,54 +222,61 @@ SDL.SettingsController = Em.Object.create({
   },
 
   updateSDL: function() {
-    FFW.BasicCommunication.UpdateSDL();
-  },
+      FFW.BasicCommunication.UpdateSDL();
+    },
 
   AllowSDLFunctionality: function(messages) {
 
     if (messages.length > 0) {
-      SDL.SettingsController.simpleParseUserFriendlyMessageData(messages, SDL.SettingsController.OnAllowSDLFunctionality);
+      SDL.SettingsController.simpleParseUserFriendlyMessageData(messages,
+        SDL.SettingsController.OnAllowSDLFunctionality
+      );
     } else {
       SDL.PopUp.create().appendTo('body').popupActivate(
-          'WARNING!!!!!!!!!!!!!! '          +
-                'There is no text from SDL in GetUserFriendlyMessage for DataConsent parameter!!! Please allow the device...',
-          SDL.SettingsController.OnAllowSDLFunctionality);
+        'WARNING!!!!!!!!!!!!!! ' +
+        'There is no text from SDL in GetUserFriendlyMessage for DataConsent parameter!!! Please allow the device...',
+        SDL.SettingsController.OnAllowSDLFunctionality
+      );
     }
 
   },
 
   userFriendlyMessagePopUp: function(appId, messageCode) {
 
-    FFW.BasicCommunication.GetUserFriendlyMessage(SDL.SettingsController.simpleParseUserFriendlyMessageData, appId, messageCode);
+    FFW.BasicCommunication.GetUserFriendlyMessage(
+      SDL.SettingsController.simpleParseUserFriendlyMessageData, appId,
+      messageCode
+    );
   },
 
   simpleParseUserFriendlyMessageData: function(messages, func) {
-    var tts = '',
+      var tts = '',
         text = '';
 
-    messages.forEach(function(x) {
-      if (x.ttsString) {
-        tts += x.ttsString;
-      }
-      if (x.textBody) {
-        text += x.textBody;
-      }
-      if (x.line1) {
-        text += x.line1;
-      }
-      if (x.line2) {
-        text += x.line2;
-      }
-    });
+      messages.forEach(function(x) {
+          if (x.ttsString) {
+            tts += x.ttsString;
+          }
+          if (x.textBody) {
+            text += x.textBody;
+          }
+          if (x.line1) {
+            text += x.line1;
+          }
+          if (x.line2) {
+            text += x.line2;
+          }
+        }
+      );
 
-    if (tts) {
-      SDL.TTSPopUp.ActivateTTS(tts);
-    }
+      if (tts) {
+        SDL.TTSPopUp.ActivateTTS(tts);
+      }
 
-    if (text) {
-      SDL.PopUp.create().appendTo('body').popupActivate(text, func);
-    }
-  },
+      if (text) {
+        SDL.PopUp.create().appendTo('body').popupActivate(text, func);
+      }
+    },
 
   OnAllowSDLFunctionality: function(result) {
 
@@ -278,9 +293,13 @@ SDL.SettingsController = Em.Object.create({
 
     SDL.DeviceConfigView.showDeviceList();
 
-    FFW.BasicCommunication.OnAllowSDLFunctionality(result, 'GUI', SDL.SettingsController.currentDeviceAllowance);
+    FFW.BasicCommunication.OnAllowSDLFunctionality(result, 'GUI',
+      SDL.SettingsController.currentDeviceAllowance
+    );
 
-    SDL.SDLModel.data.connectedDevices[SDL.SettingsController.currentDeviceAllowance.id].isSDLAllowed = result;
+    SDL.SDLModel.data.connectedDevices[
+      SDL.SettingsController.currentDeviceAllowance.id
+      ].isSDLAllowed = result;
 
     SDL.SettingsController.currentDeviceAllowance = null;
   },
@@ -304,14 +323,20 @@ SDL.SettingsController = Em.Object.create({
         if ('policyAppID' in url && 'appID' in url) { //If policyAppID and appID presented in arguments than all datashould be sent
 
           FFW.BasicCommunication.OnSystemRequest(
-              'PROPRIETARY',
-              SDL.SettingsController.policyUpdateFile,
-              url.url,
-              url.appID,
-              url.policyAppID
+            'PROPRIETARY',
+            SDL.SettingsController.policyUpdateFile,
+            url.url,
+            url.appID,
+            url.policyAppID
           );
-        } else if ((!('appID' in url) && ('policyAppID' in url))            ||
-                    (('appID' in url) && !('policyAppID' in url))) {  //If policyAppID or appID in not presented
+        } else if ((
+          !(
+          'appID' in url) && (
+          'policyAppID' in url)) ||
+          (
+          (
+          'appID' in url) && !(
+          'policyAppID' in url))) {  //If policyAppID or appID in not presented
           // than error message should appear and
           // no notification should be sent
 
@@ -320,11 +345,11 @@ SDL.SettingsController = Em.Object.create({
           //if there is only url in arguments than default
           //data should be sent to SDL Core
           FFW.BasicCommunication.OnSystemRequest(
-              'PROPRIETARY',
-              SDL.SettingsController.policyUpdateFile,
-              url.url,
-              null,
-              'default'
+            'PROPRIETARY',
+            SDL.SettingsController.policyUpdateFile,
+            url.url,
+            null,
+            'default'
           );
         }
       }
@@ -342,35 +367,40 @@ SDL.SettingsController = Em.Object.create({
     clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
     SDL.SDLModel.data.policyUpdateRetry.timer = null;
 
-    if (abort !== 'ABORT' && (SDL.SDLModel.data.policyUpdateRetry.try < SDL.SDLModel.data.policyUpdateRetry.retry.length)) {
+    if (abort !== 'ABORT' && (
+      SDL.SDLModel.data.policyUpdateRetry.try <
+      SDL.SDLModel.data.policyUpdateRetry.retry.length)) {
 
-      SDL.SDLModel.data.policyUpdateRetry.oldTimer = SDL.SDLModel.data.policyUpdateRetry.oldTimer +
-          SDL.SDLModel.data.policyUpdateRetry.timeout * 1000 +
-          SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] * 1000;
+      SDL.SDLModel.data.policyUpdateRetry.oldTimer =
+        SDL.SDLModel.data.policyUpdateRetry.oldTimer +
+        SDL.SDLModel.data.policyUpdateRetry.timeout * 1000 +
+        SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] *
+        1000;
 
       SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
-                function() {
-                  FFW.BasicCommunication.OnSystemRequest(
-                      'PROPRIETARY',
-                      SDL.SettingsController.policyUpdateFile,
-                      SDL.SDLModel.data.policyURLs[0].url,
-                      SDL.SDLModel.data.policyURLs[0].appID,
-                      SDL.SDLModel.data.policyURLs[0].policyAppId
-                  );
-                  SDL.SettingsController.policyUpdateRetry();
-                }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
+          function() {
+            FFW.BasicCommunication.OnSystemRequest(
+              'PROPRIETARY',
+              SDL.SettingsController.policyUpdateFile,
+              SDL.SDLModel.data.policyURLs[0].url,
+              SDL.SDLModel.data.policyURLs[0].appID,
+              SDL.SDLModel.data.policyURLs[0].policyAppId
             );
+            SDL.SettingsController.policyUpdateRetry();
+          }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
+        );
 
       SDL.SDLModel.data.policyUpdateRetry.try++;
     } else {
       clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
       SDL.SDLModel.data.policyUpdateRetry = {
-        timeout: null,
-        retry: [],
-        try: null,
-        timer: null,
-        oldTimer: 0
-      };
+          timeout: null,
+          retry: [],
+          try: null,
+          timer: null,
+          oldTimer: 0
+        };
     }
   }
-});
+}
+);

@@ -31,10 +31,10 @@
  * @version 1.0
  */
 
-FFW = Em.Object.create({
-
-  init: function() {
-
-    Em.Logger.log('FFW: Framework init');
+FFW = Em.Object.create(
+  {
+    init: function() {
+      Em.Logger.log('FFW: Framework init');
+    }
   }
-});
+);

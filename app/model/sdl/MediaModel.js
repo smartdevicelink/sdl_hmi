@@ -49,29 +49,33 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     // init properties here
     this.set('appInfo', Em.Object.create({
-      field1: '<field1>',
-      field2: '<field2>',
-      field3: '<field3>',
-      mediaClock: '<mediaClock>',
-      trackIcon: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
-      customPresets: [
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>'
-      ],
-      alignment: 'text-align:center'
-    }));
+          field1: '<field1>',
+          field2: '<field2>',
+          field3: '<field3>',
+          mediaClock: '<mediaClock>',
+          trackIcon: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
+          customPresets: [
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>'
+          ],
+          alignment: 'text-align:center'
+        }
+        )
+      );
 
     this.set('activeRequests', Em.Object.create({
-      uiPerformInteraction: null
-    }));
+          uiPerformInteraction: null
+        }
+        )
+      );
 
     this.set('VRCommands', []);
     this.set('tbtActivate', false);
@@ -84,7 +88,11 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
-    this.set('moduleSubscriptions', {'CLIMATE': {'subscription': false,zone: []},'RADIO': {'subscription': false,zone: []}});
+    this.set('moduleSubscriptions', {
+          'CLIMATE': {'subscription': false, zone: []},
+          'RADIO': {'subscription': false, zone: []}
+        }
+      );
   },
 
   /**
@@ -155,7 +163,8 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       this.timer = setInterval(function() {
 
         self.set('currTime', self.currTime + 1);
-      }, 1000);
+      }, 1000
+    );
     } else {
       clearInterval(this.timer);
     }
@@ -184,12 +193,15 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     }
 
     hrs = parseInt(number / 3600), // hours
-        min = parseInt(number / 60) % 60, // minutes
-        sec = number % 60; // seconds
+      min = parseInt(number / 60) % 60, // minutes
+      sec = number % 60; // seconds
 
-    str = (hrs < 10 ? '0' : '') + hrs + ':';
-    str += (min < 10 ? '0' : '') + min + ':';
-    str += (sec < 10 ? '0' : '') + sec;
+    str = (
+        hrs < 10 ? '0' : '') + hrs + ':';
+    str += (
+        min < 10 ? '0' : '') + min + ':';
+    str += (
+        sec < 10 ? '0' : '') + sec;
     this.appInfo.set('mediaClock', str);
 
     if (!this.get('countUp') && this.duration == this.currTime) {
@@ -213,7 +225,12 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
    */
   sdlSetMediaClockTimer: function(params) {
 
-    if ((params.updateMode == 'PAUSE' && this.pause) || (params.updateMode == 'RESUME' && !this.pause) || ((params.updateMode == 'RESUME' || params.updateMode == 'PAUSE') && this.pause === null)) {
+    if ((
+      params.updateMode == 'PAUSE' && this.pause) || (
+      params.updateMode == 'RESUME' && !this.pause) || (
+      (
+      params.updateMode == 'RESUME' || params.updateMode == 'PAUSE') &&
+      this.pause === null)) {
       return SDL.SDLModel.data.resultCode['IGNORED'];
     }
 
@@ -230,7 +247,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       if (params.startTime) {
         this.set('countUp', params.updateMode == 'COUNTUP' ? true : false);
         this.set('duration', null);
-        this.set('duration', params.startTime.hours * 3600 + params.startTime.minutes * 60 + params.startTime.seconds);
+        this.set('duration',
+          params.startTime.hours * 3600 + params.startTime.minutes * 60 +
+          params.startTime.seconds
+        );
       }
       this.set('pause', false);
     }
@@ -341,7 +361,8 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     // Magic number is a count of Preset Buttons on HMI = 8
     for (var i = 0; i < 10; i++) {
-      if (!params.customPresets || (params.customPresets[i] == '' || params.customPresets[i] == null)) {
+      if (!params.customPresets || (
+        params.customPresets[i] == '' || params.customPresets[i] == null)) {
         this.appInfo.set('customPresets.' + i, 'PRESET_' + i);
       } else {
         this.appInfo.set('customPresets.' + i, params.customPresets[i]);
@@ -349,4 +370,5 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     }
     this.set('mediaPreset', true);
   }
-});
+}
+);

@@ -31,142 +31,152 @@
  * @version 1.0
  */
 
-SDL.Button = Em.View
-    .extend(Ember.TargetActionSupport,
-        {
-          classNames: [
-              'ffw-button', 'notpressed'
-          ],
+SDL.Button = Em.View.extend(Ember.TargetActionSupport,
+  {
+    classNames: [
+      'ffw-button', 'notpressed'
+    ],
 
-          classNameBindings: [
-              'pressed', 'disabled', 'hidden'
-          ],
+    classNameBindings: [
+      'pressed', 'disabled', 'hidden'
+    ],
 
-          /** Pressed state binding */
-          pressed: false,
+    /** Pressed state binding */
+    pressed: false,
 
-          /** Disable actions on button */
-          disabled: false,
+    /** Disable actions on button */
+    disabled: false,
 
-          /** Button icon class */
-          icon: null,
+    /** Button icon class */
+    icon: null,
 
-          /** Button rightIcon class */
-          righticon: null,
+    /** Button rightIcon class */
+    righticon: null,
 
-          /** Button text */
-          text: null,
+    /** Button text */
+    text: null,
 
-          rightText: null,
+    rightText: null,
 
-          target: this.target ? this.target : this,
+    target: this.target ? this.target : this,
 
-          /** Arrow icon */
-          arrow: false,
+    /** Arrow icon */
+    arrow: false,
 
-          /** Button timer flag */
-          timer: 0,
+    /** Button timer flag */
+    timer: 0,
 
-          timerId: null,
-          /** Touch leave event flag */
-          touchleave: false,
+    timerId: null,
+    /** Touch leave event flag */
+    touchleave: false,
 
-          onDown: true,
+    onDown: true,
 
-          helpMode: false,
-          /**  */
-          targetElement: null,
+    helpMode: false,
+    /**  */
+    targetElement: null,
 
-          actionDown: function(event) {
+    actionDown: function(event) {
 
-            if (this.get('disabled')) { return; }
+      if (this.get('disabled')) {
+        return;
+      }
 
-            var self = this;
+      var self = this;
 
-            this.set('pressed', true);
-            /** Set Mouse Leave Event Flag to false */
-            this.set('mouseleave', false);
+      this.set('pressed', true);
+      /** Set Mouse Leave Event Flag to false */
+      this.set('mouseleave', false);
 
-            // Default trigger action
-            if (this.onDown) {
-              this.triggerAction();
-            }
+      // Default trigger action
+      if (this.onDown) {
+        this.triggerAction();
+      }
 
-            // Call trigger with timeout
-            if (this.timer) {
-              this.timerId = setInterval(function() {
+      // Call trigger with timeout
+      if (this.timer) {
+        this.timerId = setInterval(function() {
 
-                self.triggerAction();
-              }, this.timer);
-            }
-          },
+          self.triggerAction();
+        }, this.timer
+      );
+      }
+    },
 
-          actionUp: function(event) {
+    actionUp: function(event) {
 
-            this.set('pressed', false);
+      this.set('pressed', false);
 
-            if (this.timer) {
-              clearInterval(this.timerId);
-            }
+      if (this.timer) {
+        clearInterval(this.timerId);
+      }
 
-            if (this.get('disabled')) {
-              if (this.touchleave == true) {
-                this.set('touchleave', false);
-              }
-              return;
-            }
+      if (this.get('disabled')) {
+        if (this.touchleave == true) {
+          this.set('touchleave', false);
+        }
+        return;
+      }
 
-            if (!this.onDown) {
-              this.triggerAction();
-            }
-          },
+      if (!this.onDown) {
+        this.triggerAction();
+      }
+    },
 
-          /** Only for desktop */
-          mouseLeave: function(event) {
+    /** Only for desktop */
+    mouseLeave: function(event) {
 
-            this.set('pressed', false);
+      this.set('pressed', false);
 
-            if (this.timer) {
-              clearInterval(this.timerId);
-            }
-          },
+      if (this.timer) {
+        clearInterval(this.timerId);
+      }
+    },
 
-          /**
-           * Only for IOS Simulation of mouseleave event for touch devices If
-           * target element looses focus during touch move event events dont
-           * trigger
-           */
-          touchMove: function(event) {
+    /**
+     * Only for IOS Simulation of mouseleave event for touch devices If
+     * target element looses focus during touch move event events dont
+     * trigger
+     */
+    touchMove: function(event) {
 
-            /** Set Mouse Leave Event Flag to true */
-            this.set('touchleave', this.targetElement !== document
-                .elementFromPoint(event.originalEvent.touches[0].pageX,
-                    event.originalEvent.touches[0].pageY));
-          },
+      /** Set Mouse Leave Event Flag to true */
+      this.set('touchleave', this.targetElement !==
+        document.elementFromPoint(event.originalEvent.touches[0].pageX,
+          event.originalEvent.touches[0].pageY
+        )
+      );
+    },
 
-          // component default template
-          defaultTemplate: Em.Handlebars
-              .compile('<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />'                  +
-                    '<span>{{view.text}}</span>'),
+    // component default template
+    defaultTemplate: Em.Handlebars.compile(
+      '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+      '<span>{{view.text}}</span>'
+    ),
 
-          templates: {
-            text: Em.Handlebars.compile('<span class="text">{{view.text}}</span>'),
+    templates: {
+      text: Em.Handlebars.compile('<span class="text">{{view.text}}</span>'),
 
-            icon: Em.Handlebars
-                .compile('<img class="ico" {{bindAttr src="view.icon"}} />'),
+      icon: Em.Handlebars.compile(
+        '<img class="ico" {{bindAttr src="view.icon"}} />'
+      ),
 
-            rightText: Em.Handlebars
-                .compile('<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
-                        '<span class="right_text">{{view.text}}</span>'),
+      rightText: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span class="right_text">{{view.text}}</span>'
+      ),
 
-            arrow: Em.Handlebars
-                .compile('<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
-                        '<span>{{view.text}}</span>'                    +
-                        '<img class="arrow-ico" src="images/common/arrow_ico.png" />'),
+      arrow: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.text}}</span>' +
+        '<img class="arrow-ico" src="images/common/arrow_ico.png" />'
+      ),
 
-            rightIcon: Em.Handlebars
-                .compile('<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
-                        '<span>{{view.text}}</span>'                    +
-                        '<img class="right_ico" {{bindAttr src="view.righticon"}} />')
-          }
-        });
+      rightIcon: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.text}}</span>' +
+        '<img class="right_ico" {{bindAttr src="view.righticon"}} />'
+      )
+    }
+  }
+);

@@ -32,83 +32,85 @@
  * @version 1.0
  */
 
-SDL.LeftMenuView = Em.ContainerView.extend({
-  /** View ID */
-  elementId: 'media_leftmenu',
-
-  /** View components */
-  childViews:
-      [
-          'border',
-          'radio',
-          'cdButton',
-          'usbButton',
-          'sdlButton'
-      ],
-
-  /** Border decoration */
-  border: Em.View.extend({
-    elementId: 'media_left_menu_border',
-    classNames: 'ls_border'
-  }),
-
-  /** CD Station Button */
-  radio: SDL.Button.extend({
-    classNameBindings: [
-        'SDL.States.media.player.radio.active:active_state',
-        'SDL.FuncSwitcher.rev::is-disabled'
+SDL.LeftMenuView = Em.ContainerView.extend(
+  {
+    /** View ID */
+    elementId: 'media_leftmenu',
+    /** View components */
+    childViews: [
+      'border',
+      'radio',
+      'cdButton',
+      'usbButton',
+      'sdlButton'
     ],
-    elementId: 'media_radioButton',
-    classNames: 'media-ls-item',
-    action: 'turnOnRadio',
-    target: 'SDL.MediaController',
-    icon: 'images/media/ico_fm.png',
-    textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_radio')
-  }),
-
-  /** CD Station Button */
-  cdButton: SDL.Button.extend({
-    classNameBindings:
-        [
-            'SDL.States.media.player.cd.active:active_state'
+    /** Border decoration */
+    border: Em.View.extend(
+      {
+        elementId: 'media_left_menu_border',
+        classNames: 'ls_border'
+      }
+    ),
+    /** CD Station Button */
+    radio: SDL.Button.extend(
+      {
+        classNameBindings: [
+          'SDL.States.media.player.radio.active:active_state',
+          'SDL.FuncSwitcher.rev::is-disabled'
         ],
-    elementId: 'media_cdButton',
-    classNames: 'media-ls-item',
-    action: 'turnOnCD',
-    icon: 'images/media/ico_cd.png',
-    target: 'SDL.MediaController',
-    textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_cd')
-  }),
-
-  /** USB Station Button */
-  usbButton: SDL.Button.extend({
-    classNameBindings: [
-        'SDL.States.media.player.usb.active:active_state',
-        'SDL.FuncSwitcher.rev::is-disabled'
-    ],
-    elementId: 'media_usbButton',
-    classNames: 'media-ls-item',
-    action: 'turnOnUSB',
-    icon: 'images/media/ico_usb.png',
-    target: 'SDL.MediaController',
-    textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_usb')
-  }),
-
-  /** SDL Button */
-  sdlButton: SDL.Button.extend({
-    classNameBindings:
-        [
-            'SDL.States.media.sdlmedia.active:active_state'
+        elementId: 'media_radioButton',
+        classNames: 'media-ls-item',
+        action: 'turnOnRadio',
+        target: 'SDL.MediaController',
+        icon: 'images/media/ico_fm.png',
+        textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_radio')
+      }
+    ),
+    /** CD Station Button */
+    cdButton: SDL.Button.extend(
+      {
+        classNameBindings: [
+          'SDL.States.media.player.cd.active:active_state'
         ],
-    elementId: 'media_sdlButton',
-    classNames: 'media-ls-item',
-    hidden: function() {
-      return SDL.SDLMediaController.currentAppId === null;
-    }.property('SDL.SDLMediaController.currentAppId'),
-    textBinding: 'SDL.SDLMediaController.currentAppName',
-    iconBinding: 'SDL.SDLMediaController.currentAppIcon',
-    action: 'activateCurrentApp',
-    target: 'SDL.SDLMediaController'
-  })
-
-});
+        elementId: 'media_cdButton',
+        classNames: 'media-ls-item',
+        action: 'turnOnCD',
+        icon: 'images/media/ico_cd.png',
+        target: 'SDL.MediaController',
+        textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_cd')
+      }
+    ),
+    /** USB Station Button */
+    usbButton: SDL.Button.extend(
+      {
+        classNameBindings: [
+          'SDL.States.media.player.usb.active:active_state',
+          'SDL.FuncSwitcher.rev::is-disabled'
+        ],
+        elementId: 'media_usbButton',
+        classNames: 'media-ls-item',
+        action: 'turnOnUSB',
+        icon: 'images/media/ico_usb.png',
+        target: 'SDL.MediaController',
+        textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_usb')
+      }
+    ),
+    /** SDL Button */
+    sdlButton: SDL.Button.extend(
+      {
+        classNameBindings: [
+          'SDL.States.media.sdlmedia.active:active_state'
+        ],
+        elementId: 'media_sdlButton',
+        classNames: 'media-ls-item',
+        hidden: function() {
+          return SDL.SDLMediaController.currentAppId === null;
+        }.property('SDL.SDLMediaController.currentAppId'),
+        textBinding: 'SDL.SDLMediaController.currentAppName',
+        iconBinding: 'SDL.SDLMediaController.currentAppIcon',
+        action: 'activateCurrentApp',
+        target: 'SDL.SDLMediaController'
+      }
+    )
+  }
+);

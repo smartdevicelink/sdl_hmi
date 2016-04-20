@@ -31,106 +31,93 @@
  * @version 1.0
  */
 
-SDL.AppPermissionsView = Em.ContainerView.create({
-
-  elementId: 'policies_settings_appPermissions',
-
-  classNames: 'in_settings_separate_view',
-
-  classNameBindings: [
+SDL.AppPermissionsView = Em.ContainerView.create(
+  {
+    elementId: 'policies_settings_appPermissions',
+    classNames: 'in_settings_separate_view',
+    classNameBindings: [
       'SDL.States.settings.policies.appPermissions.active:active_state:inactive_state'
-  ],
-
-  childViews: [
+    ],
+    childViews: [
       'backButton',
       'appList',
       'label'
-  ],
-
-  currentAppId: null,
-
-  /**
-   * Label in title
-   */
-  label: SDL.Label.extend({
-
-    classNames: 'label',
-
-    content: 'Choose devices to be allowed for SDL functionality:'
-  }),
-
-  backButton: SDL.Button.extend({
-    classNames:
-        [
-            'backButton'
+    ],
+    currentAppId: null,
+    /**
+     * Label in title
+     */
+    label: SDL.Label.extend(
+      {
+        classNames: 'label',
+        content: 'Choose devices to be allowed for SDL functionality:'
+      }
+    ),
+    backButton: SDL.Button.extend(
+      {
+        classNames: [
+          'backButton'
         ],
-    action: function(element) {
-
-      SDL.SettingsController.onState(element);
-
-      var permissions = [];
-
-      for (var i = 0; i < SDL.AppPermissionsView.appList.list._childViews.length; i++) {
-        permissions.push({
-          'name': SDL.AppPermissionsView.appList.list._childViews[i].name,
-          'id': SDL.AppPermissionsView.appList.list._childViews[i].id,
-          'allowed': SDL.AppPermissionsView.appList.list._childViews[i].allowed
-        });
+        action: function(element) {
+          SDL.SettingsController.onState(element);
+          var permissions = [];
+          for (var i = 0; i <
+          SDL.AppPermissionsView.appList.list._childViews.length; i++) {
+            permissions.push(
+              {
+                'name': SDL.AppPermissionsView.appList.list._childViews[i].name,
+                'id': SDL.AppPermissionsView.appList.list._childViews[i].id,
+                'allowed': SDL.AppPermissionsView.appList.list._childViews[i].allowed
+              }
+            );
+          }
+          FFW.BasicCommunication.OnAppPermissionConsent(
+            permissions, 'GUI', SDL.AppPermissionsView.currentAppId
+          );
+          SDL.AppPermissionsView.currentAppId = null;
+        },
+        goToState: 'policies',
+        icon: 'images/media/ico_back.png',
+        onDown: false
       }
-
-      FFW.BasicCommunication.OnAppPermissionConsent(permissions, 'GUI', SDL.AppPermissionsView.currentAppId);
-
-      SDL.AppPermissionsView.currentAppId = null;
-    },
-    goToState: 'policies',
-    icon: 'images/media/ico_back.png',
-    onDown: false
-  }),
-
-  /**
-   * Function to add application to application list
-   */
-  update: function(message, appID) {
-
-    SDL.AppPermissionsView.currentAppId = appID;
-
-    this.appList.items = [];
-
-    for (var i = 0; i < message.length; i++) {
-
-      var text = ' - Undefined';
-
-      if (message[i].allowed === true) {
-        text = ' - Allowed';
-      } else if (message[i].allowed === false) {
-        text = ' - Not allowed';
-      }
-
-      this.appList.items.push({
-        type: SDL.Button,
-        params: {
-          action: 'changeAppPermission',
-          target: 'SDL.SettingsController',
-          text: message[i].name + text,
-          name: message[i].name,
-          allowed: message[i].allowed,
-          id: message[i].id,
-          appID: appID
+    ),
+    /**
+     * Function to add application to application list
+     */
+    update: function(message, appID) {
+      SDL.AppPermissionsView.currentAppId = appID;
+      this.appList.items = [];
+      for (var i = 0; i < message.length; i++) {
+        var text = ' - Undefined';
+        if (message[i].allowed === true) {
+          text = ' - Allowed';
+        } else if (message[i].allowed === false) {
+          text = ' - Not allowed';
         }
-      });
-    }
-
-    this.appList.list.refresh();
-
-  },
-
-  appList: SDL.List.extend({
-
-    elementId: 'polocies_app_permissions_list',
-
-    itemsOnPage: 5,
-
-    /** Items */
-    items: new Array()
-  })
-});
+        this.appList.items.push(
+          {
+            type: SDL.Button,
+            params: {
+              action: 'changeAppPermission',
+              target: 'SDL.SettingsController',
+              text: message[i].name + text,
+              name: message[i].name,
+              allowed: message[i].allowed,
+              id: message[i].id,
+              appID: appID
+            }
+          }
+        );
+      }
+      this.appList.list.refresh();
+    },
+    appList: SDL.List.extend(
+      {
+        elementId: 'polocies_app_permissions_list',
+        itemsOnPage: 5,
+        /** Items */
+        items: new Array()
+      }
+    )
+  }
+);

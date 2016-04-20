@@ -31,476 +31,416 @@
  * notification of chosen commands to SDLCore.
  *
  */
-
-FFW.VR = FFW.RPCObserver.create({
-
-  /**
-   * If true then VR is present and ready to communicate with SDL.
-   *
-   * @type {Boolean}
-   */
-  isReady: true,
-
-  /**
-   * Contains response codes for request that should be processed but there were some kind of errors
-   * Error codes will be injected into response.
-   */
-  errorResponsePull: {},
-
-  /*
-   * access to basic RPC functionality
-   */
-  client: FFW.RPCClient.create({
-    componentName: 'VR'
-  }),
-
-  /*
-   * connect to RPC bus
-   */
-  connect: function() {
-
-    this.client.connect(this, 500); // Magic number is unique identifier for
-    // component
-  },
-
-  /*
-   * disconnect from RPC bus
-   */
-  disconnect: function() {
-
-    this.onRPCUnregistered();
-    this.client.disconnect();
-  },
-
-  /*
-   * Client is registered - we can send request starting from this point of
-   * time
-   */
-  onRPCRegistered: function() {
-
-    Em.Logger.log('FFW.VR.onRPCRegistered');
-    this._super();
-  },
-
-  /*
-   * Client is unregistered - no more requests
-   */
-  onRPCUnregistered: function() {
-
-    Em.Logger.log('FFW.VR.onRPCUnregistered');
-    this._super();
-  },
-
-  /*
-   * Client disconnected.
-   */
-  onRPCDisconnected: function() {
-
-  },
-
-  /*
-   * when result is received from RPC component this function is called It is
-   * the propriate place to check results of reuqest execution Please use
-   * previously store reuqestID to determine to which request repsonse belongs
-   * to
-   */
-  onRPCResult: function(response) {
-
-    Em.Logger.log('FFW.VR.onRPCResult');
-    this._super();
-  },
-
-  /*
-   * handle RPC erros here
-   */
-  onRPCError: function(error) {
-
-    Em.Logger.log('FFW.VR.onRPCError');
-    this._super();
-  },
-
-  /*
-   * handle RPC notifications here
-   */
-  onRPCNotification: function(notification) {
-
-    Em.Logger.log('FFW.VR.onRPCNotification');
-    this._super();
-  },
-
-  /*
-   * handle RPC requests here
-   */
-  onRPCRequest: function(request) {
-
-    Em.Logger.log('FFW.VR.onRPCRequest');
-    if (this.validationCheck(request)) {
-
-      switch (request.method) {
-      case 'VR.AddCommand': {
-
-        SDL.SDLModel.addCommandVR(request.params);
-
-        this.sendVRResult(SDL.SDLModel.data.resultCode.SUCCESS,
-            request.id,
-            request.method);
-
-        break;
+FFW.VR = FFW.RPCObserver.create(
+  {
+    /**
+     * If true then VR is present and ready to communicate with SDL.
+     *
+     * @type {Boolean}
+     */
+    isReady: true,
+    /**
+     * Contains response codes for request that should be processed but there
+     * were some kind of errors Error codes will be injected into response.
+     */
+    errorResponsePull: {},
+    /*
+     * access to basic RPC functionality
+     */
+    client: FFW.RPCClient.create(
+      {
+        componentName: 'VR'
       }
-      case 'VR.DeleteCommand': {
-
-        SDL.SDLModel.deleteCommandVR(request);
-
-        break;
-      }
-      case 'VR.GetSupportedLanguages': {
-
-        Em.Logger.log('FFW.' + request.method + 'Response');
-
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': request.id,
-          'result': {
-            'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
-            // (enum)
-            // from SDL
-            'method': 'VR.GetSupportedLanguages',
-            'languages': SDL.SDLModel.data.sdlLanguagesList
+    ),
+    /*
+     * connect to RPC bus
+     */
+    connect: function() {
+      this.client.connect(this, 500); // Magic number is unique identifier for
+      // component
+    },
+    /*
+     * disconnect from RPC bus
+     */
+    disconnect: function() {
+      this.onRPCUnregistered();
+      this.client.disconnect();
+    },
+    /*
+     * Client is registered - we can send request starting from this point of
+     * time
+     */
+    onRPCRegistered: function() {
+      Em.Logger.log('FFW.VR.onRPCRegistered');
+      this._super();
+    },
+    /*
+     * Client is unregistered - no more requests
+     */
+    onRPCUnregistered: function() {
+      Em.Logger.log('FFW.VR.onRPCUnregistered');
+      this._super();
+    },
+    /*
+     * Client disconnected.
+     */
+    onRPCDisconnected: function() {
+    },
+    /*
+     * when result is received from RPC component this function is called It is
+     * the propriate place to check results of reuqest execution Please use
+     * previously store reuqestID to determine to which request repsonse belongs
+     * to
+     */
+    onRPCResult: function(response) {
+      Em.Logger.log('FFW.VR.onRPCResult');
+      this._super();
+    },
+    /*
+     * handle RPC erros here
+     */
+    onRPCError: function(error) {
+      Em.Logger.log('FFW.VR.onRPCError');
+      this._super();
+    },
+    /*
+     * handle RPC notifications here
+     */
+    onRPCNotification: function(notification) {
+      Em.Logger.log('FFW.VR.onRPCNotification');
+      this._super();
+    },
+    /*
+     * handle RPC requests here
+     */
+    onRPCRequest: function(request) {
+      Em.Logger.log('FFW.VR.onRPCRequest');
+      if (this.validationCheck(request)) {
+        switch (request.method) {
+          case 'VR.AddCommand':
+          {
+            SDL.SDLModel.addCommandVR(request.params);
+            this.sendVRResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
+            );
+            break;
           }
-        };
-        this.client.send(JSONMessage);
-
-        break;
-      }
-      case 'VR.GetLanguage': {
-
-        Em.Logger.log('FFW.' + request.method + 'Response');
-
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': request.id,
-          'result': {
-            'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
-            // (enum)
-            // from SDL
-            'method': 'VR.GetLanguage',
-            'language': SDL.SDLModel.data.hmiTTSVRLanguage
+          case 'VR.DeleteCommand':
+          {
+            SDL.SDLModel.deleteCommandVR(request);
+            break;
           }
-        };
-        this.client.send(JSONMessage);
+          case 'VR.GetSupportedLanguages':
+          {
+            Em.Logger.log('FFW.' + request.method + 'Response');
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
+                // (enum)
+                // from SDL
+                'method': 'VR.GetSupportedLanguages',
+                'languages': SDL.SDLModel.data.sdlLanguagesList
+              }
+            };
+            this.client.send(JSONMessage);
+            break;
+          }
+          case 'VR.GetLanguage':
+          {
+            Em.Logger.log('FFW.' + request.method + 'Response');
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
+                // (enum)
+                // from SDL
+                'method': 'VR.GetLanguage',
+                'language': SDL.SDLModel.data.hmiTTSVRLanguage
+              }
+            };
+            this.client.send(JSONMessage);
+            break;
+          }
+          case 'VR.ChangeRegistration':
+          {
+            SDL.SDLModel.changeRegistrationTTSVR(
+              request.params.language, request.params.appID
+            );
+            if (request.params.vrSynonyms) {
+              SDL.VRPopUp.DeleteCommand(0, request.params.appID);
+              SDL.VRPopUp.AddCommand(
+                0, request.params.vrSynonyms, request.params.appID,
+                'Application'
+              );
+            }
+            this.sendVRResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
+            );
+            break;
+          }
+          case 'VR.IsReady':
+          {
+            Em.Logger.log('FFW.' + request.method + 'Response');
+            // send repsonse
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'available': this.get('isReady'),
+                'code': 0,
+                'method': 'VR.IsReady'
+              }
+            };
+            this.client.send(JSONMessage);
+            break;
+          }
+          case 'VR.PerformInteraction':
+          {
 
-        break;
-      }
-      case 'VR.ChangeRegistration': {
-
-        SDL.SDLModel.changeRegistrationTTSVR(request.params.language, request.params.appID);
-
-        if (request.params.vrSynonyms) {
-          SDL.VRPopUp.DeleteCommand(0, request.params.appID);
-          SDL.VRPopUp.AddCommand(0, request.params.vrSynonyms, request.params.appID, 'Application');
+            // Verify if there is an unsupported data in request
+            //if (this.errorResponsePull[request.id] != null) {
+            //
+            ////Check if there is any available data to  process the request
+            //if ("helpPrompt" in request.params
+            //    || "initialPrompt" in request.params
+            //    || "timeoutPrompt" in request.params
+            //    || "grammarID" in request.params) {
+            //
+            //    this.errorResponsePull[request.id].code =
+            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
+            // available data sent error response and stop process current
+            // request this.sendError(this.errorResponsePull[request.id].code,
+            // request.id, request.method, "Unsupported " +
+            // this.errorResponsePull[request.id].type + " type. Request was
+            // not processed."); this.errorResponsePull[request.id] = null; 
+            // return; } }
+            SDL.SDLModel.vrPerformInteraction(request);
+            break;
+          }
+          case 'VR.GetCapabilities':
+          {
+            Em.Logger.log('FFW.' + request.method + 'Response');
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                'method': 'VR.GetCapabilities',
+                'vrCapabilities': ['TEXT']
+              }
+            };
+            this.client.send(JSONMessage);
+            break;
+          }
+          default:
+          {
+            // statements_def
+            break;
+          }
         }
-
-        this.sendVRResult(SDL.SDLModel.data.resultCode.SUCCESS,
-            request.id,
-            request.method);
-
-        break;
       }
-      case 'VR.IsReady': {
-
-        Em.Logger.log('FFW.' + request.method + 'Response');
+    },
+    /**
+     * Send error response from onRPCRequest
+     *
+     * @param {Number}
+     *            resultCode
+     * @param {Number}
+     *            id
+     * @param {String}
+     *            method
+     */
+    sendError: function(resultCode, id, method, message) {
+      Em.Logger.log('FFW.' + method + 'Response');
+      if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
-          'id': request.id,
-          'result': {
-            'available': this.get('isReady'),
-            'code': 0,
-            'method': 'VR.IsReady'
+          'id': id,
+          'error': {
+            'code': resultCode, // type (enum) from SDL protocol
+            'message': message,
+            'data': {
+              'method': method
+            }
           }
         };
-
         this.client.send(JSONMessage);
-
-        break;
       }
-      case 'VR.PerformInteraction': {
+    },
+    /**
+     * send notification when command was triggered
+     *
+     * @param {Number} requestID
+     * @param {Number} resultCode
+     * @param {Number} commandID
+     */
+    interactionResponse: function(requestID, resultCode, commandID) {
+      Em.Logger.log('FFW.VR.PerformInteractionResponse');
+      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+        if (this.errorResponsePull[requestID]) {
 
-        // Verify if there is an unsupported data in request
-        //if (this.errorResponsePull[request.id] != null) {
-        //
-        ////Check if there is any available data to  process the request
-        //if ("helpPrompt" in request.params
-        //    || "initialPrompt" in request.params
-        //    || "timeoutPrompt" in request.params
-        //    || "grammarID" in request.params) {
-        //
-        //    this.errorResponsePull[request.id].code = SDL.SDLModel.data.resultCode["WARNINGS"];
-        //} else {
-        //If no available data sent error response and stop process current request
-
-        //this.sendError(this.errorResponsePull[request.id].code, request.id, request.method,
-        //        "Unsupported " + this.errorResponsePull[request.id].type + " type. Request was not processed.");
-        //this.errorResponsePull[request.id] = null;
-        //
-        //return;
-        //}
-        //}
-
-        SDL.SDLModel.vrPerformInteraction(request);
-
-        break;
-      }
-      case 'VR.GetCapabilities': {
-
-        Em.Logger.log('FFW.' + request.method + 'Response');
-
+          // send repsonse
+          var JSONMessage = {
+            'jsonrpc': '2.0',
+            'id': requestID,
+            'error': {
+              'code': this.errorResponsePull[requestID].code,
+              'message': 'Unsupported ' +
+              this.errorResponsePull[requestID].type +
+              ' type. Available data in request was processed.',
+              'data': {
+                'method': 'VR.PerformInteraction'
+              }
+            }
+          };
+          if (commandID) {
+            JSONMessage.error.data.choiceID = commandID;
+          }
+          this.client.send(JSONMessage);
+          this.errorResponsePull[requestID] = null;
+          return;
+        }
+        // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
-          'id': request.id,
+          'id': requestID,
           'result': {
-            'code': SDL.SDLModel.data.resultCode.SUCCESS,
-            'method': 'VR.GetCapabilities',
-            'vrCapabilities': ['TEXT']
+            'code': resultCode,
+            'method': 'VR.PerformInteraction'
           }
         };
-        this.client.send(JSONMessage);
-
-        break;
-      }
-
-      default: {
-        // statements_def
-        break;
-      }
-      }
-    }
-  },
-
-  /**
-   * Send error response from onRPCRequest
-   *
-   * @param {Number}
-   *            resultCode
-   * @param {Number}
-   *            id
-   * @param {String}
-   *            method
-   */
-  sendError: function(resultCode, id, method, message) {
-
-    Em.Logger.log('FFW.' + method + 'Response');
-
-    if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
-
-      // send repsonse
-      var JSONMessage = {
-        'jsonrpc': '2.0',
-        'id': id,
-        'error': {
-          'code': resultCode, // type (enum) from SDL protocol
-          'message': message,
-          'data': {
-            'method': method
-          }
+        if (commandID) {
+          JSONMessage.result.choiceID = commandID;
         }
-      };
-      this.client.send(JSONMessage);
-    }
-  },
-
-  /**
-   * send notification when command was triggered
-   *
-   * @param {Number} requestID
-   * @param {Number} resultCode
-   * @param {Number} commandID
-   */
-  interactionResponse: function(requestID, resultCode, commandID) {
-
-    Em.Logger.log('FFW.VR.PerformInteractionResponse');
-
-    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-
-      if (this.errorResponsePull[requestID]) {
-
+      } else {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': requestID,
           'error': {
-            'code': this.errorResponsePull[requestID].code,
-            'message': 'Unsupported ' + this.errorResponsePull[requestID].type + ' type. Available data in request was processed.',
+            'code': resultCode, // type (enum) from SDL protocol
+            'message': 'Perform Interaction error response.',
             'data': {
               'method': 'VR.PerformInteraction'
             }
           }
         };
-
-        if (commandID) {
-          JSONMessage.error.data.choiceID = commandID;
-        }
-
-        this.client.send(JSONMessage);
-        this.errorResponsePull[requestID] = null;
+      }
+      SDL.SDLModel.data.set('performInteractionSession', []);
+      this.client.send(JSONMessage);
+    },
+    /**
+     * send response from onRPCRequest
+     *
+     * @param {Number}
+     *            resultCode
+     * @param {Number}
+     *            id
+     * @param {String}
+     *            method
+     */
+    sendVRResult: function(resultCode, id, method) {
+      if (this.errorResponsePull[id]) {
+        this.sendError(
+          this.errorResponsePull[id].code, id, method,
+          'Unsupported ' + this.errorResponsePull[id].type +
+          ' type. Available data in request was processed.'
+        );
+        this.errorResponsePull[id] = null;
         return;
       }
+      Em.Logger.log('FFW.' + method + 'Response');
+      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
-      // send repsonse
-      var JSONMessage = {
-        'jsonrpc': '2.0',
-        'id': requestID,
-        'result': {
-          'code': resultCode,
-          'method': 'VR.PerformInteraction'
-        }
-      };
-
-      if (commandID) {
-        JSONMessage.result.choiceID = commandID;
-      }
-    } else {
-      // send repsonse
-      var JSONMessage = {
-        'jsonrpc': '2.0',
-        'id': requestID,
-        'error': {
-          'code': resultCode, // type (enum) from SDL protocol
-          'message': 'Perform Interaction error response.',
-          'data': {
-            'method': 'VR.PerformInteraction'
+        // send repsonse
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': id,
+          'result': {
+            'code': resultCode, // type (enum) from SDL protocol
+            'method': method
           }
+        };
+        this.client.send(JSONMessage);
+      }
+    },
+    /*
+     * send notification when command was triggered from VR
+     */
+    onChoise: function(commandID) {
+      Em.Logger.log('FFW.VR.PerformInteraction');
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'VR.OnChoise',
+        'params': {
+          'choiceID': commandID
         }
       };
-    }
-
-    SDL.SDLModel.data.set('performInteractionSession', []);
-
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * send response from onRPCRequest
-   *
-   * @param {Number}
-   *            resultCode
-   * @param {Number}
-   *            id
-   * @param {String}
-   *            method
-   */
-  sendVRResult: function(resultCode, id, method) {
-
-    if (this.errorResponsePull[id]) {
-
-      this.sendError(this.errorResponsePull[id].code, id, method,
-              'Unsupported ' + this.errorResponsePull[id].type + ' type. Available data in request was processed.');
-      this.errorResponsePull[id] = null;
-      return;
-    }
-
-    Em.Logger.log('FFW.' + method + 'Response');
-
-    if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Initiated by VR module to let SDL know that VR session has started.
+     */
+    Started: function() {
+      Em.Logger.log('FFW.VR.Started');
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'VR.Started'
+      };
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Initiated by VR module to let SDL know that VR session has stopped.
+     */
+    Stopped: function() {
+      Em.Logger.log('FFW.VR.Stopped');
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'VR.Stopped'
+      };
+      this.client.send(JSONMessage);
+    },
+    /**
+     * send notification when command was triggered
+     */
+    onCommand: function(commandID, appID, grammarID) {
+      Em.Logger.log('FFW.VR.onCommand');
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'VR.OnCommand',
+        'params': {
+          'cmdID': commandID,
+          'grammarID': grammarID
+        }
+      };
+      if (appID) {
+        JSONMessage.params.appID = appID;
+      }
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Notifies if sdl VR components language was changed
+     */
+    OnLanguageChange: function(lang) {
+      Em.Logger.log('FFW.VR.OnLanguageChange');
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
-        'id': id,
-        'result': {
-          'code': resultCode, // type (enum) from SDL protocol
-          'method': method
+        'method': 'VR.OnLanguageChange',
+        'params': {
+          'language': lang
         }
       };
       this.client.send(JSONMessage);
     }
-  },
-
-  /*
-   * send notification when command was triggered from VR
-   */
-  onChoise: function(commandID) {
-
-    Em.Logger.log('FFW.VR.PerformInteraction');
-
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'VR.OnChoise',
-      'params': {
-        'choiceID': commandID
-      }
-    };
-
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * Initiated by VR module to let SDL know that VR session has started.
-   */
-  Started: function() {
-
-    Em.Logger.log('FFW.VR.Started');
-
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'VR.Started'
-    };
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * Initiated by VR module to let SDL know that VR session has stopped.
-   */
-  Stopped: function() {
-
-    Em.Logger.log('FFW.VR.Stopped');
-
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'VR.Stopped'
-    };
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * send notification when command was triggered
-   */
-  onCommand: function(commandID, appID, grammarID) {
-
-    Em.Logger.log('FFW.VR.onCommand');
-
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'VR.OnCommand',
-      'params': {
-        'cmdID': commandID,
-        'grammarID': grammarID
-      }
-    };
-
-    if (appID) {
-      JSONMessage.params.appID = appID;
-    }
-
-    this.client.send(JSONMessage);
-  },
-
-  /**
-   * Notifies if sdl VR components language was changed
-   */
-  OnLanguageChange: function(lang) {
-
-    Em.Logger.log('FFW.VR.OnLanguageChange');
-
-    // send repsonse
-    var JSONMessage = {
-      'jsonrpc': '2.0',
-      'method': 'VR.OnLanguageChange',
-      'params': {
-        'language': lang
-      }
-    };
-    this.client.send(JSONMessage);
   }
-});
+);

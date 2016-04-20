@@ -31,95 +31,98 @@
  * @version 1.0
  */
 
-SDL.TBTTurnList = SDL.SDLAbstractView.create({
-
-  elementId: 'tbtTurnListView',
-
-  childViews: [
+SDL.TBTTurnList = SDL.SDLAbstractView.create(
+  {
+    elementId: 'tbtTurnListView',
+    childViews: [
       'backButton',
       'captionText',
       'tbtTurnListList'
-  ],
-
-  /**
-   * Activate window
-   */
-  activate: function(appID) {
-
-    this.set('active', true);
-    this.updateList(appID);
-  },
-
-  /**
-   * Deactivate window if TurnByTurnView window was closed
-   */
-  closeTurnList: function() {
-
-    if (!SDL.TurnByTurnView.get('activeTBT')) {
-      this.set('active', false);
-    }
-  }.observes('SDL.TurnByTurnView.activeTBT'),
-
-  /**
-   * Title Labes of window
-   */
-  captionText: SDL.Label.extend({
-    classNames: 'caption-text',
-
-    content: 'Turn List'
-  }),
-
-  /**
-   * Turn List
-   */
-  tbtTurnListList: SDL.List.extend({
-    elementId: 'tbtTurnListList',
-    itemsOnPage: 5,
-    items: []
-  }),
-
-  /**
-   * Function updates content of Turn List with data from application's
-   * model
-   *
-   * @type {Number}
-   */
-  updateList: function(appID) {
-
-    this.get('tbtTurnListList.list').removeAllChildren();
-
-    this.tbtTurnListList.list.refresh();
-
-    var turnListArray = SDL.SDLController.getApplicationModel(appID).turnList,
+    ],
+    /**
+     * Activate window
+     */
+    activate: function(appID) {
+      this.set('active', true);
+      this.updateList(appID);
+    },
+    /**
+     * Deactivate window if TurnByTurnView window was closed
+     */
+    closeTurnList: function() {
+      if (!SDL.TurnByTurnView.get('activeTBT')) {
+        this.set('active', false);
+      }
+    }.observes('SDL.TurnByTurnView.activeTBT'),
+    /**
+     * Title Labes of window
+     */
+    captionText: SDL.Label.extend(
+      {
+        classNames: 'caption-text',
+        content: 'Turn List'
+      }
+    ),
+    /**
+     * Turn List
+     */
+    tbtTurnListList: SDL.List.extend(
+      {
+        elementId: 'tbtTurnListList',
+        itemsOnPage: 5,
+        items: []
+      }
+    ),
+    /**
+     * Function updates content of Turn List with data from application's
+     * model
+     *
+     * @type {Number}
+     */
+    updateList: function(appID) {
+      this.get('tbtTurnListList.list').removeAllChildren();
+      this.tbtTurnListList.list.refresh();
+      var turnListArray = SDL.SDLController.getApplicationModel(appID).turnList,
         length = turnListArray.length;
-    for (var i = 0; i < length; i++) {
-      this.get('tbtTurnListList.list.childViews').pushObject(SDL.Label.create({
-        icon: turnListArray[i].turnIcon ? turnListArray[i].turnIcon.value : '',
-        content: turnListArray[i].navigationText ? turnListArray[i].navigationText.fieldText : '',
-        classNames: 'list-item',
-        templateName: turnListArray[i].turnIcon ? 'icon' : ''
-      }));
-    }
-
-    turnListArray = SDL.SDLController.getApplicationModel(appID).turnListSoftButtons;
-    length = turnListArray.length;
-
-    for (var i = 0; i < length; i++) {
-      this.get('tbtTurnListList.list.childViews').pushObject(SDL.Button.create(SDL.PresetEventsCustom, {
-        systemAction: turnListArray[i].systemAction,
-        groupName: 'TBTList',
-        classNameBindings: [
-            'isHighlighted:isHighlighted'
-        ],
-        isHighlighted: turnListArray[i].isHighlighted ? true : false,
-        softButtonID: turnListArray[i].softButtonID,
-        icon: turnListArray[i].image ? turnListArray[i].image.value : '',
-        text: turnListArray[i].text,
-        classNames: 'list-item softButton',
-        elementId: 'softButton' + i,
-        templateName: turnListArray[i].image ? 'rightIcon' : 'text',
-        appID: appID
-      }));
+      for (var i = 0; i < length; i++) {
+        this.get('tbtTurnListList.list.childViews').pushObject(
+          SDL.Label.create(
+            {
+              icon: turnListArray[i].turnIcon ?
+                turnListArray[i].turnIcon.value : '',
+              content: turnListArray[i].navigationText ?
+                turnListArray[i].navigationText.fieldText : '',
+              classNames: 'list-item',
+              templateName: turnListArray[i].turnIcon ? 'icon' : ''
+            }
+          )
+        );
+      }
+      turnListArray = SDL.SDLController.getApplicationModel(
+        appID
+      ).turnListSoftButtons;
+      length = turnListArray.length;
+      for (var i = 0; i < length; i++) {
+        this.get('tbtTurnListList.list.childViews').pushObject(
+          SDL.Button.create(
+            SDL.PresetEventsCustom, {
+              systemAction: turnListArray[i].systemAction,
+              groupName: 'TBTList',
+              classNameBindings: [
+                'isHighlighted:isHighlighted'
+              ],
+              isHighlighted: turnListArray[i].isHighlighted ? true : false,
+              softButtonID: turnListArray[i].softButtonID,
+              icon: turnListArray[i].image ? turnListArray[i].image.value : '',
+              text: turnListArray[i].text,
+              classNames: 'list-item softButton',
+              elementId: 'softButton' + i,
+              templateName: turnListArray[i].image ? 'rightIcon' : 'text',
+              appID: appID
+            }
+          )
+        );
+      }
     }
   }
-});
+);

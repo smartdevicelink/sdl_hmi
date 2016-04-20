@@ -62,7 +62,9 @@ SDL.List = Em.ContainerView.extend({
    */
   listCount: function() {
 
-    if ((this.get('this.list.childViews.length') / this.get('columnsNumber') / this.get('itemsOnPage')) < this.get('currentPage')) {
+    if ((
+      this.get('this.list.childViews.length') / this.get('columnsNumber') /
+      this.get('itemsOnPage')) < this.get('currentPage')) {
       this.set('currentPage', 0);
     }
     // console.log(this.get('this.list.childViews.length'));
@@ -72,8 +74,9 @@ SDL.List = Em.ContainerView.extend({
   /** Pages count */
   pageCount: function() {
 
-    return Math.ceil(this.get('listCount') / this.get('columnsNumber')        /
-            this.get('itemsOnPage'));
+    return Math.ceil(this.get('listCount') / this.get('columnsNumber') /
+      this.get('itemsOnPage')
+    );
   }.property('listCount', 'itemsOnPage'),
 
   listHeight: function() {
@@ -100,8 +103,11 @@ SDL.List = Em.ContainerView.extend({
   /** Scroll content according to current page */
   onCurrentPageChange: function() {
 
-    this.set('listScrollingAttributes', 'margin-top: '        +
-            (this.get('currentPage') * this.itemsOnPage * (-50)) + 'px');
+    this.set('listScrollingAttributes', 'margin-top: ' +
+      (
+      this.get('currentPage') * this.itemsOnPage * (
+        -50)) + 'px'
+    );
   }.observes('currentPage'),
 
   /** Method for delete certain item from list */
@@ -113,7 +119,7 @@ SDL.List = Em.ContainerView.extend({
 
   /** List components */
   childViews: [
-      'list', 'scrollbar'
+    'list', 'scrollbar'
   ],
 
   /** List view */
@@ -124,7 +130,7 @@ SDL.List = Em.ContainerView.extend({
     listStyleBinding: 'parentView.listScrollingAttributes',
 
     attributeBindings: [
-        'listStyle:style'
+      'listStyle:style'
     ],
 
     refresh: function() {
@@ -139,48 +145,51 @@ SDL.List = Em.ContainerView.extend({
       for (i = 0; i < items.length; i++) {
 
         element = items[i].type.create({
-          // element id
-          elementId: this._parentView.elementId + '_item' + i,
+                // element id
+                elementId: this._parentView.elementId + '_item' + i,
 
-          // list item css class
-          classNames: 'list-item',
+                // list item css class
+                classNames: 'list-item',
 
-          classNameBindings: [
-              'this.voiceOver'
-          ],
+                classNameBindings: [
+                  'this.voiceOver'
+                ],
 
-          // Dynamic property set
-          init: function() {
+                // Dynamic property set
+                init: function() {
 
-            for (key in items[i].params) {
-              if (key.match('Binding') != null) {
-                binding = Ember.Binding
-                    .from(items[i].params[key]).to(key
-                        .replace('Binding', ''));
-                binding.connect(this);
-                // Set one way binding
-                binding.oneWay();
-              } else {
-                this.set(key, items[i].params[key]);
+                  for (key in items[i].params) {
+                    if (key.match('Binding') != null) {
+                      binding = Ember.Binding.from(items[i].params[key]).
+                                      to(key.replace('Binding', ''));
+                      binding.connect(this);
+                      // Set one way binding
+                      binding.oneWay();
+                    } else {
+                      this.set(key, items[i].params[key]);
+                    }
+                  }
+                  this._super();
+                  // synchronize bindings
+                  Ember.run.sync();
+                }
               }
-            }
-            this._super();
-            // synchronize bindings
-            Ember.run.sync();
-          }
-        });
+            );
 
         // Push element to list
         this.get('childViews').pushObject(element);
       }
     }
-  }),
+  }
+),
 
   /** Scrollbar view */
   scrollbar: SDL.ScrollBar.extend({
-    currentPageBinding: 'parentView.currentPage',
-    pageCountBinding: 'parentView.pageCount',
-    listHeightBinding: 'parentView.listHeight',
-    scrollBarIsDisabledBinding: 'parentView.disableScrollbar'
-  })
-});
+        currentPageBinding: 'parentView.currentPage',
+        pageCountBinding: 'parentView.pageCount',
+        listHeightBinding: 'parentView.listHeight',
+        scrollBarIsDisabledBinding: 'parentView.disableScrollbar'
+      }
+    )
+}
+);

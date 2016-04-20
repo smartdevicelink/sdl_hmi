@@ -36,27 +36,28 @@ SDL.StatusPhoneView = Em.ContainerView.extend({
   elementId: 'status_phone',
 
   classNames: [
-      'status_bar'
+    'status_bar'
   ],
 
   /** Bind class for visual representation */
   classNameBindings: [
-      'SDL.States.phone.active:selected'
+    'SDL.States.phone.active:selected'
   ],
 
   /** Climate components */
   childViews: [
-      'statusHome'
+    'statusHome'
   ],
 
   /** Label for Home screen */
   statusHome: SDL.Label.extend({
-    elementId: 'status_phone_label',
+        elementId: 'status_phone_label',
 
-    classNames: 'visible',
+        classNames: 'visible',
 
-    content: 'Phone'
-  }),
+        content: 'Phone'
+      }
+    ),
 
   /**
    * Select phone state should be called when user press phone statusbar
@@ -65,4 +66,5 @@ SDL.StatusPhoneView = Em.ContainerView.extend({
 
     SDL.States.goToStates('phone.dialpad');
   }
-});
+}
+);

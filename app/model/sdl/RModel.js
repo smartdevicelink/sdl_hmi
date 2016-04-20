@@ -79,18 +79,18 @@ SDL.RModel = SDL.ABSModel.extend({
    * Map for OnDeviceRankChanged notification param 'deviceRank'
    */
   deviceRank: {
-    0: 'DRIVER',
-    1: 'PASSENGER'
-  },
+      0: 'DRIVER',
+      1: 'PASSENGER'
+    },
 
   /**
    * Interior zones for OnDeviceLocationChanged notification
    */
   interiorZone: [
-      'driver',
-      'back_left',
-      'front_passenger',
-      'back_right'
+    'driver',
+    'back_left',
+    'front_passenger',
+    'back_right'
   ],
 
   /**
@@ -121,7 +121,7 @@ SDL.RModel = SDL.ABSModel.extend({
     var message = {};
 
     var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
-        app = SDL.SDLController.getApplicationModel(params.appID);
+      app = SDL.SDLController.getApplicationModel(params.appID);
 
     if (app != undefined && app.initialized == false) {
 
@@ -132,7 +132,9 @@ SDL.RModel = SDL.ABSModel.extend({
       }
       return;
     } else if (app != undefined && app.initialized == true) {
-      console.log('Application with appID ' + params.appID + ' already registered!');
+      console.log(
+        'Application with appID ' + params.appID + ' already registered!'
+      );
       return; // if application already registered and correctly initialized and BC.UpdateAppList came from SDL than nothing shoul happend
     }
 
@@ -152,17 +154,32 @@ SDL.RModel = SDL.ABSModel.extend({
     SDL.SDLController.registerApplication(params, applicationType);
 
     if (SDL.SDLModel.data.unRegisteredApps.indexOf(params.appID) >= 0) {
-      setTimeout(function() { SDL.PopUp.create().appendTo('body').popupActivate('Connection with ' + params.appName + '  is re-established.');}, 1000);
+      setTimeout(function() {
+            SDL.PopUp.create().appendTo('body').popupActivate(
+              'Connection with ' + params.appName + '  is re-established.'
+            );
+          }, 1000
+        );
       this.data.unRegisteredApps.pop(params.appID);
     }
 
     //Magic number if predefined VR command USER_EXIT
-    message = {'cmdID': -2, 'vrCommands': ['USER_EXIT ' + params.appName], 'appID': params.appID, 'type': 'Command'};
+    message = {
+        'cmdID': -2,
+        'vrCommands': ['USER_EXIT ' + params.appName],
+        'appID': params.appID,
+        'type': 'Command'
+      };
     this.addCommandVR(message);
 
     if (vrSynonyms) {
 
-      message = {'cmdID': 0, 'vrCommands': vrSynonyms, 'appID': params.appID, 'type': 'Application'};
+      message = {
+          'cmdID': 0,
+          'vrCommands': vrSynonyms,
+          'appID': params.appID,
+          'type': 'Application'
+        };
       this.addCommandVR(message);
     }
   },
@@ -191,28 +208,33 @@ SDL.RModel = SDL.ABSModel.extend({
   giveControl: function(message) {
 
     var appID = message.params.appID,
-        appName = SDL.SDLController.getApplicationModel(appID).appName;
+      appName = SDL.SDLController.getApplicationModel(appID).appName;
 
     SDL.PopUp.create().appendTo('body').popupActivate(
-        'Mobile Device ' + appName + ' is requesting access to take control of the onboard HD Radio system.',
-            function(value) {
-              SDL.SDLController.ControlAccessAction(appID, value);
-            });
+      'Mobile Device ' + appName +
+      ' is requesting access to take control of the onboard HD Radio system.',
+        function(value) {
+          SDL.SDLController.ControlAccessAction(appID, value);
+        }
+      );
 
     SDL.SDLModel.controlRequestID = message.id;
   },
 
   resetControl: function() {
-    if (SDL.SDLController && SDL.SDLModel.givenControl != null) {
-      FFW.RC.OnControlChanged();
-      SDL.SDLModel.givenControl = null;
-    }
-  },
+      if (SDL.SDLController && SDL.SDLModel.givenControl != null) {
+        FFW.RC.OnControlChanged();
+        SDL.SDLModel.givenControl = null;
+      }
+    },
 
   cancelControl: function(request) {
-    FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, 'VehicleInfo.CancelAccess');
-    SDL.SDLModel.givenControl = null;
-    SDL.SDLModel.set('givenControlFlag', false);
-  }
+      FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode.SUCCESS,
+        request.id, 'VehicleInfo.CancelAccess'
+      );
+      SDL.SDLModel.givenControl = null;
+      SDL.SDLModel.set('givenControlFlag', false);
+    }
 
-});
+}
+);

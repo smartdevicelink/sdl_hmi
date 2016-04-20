@@ -28,16 +28,17 @@
  *
  * @desc Component for Phone Home Widget
  *
- * @category	view
- * @filesource	app/view/home/widgetPhoneView.js
- * @version		1.0
+ * @category  view
+ * @filesource  app/view/home/widgetPhoneView.js
+ * @version    1.0
  */
 
 SDL.WidgetPhoneView = Em.ContainerView.extend({
 
-  elementId:	'home_widgetPhone',
+  elementId: 'home_widgetPhone',
 
   classNameBindings: [
-      'SDL.FuncSwitcher.rev::is-disabled'
+    'SDL.FuncSwitcher.rev::is-disabled'
   ]
-});
+}
+);

@@ -49,30 +49,34 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
 
     // init properties here
     this.set('appInfo', Em.Object.create({
-      field1: '<field1>',
-      field2: '<field2>',
-      field3: '<field3>',
-      field4: '<field4>',
-      mainImage: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
-      image: '',
-      customPresets: [
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>',
-          '<no definition>'
-      ],
-      alignment: 'text-align:center'
-    }));
+          field1: '<field1>',
+          field2: '<field2>',
+          field3: '<field3>',
+          field4: '<field4>',
+          mainImage: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
+          image: '',
+          customPresets: [
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>',
+            '<no definition>'
+          ],
+          alignment: 'text-align:center'
+        }
+        )
+      );
 
     this.set('activeRequests', Em.Object.create({
-      uiPerformInteraction: null
-    }));
+          uiPerformInteraction: null
+        }
+        )
+      );
 
     this.set('constantTBTParams', null);
 
@@ -86,7 +90,11 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
-    this.set('moduleSubscriptions', {'CLIMATE': {'subscription': false,zone: []},'RADIO': {'subscription': false,zone: []}});
+    this.set('moduleSubscriptions', {
+          'CLIMATE': {'subscription': false, zone: []},
+          'RADIO': {'subscription': false, zone: []}
+        }
+      );
   },
 
   /**
@@ -200,7 +208,8 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
     // Magic number is a count of Preset Buttons on HMI = 8
     this.appInfo.set('customPresets', []);
     for (var i = 0; i < 10; i++) {
-      if (!params.customPresets || (params.customPresets[i] == '' || params.customPresets[i] == null)) {
+      if (!params.customPresets || (
+        params.customPresets[i] == '' || params.customPresets[i] == null)) {
         this.appInfo.get('customPresets').pushObject('PRESET_' + i);
       } else {
         this.appInfo.get('customPresets').pushObject(params.customPresets[i]);
@@ -216,4 +225,5 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
 
     return;
   }
-});
+}
+);

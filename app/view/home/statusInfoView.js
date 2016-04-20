@@ -31,30 +31,32 @@
  * @version 1.0
  */
 SDL.StatusInfoView = Em.ContainerView.extend({
-  /** View Id */
-  elementId: 'status_info',
+    /** View Id */
+    elementId: 'status_info',
 
-  classNames: [
+    classNames: [
       'status_bar', 'hidden'
-  ],
+    ],
 
-  classNameBindings: [
+    classNameBindings: [
       'SDL.States.info.active:selected'
-  ],
+    ],
 
-  /** Navigation components */
-  childViews: [
+    /** Navigation components */
+    childViews: [
       'statusHome'
-  ],
+    ],
 
-  /** Label for Home screen */
-  statusHome: SDL.Label.create({
-    elementId: 'status_info_label',
-    content: 'Information'
-  }),
+    /** Label for Home screen */
+    statusHome: SDL.Label.create({
+        elementId: 'status_info_label',
+        content: 'Information'
+      }
+    ),
 
-  actionUp: function(event) {
+    actionUp: function(event) {
 
-    SDL.States.goToStates(SDL.InfoController.activeState);
+      SDL.States.goToStates(SDL.InfoController.activeState);
+    }
   }
-});
+);

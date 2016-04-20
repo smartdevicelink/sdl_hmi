@@ -68,8 +68,8 @@ SDL.PhoneController = Em.Object.create({
    * Dialpad key press handler
    */
   keyPress: function(element) {
-    this.model.setDialpadNumber(element.text);
-  },
+      this.model.setDialpadNumber(element.text);
+    },
 
   /**
    *
@@ -79,4 +79,5 @@ SDL.PhoneController = Em.Object.create({
     this.model.setDialpadNumber(request.params.number);
     this.onDialCall();
   }
-});
+}
+);

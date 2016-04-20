@@ -32,153 +32,137 @@
  * @version 1.0
  */
 
-SDL.AlertManeuverPopUp = Em.ContainerView.create({
-
-  elementId: 'AlertManeuverPopUp',
-
-  classNames: 'AlertManeuverPopUp',
-
-  classNameBindings:
-      ['activate:AlertManeuverActive'
-      ],
-
-  childViews:
-      [
-          'applicationName',
-          // 'image',
-          // 'message1',
-          // 'message2',
-          // 'message3',
-          'softbuttons',
-          'closeButton'
-      ],
-
-  content1: 'Title',
-
-  content2: 'Text',
-
-  activate: false,
-
-  timer: null,
-
-  /**
-   * Wagning image on Alert Maneuver PopUp
-   */
-  image: Em.View.extend({
-    elementId: 'alertManeuverPopUpImage',
-
-    classNames: 'alertManeuverPopUpImage'
-  }),
-
-  applicationName: SDL.Label.extend({
-
-    elementId: 'applicationName',
-
-    classNames: 'applicationName',
-
-    contentBinding: 'parentView.appName'
-  }),
-
-  message1: SDL.Label.extend({
-
-    elementId: 'message1',
-
-    classNames: 'message1',
-
-    contentBinding: 'parentView.content1'
-  }),
-
-  message2: SDL.Label.extend({
-
-    elementId: 'message2',
-
-    classNames: 'message2',
-
-    contentBinding: 'parentView.content2'
-  }),
-
-  message3: SDL.Label.extend({
-
-    elementId: 'message3',
-
-    classNames: 'message3',
-
-    contentBinding: 'parentView.content3'
-  }),
-
-  /**
-   * Container for softbuttons
-   */
-  softbuttons: Em.ContainerView.extend({
-    elementId: 'alertManeuverSoftButtons',
-
-    classNames: 'alertManeuverSoftButtons'
-  }),
-
-  /**
-   * Close button
-   */
-  closeButton: SDL.Button.create({
-    text: 'Close',
-    classNames: 'closeButton softButton',
-    action: 'closeAlertMeneuverPopUp',
-    target: 'SDL.SDLController',
-    templateName: 'text'
-  }),
-
-  /**
-   * @desc Function creates Soft Buttons on AlertPoUp
-   * @param {Object} params
-   */
-  addSoftButtons: function(params) {
-
-    var count = this.get('softbuttons').removeAllChildren();
-
-    if (params) {
-
-      var softButtonsClass;
-      switch (params.length){
-        case 1:
-          softButtonsClass = 'one';
-        break;
-        case 2:
-          softButtonsClass = 'two';
-        break;
-        case 3:
-          softButtonsClass = 'three';
-        break;
-        case 4:
-          softButtonsClass = 'four';
-        break;
+SDL.AlertManeuverPopUp = Em.ContainerView.create(
+  {
+    elementId: 'AlertManeuverPopUp',
+    classNames: 'AlertManeuverPopUp',
+    classNameBindings: [
+      'activate:AlertManeuverActive'
+    ],
+    childViews: [
+      'applicationName',
+      // 'image',
+      // 'message1',
+      // 'message2',
+      // 'message3',
+      'softbuttons',
+      'closeButton'
+    ],
+    content1: 'Title',
+    content2: 'Text',
+    activate: false,
+    timer: null,
+    /**
+     * Wagning image on Alert Maneuver PopUp
+     */
+    image: Em.View.extend(
+      {
+        elementId: 'alertManeuverPopUpImage',
+        classNames: 'alertManeuverPopUpImage'
       }
-
-      for (var i = 0; i < params.length; i++) {
-        this.get('softbuttons.childViews').pushObject(SDL.Button.create(SDL.PresetEventsCustom, {
-          softButtonID: params[i].softButtonID,
-          icon: params[i].image,
-          text: params[i].text,
-          classNames: 'list-item softButton ' + softButtonsClass,
-          elementId: 'softButton' + i,
-          templateName: params[i].image ? 'rightIcon' : 'text',
-          systemAction: params[i].systemAction,
-          appID: params.appID
-        }));
+    ),
+    applicationName: SDL.Label.extend(
+      {
+        elementId: 'applicationName',
+        classNames: 'applicationName',
+        contentBinding: 'parentView.appName'
       }
+    ),
+    message1: SDL.Label.extend(
+      {
+        elementId: 'message1',
+        classNames: 'message1',
+        contentBinding: 'parentView.content1'
+      }
+    ),
+    message2: SDL.Label.extend(
+      {
+        elementId: 'message2',
+        classNames: 'message2',
+        contentBinding: 'parentView.content2'
+      }
+    ),
+    message3: SDL.Label.extend(
+      {
+        elementId: 'message3',
+        classNames: 'message3',
+        contentBinding: 'parentView.content3'
+      }
+    ),
+    /**
+     * Container for softbuttons
+     */
+    softbuttons: Em.ContainerView.extend(
+      {
+        elementId: 'alertManeuverSoftButtons',
+        classNames: 'alertManeuverSoftButtons'
+      }
+    ),
+    /**
+     * Close button
+     */
+    closeButton: SDL.Button.create(
+      {
+        text: 'Close',
+        classNames: 'closeButton softButton',
+        action: 'closeAlertMeneuverPopUp',
+        target: 'SDL.SDLController',
+        templateName: 'text'
+      }
+    ),
+    /**
+     * @desc Function creates Soft Buttons on AlertPoUp
+     * @param {Object} params
+     */
+    addSoftButtons: function(params) {
+      var count = this.get('softbuttons').removeAllChildren();
+      if (params) {
+        var softButtonsClass;
+        switch (params.length) {
+          case 1:
+            softButtonsClass = 'one';
+            break;
+          case 2:
+            softButtonsClass = 'two';
+            break;
+          case 3:
+            softButtonsClass = 'three';
+            break;
+          case 4:
+            softButtonsClass = 'four';
+            break;
+        }
+        for (var i = 0; i < params.length; i++) {
+          this.get('softbuttons.childViews').pushObject(
+            SDL.Button.create(
+              SDL.PresetEventsCustom, {
+                softButtonID: params[i].softButtonID,
+                icon: params[i].image,
+                text: params[i].text,
+                classNames: 'list-item softButton ' + softButtonsClass,
+                elementId: 'softButton' + i,
+                templateName: params[i].image ? 'rightIcon' : 'text',
+                systemAction: params[i].systemAction,
+                appID: params.appID
+              }
+            )
+          );
+        }
+      }
+    },
+    AlertManeuverActive: function(message) {
+      //        var self = this;
+      //
+      //        if (message.softButtons) {
+      //            this.addSoftButtons( message.softButtons );
+      //        }
+      //
+      //        this.set( 'activate', true );
+      //
+      //        clearTimeout( this.timer );
+      //        this.timer = setTimeout( function() {
+      //            self.set( 'activate', false );
+      //        }, 5000 );
     }
-  },
-
-  AlertManeuverActive: function(message) {
-    //        var self = this;
-    //
-    //        if (message.softButtons) {
-    //            this.addSoftButtons( message.softButtons );
-    //        }
-    //
-    //        this.set( 'activate', true );
-    //
-    //        clearTimeout( this.timer );
-    //        this.timer = setTimeout( function() {
-    //            self.set( 'activate', false );
-    //        }, 5000 );
   }
-});
+);

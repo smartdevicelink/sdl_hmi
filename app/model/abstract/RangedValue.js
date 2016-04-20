@@ -53,7 +53,9 @@ SDL.RangedValue = Em.Object.extend({
     if (this.value < this.range) {
       this.set('value', this.value + 1);
     } else {
-      if (!this.cycle) { return; }
+      if (!this.cycle) {
+        return;
+      }
       this.set('value', 0);
     }
   },
@@ -85,7 +87,10 @@ SDL.RangedValue = Em.Object.extend({
     }
 
     if (this.value >= this.minValue) {
-      if (!this.cycle && (this.value == this.minValue)) { return; }
+      if (!this.cycle && (
+        this.value == this.minValue)) {
+        return;
+      }
       this.set('value', this.value - 1);
     } else {
       this.set('value', this.range);
@@ -134,4 +139,5 @@ SDL.RangedValue = Em.Object.extend({
       this.set('value', this.beforeOff);
     }
   }
-});
+}
+);

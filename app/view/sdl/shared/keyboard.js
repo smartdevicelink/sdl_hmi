@@ -32,11 +32,10 @@
  * @version 1.0
  */
 
-SDL.Keyboard = SDL.SDLAbstractView.create({
-
-  elementId: 'keyboard_view',
-
-  childViews: [
+SDL.Keyboard = SDL.SDLAbstractView.create(
+  {
+    elementId: 'keyboard_view',
+    childViews: [
       'backButton',
       'microphone',
       'searchBar',
@@ -44,254 +43,266 @@ SDL.Keyboard = SDL.SDLAbstractView.create({
       'buttonsAreaQWERTY',
       'buttonsAreaQWERTZ',
       'buttonsAreaAZERTY'
-  ],
-
-  /**
-   * Activate keyboard method
-   *
-   * @param {Object}
-   */
-  activate: function(element) {
-    if (element) {
-
-      this.set('active', true);
-      this.set('target', element);
-    }
-  },
-
-  backButton: SDL.Button.extend({
-    classNames:
-        [
-            'back-button'
-        ],
-    action: function() {
-
-      if (SDL.SDLController.model && SDL.SDLController.model.activeRequests.uiPerformInteraction && !SDL.InteractionChoicesView.active) {
-        FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
-        SDL.InteractionChoicesView.deactivate('ABORTED');
+    ],
+    /**
+     * Activate keyboard method
+     *
+     * @param {Object}
+     */
+    activate: function(element) {
+      if (element) {
+        this.set('active', true);
+        this.set('target', element);
       }
-      SDL.Keyboard.deactivate();
     },
-    icon: 'images/media/ico_back.png',
-    onDown: false
-  }),
-
-  /**
-   * Extend deactivate method send SUCCESS response on deactivate with current
-   * slider value
-   */
-  deactivate: function() {
-
-    this._super();
-    this.searchBar.input.set('value', null);
-    this.set('target', null);
-  },
-
-  inputChanges: function(element) {
-
-    if (SDL.SDLController.model && SDL.SDLController.model.activeRequests.uiPerformInteraction) {
-      SDL.SDLController.onResetTimeout(SDL.SDLController.model.appID, 'UI.PerformInteraction');
-    }
-
-    if (this.searchBar.input.value == null) {
-      this.searchBar.input.set('value', '');
-    }
-
-    switch (element.text) {
-      case 'Space': {
-        this.searchBar.input.set('value', this.searchBar.input.value + ' ');
-        this.target.set('value', this.searchBar.input.value);
-        break;
+    backButton: SDL.Button.extend(
+      {
+        classNames: [
+          'back-button'
+        ],
+        action: function() {
+          if (SDL.SDLController.model &&
+            SDL.SDLController.model.activeRequests.uiPerformInteraction &&
+            !SDL.InteractionChoicesView.active) {
+            FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
+            SDL.InteractionChoicesView.deactivate('ABORTED');
+          }
+          SDL.Keyboard.deactivate();
+        },
+        icon: 'images/media/ico_back.png',
+        onDown: false
       }
-      case 'Search': {
-        if (this.target.value == null) {
-          this.target.set('value', '');
+    ),
+    /**
+     * Extend deactivate method send SUCCESS response on deactivate with current
+     * slider value
+     */
+    deactivate: function() {
+      this._super();
+      this.searchBar.input.set('value', null);
+      this.set('target', null);
+    },
+    inputChanges: function(element) {
+      if (SDL.SDLController.model &&
+        SDL.SDLController.model.activeRequests.uiPerformInteraction) {
+        SDL.SDLController.onResetTimeout(
+          SDL.SDLController.model.appID, 'UI.PerformInteraction'
+        );
+      }
+      if (this.searchBar.input.value == null) {
+        this.searchBar.input.set('value', '');
+      }
+      switch (element.text) {
+        case 'Space':
+        {
+          this.searchBar.input.set('value', this.searchBar.input.value + ' ');
+          this.target.set('value', this.searchBar.input.value);
+          break;
         }
-        this.target.search();
-        this.deactivate();
-        break;
+        case 'Search':
+        {
+          if (this.target.value == null) {
+            this.target.set('value', '');
+          }
+          this.target.search();
+          this.deactivate();
+          break;
+        }
+        default:
+        {
+          this.searchBar.input.set(
+            'value', this.searchBar.input.value + element.text
+          );
+          this.target.set('value', this.searchBar.input.value);
+        }
       }
-      default: {
-        this.searchBar.input.set('value', this.searchBar.input.value + element.text);
-        this.target.set('value', this.searchBar.input.value);
+    },
+    clearBtn: function(element) {
+      this.searchBar.input.set(
+        'value', this.searchBar.input.value.slice(0, -1)
+      );
+      this.target.set('value', this.searchBar.input.value);
+      if (this.searchBar.input.value == '') {
+        FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
       }
-
-    }
-  },
-
-  clearBtn: function(element) {
-    this.searchBar.input.set('value', this.searchBar.input.value.slice(0, -1));
-    this.target.set('value', this.searchBar.input.value);
-    if (this.searchBar.input.value == '') {
-      FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
-    }
-    SDL.SDLController.onResetTimeout(SDL.SDLController.model.appID, 'UI.PerformInteraction');
-  },
-
-  /**
-   * Tearget element that initiated keyboard
-   */
-  target: null,
-
-  microphone: SDL.Button.extend({
-    classNames: 'microphone',
-    text: 'mic'
-  }),
-
-  searchBar: Em.ContainerView.extend({
-
-    classNames: 'searchBar',
-
-    childViews: [
-        'input',
-        'clearBtn',
-        'serchIcon'
-    ],
-
-    clearBtn: SDL.Button.extend({
-      classNames: 'clearBtn',
-      text: 'X',
-      action: 'clearBtn',
-      target: 'parentView.parentView'
-    }),
-
-    serchIcon: Em.View.extend({
-      classNames: 'serchIcon'
-    }),
-
-    input: Ember.TextField.extend({
-      elementId: 'keyboardInput',
-      classNames: 'keyboardInput',
-      valueBinding: 'SDL.SDLModel.data.keyboardInputValue'
-    })
-
-  }),
-
-  controlls: Em.ContainerView.extend({
-
-    classNames: 'controlls',
-
-    childViews: [
-        'numericBtn',
-        'symbolBtn',
-        'spaceBtn',
-        'caseSwitchBtn',
-        'localisationBtn',
-        'searchBtn'
-    ],
-
-    numericBtn: SDL.Button.extend({
-      classNames: 'numericBtn controll',
-      text: '123'
-    }),
-
-    symbolBtn: SDL.Button.extend({
-      classNames: 'symbolBtn controll',
-      text: '!@#'
-    }),
-
-    spaceBtn: SDL.Button.extend({
-      classNames: 'spaceBtn controll',
-      text: 'Space',
-      target: 'parentView.parentView',
-      action: 'inputChanges'
-    }),
-
-    caseSwitchBtn: SDL.Button.extend({
-      classNames: 'caseSwitchBtn controll',
-      text: 'ABC'
-    }),
-
-    localisationBtn: SDL.Button.extend({
-      classNames: 'localisationBtn controll',
-      icon: 'images/info/info_leftMenu_apps_ico.png'
-    }),
-
-    searchBtn: SDL.Button.extend(SDL.PresetEvents, {
-      classNames: 'searchBtn controll',
-      text: 'Search',
-      click: function() {
-        this.get('parentView.parentView').inputChanges(this);
-      },
-      presetName: 'SEARCH'
-    })
-  }),
-
-  disableButtons: function() {
-
-    if (SDL.SDLController.model) {
-      if (!SDL.SDLController.model.globalProperties.keyboardProperties) {
-        return;
+      SDL.SDLController.onResetTimeout(
+        SDL.SDLController.model.appID, 'UI.PerformInteraction'
+      );
+    },
+    /**
+     * Tearget element that initiated keyboard
+     */
+    target: null,
+    microphone: SDL.Button.extend(
+      {
+        classNames: 'microphone',
+        text: 'mic'
       }
-      var list = SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList ? SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList : [];
-
-      for (var i = 0; i < list.length; i++) {
-        list[i] = list[i].toLowerCase();
+    ),
+    searchBar: Em.ContainerView.extend(
+      {
+        classNames: 'searchBar',
+        childViews: [
+          'input',
+          'clearBtn',
+          'serchIcon'
+        ],
+        clearBtn: SDL.Button.extend(
+          {
+            classNames: 'clearBtn',
+            text: 'X',
+            action: 'clearBtn',
+            target: 'parentView.parentView'
+          }
+        ),
+        serchIcon: Em.View.extend(
+          {
+            classNames: 'serchIcon'
+          }
+        ),
+        input: Ember.TextField.extend(
+          {
+            elementId: 'keyboardInput',
+            classNames: 'keyboardInput',
+            valueBinding: 'SDL.SDLModel.data.keyboardInputValue'
+          }
+        )
       }
-
-      if (SDL.SDLController.model && list.length) {
-
-        for (var i = 0; i < this.buttonsAreaQWERTY._childViews.length; i++) {
-
-          if (list.indexOf(this.buttonsAreaQWERTY._childViews[i].text) < 0) {
-            this.buttonsAreaQWERTY._childViews[i].set('disabled', true);
-            this.buttonsAreaQWERTZ._childViews[i].set('disabled', true);
-            this.buttonsAreaAZERTY._childViews[i].set('disabled', true);
-          } else {
+    ),
+    controlls: Em.ContainerView.extend(
+      {
+        classNames: 'controlls',
+        childViews: [
+          'numericBtn',
+          'symbolBtn',
+          'spaceBtn',
+          'caseSwitchBtn',
+          'localisationBtn',
+          'searchBtn'
+        ],
+        numericBtn: SDL.Button.extend(
+          {
+            classNames: 'numericBtn controll',
+            text: '123'
+          }
+        ),
+        symbolBtn: SDL.Button.extend(
+          {
+            classNames: 'symbolBtn controll',
+            text: '!@#'
+          }
+        ),
+        spaceBtn: SDL.Button.extend(
+          {
+            classNames: 'spaceBtn controll',
+            text: 'Space',
+            target: 'parentView.parentView',
+            action: 'inputChanges'
+          }
+        ),
+        caseSwitchBtn: SDL.Button.extend(
+          {
+            classNames: 'caseSwitchBtn controll',
+            text: 'ABC'
+          }
+        ),
+        localisationBtn: SDL.Button.extend(
+          {
+            classNames: 'localisationBtn controll',
+            icon: 'images/info/info_leftMenu_apps_ico.png'
+          }
+        ),
+        searchBtn: SDL.Button.extend(
+          SDL.PresetEvents, {
+            classNames: 'searchBtn controll',
+            text: 'Search',
+            click: function() {
+              this.get('parentView.parentView').inputChanges(this);
+            },
+            presetName: 'SEARCH'
+          }
+        )
+      }
+    ),
+    disableButtons: function() {
+      if (SDL.SDLController.model) {
+        if (!SDL.SDLController.model.globalProperties.keyboardProperties) {
+          return;
+        }
+        var list = SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList ?
+          SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList :
+          [];
+        for (var i = 0; i < list.length; i++) {
+          list[i] = list[i].toLowerCase();
+        }
+        if (SDL.SDLController.model && list.length) {
+          for (var i = 0; i < this.buttonsAreaQWERTY._childViews.length; i++) {
+            if (list.indexOf(this.buttonsAreaQWERTY._childViews[i].text) < 0) {
+              this.buttonsAreaQWERTY._childViews[i].set('disabled', true);
+              this.buttonsAreaQWERTZ._childViews[i].set('disabled', true);
+              this.buttonsAreaAZERTY._childViews[i].set('disabled', true);
+            } else {
+              this.buttonsAreaQWERTY._childViews[i].set('disabled', false);
+              this.buttonsAreaQWERTZ._childViews[i].set('disabled', false);
+              this.buttonsAreaAZERTY._childViews[i].set('disabled', false);
+            }
+          }
+        } else if (SDL.SDLController.model && !list.length) {
+          for (var i = 0; i < this.buttonsAreaQWERTY._childViews.length; i++) {
             this.buttonsAreaQWERTY._childViews[i].set('disabled', false);
-            this.buttonsAreaQWERTZ._childViews[i].set('disabled', false);
-            this.buttonsAreaAZERTY._childViews[i].set('disabled', false);
           }
         }
-      } else if (SDL.SDLController.model && !list.length) {
-        for (var i = 0; i < this.buttonsAreaQWERTY._childViews.length; i++) {
-          this.buttonsAreaQWERTY._childViews[i].set('disabled', false);
-        }
       }
-    }
-
-  }.observes('SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList.@each'),
-
-  buttonsAreaQWERTY: SDL.QWERTYLayout.create({
-
-    classNameBindings: 'this.pQWERTY::hide',
-
-    pQWERTY: function() {
-      if (!SDL.SDLController.model || SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == 'QWERTY') {
-        return true;
-      } else {
-        return false;
+    }.observes(
+      'SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList.@each'
+    ),
+    buttonsAreaQWERTY: SDL.QWERTYLayout.create(
+      {
+        classNameBindings: 'this.pQWERTY::hide',
+        pQWERTY: function() {
+          if (!SDL.SDLController.model || SDL.SDLController.model &&
+            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout ==
+            'QWERTY') {
+            return true;
+          } else {
+            return false;
+          }
+        }.property(
+          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
+        )
       }
-    }.property('SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout')
-
-  }),
-
-  buttonsAreaQWERTZ: SDL.QWERTZLayout.create({
-
-    classNameBindings: 'this.pQWERTZ::hide',
-
-    pQWERTZ: function() {
-      if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == 'QWERTZ') {
-        return true;
-      } else {
-        return false;
+    ),
+    buttonsAreaQWERTZ: SDL.QWERTZLayout.create(
+      {
+        classNameBindings: 'this.pQWERTZ::hide',
+        pQWERTZ: function() {
+          if (SDL.SDLController.model &&
+            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout ==
+            'QWERTZ') {
+            return true;
+          } else {
+            return false;
+          }
+        }.property(
+          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
+        )
       }
-    }.property('SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout')
-
-  }),
-
-  buttonsAreaAZERTY: SDL.AZERTYLayout.create({
-
-    classNameBindings: 'this.pAZERTY::hide',
-
-    pAZERTY: function() {
-      if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == 'AZERTY') {
-        return true;
-      } else {
-        return false;
+    ),
+    buttonsAreaAZERTY: SDL.AZERTYLayout.create(
+      {
+        classNameBindings: 'this.pAZERTY::hide',
+        pAZERTY: function() {
+          if (SDL.SDLController.model &&
+            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout ==
+            'AZERTY') {
+            return true;
+          } else {
+            return false;
+          }
+        }.property(
+          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
+        )
       }
-    }.property('SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout')
-
-  })
-
-});
+    )
+  }
+);

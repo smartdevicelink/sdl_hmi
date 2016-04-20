@@ -31,5 +31,4 @@
  * @version 1.0
  */
 
-SDL.PModel = SDL.ABSModel.extend({
-});
+SDL.PModel = SDL.ABSModel.extend({});

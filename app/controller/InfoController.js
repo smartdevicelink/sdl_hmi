@@ -31,50 +31,45 @@
  * @version 1.0
  */
 
-SDL.InfoController = Em.Object.create({
-
-  activeState: 'info.apps',
-
-  hiddenLeftMenu: false,
-
-  onState: function(event) {
-
-    SDL.States.goToStates('info.' + event.goToState);
-  },
-
-  onChildState: function(event) {
-
-    SDL.States.goToStates(SDL.States.currentState.get('path') + '.'        +
-            event.goToState);
-  },
-
-  /**
-   * Switching on Application
-   */
-  turnOnSDL: function() {
-
-    //SDL.CDModel.set('active', false);
+SDL.InfoController = Em.Object.create(
+  {
+    activeState: 'info.apps',
+    hiddenLeftMenu: false,
+    onState: function(event) {
+      SDL.States.goToStates('info.' + event.goToState);
+    },
+    onChildState: function(event) {
+      SDL.States.goToStates(
+        SDL.States.currentState.get('path') + '.' +
+        event.goToState
+      );
+    },
     /**
-     * Set SDL Data active, flag for status bar
+     * Switching on Application
      */
-    if (SDL.SDLController.model) {
-      SDL.SDLController.model.set('active', true);
-    }
-    /**
-     * Go to SDL state
-     */
-    if (SDL.SDLController.model.appType) {
-      for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
-        if (SDL.SDLController.model.appType[i] == 'NAVIGATION') {
-          SDL.BaseNavigationView.update();
-          SDL.States.goToStates('navigationApp.baseNavigation');
-          return;
+    turnOnSDL: function() {
+
+      //SDL.CDModel.set('active', false);
+      /**
+       * Set SDL Data active, flag for status bar
+       */
+      if (SDL.SDLController.model) {
+        SDL.SDLController.model.set('active', true);
+      }
+      /**
+       * Go to SDL state
+       */
+      if (SDL.SDLController.model.appType) {
+        for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
+          if (SDL.SDLController.model.appType[i] == 'NAVIGATION') {
+            SDL.BaseNavigationView.update();
+            SDL.States.goToStates('navigationApp.baseNavigation');
+            return;
+          }
         }
       }
+      SDL.States.goToStates('info.nonMedia');
+      //SDL.States.goToStates('media.sdlmedia');
     }
-
-    SDL.States.goToStates('info.nonMedia');
-    //SDL.States.goToStates('media.sdlmedia');
-
   }
-});
+);

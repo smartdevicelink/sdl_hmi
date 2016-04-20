@@ -31,47 +31,49 @@
  * @version 1.0
  */
 
-SDL.ControlButtons = Em.ContainerView
-    .create({
+SDL.ControlButtons = Em.ContainerView.create({
 
-      elementId: 'app_controlButtons',
+  elementId: 'app_controlButtons',
 
-      childViews: [
-          'VRButton',
-          'buttonControls',
-          'driverDistractionControl',
-          'infoTable',
-          'vehicleInfo',
-          'tbtClientState',
-          'ExitApp',
-          'SystemRequest',
-          'UILanguages',
-          'TTSVRLanguages',
-          'UILanguagesLabel',
-          'TTSVRLanguagesLabel',
-          'appUILanguagesLabel',
-          'appTTSVRLanguagesLabel',
-          'appUILang',
-          'appTTSVRLang',
-          'phoneCall',
-          'keyboard'
-      ],
+  childViews: [
+    'VRButton',
+    'buttonControls',
+    'driverDistractionControl',
+    'infoTable',
+    'vehicleInfo',
+    'tbtClientState',
+    'ExitApp',
+    'SystemRequest',
+    'UILanguages',
+    'TTSVRLanguages',
+    'UILanguagesLabel',
+    'TTSVRLanguagesLabel',
+    'appUILanguagesLabel',
+    'appTTSVRLanguagesLabel',
+    'appUILang',
+    'appTTSVRLang',
+    'phoneCall',
+    'keyboard'
+  ],
 
-      keyboard: SDL.Button.extend({
+  keyboard: SDL.Button.extend({
         classNames: ['keyboard', 'button'],
         elementId: 'activate_keyboard',
         action: 'uiShowKeyboard',
         text: 'KEYBOARD',
         target: 'SDL.SDLController',
         search: function() {
-          FFW.UI.OnKeyboardInput(SDL.SDLModel.data.keyboardInputValue, 'ENTRY_SUBMITTED');
+          FFW.UI.OnKeyboardInput(SDL.SDLModel.data.keyboardInputValue,
+            'ENTRY_SUBMITTED'
+          );
         }
-      }),
+      }
+    ),
 
-      /**
-       * Button to initiate phone call emulation on HMI
-       */
-      phoneCall: SDL.Button.extend({
+  /**
+   * Button to initiate phone call emulation on HMI
+   */
+  phoneCall: SDL.Button.extend({
         elementId: 'phone_call_button',
 
         classNames: ['phone_call_button', 'button'],
@@ -93,113 +95,122 @@ SDL.ControlButtons = Em.ContainerView
         target: 'SDL.SettingsController',
 
         text: 'Incoming call!'
-      }),
+      }
+    ),
 
-      /*
-       * Label with name of UILanguages select
-       */
-      appUILang: SDL.Label.extend({
+  /*
+   * Label with name of UILanguages select
+   */
+  appUILang: SDL.Label.extend({
 
-        elementId: 'appUILang',
+    elementId: 'appUILang',
 
-        classNames: 'appUILang',
+    classNames: 'appUILang',
 
-        contentBinding: 'SDL.SDLController.model.UILanguage'
-      }),
+    contentBinding: 'SDL.SDLController.model.UILanguage'
+  }
+),
 
-      /*
-       * Label with name of TTSVRLanguages select
-       */
-      appTTSVRLang: SDL.Label.extend({
+  /*
+   * Label with name of TTSVRLanguages select
+   */
+  appTTSVRLang: SDL.Label.extend({
 
-        elementId: 'appTTSVRLang',
+    elementId: 'appTTSVRLang',
 
-        classNames: 'appTTSVRLang',
+    classNames: 'appTTSVRLang',
 
-        contentBinding: 'SDL.SDLController.model.TTSVRLanguage'
-      }),
+    contentBinding: 'SDL.SDLController.model.TTSVRLanguage'
+  }
+),
 
-      /*
-       * Label with name of UILanguages select
-       */
-      appUILanguagesLabel: SDL.Label.extend({
+  /*
+   * Label with name of UILanguages select
+   */
+  appUILanguagesLabel: SDL.Label.extend({
 
-        elementId: 'appUILanguagesLabel',
+    elementId: 'appUILanguagesLabel',
 
-        classNames: 'appUILanguagesLabel',
+    classNames: 'appUILanguagesLabel',
 
-        content: 'application UI Languages'
-      }),
+    content: 'application UI Languages'
+  }
+),
 
-      /*
-       * Label with name of TTSVRLanguages select
-       */
-      appTTSVRLanguagesLabel: SDL.Label.extend({
+  /*
+   * Label with name of TTSVRLanguages select
+   */
+  appTTSVRLanguagesLabel: SDL.Label.extend({
 
-        elementId: 'appTTSVRLanguagesLabel',
+    elementId: 'appTTSVRLanguagesLabel',
 
-        classNames: 'appTTSVRLanguagesLabel',
+    classNames: 'appTTSVRLanguagesLabel',
 
-        content: 'application (TTS + VR) Languages'
-      }),
+    content: 'application (TTS + VR) Languages'
+  }
+),
 
-      /*
-       * Label with name of UILanguages select
-       */
-      UILanguagesLabel: SDL.Label.extend({
+  /*
+   * Label with name of UILanguages select
+   */
+  UILanguagesLabel: SDL.Label.extend({
 
-        elementId: 'UILanguagesLabel',
+    elementId: 'UILanguagesLabel',
 
-        classNames: 'UILanguagesLabel',
+    classNames: 'UILanguagesLabel',
 
-        content: 'UI Languages'
-      }),
+    content: 'UI Languages'
+  }
+),
 
-      /*
-       * Label with name of TTSVRLanguages select
-       */
-      TTSVRLanguagesLabel: SDL.Label.extend({
+  /*
+   * Label with name of TTSVRLanguages select
+   */
+  TTSVRLanguagesLabel: SDL.Label.extend({
 
-        elementId: 'TTSVRLanguagesLabel',
+    elementId: 'TTSVRLanguagesLabel',
 
-        classNames: 'TTSVRLanguagesLabel',
+    classNames: 'TTSVRLanguagesLabel',
 
-        content: 'TTS + VR Languages'
-      }),
+    content: 'TTS + VR Languages'
+  }
+),
 
-      /*
-       * HMI element Select with list of supported UI component languages
-       */
-      UILanguages: Em.Select.extend({
+  /*
+   * HMI element Select with list of supported UI component languages
+   */
+  UILanguages: Em.Select.extend({
 
-        elementId: 'UILanguages',
+    elementId: 'UILanguages',
 
-        classNames: 'languageSelect',
+    classNames: 'languageSelect',
 
-        contentBinding: 'SDL.SDLModel.data.sdlLanguagesList',
+    contentBinding: 'SDL.SDLModel.data.sdlLanguagesList',
 
-        valueBinding: 'SDL.SDLModel.data.hmiUILanguage'
-      }),
+    valueBinding: 'SDL.SDLModel.data.hmiUILanguage'
+  }
+),
 
-      /*
-       * HMI element Select with list of supported TTS and VR component
-       * languages
-       */
-      TTSVRLanguages: Em.Select.extend({
+  /*
+   * HMI element Select with list of supported TTS and VR component
+   * languages
+   */
+  TTSVRLanguages: Em.Select.extend({
 
-        elementId: 'TTSVRLanguages',
+    elementId: 'TTSVRLanguages',
 
-        classNames: 'languageSelect',
+    classNames: 'languageSelect',
 
-        contentBinding: 'SDL.SDLModel.data.sdlLanguagesList',
+    contentBinding: 'SDL.SDLModel.data.sdlLanguagesList',
 
-        valueBinding: 'SDL.SDLModel.data.hmiTTSVRLanguage'
-      }),
+    valueBinding: 'SDL.SDLModel.data.hmiTTSVRLanguage'
+  }
+),
 
-      /**
-       * VehicleInfo button
-       */
-      vehicleInfo: SDL.Button.create({
+  /**
+   * VehicleInfo button
+   */
+  vehicleInfo: SDL.Button.create({
         elementId: 'vehicleInfoButton',
         classNames: 'vehicleInfoButton btn',
         text: 'Vehicle Info',
@@ -209,12 +220,13 @@ SDL.ControlButtons = Em.ContainerView
           SDL.VehicleInfo.toggleActivity();
         },
         templateName: 'text'
-      }),
+      }
+    ),
 
-      /**
-       * TBT Client State button
-       */
-      tbtClientState: SDL.Button.create({
+  /**
+   * TBT Client State button
+   */
+  tbtClientState: SDL.Button.create({
         elementId: 'tbtClientStateButton',
         classNames: 'tbtClientStateButton btn',
         text: 'TBT Client State',
@@ -224,12 +236,13 @@ SDL.ControlButtons = Em.ContainerView
           SDL.TBTClientStateView.toggleActivity();
         },
         templateName: 'text'
-      }),
+      }
+    ),
 
-      /**
-       * Exit Application button opens Exit Application reasons popup
-       */
-      ExitApp: SDL.Button.create({
+  /**
+   * Exit Application button opens Exit Application reasons popup
+   */
+  ExitApp: SDL.Button.create({
         elementId: 'exitApp',
         classNames: 'exitApp btn',
         text: 'Exit Application',
@@ -239,12 +252,13 @@ SDL.ControlButtons = Em.ContainerView
           SDL.ExitApp.toggleActivity();
         },
         templateName: 'text'
-      }),
+      }
+    ),
 
-      /**
-       * Exit Application button opens Exit Application reasons popup
-       */
-      SystemRequest: SDL.Button.create({
+  /**
+   * Exit Application button opens Exit Application reasons popup
+   */
+  SystemRequest: SDL.Button.create({
         elementId: 'systemRequest',
         classNames: 'systemRequest btn',
         text: 'System Request',
@@ -254,137 +268,155 @@ SDL.ControlButtons = Em.ContainerView
           SDL.SystemRequest.toggleActivity();
         },
         templateName: 'text'
-      }),
+      }
+    ),
 
-      /**
-       * Voice Recognition button
-       */
-      VRButton: SDL.Button.create({
+  /**
+   * Voice Recognition button
+   */
+  VRButton: SDL.Button.create({
         elementId: 'VRButton',
         classNames: 'VRButton',
         action: 'activateVRPopUp',
         target: 'SDL.SDLController'
-      }),
+      }
+    ),
 
-      infoTable: Em.ContainerView
-            .extend({
-              elementId: 'infoTable',
+  infoTable: Em.ContainerView.extend({
+        elementId: 'infoTable',
 
-              classNames: 'infoTable',
+        classNames: 'infoTable',
 
-              childViews: [
-                  'globalPropertiesLabel',
-                  'gpHelpData',
-                  'gpTimeoutData',
-                  'gpAUTOCOMPLETE',
-                  'policyURLs'
-              ],
+        childViews: [
+          'globalPropertiesLabel',
+          'gpHelpData',
+          'gpTimeoutData',
+          'gpAUTOCOMPLETE',
+          'policyURLs'
+        ],
 
-              globalPropertiesLabel: SDL.Label.extend({
+        globalPropertiesLabel: SDL.Label.extend({
 
-                elementId: 'sdlGPLabel',
+          elementId: 'sdlGPLabel',
 
-                classNames: 'sdlGPLabel',
+          classNames: 'sdlGPLabel',
 
-                content: 'HELP_PROMPT: TIMEOUT_PROMPT: AUTOCOMPLETE_TEXT: POLICY_GetURLS:'
-              }),
+          content: 'HELP_PROMPT: TIMEOUT_PROMPT: AUTOCOMPLETE_TEXT: POLICY_GetURLS:'
+        }
+      ),
 
-              policyURLs: SDL.Label.extend({
+        policyURLs: SDL.Label.extend({
 
-                elementId: 'policyURLs',
+          elementId: 'policyURLs',
 
-                classNames: 'sdlGPData',
+          classNames: 'sdlGPData',
 
-                contentBinding: 'this.propertiesData',
+          contentBinding: 'this.propertiesData',
 
-                propertiesData: function() {
+          propertiesData: function() {
 
-                  var str = '';
-                  for (var i = 0; i < SDL.SDLModel.data.policyURLs.length; i++) {
-                    str += SDL.SDLModel.data.policyURLs[i] + '; ';
-                  }
+            var str = '';
+            for (var i = 0; i < SDL.SDLModel.data.policyURLs.length; i++) {
+              str += SDL.SDLModel.data.policyURLs[i] + '; ';
+            }
 
-                  return str;
-                }.property('SDL.SDLModel.data.policyURLs')
-              }),
+            return str;
+          }.property('SDL.SDLModel.data.policyURLs')
+        }
+      ),
 
-              gpHelpData: SDL.Label.extend({
+        gpHelpData: SDL.Label.extend({
 
-                elementId: 'sdlGPHData',
+          elementId: 'sdlGPHData',
 
-                classNames: 'sdlGPData',
+          classNames: 'sdlGPData',
 
-                contentBinding: 'this.propertiesData',
+          contentBinding: 'this.propertiesData',
 
-                propertiesData: function() {
+          propertiesData: function() {
 
-                  var str = '';
-                  if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.helpPrompt) {
-                    var i = 0;
+            var str = '';
+            if (SDL.SDLController.model &&
+              SDL.SDLController.model.globalProperties.helpPrompt) {
+              var i = 0;
 
-                    for (i = 0; i < SDL.SDLController.model.globalProperties.helpPrompt.length; i++) {
-                      str += SDL.SDLController.model.globalProperties.helpPrompt[i].text                          +
-                                    ' ';
-                    }
-                  }
-                  return str;
-                }.property('SDL.SDLController.model.globalProperties.helpPrompt.@each.text')
-              }),
+              for (i = 0; i <
+              SDL.SDLController.model.globalProperties.helpPrompt.length; i++) {
+                str += SDL.SDLController.model.globalProperties.helpPrompt[i].text +
+                  ' ';
+              }
+            }
+            return str;
+          }.property(
+            'SDL.SDLController.model.globalProperties.helpPrompt.@each.text'
+          )
+        }
+      ),
 
-              gpTimeoutData: SDL.Label.extend({
+        gpTimeoutData: SDL.Label.extend({
 
-                elementId: 'sdlGPTData',
+          elementId: 'sdlGPTData',
 
-                classNames: 'sdlGPData',
+          classNames: 'sdlGPData',
 
-                contentBinding: 'this.propertiesData',
+          contentBinding: 'this.propertiesData',
 
-                propertiesData: function() {
+          propertiesData: function() {
 
-                  var str = '';
-                  if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.timeoutPrompt) {
-                    var i = 0;
-                    for (i = 0; i < SDL.SDLController.model.globalProperties.timeoutPrompt.length; i++) {
-                      str += SDL.SDLController.model.globalProperties.timeoutPrompt[i].text                          +
-                                    ' ';
-                    }
-                  }
+            var str = '';
+            if (SDL.SDLController.model &&
+              SDL.SDLController.model.globalProperties.timeoutPrompt) {
+              var i = 0;
+              for (i = 0; i <
+              SDL.SDLController.model.globalProperties.timeoutPrompt.length; i++) {
+                str                  +=
+                    SDL.SDLController.model.globalProperties.timeoutPrompt[i].text +
+                  ' ';
+              }
+            }
 
-                  return str;
-                }.property('SDL.SDLController.model.globalProperties.timeoutPrompt.@each.text')
-              }),
+            return str;
+          }.property(
+            'SDL.SDLController.model.globalProperties.timeoutPrompt.@each.text'
+          )
+        }
+      ),
 
-              gpAUTOCOMPLETE: SDL.Label.extend({
+        gpAUTOCOMPLETE: SDL.Label.extend({
 
-                elementId: 'sdlGPAUTOCOMPLETE',
+          elementId: 'sdlGPAUTOCOMPLETE',
 
-                classNames: 'sdlGPData',
+          classNames: 'sdlGPData',
 
-                contentBinding: 'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteText',
+          contentBinding: 'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteText',
 
-                propertiesData: function() {
+          propertiesData: function() {
 
-                  //                        var str = '';
-                  //                        if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.timeoutPrompt) {
-                  //                            var i = 0;
-                  //                            for (i = 0; i < SDL.SDLController.model.globalProperties.timeoutPrompt.length; i++) {
-                  //                                str += SDL.SDLController.model.globalProperties.timeoutPrompt[i].text
-                  //                                    + ' ';
-                  //                            }
-                  //                        }
-                  //
-                  //                        return str;
-                }.property('SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteText.@each')
-              })
-            }),
+            //                        var str = '';
+            //                        if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.timeoutPrompt) {
+            //                            var i = 0;
+            //                            for (i = 0; i < SDL.SDLController.model.globalProperties.timeoutPrompt.length; i++) {
+            //                                str += SDL.SDLController.model.globalProperties.timeoutPrompt[i].text
+            //                                    + ' ';
+            //                            }
+            //                        }
+            //
+            //                        return str;
+          }.property(
+            'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteText.@each'
+          )
+        }
+      )
+      }
+    ),
 
-      driverDistractionControl: Em.ContainerView.extend({
+  driverDistractionControl: Em.ContainerView.extend({
         elementId: 'driverDistractionControl',
 
         classNames: 'driverDistractionControl',
 
         childViews: [
-            'driverDistractionLabel', 'driverDistractionCheckBox'
+          'driverDistractionLabel', 'driverDistractionCheckBox'
         ],
 
         driverDistractionLabel: SDL.Label.extend({
@@ -394,7 +426,8 @@ SDL.ControlButtons = Em.ContainerView
           classNames: 'driverDistractionControlLabel',
 
           content: 'DD'
-        }),
+        }
+      ),
 
         driverDistractionCheckBox: Em.Checkbox.extend({
 
@@ -404,188 +437,206 @@ SDL.ControlButtons = Em.ContainerView
 
           checkedBinding: 'SDL.SDLModel.data.driverDistractionState'
 
-        })
-      }),
+        }
+      )
+      }
+    ),
 
-      buttonControls: Em.ContainerView.extend({
+  buttonControls: Em.ContainerView.extend({
         elementId: 'buttonControls',
 
         classNames: 'buttonControls',
 
         childViews: [
-            'ContainerControlls',
-            'OneBtn',
-            'TwoBtn',
-            'ThreeBtn',
-            'FourBtn',
-            'FiveBtn',
-            'SixBtn',
-            'SevenBtn',
-            'EightBtn',
-            'NineBtn',
-            'ZiroBtn'
+          'ContainerControlls',
+          'OneBtn',
+          'TwoBtn',
+          'ThreeBtn',
+          'FourBtn',
+          'FiveBtn',
+          'SixBtn',
+          'SevenBtn',
+          'EightBtn',
+          'NineBtn',
+          'ZiroBtn'
         ],
 
         ContainerControlls: Em.ContainerView.extend({
-          elementId: 'ContainerControlls',
+            elementId: 'ContainerControlls',
 
-          classNames: 'ContainerControlls',
+            classNames: 'ContainerControlls',
 
-          childViews: [
+            childViews: [
               'UpBtn', 'DownBtn', 'LeftBtn', 'RightBtn', 'OkBtn'
-          ],
+            ],
 
-          /** Up button */
-          UpBtn: SDL.Button.create(SDL.PresetEvents, {
-            elementId: 'TUNEUP',
-            classNames: 'UpBtn',
-            time: 0,
-            presetName: 'TUNEUP'
-          }),
+            /** Up button */
+            UpBtn: SDL.Button.create(SDL.PresetEvents, {
+                elementId: 'TUNEUP',
+                classNames: 'UpBtn',
+                time: 0,
+                presetName: 'TUNEUP'
+              }
+            ),
 
-          /** Down button */
-          DownBtn: SDL.Button.create(SDL.PresetEvents, {
-            elementId: 'TUNEDOWN',
-            classNames: 'DownBtn',
-            time: 0,
-            presetName: 'TUNEDOWN'
-          }),
+            /** Down button */
+            DownBtn: SDL.Button.create(SDL.PresetEvents, {
+                elementId: 'TUNEDOWN',
+                classNames: 'DownBtn',
+                time: 0,
+                presetName: 'TUNEDOWN'
+              }
+            ),
 
-          /** Left button */
-          LeftBtn: SDL.Button.create(SDL.PresetEvents, {
-            elementId: 'SEEKLEFT',
-            classNames: 'LeftBtn',
-            time: 0,
-            presetName: 'SEEKLEFT'
-          }),
+            /** Left button */
+            LeftBtn: SDL.Button.create(SDL.PresetEvents, {
+                elementId: 'SEEKLEFT',
+                classNames: 'LeftBtn',
+                time: 0,
+                presetName: 'SEEKLEFT'
+              }
+            ),
 
-          /** Right button */
-          RightBtn: SDL.Button.create(SDL.PresetEvents, {
-            elementId: 'SEEKRIGHT',
-            classNames: 'RightBtn',
-            time: 0,
-            presetName: 'SEEKRIGHT'
-          }),
+            /** Right button */
+            RightBtn: SDL.Button.create(SDL.PresetEvents, {
+                elementId: 'SEEKRIGHT',
+                classNames: 'RightBtn',
+                time: 0,
+                presetName: 'SEEKRIGHT'
+              }
+            ),
 
-          /** Ok button */
-          OkBtn: SDL.Button.create({
-            elementId: 'OK',
-            classNames: 'OkBtn',
-            time: 0,
-            presetName: 'OK',
-            actionDown: function() {
+            /** Ok button */
+            OkBtn: SDL.Button.create({
+                elementId: 'OK',
+                classNames: 'OkBtn',
+                time: 0,
+                presetName: 'OK',
+                actionDown: function() {
 
-              this._super();
-              SDL.SDLController
-                  .onSoftButtonOkActionDown(this.presetName);
-            },
-            actionUp: function() {
+                  this._super();
+                  SDL.SDLController.onSoftButtonOkActionDown(this.presetName);
+                },
+                actionUp: function() {
 
-              this._super();
-              SDL.SDLController
-                  .onSoftButtonOkActionUp(this.presetName);
-            }
-          })
-        }),
+                  this._super();
+                  SDL.SDLController.onSoftButtonOkActionUp(this.presetName);
+                }
+              }
+            )
+          }
+        ),
 
         /** One button */
         OneBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_1',
-          classNames: 'OneBtn btnNotPressed',
-          text: '1',
-          time: 0,
-          presetName: 'PRESET_1',
-          templateName: 'text'
-        }),
+            elementId: 'PRESET_1',
+            classNames: 'OneBtn btnNotPressed',
+            text: '1',
+            time: 0,
+            presetName: 'PRESET_1',
+            templateName: 'text'
+          }
+        ),
 
         /** Two button */
         TwoBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_2',
-          classNames: 'TwoBtn btnNotPressed',
-          text: '2',
-          time: 0,
-          presetName: 'PRESET_2',
-          templateName: 'text'
-        }),
+            elementId: 'PRESET_2',
+            classNames: 'TwoBtn btnNotPressed',
+            text: '2',
+            time: 0,
+            presetName: 'PRESET_2',
+            templateName: 'text'
+          }
+        ),
 
         /** Three button */
         ThreeBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_3',
-          classNames: 'ThreeBtn btnNotPressed',
-          text: '3',
-          time: 0,
-          presetName: 'PRESET_3',
-          templateName: 'text'
-        }),
+            elementId: 'PRESET_3',
+            classNames: 'ThreeBtn btnNotPressed',
+            text: '3',
+            time: 0,
+            presetName: 'PRESET_3',
+            templateName: 'text'
+          }
+        ),
 
         /** Four button */
         FourBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_4',
-          classNames: 'FourBtn btnNotPressed',
-          text: '4',
-          time: 0,
-          presetName: 'PRESET_4',
-          templateName: 'text'
-        }),
+            elementId: 'PRESET_4',
+            classNames: 'FourBtn btnNotPressed',
+            text: '4',
+            time: 0,
+            presetName: 'PRESET_4',
+            templateName: 'text'
+          }
+        ),
 
         /** Five button */
         FiveBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_5',
-          classNames: 'FiveBtn btnNotPressed',
-          text: '5',
-          time: 0,
-          presetName: 'PRESET_5',
-          templateName: 'text'
-        }),
+            elementId: 'PRESET_5',
+            classNames: 'FiveBtn btnNotPressed',
+            text: '5',
+            time: 0,
+            presetName: 'PRESET_5',
+            templateName: 'text'
+          }
+        ),
 
         /** One button */
         SixBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_6',
-          classNames: 'SixBtn btnNotPressed',
-          text: '6',
-          time: 0,
-          presetName: 'PRESET_6',
-          templateName: 'text'
-        }),
+            elementId: 'PRESET_6',
+            classNames: 'SixBtn btnNotPressed',
+            text: '6',
+            time: 0,
+            presetName: 'PRESET_6',
+            templateName: 'text'
+          }
+        ),
 
         /** One button */
         SevenBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_7',
-          classNames: 'SevenBtn btnNotPressed',
-          text: '7',
-          time: 0,
-          presetName: 'PRESET_7',
-          templateName: 'text'
-        }),
+            elementId: 'PRESET_7',
+            classNames: 'SevenBtn btnNotPressed',
+            text: '7',
+            time: 0,
+            presetName: 'PRESET_7',
+            templateName: 'text'
+          }
+        ),
 
         /** One button */
         EightBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_8',
-          classNames: 'EightBtn btnNotPressed',
-          text: '8',
-          time: 0,
-          presetName: 'PRESET_8',
-          templateName: 'text'
-        }),
+            elementId: 'PRESET_8',
+            classNames: 'EightBtn btnNotPressed',
+            text: '8',
+            time: 0,
+            presetName: 'PRESET_8',
+            templateName: 'text'
+          }
+        ),
 
         /** One button */
         NineBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_9',
-          classNames: 'NineBtn btnNotPressed',
-          text: '9',
-          time: 0,
-          presetName: 'PRESET_9',
-          templateName: 'text'
-        }),
+            elementId: 'PRESET_9',
+            classNames: 'NineBtn btnNotPressed',
+            text: '9',
+            time: 0,
+            presetName: 'PRESET_9',
+            templateName: 'text'
+          }
+        ),
 
         /** One button */
         ZiroBtn: SDL.Button.create(SDL.PresetEvents, {
-          elementId: 'PRESET_0',
-          classNames: 'ZiroBtn btnNotPressed',
-          text: '0',
-          time: 0,
-          presetName: 'PRESET_0',
-          templateName: 'text'
-        })
-      })
-    });
+            elementId: 'PRESET_0',
+            classNames: 'ZiroBtn btnNotPressed',
+            text: '0',
+            time: 0,
+            presetName: 'PRESET_0',
+            templateName: 'text'
+          }
+        )
+      }
+    )
+}
+);

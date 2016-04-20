@@ -34,11 +34,11 @@
 SDL.DeviceListView = Em.ContainerView.create({
 
   classNames: [
-      'info_apps_deviceList_view'
+    'info_apps_deviceList_view'
   ],
 
   classNameBindings: [
-      'SDL.States.info.devicelist.active:active_state:inactive_state'
+    'SDL.States.info.devicelist.active:active_state:inactive_state'
   ],
 
   /**
@@ -50,51 +50,53 @@ SDL.DeviceListView = Em.ContainerView.create({
    * View Components
    */
   childViews: [
-      'backButton',
-      'listOfDevices',
-      'deviceListLabel',
-      'progress',
-      'primaryDevice'
+    'backButton',
+    'listOfDevices',
+    'deviceListLabel',
+    'progress',
+    'primaryDevice'
   ],
 
   /**
    * Animation of search devices progress
    */
   progress: Em.View.extend({
-    classNames: [
-        'progress'
-    ],
-    classNameBindings: ['SDL.SDLModel.data.deviceSearchProgress:progress']
-  }),
+        classNames: [
+          'progress'
+        ],
+        classNameBindings: ['SDL.SDLModel.data.deviceSearchProgress:progress']
+      }
+    ),
 
   /**
    * Button to return to previous view
    */
   backButton: SDL.Button.extend({
-    classNames: [
-        'backButton', 'button'
-    ],
-    action: 'turnChangeDeviceViewBack',
-    target: 'SDL.SDLController',
-    icon: 'images/media/ico_back.png'
-  }),
+        classNames: [
+          'backButton', 'button'
+        ],
+        action: 'turnChangeDeviceViewBack',
+        target: 'SDL.SDLController',
+        icon: 'images/media/ico_back.png'
+      }
+    ),
 
   /**
    * Button to open window to choose primary device
    */
   primaryDevice: SDL.Button.extend({
-    classNames: [
-        'primaryDevice', 'button'
-    ],
-    classNameBindings:
-        [
-            'SDL.FuncSwitcher.rev::is-disabled'
+        classNames: [
+          'primaryDevice', 'button'
         ],
-    action: 'toggleDriverDeviceWindow',
-    target: 'SDL.SDLController',
-    text: 'Driver',
-    templateName: 'text'
-  }),
+        classNameBindings: [
+          'SDL.FuncSwitcher.rev::is-disabled'
+        ],
+        action: 'toggleDriverDeviceWindow',
+        target: 'SDL.SDLController',
+        text: 'Driver',
+        templateName: 'text'
+      }
+    ),
 
   /**
    * Label in title
@@ -106,7 +108,8 @@ SDL.DeviceListView = Em.ContainerView.create({
     classNames: 'deviceListLabel',
 
     content: 'Change Devices'
-  }),
+  }
+),
 
   /**
    * Function calls when notification from RPC comes and creates buttons to
@@ -117,19 +120,20 @@ SDL.DeviceListView = Em.ContainerView.create({
     this.clearDeviceList();
 
     for (var i = 0; i < params.deviceList.length; i++) {
-      this.get('listOfDevices.list.childViews').pushObject(SDL.Button
-                .create({
-                  deviceName: params.deviceList[i].name,
-                  icon: params.deviceList[i].icon,
-                  text: params.deviceList[i].name,
-                  classNames: 'ffw-button notpressed list-item',
-                  templateName: params.deviceList[i].icon ? 'rightIcon'
-                      : 'text',
-                  action: 'onDeviceChoosed',
-                  target: 'SDL.SDLController',
-                  onDown: false,
-                  id: params.deviceList[i].id
-                }));
+      this.get('listOfDevices.list.childViews').pushObject(SDL.Button.create({
+            deviceName: params.deviceList[i].name,
+            icon: params.deviceList[i].icon,
+            text: params.deviceList[i].name,
+            classNames: 'ffw-button notpressed list-item',
+            templateName: params.deviceList[i].icon ? 'rightIcon'
+              : 'text',
+            action: 'onDeviceChoosed',
+            target: 'SDL.SDLController',
+            onDown: false,
+            id: params.deviceList[i].id
+          }
+          )
+        );
     }
   },
 
@@ -154,5 +158,7 @@ SDL.DeviceListView = Em.ContainerView.create({
 
     /** Items array */
     items: []
-  })
-});
+  }
+)
+}
+);

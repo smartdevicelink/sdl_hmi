@@ -35,41 +35,29 @@
  * @version 1.0
  */
 
-FLAGS = Em.Object.create({
-  /**
-   * Set language for localization
-   */
-  SET_LOCALIZATION: 'eng',
-
-  WEBSOCKET_URL: 'ws://127.0.0.1:8087',
-
-  CAN_WEBSOCKET_URL: 'ws://127.0.0.1:2468',
-
-  TOUCH_EVENT_STARTED: false,
-
-  BasicCommunication: null,
-
-  UI: null,
-
-  VehicleInfo: null,
-
-  VR: null,
-
-  Buttons: null,
-
-  TTS: null,
-
-  Navigation: null,
-
-  CAN: null,
-
-  RC: null,
-
-  /**
-   * 0 - G
-   * 1 - P
-   * 2 - R
-   */
-  SimpleFunctionality: 2
-
-});
+FLAGS = Em.Object.create(
+  {
+    /**
+     * Set language for localization
+     */
+    SET_LOCALIZATION: 'eng',
+    WEBSOCKET_URL: 'ws://127.0.0.1:8087',
+    CAN_WEBSOCKET_URL: 'ws://127.0.0.1:2468',
+    TOUCH_EVENT_STARTED: false,
+    BasicCommunication: null,
+    UI: null,
+    VehicleInfo: null,
+    VR: null,
+    Buttons: null,
+    TTS: null,
+    Navigation: null,
+    CAN: null,
+    RC: null,
+    /**
+     * 0 - G
+     * 1 - P
+     * 2 - R
+     */
+    SimpleFunctionality: 2
+  }
+);

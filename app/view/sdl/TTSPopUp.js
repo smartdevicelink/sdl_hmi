@@ -31,142 +31,114 @@
  * @version 1.0
  */
 
-SDL.TTSPopUp = Em.ContainerView.create({
-
-  elementId: 'TTSPopUp',
-
-  classNames: 'TTSPopUp',
-
-  classNameBindings: [
+SDL.TTSPopUp = Em.ContainerView.create(
+  {
+    elementId: 'TTSPopUp',
+    classNames: 'TTSPopUp',
+    classNameBindings: [
       'active'
-  ],
-
-  childViews: [
+    ],
+    childViews: [
       'popUp',
       'message',
       'okButton',
       'timerText',
       'checkBoxLabel',
       'checkBox'
-  ],
-
-  requestId: null,
-
-  content: 'Messaage',
-
-  active: false,
-
-  timer: null,
-
-  appID: null,
-
-  timerSeconds: 5,
-
-  popUp: Ember.TextArea.extend({
-
-    elementId: 'popUp',
-
-    classNames: 'popUp',
-
-    valueBinding: 'parentView.content'
-  }),
-
-  message: SDL.Label.extend({
-
-    elementId: 'message',
-
-    classNames: 'message'
-  }),
-
-  okButton: SDL.Button.extend({
-    classNames: 'button okButton',
-    text: 'Reset Timeout',
-    action: 'resetTimeout',
-    target: 'parentView',
-    buttonAction: true,
-    onDown: false,
-    disabledBinding: 'parentView.buttons'
-  }),
-
-  checkBoxLabel: SDL.Label.extend({
-
-    elementId: 'checkBoxLabel',
-
-    classNames: 'checkBoxLabel',
-
-    content: 'Send response'
-  }),
-
-  checkBox: Em.Checkbox.extend({
-
-    elementId: 'checkBoxTTS',
-
-    classNames: 'checkBoxTTS',
-
-    checked: true
-
-  }),
-
-  timerText: SDL.Label.extend({
-
-    elementId: 'timerText',
-
-    classNames: 'timerText',
-
-    contentBinding: 'parentView.timerSeconds'
-  }),
-
-  resetTimeout: function() {
-    this.set('timerSeconds', 10);
-    FFW.TTS.OnResetTimeout(this.appID, 'TTS.Speak');
-  },
-
-  ActivateTTS: function(msg, appID) {
-
-    if (this.timer || this.active) {
-      this.DeactivateTTS();
+    ],
+    requestId: null,
+    content: 'Messaage',
+    active: false,
+    timer: null,
+    appID: null,
+    timerSeconds: 5,
+    popUp: Ember.TextArea.extend(
+      {
+        elementId: 'popUp',
+        classNames: 'popUp',
+        valueBinding: 'parentView.content'
+      }
+    ),
+    message: SDL.Label.extend(
+      {
+        elementId: 'message',
+        classNames: 'message'
+      }
+    ),
+    okButton: SDL.Button.extend(
+      {
+        classNames: 'button okButton',
+        text: 'Reset Timeout',
+        action: 'resetTimeout',
+        target: 'parentView',
+        buttonAction: true,
+        onDown: false,
+        disabledBinding: 'parentView.buttons'
+      }
+    ),
+    checkBoxLabel: SDL.Label.extend(
+      {
+        elementId: 'checkBoxLabel',
+        classNames: 'checkBoxLabel',
+        content: 'Send response'
+      }
+    ),
+    checkBox: Em.Checkbox.extend(
+      {
+        elementId: 'checkBoxTTS',
+        classNames: 'checkBoxTTS',
+        checked: true
+      }
+    ),
+    timerText: SDL.Label.extend(
+      {
+        elementId: 'timerText',
+        classNames: 'timerText',
+        contentBinding: 'parentView.timerSeconds'
+      }
+    ),
+    resetTimeout: function() {
+      this.set('timerSeconds', 10);
+      FFW.TTS.OnResetTimeout(this.appID, 'TTS.Speak');
+    },
+    ActivateTTS: function(msg, appID) {
+      if (this.timer || this.active) {
+        this.DeactivateTTS();
+      }
+      var self = this;
+      this.set('appID', appID);
+      this.set('content', msg);
+      this.set('active', true);
+      clearInterval(this.timer);
+      this.timer = setInterval(
+        function() {
+          self.set('timerSeconds', self.timerSeconds - 1);
+        }, 1000
+      ); // timeout for TTS popUp timer interval in milliseconds
+      FFW.TTS.Started();
+    },
+    timerHandler: function() {
+      if (this.timerSeconds === 0) {
+        this.DeactivateTTS();
+      }
+    }.observes('this.timerSeconds'),
+    DeactivateTTS: function() {
+      clearInterval(this.timer);
+      this.timer = null;
+      this.set('active', false);
+      this.appID = null;
+      this.set('timerSeconds', 5);
+      if (this.checkBox.checked) {
+        SDL.SDLController.TTSResponseHandler();
+      }
+      FFW.TTS.Stopped();
+      this.checkBox.set('checked', true);
+    },
+    /**
+     * This event triggered when component is placed to document DOM structure
+     */
+    didInsertElement: function() {
+      this._super();
     }
-
-    var self = this;
-
-    this.set('appID', appID);
-    this.set('content', msg);
-    this.set('active', true);
-
-    clearInterval(this.timer);
-    this.timer = setInterval(function() {
-
-      self.set('timerSeconds', self.timerSeconds - 1);
-    }, 1000); // timeout for TTS popUp timer interval in milliseconds
-    FFW.TTS.Started();
-  },
-
-  timerHandler: function() {
-    if (this.timerSeconds === 0) {
-      this.DeactivateTTS();
-    }
-  }.observes('this.timerSeconds'),
-
-  DeactivateTTS: function() {
-    clearInterval(this.timer);
-    this.timer = null;
-    this.set('active', false);
-    this.appID = null;
-    this.set('timerSeconds', 5);
-
-    if (this.checkBox.checked) {
-      SDL.SDLController.TTSResponseHandler();
-    }
-
-    FFW.TTS.Stopped();
-    this.checkBox.set('checked', true);
-  },
-
-  /**
-   * This event triggered when component is placed to document DOM structure
-   */
-  didInsertElement: function() {
-
-    this._super();
   }
-});
+);

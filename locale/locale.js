@@ -31,12 +31,11 @@
  * @version 1.0
  */
 
-SDL.locale = Em.Object.create({
-
-  label: SDL[SDL.localization],
-
-  setLang: function(lang) {
-
-    this.set('label', SDL[SDL.localization]);
-  }.observes('SDL.localization')
-});
+SDL.locale = Em.Object.create(
+  {
+    label: SDL[SDL.localization],
+    setLang: function(lang) {
+      this.set('label', SDL[SDL.localization]);
+    }.observes('SDL.localization')
+  }
+);

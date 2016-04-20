@@ -31,84 +31,71 @@
  * @version 1.0
  */
 
-SDL.NonMediaController = Em.Object.create({
-
-  /**
-   * Current NonMedia application id
-   *
-   * @type {Number}
-   */
-  currentAppId: null,
-
-  /**
-   * Return current NonMedia application name used for application button
-   */
-  currentAppName: function() {
-
-    if (this.currentAppId != null) {
-      return SDL.SDLController.getApplicationModel(this.currentAppId).appName;
-    }
-  }.property('this.currentAppId'),
-
-  /**
-   * Return current NonMedia application icon used for application button
-   */
-  currentAppIcon: function() {
-
-    if (this.currentAppId != null) {
-      return SDL.SDLController.getApplicationModel(this.currentAppId).appIcon;
-    }
-  }.property('this.currentAppId', 'SDL.SDLController.model.appIcon'),
-
-  /**
-   * Activate application model
-   *
-   * @param {SDLAppModel}
-   */
-  activateApp: function(applicationModel) {
-
-    // store active application id
-    this.set('currentAppId', applicationModel.appID);
-
-    // set active model
-    SDL.SDLController.set('model', applicationModel);
-
-    // send response
-    // FFW.BasicCommunication.ActivateApp( applicationModel.appID );
-
-    // Go to SDL state
-    SDL.InfoController.turnOnSDL();
-    //SDL.States.goToStates('info.nonMedia');
-  },
-
-  /**
-   * Restore current application to active state
-   */
-  activateCurrentApp: function() {
-
-    FFW.BasicCommunication.ActivateApp(this.currentAppId);
-  },
-
-  /**
-   * Method hides sdl activation button and sdl application
-   *
-   * @param {Number}
-   */
-  onDeleteApplication: function(appID) {
-
-    if (this.currentAppId == appID) {
-      if (SDL.States.info.nonMedia.active          ||
-                SDL.SDLController.model) {
-
-        SDL.SDLController.getApplicationModel(appID).set('active', false);
-
-        SDL.States.goToStates('info.apps');
+SDL.NonMediaController = Em.Object.create(
+  {
+    /**
+     * Current NonMedia application id
+     *
+     * @type {Number}
+     */
+    currentAppId: null,
+    /**
+     * Return current NonMedia application name used for application button
+     */
+    currentAppName: function() {
+      if (this.currentAppId != null) {
+        return SDL.SDLController.getApplicationModel(this.currentAppId).appName;
       }
+    }.property('this.currentAppId'),
+    /**
+     * Return current NonMedia application icon used for application button
+     */
+    currentAppIcon: function() {
+      if (this.currentAppId != null) {
+        return SDL.SDLController.getApplicationModel(this.currentAppId).appIcon;
+      }
+    }.property('this.currentAppId', 'SDL.SDLController.model.appIcon'),
+    /**
+     * Activate application model
+     *
+     * @param {SDLAppModel}
+     */
+    activateApp: function(applicationModel) {
 
-      SDL.InfoController.set('activeState', 'info.apps');
-
-      this.set('currentAppId', null);
+      // store active application id
+      this.set('currentAppId', applicationModel.appID);
+      // set active model
+      SDL.SDLController.set('model', applicationModel);
+      // send response
+      // FFW.BasicCommunication.ActivateApp( applicationModel.appID );
+      // Go to SDL state
+      SDL.InfoController.turnOnSDL();
+      //SDL.States.goToStates('info.nonMedia');
+    },
+    /**
+     * Restore current application to active state
+     */
+    activateCurrentApp: function() {
+      FFW.BasicCommunication.ActivateApp(this.currentAppId);
+    },
+    /**
+     * Method hides sdl activation button and sdl application
+     *
+     * @param {Number}
+     */
+    onDeleteApplication: function(appID) {
+      if (this.currentAppId == appID) {
+        if (SDL.States.info.nonMedia.active ||
+          SDL.SDLController.model) {
+          SDL.SDLController.getApplicationModel(appID).set('active', false);
+          SDL.States.goToStates('info.apps');
+        }
+        SDL.InfoController.set('activeState', 'info.apps');
+        this.set('currentAppId', null);
+      }
+      SDL.SDLModel.data.get('registeredApps').removeObjects(
+        SDL.SDLModel.data.get('registeredApps').filterProperty('appID', appID)
+      );
     }
-    SDL.SDLModel.data.get('registeredApps').removeObjects(SDL.SDLModel.data.get('registeredApps').filterProperty('appID', appID));
   }
-});
+);

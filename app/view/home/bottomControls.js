@@ -36,55 +36,59 @@ SDL.BottomControls = Em.ContainerView.extend({
   elementId: 'app_bottom_controlls',
 
   childViews: [
-      'information', 'home', 'settings'
+    'information', 'home', 'settings'
   ],
 
   information: Em.View.extend({
-    elementId: 'info_but',
-    classNameBindings: [
-        'SDL.States.info.active:selected'
-    ],
+        elementId: 'info_but',
+        classNameBindings: [
+          'SDL.States.info.active:selected'
+        ],
 
-    template: Em.Handlebars.compile('<div id="info_but_click"></div>'),
+        template: Em.Handlebars.compile('<div id="info_but_click"></div>'),
 
-    actionDown: function(event) {
+        actionDown: function(event) {
 
-      if (!SDL.States.info.active) {
-        if (SDL.InfoController.activeState === 'info.nonMedia') {
-          SDL.NonMediaController.activateCurrentApp();
-        } else {
-          SDL.States.goToStates(SDL.InfoController.activeState);
+          if (!SDL.States.info.active) {
+            if (SDL.InfoController.activeState === 'info.nonMedia') {
+              SDL.NonMediaController.activateCurrentApp();
+            } else {
+              SDL.States.goToStates(SDL.InfoController.activeState);
+            }
+          }
         }
       }
-    }
-  }),
+    ),
 
   home: Em.View.extend({
-    elementId: 'home_but',
-    classNameBindings: [
-        'SDL.States.home.active:selected'
-    ],
+        elementId: 'home_but',
+        classNameBindings: [
+          'SDL.States.home.active:selected'
+        ],
 
-    template: Em.Handlebars.compile('<div id="home_but_click"></div>'),
+        template: Em.Handlebars.compile('<div id="home_but_click"></div>'),
 
-    actionDown: function(event) {
+        actionDown: function(event) {
 
-      SDL.States.goToStates('home');
-    }
-  }),
+          SDL.States.goToStates('home');
+        }
+      }
+    ),
 
   settings: Em.View.extend({
-    elementId: 'setting_but',
+        elementId: 'setting_but',
 
-    classNameBindings: 'SDL.States.settings.active:selected',
+        classNameBindings: 'SDL.States.settings.active:selected',
 
-    template: Em.Handlebars.compile('<div id="setting_but_click"></div>'),
+        template: Em.Handlebars.compile('<div id="setting_but_click"></div>'),
 
-    actionDown: function(event) {
+        actionDown: function(event) {
 
-      if (!SDL.States.settings.active) {
-        SDL.States.goToStates(SDL.SettingsController.activeState);
+          if (!SDL.States.settings.active) {
+            SDL.States.goToStates(SDL.SettingsController.activeState);
+          }
+        }
       }
-    }
-  })
-});
+    )
+}
+);

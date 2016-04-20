@@ -1,25 +1,48 @@
 /*NAVIGATION CSS*/
 
-#navigationView.navigationView{
+#navigationView.navigationView {
     width: 800px;
     height: 480px;
     background: url(../images/nav/bg.png) no-repeat;
     background-position: top;
 }
 
-#poiList{
-    top: 70px;
-    left: 15px;
+#map {
+    top: 48px;
+    height: 384px;
+    width: 800px;
 }
 
-#baseNavigation{
+#poiList {
+    top: 70px;
+    left: 15px;
+    z-index: 1;
+}
+
+.POIButton {
+    z-index: 1;
+    top: 335px;
+    left: 20px;
+    width: 50px;
+    text-align: center;
+}
+
+.navigationButton {
+    bottom: 60px;
+    left: 20px;
+    width: 80px;
+    text-align: center;
+}
+
+#baseNavigation {
     z-index: 2;
     position: absolute;
     top: 48px;
     width: 800px;
     height: 384px;
 }
-#baseNavigation .mainField{
+
+#baseNavigation .mainField {
     position: absolute;
     background: rgba(124, 124, 124, 0.3);
     border: 1px solid;
@@ -30,30 +53,35 @@
     padding-left: 10px;
     font-size: 18px;
 }
-#baseNavigation .softButton{
+
+#baseNavigation .softButton {
     position: absolute;
     border-radius: 3px;
     border: 1px solid #393939;
 }
-#baseNavigation .mainField1{
+
+#baseNavigation .mainField1 {
     top: 0;
     height: 30px;
     width: 190px;
     left: 0;
 }
-#baseNavigation .mainField2{
+
+#baseNavigation .mainField2 {
     top: 0;
     height: 40px;
     width: 380px;
     left: 204px;
 }
-#baseNavigation .mainField3{
+
+#baseNavigation .mainField3 {
     top: 0;
     height: 30px;
     width: 190px;
     right: 0;
 }
-#baseNavigation .mainField4{
+
+#baseNavigation .mainField4 {
     top: 50px;
     height: 30px;
     width: 90px;
@@ -61,55 +89,61 @@
     overflow: hidden;
     white-space: nowrap;
 }
-#baseNavigation .mainField5{
+
+#baseNavigation .mainField5 {
     top: 100px;
     height: 30px;
     width: 90px;
     right: 0;
 }
-#baseNavigation .mainField6{
+
+#baseNavigation .mainField6 {
     bottom: 0;
     height: 40px;
     width: 280px;
     left: 254px;
 }
-#baseNavigation .softButton1{
+
+#baseNavigation .softButton1 {
     width: 250px;
     bottom: 0;
     left: 0;
-    position: absolute!important;
-    margin: 0px!important;
-    height: 49px!important;
+    position: absolute !important;
+    margin: 0px !important;
+    height: 49px !important;
     font-size: 32px;
-    line-height: 50px!important;
+    line-height: 50px !important;
 }
-#baseNavigation .softButton2{
+
+#baseNavigation .softButton2 {
     width: 250px;
     bottom: 0px;
     right: 0px;
-    position: absolute!important;
-    margin: 0px!important;
-    height: 49px!important;
+    position: absolute !important;
+    margin: 0px !important;
+    height: 49px !important;
     font-size: 32px;
-    line-height: 50px!important;
+    line-height: 50px !important;
 }
-#baseNavigation .softButton3{
+
+#baseNavigation .softButton3 {
     width: 100px;
     top: 100px;
     left: 0;
-    position: absolute!important;
-    margin: 0px!important;
-    height: 49px!important;
+    position: absolute !important;
+    margin: 0px !important;
+    height: 49px !important;
     font-size: 32px;
-    line-height: 50px!important;
+    line-height: 50px !important;
 }
-#baseNavigation .softButton4{
+
+#baseNavigation .softButton4 {
     width: 100px;
     top: 150px;
     left: 0;
-    position: absolute!important;
-    margin: 0px!important;
-    height: 49px!important;
+    position: absolute !important;
+    margin: 0px !important;
+    height: 49px !important;
     font-size: 32px;
-    line-height: 50px!important;
+    line-height: 50px !important;
 }

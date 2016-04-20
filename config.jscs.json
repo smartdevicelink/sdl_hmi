@@ -3,5 +3,6 @@
   "maxErrors": -1,
   "excludeFiles": [
     "./app/lib/*"
-  ]
+  ],
+  "maximumLineLength": 80
 }

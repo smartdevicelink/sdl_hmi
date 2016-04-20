@@ -63,9 +63,8 @@ SDL.PhoneModel = Em.Object.create({
 
     if (SDL.SDLModel.data.phoneCall) {
       SDL.SDLModel.data.set('phoneCall', false);
-      SDL.SDLController
-          .getApplicationModel(SDL.SDLController.model.appID)
-          .turnOnSDL();
+      SDL.SDLController.getApplicationModel(SDL.SDLController.model.appID).
+          turnOnSDL();
     }
   },
 
@@ -85,4 +84,5 @@ SDL.PhoneModel = Em.Object.create({
       this.set('dialpadNumber', this.dialpadNumber.slice(0, -1));
     }
   }
-});
+}
+);

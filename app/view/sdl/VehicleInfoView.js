@@ -32,242 +32,219 @@
  * @version 1.0
  */
 
-SDL.VehicleInfo = Em.ContainerView.create({
-
-  elementId: 'VehicleInfo',
-
-  classNames: 'VehicleInfo',
-
-  classNameBindings:
-      [
-          'active'
-      ],
-
-  childViews:
-      [
-          'prndlLabel',
-          'vehicleInfoLabel',
-          'prndlSelect',
-          'fuelLevelInput',
-          'fuelLevelLabel',
-          'speedInput',
-          'speedLabel',
-          'ecu1Title',
-          'ecu1',
-          'ecu2',
-          'ecu1Data',
-          'ecu2Data',
-          'odometrTitle',
-          'odometrInput',
-          'onAwakeSDLButton'
-      ],
-
-  /**
-   * Title of odometr group of parameters stored data in VehicleInfo model
-   */
-  odometrTitle: SDL.Label.extend({
-
-    elementId: 'odometrTitle',
-
-    classNames: 'odometrTitle',
-
-    content: 'Odometr'
-  }),
-
-  /**
-   * Input for odometr value changes
-   */
-  odometrInput: Ember.TextField.extend({
-    elementId: 'odometrInput',
-    classNames: 'odometrInput',
-    keyUp: function(event, view) {
-      if (event.which == 13) {
-        SDL.SDLVehicleInfoModel.set('odometrInput', parseInt(this.value));
+SDL.VehicleInfo = Em.ContainerView.create(
+  {
+    elementId: 'VehicleInfo',
+    classNames: 'VehicleInfo',
+    classNameBindings: [
+      'active'
+    ],
+    childViews: [
+      'prndlLabel',
+      'vehicleInfoLabel',
+      'prndlSelect',
+      'fuelLevelInput',
+      'fuelLevelLabel',
+      'speedInput',
+      'speedLabel',
+      'ecu1Title',
+      'ecu1',
+      'ecu2',
+      'ecu1Data',
+      'ecu2Data',
+      'odometrTitle',
+      'odometrInput',
+      'onAwakeSDLButton'
+    ],
+    /**
+     * Title of odometr group of parameters stored data in VehicleInfo model
+     */
+    odometrTitle: SDL.Label.extend(
+      {
+        elementId: 'odometrTitle',
+        classNames: 'odometrTitle',
+        content: 'Odometr'
       }
-    }
-  }),
-
-  /**
-   * Label with stored data in VehicleInfo model
-   */
-  ecu2Data: SDL.Label.extend({
-
-    elementId: 'ecu2Data',
-
-    classNames: 'ecu2Data',
-
-    contentBinding: 'SDL.SDLVehicleInfoModel.ecuDIDData.1.data'
-  }),
-
-  /**
-   * Label with stored data in VehicleInfo model
-   */
-  ecu1Data: SDL.Label.extend({
-
-    elementId: 'ecu1Data',
-
-    classNames: 'ecu1Data',
-
-    contentBinding: 'SDL.SDLVehicleInfoModel.ecuDIDData.0.data'
-  }),
-
-  /**
-   * Label with name of some parameter stored data in VehicleInfo model
-   */
-  ecu2: SDL.Label.extend({
-
-    elementId: 'ecu2',
-
-    classNames: 'ecu2',
-
-    content: 'ECU 2:'
-  }),
-
-  /**
-   * Label with name of some parameter stored data in VehicleInfo model
-   */
-  ecu1: SDL.Label.extend({
-
-    elementId: 'ecu1',
-
-    classNames: 'ecu1',
-
-    content: 'ECU 1:'
-  }),
-
-  /**
-   * Title of ecu group of parameters stored data in VehicleInfo model
-   */
-  ecu1Title: SDL.Label.extend({
-
-    elementId: 'ecu1Title',
-
-    classNames: 'ecu1Title',
-
-    content: 'ECU'
-  }),
-
-  /**
-   * Title of VehicleInfo PopUp view
-   */
-  vehicleInfoLabel: SDL.Label.extend({
-
-    elementId: 'vehicleInfoLabel',
-
-    classNames: 'vehicleInfoLabel',
-
-    content: 'Vehicle Information'
-  }),
-
-  /**
-   * Property indicates the activity state of VehicleInfo PopUp
-   */
-  active: false,
-
-  /**
-   * Title of prndl group of parameters stored in VehicleInfo model
-   */
-  prndlLabel: SDL.Label.extend({
-
-    elementId: 'prndlLabel',
-
-    classNames: 'prndlLabel',
-
-    content: 'PRNDL'
-  }),
-
-  /**
-   * Title of fuel level group of parameters stored in VehicleInfo model
-   */
-  fuelLevelLabel: SDL.Label.extend({
-
-    elementId: 'fuelLevelLabel',
-
-    classNames: 'fuelLevelLabel',
-
-    content: 'Fuel Level'
-  }),
-
-  /**
-   * Title of peed group of parameters stored in VehicleInfo model
-   */
-  speedLabel: SDL.Label.extend({
-
-    elementId: 'speedLabel',
-
-    classNames: 'speedLabel',
-
-    content: 'Speed'
-  }),
-
-  /**
-   * HMI element Select with parameters of transmission state from VehicleInfo
-   * Model
-   */
-  prndlSelect: Em.Select.extend({
-
-    elementId: 'prndlSelect',
-
-    classNames: 'prndlSelect',
-
-    contentBinding: 'SDL.SDLVehicleInfoModel.vehicleInfoPRNDL',
-
-    valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState'
-  }),
-
-  /**
-   * Input for fuel level value changes
-   */
-  fuelLevelInput: Ember.TextField.extend({
-    elementId: 'fuelLevelInput',
-    classNames: 'fuelLevelInput',
-    keyUp: function(event, view) {
-      if (event.which == 13) {
-        SDL.SDLVehicleInfoModel.set('fuelLevelInput', parseFloat(this.value));
+    ),
+    /**
+     * Input for odometr value changes
+     */
+    odometrInput: Ember.TextField.extend(
+      {
+        elementId: 'odometrInput',
+        classNames: 'odometrInput',
+        keyUp: function(event, view) {
+          if (event.which == 13) {
+            SDL.SDLVehicleInfoModel.set('odometrInput', parseInt(this.value));
+          }
+        }
       }
-    }
-  }),
-
-  /**
-   * Input for speed value changes
-   */
-  speedInput: Ember.TextField.extend({
-    elementId: 'speedInput',
-    classNames: 'speedInput',
-    keyUp: function(event, view) {
-      if (event.which == 13) {
-        SDL.SDLVehicleInfoModel.set('speedInput', parseFloat(this.value));
+    ),
+    /**
+     * Label with stored data in VehicleInfo model
+     */
+    ecu2Data: SDL.Label.extend(
+      {
+        elementId: 'ecu2Data',
+        classNames: 'ecu2Data',
+        contentBinding: 'SDL.SDLVehicleInfoModel.ecuDIDData.1.data'
       }
+    ),
+    /**
+     * Label with stored data in VehicleInfo model
+     */
+    ecu1Data: SDL.Label.extend(
+      {
+        elementId: 'ecu1Data',
+        classNames: 'ecu1Data',
+        contentBinding: 'SDL.SDLVehicleInfoModel.ecuDIDData.0.data'
+      }
+    ),
+    /**
+     * Label with name of some parameter stored data in VehicleInfo model
+     */
+    ecu2: SDL.Label.extend(
+      {
+        elementId: 'ecu2',
+        classNames: 'ecu2',
+        content: 'ECU 2:'
+      }
+    ),
+    /**
+     * Label with name of some parameter stored data in VehicleInfo model
+     */
+    ecu1: SDL.Label.extend(
+      {
+        elementId: 'ecu1',
+        classNames: 'ecu1',
+        content: 'ECU 1:'
+      }
+    ),
+    /**
+     * Title of ecu group of parameters stored data in VehicleInfo model
+     */
+    ecu1Title: SDL.Label.extend(
+      {
+        elementId: 'ecu1Title',
+        classNames: 'ecu1Title',
+        content: 'ECU'
+      }
+    ),
+    /**
+     * Title of VehicleInfo PopUp view
+     */
+    vehicleInfoLabel: SDL.Label.extend(
+      {
+        elementId: 'vehicleInfoLabel',
+        classNames: 'vehicleInfoLabel',
+        content: 'Vehicle Information'
+      }
+    ),
+    /**
+     * Property indicates the activity state of VehicleInfo PopUp
+     */
+    active: false,
+    /**
+     * Title of prndl group of parameters stored in VehicleInfo model
+     */
+    prndlLabel: SDL.Label.extend(
+      {
+        elementId: 'prndlLabel',
+        classNames: 'prndlLabel',
+        content: 'PRNDL'
+      }
+    ),
+    /**
+     * Title of fuel level group of parameters stored in VehicleInfo model
+     */
+    fuelLevelLabel: SDL.Label.extend(
+      {
+        elementId: 'fuelLevelLabel',
+        classNames: 'fuelLevelLabel',
+        content: 'Fuel Level'
+      }
+    ),
+    /**
+     * Title of peed group of parameters stored in VehicleInfo model
+     */
+    speedLabel: SDL.Label.extend(
+      {
+        elementId: 'speedLabel',
+        classNames: 'speedLabel',
+        content: 'Speed'
+      }
+    ),
+    /**
+     * HMI element Select with parameters of transmission state from VehicleInfo
+     * Model
+     */
+    prndlSelect: Em.Select.extend(
+      {
+        elementId: 'prndlSelect',
+        classNames: 'prndlSelect',
+        contentBinding: 'SDL.SDLVehicleInfoModel.vehicleInfoPRNDL',
+        valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState'
+      }
+    ),
+    /**
+     * Input for fuel level value changes
+     */
+    fuelLevelInput: Ember.TextField.extend(
+      {
+        elementId: 'fuelLevelInput',
+        classNames: 'fuelLevelInput',
+        keyUp: function(event, view) {
+          if (event.which == 13) {
+            SDL.SDLVehicleInfoModel.set(
+              'fuelLevelInput', parseFloat(this.value)
+            );
+          }
+        }
+      }
+    ),
+    /**
+     * Input for speed value changes
+     */
+    speedInput: Ember.TextField.extend(
+      {
+        elementId: 'speedInput',
+        classNames: 'speedInput',
+        keyUp: function(event, view) {
+          if (event.which == 13) {
+            SDL.SDLVehicleInfoModel.set('speedInput', parseFloat(this.value));
+          }
+        }
+      }
+    ),
+    /**
+     * Button to send OnEmergencyEvent to SDL
+     */
+    onAwakeSDLButton: SDL.Button.extend(
+      {
+        classNames: 'button onEmergencyEvent',
+        textBinding: 'this.displayText',
+        action: 'OnEmergencyEventNotificationSend',
+        target: 'SDL.SDLController',
+        enabled: false,
+        onDown: false,
+        displayText: function() {
+          return this.enabled ? 'Send OnEmergencyEvent On' :
+            'Send OnEmergencyEvent Off';
+        }.property('this.enabled')
+      }
+    ),
+    /**
+     * Trigger function that activates and deactivates VehicleInfo PopUp
+     */
+    toggleActivity: function() {
+      this.set('active', !this.active);
+    },
+    /**
+     * This event triggered when component is placed to
+     * document DOM structure
+     */
+    didInsertElement: function() {
+      this._super();
     }
-  }),
-
-  /**
-   * Button to send OnEmergencyEvent to SDL
-   */
-  onAwakeSDLButton: SDL.Button.extend({
-    classNames: 'button onEmergencyEvent',
-    textBinding: 'this.displayText',
-    action: 'OnEmergencyEventNotificationSend',
-    target: 'SDL.SDLController',
-    enabled: false,
-    onDown: false,
-    displayText: function() {
-      return this.enabled ? 'Send OnEmergencyEvent On' : 'Send OnEmergencyEvent Off';
-    }.property('this.enabled')
-  }),
-
-  /**
-   * Trigger function that activates and deactivates VehicleInfo PopUp
-   */
-  toggleActivity: function() {
-    this.set('active', !this.active);
-  },
-
-  /**
- * This event triggered when component is placed to
- * document DOM structure
- */
-  didInsertElement: function() {
-    this._super();
   }
-});
+);

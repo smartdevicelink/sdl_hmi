@@ -28,9 +28,9 @@
  *
  * @desc Component for Home top controls
  *
- * @category	view
- * @filesource	app/view/home/topControls.js
- * @version		1.0
+ * @category  view
+ * @filesource  app/view/home/topControls.js
+ * @version    1.0
  */
 
 SDL.TopControls = Em.ContainerView.extend({
@@ -38,39 +38,43 @@ SDL.TopControls = Em.ContainerView.extend({
   elementId: 'app_top_menu_cont',
 
   childViews: [
-      'controls'
+    'controls'
   ],
 
   controls: Em.ContainerView.extend({
-    elementId: 'top_controls',
+        elementId: 'top_controls',
 
-    childViews: [
-        'clock',
-        'sdlControlStatus'
-    ],
+        childViews: [
+          'clock',
+          'sdlControlStatus'
+        ],
 
-    clock: Em.View.extend({
-      elementId:			'clock',
-      template: Em.Handlebars.compile('<div id="time_num">12:21 86°</div>')
-    }),
+        clock: Em.View.extend({
+            elementId: 'clock',
+            template: Em.Handlebars.compile('<div id="time_num">12:21 86°</div>')
+          }
+        ),
 
-    sdlControlStatus: SDL.Button.extend({
-      elementId:			'sdlControlStatus',
+        sdlControlStatus: SDL.Button.extend({
+            elementId: 'sdlControlStatus',
 
-      classNameBindings: [
-          'SDL.States.media.player.radio.active:active_state',
-          'SDL.SDLModel.givenControlFlag:mobile',
-          'SDL.FuncSwitcher.rev::is-disabled'
-      ],
+            classNameBindings: [
+              'SDL.States.media.player.radio.active:active_state',
+              'SDL.SDLModel.givenControlFlag:mobile',
+              'SDL.FuncSwitcher.rev::is-disabled'
+            ],
 
-      target: 'SDL.SDLModel',
+            target: 'SDL.SDLModel',
 
-      action: 'resetControl',
+            action: 'resetControl',
 
-      template: Em.Handlebars.compile(
-          '<div class="icon"></div>' +
-          '<div class="mask"></div>'
-      )
-    })
-  })
-});
+            template: Em.Handlebars.compile(
+              '<div class="icon"></div>' +
+              '<div class="mask"></div>'
+            )
+          }
+        )
+      }
+    )
+}
+);

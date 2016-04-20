@@ -32,101 +32,85 @@
  * @version 1.0
  */
 
-SDL.OptionsView = SDL.SDLAbstractView.create({
-
-  elementId: 'sdl_options',
-
-  childViews:
-      [
-          'backButton',
-          'captionText',
-          'commands'
-      ],
-
-  // Menu caption text
-  captionBinding: 'SDL.SDLController.model.currentSubMenuLabel',
-
-  activate: function(text) {
-    this._super();
-
-    SDL.SDLController.buttonsSort('top', SDL.SDLController.model.appID);
-    SDL.OptionsView.commands.refreshItems();
-
-    SDL.SDLController.onSystemContextChange();
-  },
-
-  // Extend deactivate window
-  deactivate: function() {
-
-    if (SDL.SDLController.model) {
-
-      if (SDL.SDLController.model.get('currentSubMenuId') >= 0) {
-        SDL.SDLController.onSubMenu('top');
-      }else {
-        this._super();
-      }
-    }
-
-    SDL.SDLController.onSystemContextChange();
-  },
-
-  commands: SDL.List.extend({
-
-    elementId: 'info_nonMedia_options_list',
-
-    itemsOnPage: 5,
-
-    items: [],
-
-    /*
-     * itemsDefault: [ { type: SDL.Button,
-     *
-     * params: { templateName: 'text', text: 'Exit', target:
-     * 'this.parentView.parentView.parentView', action: 'deactivate',
-     * onDown: false } }, { type: SDL.Button,
-     *
-     * params: { templateName: 'arrow', text: 'Device Information', } } ],
-     */
-
-    refreshItems: function() {
-
+SDL.OptionsView = SDL.SDLAbstractView.create(
+  {
+    elementId: 'sdl_options',
+    childViews: [
+      'backButton',
+      'captionText',
+      'commands'
+    ],
+    // Menu caption text
+    captionBinding: 'SDL.SDLController.model.currentSubMenuLabel',
+    activate: function(text) {
+      this._super();
+      SDL.SDLController.buttonsSort('top', SDL.SDLController.model.appID);
+      SDL.OptionsView.commands.refreshItems();
+      SDL.SDLController.onSystemContextChange();
+    },
+    // Extend deactivate window
+    deactivate: function() {
       if (SDL.SDLController.model) {
-
-        var commands = SDL.SDLController.model.get('currentCommandsList'),
-            i,
-            len,
-            template;
-
-        this.items = [];
-
-        len = commands.length;
-
-        for (i = 0; i < len; i++) {
-
-          if (commands[i].menuID >= 0) {
-            template = 'arrow';
-          }else {
-            template = commands[i].icon ? 'rightText' : 'text';
-          }
-
-          this.items.push({
-            type: SDL.Button,
-            params: {
-              templateName: template,
-              text: commands[i].name,
-              commandID: commands[i].commandID,
-              menuID: commands[i].menuID,
-              icon: commands[i].icon,
-              target: 'SDL.SDLController',
-              action: 'onCommand',
-              onDown: false
-            }
-          });
+        if (SDL.SDLController.model.get('currentSubMenuId') >= 0) {
+          SDL.SDLController.onSubMenu('top');
+        } else {
+          this._super();
         }
-
-        this.list.refresh();
       }
+      SDL.SDLController.onSystemContextChange();
+    },
+    commands: SDL.List.extend(
+      {
+        elementId: 'info_nonMedia_options_list',
+        itemsOnPage: 5,
+        items: [],
+        /*
+         * itemsDefault: [ { type: SDL.Button,
+         *
+         * params: { templateName: 'text', text: 'Exit', target:
+         * 'this.parentView.parentView.parentView', action: 'deactivate',
+         * onDown: false } }, { type: SDL.Button,
+         *
+         * params: { templateName: 'arrow', text: 'Device Information', } } ],
+         */
 
-    }.observes('SDL.SDLController.model.currentSubMenuId', 'SDL.SDLController.model.currentCommandsList.@each')
-  })
-});
+        refreshItems: function() {
+          if (SDL.SDLController.model) {
+            var commands = SDL.SDLController.model.get('currentCommandsList'),
+              i,
+              len,
+              template;
+            this.items = [];
+            len = commands.length;
+            for (i = 0; i < len; i++) {
+              if (commands[i].menuID >= 0) {
+                template = 'arrow';
+              } else {
+                template = commands[i].icon ? 'rightText' : 'text';
+              }
+              this.items.push(
+                {
+                  type: SDL.Button,
+                  params: {
+                    templateName: template,
+                    text: commands[i].name,
+                    commandID: commands[i].commandID,
+                    menuID: commands[i].menuID,
+                    icon: commands[i].icon,
+                    target: 'SDL.SDLController',
+                    action: 'onCommand',
+                    onDown: false
+                  }
+                }
+              );
+            }
+            this.list.refresh();
+          }
+        }.observes(
+          'SDL.SDLController.model.currentSubMenuId',
+          'SDL.SDLController.model.currentCommandsList.@each'
+        )
+      }
+    )
+  }
+);

@@ -32,133 +32,109 @@
  * @version 1.0
  */
 
-SDL.ExitApp = Em.ContainerView.create({
-
-  elementId: 'exitAppView',
-
-  classNames: 'exitAppView',
-
-  classNameBindings:
-      [
-          'active'
-      ],
-
-  childViews:
-      [
-          'exitAppViewLabel',
-          'exitAppViewTitle',
-          'exitAppViewSelect',
-          'onAwakeSDLLabel',
-          'onAwakeSDLButton',
-          'onDeactivateSelect',
-          'onDeactivateLabel'
-      ],
-
-  /**
-   * Title of VehicleInfo PopUp view
-   */
-  exitAppViewLabel: SDL.Label.extend({
-
-    elementId: 'exitAppViewLabel',
-
-    classNames: 'exitAppViewLabel',
-
-    content: 'Exit Application'
-  }),
-
-  /**
-   * Property indicates the activity state of TBTClientStateView
-   */
-  active: false,
-
-  /**
-   * Title of tbtClientState group of parameters
-   */
-  exitAppViewTitle: SDL.Label.extend({
-
-    elementId: 'exitAppViewTitle',
-
-    classNames: 'exitAppViewTitle',
-
-    content: 'Exit Application reason'
-  }),
-
-  /**
-   * HMI element Select with parameters of TBTClientStates
-   */
-  exitAppViewSelect: Em.Select.extend({
-
-    elementId: 'exitAppViewSelect',
-
-    classNames: 'exitAppViewSelect',
-
-    contentBinding: 'SDL.SDLModel.data.exitAppState',
-
-    optionValuePath: 'content.id',
-
-    optionLabelPath: 'content.name',
-
+SDL.ExitApp = Em.ContainerView.create(
+  {
+    elementId: 'exitAppView',
+    classNames: 'exitAppView',
+    classNameBindings: [
+      'active'
+    ],
+    childViews: [
+      'exitAppViewLabel',
+      'exitAppViewTitle',
+      'exitAppViewSelect',
+      'onAwakeSDLLabel',
+      'onAwakeSDLButton',
+      'onDeactivateSelect',
+      'onDeactivateLabel'
+    ],
     /**
-     * Selected data sent on model for further processing
+     * Title of VehicleInfo PopUp view
      */
-    click: function() {
-
-      SDL.SDLController.exitAppViewSelected(this.selection.name);
-
-    }
-  }),
-
-  onAwakeSDLLabel: SDL.Label.extend({
-
-    elementId: 'onAwakeSDLLabel',
-
-    classNames: 'onAwakeSDLLabel',
-
-    content: 'onAwakeSDL notification send'
-  }),
-
-  onAwakeSDLButton: SDL.Button.extend({
-    classNames: 'button onAwakeSDLButton',
-    text: 'Send onAwakeSDL',
-    action: 'onAwakeSDLNotificationSend',
-    target: 'SDL.SDLController',
-    buttonAction: true,
-    onDown: false
-  }),
-
-  onDeactivateLabel: SDL.Label.extend({
-
-    elementId: 'onDeactivateLabel',
-
-    classNames: 'onDeactivateLabel',
-
-    content: 'OnDeactivate notification send'
-  }),
-
-  /**
-   * HMI element Select with parameters of TBTClientStates
-   */
-  onDeactivateSelect: Em.Select.extend({
-
-    elementId: 'onDeactivateSelect',
-
-    classNames: 'onDeactivateSelect',
-
-    content: [true, false],
-
+    exitAppViewLabel: SDL.Label.extend(
+      {
+        elementId: 'exitAppViewLabel',
+        classNames: 'exitAppViewLabel',
+        content: 'Exit Application'
+      }
+    ),
     /**
-     * Selected data sent on model for further processing
+     * Property indicates the activity state of TBTClientStateView
      */
-    click: function() {
-
-      SDL.SDLController.onEventChanged('onDeactivateHMI', this.selection);
+    active: false,
+    /**
+     * Title of tbtClientState group of parameters
+     */
+    exitAppViewTitle: SDL.Label.extend(
+      {
+        elementId: 'exitAppViewTitle',
+        classNames: 'exitAppViewTitle',
+        content: 'Exit Application reason'
+      }
+    ),
+    /**
+     * HMI element Select with parameters of TBTClientStates
+     */
+    exitAppViewSelect: Em.Select.extend(
+      {
+        elementId: 'exitAppViewSelect',
+        classNames: 'exitAppViewSelect',
+        contentBinding: 'SDL.SDLModel.data.exitAppState',
+        optionValuePath: 'content.id',
+        optionLabelPath: 'content.name',
+        /**
+         * Selected data sent on model for further processing
+         */
+        click: function() {
+          SDL.SDLController.exitAppViewSelected(this.selection.name);
+        }
+      }
+    ),
+    onAwakeSDLLabel: SDL.Label.extend(
+      {
+        elementId: 'onAwakeSDLLabel',
+        classNames: 'onAwakeSDLLabel',
+        content: 'onAwakeSDL notification send'
+      }
+    ),
+    onAwakeSDLButton: SDL.Button.extend(
+      {
+        classNames: 'button onAwakeSDLButton',
+        text: 'Send onAwakeSDL',
+        action: 'onAwakeSDLNotificationSend',
+        target: 'SDL.SDLController',
+        buttonAction: true,
+        onDown: false
+      }
+    ),
+    onDeactivateLabel: SDL.Label.extend(
+      {
+        elementId: 'onDeactivateLabel',
+        classNames: 'onDeactivateLabel',
+        content: 'OnDeactivate notification send'
+      }
+    ),
+    /**
+     * HMI element Select with parameters of TBTClientStates
+     */
+    onDeactivateSelect: Em.Select.extend(
+      {
+        elementId: 'onDeactivateSelect',
+        classNames: 'onDeactivateSelect',
+        content: [true, false],
+        /**
+         * Selected data sent on model for further processing
+         */
+        click: function() {
+          SDL.SDLController.onEventChanged('onDeactivateHMI', this.selection);
+        }
+      }
+    ),
+    /**
+     * Trigger function that activates and deactivates tbtClientStateView
+     */
+    toggleActivity: function() {
+      this.toggleProperty('active');
     }
-  }),
-
-  /**
-   * Trigger function that activates and deactivates tbtClientStateView
-   */
-  toggleActivity: function() {
-    this.toggleProperty('active');
   }
-});
+);

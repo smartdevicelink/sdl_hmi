@@ -38,24 +38,25 @@ SDL.StatusClimateView = Em.ContainerView.extend({
   classNameBindings: 'SDL.States.climate.active:hide',
 
   classNames: [
-      'status_bar'
+    'status_bar'
   ],
 
   /** Climate components */
   childViews: [
-      'statusHome'
+    'statusHome'
   ],
 
   /** Label for Home screen */
   statusHome: SDL.Label.create({
-    elementId: 'status_climate_label',
+        elementId: 'status_climate_label',
 
-    classNames: [
-        'visible'
-    ],
+        classNames: [
+          'visible'
+        ],
 
-    content: 'Climate'
-  }),
+        content: 'Climate'
+      }
+    ),
 
   /**
    * Select phone state should be called when user press phone statusbar
@@ -65,4 +66,5 @@ SDL.StatusClimateView = Em.ContainerView.extend({
     SDL.States.goToStates('climate');
   }
 
-});
+}
+);

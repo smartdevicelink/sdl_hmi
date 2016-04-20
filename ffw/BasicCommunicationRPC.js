@@ -31,21 +31,21 @@
  */
 
 FFW.BasicCommunication = FFW.RPCObserver
-    .create({
-
+  .create(
+    {
       /**
        * access to basic RPC functionality
        */
-      client: FFW.RPCClient.create({
-        componentName: 'BasicCommunication'
-      }),
-
+      client: FFW.RPCClient.create(
+        {
+          componentName: 'BasicCommunication'
+        }
+      ),
       /**
-       * Contains response codes for request that should be processed but there were some kind of errors
-       * Error codes will be injected into response.
+       * Contains response codes for request that should be processed but there
+       * were some kind of errors Error codes will be injected into response.
        */
       errorResponsePull: {},
-
       onPutFileSubscribeRequestID: -1,
       onStatusUpdateSubscribeRequestID: -1,
       onAppPermissionChangedSubscribeRequestID: -1,
@@ -56,7 +56,6 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLCloseSubscribeRequestID: -1,
       onSDLConsentNeededSubscribeRequestID: -1,
       onResumeAudioSourceSubscribeRequestID: -1,
-
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
       onAppPermissionChangedUnsubscribeRequestID: -1,
@@ -67,7 +66,6 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLCloseUnsubscribeRequestID: -1,
       onSDLConsentNeededUnsubscribeRequestID: -1,
       onResumeAudioSourceUnsubscribeRequestID: -1,
-
       // const
       onStatusUpdateNotification: 'SDL.OnStatusUpdate',
       onAppPermissionChangedNotification: 'SDL.OnAppPermissionChanged',
@@ -79,106 +77,92 @@ FFW.BasicCommunication = FFW.RPCObserver
       onAppUnregisteredNotification: 'BasicCommunication.OnAppUnregistered',
       onSDLCloseNotification: 'BasicCommunication.OnSDLClose',
       onResumeAudioSourceNotification: 'BasicCommunication.OnResumeAudioSource',
-
       /**
        * init object
        */
       init: function() {
-
       },
-
       /**
        * connect to RPC bus
        */
       connect: function() {
-
         this.client.connect(this, 600); // Magic number is unique identifier
         // for component
       },
-
       /**
        * disconnect from RPC bus
        */
       disconnect: function() {
-
         this.onRPCUnregistered();
         this.client.disconnect();
       },
-
       /**
        * Client is registered - we can send request starting from this point
        * of time
        */
       onRPCRegistered: function() {
-
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCRegistered');
         this._super();
-
         // subscribe to notifications
         this.onPutFileSubscribeRequestID = this.client
-            .subscribeToNotification(this.onPutFileNotification);
+          .subscribeToNotification(this.onPutFileNotification);
         this.onStatusUpdateSubscribeRequestID = this.client
-            .subscribeToNotification(this.onStatusUpdateNotification);
+          .subscribeToNotification(this.onStatusUpdateNotification);
         this.onAppPermissionChangedSubscribeRequestID = this.client
-            .subscribeToNotification(this.onAppPermissionChangedNotification);
+          .subscribeToNotification(this.onAppPermissionChangedNotification);
         this.onSDLPersistenceCompleteSubscribeRequestID = this.client
-            .subscribeToNotification(this.onSDLPersistenceCompleteNotification);
+          .subscribeToNotification(this.onSDLPersistenceCompleteNotification);
         this.onFileRemovedSubscribeRequestID = this.client
-            .subscribeToNotification(this.onFileRemovedNotification);
+          .subscribeToNotification(this.onFileRemovedNotification);
         this.onAppRegisteredSubscribeRequestID = this.client
-            .subscribeToNotification(this.onAppRegisteredNotification);
+          .subscribeToNotification(this.onAppRegisteredNotification);
         this.onAppUnregisteredSubscribeRequestID = this.client
-            .subscribeToNotification(this.onAppUnregisteredNotification);
+          .subscribeToNotification(this.onAppUnregisteredNotification);
         this.onSDLCloseSubscribeRequestID = this.client
-            .subscribeToNotification(this.onSDLCloseNotification);
+          .subscribeToNotification(this.onSDLCloseNotification);
         this.onSDLConsentNeededSubscribeRequestID = this.client
-            .subscribeToNotification(this.onSDLConsentNeededNotification);
+          .subscribeToNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceSubscribeRequestID = this.client
-            .subscribeToNotification(this.onResumeAudioSourceNotification);
+          .subscribeToNotification(this.onResumeAudioSourceNotification);
       },
-
       /**
        * Client is unregistered - no more requests
        */
       onRPCUnregistered: function() {
-
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCUnregistered');
         this._super();
-
         // unsubscribe from notifications
-
         this.onPutFileUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onPutFileNotification);
+          .unsubscribeFromNotification(this.onPutFileNotification);
         this.onStatusUpdateUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onStatusUpdateNotification);
+          .unsubscribeFromNotification(this.onStatusUpdateNotification);
         this.onAppPermissionChangedUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onAppPermissionChangedNotification);
+          .unsubscribeFromNotification(this.onAppPermissionChangedNotification);
         this.onSDLPersistenceCompleteUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onSDLPersistenceCompleteNotification);
+          .unsubscribeFromNotification(
+            this.onSDLPersistenceCompleteNotification
+          );
         this.onFileRemovedUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onFileRemovedNotification);
+          .unsubscribeFromNotification(this.onFileRemovedNotification);
         this.onAppRegisteredUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onAppRegisteredNotification);
+          .unsubscribeFromNotification(this.onAppRegisteredNotification);
         this.onAppUnregisteredUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onAppUnregisteredNotification);
+          .unsubscribeFromNotification(this.onAppUnregisteredNotification);
         this.onSDLCloseUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onSDLCloseNotification);
+          .unsubscribeFromNotification(this.onSDLCloseNotification);
         this.onSDLConsentNeededUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onSDLConsentNeededNotification);
+          .unsubscribeFromNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceUnsubscribeRequestID = this.client
-            .unsubscribeFromNotification(this.onResumeAudioSourceNotification);
+          .unsubscribeFromNotification(this.onResumeAudioSourceNotification);
       },
-
       /**
        * Client disconnected.
        */
       onRPCDisconnected: function() {
-
         if (SDL.SDLController) {
           SDL.SDLController.onSDLDisconected();
         }
       },
-
       /**
        * when result is received from RPC component this function is called It
        * is the propriate place to check results of reuqest execution Please
@@ -186,251 +170,203 @@ FFW.BasicCommunication = FFW.RPCObserver
        * belongs to
        */
       onRPCResult: function(response) {
-
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCResult');
         this._super();
-
         if (response.result.method == 'SDL.GetUserFriendlyMessage') {
-
           Em.Logger.log('SDL.GetUserFriendlyMessage: Response from SDL!');
-
           if (response.id in SDL.SDLModel.data.userFriendlyMessagePull) {
             var callbackObj = SDL.SDLModel.data.userFriendlyMessagePull[response.id];
             callbackObj.callbackFunc(response.result.messages);
             delete SDL.SDLModel.data.userFriendlyMessagePull[response.id];
           }
         }
-
         if (response.result.method == 'SDL.ActivateApp') {
-
           Em.Logger.log('SDL.ActivateApp: Response from SDL!');
-
           if (response.id in SDL.SDLModel.data.activateAppRequestsList) {
-
             var appID = SDL.SDLModel.data.activateAppRequestsList[response.id].appID,
-                popUp = SDL.SDLModel.data.activateAppRequestsList[response.id].popUp;
-
+              popUp = SDL.SDLModel.data.activateAppRequestsList[response.id].popUp;
             popUp.deactivate();
-
             if (!response.result.isSDLAllowed) {
-
-              SDL.SettingsController.currentDeviceAllowance = response.result.device;
-
+              SDL.SettingsController.currentDeviceAllowance
+                = response.result.device;
               FFW.BasicCommunication.GetUserFriendlyMessage(
-                  SDL.SettingsController.AllowSDLFunctionality,
-                  appID,
-                  ['DataConsent']
+                SDL.SettingsController.AllowSDLFunctionality,
+                appID,
+                ['DataConsent']
               );
             }
-
             if (response.result.isPermissionsConsentNeeded) {
-
               this.GetListOfPermissions(appID);
             }
-
             if (response.result.isAppPermissionsRevoked) {
-
-              SDL.SDLModel.setAppPermissions(appID, response.result.appRevokedPermissions);
+              SDL.SDLModel.setAppPermissions(
+                appID, response.result.appRevokedPermissions
+              );
             }
-
             if (response.result.isAppRevoked) {
-
               FFW.BasicCommunication.GetUserFriendlyMessage(
-                  SDL.SettingsController.simpleParseUserFriendlyMessageData,
-                  appID,
-                  ['AppUnsupported']
+                SDL.SettingsController.simpleParseUserFriendlyMessageData,
+                appID,
+                ['AppUnsupported']
               );
             } else {
-
               SDL.SDLController.getApplicationModel(appID)
-                  .deviceID = response.result.device ? response.result.device.id : null;
-
-              if (SDL.SDLController.model && SDL.SDLController.model.appID != appID) {
+                .deviceID = response.result.device ? response.result.device.id :
+                null;
+              if (SDL.SDLController.model &&
+                SDL.SDLController.model.appID != appID) {
                 SDL.States.goToStates('info.apps');
               }
-
               if (SDL.SDLModel.data.stateLimited == appID) {
                 SDL.SDLModel.data.stateLimited = null;
                 SDL.SDLModel.data.set('limitedExist', false);
               }
-
               if (response.result.isSDLAllowed) {
                 SDL.SDLController.getApplicationModel(appID).turnOnSDL(appID);
               }
             }
-
             delete SDL.SDLModel.data.activateAppRequestsList[response.id];
           }
         }
-
         if (response.result.method == 'SDL.GetListOfPermissions') {
-
           Em.Logger.log('SDL.GetListOfPermissions: Response from SDL!');
-
           SDL.SettingsController.GetListOfPermissionsResponse(response);
         }
-
         if (response.result.method == 'SDL.GetStatusUpdate') {
-
           Em.Logger.log('SDL.GetStatusUpdate: Response from SDL!');
-
           SDL.PopUp.create().appendTo('body').popupActivate(response.result);
         }
-
         if (response.result.method == 'SDL.GetURLS') {
-
           SDL.SDLModel.data.set('policyURLs', response.result.urls);
-
           if (response.result.urls.length) {
             SDL.SettingsController.GetUrlsHandler(response.result.urls);
           } else {
             this.OnSystemRequest('PROPRIETARY');
           }
-
           SDL.SettingsController.policyUpdateRetry();
-
         }
       },
-
       /**
        * handle RPC erros here
        */
       onRPCError: function(response) {
-
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCError');
         this._super();
-
         if (response.error.data.method === 'SDL.ActivateApp') {
-
           var appID = SDL.SDLModel.data.activateAppRequestsList[response.id].appID,
-              popUp = SDL.SDLModel.data.activateAppRequestsList[response.id].popUp;
-
+            popUp = SDL.SDLModel.data.activateAppRequestsList[response.id].popUp;
           popUp.deactivate();
-
-          if (response.error.code === SDL.SDLModel.data.resultCode['APPLICATION_NOT_REGISTERED']) {
-
-            SDL.PopUp.create().appendTo('body').popupActivate('Activation FAILED! Application NOT registered.');
+          if (response.error.code ===
+            SDL.SDLModel.data.resultCode['APPLICATION_NOT_REGISTERED']) {
+            SDL.PopUp.create().appendTo('body').popupActivate(
+              'Activation FAILED! Application NOT registered.'
+            );
             return;
-          } else if (response.error.code === SDL.SDLModel.data.resultCode.REJECTED) {
-
-            SDL.PopUp.create().appendTo('body').popupActivate('Activation FAILED! SDL rejected activation.');
+          } else if (response.error.code ===
+            SDL.SDLModel.data.resultCode.REJECTED) {
+            SDL.PopUp.create().appendTo('body').popupActivate(
+              'Activation FAILED! SDL rejected activation.'
+            );
             return;
           }
         }
       },
-
       /**
        * handle RPC notifications here
        */
       onRPCNotification: function(notification) {
-
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCNotification');
         this._super();
-
         if (notification.method == this.onFileRemovedNotification) {
           SDL.SDLModel.onFileRemoved(notification.params);
         }
-
         if (notification.method == this.onStatusUpdateNotification) {
-
-          SDL.PopUp.create().appendTo('body').popupActivate('onStatusUpdate Notification: ' + notification.params.status);
-
+          SDL.PopUp.create().appendTo('body').popupActivate(
+            'onStatusUpdate Notification: ' + notification.params.status
+          );
           var messageCode = '';
-          switch (notification.params.status){
-            case 'UP_TO_DATE': {
+          switch (notification.params.status) {
+            case 'UP_TO_DATE':
+            {
               messageCode = 'StatusUpToDate';
               break;
             }
-            case 'UPDATING': {
+            case 'UPDATING':
+            {
               messageCode = 'StatusPending';
               break;
             }
-            case 'UPDATE_NEEDED': {
+            case 'UPDATE_NEEDED':
+            {
               messageCode = 'StatusNeeded';
               break;
             }
           }
-
           FFW.BasicCommunication.GetUserFriendlyMessage(
-              SDL.SettingsController.simpleParseUserFriendlyMessageData,
-              SDL.SDLController.model ? SDL.SDLController.model.appID : null,
-              [messageCode]
+            SDL.SettingsController.simpleParseUserFriendlyMessageData,
+            SDL.SDLController.model ? SDL.SDLController.model.appID : null,
+            [messageCode]
           );
         }
-
         if (notification.method == this.onAppPermissionChangedNotification) {
-
           if (notification.params.appPermissionsConsentNeeded) {
-
             this.GetListOfPermissions(notification.params.appID);
           }
-
           if (notification.params.isAppPermissionsRevoked) {
-
             SDL.SDLModel.setAppPermissions(
-                notification.params.appID,
-                notification.params.appRevokedPermissions
+              notification.params.appID,
+              notification.params.appRevokedPermissions
             );
           }
-
           if (notification.params.appRevoked) {
-
             FFW.BasicCommunication.GetUserFriendlyMessage(
-                SDL.SettingsController.simpleParseUserFriendlyMessageData,
-                notification.params.appID,
-                ['AppUnsupported']
+              SDL.SettingsController.simpleParseUserFriendlyMessageData,
+              notification.params.appID,
+              ['AppUnsupported']
             );
           }
-
           if (notification.params.appUnauthorized) {
-
             FFW.BasicCommunication.GetUserFriendlyMessage(
-                SDL.SettingsController.simpleParseUserFriendlyMessageData,
-                notification.params.appID,
-                ['AppUnauthorized']
+              SDL.SettingsController.simpleParseUserFriendlyMessageData,
+              notification.params.appID,
+              ['AppUnauthorized']
             );
           }
         }
-
         if (notification.method == this.onAppRegisteredNotification) {
-          SDL.SDLModel.onAppRegistered(notification.params.application, notification.params.vrSynonyms);
+          SDL.SDLModel.onAppRegistered(
+            notification.params.application, notification.params.vrSynonyms
+          );
           this.OnFindApplications();
         }
-
         if (notification.method == this.onAppUnregisteredNotification) {
           // remove app from list
           SDL.SDLModel.onAppUnregistered(notification.params);
         }
-
         if (notification.method == this.onSDLCloseNotification) {
           //notification handler method
         }
         if (notification.method == this.onSDLConsentNeededNotification) {
-
-          SDL.SettingsController.currentDeviceAllowance = notification.params.device;
+          SDL.SettingsController.currentDeviceAllowance
+            = notification.params.device;
           FFW.BasicCommunication.GetUserFriendlyMessage(
-              SDL.SettingsController.AllowSDLFunctionality,
-              null,
-              ['DataConsent']
+            SDL.SettingsController.AllowSDLFunctionality,
+            null,
+            ['DataConsent']
           );
         }
         if (notification.method == this.onResumeAudioSourceNotification) {
-
           SDL.SDLModel.data.stateLimited = notification.params.device;
           SDL.VRPopUp.updateVR();
         }
       },
-
       /**
        * handle RPC requests here
        */
       onRPCRequest: function(request) {
-
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCRequest');
         this._super();
-
         if (this.validationCheck(request)) {
-
           if (request.method == 'BasicCommunication.MixingAudioSupported') {
             this.MixingAudioSupported(request.id, true);
           }
@@ -445,108 +381,113 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.UpdateDeviceList') {
             SDL.SDLModel.onGetDeviceList(request.params);
-            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method);
+            this.sendBCResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
+            );
           }
           if (request.method == 'BasicCommunication.UpdateAppList') {
-
             SDL.SDLController.UpdateAppList(request.params);
-
-            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method);
-
+            this.sendBCResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
+            );
             SDL.InfoAppsView.showAppList();
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
-
             SDL.SettingsController.policyUpdateRetry('ABORT');
-
             this.OnReceivedPolicyUpdate(request.params.fileName);
-
             SDL.SettingsController.policyUpdateFile = null;
-
-            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method);
+            this.sendBCResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
+            );
           }
           if (request.method == 'BasicCommunication.DialNumber') {
-
             SDL.PopUp.create().appendTo('body').popupActivate(
-                'Would you like to dial ' + request.params.number + ' ?',
-                        function(result) {
-                          if (result) {
-
-                            FFW.BasicCommunication.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS,
-                                request.id,
-                                request.method);
-
-                            SDL.SDLModel.onDeactivateApp('call', request.params.appID);
-                            SDL.States.goToStates('phone.dialpad');
-                            SDL.PhoneController.incomingCall(request);
-                          } else {
-
-                            FFW.BasicCommunication.sendError(SDL.SDLModel.data.resultCode.REJECTED,
-                                request.id,
-                                request.method,
-                                'No paired device!'
-                            );
-                          }
-                        },
-                        false);
+              'Would you like to dial ' + request.params.number + ' ?',
+              function(result) {
+                if (result) {
+                  FFW.BasicCommunication.sendBCResult(
+                    SDL.SDLModel.data.resultCode.SUCCESS,
+                    request.id,
+                    request.method
+                  );
+                  SDL.SDLModel.onDeactivateApp('call', request.params.appID);
+                  SDL.States.goToStates('phone.dialpad');
+                  SDL.PhoneController.incomingCall(request);
+                } else {
+                  FFW.BasicCommunication.sendError(
+                    SDL.SDLModel.data.resultCode.REJECTED,
+                    request.id,
+                    request.method,
+                    'No paired device!'
+                  );
+                }
+              },
+              false
+            );
           }
           if (request.method == 'BasicCommunication.ActivateApp') {
-
             if (!request.params.level || request.params.level == 'FULL') {
-              if (SDL.SDLController.model && SDL.SDLController.model.appID != request.params.appID) {
+              if (SDL.SDLController.model &&
+                SDL.SDLController.model.appID != request.params.appID) {
                 SDL.States.goToStates('info.apps');
               }
-
               if (SDL.SDLModel.data.stateLimited == request.params.appID) {
                 SDL.SDLModel.data.stateLimited = null;
                 SDL.SDLModel.data.set('limitedExist', false);
               }
-
-              SDL.SDLController.getApplicationModel(request.params.appID).level = 'FULL';
-
-              SDL.SDLController.getApplicationModel(request.params.appID).turnOnSDL(request.params.appID);
-
+              SDL.SDLController.getApplicationModel(request.params.appID).level
+                = 'FULL';
+              SDL.SDLController.getApplicationModel(request.params.appID)
+                .turnOnSDL(request.params.appID);
               SDL.VRPopUp.updateVR();
             } else if (request.params.level === 'LIMITED') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level = 'LIMITED';
+              SDL.SDLController.getApplicationModel(request.params.appID).level
+                = 'LIMITED';
               SDL.VRPopUp.updateVR();
-              if (SDL.SDLController.model && SDL.SDLController.model.appID === request.params.appID) {
+              if (SDL.SDLController.model &&
+                SDL.SDLController.model.appID === request.params.appID) {
                 SDL.States.goToStates('info.apps');
               }
               SDL.InfoAppsView.showAppList();
             } else if (request.params.level === 'NONE') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level = 'NONE';
+              SDL.SDLController.getApplicationModel(request.params.appID).level
+                = 'NONE';
               SDL.VRPopUp.updateVR();
-              if (SDL.SDLController.model && SDL.SDLController.model.appID === request.params.appID) {
+              if (SDL.SDLController.model &&
+                SDL.SDLController.model.appID === request.params.appID) {
                 SDL.States.goToStates('info.apps');
               }
               SDL.InfoAppsView.showAppList();
             } else if (request.params.level === 'BACKGROUND') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level = 'BACKGROUND';
+              SDL.SDLController.getApplicationModel(request.params.appID).level
+                = 'BACKGROUND';
               SDL.VRPopUp.updateVR();
-              if (SDL.SDLController.model && SDL.SDLController.model.appID === request.params.appID) {
+              if (SDL.SDLController.model &&
+                SDL.SDLController.model.appID === request.params.appID) {
                 SDL.States.goToStates('info.apps');
               }
               SDL.InfoAppsView.showAppList();
             }
-            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
+            this.sendBCResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
           }
           if (request.method == 'BasicCommunication.GetSystemInfo') {
-
             Em.Logger.log('BasicCommunication.GetSystemInfo Response');
-
             // send repsonse
             var JSONMessage = {
               'jsonrpc': '2.0',
               'id': request.id,
               'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
+                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum)
+                                                              // from SDL
+                                                              // protocol
                 'method': request.method,
                 'ccpu_version': 'ccpu_version',
                 'language': SDL.SDLModel.data.hmiUILanguage,
@@ -557,22 +498,22 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.PolicyUpdate') {
             SDL.SettingsController.policyUpdateFile = request.params.file;
-
-            SDL.SDLModel.data.policyUpdateRetry.timeout = request.params.timeout;
+            SDL.SDLModel.data.policyUpdateRetry.timeout
+              = request.params.timeout;
             SDL.SDLModel.data.policyUpdateRetry.retry = request.params.retry;
             SDL.SDLModel.data.policyUpdateRetry.try = 0;
-
             this.GetURLS(7); //Service type for policies
-
-            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
+            this.sendBCResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
           }
           if (request.method == 'BasicCommunication.DecryptCertificate') {
-
-            this.sendBCResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
+            this.sendBCResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
           }
         }
       },
-
       /********************* Requests BEGIN *********************/
 
       /**
@@ -581,16 +522,14 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @param {Number} appID
        */
       ActivateApp: function(appID) {
-
         var itemIndex = this.client.generateId();
-
         SDL.SDLModel.data.activateAppRequestsList[itemIndex] = {
           'appID': appID,
-          'popUp': SDL.PopUp.create().appendTo('body').popupActivate('Activation in progress...', null, true)
+          'popUp': SDL.PopUp.create().appendTo('body').popupActivate(
+            'Activation in progress...', null, true
+          )
         };
-
         Em.Logger.log('SDL.ActivateApp: Request from HMI!');
-
         // send notification
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -602,7 +541,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Request to SDLCore to get user friendly message
        * callback function uses text message came in response from SDLCore
@@ -610,13 +548,10 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @callback callbackFunc
        */
       GetUserFriendlyMessage: function(callbackFunc, appID, messageCodes) {
-
         var itemIndex = this.client.generateId();
-
-        SDL.SDLModel.data.userFriendlyMessagePull[itemIndex] = {'callbackFunc': callbackFunc, 'appID': appID};
-
+        SDL.SDLModel.data.userFriendlyMessagePull[itemIndex]
+          = {'callbackFunc': callbackFunc, 'appID': appID};
         Em.Logger.log('SDL.GetUserFriendlyMessage: Request from HMI!');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -627,10 +562,8 @@ FFW.BasicCommunication = FFW.RPCObserver
             'messageCodes': messageCodes
           }
         };
-
         this.client.send(JSONMessage);
       },
-
       /**
        * Request to SDLCore to get user friendly message
        * callback function uses text message came in response from SDLCore
@@ -638,61 +571,45 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @param {Number} appID
        */
       GetListOfPermissions: function(appID) {
-
         var itemIndex = this.client.generateId();
-
         SDL.SDLModel.data.getListOfPermissionsPull[itemIndex] = appID;
-
         Em.Logger.log('SDL.GetListOfPermissions: Request from HMI!');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': itemIndex,
           'method': 'SDL.GetListOfPermissions',
-          'params': {
-          }
+          'params': {}
         };
-
         if (appID) {
           JSONMessage.params.appID = appID;
         }
-
         this.client.send(JSONMessage);
       },
-
       /**
        * Send request if application was activated
        *
        * @param {Number} type
        */
       GetURLS: function(type) {
-
         Em.Logger.log('FFW.SDL.GetURLS: Request from HMI!');
-
         // send notification
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': this.client.generateId(),
           'method': 'SDL.GetURLS',
-          'params': {
-          }
+          'params': {}
         };
-
         if (type) {
           JSONMessage.params.service = type;
         }
-
         this.client.send(JSONMessage);
       },
-
       /**
        * Request from HMI to find out Policy Table status
        */
       GetStatusUpdate: function() {
-
         Em.Logger.log('SDL.GetStatusUpdate: Request from HMI!');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -702,11 +619,8 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       UpdateSDL: function() {
-
         Em.Logger.log('SDL.UpdateSDL: Request from HMI!');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -716,16 +630,12 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Request for list of avaliable devices
        */
       getDeviceList: function() {
-
         Em.Logger.log('FFW.BasicCommunication.GetDeviceList');
-
         this.getDeviceListRequestID = this.client.generateID();
-
         var JSONMessage = {
           'id': this.getDeviceListRequestID,
           'jsonrpc': '2.0',
@@ -733,7 +643,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /********************* Requests END *********************/
 
       /********************* Responses BEGIN *********************/
@@ -749,9 +658,7 @@ FFW.BasicCommunication = FFW.RPCObserver
        *            method
        */
       sendError: function(resultCode, id, method, message) {
-
         Em.Logger.log('FFW.' + method + 'Response');
-
         if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
           // send repsonse
@@ -769,7 +676,6 @@ FFW.BasicCommunication = FFW.RPCObserver
           this.client.send(JSONMessage);
         }
       },
-
       /**
        * send response from onRPCRequest
        *
@@ -781,9 +687,7 @@ FFW.BasicCommunication = FFW.RPCObserver
        *            method
        */
       sendBCResult: function(resultCode, id, method) {
-
         Em.Logger.log('FFW.' + method + 'Response');
-
         if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
           // send repsonse
@@ -798,7 +702,6 @@ FFW.BasicCommunication = FFW.RPCObserver
           this.client.send(JSONMessage);
         }
       },
-
       /**
        * send response from onRPCRequest
        *
@@ -810,9 +713,7 @@ FFW.BasicCommunication = FFW.RPCObserver
        *            allow
        */
       AllowDeviceToConnect: function(id, method, allow) {
-
         Em.Logger.log('FFW.' + method + 'Response');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -826,9 +727,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
         };
         this.client.send(JSONMessage);
-
       },
-
       /**
        * Response with params of the last one supports mixing audio (ie
        * recording TTS command and playing audio).
@@ -836,11 +735,8 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @params {Number}
        */
       MixingAudioSupported: function(requestid, attenuatedSupported) {
-
         Em.Logger.log('FFW.BasicCommunication.MixingAudioSupported Response');
-
         // send request
-
         var JSONMessage = {
           'id': requestid,
           'jsonrpc': '2.0',
@@ -852,7 +748,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Response with Results by user/HMI allowing SDL functionality or
        * disallowing access to all mobile apps.
@@ -860,11 +755,8 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @params {Number}
        */
       AllowAllApps: function(request, allowed) {
-
         Em.Logger.log('FFW.BasicCommunication.AllowAllApps Response');
-
         // send request
-
         var JSONMessage = {
           'id': request.id,
           'jsonrpc': '2.0',
@@ -876,29 +768,25 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Response with result of allowed application
        *
        * @params {Number}
        */
       AllowApp: function(request) {
-
         Em.Logger.log('FFW.BasicCommunication.AllowAppResponse');
-
         var allowedFunctions = [];
-        request.params.appPermissions.forEach(function(entry) {
-          allowedFunctions.push(
-                        {
-                          name: entry,
-                          allowed: true
-                        }
-                    );
-        }
-    );
-
+        request.params.appPermissions.forEach(
+          function(entry) {
+            allowedFunctions.push(
+              {
+                name: entry,
+                allowed: true
+              }
+            );
+          }
+        );
         // send request
-
         var JSONMessage = {
           'id': request.id,
           'jsonrpc': '2.0',
@@ -910,7 +798,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /********************* Responses end *********************/
 
       /********************* Notifications BEGIN *********************/
@@ -922,9 +809,7 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @param {String} source
        */
       OnAllowSDLFunctionality: function(allowed, source) {
-
         Em.Logger.log('FFW.SDL.OnAllowSDLFunctionality');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -934,24 +819,19 @@ FFW.BasicCommunication = FFW.RPCObserver
             'source': source
           }
         };
-
         if (SDL.SettingsController.currentDeviceAllowance) {
           JSONMessage.params.device =
-              SDL.SettingsController.currentDeviceAllowance;
+            SDL.SettingsController.currentDeviceAllowance;
         }
-
         this.client.send(JSONMessage);
       },
-
       /**
        * Notifies if language was changed
        *
        * @param {String} lang
        */
       OnSystemInfoChanged: function(lang) {
-
         Em.Logger.log('FFW.BasicCommunication.OnSystemInfoChanged');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -960,19 +840,15 @@ FFW.BasicCommunication = FFW.RPCObserver
             'language': lang
           }
         };
-
         this.client.send(JSONMessage);
       },
-
       /**
        * Notification of decrypted policy table available
        *
        * @param {String} policyfile
        */
       OnReceivedPolicyUpdate: function(policyfile) {
-
         Em.Logger.log('FFW.SDL.OnReceivedPolicyUpdate');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -981,10 +857,8 @@ FFW.BasicCommunication = FFW.RPCObserver
             'policyfile': policyfile
           }
         };
-
         this.client.send(JSONMessage);
       },
-
       /**
        * Notifies if functionality was changed
        *
@@ -993,9 +867,7 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @param {String} appID
        */
       OnAppPermissionConsent: function(consentedFunctions, source, appID) {
-
         Em.Logger.log('FFW.SDL.OnAppPermissionConsent');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -1005,52 +877,41 @@ FFW.BasicCommunication = FFW.RPCObserver
             'source': source
           }
         };
-
         if (appID) {
           JSONMessage.params.appID = appID;
         }
-
         this.client.send(JSONMessage);
       },
-
       /**
        * notification that UI is ready BasicCommunication should be sunscribed
        * to this notification
        */
       onReady: function() {
-
         Em.Logger.log('FFW.BasicCommunication.onReady');
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnReady'
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Sent notification to SDL when HMI closes
        */
       OnIgnitionCycleOver: function() {
-
         Em.Logger.log('FFW.BasicCommunication.OnIgnitionCycleOver');
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnIgnitionCycleOver'
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Send request if device was unpaired from HMI
        *
        * @param {number} appID
        */
       OnDeviceStateChanged: function(elemet) {
-
         Em.Logger.log('FFW.SDL.OnDeviceStateChanged');
-
         // send notification
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -1066,37 +927,28 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * This methos is request to get list of registered apps.
        */
       OnFindApplications: function() {
-
         Em.Logger.log('FFW.BasicCommunication.OnFindApplications');
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnFindApplications'
         };
-
         if (SDL.SDLModel.data.CurrDeviceInfo.name ||
-            SDL.SDLModel.data.CurrDeviceInfo.id) {
-
+          SDL.SDLModel.data.CurrDeviceInfo.id) {
           JSONMessage.params = {
             'deviceInfo': SDL.SDLModel.data.CurrDeviceInfo
           };
         }
-
         this.client.send(JSONMessage);
       },
-
       /**
        * Send notification to SDL Core about system errors
        */
       OnSystemError: function(error) {
-
         Em.Logger.log('FFW.SDL.OnSystemError');
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'SDL.OnSystemError',
@@ -1104,17 +956,13 @@ FFW.BasicCommunication = FFW.RPCObserver
             'error': error
           }
         };
-
         this.client.send(JSONMessage);
       },
-
       /**
        * This methos is request to get list of registered apps.
        */
       AddStatisticsInfo: function(statisticType) {
-
         Em.Logger.log('FFW.SDL.AddStatisticsInfo');
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'SDL.AddStatisticsInfo',
@@ -1122,10 +970,8 @@ FFW.BasicCommunication = FFW.RPCObserver
             'statisticType': statisticType
           }
         };
-
         this.client.send(JSONMessage);
       },
-
       /**
        * Invoked by UI component when user switches to any functionality which
        * is not other mobile application.
@@ -1134,11 +980,8 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @params {Number}
        */
       OnAppDeactivated: function(appID) {
-
         Em.Logger.log('FFW.BasicCommunication.OnAppDeactivated');
-
         // send request
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnAppDeactivated',
@@ -1148,18 +991,14 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Sender: HMI->SDL. When: upon phone-call event started or ended
        *
        * @params {Boolean}
        */
       OnPhoneCall: function(isActive) {
-
         Em.Logger.log('FFW.BasicCommunication.OnPhoneCall');
-
         // send request
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnPhoneCall',
@@ -1169,32 +1008,25 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Initiated by HMI user. In response optional list of found devices -
        * if not provided, not were found.
        */
       OnStartDeviceDiscovery: function() {
-
         Em.Logger.log('FFW.BasicCommunication.OnStartDeviceDiscovery');
-
         // send request
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnStartDeviceDiscovery'
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * OnAwakeSDL from HMI returns SDL to normal operation
        * after OnExitAllApplications(SUSPEND)
        */
       OnAwakeSDL: function() {
-
         Em.Logger.log('FFW.BasicCommunication.OnAwakeSDL');
-
         // send request
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -1202,18 +1034,14 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Used by HMI when User chooses to exit application.
        *
        * @params {Number}
        */
       ExitApplication: function(appID, reason) {
-
         Em.Logger.log('FFW.BasicCommunication.OnExitApplication');
-
         // send request
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnExitApplication',
@@ -1224,18 +1052,14 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Sent by HMI to SDL to close all registered applications.
        *
        * @params {String}
        */
       ExitAllApplications: function(reason) {
-
         Em.Logger.log('FFW.BasicCommunication.OnExitAllApplications');
-
         // send request
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnExitAllApplications',
@@ -1245,7 +1069,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Notifies if device was choosed
        *
@@ -1255,9 +1078,7 @@ FFW.BasicCommunication = FFW.RPCObserver
        *            appID
        */
       OnDeviceChosen: function(deviceName, id) {
-
         Em.Logger.log('FFW.BasicCommunication.OnDeviceChosen');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -1271,16 +1092,13 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Notifies if audio state was changed
        *
        * @param {Boolean} enabled
        */
       OnEmergencyEvent: function(enabled) {
-
         Em.Logger.log('FFW.BasicCommunication.OnEmergencyEvent');
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -1291,16 +1109,12 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.client.send(JSONMessage);
       },
-
       /**
        * Initiated by HMI.
        */
       OnSystemRequest: function(type, fileName, url, appID, policyAppID) {
-
         Em.Logger.log('FFW.BasicCommunication.OnSystemRequest');
-
         // send request
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnSystemRequest',
@@ -1313,7 +1127,6 @@ FFW.BasicCommunication = FFW.RPCObserver
             'fileName': fileName
           }
         };
-
         if (url) {
           JSONMessage.params.url = url;
         }
@@ -1323,21 +1136,16 @@ FFW.BasicCommunication = FFW.RPCObserver
         if (appID) {
           JSONMessage.params.appID = appID;
         }
-
         this.client.send(JSONMessage);
       },
-
       /**
        * OnDeactivateHMI notification sender
        * @param value
        * @constructor
        */
       OnDeactivateHMI: function(value) {
-
         Em.Logger.log('FFW.BasicCommunication.OnDeactivateHMI');
-
         // send request
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnDeactivateHMI',
@@ -1345,10 +1153,8 @@ FFW.BasicCommunication = FFW.RPCObserver
             'isDeactivated': value
           }
         };
-
         this.client.send(JSONMessage);
       },
-
       /**
        * OnEventChanged notification sender
        * @param reason
@@ -1356,9 +1162,7 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @constructor
        */
       OnEventChanged: function(eventName, status) {
-
         Em.Logger.log('FFW.BasicCommunication.OnEventChanged');
-
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnEventChanged',
@@ -1367,10 +1171,9 @@ FFW.BasicCommunication = FFW.RPCObserver
             'isActive': status
           }
         };
-
         this.client.send(JSONMessage);
       }
 
       /********************* Notifications END *********************/
-
-    });
+    }
+  );

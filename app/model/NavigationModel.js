@@ -40,6 +40,21 @@ SDL.NavigationModel = Em.Object.create({
   appReqPull: [],
 
   /**
+   * Start navigation point
+   */
+  startLoc: '98 Walker St, New York, NY 10013, USA',
+
+  /**
+   * End navigation point
+   */
+  endLoc: '128 Seaman Ave, New York, NY 10034, USA',
+
+  /**
+   * POI list switcher flag
+   */
+  poi: true,
+
+  /**
    * Content for code editor view to display current waypoint data
    */
   currentWayPointData: '',
@@ -56,106 +71,107 @@ SDL.NavigationModel = Em.Object.create({
   wpProcessTime: 4000,
 
   LocationDetails: [
-    {
-      coordinate: {
-        latitudeDegrees: 0,
-        longitudeDegrees: 0
+      {
+        coordinate: {
+          latitudeDegrees: 0,
+          longitudeDegrees: 0
+        },
+        locationName: 'locationName',
+        addressLines: 'addressLines',
+        locationDescription: 'locationDescription',
+        phoneNumber: 'phoneNumber',
+        locationImage: {
+          value: '',
+          imageType: 'DYNAMIC'
+        },
+        searchAddress: {
+          countryName: 'countryName',
+          countryCode: 'countryCode',
+          postalCode: 'postalCode',
+          administrativeArea: 'administrativeArea',
+          subAdministrativeArea: 'subAdministrativeArea',
+          locality: 'locality',
+          subLocality: 'subLocality',
+          thoroughfare: 'thoroughfare',
+          subThoroughfare: 'subThoroughfare'
+        }
       },
-      locationName: 'locationName',
-      addressLines: 'addressLines',
-      locationDescription: 'locationDescription',
-      phoneNumber: 'phoneNumber',
-      locationImage: {
-        value: '',
-        imageType: 'DYNAMIC'
+      {
+        coordinate: {
+          latitudeDegrees: 0,
+          longitudeDegrees: 0
+        },
+        locationName: 'locationName',
+        addressLines: 'addressLines',
+        locationDescription: 'locationDescription',
+        phoneNumber: 'phoneNumber',
+        locationImage: {
+          value: 'images/common/defaultButtonImage.png',
+          imageType: 'DYNAMIC'
+        },
+        searchAddress: {
+          countryName: 'countryName',
+          countryCode: 'countryCode',
+          postalCode: 'postalCode',
+          administrativeArea: 'administrativeArea',
+          subAdministrativeArea: 'subAdministrativeArea',
+          locality: 'locality',
+          subLocality: 'subLocality',
+          thoroughfare: 'thoroughfare',
+          subThoroughfare: 'subThoroughfare'
+        }
       },
-      searchAddress: {
-        countryName: 'countryName',
-        countryCode: 'countryCode',
-        postalCode: 'postalCode',
-        administrativeArea: 'administrativeArea',
-        subAdministrativeArea: 'subAdministrativeArea',
-        locality: 'locality',
-        subLocality: 'subLocality',
-        thoroughfare: 'thoroughfare',
-        subThoroughfare: 'subThoroughfare'
+      {
+        coordinate: {
+          latitudeDegrees: 0,
+          longitudeDegrees: 0
+        },
+        locationName: 'locationName',
+        addressLines: 'addressLines',
+        locationDescription: 'locationDescription',
+        phoneNumber: 'phoneNumber',
+        locationImage: {
+          value: '',
+          imageType: 'DYNAMIC'
+        },
+        searchAddress: {
+          countryName: 'countryName',
+          countryCode: 'countryCode',
+          postalCode: 'postalCode',
+          administrativeArea: 'administrativeArea',
+          subAdministrativeArea: 'subAdministrativeArea',
+          locality: 'locality',
+          subLocality: 'subLocality',
+          thoroughfare: 'thoroughfare',
+          subThoroughfare: 'subThoroughfare'
+        }
+      },
+      {
+        coordinate: {
+          latitudeDegrees: 0,
+          longitudeDegrees: 0
+        },
+        locationName: 'locationName',
+        addressLines: 'addressLines',
+        locationDescription: 'locationDescription',
+        phoneNumber: 'phoneNumber',
+        locationImage: {
+          value: 'images/common/defaultButtonImage.png',
+          imageType: 'DYNAMIC'
+        },
+        searchAddress: {
+          countryName: 'countryName',
+          countryCode: 'countryCode',
+          postalCode: 'postalCode',
+          administrativeArea: 'administrativeArea',
+          subAdministrativeArea: 'subAdministrativeArea',
+          locality: 'locality',
+          subLocality: 'subLocality',
+          thoroughfare: 'thoroughfare',
+          subThoroughfare: 'subThoroughfare'
+        }
       }
-    },
-    {
-      coordinate: {
-        latitudeDegrees: 0,
-        longitudeDegrees: 0
-      },
-      locationName: 'locationName',
-      addressLines: 'addressLines',
-      locationDescription: 'locationDescription',
-      phoneNumber: 'phoneNumber',
-      locationImage: {
-        value: 'images/common/defaultButtonImage.png',
-        imageType: 'DYNAMIC'
-      },
-      searchAddress: {
-        countryName: 'countryName',
-        countryCode: 'countryCode',
-        postalCode: 'postalCode',
-        administrativeArea: 'administrativeArea',
-        subAdministrativeArea: 'subAdministrativeArea',
-        locality: 'locality',
-        subLocality: 'subLocality',
-        thoroughfare: 'thoroughfare',
-        subThoroughfare: 'subThoroughfare'
-      }
-    },
-    {
-      coordinate: {
-        latitudeDegrees: 0,
-        longitudeDegrees: 0
-      },
-      locationName: 'locationName',
-      addressLines: 'addressLines',
-      locationDescription: 'locationDescription',
-      phoneNumber: 'phoneNumber',
-      locationImage: {
-        value: '',
-        imageType: 'DYNAMIC'
-      },
-      searchAddress: {
-        countryName: 'countryName',
-        countryCode: 'countryCode',
-        postalCode: 'postalCode',
-        administrativeArea: 'administrativeArea',
-        subAdministrativeArea: 'subAdministrativeArea',
-        locality: 'locality',
-        subLocality: 'subLocality',
-        thoroughfare: 'thoroughfare',
-        subThoroughfare: 'subThoroughfare'
-      }
-    },
-    {
-      coordinate: {
-        latitudeDegrees: 0,
-        longitudeDegrees: 0
-      },
-      locationName: 'locationName',
-      addressLines: 'addressLines',
-      locationDescription: 'locationDescription',
-      phoneNumber: 'phoneNumber',
-      locationImage: {
-        value: 'images/common/defaultButtonImage.png',
-        imageType: 'DYNAMIC'
-      },
-      searchAddress: {
-        countryName: 'countryName',
-        countryCode: 'countryCode',
-        postalCode: 'postalCode',
-        administrativeArea: 'administrativeArea',
-        subAdministrativeArea: 'subAdministrativeArea',
-        locality: 'locality',
-        subLocality: 'subLocality',
-        thoroughfare: 'thoroughfare',
-        subThoroughfare: 'subThoroughfare'
-      }
-    }
-  ]
+    ]
 
-});
+}
+);

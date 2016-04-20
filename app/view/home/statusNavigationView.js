@@ -31,34 +31,36 @@
  * @version 1.0
  */
 SDL.StatusNavigationView = Em.ContainerView.extend({
-  /** View Id */
-  elementId: 'status_nav',
+    /** View Id */
+    elementId: 'status_nav',
 
-  classNames: 'status_bar',
+    classNames: 'status_bar',
 
-  /** Bind class for visual representation */
-  classNameBindings: [
-    'SDL.States.navigation.active:selected'
-  ],
+    /** Bind class for visual representation */
+    classNameBindings: [
+      'SDL.States.navigation.active:selected'
+    ],
 
-  /** Navigation components */
-  childViews: [
+    /** Navigation components */
+    childViews: [
       'statusHome'
-  ],
+    ],
 
-  /** Label for Home screen */
-  statusHome: SDL.Label.create({
-    elementId: 'navigation_status_label',
-    classNames: 'visible',
-    content: 'Navigation'
-  }),
+    /** Label for Home screen */
+    statusHome: SDL.Label.create({
+        elementId: 'navigation_status_label',
+        classNames: 'visible',
+        content: 'Navigation'
+      }
+    ),
 
-  /**
-   * Select phone state should be called when user press phone statusbar
-   */
-  actionUp: function(event) {
+    /**
+     * Select phone state should be called when user press phone statusbar
+     */
+    actionUp: function(event) {
 
-    SDL.States.goToStates('navigation');
+      SDL.States.goToStates('navigation');
+    }
+
   }
-
-});
+);

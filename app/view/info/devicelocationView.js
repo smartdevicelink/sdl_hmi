@@ -34,12 +34,12 @@
 SDL.DeviceLocationView = Em.ContainerView.create({
 
   classNames: [
-      'info_apps_deviceLocation_view',
-      'sdl-window'
+    'info_apps_deviceLocation_view',
+    'sdl-window'
   ],
 
   classNameBindings: [
-      'SDL.States.info.devicelocation.active:active_state:inactive_state'
+    'SDL.States.info.devicelocation.active:active_state:inactive_state'
   ],
 
   /**
@@ -51,24 +51,25 @@ SDL.DeviceLocationView = Em.ContainerView.create({
    * View Components
    */
   childViews: [
-      'backButton',
-      'deviceLocationLabel',
-      'devicesSelect',
-      'locationSelect',
-      'setButton'
+    'backButton',
+    'deviceLocationLabel',
+    'devicesSelect',
+    'locationSelect',
+    'setButton'
   ],
 
   /**
    * Button to return to previous view
    */
   backButton: SDL.Button.extend({
-    classNames: [
-        'backButton', 'button'
-    ],
-    action: 'turnChangeDeviceViewBack',
-    target: 'SDL.SDLController',
-    icon: 'images/media/ico_back.png'
-  }),
+        classNames: [
+          'backButton', 'button'
+        ],
+        action: 'turnChangeDeviceViewBack',
+        target: 'SDL.SDLController',
+        icon: 'images/media/ico_back.png'
+      }
+    ),
 
   /**
    * Label in title
@@ -80,7 +81,8 @@ SDL.DeviceLocationView = Em.ContainerView.create({
     classNames: 'caption-text',
 
     content: 'Devices Location Manage Window'
-  }),
+  }
+),
 
   /**
    * HMI element Select with parameters of transmission state from VehicleInfo
@@ -99,9 +101,10 @@ SDL.DeviceLocationView = Em.ContainerView.create({
     optionLabelPath: 'content.name',
 
     selectUpdate: function() {
-      this.selection = this.content[0];
-    }.observes('this.content')
-  }),
+          this.selection = this.content[0];
+        }.observes('this.content')
+  }
+),
 
   /**
    * HMI element Select with parameters of transmission state from VehicleInfo
@@ -116,18 +119,23 @@ SDL.DeviceLocationView = Em.ContainerView.create({
     contentBinding: 'SDL.SDLModel.interiorZone',
 
     valueBinding: 'this._parentView.location'
-  }),
+  }
+),
 
   /**
    * Button to set device location
    */
   setButton: SDL.Button.extend({
-    classNames: 'button sendLocationButton',
-    text: 'Set location',
-    click: function() {
-      FFW.RC.OnDeviceLocationChanged(this._parentView.devicesSelect.selection, this._parentView.location);
-    },
-    enabled: false,
-    onDown: false
-  })
-});
+        classNames: 'button sendLocationButton',
+        text: 'Set location',
+        click: function() {
+          FFW.RC.OnDeviceLocationChanged(this._parentView.devicesSelect.selection,
+            this._parentView.location
+          );
+        },
+        enabled: false,
+        onDown: false
+      }
+    )
+}
+);

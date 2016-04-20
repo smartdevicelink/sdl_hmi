@@ -31,76 +31,69 @@
  * @version 1.0
  */
 
-SDL.VRHelpListView = SDL.SDLAbstractView.create({
-
-  elementId: 'vr_help_list_view',
-
-  childViews: [
+SDL.VRHelpListView = SDL.SDLAbstractView.create(
+  {
+    elementId: 'vr_help_list_view',
+    childViews: [
       'backButton', 'captionText', 'helpList'
-  ],
-
-  helpList: SDL.List.extend({
-    elementId: 'vr_help_list_view_list',
-    itemsOnPage: 5,
-    items: []
-  }),
-
-  /**
-   * Deactivate window
-   */
-  deactivate: function() {
-
-    this._super();
-
-    if (SDL.SDLController.model && SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
-      SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode['ABORTED']);
-    }
-
-    SDL.SDLController.VRMove();
-  },
-
-  /**
-   * Clean choices caption and list before new proform
-   */
-  clean: function() {
-
-    this.set('captionText.content', 'vrHelp');
-    this.helpList.items = [];
-    this.helpList.list.refresh();
-  },
-
-  /**
-   * Update choises list with actual set id
-   *
-   * @param data:
-   *            Array
-   */
-  showVRHelp: function(vrHelpTitle, vrHelp) {
-
-    this.clean();
-
-    this.set('active', true);
-
-    SDL.SDLController.VRMove();
-
-    if (vrHelpTitle) {
-      this.captionText.set('content', vrHelpTitle);
-    }
-
-    if (vrHelp) {
-      for (i = 0; i < vrHelp.length; i++) {
-        this.helpList.items.push({
-          type: SDL.Label,
-          params: {
-            content: vrHelp[i].text,
-            icon: vrHelp[i].image                ?
-                            vrHelp[i].image.value : null,
-            templateName: vrHelp[i].image ? 'icon' : null
-          }
-        });
+    ],
+    helpList: SDL.List.extend(
+      {
+        elementId: 'vr_help_list_view_list',
+        itemsOnPage: 5,
+        items: []
       }
+    ),
+    /**
+     * Deactivate window
+     */
+    deactivate: function() {
+      this._super();
+      if (SDL.SDLController.model &&
+        SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
+        SDL.SDLController.vrInteractionResponse(
+          SDL.SDLModel.data.resultCode['ABORTED']
+        );
+      }
+      SDL.SDLController.VRMove();
+    },
+    /**
+     * Clean choices caption and list before new proform
+     */
+    clean: function() {
+      this.set('captionText.content', 'vrHelp');
+      this.helpList.items = [];
+      this.helpList.list.refresh();
+    },
+    /**
+     * Update choises list with actual set id
+     *
+     * @param data:
+     *            Array
+     */
+    showVRHelp: function(vrHelpTitle, vrHelp) {
+      this.clean();
+      this.set('active', true);
+      SDL.SDLController.VRMove();
+      if (vrHelpTitle) {
+        this.captionText.set('content', vrHelpTitle);
+      }
+      if (vrHelp) {
+        for (i = 0; i < vrHelp.length; i++) {
+          this.helpList.items.push(
+            {
+              type: SDL.Label,
+              params: {
+                content: vrHelp[i].text,
+                icon: vrHelp[i].image ?
+                  vrHelp[i].image.value : null,
+                templateName: vrHelp[i].image ? 'icon' : null
+              }
+            }
+          );
+        }
+      }
+      this.helpList.list.refresh();
     }
-
-    this.helpList.list.refresh();
   }
-});
+);

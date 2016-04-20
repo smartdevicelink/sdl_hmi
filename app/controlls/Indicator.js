@@ -65,23 +65,27 @@ SDL.Indicator = Em.View.extend(Ember.TargetActionSupport, {
 
     for (i = 0; i < length; i++) {
       this.indicators.push(Em.Object.create({
-        index: i,
-        className: this.indDefaultClass
-      }));
+            index: i,
+            className: this.indDefaultClass
+          }
+          )
+        );
     }
     // apply indicator visualization rule
     view.setRecord();
 
     if (this.startFrom) {
       this.indicators[this.startFrom].set('className',
-          this.indActiveClass);
+        this.indActiveClass
+      );
     }
 
     // add observer to content record
     this.addObserver('content', function() {
 
       view.setRecord();
-    });
+    }
+  );
 
     // view internal call
     this.applyAttributesToBuffer(this.buffer);
@@ -102,7 +106,8 @@ SDL.Indicator = Em.View.extend(Ember.TargetActionSupport, {
       this.content.addObserver('value', function() {
 
         view.toggleIndicators();
-      });
+      }
+    );
 
     }
 
@@ -116,19 +121,23 @@ SDL.Indicator = Em.View.extend(Ember.TargetActionSupport, {
 
     for (i = 0; i < length; i++) {
       if (i >= this.content.value) {
-        this.indicators[i].set('className', 'SDL_indicator '            +
-                    this.indDefaultClass);
+        this.indicators[i].set('className', 'SDL_indicator ' +
+          this.indDefaultClass
+        );
       } else {
-        this.indicators[i].set('className', 'SDL_indicator '            +
-                    this.indActiveClass);
+        this.indicators[i].set('className', 'SDL_indicator ' +
+          this.indActiveClass
+        );
       }
     }
   },
 
   /** Define indicator template */
-  template: Ember.Handlebars.compile('{{#with view}}'      +
-        '{{#each indicators}}'      +
-        '<div {{bindAttr class="className view.enabled:show"}}></div>'      +
-        '{{/each}}' + '{{/with}}')
+  template: Ember.Handlebars.compile('{{#with view}}' +
+    '{{#each indicators}}' +
+    '<div {{bindAttr class="className view.enabled:show"}}></div>' +
+    '{{/each}}' + '{{/with}}'
+  )
 
-});
+}
+);

@@ -31,14 +31,15 @@
  * @version 1.0
  */
 SDL.PresetEvents = Ember.Mixin.create({
-  actionDown: function() {
+    actionDown: function() {
 
-    this._super();
-    SDL.SDLController.onSoftButtonActionDown(this);
-  },
-  actionUp: function() {
+      this._super();
+      SDL.SDLController.onSoftButtonActionDown(this);
+    },
+    actionUp: function() {
 
-    this._super();
-    SDL.SDLController.onSoftButtonActionUp(this);
+      this._super();
+      SDL.SDLController.onSoftButtonActionUp(this);
+    }
   }
-});
+);

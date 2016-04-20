@@ -31,83 +31,71 @@
  * @version 1.0
  */
 
-SDL.DeviceStateChangeView = Em.ContainerView.create({
-
-  elementId: 'policies_settings_deviceStateChange',
-
-  classNames: 'in_settings_separate_view',
-
-  classNameBindings: [
+SDL.DeviceStateChangeView = Em.ContainerView.create(
+  {
+    elementId: 'policies_settings_deviceStateChange',
+    classNames: 'in_settings_separate_view',
+    classNameBindings: [
       'SDL.States.settings.policies.deviceStateChange.active:active_state:inactive_state'
-  ],
-
-  childViews: [
+    ],
+    childViews: [
       'backButton',
       'listOfDevices',
       'label'
-  ],
-
-  /**
-   * Label in title
-   */
-  label: SDL.Label.extend({
-
-    elementId: 'label',
-
-    classNames: 'label',
-
-    content: 'Choose devices to be Unpaired:'
-  }),
-
-  backButton: SDL.Button.extend({
-    classNames:
-        [
-            'backButton'
-        ],
-    action: 'onState',
-    target: 'SDL.SettingsController',
-    goToState: 'policies',
-    icon: 'images/media/ico_back.png',
-    onDown: false
-  }),
-
-  /**
-   * Function to add application to application list
-   */
-  showDeviceList: function() {
-
-    this.listOfDevices.items = [];
-
-    var dev = SDL.SDLModel.data.connectedDevices;
-
-    for (var key in dev) {
-
-      if (dev.hasOwnProperty(key)) {
-
-        this.listOfDevices.items.push({
-          type: SDL.Button,
-          params: {
-            action: 'OnDeviceStateChanged',
-            target: 'FFW.BasicCommunication',
-            text: dev[key].name,
-            deviceName: dev[key].name,
-            deviceID: dev[key].id
-          }
-        });
+    ],
+    /**
+     * Label in title
+     */
+    label: SDL.Label.extend(
+      {
+        elementId: 'label',
+        classNames: 'label',
+        content: 'Choose devices to be Unpaired:'
       }
-    }
-
-    this.listOfDevices.list.refresh();
-
-  },
-
-  listOfDevices: SDL.List.extend({
-
-    elementId: 'polocies_device_list',
-
-    itemsOnPage: 5,
-
-    /** Items */
-    items: new Array()
-  })
-});
+    ),
+    backButton: SDL.Button.extend(
+      {
+        classNames: [
+          'backButton'
+        ],
+        action: 'onState',
+        target: 'SDL.SettingsController',
+        goToState: 'policies',
+        icon: 'images/media/ico_back.png',
+        onDown: false
+      }
+    ),
+    /**
+     * Function to add application to application list
+     */
+    showDeviceList: function() {
+      this.listOfDevices.items = [];
+      var dev = SDL.SDLModel.data.connectedDevices;
+      for (var key in dev) {
+        if (dev.hasOwnProperty(key)) {
+          this.listOfDevices.items.push(
+            {
+              type: SDL.Button,
+              params: {
+                action: 'OnDeviceStateChanged',
+                target: 'FFW.BasicCommunication',
+                text: dev[key].name,
+                deviceName: dev[key].name,
+                deviceID: dev[key].id
+              }
+            }
+          );
+        }
+      }
+      this.listOfDevices.list.refresh();
+    },
+    listOfDevices: SDL.List.extend(
+      {
+        elementId: 'polocies_device_list',
+        itemsOnPage: 5,
+        /** Items */
+        items: new Array()
+      }
+    )
+  }
+);

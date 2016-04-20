@@ -39,9 +39,9 @@ SDL.SDLModelData = Em.Object.create({
    * @type {Object}
    */
   interactionData: {
-    'vrHelpTitle': null,
-    'vrHelp': null
-  },
+      'vrHelpTitle': null,
+      'vrHelp': null
+    },
 
   /**
    * Structure specified for PoliceUpdate retry sequence
@@ -50,12 +50,12 @@ SDL.SDLModelData = Em.Object.create({
    * @type {Objetc}
    */
   policyUpdateRetry: {
-    timeout: null,
-    retry: [],
-    try: null,
-    timer: null,
-    oldTimer: 0
-  },
+      timeout: null,
+      retry: [],
+      try: null,
+      timer: null,
+      oldTimer: 0
+    },
 
   /**
    * Application's container for current processed requests on VR component of HMI
@@ -63,8 +63,8 @@ SDL.SDLModelData = Em.Object.create({
    * @type {Object}
    */
   vrActiveRequests: {
-    vrPerformInteraction: null
-  },
+      vrPerformInteraction: null
+    },
 
   /**
    * List of callback functions for request SDL.GetUserFriendlyMessage
@@ -154,8 +154,8 @@ SDL.SDLModelData = Em.Object.create({
    * @type {Object}
    */
   settingsInfoList: [
-      'iAPP_BUFFER_FULL',
-      'blah'
+    'iAPP_BUFFER_FULL',
+    'blah'
   ],
 
   /**
@@ -171,8 +171,8 @@ SDL.SDLModelData = Em.Object.create({
    * @type {Object}
    */
   systemErrorList: [
-      'SYNC_REBOOTED',
-      'SYNC_OUT_OF_MEMMORY'
+    'SYNC_REBOOTED',
+    'SYNC_OUT_OF_MEMMORY'
   ],
 
   /**
@@ -188,9 +188,9 @@ SDL.SDLModelData = Em.Object.create({
    * @type {Object}
    */
   CurrDeviceInfo: {
-    'name': null,
-    'id': null
-  },
+      'name': null,
+      'id': null
+    },
 
   /**
    * Driver Distraction State
@@ -245,145 +245,145 @@ SDL.SDLModelData = Em.Object.create({
    * List of states for OnTBTClientState notification
    */
   tbtClientStates: [
-        {
-          name: 'ROUTE_UPDATE_REQUEST',
-          id: 0
-        }, {
-          name: 'ROUTE_ACCEPTED',
-          id: 1
-        }, {
-          name: 'ROUTE_REFUSED',
-          id: 2
-        }, {
-          name: 'ROUTE_CANCELLED',
-          id: 3
-        }, {
-          name: 'ETA_REQUEST',
-          id: 4
-        }, {
-          name: 'NEXT_TURN_REQUEST',
-          id: 5
-        }, {
-          name: 'ROUTE_STATUS_REQUEST',
-          id: 6
-        }, {
-          name: 'ROUTE_SUMMARY_REQUEST',
-          id: 7
-        }, {
-          name: 'TRIP_STATUS_REQUEST',
-          id: 8
-        }, {
-          name: 'ROUTE_UPDATE_REQUEST_TIMEOUT',
-          id: 9
-        }
+      {
+        name: 'ROUTE_UPDATE_REQUEST',
+        id: 0
+      }, {
+        name: 'ROUTE_ACCEPTED',
+        id: 1
+      }, {
+        name: 'ROUTE_REFUSED',
+        id: 2
+      }, {
+        name: 'ROUTE_CANCELLED',
+        id: 3
+      }, {
+        name: 'ETA_REQUEST',
+        id: 4
+      }, {
+        name: 'NEXT_TURN_REQUEST',
+        id: 5
+      }, {
+        name: 'ROUTE_STATUS_REQUEST',
+        id: 6
+      }, {
+        name: 'ROUTE_SUMMARY_REQUEST',
+        id: 7
+      }, {
+        name: 'TRIP_STATUS_REQUEST',
+        id: 8
+      }, {
+        name: 'ROUTE_UPDATE_REQUEST_TIMEOUT',
+        id: 9
+      }
     ],
 
   /**
    * List of states for ExitApplication notification
    */
   exitAppState: [
-        {
-          name: 'IGNITION_OFF',
-          id: 0
-        },
-        {
-          name: 'MASTER_RESET',
-          id: 1
-        },
-        {
-          name: 'FACTORY_DEFAULTS',
-          id: 2
-        },
-        {
-          name: 'SUSPEND',
-          id: 3
-        }
+      {
+        name: 'IGNITION_OFF',
+        id: 0
+      },
+      {
+        name: 'MASTER_RESET',
+        id: 1
+      },
+      {
+        name: 'FACTORY_DEFAULTS',
+        id: 2
+      },
+      {
+        name: 'SUSPEND',
+        id: 3
+      }
     ],
 
   /**
    * List of states for OnSystemRequest notification
    */
   systemRequestState: [
-        {
-          name: 'HTTP',
-          id: 0
-        },
-        {
-          name: 'FILE_RESUME',
-          id: 1
-        },
-        {
-          name: 'AUTH_REQUEST',
-          id: 2
-        },
-        {
-          name: 'AUTH_CHALLENGE',
-          id: 3
-        },
-        {
-          name: 'AUTH_ACK',
-          id: 4
-        },
-        {
-          name: 'PROPRIETARY',
-          id: 5
-        },
-        {
-          name: 'QUERY_APPS',
-          id: 6
-        },
-        {
-          name: 'LAUNCH_APP',
-          id: 7
-        },
-        {
-          name: 'LOCK_SCREEN_ICON_URL',
-          id: 8
-        },
-        {
-          name: 'TRAFFIC_MESSAGE_CHANNEL',
-          id: 9
-        },
-        {
-          name: 'DRIVER_PROFILE',
-          id: 10
-        },
-        {
-          name: 'VOICE_SEARCH',
-          id: 11
-        },
-        {
-          name: 'NAVIGATION',
-          id: 12
-        },
-        {
-          name: 'PHONE',
-          id: 13
-        },
-        {
-          name: 'CLIMATE',
-          id: 14
-        },
-        {
-          name: 'SETTINGS',
-          id: 15
-        },
-        {
-          name: 'VEHICLE_DIAGNOSTICS',
-          id: 16
-        },
-        {
-          name: 'EMERGENCY',
-          id: 17
-        },
-        {
-          name: 'MEDIA',
-          id: 18
-        },
-        {
-          name: 'FOTA',
-          id: 19
-        }
+      {
+        name: 'HTTP',
+        id: 0
+      },
+      {
+        name: 'FILE_RESUME',
+        id: 1
+      },
+      {
+        name: 'AUTH_REQUEST',
+        id: 2
+      },
+      {
+        name: 'AUTH_CHALLENGE',
+        id: 3
+      },
+      {
+        name: 'AUTH_ACK',
+        id: 4
+      },
+      {
+        name: 'PROPRIETARY',
+        id: 5
+      },
+      {
+        name: 'QUERY_APPS',
+        id: 6
+      },
+      {
+        name: 'LAUNCH_APP',
+        id: 7
+      },
+      {
+        name: 'LOCK_SCREEN_ICON_URL',
+        id: 8
+      },
+      {
+        name: 'TRAFFIC_MESSAGE_CHANNEL',
+        id: 9
+      },
+      {
+        name: 'DRIVER_PROFILE',
+        id: 10
+      },
+      {
+        name: 'VOICE_SEARCH',
+        id: 11
+      },
+      {
+        name: 'NAVIGATION',
+        id: 12
+      },
+      {
+        name: 'PHONE',
+        id: 13
+      },
+      {
+        name: 'CLIMATE',
+        id: 14
+      },
+      {
+        name: 'SETTINGS',
+        id: 15
+      },
+      {
+        name: 'VEHICLE_DIAGNOSTICS',
+        id: 16
+      },
+      {
+        name: 'EMERGENCY',
+        id: 17
+      },
+      {
+        name: 'MEDIA',
+        id: 18
+      },
+      {
+        name: 'FOTA',
+        id: 19
+      }
     ],
 
   /**
@@ -397,42 +397,42 @@ SDL.SDLModelData = Em.Object.create({
    * Enum to unmap state manager names into HMI API EventTypes enum
    */
   onEventChangedEnum: {
-    'player': 'AUDIO_SOURCE',
-    'navigation': 'EMBEDDED_NAVI',
-    'phoneCall': 'PHONE_CALL',
-    'emergencyEvent': 'EMERGENCY_EVENT',
-    'onDeactivateHMI': 'DEACTIVATE_HMI'
-  },
+      'player': 'AUDIO_SOURCE',
+      'navigation': 'EMBEDDED_NAVI',
+      'phoneCall': 'PHONE_CALL',
+      'emergencyEvent': 'EMERGENCY_EVENT',
+      'onDeactivateHMI': 'DEACTIVATE_HMI'
+    },
 
   /**
    * Enum with result codes for RPC
    */
   resultCode: {
-    'SUCCESS': 0,
-    'UNSUPPORTED_REQUEST': 1,
-    'UNSUPPORTED_RESOURCE': 2,
-    'DISALLOWED': 3,
-    'REJECTED': 4,
-    'ABORTED': 5,
-    'IGNORED': 6,
-    'RETRY': 7,
-    'IN_USE': 8,
-    'DATA_NOT_AVAILABLE': 9,
-    'TIMED_OUT': 10,
-    'INVALID_DATA': 11,
-    'CHAR_LIMIT_EXCEEDED': 12,
-    'INVALID_ID': 13,
-    'DUPLICATE_NAME': 14,
-    'APPLICATION_NOT_REGISTERED': 15,
-    'WRONG_LANGUAGE': 16,
-    'OUT_OF_MEMORY': 17,
-    'TOO_MANY_PENDING_REQUESTS': 18,
-    'NO_APPS_REGISTERED': 19,
-    'NO_DEVICES_CONNECTED': 20,
-    'WARNINGS': 21,
-    'GENERIC_ERROR': 22,
-    'USER_DISALLOWED': 23
-  },
+      'SUCCESS': 0,
+      'UNSUPPORTED_REQUEST': 1,
+      'UNSUPPORTED_RESOURCE': 2,
+      'DISALLOWED': 3,
+      'REJECTED': 4,
+      'ABORTED': 5,
+      'IGNORED': 6,
+      'RETRY': 7,
+      'IN_USE': 8,
+      'DATA_NOT_AVAILABLE': 9,
+      'TIMED_OUT': 10,
+      'INVALID_DATA': 11,
+      'CHAR_LIMIT_EXCEEDED': 12,
+      'INVALID_ID': 13,
+      'DUPLICATE_NAME': 14,
+      'APPLICATION_NOT_REGISTERED': 15,
+      'WRONG_LANGUAGE': 16,
+      'OUT_OF_MEMORY': 17,
+      'TOO_MANY_PENDING_REQUESTS': 18,
+      'NO_APPS_REGISTERED': 19,
+      'NO_DEVICES_CONNECTED': 20,
+      'WARNINGS': 21,
+      'GENERIC_ERROR': 22,
+      'USER_DISALLOWED': 23
+    },
 
   /**
    * Info navigationApp data for ShowConstantTBT request
@@ -440,55 +440,55 @@ SDL.SDLModelData = Em.Object.create({
    * @type: {Object}
    */
   constantTBTParams: {
-    'navigationTexts': [
-            {
-              'fieldName': 'navigationText1',
-              'fieldText': 'mainField1'
-            },
-            {
-              'fieldName': 'navigationText2',
-              'fieldText': 'mainField2'
-            },
-            {
-              'fieldName': 'ETA',
-              'fieldText': 'mainField3'
-            },
-            {
-              'fieldName': 'totalDistance',
-              'fieldText': 'mainField4'
-            },
-            {
-              'fieldName': 'navigationText',
-              'fieldText': 'mainField5'
-            },
-            {
-              'fieldName': 'timeToDestination',
-              'fieldText': 'mainField6'
-            }
-        ],
-    'softButtons': [
-            {
-              'text': 'Menu',
-              'isHighlighted': true,
-              'softButtonID': 1
-            },
-            {
-              'text': 'Custom button',
-              'isHighlighted': false,
-              'softButtonID': 2
-            },
-            {
-              'text': '+',
-              'isHighlighted': true,
-              'softButtonID': 3
-            },
-            {
-              'text': '-',
-              'isHighlighted': false,
-              'softButtonID': 4
-            }
-        ]
-  },
+      'navigationTexts': [
+        {
+          'fieldName': 'navigationText1',
+          'fieldText': 'mainField1'
+        },
+        {
+          'fieldName': 'navigationText2',
+          'fieldText': 'mainField2'
+        },
+        {
+          'fieldName': 'ETA',
+          'fieldText': 'mainField3'
+        },
+        {
+          'fieldName': 'totalDistance',
+          'fieldText': 'mainField4'
+        },
+        {
+          'fieldName': 'navigationText',
+          'fieldText': 'mainField5'
+        },
+        {
+          'fieldName': 'timeToDestination',
+          'fieldText': 'mainField6'
+        }
+      ],
+      'softButtons': [
+        {
+          'text': 'Menu',
+          'isHighlighted': true,
+          'softButtonID': 1
+        },
+        {
+          'text': 'Custom button',
+          'isHighlighted': false,
+          'softButtonID': 2
+        },
+        {
+          'text': '+',
+          'isHighlighted': true,
+          'softButtonID': 3
+        },
+        {
+          'text': '-',
+          'isHighlighted': false,
+          'softButtonID': 4
+        }
+      ]
+    },
 
   /**
    * List of registered applications, To prevent errors without registered
@@ -513,17 +513,17 @@ SDL.SDLModelData = Em.Object.create({
   connectedDevices: {},
 
   connectedDevicesArray: function() {
-    var temArray = [];
+      var temArray = [];
 
-    for (var key in SDL.SDLModel.data.connectedDevices) {
-      if (SDL.SDLModel.data.connectedDevices.hasOwnProperty(key)) {
+      for (var key in SDL.SDLModel.data.connectedDevices) {
+        if (SDL.SDLModel.data.connectedDevices.hasOwnProperty(key)) {
 
-        temArray.push(SDL.SDLModel.data.connectedDevices[key]);
+          temArray.push(SDL.SDLModel.data.connectedDevices[key]);
+        }
       }
-    }
 
-    return temArray;
-  }.property('SDL.SDLModel.data.connectedDevices'),
+      return temArray;
+    }.property('SDL.SDLModel.data.connectedDevices'),
 
   /**
    * List of registered components
@@ -531,28 +531,28 @@ SDL.SDLModelData = Em.Object.create({
    * @type object
    */
   registeredComponents: [
-        {
-          type: 'UI',
-          state: false
-        }, {
-          type: 'TTS',
-          state: false
-        }, {
-          type: 'VR',
-          state: false
-        }, {
-          type: 'BasicCommunication',
-          state: false
-        }, {
-          type: 'VehicleInfo',
-          state: false
-        }, {
-          type: 'Buttons',
-          state: false
-        }, {
-          type: 'Navigation',
-          state: false
-        }
+      {
+        type: 'UI',
+        state: false
+      }, {
+        type: 'TTS',
+        state: false
+      }, {
+        type: 'VR',
+        state: false
+      }, {
+        type: 'BasicCommunication',
+        state: false
+      }, {
+        type: 'VehicleInfo',
+        state: false
+      }, {
+        type: 'Buttons',
+        state: false
+      }, {
+        type: 'Navigation',
+        state: false
+      }
     ],
 
   /**
@@ -561,12 +561,12 @@ SDL.SDLModelData = Em.Object.create({
    * @type {Object}
    */
   defaultListOfIcons: {
-    // appID: syncFileName
-    //0: "images/media/ico_li.png"
-    'app': 'images/info/info_leftMenu_apps_ico.png',
-    'command': 'images/common/defaultButtonImage.png',
-    'trackIcon': 'images/sdl/audio_icon.jpg'
-  },
+      // appID: syncFileName
+      //0: "images/media/ico_li.png"
+      'app': 'images/info/info_leftMenu_apps_ico.png',
+      'command': 'images/common/defaultButtonImage.png',
+      'trackIcon': 'images/sdl/audio_icon.jpg'
+    },
 
   /**
    * Array of active applications
@@ -619,32 +619,33 @@ SDL.SDLModelData = Em.Object.create({
    * @type {Array}
    */
   sdlLanguagesList: [
-      'EN-US',
-      'ES-MX',
-      'FR-CA',
-      'DE-DE',
-      'ES-ES',
-      'EN-GB',
-      'RU-RU',
-      'TR-TR',
-      'PL-PL',
-      'FR-FR',
-      'IT-IT',
-      'SV-SE',
-      'PT-PT',
-      'NL-NL',
-      'ZH-TW',
-      'JA-JP',
-      'AR-SA',
-      'KO-KR',
-      'PT-BR',
-      'CS-CZ',
-      'DA-DK',
-      'NO-NO',
-      'NL-BE',
-      'EL-GR',
-      'HU-HU',
-      'FI-FI',
-      'SK-SK'
+    'EN-US',
+    'ES-MX',
+    'FR-CA',
+    'DE-DE',
+    'ES-ES',
+    'EN-GB',
+    'RU-RU',
+    'TR-TR',
+    'PL-PL',
+    'FR-FR',
+    'IT-IT',
+    'SV-SE',
+    'PT-PT',
+    'NL-NL',
+    'ZH-TW',
+    'JA-JP',
+    'AR-SA',
+    'KO-KR',
+    'PT-BR',
+    'CS-CZ',
+    'DA-DK',
+    'NO-NO',
+    'NL-BE',
+    'EL-GR',
+    'HU-HU',
+    'FI-FI',
+    'SK-SK'
   ]
-});
+}
+);

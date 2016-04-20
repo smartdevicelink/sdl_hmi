@@ -202,8 +202,8 @@ SDL.ABSAppModel = Em.Object.extend({
    * @type {Array}
    */
   commandsList: {
-    0: []
-  },
+      0: []
+    },
 
   /**
    * Flag to open ShowConstantTBTview when entering to current screen
@@ -275,11 +275,12 @@ SDL.ABSAppModel = Em.Object.extend({
 
           // Check image name with each command in each subMenu
           if (this.commandsList[commands][i].icon) {
-            if (this.commandsList[commands][i].icon.indexOf(imageName) != -1                &&
-                            imageName.length == this.commandsList[commands][i].icon.length) {
+            if (this.commandsList[commands][i].icon.indexOf(imageName) != -1 &&
+              imageName.length == this.commandsList[commands][i].icon.length) {
 
               // If found same image path than set default icon path
-              this.commandsList[commands][i].icon = SDL.SDLModel.data.defaultListOfIcons.command;
+              this.commandsList[commands][i].icon                =
+                  SDL.SDLModel.data.defaultListOfIcons.command;
               result = true;
             }
           }
@@ -311,7 +312,8 @@ SDL.ABSAppModel = Em.Object.extend({
    */
   addCommand: function(request) {
 
-    var parentID = request.params.menuParams.parentID > 0 ? request.params.menuParams.parentID : 'top';
+    var parentID = request.params.menuParams.parentID > 0 ?
+      request.params.menuParams.parentID : 'top';
 
     if (!this.get('commandsList.' + parentID)) {
       this.commandsList[parentID] = [];
@@ -323,24 +325,31 @@ SDL.ABSAppModel = Em.Object.extend({
     if (commands.length <= 999) {
 
       commands[commands.length] = {
-        commandID: request.params.cmdID,
-        name: request.params.menuParams.menuName,
-        parent: parentID,
-        position: request.params.menuParams.position ? request.params.menuParams.position : 0,
-        icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
-      };
+          commandID: request.params.cmdID,
+          name: request.params.menuParams.menuName,
+          parent: parentID,
+          position: request.params.menuParams.position ?
+            request.params.menuParams.position : 0,
+          icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
+        };
 
-      if (SDL.SDLController.getApplicationModel(request.params.appID) && SDL.OptionsView.active) {
+      if (SDL.SDLController.getApplicationModel(request.params.appID) &&
+        SDL.OptionsView.active) {
         SDL.SDLController.buttonsSort(parentID, this.appID);
         SDL.OptionsView.commands.refreshItems();
       }
 
       console.log(commands.length);
       if (request.id >= 0) {
-        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
+        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id,
+          request.method
+        );
       }
     } else {
-      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'Adding more than 1000 item to the top menu or to submenu is not allowed.');
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id,
+        request.method,
+        'Adding more than 1000 item to the top menu or to submenu is not allowed.'
+      );
     }
 
   },
@@ -355,11 +364,17 @@ SDL.ABSAppModel = Em.Object.extend({
     for (var i in this.commandsList) {
       if (this.commandsList[i].filterProperty('commandID', commandID).length) {
         if (i != this.currentSubMenuId || this.currentSubMenuId == 'top') {
-          this.get('commandsList.' + i).removeObjects(this.get('commandsList.' + i).filterProperty('commandID', commandID));
-          SDL.SDLModel.deleteCommandResponse(SDL.SDLModel.data.resultCode.SUCCESS, requestID);
+          this.get('commandsList.' + i).removeObjects(
+            this.get('commandsList.' + i).filterProperty('commandID', commandID)
+          );
+          SDL.SDLModel.deleteCommandResponse(
+            SDL.SDLModel.data.resultCode.SUCCESS, requestID
+          );
           return;
         } else {
-          SDL.SDLModel.deleteCommandResponse(SDL.SDLModel.data.resultCode['IN_USE'], requestID);
+          SDL.SDLModel.deleteCommandResponse(
+            SDL.SDLModel.data.resultCode['IN_USE'], requestID
+          );
           return;
         }
       }
@@ -383,20 +398,28 @@ SDL.ABSAppModel = Em.Object.extend({
 
       this.commandsList[request.params.menuID] = [];
       commands[commands.length] = {
-        menuID: request.params.menuID,
-        name: request.params.menuParams.menuName ? request.params.menuParams.menuName : '',
-        parent: 0,
-        position: request.params.menuParams.position ? request.params.menuParams.position : 0
-      };
+          menuID: request.params.menuID,
+          name: request.params.menuParams.menuName ?
+            request.params.menuParams.menuName : '',
+          parent: 0,
+          position: request.params.menuParams.position ?
+            request.params.menuParams.position : 0
+        };
 
-      if (SDL.SDLController.getApplicationModel(request.params.appID) && SDL.OptionsView.active) {
+      if (SDL.SDLController.getApplicationModel(request.params.appID) &&
+        SDL.OptionsView.active) {
         SDL.SDLController.buttonsSort(parentID, this.appID);
         SDL.OptionsView.commands.refreshItems();
       }
 
-      FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
+      FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id,
+        request.method
+      );
     } else {
-      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method, 'Adding more than 1000 item to the top menu or to submenu is not allowed.');
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id,
+        request.method,
+        'Adding more than 1000 item to the top menu or to submenu is not allowed.'
+      );
     }
   },
 
@@ -408,7 +431,9 @@ SDL.ABSAppModel = Em.Object.extend({
   deleteSubMenu: function(menuID) {
 
     if (this.commandsList['top'].filterProperty('commandID', menuID)) {
-      this.get('commandsList.top').removeObjects(this.get('commandsList.top').filterProperty('menuID', menuID));
+      this.get('commandsList.top').removeObjects(
+        this.get('commandsList.top').filterProperty('menuID', menuID)
+      );
       //delete(this.commandsList[menuID]);
     }
 
@@ -452,4 +477,5 @@ SDL.ABSAppModel = Em.Object.extend({
     SDL.SliderView.activate(this.appName, message.params.timeout);
 
   }
-});
+}
+);

@@ -32,53 +32,43 @@
  * @version 1.0
  */
 
-SDL.DriverDistraction = Em.ContainerView.create({
-
-  elementId: 'driverDistraction',
-
-  classNames: 'driverDistractionWindow',
-
-  classNameBindings:
-      [
-          'active'
-      ],
-
-  childViews:
-      [
-          'driverDistractionPopUp',
-          'driverDistractionText'
-      ],
-
-  content: 'Not accessible while driving',
-
-  active: false,
-
-  driverDistractionPopUp: Em.View.create({
-
-    classNames: 'driverDistraction'
-  }),
-
-  driverDistractionText: SDL.Label.extend({
-
-    elementId: 'driverDistractionText',
-
-    classNames: 'driverDistractionText',
-
-    contentBinding: 'parentView.content'
-  }),
-
-  activate: function() {
-    this.set('active', true);
-    setTimeout(function() {
-      SDL.DriverDistraction.deactivate();
-    }, 3000);
-
-    SDL.SDLController.onSystemContextChange();
-  },
-
-  deactivate: function() {
-    this.set('active', false);
-
-    SDL.SDLController.onSystemContextChange();
+SDL.DriverDistraction = Em.ContainerView.create(
+  {
+    elementId: 'driverDistraction',
+    classNames: 'driverDistractionWindow',
+    classNameBindings: [
+      'active'
+    ],
+    childViews: [
+      'driverDistractionPopUp',
+      'driverDistractionText'
+    ],
+    content: 'Not accessible while driving',
+    active: false,
+    driverDistractionPopUp: Em.View.create(
+      {
+        classNames: 'driverDistraction'
+      }
+    ),
+    driverDistractionText: SDL.Label.extend(
+      {
+        elementId: 'driverDistractionText',
+        classNames: 'driverDistractionText',
+        contentBinding: 'parentView.content'
+      }
+    ),
+    activate: function() {
+      this.set('active', true);
+      setTimeout(
+        function() {
+          SDL.DriverDistraction.deactivate();
+        }, 3000
+      );
+      SDL.SDLController.onSystemContextChange();
+    },
+    deactivate: function() {
+      this.set('active', false);
+      SDL.SDLController.onSystemContextChange();
+    }
   }
-});
+);

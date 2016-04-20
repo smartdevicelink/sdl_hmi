@@ -31,19 +31,18 @@
  * @filesource app/view/media/MediaView.js
  * @version 1.0
  */
-SDL.MediaView = Em.ContainerView.create({
-  /** View Id */
-  elementId: 'media',
-
-  classNameBindings: 'SDL.States.media.active:active_state:inactive_state',
-
-  /** Media components */
-  childViews:
-      [
-          'leftMenu',
-          SDL.playerView,
-          SDL.sdlView
-      ],
-  /** Left Menu view component */
-  leftMenu: SDL.LeftMenuView
-});
+SDL.MediaView = Em.ContainerView.create(
+  {
+    /** View Id */
+    elementId: 'media',
+    classNameBindings: 'SDL.States.media.active:active_state:inactive_state',
+    /** Media components */
+    childViews: [
+      'leftMenu',
+      SDL.playerView,
+      SDL.sdlView
+    ],
+    /** Left Menu view component */
+    leftMenu: SDL.LeftMenuView
+  }
+);

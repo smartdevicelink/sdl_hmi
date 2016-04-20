@@ -32,133 +32,105 @@
  */
 
 SDL.InfoTravelLinkView = Em.ContainerView
-    .create({
-
+  .create(
+    {
       classNameBindings: [
-          'SDL.States.info.travelLink.active:active_state:inactive_state'
+        'SDL.States.info.travelLink.active:active_state:inactive_state'
       ],
-
       elementId: 'info_travelLink',
-
       childViews: [
-          'imageLogo', 'listLeft', 'listRight',
+        'imageLogo', 'listLeft', 'listRight',
       ],
-
-      imageLogo: SDL.Label.extend({
-        elementId: 'info_travelLink_logo',
-        icon: 'images/info/info_travelLink_sirius_logo.png',
-        templateName: 'icon'
-      }),
-
+      imageLogo: SDL.Label.extend(
+        {
+          elementId: 'info_travelLink_logo',
+          icon: 'images/info/info_travelLink_sirius_logo.png',
+          templateName: 'icon'
+        }
+      ),
       listLeft: SDL.List
-            .extend({
-              elementId: 'info_travelLink_listLeft',
-
-              disableScrollbar: true,
-
-              itemsOnPage: 5,
-
-              /** Items */
-              items: [
-                    {
-
-                      type: SDL.Button,
-
-                      params: {
-                        textBinding: 'SDL.locale.label.view_info_travelLink_trafficOnRoute',
-                        templateName: 'arrow',
-                        disabled: true
-                      }
-
-                    },
-                    {
-
-                      type: SDL.Button,
-
-                      params: {
-                        textBinding: 'SDL.locale.label.view_info_travelLink_trafficNearby',
-                        templateName: 'arrow',
-                        disabled: true
-                      }
-
-                    },
-                    {
-
-                      type: SDL.Button,
-
-                      params: {
-                        textBinding: 'SDL.locale.label.view_info_travelLink_fuelPrices',
-                        templateName: 'arrow',
-                        disabled: true
-                      }
-
-                    },
-                    {
-
-                      type: SDL.Button,
-
-                      params: {
-                        textBinding: 'SDL.locale.label.view_info_travelLink_movieListings',
-                        templateName: 'arrow',
-                        disabled: true
-                      }
-
-                    },
-                ]
-            }),
-
+        .extend(
+          {
+            elementId: 'info_travelLink_listLeft',
+            disableScrollbar: true,
+            itemsOnPage: 5,
+            /** Items */
+            items: [
+              {
+                type: SDL.Button,
+                params: {
+                  textBinding: 'SDL.locale.label.view_info_travelLink_trafficOnRoute',
+                  templateName: 'arrow',
+                  disabled: true
+                }
+              },
+              {
+                type: SDL.Button,
+                params: {
+                  textBinding: 'SDL.locale.label.view_info_travelLink_trafficNearby',
+                  templateName: 'arrow',
+                  disabled: true
+                }
+              },
+              {
+                type: SDL.Button,
+                params: {
+                  textBinding: 'SDL.locale.label.view_info_travelLink_fuelPrices',
+                  templateName: 'arrow',
+                  disabled: true
+                }
+              },
+              {
+                type: SDL.Button,
+                params: {
+                  textBinding: 'SDL.locale.label.view_info_travelLink_movieListings',
+                  templateName: 'arrow',
+                  disabled: true
+                }
+              }
+            ]
+          }
+        ),
       listRight: SDL.List
-            .extend({
-              elementId: 'info_travelLink_listRight',
-
-              disableScrollbar: true,
-
-              /** Items */
-              items: [
-                    {
-
-                      type: SDL.Button,
-
-                      params: {
-
-                        textBinding: 'SDL.locale.label.view_info_travelLink_subscriptionInfo',
-                        disabled: true
-                      }
-
-                    },
-                    {
-
-                      type: SDL.Button,
-
-                      params: {
-                        textBinding: 'SDL.locale.label.view_info_travelLink_weather',
-                        templateName: 'arrow',
-                        disabled: true
-                      }
-
-                    },
-                    {
-
-                      type: SDL.Button,
-
-                      params: {
-                        textBinding: 'SDL.locale.label.view_info_travelLink_sportsInfo',
-                        templateName: 'arrow',
-                        disabled: true
-                      }
-
-                    },
-                    {
-
-                      type: SDL.Button,
-
-                      params: {
-                        textBinding: 'SDL.locale.label.view_info_travelLink_skiConditions',
-                        templateName: 'arrow',
-                        disabled: true
-                      }
-
-                    }
-                ]
-            })
-    });
+        .extend(
+          {
+            elementId: 'info_travelLink_listRight',
+            disableScrollbar: true,
+            /** Items */
+            items: [
+              {
+                type: SDL.Button,
+                params: {
+                  textBinding: 'SDL.locale.label.view_info_travelLink_subscriptionInfo',
+                  disabled: true
+                }
+              },
+              {
+                type: SDL.Button,
+                params: {
+                  textBinding: 'SDL.locale.label.view_info_travelLink_weather',
+                  templateName: 'arrow',
+                  disabled: true
+                }
+              },
+              {
+                type: SDL.Button,
+                params: {
+                  textBinding: 'SDL.locale.label.view_info_travelLink_sportsInfo',
+                  templateName: 'arrow',
+                  disabled: true
+                }
+              },
+              {
+                type: SDL.Button,
+                params: {
+                  textBinding: 'SDL.locale.label.view_info_travelLink_skiConditions',
+                  templateName: 'arrow',
+                  disabled: true
+                }
+              }
+            ]
+          }
+        )
+    }
+  );

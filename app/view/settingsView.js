@@ -31,71 +31,65 @@
  * @filesource app/view/player/PlayerView.js
  * @version 1.0
  */
-SDL.SettingsView = Em.ContainerView.create({
-  /** View Id */
-  elementId: 'settingsView',
-
-  classNameBindings: [
+SDL.SettingsView = Em.ContainerView.create(
+  {
+    /** View Id */
+    elementId: 'settingsView',
+    classNameBindings: [
       'SDL.States.settings.active:active_state:inactive_state'
-  ],
-
-  /** Settings components */
-  childViews:
-      [
-          'leftMenu',
-          SDL.DeviceStateChangeView,
-          SDL.PoliciesView,
-          SDL.AppPermissionsListView,
-          SDL.AppPermissionsView,
-          SDL.DeviceConfigView,
-          SDL.StatisticsInfoView,
-          SDL.GetUrlsView,
-          SDL.SystemErrorView
-      ],
-
-  /** Left menu */
-  leftMenu: Em.ContainerView.extend({
-    elementId: 'settings_leftMenu',
-
-    classNameBindings:
-        [
-            'parentView.controller.hiddenLeftMenu:hidden'
+    ],
+    /** Settings components */
+    childViews: [
+      'leftMenu',
+      SDL.DeviceStateChangeView,
+      SDL.PoliciesView,
+      SDL.AppPermissionsListView,
+      SDL.AppPermissionsView,
+      SDL.DeviceConfigView,
+      SDL.StatisticsInfoView,
+      SDL.GetUrlsView,
+      SDL.SystemErrorView
+    ],
+    /** Left menu */
+    leftMenu: Em.ContainerView.extend(
+      {
+        elementId: 'settings_leftMenu',
+        classNameBindings: [
+          'parentView.controller.hiddenLeftMenu:hidden'
         ],
-
-    classNames: 'menu-items',
-
-    childViews:
-        [
-            'border',
-            'items'
+        classNames: 'menu-items',
+        childViews: [
+          'border',
+          'items'
         ],
-
-    border: Em.View.extend({
-      classNames: 'ls_border'
-    }),
-
-    items: Em.ContainerView.extend({
-      classNames: 'ls-items',
-
-      childViews:
-          [
+        border: Em.View.extend(
+          {
+            classNames: 'ls_border'
+          }
+        ),
+        items: Em.ContainerView.extend(
+          {
+            classNames: 'ls-items',
+            childViews: [
               'policies'
-          ],
-
-      policies: SDL.Button.extend({
-        elementId: 'policies_leftMenu',
-        goToState: 'policies',
-        classNames: 'menu-item lsp1_p',
-        classNameBindings:
-            [
-                'SDL.States.settings.policies.active:info_active'
             ],
-        text: 'Policies',
-        icon: 'images/settings/ico_settings.png',
-        action: 'onState',
-        target: 'SDL.SettingsController'
-      })
-    })
-  })
-
-});
+            policies: SDL.Button.extend(
+              {
+                elementId: 'policies_leftMenu',
+                goToState: 'policies',
+                classNames: 'menu-item lsp1_p',
+                classNameBindings: [
+                  'SDL.States.settings.policies.active:info_active'
+                ],
+                text: 'Policies',
+                icon: 'images/settings/ico_settings.png',
+                action: 'onState',
+                target: 'SDL.SettingsController'
+              }
+            )
+          }
+        )
+      }
+    )
+  }
+);

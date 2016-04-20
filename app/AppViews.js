@@ -30,19 +30,16 @@
  * @filesource app/AppViews.js
  * @version 1.0
  */
-
 /** Appending views */
-SDL.AppViews = Em.ContainerView.extend({
-
-  elementId: 'app',
-
-  classNameBindings: [
+SDL.AppViews = Em.ContainerView.extend(
+  {
+    elementId: 'app',
+    classNameBindings: [
       'SDL.FuncSwitcher.gen:gen',
       'SDL.FuncSwitcher.pan:pan',
       'SDL.FuncSwitcher.rev:rev'
-  ],
-
-  childViews: [
+    ],
+    childViews: [
       SDL.HomeView,
       SDL.MediaView,
       SDL.NavigationAppView,
@@ -78,42 +75,37 @@ SDL.AppViews = Em.ContainerView.extend({
       SDL.ExitApp,
       SDL.PrimaryDevice,
       SDL.SystemRequest
-  ],
-
-  /*
-   * This method is called when the app is fully rendered and ready to be
-   * displayed. We notify the backend to hide the splash and load internal
-   * view modules
-   */
-  didInsertElement: function() {
-
-    this._super();
-
-    SDL.set('appReady', true);
-
-    $(window).bind('beforeunload', function(e) {
-
-      FFW.BasicCommunication.OnIgnitionCycleOver();
-
-      FFW.BasicCommunication.disconnect();
-      FFW.UI.disconnect();
-      FFW.VR.disconnect();
-      FFW.VehicleInfo.disconnect();
-      FFW.TTS.disconnect();
-      FFW.Buttons.disconnect();
-      FFW.Navigation.disconnect();
-
-      if (confirm('The "ignition off" emulation executed!')) {
-        return 'OK, Good Bye then';
-      } else {
-        e = e || event;
-        if (e.preventDefault) {
-          e.preventDefault();
+    ],
+    /*
+     * This method is called when the app is fully rendered and ready to be
+     * displayed. We notify the backend to hide the splash and load internal
+     * view modules
+     */
+    didInsertElement: function() {
+      this._super();
+      SDL.set('appReady', true);
+      $(window).bind(
+        'beforeunload', function(e) {
+          FFW.BasicCommunication.OnIgnitionCycleOver();
+          FFW.BasicCommunication.disconnect();
+          FFW.UI.disconnect();
+          FFW.VR.disconnect();
+          FFW.VehicleInfo.disconnect();
+          FFW.TTS.disconnect();
+          FFW.Buttons.disconnect();
+          FFW.Navigation.disconnect();
+          if (confirm('The "ignition off" emulation executed!')) {
+            return 'OK, Good Bye then';
+          } else {
+            e = e || event;
+            if (e.preventDefault) {
+              e.preventDefault();
+            }
+            e.returnValue = false;
+            return 'The "ignition off" emulation executed!';
+          }
         }
-        e.returnValue = false;
-        return 'The "ignition off" emulation executed!';
-      }
-    });
-
+      );
+    }
   }
-});
+);

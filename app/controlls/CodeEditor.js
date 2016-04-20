@@ -34,133 +34,138 @@
 
 SDL.CodeEditor = Em.ContainerView.extend({
 
-  classNames: 'codeEditor PopUp',
+    classNames: 'codeEditor PopUp',
 
-  childViews:
-  [
+    childViews: [
       'editor',
       'buttonOk',
       'buttonReset',
       'buttonDelete',
       'backButton'
-  ],
+    ],
 
-  classNameBindings: [
+    classNameBindings: [
       'this.active:active_state:inactive_state'
-  ],
+    ],
 
-  codeEditorId: 0,
+    codeEditorId: 0,
 
-  /**
-   * Callback function to return result of made action by user
-   */
-  callback: null,
+    /**
+     * Callback function to return result of made action by user
+     */
+    callback: null,
 
-  content: 'Title',
+    content: 'Title',
 
-  active: false,
+    active: false,
 
-  backButton: SDL.Button.extend({
-    classNames: 'button backButton',
-    text: 'Close',
-    click: function() {
-      this._parentView.deactivate();
-    },
-    buttonAction: true,
-    onDown: false
-  }),
-
-  buttons: true,
-
-  buttonOk: SDL.Button.extend({
-    classNames: 'button',
-    text: 'Save',
-    action: 'save',
-    target: 'parentView',
-    onDown: false
-  }),
-
-  buttonReset: SDL.Button.extend({
-    classNames: 'button ResetButton',
-    text: 'Reset',
-    action: 'reset',
-    target: 'parentView',
-    onDown: false
-  }),
-
-  buttonDelete: SDL.Button.extend({
-    classNames: 'button DeleteButton',
-    text: 'Delete',
-    action: 'delete',
-    target: 'parentView',
-    onDown: false
-  }),
-
-  editor: SDL.Code.extend({
-    elementId: 'editor',
-    codeBinding: 'parentView.content'
-  }),
-
-  /**
-   * Method to reset users changes in current opened editor
-   */
-  reset: function() {
-    this.editor.editor.getSession().setValue(this.content);
-  },
-
-  /**
-   * Method to save users changes in current opened editor
-   */
-  save: function() {
-    if (this.callback) {
-      try {
-        JSON.parse(this.editor.editor.getSession().getValue());
-      } catch (e) {
-        SDL.PopUp.create().appendTo('body').popupActivate(
-            'Incorrect JSON format'
-        );
-        return;
+    backButton: SDL.Button.extend({
+        classNames: 'button backButton',
+        text: 'Close',
+        click: function() {
+          this._parentView.deactivate();
+        },
+        buttonAction: true,
+        onDown: false
       }
-      this.callback(
-          this.editor.editor.getSession().getValue()
-      );
-    }
-    this.deactivate();
-  },
+    ),
 
-  /**
-   * Method to delete current opened editor data
-   */
-  delete: function() {
-    this.callback(
+    buttons: true,
+
+    buttonOk: SDL.Button.extend({
+        classNames: 'button',
+        text: 'Save',
+        action: 'save',
+        target: 'parentView',
+        onDown: false
+      }
+    ),
+
+    buttonReset: SDL.Button.extend({
+        classNames: 'button ResetButton',
+        text: 'Reset',
+        action: 'reset',
+        target: 'parentView',
+        onDown: false
+      }
+    ),
+
+    buttonDelete: SDL.Button.extend({
+        classNames: 'button DeleteButton',
+        text: 'Delete',
+        action: 'delete',
+        target: 'parentView',
+        onDown: false
+      }
+    ),
+
+    editor: SDL.Code.extend({
+        elementId: 'editor',
+        codeBinding: 'parentView.content'
+      }
+    ),
+
+    /**
+     * Method to reset users changes in current opened editor
+     */
+    reset: function() {
+      this.editor.editor.getSession().setValue(this.content);
+    },
+
+    /**
+     * Method to save users changes in current opened editor
+     */
+    save: function() {
+      if (this.callback) {
+        try {
+          JSON.parse(this.editor.editor.getSession().getValue());
+        } catch (e) {
+          SDL.PopUp.create().appendTo('body').popupActivate(
+            'Incorrect JSON format'
+          );
+          return;
+        }
+        this.callback(
+          this.editor.editor.getSession().getValue()
+        );
+      }
+      this.deactivate();
+    },
+
+    /**
+     * Method to delete current opened editor data
+     */
+    delete: function() {
+      this.callback(
         null,
         true
-    );
-    this.deactivate();
-  },
+      );
+      this.deactivate();
+    },
 
-  /**
-   * Deactivate CodeEditor
-   */
-  deactivate: function(event) {
-    this.set('active', false);
-    this.set('callback', null);
-    this.set('content', '');
-  },
+    /**
+     * Deactivate CodeEditor
+     */
+    deactivate: function(event) {
+      this.set('active', false);
+      this.set('callback', null);
+      this.set('content', '');
+    },
 
-  /**
-   * Code editor activation method
-   *
-   * @param {Object} callback
-   * @returns {SDL.CodeEditor}
-   */
-  activate: function(callback) {
-    if (!this.editor.editor) {
-      this.editor.activate();
+    /**
+     * Code editor activation method
+     *
+     * @param {Object} callback
+     * @returns {SDL.CodeEditor}
+     */
+    activate: function(callback) {
+      if (!this.editor.editor) {
+        this.editor.activate();
+      }
+      this.set('active', true);
+      this.set('callback', callback);
+
+      return this;
     }
-    this.set('active', true);
-    this.set('callback', callback);
-
-    return this;
   }
-});
+);

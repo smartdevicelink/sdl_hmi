@@ -31,17 +31,15 @@
  * @version 1.0
  */
 SDL.sdlView = Em.ContainerView
-    .create({
-
+  .create(
+    {
       /**
        * View Id
        */
       elementId: 'sdl_view_container',
-
       classNameBindings: [
-          'this.activeState:active_state:inactive_state'
+        'this.activeState:active_state:inactive_state'
       ],
-
       activeState: function() {
         if (SDL.TurnByTurnView.activeTBT) {
           return false;
@@ -50,61 +48,58 @@ SDL.sdlView = Em.ContainerView
         } else {
           return false;
         }
-      }.property('SDL.States.media.sdlmedia.active', 'SDL.TurnByTurnView.activeTBT'),
-
+      }.property(
+        'SDL.States.media.sdlmedia.active', 'SDL.TurnByTurnView.activeTBT'
+      ),
       /**
        * View Components
        */
       childViews: [
-          'innerMenu',
-          'controlls'
+        'innerMenu',
+        'controlls'
       ],
-
       controlls: SDL.SDLMediaControlls,
-
       /**
        * Deactivate View
        */
       deactivate: function() {
-
         SDL.States.goToStates('info.apps');
       },
-
       innerMenu: SDL.MenuList
-            .extend({
-
-              refreshItems: function() {
-
-                if (SDL.SDLController.model && SDL.SDLController.model.appID == SDL.SDLMediaController.currentAppId) {
-                  this.addItems(SDL.SDLController.model.softButtons,
-                      SDL.SDLController.model.appID);
-                }
-              }.observes('SDL.SDLController.model.softButtons.@each'),
-
-              groupName: 'MediaView',
-
-              content: Em.ContainerView.extend({
-
+        .extend(
+          {
+            refreshItems: function() {
+              if (SDL.SDLController.model && SDL.SDLController.model.appID ==
+                SDL.SDLMediaController.currentAppId) {
+                this.addItems(
+                  SDL.SDLController.model.softButtons,
+                  SDL.SDLController.model.appID
+                );
+              }
+            }.observes('SDL.SDLController.model.softButtons.@each'),
+            groupName: 'MediaView',
+            content: Em.ContainerView.extend(
+              {
                 classNames: [
-                    'content'
+                  'content'
                 ],
-
                 attributeBindings: [
-                    'parentView.contentPositon:style'
+                  'parentView.contentPositon:style'
                 ],
-
                 childViews: [
-                    'optionsButton'
+                  'optionsButton'
                 ],
-
-                optionsButton: SDL.Button.extend({
-                  text: 'Options',
-
-                  templateName: 'arrow',
-
-                  action: 'openCommandsList',
-                  target: 'SDL.SDLController'
-                })
-              })
-            })
-    });
+                optionsButton: SDL.Button.extend(
+                  {
+                    text: 'Options',
+                    templateName: 'arrow',
+                    action: 'openCommandsList',
+                    target: 'SDL.SDLController'
+                  }
+                )
+              }
+            )
+          }
+        )
+    }
+  );
