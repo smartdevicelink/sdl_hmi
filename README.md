@@ -17,4 +17,3 @@ SDL HMI utility is only for acquaintance with the SDL project.
 ## Look at configuration file app/FLAGS.js. You can found there:
  - SDL WebSocket connection string -
 WEBSOCKET_URL
- - CAN WebSocket connection string -
