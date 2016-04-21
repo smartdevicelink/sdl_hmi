@@ -31,6 +31,6 @@
  * @version 1.0
  */
 
-SDL.GController = SDL.ABSController.extend(
+SDL.GController = SDL.SDLController.extend(
   {}
 );

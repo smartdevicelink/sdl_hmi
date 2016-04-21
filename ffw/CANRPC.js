@@ -48,7 +48,7 @@ FFW.CAN = FFW.RPCObserver.create(
          * stringify object and send via socket connection
          */
         send: function(obj) {
-          if (FLAGS.SimpleFunctionality === 2 && FLAGS.CAN) {
+          if (FLAGS.SimpleFunctionality === 1 && FLAGS.CAN) {
             if (this.socket.readyState == this.socket.OPEN) {
               var strJson = JSON.stringify(obj);
               var logTime = new Date();

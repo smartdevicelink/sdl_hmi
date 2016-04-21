@@ -148,7 +148,7 @@ SDL.MediaCDPlayer = Em.Object.extend({
       };
 
       FFW.CAN.OnPlayerDetails(params);
-      if (FLAGS.SimpleFunctionality === 2) {
+      if (FLAGS.SimpleFunctionality === 1) {
         SDL.SDLModel.resetControl();
       }
     },
@@ -174,7 +174,7 @@ SDL.MediaCDPlayer = Em.Object.extend({
       };
 
       FFW.CAN.OnPlayerDetails(params);
-      if (FLAGS.SimpleFunctionality === 2) {
+      if (FLAGS.SimpleFunctionality === 1) {
         SDL.SDLModel.resetControl();
       }
     },
@@ -200,7 +200,7 @@ SDL.MediaCDPlayer = Em.Object.extend({
       };
 
       FFW.CAN.OnPlayerDetails(params);
-      if (FLAGS.SimpleFunctionality === 2) {
+      if (FLAGS.SimpleFunctionality === 1) {
         SDL.SDLModel.resetControl();
       }
     },

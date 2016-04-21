@@ -24,40 +24,66 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @name SDL
- * @desc flags for application flags used for diffeerent configurations of
- *       application As the same code base is used fro Production and RnD work
- *       pakackages, it is necessary to configare application for different
- *       needs/releases It is NOT recommended to extend this object with new
- *       flags. Each modification should be discussed with PM in advance
- * @category Application
- * @filesource app/AppFlags.js
+ * @name SDL.Code
+ * @desc Universal code component for SDL application
+ * @category Controlls
+ * @filesource app/controlls/Code.js
  * @version 1.0
  */
 
-FLAGS = Em.Object.create(
+SDL.RadioButton = Em.ContainerView.extend(
   {
-    /**
-     * Set language for localization
-     */
-    SET_LOCALIZATION: 'eng',
-    WEBSOCKET_URL: 'ws://127.0.0.1:8087',
-    CAN_WEBSOCKET_URL: 'ws://127.0.0.1:2468',
-    TOUCH_EVENT_STARTED: false,
-    BasicCommunication: null,
-    UI: null,
-    VehicleInfo: null,
-    VR: null,
-    Buttons: null,
-    TTS: null,
-    Navigation: null,
-    CAN: null,
-    RC: null,
-    /**
-     * 0 - G
-     * 1 - R
-     * 2 - P
-     */
-    SimpleFunctionality: 1
+    childViews: [
+      'radio',
+      'label',
+      'check'
+    ],
+    classNames: 'radioButton',
+    text: '',
+    name: '',
+    value: '',
+    selection: '',
+    id: '',
+    checked: false,
+    radio: Em.View.extend(
+      {
+        tagName: 'input',
+        type: 'radio',
+        elementIdBinding: 'this.parentView.Id',
+        attributeBindings: [
+          'this.parentView.name:name', 'type',
+          'this.parentView.value:value', 'checked:checked'
+        ],
+        click: function(event) {
+          this.set('parentView.selection', event.target.value);
+        },
+        checked: function() {
+          return this.get('parentView.value') ==
+            this.get('parentView.selection');
+        }.property('selection')
+      }
+    ),
+    label: SDL.Label.extend(
+      {
+        tagName: 'label',
+        attributeBindings: ['this.parentView.Id:for'],
+        classNames: 'label',
+        contentBinding: 'this.parentView.text'
+      }
+    ),
+    check: Em.ContainerView.extend(
+      {
+        classNames: 'check',
+        childViews: [
+          'inside'
+        ],
+        inside: Em.View.extend(
+          {
+            classNames: 'inside'
+          }
+        )
+      }
+    )
   }
 );
+//Em.Handlebars.helper('radio-button', SDL.RadioButton);

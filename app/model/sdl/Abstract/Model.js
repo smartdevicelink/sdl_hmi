@@ -31,7 +31,7 @@
  * @version 1.0
  */
 
-SDL.ABSModel = Em.Object.extend({
+SDL.SDLModel = Em.Object.extend({
 
   /**
    * Model's data

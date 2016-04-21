@@ -259,8 +259,6 @@ SDL.NavigationController = Em.Object.create(
         }
         return function(response, status) {
           if (status == google.maps.DirectionsStatus.OK) {
-            var bounds = new google.maps.LatLngBounds();
-            var route = response.routes[0];
             SDL.NavigationController.startLocation = {};
             SDL.NavigationController.endLocation = {};
             SDL.NavigationController.polyline = new google.maps.Polyline(
@@ -277,38 +275,35 @@ SDL.NavigationController = Em.Object.create(
                 strokeWeight: 3
               }
             );
-            var path = response.routes[0].overview_path;
-            var legs = response.routes[0].legs;
+            var route = response.routes[0].legs[0];
             disp = new google.maps.DirectionsRenderer(rendererOptions);
             disp.setMap(SDL.NavigationController.map);
             disp.setDirections(response);
-            //Markers
-            for (i = 0; i < legs.length; i++) {
-              if (i == 0) {
-                SDL.NavigationController.startLocation.latlng =
-                  legs[i].start_location;
-                SDL.NavigationController.startLocation.address =
-                  legs[i].start_address;
-                SDL.NavigationController.marker =
-                  SDL.NavigationController.createMarker(
-                    legs[i].start_location,
-                    'start',
-                    legs[i].start_address,
-                    'green'
-                  );
-              }
-              SDL.NavigationController.endLocation.latlng =
-                legs[i].end_location;
-              SDL.NavigationController.endLocation.address =
-                legs[i].end_address;
-              var steps = legs[i].steps;
-              for (j = 0; j < steps.length; j++) {
-                var nextSegment = steps[j].path;
-                for (k = 0; k < nextSegment.length; k++) {
-                  SDL.NavigationController.polyline.getPath().push(
-                    nextSegment[k]
-                  );
-                }
+            SDL.NavigationController.startLocation.latlng =
+              route.start_location;
+            SDL.NavigationController.startLocation.address =
+              route.start_address;
+            if (SDL.NavigationController.marker) {
+              SDL.NavigationController.marker.setMap(null);
+            }
+            SDL.NavigationController.marker =
+              SDL.NavigationController.createMarker(
+                route.start_location,
+                'start',
+                route.start_address,
+                'green'
+              );
+            SDL.NavigationController.endLocation.latlng =
+              route.end_location;
+            SDL.NavigationController.endLocation.address =
+              route.end_address;
+            var steps = route.steps;
+            for (j = 0; j < steps.length; j++) {
+              var nextSegment = steps[j].path;
+              for (k = 0; k < nextSegment.length; k++) {
+                SDL.NavigationController.polyline.getPath().push(
+                  nextSegment[k]
+                );
               }
             }
           } else {
@@ -326,9 +321,9 @@ SDL.NavigationController = Em.Object.create(
     },
     lastVertex: 1,
     step: function() {
-      return SDL.SDLVehicleInfoModel.vehicleData.speed * (
-        10 / 36) / 2;
-    }.property('SDL.SDLVehicleInfoModel.vehicleData.speed'), // 5, // metres
+      return SDL.SDLVehicleInfoModel.vehicleData.speed *
+        (10 / 36) / 2;
+    }.property('SDL.SDLVehicleInfoModel.vehicleData.speed'),
     tick: 500, // milliseconds
     eol: [],
     updatePoly: function(d) {
@@ -370,6 +365,9 @@ SDL.NavigationController = Em.Object.create(
         SDL.NavigationController.marker.setPosition(
           SDL.NavigationController.endLocation.latlng
         );
+        SDL.NavigationController.marker.setAnimation(
+          google.maps.Animation.BOUNCE
+        );
         return;
       }
       var p = SDL.NavigationController.polyline.GetPointAtDistance(d);
@@ -404,7 +402,7 @@ SDL.NavigationController = Em.Object.create(
       );
       SDL.NavigationController.timerHandle = setTimeout(
         function() {
-          SDL.NavigationController.animate(50);
+          SDL.NavigationController.animate(0);
         },
         2000
       );  // Allow time for the initial map display

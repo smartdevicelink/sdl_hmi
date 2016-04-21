@@ -31,4 +31,4 @@
  * @version 1.0
  */
 
-SDL.GModel = SDL.ABSModel.extend({});
+SDL.GModel = SDL.SDLModel.extend({});

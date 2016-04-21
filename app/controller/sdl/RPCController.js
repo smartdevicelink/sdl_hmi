@@ -38,10 +38,11 @@ SDL.RPCController = Em.Object.create(
      * Start register RPC components on controller init
      */
     ConnectToSDL: function() {
+      SDL.FuncSwitcher.init();
       if (FLAGS.CAN) {
         FFW.CAN.connect();
       }
-      if (FLAGS.RC) {
+      if (FLAGS.RC && FLAGS.SimpleFunctionality === 1) {
         FFW.RC.connect();
       }
       if (FLAGS.Buttons) {

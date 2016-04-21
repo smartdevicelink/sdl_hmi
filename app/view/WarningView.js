@@ -42,15 +42,46 @@ SDL.warningView = Em.ContainerView
       elementId: 'warning_view',
       childViews: [
         'content',
-        'button'
+        'button',
+        'openSDL',
+        'pluginRC',
+        'otherSDL'
       ],
+      openSDL: SDL.RadioButton.extend(
+        {
+          Id: 'openSDL',
+          name: 'radio',
+          value: 0,
+          selectionBinding: 'FLAGS.SimpleFunctionality',
+          text: 'Open SDL'
+        }
+      ),
+      pluginRC: SDL.RadioButton.extend(
+        {
+          Id: 'pluginRC',
+          name: 'radio',
+          value: 1,
+          selectionBinding: 'FLAGS.SimpleFunctionality',
+          text: 'plugin RC'
+        }
+      ),
+      otherSDL: SDL.RadioButton.extend(
+        {
+          Id: 'otherSDL',
+          name: 'radio',
+          value: 2,
+          selectionBinding: 'FLAGS.SimpleFunctionality',
+          text: 'Other'
+        }
+      ),
       content: Em.View
         .extend(
           {
             classNames: 'message',
             template: Ember.Handlebars
               .compile(
-                '<div class="warning_text"> {{SDL.locale.label.view_warning}}</div>' +
+                '<div class="warning_text"> ' +
+                '{{SDL.locale.label.view_warning}}</div>' +
                 '<div class="text">' +
                 '<br>' +
                 '<p>{{SDL.locale.label.view_warning_paragraph1}} </p><br>' +
@@ -90,8 +121,7 @@ SDL.warningView = Em.ContainerView
                 self.set('isReady', true);
               }, 2000
             );
-            var timer = null;
-            setInterval(
+            var timer = setInterval(
               function() {
                 if (FLAGS.Buttons === null) {
                   FLAGS.set('Buttons', true);
@@ -105,11 +135,9 @@ SDL.warningView = Em.ContainerView
                   FLAGS.set('VehicleInfo', true);
                   return;
                 }
-                if (FLAGS.RC === null && FLAGS.SimpleFunctionality === 2) {
+                if (FLAGS.RC === null) {
                   FLAGS.set('RC', true);
                   return;
-                } else if (FLAGS.SimpleFunctionality != 2) {
-                  FLAGS.set('RC', false);
                 }
                 if (FLAGS.BasicCommunication === null) {
                   FLAGS.set('BasicCommunication', true);
@@ -160,6 +188,10 @@ SDL.warningView = Em.ContainerView
                     ),
                     text: SDL.Label.extend(
                       {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
                         classNames: 'basicCommunicationText item',
                         content: 'BasicCommunication'
                       }
@@ -182,6 +214,10 @@ SDL.warningView = Em.ContainerView
                     ),
                     text: SDL.Label.extend(
                       {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
                         classNames: 'buttonsText item',
                         content: 'Buttons'
                       }
@@ -204,6 +240,10 @@ SDL.warningView = Em.ContainerView
                     ),
                     text: SDL.Label.extend(
                       {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
                         classNames: 'navigationText item',
                         content: 'Navigation'
                       }
@@ -226,6 +266,10 @@ SDL.warningView = Em.ContainerView
                     ),
                     text: SDL.Label.extend(
                       {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
                         classNames: 'ttsText item',
                         content: 'TTS'
                       }
@@ -248,6 +292,10 @@ SDL.warningView = Em.ContainerView
                     ),
                     text: SDL.Label.extend(
                       {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
                         classNames: 'uiText item',
                         content: 'UI'
                       }
@@ -270,6 +318,10 @@ SDL.warningView = Em.ContainerView
                     ),
                     text: SDL.Label.extend(
                       {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
                         classNames: 'viText item',
                         content: 'VI'
                       }
@@ -292,6 +344,10 @@ SDL.warningView = Em.ContainerView
                     ),
                     text: SDL.Label.extend(
                       {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
                         classNames: 'vrText item',
                         content: 'VR'
                       }
@@ -317,6 +373,10 @@ SDL.warningView = Em.ContainerView
                     ),
                     text: SDL.Label.extend(
                       {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
                         classNames: 'canText item',
                         content: 'CAN'
                       }
@@ -342,6 +402,10 @@ SDL.warningView = Em.ContainerView
                     ),
                     text: SDL.Label.extend(
                       {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
                         classNames: 'canText item',
                         content: 'RC'
                       }

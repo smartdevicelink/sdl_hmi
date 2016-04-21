@@ -42,7 +42,7 @@ SDL.PoliciesView = Em.ContainerView.create(
       'SettingsList'
     ],
     afterRender: function() {
-      if (FLAGS.SimpleFunctionality === 2) { // R project
+      if (FLAGS.SimpleFunctionality === 1) { // R project
         this.get('SettingsList.list.childViews').pushObject(
           SDL.Button.create(
             {

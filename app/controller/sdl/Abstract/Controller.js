@@ -30,7 +30,7 @@
  * @filesource app/controller/sdl/SDLController.js
  * @version 1.0
  */
-SDL.ABSController = Em.Object.extend(
+SDL.SDLController = Em.Object.extend(
   {
     init: function() {
       /**

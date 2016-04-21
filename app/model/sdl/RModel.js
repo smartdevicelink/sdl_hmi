@@ -31,7 +31,7 @@
  * @version 1.0
  */
 
-SDL.RModel = SDL.ABSModel.extend({
+SDL.RModel = SDL.SDLModel.extend({
 
   /**
    * Parameter of controll permissions deligation to mobile app

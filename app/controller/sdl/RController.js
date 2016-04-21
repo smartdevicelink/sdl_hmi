@@ -31,7 +31,7 @@
  * @version 1.0
  */
 
-SDL.RController = SDL.ABSController.extend(
+SDL.RController = SDL.SDLController.extend(
   {
     reverseAppsAllowed: true,
     /**
