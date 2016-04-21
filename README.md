@@ -5,9 +5,8 @@ HTML5 based utility to see how the SDL works. It connects via WebSocket to [SDLC
 # Getting Started
 A quick guide to installing, configuring, and running HMI.
 
-	1. In app/FLAGS.js configure SimpleFunctionality flag for your project
-	2. run SmartDeviceLinkCore
-	3. run chromium-browser [root_of_cloned_sdl_hmi_repo/index.html]
+	1. run SmartDeviceLinkCore
+	2. run chromium-browser [root_of_cloned_sdl_hmi_repo/index.html]
 
 ## A quick note about dependencies
 All dependencies are installed after the SDL Core is successfully installed.
@@ -19,6 +18,3 @@ SDL HMI utility is only for acquaintance with the SDL project.
  - SDL WebSocket connection string -
 WEBSOCKET_URL
  - CAN WebSocket connection string -
-CAN_WEBSOCKET_URL (REVSDL project)
- - New important ability to switch functionality between OpenSDL, RCPlugin SDL Projects
-    You should just configure "SimpleFunctionality" flag into apropriate state (0 - OpenSDL, 1 - RCPlugin, 2 - Other) and after that run command "chromium-browser [path_to_index.html]"
