@@ -1112,7 +1112,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       /**
        * Initiated by HMI.
        */
-      OnSystemRequest: function(type, fileName, url, appID, policyAppID) {
+      OnSystemRequest: function(type, fileName, url, appID) {
         Em.Logger.log('FFW.BasicCommunication.OnSystemRequest');
         // send request
         var JSONMessage = {
@@ -1129,9 +1129,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         if (url) {
           JSONMessage.params.url = url;
-        }
-        if (policyAppID) {
-          JSONMessage.params.policyAppID = policyAppID;
         }
         if (appID) {
           JSONMessage.params.appID = appID;

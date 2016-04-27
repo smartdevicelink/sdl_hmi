@@ -45,8 +45,6 @@ SDL.SystemRequest = Em.ContainerView.create(
       'systemRequestViewSelect',
       'urlsLabel',
       'urlsInput',
-      'policyAppIdLabel',
-      'policyAppIdInput',
       'appIDSelect',
       'appIDSelectTitle',
       'sendButton',
@@ -109,26 +107,6 @@ SDL.SystemRequest = Em.ContainerView.create(
         value: document.location.pathname.replace(
           'index.html', 'IVSU/PROPRIETARY_REQUEST'
         )
-      }
-    ),
-    /**
-     * Label for policyAppId Input
-     */
-    policyAppIdLabel: SDL.Label.extend(
-      {
-        elementId: 'policyAppIdLabel',
-        classNames: 'policyAppIdLabel',
-        content: 'policyAppId'
-      }
-    ),
-    /**
-     * Input for policyAppId value changes
-     */
-    policyAppIdInput: Ember.TextField.extend(
-      {
-        elementId: 'policyAppIdInput',
-        classNames: 'policyAppIdInput',
-        value: 'default'
       }
     ),
     /**
@@ -195,8 +173,7 @@ SDL.SystemRequest = Em.ContainerView.create(
             element._parentView.systemRequestViewSelect.selection.name,
             element._parentView.fileNameInput.value,
             element._parentView.urlsInput.value,
-            element._parentView.appIDSelect.selection,
-            element._parentView.policyAppIdInput.value
+            element._parentView.appIDSelect.selection
           );
         },
         onDown: false
