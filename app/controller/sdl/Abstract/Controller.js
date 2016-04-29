@@ -901,8 +901,12 @@ SDL.SDLController = Em.Object.extend(
             params.applications[i].appID
           ).length === 0) {
           SDL.SDLModel.onAppRegistered(params.applications[i]);
+        } else {
+          SDL.SDLController.getApplicationModel(params.applications[i].appID)
+            .set('disabledToActivate', params.applications[i].greyOut);
         }
       }
+      SDL.InfoAppsView.showAppList();
     },
     /**
      * SDL Driver Distraction ON/OFF switcher
