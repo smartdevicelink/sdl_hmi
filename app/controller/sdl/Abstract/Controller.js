@@ -638,13 +638,13 @@ SDL.SDLController = Em.Object.extend(
         SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction, result,
         choiceID
       );
-      SDL.SDLModel.data.set('VRActive', false);
       SDL.InteractionChoicesView.timerUpdate();
       if (choiceID && SDL.TTSPopUp.active && FFW.TTS.requestId == null) {
         SDL.TTSPopUp.DeactivateTTS();
       }
       SDL.SDLModel.data.interactionData.helpPrompt = null;
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = null;
+      SDL.SDLModel.data.set('VRActive', false);
     },
     /**
      * Method to sent notification for Alert
