@@ -32,10 +32,9 @@
  * @version 1.0
  */
 
-SDL.CodeEditor = Em.ContainerView.extend({
-
+SDL.CodeEditor = Em.ContainerView.extend(
+  {
     classNames: 'codeEditor PopUp',
-
     childViews: [
       'editor',
       'buttonOk',
@@ -43,23 +42,18 @@ SDL.CodeEditor = Em.ContainerView.extend({
       'buttonDelete',
       'backButton'
     ],
-
     classNameBindings: [
       'this.active:active_state:inactive_state'
     ],
-
     codeEditorId: 0,
-
     /**
      * Callback function to return result of made action by user
      */
     callback: null,
-
     content: 'Title',
-
     active: false,
-
-    backButton: SDL.Button.extend({
+    backButton: SDL.Button.extend(
+      {
         classNames: 'button backButton',
         text: 'Close',
         click: function() {
@@ -69,10 +63,9 @@ SDL.CodeEditor = Em.ContainerView.extend({
         onDown: false
       }
     ),
-
     buttons: true,
-
-    buttonOk: SDL.Button.extend({
+    buttonOk: SDL.Button.extend(
+      {
         classNames: 'button',
         text: 'Save',
         action: 'save',
@@ -80,8 +73,8 @@ SDL.CodeEditor = Em.ContainerView.extend({
         onDown: false
       }
     ),
-
-    buttonReset: SDL.Button.extend({
+    buttonReset: SDL.Button.extend(
+      {
         classNames: 'button ResetButton',
         text: 'Reset',
         action: 'reset',
@@ -89,8 +82,8 @@ SDL.CodeEditor = Em.ContainerView.extend({
         onDown: false
       }
     ),
-
-    buttonDelete: SDL.Button.extend({
+    buttonDelete: SDL.Button.extend(
+      {
         classNames: 'button DeleteButton',
         text: 'Delete',
         action: 'delete',
@@ -98,20 +91,18 @@ SDL.CodeEditor = Em.ContainerView.extend({
         onDown: false
       }
     ),
-
-    editor: SDL.Code.extend({
-        elementId: 'editor',
+    editor: SDL.Code.extend(
+      {
+        elementIdBinding: 'this.parentView.codeEditorId',
         codeBinding: 'parentView.content'
       }
     ),
-
     /**
      * Method to reset users changes in current opened editor
      */
     reset: function() {
       this.editor.editor.getSession().setValue(this.content);
     },
-
     /**
      * Method to save users changes in current opened editor
      */
@@ -131,7 +122,6 @@ SDL.CodeEditor = Em.ContainerView.extend({
       }
       this.deactivate();
     },
-
     /**
      * Method to delete current opened editor data
      */
@@ -142,7 +132,6 @@ SDL.CodeEditor = Em.ContainerView.extend({
       );
       this.deactivate();
     },
-
     /**
      * Deactivate CodeEditor
      */
@@ -151,7 +140,6 @@ SDL.CodeEditor = Em.ContainerView.extend({
       this.set('callback', null);
       this.set('content', '');
     },
-
     /**
      * Code editor activation method
      *
@@ -164,7 +152,6 @@ SDL.CodeEditor = Em.ContainerView.extend({
       }
       this.set('active', true);
       this.set('callback', callback);
-
       return this;
     }
   }

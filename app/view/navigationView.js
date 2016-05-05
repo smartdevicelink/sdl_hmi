@@ -77,6 +77,7 @@ SDL.NavigationView = Em.ContainerView.create(
     ),
     codeEditor: SDL.CodeEditor.extend(
       {
+        codeEditorId: 'navigationEditor',
         contentBinding: 'SDL.NavigationModel.currentWayPointData'
       }
     ),

@@ -43,7 +43,7 @@ SDL.Code = Em.View.extend({
       this.editor.getSession().setValue(this.code);
     }.observes('this.code'),
     activate: function() {
-      this.editor = ace.edit(this.elementId);
+      this.editor = ace.edit(this._parentView.codeEditorId);
       this.editor.setTheme('ace/theme/monokai');
     }
   }

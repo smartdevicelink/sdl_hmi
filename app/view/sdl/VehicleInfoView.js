@@ -40,9 +40,10 @@ SDL.VehicleInfo = Em.ContainerView.create(
       'active'
     ],
     childViews: [
-      'prndlLabel',
+      'vehicleDataLabel',
+      'vehicleDataCodeEditor',
       'vehicleInfoLabel',
-      'prndlSelect',
+      'vehicleDataChange',
       'fuelLevelInput',
       'fuelLevelLabel',
       'speedInput',
@@ -145,13 +146,21 @@ SDL.VehicleInfo = Em.ContainerView.create(
      */
     active: false,
     /**
-     * Title of prndl group of parameters stored in VehicleInfo model
+     * Title of vehicleData group of parameters stored in VehicleInfo model
      */
-    prndlLabel: SDL.Label.extend(
+    vehicleDataLabel: SDL.Label.extend(
       {
-        elementId: 'prndlLabel',
-        classNames: 'prndlLabel',
-        content: 'PRNDL'
+        elementId: 'vehicleDataLabel',
+        classNames: 'vehicleDataLabel',
+        content: 'Vehicle Data Change'
+      }
+    ),
+    /**
+     * Code editor for vehicle data model change
+     */
+    vehicleDataCodeEditor: SDL.CodeEditor.extend(
+      {
+        codeEditorId: 'vehicleInfoEditor'
       }
     ),
     /**
@@ -178,12 +187,16 @@ SDL.VehicleInfo = Em.ContainerView.create(
      * HMI element Select with parameters of transmission state from VehicleInfo
      * Model
      */
-    prndlSelect: Em.Select.extend(
+    vehicleDataChange: SDL.Button.extend(
       {
-        elementId: 'prndlSelect',
-        classNames: 'prndlSelect',
-        contentBinding: 'SDL.SDLVehicleInfoModel.vehicleInfoPRNDL',
-        valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState'
+        elementId: 'vehicleDataChange',
+        classNames: 'vehicleDataChange button',
+        text: 'Edit Vehicle Data',
+        action: 'vehicleDataChange',
+        target: 'SDL.SDLController',
+        onDown: false
+        // contentBinding: 'SDL.SDLVehicleInfoModel.vehicleInfoPRNDL',
+        // valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState'
       }
     ),
     /**

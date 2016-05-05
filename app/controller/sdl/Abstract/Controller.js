@@ -336,6 +336,66 @@ SDL.SDLController = Em.Object.extend(
         SDL.SliderView.deactivate(false);
       }
     },
+    compareObjects: function(v, w) {
+      for (var p in v) {
+        if (!v.hasOwnProperty(p)) {
+          continue;
+        }
+        if (!w.hasOwnProperty(p)) {
+          return 1;
+        }
+        if (v[p] === w[p]) {
+          continue;
+        }
+        if (typeof(v[p]) !== "object") {
+          return 1;
+        }
+        var c = SDL.SDLController.compareObjects(v[p], w[p]);
+        if (c) {
+          return c;
+        }
+      }
+      for (p in w) {
+        if (w.hasOwnProperty(p) && !v.hasOwnProperty(p)) {
+          return -1;
+        }
+      }
+      if (typeof(v) !== "object" &&
+        typeof(W) !== "object" &&
+          v !== w
+      ) {
+        return 1;
+      }
+      return 0;
+    },
+    /**
+     * vehicleDataChange button handler on VehicleInfo View
+     */
+    vehicleDataChange: function() {
+      SDL.VehicleInfo.vehicleDataCodeEditor.activate(
+        function(data) {
+          var params = {};
+          var parsedData = JSON.parse(data);
+          for (var i in parsedData) {
+            if (SDL.SDLController.compareObjects(
+                SDL.SDLVehicleInfoModel.vehicleData[i],
+                parsedData[i]
+              )
+            ) {
+              params[i] = parsedData[i];
+            }
+          }
+          SDL.SDLVehicleInfoModel.vehicleData = parsedData;
+          if (params) {
+            FFW.VehicleInfo.OnVehicleData(params);
+          }
+        }
+      );
+      SDL.VehicleInfo.vehicleDataCodeEditor.editor.set(
+        'code',
+        JSON.stringify(SDL.SDLVehicleInfoModel.vehicleData, null, 2)
+      );
+    },
     /**
      * Notify SDLCore that HMI is ready and all components are registered
      *
