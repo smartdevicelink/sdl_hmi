@@ -362,7 +362,7 @@ SDL.SDLController = Em.Object.extend(
       }
       if (typeof(v) !== "object" &&
         typeof(W) !== "object" &&
-          v !== w
+        v !== w
       ) {
         return 1;
       }
@@ -1226,6 +1226,24 @@ SDL.SDLController = Em.Object.extend(
         }
         FFW.UI.OnSystemContext(sysContextValue, appID);
       }
+    },
+    /**
+     * SetAudioStreamingIndicator notification handler
+     *
+     * @param {Object} params
+     * @constructor
+     * @return {boolean}
+     */
+    SetAudioStreamingIndicator: function(params) {
+      if (SDL.SDLController.model) {
+        SDL.SDLController.model.set(
+          'mediaPlayerIndicator',
+          SDL.SDLModel.data.
+            mediaPlayerIndicatorEnum[params.audioStreamingIndicator]
+        );
+        return true;
+      }
+      return false;
     }
   }
 );

@@ -31,220 +31,204 @@
  * @version 1.0
  */
 
-SDL.SDLModelData = Em.Object.create({
-
-  /**
-   * Data came from UI.PerformInteractionRequest for ShowVRHelpItems popup
-   *
-   * @type {Object}
-   */
-  interactionData: {
+SDL.SDLModelData = Em.Object.create(
+  {
+    /**
+     * Data came from UI.PerformInteractionRequest for ShowVRHelpItems popup
+     *
+     * @type {Object}
+     */
+    interactionData: {
       'vrHelpTitle': null,
       'vrHelp': null
     },
-
-  /**
-   * Structure specified for PoliceUpdate retry sequence
-   * contains timeout seconds param, array of retry seconds and counter of number of retries
-   *
-   * @type {Objetc}
-   */
-  policyUpdateRetry: {
+    /**
+     * Enum for media Player Indicator
+     */
+    mediaPlayerIndicatorEnum: {
+      'PLAY_PAUSE': 0,
+      'PLAY': 1,
+      'PAUSE': 2
+    },
+    /**
+     * Structure specified for PoliceUpdate retry sequence
+     * contains timeout seconds param, array of retry seconds and counter of
+     * number of retries
+     *
+     * @type {Objetc}
+     */
+    policyUpdateRetry: {
       timeout: null,
       retry: [],
       try: null,
       timer: null,
       oldTimer: 0
     },
-
-  /**
-   * Application's container for current processed requests on VR component of HMI
-   *
-   * @type {Object}
-   */
-  vrActiveRequests: {
+    /**
+     * Application's container for current processed requests on VR component
+     * of HMI
+     *
+     * @type {Object}
+     */
+    vrActiveRequests: {
       vrPerformInteraction: null
     },
-
-  /**
-   * List of callback functions for request SDL.GetUserFriendlyMessage
-   * where key is requestId
-   * and parameter is a function that will handle data came in respone from SDL
-   *
-   * @type {Object}
-   */
-  userFriendlyMessagePull: {},
-
-  /**
-   * List of appID functions for request SDL.GetListOfPermissions
-   * where key is requestId
-   * and parameter is a appID that will handle data came in respone from SDL
-   *
-   * @type {Object}
-   */
-  getListOfPermissionsPull: {},
-
-  /**
-   * List of application id's for request SDL.ActivateApp
-   * where key is requestId
-   * and parameter is a id of application to be activated
-   *
-   * @type {Object}
-   */
-  activateAppRequestsList: {},
-
-  /**
-   * ID of app in LIMITED HMI state
-   */
-  stateLimited: null,
-
-  /**
-   * Active state of phone call on HMI for Deactivate app to handle event
-   */
-  phoneCallActive: false,
-
-  /**
-   * FLAG of any app in limited level exists
-   */
-  limitedExist: false,
-
-  /**
-   * IScroll object to manage scroll on PerformInteraction view
-   *
-   * @type {Object}
-   */
-  interactionListWrapper: null,
-
-  /**
-   * TimeStamp of current started HMI session
-   *
-   * @type {Number}
-   */
-  timeStamp: null,
-
-  /**
-   * List of VR commands
-   */
-  VRCommands: [],
-
-  /**
-   * Video player object for navigationApp
-   *
-   * @type {Object}
-   */
-  naviVideo: {},
-
-  /**
-   * Array of strings came in SDL.GetURLS response
-   *
-   * @type {Object}
-   */
-  policyURLs: [],
-
-  /**
-   * Policy Settings Info state value
-   *
-   * @type {String}
-   */
-  settingsInfoListState: 'iAPP_BUFFER_FULL',
-
-  /**
-   * Policy Settings Info list
-   *
-   * @type {Object}
-   */
-  settingsInfoList: [
-    'iAPP_BUFFER_FULL',
-    'blah'
-  ],
-
-  /**
-   * Policy Settings Info state value
-   *
-   * @type {String}
-   */
-  systemErrorListState: 'SYNC_REBOOTED',
-
-  /**
-   * Policy Settings Info list
-   *
-   * @type {Object}
-   */
-  systemErrorList: [
-    'SYNC_REBOOTED',
-    'SYNC_OUT_OF_MEMMORY'
-  ],
-
-  /**
-   * Flag to indicate AudioPassThruPopUp activity
-   *
-   * @type {Boolean}
-   */
-  AudioPassThruState: false,
-
-  /**
-   * Current device information
-   *
-   * @type {Object}
-   */
-  CurrDeviceInfo: {
+    /**
+     * List of callback functions for request SDL.GetUserFriendlyMessage
+     * where key is requestId
+     * and parameter is a function that will handle data came in respone from
+     * SDL
+     *
+     * @type {Object}
+     */
+    userFriendlyMessagePull: {},
+    /**
+     * List of appID functions for request SDL.GetListOfPermissions
+     * where key is requestId
+     * and parameter is a appID that will handle data came in respone from SDL
+     *
+     * @type {Object}
+     */
+    getListOfPermissionsPull: {},
+    /**
+     * List of application id's for request SDL.ActivateApp
+     * where key is requestId
+     * and parameter is a id of application to be activated
+     *
+     * @type {Object}
+     */
+    activateAppRequestsList: {},
+    /**
+     * ID of app in LIMITED HMI state
+     */
+    stateLimited: null,
+    /**
+     * Active state of phone call on HMI for Deactivate app to handle event
+     */
+    phoneCallActive: false,
+    /**
+     * FLAG of any app in limited level exists
+     */
+    limitedExist: false,
+    /**
+     * IScroll object to manage scroll on PerformInteraction view
+     *
+     * @type {Object}
+     */
+    interactionListWrapper: null,
+    /**
+     * TimeStamp of current started HMI session
+     *
+     * @type {Number}
+     */
+    timeStamp: null,
+    /**
+     * List of VR commands
+     */
+    VRCommands: [],
+    /**
+     * Video player object for navigationApp
+     *
+     * @type {Object}
+     */
+    naviVideo: {},
+    /**
+     * Array of strings came in SDL.GetURLS response
+     *
+     * @type {Object}
+     */
+    policyURLs: [],
+    /**
+     * Policy Settings Info state value
+     *
+     * @type {String}
+     */
+    settingsInfoListState: 'iAPP_BUFFER_FULL',
+    /**
+     * Policy Settings Info list
+     *
+     * @type {Object}
+     */
+    settingsInfoList: [
+      'iAPP_BUFFER_FULL',
+      'blah'
+    ],
+    /**
+     * Policy Settings Info state value
+     *
+     * @type {String}
+     */
+    systemErrorListState: 'SYNC_REBOOTED',
+    /**
+     * Policy Settings Info list
+     *
+     * @type {Object}
+     */
+    systemErrorList: [
+      'SYNC_REBOOTED',
+      'SYNC_OUT_OF_MEMMORY'
+    ],
+    /**
+     * Flag to indicate AudioPassThruPopUp activity
+     *
+     * @type {Boolean}
+     */
+    AudioPassThruState: false,
+    /**
+     * Current device information
+     *
+     * @type {Object}
+     */
+    CurrDeviceInfo: {
       'name': null,
       'id': null
     },
-
-  /**
-   * Driver Distraction State
-   *
-   * @type bool
-   */
-  driverDistractionState: false,
-
-  /**
-   * Flag to sent Send Data extended params
-   *
-   * @type {Boolean}
-   */
-  sendDataExtend: false,
-
-  /**
-   * VR active status
-   *
-   * @type {Boolean}
-   */
-  VRActive: false,
-
-  /**
-   * Flag to be set true when phone call is initialised
-   *
-   * @type {Boolean}
-   */
-  phoneCall: false,
-
-  /**
-   * Device list search progress flag
-   *
-   * @param {Boolean}
-   */
-  deviceSearchProgress: false,
-
-  /**
-   * Flag to be set true when VRHelpList are activated
-   *
-   * @param {Boolean}
-   */
-  VRHelpListActivated: false,
-
-  /**
-   * Flag to be set true when VRHelpList are activated
-   *
-   * @type {String}
-   */
-  keyboardInputValue: '',
-
-  /**
-   * List of states for OnTBTClientState notification
-   */
-  tbtClientStates: [
+    /**
+     * Driver Distraction State
+     *
+     * @type bool
+     */
+    driverDistractionState: false,
+    /**
+     * Flag to sent Send Data extended params
+     *
+     * @type {Boolean}
+     */
+    sendDataExtend: false,
+    /**
+     * VR active status
+     *
+     * @type {Boolean}
+     */
+    VRActive: false,
+    /**
+     * Flag to be set true when phone call is initialised
+     *
+     * @type {Boolean}
+     */
+    phoneCall: false,
+    /**
+     * Device list search progress flag
+     *
+     * @param {Boolean}
+     */
+    deviceSearchProgress: false,
+    /**
+     * Flag to be set true when VRHelpList are activated
+     *
+     * @param {Boolean}
+     */
+    VRHelpListActivated: false,
+    /**
+     * Flag to be set true when VRHelpList are activated
+     *
+     * @type {String}
+     */
+    keyboardInputValue: '',
+    /**
+     * List of states for OnTBTClientState notification
+     */
+    tbtClientStates: [
       {
         name: 'ROUTE_UPDATE_REQUEST',
         id: 0
@@ -277,11 +261,10 @@ SDL.SDLModelData = Em.Object.create({
         id: 9
       }
     ],
-
-  /**
-   * List of states for ExitApplication notification
-   */
-  exitAppState: [
+    /**
+     * List of states for ExitApplication notification
+     */
+    exitAppState: [
       {
         name: 'IGNITION_OFF',
         id: 0
@@ -299,11 +282,10 @@ SDL.SDLModelData = Em.Object.create({
         id: 3
       }
     ],
-
-  /**
-   * List of states for OnSystemRequest notification
-   */
-  systemRequestState: [
+    /**
+     * List of states for OnSystemRequest notification
+     */
+    systemRequestState: [
       {
         name: 'HTTP',
         id: 0
@@ -385,29 +367,26 @@ SDL.SDLModelData = Em.Object.create({
         id: 19
       }
     ],
-
-  /**
-   * Data for AudioPassThruPopUp that contains params for visualisation
-   *
-   * @type {Object}
-   */
-  AudioPassThruData: {},
-
-  /**
-   * Enum to unmap state manager names into HMI API EventTypes enum
-   */
-  onEventChangedEnum: {
+    /**
+     * Data for AudioPassThruPopUp that contains params for visualisation
+     *
+     * @type {Object}
+     */
+    AudioPassThruData: {},
+    /**
+     * Enum to unmap state manager names into HMI API EventTypes enum
+     */
+    onEventChangedEnum: {
       'player': 'AUDIO_SOURCE',
       'navigation': 'EMBEDDED_NAVI',
       'phoneCall': 'PHONE_CALL',
       'emergencyEvent': 'EMERGENCY_EVENT',
       'onDeactivateHMI': 'DEACTIVATE_HMI'
     },
-
-  /**
-   * Enum with result codes for RPC
-   */
-  resultCode: {
+    /**
+     * Enum with result codes for RPC
+     */
+    resultCode: {
       'SUCCESS': 0,
       'UNSUPPORTED_REQUEST': 1,
       'UNSUPPORTED_RESOURCE': 2,
@@ -433,13 +412,12 @@ SDL.SDLModelData = Em.Object.create({
       'GENERIC_ERROR': 22,
       'USER_DISALLOWED': 23
     },
-
-  /**
-   * Info navigationApp data for ShowConstantTBT request
-   *
-   * @type: {Object}
-   */
-  constantTBTParams: {
+    /**
+     * Info navigationApp data for ShowConstantTBT request
+     *
+     * @type: {Object}
+     */
+    constantTBTParams: {
       'navigationTexts': [
         {
           'fieldName': 'navigationText1',
@@ -489,48 +467,41 @@ SDL.SDLModelData = Em.Object.create({
         }
       ]
     },
-
-  /**
-   * List of registered applications, To prevent errors without registered
-   * application "-1" used as test appID
-   *
-   * @type object
-   */
-  registeredApps: [],
-
-  /**
-   * List of unregistered applications, to verify which app is reestablished connection
-   *
-   * @type object
-   */
-  unRegisteredApps: [],
-
-  /**
-   * List of objects with params for connected devices
-   *
-   * @type object
-   */
-  connectedDevices: {},
-
-  connectedDevicesArray: function() {
+    /**
+     * List of registered applications, To prevent errors without registered
+     * application "-1" used as test appID
+     *
+     * @type object
+     */
+    registeredApps: [],
+    /**
+     * List of unregistered applications, to verify which app is reestablished
+     * connection
+     *
+     * @type object
+     */
+    unRegisteredApps: [],
+    /**
+     * List of objects with params for connected devices
+     *
+     * @type object
+     */
+    connectedDevices: {},
+    connectedDevicesArray: function() {
       var temArray = [];
-
       for (var key in SDL.SDLModel.data.connectedDevices) {
         if (SDL.SDLModel.data.connectedDevices.hasOwnProperty(key)) {
-
           temArray.push(SDL.SDLModel.data.connectedDevices[key]);
         }
       }
-
       return temArray;
     }.property('SDL.SDLModel.data.connectedDevices'),
-
-  /**
-   * List of registered components
-   *
-   * @type object
-   */
-  registeredComponents: [
+    /**
+     * List of registered components
+     *
+     * @type object
+     */
+    registeredComponents: [
       {
         type: 'UI',
         state: false
@@ -554,98 +525,91 @@ SDL.SDLModelData = Em.Object.create({
         state: false
       }
     ],
-
-  /**
-   * List of icons
-   *
-   * @type {Object}
-   */
-  defaultListOfIcons: {
+    /**
+     * List of icons
+     *
+     * @type {Object}
+     */
+    defaultListOfIcons: {
       // appID: syncFileName
       //0: "images/media/ico_li.png"
       'app': 'images/info/info_leftMenu_apps_ico.png',
       'command': 'images/common/defaultButtonImage.png',
       'trackIcon': 'images/sdl/audio_icon.jpg'
     },
-
-  /**
-   * Array of active applications
-   *
-   * @type {Array}
-   */
-  applicationsList: [],
-
-  /**
-   * Array of connected devices
-   *
-   * @type {Array}
-   */
-  devicesList: [],
-
-  /**
-   * TTS + VR language
-   *
-   * @type {String}
-   */
-  hmiTTSVRLanguage: 'EN-US',
-
-  /**
-   * UI language
-   *
-   * @type {String}
-   */
-  hmiUILanguage: 'EN-US',
-
-  /**
-   * Parameter describes if performInteraction session was started on HMI
-   * this flag set to true when UI.PerformInteraction request came on HMI
-   * and set to false when HMI send response to SDL Core on UI.PerformInteraction request
-   *
-   * @type {Boolean}
-   */
-  performInteractionSession: [],
-
-  /**
-   * Array with app permissions
-   * used for policies
-   *
-   * @type {Object}
-   */
-  appPermissions: [],
-
-  /**
-   * List of supported languages
-   *
-   * @type {Array}
-   */
-  sdlLanguagesList: [
-    'EN-US',
-    'ES-MX',
-    'FR-CA',
-    'DE-DE',
-    'ES-ES',
-    'EN-GB',
-    'RU-RU',
-    'TR-TR',
-    'PL-PL',
-    'FR-FR',
-    'IT-IT',
-    'SV-SE',
-    'PT-PT',
-    'NL-NL',
-    'ZH-TW',
-    'JA-JP',
-    'AR-SA',
-    'KO-KR',
-    'PT-BR',
-    'CS-CZ',
-    'DA-DK',
-    'NO-NO',
-    'NL-BE',
-    'EL-GR',
-    'HU-HU',
-    'FI-FI',
-    'SK-SK'
-  ]
-}
+    /**
+     * Array of active applications
+     *
+     * @type {Array}
+     */
+    applicationsList: [],
+    /**
+     * Array of connected devices
+     *
+     * @type {Array}
+     */
+    devicesList: [],
+    /**
+     * TTS + VR language
+     *
+     * @type {String}
+     */
+    hmiTTSVRLanguage: 'EN-US',
+    /**
+     * UI language
+     *
+     * @type {String}
+     */
+    hmiUILanguage: 'EN-US',
+    /**
+     * Parameter describes if performInteraction session was started on HMI
+     * this flag set to true when UI.PerformInteraction request came on HMI
+     * and set to false when HMI send response to SDL Core on
+     * UI.PerformInteraction request
+     *
+     * @type {Boolean}
+     */
+    performInteractionSession: [],
+    /**
+     * Array with app permissions
+     * used for policies
+     *
+     * @type {Object}
+     */
+    appPermissions: [],
+    /**
+     * List of supported languages
+     *
+     * @type {Array}
+     */
+    sdlLanguagesList: [
+      'EN-US',
+      'ES-MX',
+      'FR-CA',
+      'DE-DE',
+      'ES-ES',
+      'EN-GB',
+      'RU-RU',
+      'TR-TR',
+      'PL-PL',
+      'FR-FR',
+      'IT-IT',
+      'SV-SE',
+      'PT-PT',
+      'NL-NL',
+      'ZH-TW',
+      'JA-JP',
+      'AR-SA',
+      'KO-KR',
+      'PT-BR',
+      'CS-CZ',
+      'DA-DK',
+      'NO-NO',
+      'NL-BE',
+      'EL-GR',
+      'HU-HU',
+      'FI-FI',
+      'SK-SK'
+    ]
+  }
 );

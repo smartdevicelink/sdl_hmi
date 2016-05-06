@@ -115,6 +115,11 @@ FFW.Buttons = FFW.RPCObserver.create(
     onRPCNotification: function(notification) {
       Em.Logger.log('FFW.Buttons.onRPCNotification');
       this._super();
+
+      if (notification.method == this.onButtonSubscriptionNotification) {
+        SDL.SDLController.getApplicationModel(notification.params.appID).
+        set(notification.params.name, notification.params.isSubscribed);
+      }
     },
     /*
      * handle RPC requests here
@@ -231,6 +236,11 @@ FFW.Buttons = FFW.RPCObserver.create(
                 'upDownAvailable': true
               }, {
                 'name': 'OK',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'PLAY_PAUSE',
                 'shortPressAvailable': true,
                 'longPressAvailable': true,
                 'upDownAvailable': true

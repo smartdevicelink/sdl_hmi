@@ -75,6 +75,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
         PrevTrackButton: SDL.Button.extend(
           SDL.PresetEvents, {
             elementId: 'app_view_controlls_prev_track_button_v2',
+            classNameBindings: 'SDL.SDLController.model.SEEKLEFT::unsubscribed',
             classNames: [
               'bc-item-big',
               'prevcd'
@@ -90,7 +91,8 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               'bc-item-big',
               'playcd'
             ],
-            presetName: 'OK',
+            classNameBindings: 'SDL.SDLController.model.PLAY_PAUSE::unsubscribed',
+            presetName: 'PLAY_PAUSE',
             actionUp: function() {
               SDL.SDLController.onSoftButtonOkActionUp(this.presetName);
             },
@@ -103,8 +105,9 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
              */
             template: Ember.Handlebars
               .compile(
-                '<img class="playIcon" {{bindAttr class="SDL.SDLController.model.isPlaying:visible:not-visible"}} src="images/media/ico_pause.png" />' +
-                '<img class="playIcon not-visible" {{bindAttr class="SDL.SDLController.model.isPlaying:not-visible:visible"}} src="images/media/ico-play.png" />'
+                '<img class="playIcon" {{bindAttr class="SDL.SDLController.model.pauseIndicator:visible:not-visible"}} src="images/media/ico_pause.png" />' +
+                '<img class="playIcon" {{bindAttr class="SDL.SDLController.model.playPauseIndicator:visible:not-visible"}} src="images/media/ico_play_pause.png" />' +
+                '<img class="playIcon not-visible" {{bindAttr class="SDL.SDLController.model.playIndicator:visible"}} src="images/media/ico-play.png" />'
               )
           }
         ),
@@ -115,6 +118,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               'bc-item-big',
               'nextcd'
             ],
+            classNameBindings: 'SDL.SDLController.model.SEEKRIGHT::unsubscribed',
             icon: 'images/media/ico_next.png',
             presetName: 'SEEKRIGHT'
           }

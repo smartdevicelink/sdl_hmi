@@ -86,8 +86,8 @@ FFW.UI = FFW.RPCObserver.create(
       Em.Logger.log('FFW.UI.onRPCRegistered');
       this._super();
       // subscribe to notifications
-      this.onRecordStartSubscribeRequestID
-        = this.client.subscribeToNotification(this.onRecordStartNotification);
+      this.onRecordStartSubscribeRequestID =
+        this.client.subscribeToNotification(this.onRecordStartNotification);
     },
     /**
      * Client is unregistered - no more requests
@@ -96,10 +96,10 @@ FFW.UI = FFW.RPCObserver.create(
       Em.Logger.log('FFW.UI.onRPCUnregistered');
       this._super();
       // unsubscribe from notifications
-      this.onRecordStartUnsubscribeRequestID
-        = this.client.unsubscribeFromNotification(
-        this.onRecordStartNotification
-      );
+      this.onRecordStartUnsubscribeRequestID =
+        this.client.unsubscribeFromNotification(
+          this.onRecordStartNotification
+        );
     },
     /**
      * Client disconnected.
@@ -156,7 +156,7 @@ FFW.UI = FFW.RPCObserver.create(
             // request this.sendError(this.errorResponsePull[request.id].code,
             // request.id, request.method, "Unsupported " +
             // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null; 
+            // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
               SDL.SDLController.onSystemContextChange(request.params.appID);
@@ -175,11 +175,11 @@ FFW.UI = FFW.RPCObserver.create(
                 'secondaryGraphic' in request.params ||
                 'softButtons' in request.params ||
                 'customPresets' in request.params) {
-                this.errorResponsePull[request.id].code
-                  = SDL.SDLModel.data.resultCode['WARNINGS'];
+                this.errorResponsePull[request.id].code =
+                  SDL.SDLModel.data.resultCode['WARNINGS'];
                 //} else {
                 //    //If no available data sent error response and stop
-                // process current request 
+                // process current request
                 // this.sendError(this.errorResponsePull[request.id].code,
                 // request.id, request.method, "Unsupported " +
                 // this.errorResponsePull[request.id].type + " type. Request
@@ -213,7 +213,7 @@ FFW.UI = FFW.RPCObserver.create(
             // request this.sendError(this.errorResponsePull[request.id].code,
             // request.id, request.method, "Unsupported " +
             // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null; 
+            // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
             SDL.SDLModel.setProperties(request.params);
             this.sendUIResult(
@@ -237,7 +237,7 @@ FFW.UI = FFW.RPCObserver.create(
             // request this.sendError(this.errorResponsePull[request.id].code,
             // request.id, request.method, "Unsupported " +
             // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null; 
+            // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
             SDL.SDLController.getApplicationModel(request.params.appID)
               .addCommand(request);
@@ -280,7 +280,7 @@ FFW.UI = FFW.RPCObserver.create(
             // request this.sendError(this.errorResponsePull[request.id].code,
             // request.id, request.method, "Unsupported " +
             // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null; 
+            // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
             if (SDL.SDLModel.uiPerformInteraction(request)) {
               SDL.SDLController.onSystemContextChange();
@@ -796,6 +796,11 @@ FFW.UI = FFW.RPCObserver.create(
                       'longPressAvailable': true,
                       'upDownAvailable': true
                     }, {
+                      'name': 'PLAY_PAUSE',
+                      'shortPressAvailable': true,
+                      'longPressAvailable': true,
+                      'upDownAvailable': true
+                    }, {
                       'name': 'SEEKRIGHT',
                       'shortPressAvailable': true,
                       'longPressAvailable': true,
@@ -847,7 +852,7 @@ FFW.UI = FFW.RPCObserver.create(
             //this.sendError(this.errorResponsePull[request.id].code,
             // request.id, request.method, "Unsupported " +
             // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null; 
+            // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
             SDL.SDLModel.onSDLSetAppIcon(
               request.params, request.id, request.method
@@ -1336,6 +1341,22 @@ FFW.UI = FFW.RPCObserver.create(
             );
             break;
           }
+          case 'UI.SetAudioStreamingIndicator':
+          {
+            if (SDL.SDLController.SetAudioStreamingIndicator(request.params)) {
+              this.sendUIResult(
+                SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+              );
+            } else {
+              this.sendError(
+                SDL.SDLModel.data.resultCode.SUCCESS,
+                request.id,
+                request.method,
+                'No application in FULL mode'
+              );
+            }
+            break;
+          }
           default:
           {
             // statements_def
@@ -1569,7 +1590,7 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {String} manualTextEntry
      */
     interactionResponse: function(requestID, resultCode, commandID,
-                                  manualTextEntry) {
+      manualTextEntry) {
       Em.Logger.log('FFW.UI.PerformInteractionResponse');
       if (this.errorResponsePull[requestID] &&
         resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
