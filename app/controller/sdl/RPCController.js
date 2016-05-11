@@ -736,6 +736,28 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         /**
+         * Validate method for request Navigation.SubscribeWayPoints
+         *
+         * @param {Object} params
+         */
+        SubscribeWayPoints: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        /**
+         * Validate method for request Navigation.UnsubscribeWayPoints
+         *
+         * @param {Object} params
+         */
+        UnsubscribeWayPoints: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        /**
          * Validate method for request Navigation.SendLocation
          *
          * @param {Object} params
