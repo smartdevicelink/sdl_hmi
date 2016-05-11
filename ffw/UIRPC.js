@@ -140,8 +140,7 @@ FFW.UI = FFW.RPCObserver.create(
       Em.Logger.log('FFW.UI.onRPCRequest');
       if (this.validationCheck(request)) {
         switch (request.method) {
-          case 'UI.Alert':
-          {
+          case 'UI.Alert': {
 
             // Verify if there is an unsupported data in request
             //if (this.errorResponsePull[request.id] != null) {
@@ -163,8 +162,7 @@ FFW.UI = FFW.RPCObserver.create(
             }
             break;
           }
-          case 'UI.Show':
-          {
+          case 'UI.Show': {
 
             // Verify if there is an unsupported data in request
             if (this.errorResponsePull[request.id] != null) {
@@ -195,8 +193,7 @@ FFW.UI = FFW.RPCObserver.create(
             );
             break;
           }
-          case 'UI.SetGlobalProperties':
-          {
+          case 'UI.SetGlobalProperties': {
 
             // Verify if there is an unsupported data in request
             //if (this.errorResponsePull[request.id] != null) {
@@ -221,8 +218,7 @@ FFW.UI = FFW.RPCObserver.create(
             );
             break;
           }
-          case 'UI.AddCommand':
-          {
+          case 'UI.AddCommand': {
 
             // Verify if there is an unsupported data in request
             //if (this.errorResponsePull[request.id] != null) {
@@ -243,28 +239,24 @@ FFW.UI = FFW.RPCObserver.create(
               .addCommand(request);
             break;
           }
-          case 'UI.DeleteCommand':
-          {
+          case 'UI.DeleteCommand': {
             SDL.SDLController.getApplicationModel(request.params.appID)
               .deleteCommand(request.params.cmdID, request.id);
             break;
           }
-          case 'UI.AddSubMenu':
-          {
+          case 'UI.AddSubMenu': {
             SDL.SDLController.getApplicationModel(request.params.appID)
               .addSubMenu(request);
             break;
           }
-          case 'UI.DeleteSubMenu':
-          {
+          case 'UI.DeleteSubMenu': {
             var resultCode = SDL.SDLController.getApplicationModel(
               request.params.appID
             ).deleteSubMenu(request.params.menuID);
             this.sendUIResult(resultCode, request.id, request.method);
             break;
           }
-          case 'UI.PerformInteraction':
-          {
+          case 'UI.PerformInteraction': {
 
             // Verify if there is an unsupported data in request
             //if (this.errorResponsePull[request.id] != null) {
@@ -287,8 +279,7 @@ FFW.UI = FFW.RPCObserver.create(
             }
             break;
           }
-          case 'UI.SetMediaClockTimer':
-          {
+          case 'UI.SetMediaClockTimer': {
             var resultCode = SDL.SDLController.getApplicationModel(
               request.params.appID
             ).sdlSetMediaClockTimer(request.params);
@@ -304,22 +295,19 @@ FFW.UI = FFW.RPCObserver.create(
             }
             break;
           }
-          case 'UI.Slider':
-          {
+          case 'UI.Slider': {
             if (SDL.SDLModel.uiSlider(request)) {
               SDL.SDLController.onSystemContextChange();
             }
             break;
           }
-          case 'UI.ScrollableMessage':
-          {
+          case 'UI.ScrollableMessage': {
             if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
               SDL.SDLController.onSystemContextChange();
             }
             break;
           }
-          case 'UI.ChangeRegistration':
-          {
+          case 'UI.ChangeRegistration': {
             if (request.params.appName) {
               SDL.SDLController.getApplicationModel(request.params.appID).set(
                 'appName',
@@ -337,42 +325,34 @@ FFW.UI = FFW.RPCObserver.create(
             );
             break;
           }
-          case 'UI.SetDisplayLayout':
-          {
+          case 'UI.SetDisplayLayout': {
             var senResponseFlag = false;
             switch (request.params.displayLayout) {
-              case 'MEDIA':
-              {
+              case 'MEDIA': {
                 senResponseFlag = true;
                 break;
               }
-              case 'NON-MEDIA':
-              {
+              case 'NON-MEDIA': {
                 senResponseFlag = true;
                 break;
               }
-              case 'DEFAULT':
-              {
+              case 'DEFAULT': {
                 senResponseFlag = true;
                 break;
               }
-              case 'ONSCREEN_PRESETS':
-              {
+              case 'ONSCREEN_PRESETS': {
                 senResponseFlag = true;
                 break;
               }
-              case 'NAV_FULLSCREEN_MAP':
-              {
+              case 'NAV_FULLSCREEN_MAP': {
                 senResponseFlag = true;
                 break;
               }
-              case 'NAV_KEYBOARD':
-              {
+              case 'NAV_KEYBOARD': {
                 senResponseFlag = true;
                 break;
               }
-              case 'NAV_LIST':
-              {
+              case 'NAV_LIST': {
                 senResponseFlag = true;
                 break;
               }
@@ -841,8 +821,7 @@ FFW.UI = FFW.RPCObserver.create(
             }
             break;
           }
-          case 'UI.SetAppIcon':
-          {
+          case 'UI.SetAppIcon': {
 
             // Verify if there is an unsupported data in request
             //if (this.errorResponsePull[request.id] != null) {
@@ -859,8 +838,7 @@ FFW.UI = FFW.RPCObserver.create(
             );
             break;
           }
-          case 'UI.PerformAudioPassThru':
-          {
+          case 'UI.PerformAudioPassThru': {
             if (this.performAudioPassThruRequestID > 0) {
               this.sendError(
                 SDL.SDLModel.data.resultCode.REJECTED,
@@ -875,14 +853,12 @@ FFW.UI = FFW.RPCObserver.create(
             }
             break;
           }
-          case 'UI.EndAudioPassThru':
-          {
+          case 'UI.EndAudioPassThru': {
             this.endAudioPassThruRequestID = request.id;
             SDL.SDLModel.UIEndAudioPassThru();
             break;
           }
-          case 'UI.GetSupportedLanguages':
-          {
+          case 'UI.GetSupportedLanguages': {
             Em.Logger.log('FFW.' + request.method + 'Response');
             var JSONMessage = {
               'id': request.id,
@@ -899,8 +875,7 @@ FFW.UI = FFW.RPCObserver.create(
             this.client.send(JSONMessage);
             break;
           }
-          case 'UI.GetLanguage':
-          {
+          case 'UI.GetLanguage': {
             Em.Logger.log('FFW.' + request.method + 'Response');
             var JSONMessage = {
               'jsonrpc': '2.0',
@@ -917,8 +892,7 @@ FFW.UI = FFW.RPCObserver.create(
             this.client.send(JSONMessage);
             break;
           }
-          case 'UI.GetCapabilities':
-          {
+          case 'UI.GetCapabilities': {
             Em.Logger.log('FFW.' + request.method + 'Response');
             // send repsonse
             var JSONMessage = {
@@ -1291,7 +1265,8 @@ FFW.UI = FFW.RPCObserver.create(
                 ],
                 'hmiCapabilities': {
                   'navigation': true,
-                  'phoneCall': true
+                  'phoneCall': true,
+                  'steeringWheelLocation': 'LEFT'
                 },
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': 'UI.GetCapabilities'
@@ -1300,8 +1275,7 @@ FFW.UI = FFW.RPCObserver.create(
             this.client.send(JSONMessage);
             break;
           }
-          case 'UI.IsReady':
-          {
+          case 'UI.IsReady': {
             Em.Logger.log('FFW.' + request.method + 'Response');
             // send repsonse
             var JSONMessage = {
@@ -1316,8 +1290,7 @@ FFW.UI = FFW.RPCObserver.create(
             this.client.send(JSONMessage);
             break;
           }
-          case 'UI.ClosePopUp':
-          {
+          case 'UI.ClosePopUp': {
             SDL.SDLController.closePopUp(request.params.methodName);
             Em.Logger.log('FFW.' + request.method + 'Response');
             // send repsonse
@@ -1332,8 +1305,7 @@ FFW.UI = FFW.RPCObserver.create(
             this.client.send(JSONMessage);
             break;
           }
-          case 'UI.ShowVrHelp':
-          {
+          case 'UI.ShowVrHelp': {
 
             //SDL.SDLModel.ShowVrHelp(request.params);
             this.sendUIResult(
@@ -1341,8 +1313,7 @@ FFW.UI = FFW.RPCObserver.create(
             );
             break;
           }
-          case 'UI.SetAudioStreamingIndicator':
-          {
+          case 'UI.SetAudioStreamingIndicator': {
             if (SDL.SDLController.SetAudioStreamingIndicator(request.params)) {
               this.sendUIResult(
                 SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
@@ -1357,8 +1328,7 @@ FFW.UI = FFW.RPCObserver.create(
             }
             break;
           }
-          default:
-          {
+          default: {
             // statements_def
             break;
           }
@@ -1440,18 +1410,15 @@ FFW.UI = FFW.RPCObserver.create(
     alertResponse: function(resultCode, id) {
       Em.Logger.log('FFW.UI.AlertResponse');
       switch (resultCode) {
-        case SDL.SDLModel.data.resultCode.SUCCESS:
-        {
+        case SDL.SDLModel.data.resultCode.SUCCESS: {
           this.sendUIResult(resultCode, id, 'UI.Alert');
           break;
         }
-        case SDL.SDLModel.data.resultCode['ABORTED']:
-        {
+        case SDL.SDLModel.data.resultCode['ABORTED']: {
           this.sendError(resultCode, id, 'UI.Alert', 'Alert request aborted.');
           break;
         }
-        case SDL.SDLModel.data.resultCode.REJECTED:
-        {
+        case SDL.SDLModel.data.resultCode.REJECTED: {
           this.sendError(
             resultCode, id, 'UI.Alert', 'Another Alert is active.'
           );
