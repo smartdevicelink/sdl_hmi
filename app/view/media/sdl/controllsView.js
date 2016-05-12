@@ -93,6 +93,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
             ],
             classNameBindings: 'SDL.SDLController.model.PLAY_PAUSE::unsubscribed',
             presetName: 'PLAY_PAUSE',
+            textBinding: 'SDL.SDLController.model.bufferingIndicator',
             actionUp: function() {
               SDL.SDLController.onSoftButtonOkActionUp(this.presetName);
             },
@@ -105,9 +106,16 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
              */
             template: Ember.Handlebars
               .compile(
-                '<img class="playIcon" {{bindAttr class="SDL.SDLController.model.pauseIndicator:visible:not-visible"}} src="images/media/ico_pause.png" />' +
-                '<img class="playIcon" {{bindAttr class="SDL.SDLController.model.playPauseIndicator:visible:not-visible"}} src="images/media/ico_play_pause.png" />' +
-                '<img class="playIcon not-visible" {{bindAttr class="SDL.SDLController.model.playIndicator:visible"}} src="images/media/ico-play.png" />'
+                '<img class="playIcon" {{bindAttr' +
+                ' class="SDL.SDLController.model.pauseIndicator:visible:not-visible"}} ' +
+                'src="images/media/ico_pause.png" />' +
+                '<img class="playIcon" {{bindAttr' +
+                ' class="SDL.SDLController.model.playPauseIndicator:visible:not-visible"}} ' +
+                'src="images/media/ico_play_pause.png" />' +
+                '<img class="playIcon not-visible" {{bindAttr' +
+                ' class="SDL.SDLController.model.playIndicator:visible"}}' +
+                ' src="images/media/ico-play.png" />' +
+                '<span>{{view.text}}</span>'
               )
           }
         ),

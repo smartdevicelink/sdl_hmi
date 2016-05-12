@@ -567,6 +567,10 @@
     top: 0px;
     position: absolute;
     left: 156px;
+    line-height: 100px;
+}
+.player_controllsV2 .bc-item-big.playcd {
+    line-height: 50px;
 }
 
 .bc-item-big.play-usb,

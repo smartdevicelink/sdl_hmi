@@ -56,7 +56,8 @@ SDL.SDLModelData = Em.Object.create(
     mediaPlayerIndicatorEnum: {
       'PLAY_PAUSE': 0,
       'PLAY': 1,
-      'PAUSE': 2
+      'PAUSE': 2,
+      'BUFFERING': 3
     },
     /**
      * Structure specified for PoliceUpdate retry sequence
