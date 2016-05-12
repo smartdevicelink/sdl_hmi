@@ -34,6 +34,14 @@
 SDL.SDLModelData = Em.Object.create(
   {
     /**
+     * Value from enum from HMI_API PrivacyModeState
+     */
+    appPermChangePrivacy: 'OFF',
+    /**
+     * Selected appID from AppPermissionsView
+     */
+    appPermChangeAppID: null,
+    /**
      * Data came from UI.PerformInteractionRequest for ShowVRHelpItems popup
      *
      * @type {Object}

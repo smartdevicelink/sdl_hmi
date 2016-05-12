@@ -41,7 +41,11 @@ SDL.AppPermissionsView = Em.ContainerView.create(
     childViews: [
       'backButton',
       'appList',
-      'label'
+      'label',
+      'appIDSelectTitle',
+      'appIDSelect',
+      'privacyModeTitle',
+      'privacyModeSelect'
     ],
     currentAppId: null,
     /**
@@ -114,9 +118,60 @@ SDL.AppPermissionsView = Em.ContainerView.create(
     appList: SDL.List.extend(
       {
         elementId: 'polocies_app_permissions_list',
-        itemsOnPage: 5,
+        itemsOnPage: 4,
         /** Items */
         items: new Array()
+      }
+    ),
+    /**
+     * Title of appID group of parameters
+     */
+    appIDSelectTitle: SDL.Label.extend(
+      {
+        elementId: 'appIDSelectTitlePermission',
+        classNames: 'appIDSelectTitle',
+        content: 'appID'
+      }
+    ),
+    /**
+     * HMI element Select with parameters of registered applications id's
+     */
+    appIDSelect: Em.Select.extend(
+      {
+        elementId: 'appIDSelectPermission',
+        classNames: 'appIDSelect',
+        contentBinding: 'this.appIDList',
+        appIDList: function() {
+          var list = [];
+          for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
+            list.addObject(SDL.SDLModel.data.registeredApps[i].appID);
+            this.selection = list[0];
+          }
+          list.addObject('');
+          return list;
+        }.property('SDL.SDLModel.data.registeredApps.@each'),
+        valueBinding: 'SDL.SDLModel.data.appPermChangeAppID'
+      }
+    ),
+    /**
+     * Title of privacyMode group of parameters
+     */
+    privacyModeTitle: SDL.Label.extend(
+      {
+        elementId: 'privacyModeTitlePermission',
+        classNames: 'privacyModeTitle',
+        content: 'Privacy Mode'
+      }
+    ),
+    /**
+     * HMI element Select with parameters of privacyMode enum
+     */
+    privacyModeSelect: Em.Select.extend(
+      {
+        elementId: 'privacyModePermission',
+        classNames: 'privacyModeSelect',
+        content: ['ON','OFF'],
+        valueBinding: 'SDL.SDLModel.data.appPermChangePrivacy'
       }
     )
   }

@@ -663,7 +663,9 @@
 #info_apps_deviceLocation_view .devicesSelect,
 #info_apps_deviceLocation_view .locationSelect,
 #systemRequestView .appIDSelect,
-#PrimaryDevice .deviceSelect {
+#PrimaryDevice .deviceSelect,
+#policies_settings_appPermissions .privacyModeSelect,
+#policies_settings_appPermissions .appIDSelect{
     top: 125px;
     position: absolute;
     width: 150px;

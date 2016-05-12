@@ -108,14 +108,14 @@ SDL.NavigationController = Em.Object.create(
           function() {
             FFW.Navigation.wayPointSend(
               SDL.SDLModel.data.resultCode.SUCCESS,
-              this.model.LocationDetails,
+              SDL.NavigationModel.LocationDetails,
               request.id
             );
-            this.model.appReqPull.splice(
-              this.model.appReqPull.indexOf(request.params.appID), 1
+            SDL.NavigationModel.appReqPull.splice(
+              SDL.NavigationModel.appReqPull.indexOf(request.params.appID), 1
             );
           },
-          this.model.wpProcessTime
+          SDL.NavigationModel.wpProcessTime
         );
       } else {
         FFW.Navigation.wayPointSend(SDL.SDLModel.data.resultCode.IN_USE);
@@ -127,7 +127,7 @@ SDL.NavigationController = Em.Object.create(
      * @param {Object} request
      */
     subscribeWayPoints: function(request) {
-      if (this.model.isSubscribedOnWayPoints) {
+      if (!this.model.isSubscribedOnWayPoints) {
         this.model.set('isSubscribedOnWayPoints', true);
         FFW.Navigation.sendNavigationResult(
           SDL.SDLModel.data.resultCode.SUCCESS,
@@ -149,7 +149,7 @@ SDL.NavigationController = Em.Object.create(
      * @param {Object} request
      */
     unsubscribeWayPoints: function(request) {
-      if (!this.model.isSubscribedOnWayPoints) {
+      if (this.model.isSubscribedOnWayPoints) {
         this.model.set('isSubscribedOnWayPoints', false);
         FFW.Navigation.sendNavigationResult(
           SDL.SDLModel.data.resultCode.SUCCESS,
