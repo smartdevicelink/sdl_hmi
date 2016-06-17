@@ -31,105 +31,93 @@
  * @version 1.0
  */
 
-SDL.DeviceConfigView = Em.ContainerView.create( {
-
+SDL.DeviceConfigView = Em.ContainerView.create(
+  {
     elementId: 'policies_settings_deviceConfig',
-
     classNames: 'in_settings_separate_view',
-
     classNameBindings: [
-        'SDL.States.settings.policies.deviceConfig.active:active_state:inactive_state'
+      'SDL.States.settings.policies.deviceConfig.active:active_state:inactive_state'
     ],
-
     childViews: [
-        'backButton',
-        'listOfDevices',
-        'label'
+      'backButton',
+      'listOfDevices',
+      'label'
     ],
-
     globalConfigurationValue: false,
-
     globalConfigurationMessage: function() {
-        if (this.globalConfigurationValue === true) {
-            return "All devices Allowed";
-        } else if (this.globalConfigurationValue === false) {
-            return "All devices Not Allowed";
-        } else {
-            return "All devices manual Configuration";
-        }
+      if (this.globalConfigurationValue === true) {
+        return 'All devices Allowed';
+      } else if (this.globalConfigurationValue === false) {
+        return 'All devices Not Allowed';
+      } else {
+        return 'All devices manual Configuration';
+      }
     }.property('this.globalConfigurationValue'),
-
     /**
      * Label in title
      */
-    label: SDL.Label.extend( {
-
+    label: SDL.Label.extend(
+      {
         elementId: 'label',
-
         classNames: 'label',
-
         content: 'Choose devices to be allowed for SDL functionality:'
-    }),
-
-    backButton: SDL.Button.extend( {
-        classNames:
-            [
-                'backButton'
-            ],
+      }
+    ),
+    backButton: SDL.Button.extend(
+      {
+        classNames: [
+          'backButton'
+        ],
         action: 'onState',
         target: 'SDL.SettingsController',
         goToState: 'policies',
         icon: 'images/media/ico_back.png',
         onDown: false
-    } ),
-
+      }
+    ),
     /**
      * Function to add application to application list
      */
     showDeviceList: function() {
-
-        this.listOfDevices.items = [];
-
-        this.listOfDevices.items.push({
-            type: SDL.Button,
-            params: {
-                action: 'allDeviceAccess',
-                target: 'SDL.SettingsController',
-                textBinding: 'SDL.DeviceConfigView.globalConfigurationMessage',
-                classNameBinding: 'SDL.DeviceConfigView.globalConfigurationValue:disabled'
-            }
-        });
-
-        var dev = SDL.SDLModel.data.connectedDevices;
-
-        for (var key in dev) {
-
-            if (dev.hasOwnProperty(key)) {
-
-                this.listOfDevices.items.push({
-                    type: SDL.Button,
-                    params: {
-                        action: 'changeDeviceAccess',
-                        target: 'SDL.SettingsController',
-                        text: dev[key].allowed ? dev[key].name + " - Allowed" : dev[key].name + " - Not allowed",
-                        name: dev[key].name,
-                        id: dev[key].id
-                    }
-                });
-            }
+      this.listOfDevices.items = [];
+      this.listOfDevices.items.push(
+        {
+          type: SDL.Button,
+          params: {
+            action: 'allDeviceAccess',
+            target: 'SDL.SettingsController',
+            textBinding: 'SDL.DeviceConfigView.globalConfigurationMessage',
+            classNameBinding: 'SDL.DeviceConfigView.globalConfigurationValue:disabled'
+          }
         }
-
-        this.listOfDevices.list.refresh();
-
+      );
+      var dev = SDL.SDLModel.data.connectedDevices;
+      for (var key in dev) {
+        if (dev.hasOwnProperty(key)) {
+          this.listOfDevices.items.push(
+            {
+              type: SDL.Button,
+              params: {
+                action: 'changeDeviceAccess',
+                target: 'SDL.SettingsController',
+                text: dev[key].allowed ? dev[key].name + ' - Allowed' :
+                dev[key].name + ' - Not allowed',
+                name: dev[key].name,
+                id: dev[key].id
+              }
+            }
+          );
+        }
+      }
+      this.listOfDevices.list.refresh();
     },
-
-    listOfDevices: SDL.List.extend( {
-
+    listOfDevices: SDL.List.extend(
+      {
         elementId: 'polocies_device_list',
-
         itemsOnPage: 5,
-
         /** Items */
         items: new Array()
-    })
-});
+      }
+    )
+  }
+);

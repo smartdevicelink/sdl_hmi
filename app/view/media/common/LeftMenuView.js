@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,31 +32,31 @@
  * @version 1.0
  */
 
-SDL.LeftMenuView = Em.ContainerView.extend( {
+SDL.LeftMenuView = Em.ContainerView.extend(
+  {
     /** View ID */
     elementId: 'media_leftmenu',
-
     /** View components */
-    childViews:
-        [
-            'border',
-            'radio',
-            'cdButton',
-            'usbButton',
-            'sdlButton'
-        ],
-
+    childViews: [
+      'border',
+      'radio',
+      'cdButton',
+      'usbButton',
+      'sdlButton'
+    ],
     /** Border decoration */
-    border: Em.View.extend( {
+    border: Em.View.extend(
+      {
         elementId: 'media_left_menu_border',
         classNames: 'ls_border'
-    } ),
-
+      }
+    ),
     /** CD Station Button */
-    radio: SDL.Button.extend({
+    radio: SDL.Button.extend(
+      {
         classNameBindings: [
-            'SDL.States.media.player.radio.active:active_state',
-            'SDL.FuncSwitcher.rev::is-disabled'
+          'SDL.States.media.player.radio.active:active_state',
+          'SDL.FuncSwitcher.rev::is-disabled'
         ],
         elementId: 'media_radioButton',
         classNames: 'media-ls-item',
@@ -64,27 +64,28 @@ SDL.LeftMenuView = Em.ContainerView.extend( {
         target: 'SDL.MediaController',
         icon: 'images/media/ico_fm.png',
         textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_radio')
-    }),
-
+      }
+    ),
     /** CD Station Button */
-    cdButton: SDL.Button.extend( {
-        classNameBindings:
-            [
-                'SDL.States.media.player.cd.active:active_state'
-            ],
+    cdButton: SDL.Button.extend(
+      {
+        classNameBindings: [
+          'SDL.States.media.player.cd.active:active_state'
+        ],
         elementId: 'media_cdButton',
         classNames: 'media-ls-item',
         action: 'turnOnCD',
         icon: 'images/media/ico_cd.png',
         target: 'SDL.MediaController',
-        textBinding: Ember.Binding.oneWay( 'SDL.locale.label.view_media_cd' )
-    } ),
-
+        textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_cd')
+      }
+    ),
     /** USB Station Button */
-    usbButton: SDL.Button.extend({
+    usbButton: SDL.Button.extend(
+      {
         classNameBindings: [
-            'SDL.States.media.player.usb.active:active_state',
-            'SDL.FuncSwitcher.rev::is-disabled'
+          'SDL.States.media.player.usb.active:active_state',
+          'SDL.FuncSwitcher.rev::is-disabled'
         ],
         elementId: 'media_usbButton',
         classNames: 'media-ls-item',
@@ -92,23 +93,24 @@ SDL.LeftMenuView = Em.ContainerView.extend( {
         icon: 'images/media/ico_usb.png',
         target: 'SDL.MediaController',
         textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_usb')
-    }),
-
+      }
+    ),
     /** SDL Button */
-    sdlButton: SDL.Button.extend( {
-        classNameBindings:
-            [
-                'SDL.States.media.sdlmedia.active:active_state'
-            ],
+    sdlButton: SDL.Button.extend(
+      {
+        classNameBindings: [
+          'SDL.States.media.sdlmedia.active:active_state'
+        ],
         elementId: 'media_sdlButton',
         classNames: 'media-ls-item',
         hidden: function() {
-            return SDL.SDLMediaController.currentAppId === null;
-        }.property( 'SDL.SDLMediaController.currentAppId' ),
+          return SDL.SDLMediaController.currentAppId === null;
+        }.property('SDL.SDLMediaController.currentAppId'),
         textBinding: 'SDL.SDLMediaController.currentAppName',
         iconBinding: 'SDL.SDLMediaController.currentAppIcon',
         action: 'activateCurrentApp',
         target: 'SDL.SDLMediaController'
-    } )
-
-} );
+      }
+    )
+  }
+);

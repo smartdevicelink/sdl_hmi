@@ -31,58 +31,51 @@
  * @version 1.0
  */
 
-SDL.StatisticsInfoView = Em.ContainerView.create( {
-
+SDL.StatisticsInfoView = Em.ContainerView.create(
+  {
     elementId: 'policies_settings_status_info',
-
     classNames: 'in_settings_separate_view',
-
     classNameBindings: [
-        'SDL.States.settings.policies.statisticsInfo.active:active_state:inactive_state'
+      'SDL.States.settings.policies.statisticsInfo.active:active_state:inactive_state'
     ],
-
     childViews: [
-        'backButton',
-        'label',
-        'listSelect'
+      'backButton',
+      'label',
+      'listSelect'
     ],
-
     /**
      * HMI element Select with parameters of transmission state from VehicleInfo
      * Model
      */
-    listSelect: Em.Select.extend( {
-
+    listSelect: Em.Select.extend(
+      {
         elementId: 'listSelect',
-
         classNames: 'listSelect',
-
         contentBinding: 'SDL.SDLModel.data.settingsInfoList',
-
         valueBinding: 'SDL.SDLModel.data.settingsInfoListState'
-    } ),
-
+      }
+    ),
     /**
      * Label in title
      */
-    label: SDL.Label.extend( {
-
+    label: SDL.Label.extend(
+      {
         elementId: 'label',
-
         classNames: 'label',
-
         content: 'Choose devices to be allowed for SDL functionality:'
-    }),
-
-    backButton: SDL.Button.extend( {
-        classNames:
-            [
-                'backButton'
-            ],
+      }
+    ),
+    backButton: SDL.Button.extend(
+      {
+        classNames: [
+          'backButton'
+        ],
         action: 'onState',
         target: 'SDL.SettingsController',
         goToState: 'policies',
         icon: 'images/media/ico_back.png',
         onDown: false
-    } )
-});
+      }
+    )
+  }
+);

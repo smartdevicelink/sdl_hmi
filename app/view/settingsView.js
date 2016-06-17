@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  · Redistributions of source code must retain the above copyright notice,
@@ -11,7 +11,7 @@
  *  · Neither the name of the Ford Motor Company nor the names of its
  * contributors may be used to endorse or promote products derived from this
  * software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,71 +31,65 @@
  * @filesource app/view/player/PlayerView.js
  * @version 1.0
  */
-SDL.SettingsView = Em.ContainerView.create( {
+SDL.SettingsView = Em.ContainerView.create(
+  {
     /** View Id */
     elementId: 'settingsView',
-
     classNameBindings: [
-        'SDL.States.settings.active:active_state:inactive_state'
+      'SDL.States.settings.active:active_state:inactive_state'
     ],
-
     /** Settings components */
-    childViews:
-        [
-            'leftMenu',
-            SDL.DeviceStateChangeView,
-            SDL.PoliciesView,
-            SDL.AppPermissionsListView,
-            SDL.AppPermissionsView,
-            SDL.DeviceConfigView,
-            SDL.StatisticsInfoView,
-            SDL.GetUrlsView,
-            SDL.SystemErrorView
-        ],
-
+    childViews: [
+      'leftMenu',
+      SDL.DeviceStateChangeView,
+      SDL.PoliciesView,
+      SDL.AppPermissionsListView,
+      SDL.AppPermissionsView,
+      SDL.DeviceConfigView,
+      SDL.StatisticsInfoView,
+      SDL.GetUrlsView,
+      SDL.SystemErrorView
+    ],
     /** Left menu */
-    leftMenu: Em.ContainerView.extend( {
+    leftMenu: Em.ContainerView.extend(
+      {
         elementId: 'settings_leftMenu',
-
-        classNameBindings:
-            [
-                'parentView.controller.hiddenLeftMenu:hidden'
-            ],
-
+        classNameBindings: [
+          'parentView.controller.hiddenLeftMenu:hidden'
+        ],
         classNames: 'menu-items',
-
-        childViews:
-            [
-                'border',
-                'items'
-            ],
-
-        border: Em.View.extend( {
+        childViews: [
+          'border',
+          'items'
+        ],
+        border: Em.View.extend(
+          {
             classNames: 'ls_border'
-        } ),
-
-        items: Em.ContainerView.extend( {
+          }
+        ),
+        items: Em.ContainerView.extend(
+          {
             classNames: 'ls-items',
-
-            childViews:
-                [
-                    'policies'
-                ],
-
-            policies: SDL.Button.extend( {
+            childViews: [
+              'policies'
+            ],
+            policies: SDL.Button.extend(
+              {
                 elementId: 'policies_leftMenu',
                 goToState: 'policies',
                 classNames: 'menu-item lsp1_p',
-                classNameBindings:
-                    [
-                        'SDL.States.settings.policies.active:info_active'
-                    ],
+                classNameBindings: [
+                  'SDL.States.settings.policies.active:info_active'
+                ],
                 text: 'Policies',
                 icon: 'images/settings/ico_settings.png',
                 action: 'onState',
                 target: 'SDL.SettingsController'
-            } )
-        } )
-    } )
-
-});
+              }
+            )
+          }
+        )
+      }
+    )
+  }
+);

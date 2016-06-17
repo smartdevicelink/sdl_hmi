@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,125 +31,155 @@
  * @version 1.0
  */
 
-SDL.InfoAppsView = Em.ContainerView
-    .create( {
+SDL.InfoAppsView = Em.ContainerView.create({
 
-        elementId: 'info_apps',
+  elementId: 'info_apps',
 
-        classNameBindings: [
-            'SDL.States.info.apps.active:active_state:inactive_state'
-        ],
+  classNameBindings: [
+    'SDL.States.info.apps.active:active_state:inactive_state'
+  ],
 
-        childViews: [
-            'vehicleHealthReport',
-            'Asist911',
-            'installButton',
-            'findNewApps',
-            'getDeviceList',
-            'listOfApplications'
-        ],
+  childViews: [
+    'vehicleHealthReport',
+    'Asist911',
+    'DeviceLocationButton',
+    'findNewApps',
+    'getDeviceList',
+    'listOfApplications'
+  ],
 
-        /**
-         * Function to add application to application list
-         */
-        showAppList: function() {
+  /**
+   * Function to add application to application list
+   */
+  showAppList: function() {
 
-            this.get('listOfApplications.list').removeAllChildren();
+    this.get('listOfApplications.list').removeAllChildren();
 
-            this.listOfApplications.list.refresh();
+    this.listOfApplications.list.refresh();
 
-            var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
+    var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
 
-            for (i = 0; i < apps.length; i++) {
+    for (i = 0; i < apps.length; i++) {
+      if (apps[i].appType.indexOf('REMOTE_CONTROL') === -1) {
+        appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
-                appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+        this.get('listOfApplications.list.childViews').
+               pushObject(SDL.Button.create({
+                   action: 'onActivateSDLApp',
+                   target: 'SDL.SDLController',
+                   text: apps[i].appName + ' - ' + apps[i].deviceName,
+                   appName: apps[i].appName,
+                   appID: apps[i].appID,
+                   classNames: 'list-item button',
+                   iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
+                   '.appIcon',
+                   disabled: apps[i].disabledToActivate
+                 }
+                 )
+               );
+      } else if (apps[i].appType.indexOf('REMOTE_CONTROL') != -1 &&
+        apps[i].level != 'NONE' &&
+        apps[i].level != 'BACKGROUND' ||
+        SDL.SDLModel.driverDeviceInfo &&
+        apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name) {
 
-                this.get('listOfApplications.list.childViews')
-                    .pushObject(SDL.Button.create( {
-                        action: 'onActivateSDLApp',
-                        target: 'SDL.SDLController',
-                        text: apps[i].appName + " - " + apps[i].deviceName,
-                        appName: apps[i].appName,
-                        appID: apps[i].appID,
-                        classNames: 'list-item button',
-                        iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex
-                            + '.appIcon',
-                        disabled: apps[i].disabledToActivate,
-                        indexApp: appIndex,
-                        fullAppName: function () {
-                            return SDL.SDLModel.data.registeredApps[this.appIndex].appIcon + SDL.SDLModel.data.registeredApps[this.appIndex].deviceName;
-                        }.property('SDL.SDLModel.data.registeredApps.' + appIndex
-                            + '.appIcon', 'SDL.SDLModel.data.registeredApps.' + appIndex
-                            + '.deviceName')
-                    }));
-            }
+        var driverDevice = (
+        SDL.SDLModel.driverDeviceInfo &&
+        apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
 
-        },
+        var ownerMarker = driverDevice ? '"D" ' : '"P" ';
 
-        vehicleHealthReport: SDL.Button
-            .extend( {
-                goToState: 'vehicle.healthReport',
-                classNames: 'button vehicleHealthReport leftButtons',
-                icon: 'images/info/ico_vehicle.png',
-                textBinding: 'SDL.locale.label.view_info_apps_vehicle_VehicleHealthReport',
-                elementId: 'infoAppsVehicleHealthReport',
-                arrow: true,
-                onDown: false
-            }),
+        appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
-        Asist911: SDL.Button.extend( {
-            goToState: 'help.helpAssist',
-            classNames: 'button Asist911 leftButtons',
-            icon: 'images/info/ico_assist.png',
-            textBinding: 'SDL.locale.label.view_info_apps_911Assist',
-            elementId: 'infoAppsAsist911',
-            arrow: true,
-            onDown: false
-        }),
+        this.get('listOfApplications.list.childViews').
+               pushObject(SDL.Button.create({
+                   action: driverDevice ? 'onActivateSDLApp' :
+                     'onDeactivatePassengerApp',
+                   target: 'SDL.SDLController',
+                   text: ownerMarker + apps[i].appName + ' - ' + apps[i].deviceName,
+                   appName: apps[i].appName,
+                   appID: apps[i].appID,
+                   classNames: 'list-item button',
+                   iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
+                   '.appIcon',
+                   disabled: false
+                 }
+                 )
+               );
+      }
+    }
 
-        installButton: SDL.Button
-            .extend( {
-                goToState: 'settings.system.installApplications',
-                icon: 'images/info/ico_info_install.png',
-                textBinding: 'SDL.locale.label.view_info_apps_vehicle_InstallApplicationsUp',
-                elementId: 'infoAppsInstallButton',
-                classNames: 'button installButton leftButtons',
-                arrow: true,
-                onDown: false
-            }),
+  },
 
-        findNewApps: SDL.Button
-            .extend( {
-                goToState: 'settings.system.installApplications',
-                icon: 'images/sdl/new_apps.png',
-                textBinding: 'SDL.locale.label.view_info_apps_vehicle_FindNewApplications',
-                elementId: 'infoAppsFindNewApps',
-                classNames: 'button findNewApps leftButtons',
-                arrow: true,
-                action: 'findNewApps',
-                target: 'SDL.SDLController',
-                onDown: false
-            }),
+  vehicleHealthReport: SDL.Button.extend({
+        goToState: 'vehicle.healthReport',
+        classNames: 'button vehicleHealthReport leftButtons',
+        icon: 'images/info/ico_vehicle.png',
+        textBinding: 'SDL.locale.label.view_info_apps_vehicle_VehicleHealthReport',
+        elementId: 'infoAppsVehicleHealthReport',
+        arrow: true,
+        onDown: false
+      }
+    ),
 
-        getDeviceList: SDL.Button
-            .extend( {
-                icon: 'images/sdl/devices.png',
-                textBinding: 'SDL.locale.label.view_info_apps_vehicle_GetDeviceList',
-                elementId: 'infoAppsGetDeviceList',
-                classNames: 'button getDeviceList leftButtons',
-                arrow: true,
-                action: 'onGetDeviceList',
-                target: 'SDL.SDLController',
-                onDown: false
-            }),
+  Asist911: SDL.Button.extend({
+        goToState: 'help.helpAssist',
+        classNames: 'button Asist911 leftButtons',
+        icon: 'images/info/ico_assist.png',
+        textBinding: 'SDL.locale.label.view_info_apps_911Assist',
+        elementId: 'infoAppsAsist911',
+        arrow: true,
+        onDown: false
+      }
+    ),
 
-        listOfApplications: SDL.List.extend( {
+  DeviceLocationButton: SDL.Button.extend({
+        goToState: 'settings.system.installApplications',
+        icon: 'images/info/location.png',
+        textBinding: 'SDL.locale.label.view_info_apps_vehicle_DeviceLocation',
+        elementId: 'infoAppsLocationButton',
+        classNames: 'button deviceLocation leftButtons',
+        arrow: true,
+        action: 'onGetDeviceLocation',
+        target: 'SDL.SDLController',
+        onDown: false
+      }
+    ),
 
-            elementId: 'info_apps_list',
+  findNewApps: SDL.Button.extend({
+        goToState: 'settings.system.installApplications',
+        icon: 'images/sdl/new_apps.png',
+        textBinding: 'SDL.locale.label.view_info_apps_vehicle_FindNewApplications',
+        elementId: 'infoAppsFindNewApps',
+        classNames: 'button findNewApps leftButtons',
+        arrow: true,
+        action: 'findNewApps',
+        target: 'SDL.SDLController',
+        onDown: false
+      }
+    ),
 
-            itemsOnPage: 5,
+  getDeviceList: SDL.Button.extend({
+        icon: 'images/sdl/devices.png',
+        textBinding: 'SDL.locale.label.view_info_apps_vehicle_GetDeviceList',
+        elementId: 'infoAppsGetDeviceList',
+        classNames: 'button getDeviceList leftButtons',
+        arrow: true,
+        action: 'onGetDeviceList',
+        target: 'SDL.SDLController',
+        onDown: false
+      }
+    ),
 
-            /** Items */
-            items: new Array()
-        })
-    });
+  listOfApplications: SDL.List.extend({
+
+    elementId: 'info_apps_list',
+
+    itemsOnPage: 5,
+
+    /** Items */
+    items: new Array()
+  }
+)
+}
+);

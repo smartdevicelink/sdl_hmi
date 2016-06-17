@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,234 +31,263 @@
  * @version 1.0
  */
 
-SDL.QWERTYLayout = Em.ContainerView.extend( {
+SDL.QWERTYLayout = Em.ContainerView.extend({
 
-    classNames: 'keyboardLayout QWERTYLayout',
+  classNames: 'keyboardLayout QWERTYLayout',
 
-    childViews: [
-        'q',
-        'w',
-        'e',
-        'r',
-        't',
-        'y',
-        'u',
-        'i',
-        'o',
-        'p',
-        'a',
-        's',
-        'd',
-        'f',
-        'g',
-        'h',
-        'j',
-        'k',
-        'l',
-        'z',
-        'x',
-        'c',
-        'v',
-        'b',
-        'n',
-        'm',
-        'dash',
-        'ampersand'
-    ],
+  childViews: [
+    'q',
+    'w',
+    'e',
+    'r',
+    't',
+    'y',
+    'u',
+    'i',
+    'o',
+    'p',
+    'a',
+    's',
+    'd',
+    'f',
+    'g',
+    'h',
+    'j',
+    'k',
+    'l',
+    'z',
+    'x',
+    'c',
+    'v',
+    'b',
+    'n',
+    'm',
+    'dash',
+    'ampersand'
+  ],
 
-    q: SDL.Button.extend({
+  q: SDL.Button.extend({
         classNames: 'q k0',
-        text      : 'q',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'q',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    w: SDL.Button.extend({
+  w: SDL.Button.extend({
         classNames: 'w k1',
-        text      : 'w',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'w',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    e: SDL.Button.extend({
+  e: SDL.Button.extend({
         classNames: 'e k2',
-        text      : 'e',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'e',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    r: SDL.Button.extend({
+  r: SDL.Button.extend({
         classNames: 'r k3',
-        text      : 'r',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'r',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    t: SDL.Button.extend({
+  t: SDL.Button.extend({
         classNames: 't k4',
-        text      : 't',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 't',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    y: SDL.Button.extend({
+  y: SDL.Button.extend({
         classNames: 'y k5',
-        text      : 'y',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'y',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    u: SDL.Button.extend({
+  u: SDL.Button.extend({
         classNames: 'u k6',
-        text      : 'u',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'u',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    i: SDL.Button.extend({
+  i: SDL.Button.extend({
         classNames: 'i k7',
-        text      : 'i',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'i',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    o: SDL.Button.extend({
+  o: SDL.Button.extend({
         classNames: 'o k8',
-        text      : 'o',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'o',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    p: SDL.Button.extend({
+  p: SDL.Button.extend({
         classNames: 'p k9',
-        text      : 'p',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'p',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    a: SDL.Button.extend({
+  a: SDL.Button.extend({
         classNames: 'a k10',
-        text      : 'a',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'a',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    s: SDL.Button.extend({
+  s: SDL.Button.extend({
         classNames: 's k11',
-        text      : 's',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 's',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    d: SDL.Button.extend({
+  d: SDL.Button.extend({
         classNames: 'd k12',
-        text      : 'd',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'd',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    f: SDL.Button.extend({
+  f: SDL.Button.extend({
         classNames: 'f k13',
-        text      : 'f',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'f',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    g: SDL.Button.extend({
+  g: SDL.Button.extend({
         classNames: 'g k14',
-        text      : 'g',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'g',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    h: SDL.Button.extend({
+  h: SDL.Button.extend({
         classNames: 'h k15',
-        text      : 'h',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'h',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    j: SDL.Button.extend({
+  j: SDL.Button.extend({
         classNames: 'j k16',
-        text      : 'j',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'j',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    k: SDL.Button.extend({
+  k: SDL.Button.extend({
         classNames: 'k k17',
-        text      : 'k',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'k',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    l: SDL.Button.extend({
+  l: SDL.Button.extend({
         classNames: 'l k18',
-        text      : 'l',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'l',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    z: SDL.Button.extend({
+  z: SDL.Button.extend({
         classNames: 'z k21',
-        text      : 'z',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'z',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    x: SDL.Button.extend({
+  x: SDL.Button.extend({
         classNames: 'x k22',
-        text      : 'x',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'x',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    c: SDL.Button.extend({
+  c: SDL.Button.extend({
         classNames: 'c k23',
-        text      : 'c',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'c',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    v: SDL.Button.extend({
+  v: SDL.Button.extend({
         classNames: 'v k24',
-        text      : 'v',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'v',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    b: SDL.Button.extend({
+  b: SDL.Button.extend({
         classNames: 'b k25',
-        text      : 'b',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'b',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    n: SDL.Button.extend({
+  n: SDL.Button.extend({
         classNames: 'n k26',
-        text      : 'n',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'n',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    m: SDL.Button.extend({
+  m: SDL.Button.extend({
         classNames: 'm k27',
-        text      : 'm',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: 'm',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    dash: SDL.Button.extend({
+  dash: SDL.Button.extend({
         classNames: 'dash k28',
-        text      : '-',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    }),
+        text: '-',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    ),
 
-    ampersand: SDL.Button.extend({
+  ampersand: SDL.Button.extend({
         classNames: 'ampersand k29',
-        text      : '&',
-        target    : 'parentView.parentView',
-        action    : 'inputChanges'
-    })
-});
+        text: '&',
+        target: 'parentView.parentView',
+        action: 'inputChanges'
+      }
+    )
+}
+);

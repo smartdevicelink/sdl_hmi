@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,111 +31,72 @@
  * @version 1.0
  */
 
-SDL.SDLMediaController = Em.Object.create( {
-
+SDL.SDLMediaController = Em.Object.create(
+  {
     /**
      * Current Media application id
-     * 
+     *
      * @type {Number}
      */
     currentAppId: null,
-
     /**
      * Return current Media application name used for application button
      */
     currentAppName: function() {
-
-        if (this.currentAppId != null) {
-            return SDL.SDLController.getApplicationModel(this.currentAppId).appName;
-        }
+      if (this.currentAppId != null) {
+        return SDL.SDLController.getApplicationModel(this.currentAppId).appName;
+      }
     }.property('this.currentAppId'),
-
     /**
      * Return current Media application icon used for application button
      */
     currentAppIcon: function() {
-
-        if (this.currentAppId != null) {
-            return SDL.SDLController.getApplicationModel(this.currentAppId).appIcon;
-        }
+      if (this.currentAppId != null) {
+        return SDL.SDLController.getApplicationModel(this.currentAppId).appIcon;
+      }
     }.property('this.currentAppId', 'SDL.SDLController.model.appIcon'),
-
     /** Call notification OnCommand on UIRPC */
     onCommand: function(element) {
-
-        FFW.UI.onCommand(element.commandID, element.appID);
+      FFW.UI.onCommand(element.commandID, element.appID);
     },
-
     /** Call notification OnCommandSoftButton on UIRPC */
     onCommandSoftButton: function(element) {
-
-        FFW.UI.onCommandSoftButton(element.softButtonID, element.appID);
+      FFW.UI.onCommandSoftButton(element.softButtonID, element.appID);
     },
-
     /** Switching on Application */
     activateApp: function(applicationModel) {
 
-        // store active application id
-        this.set('currentAppId', applicationModel.appID);
-
-        // set active model
-        SDL.SDLController.set('model', applicationModel);
-
-        SDL.MediaController.turnOnSDL();
-
+      // store active application id
+      this.set('currentAppId', applicationModel.appID);
+      // set active model
+      SDL.SDLController.set('model', applicationModel);
+      SDL.MediaController.turnOnSDL();
     },
-
     /**
      * Restore current application to active state
      */
     activateCurrentApp: function() {
-
-        FFW.BasicCommunication.OnAppActivated(this.currentAppId);
+      FFW.BasicCommunication.ActivateApp(this.currentAppId);
     },
-
-    /** SDL perform interaction action from VR */
-    onVRPerformInteractionChoosed: function(element) {
-
-        if (SDL.States.media.sdl.sdlperforminteractionchoise.active) {
-            FFW.VR.onChoise(element.choiceID);
-            SDL.States.back();
-        }
-
-    },
-
-    /** SDL perform interaction action */
-    onPerformInteractionChoosed: function(element) {
-
-        if (SDL.States.media.sdl.sdlperforminteractionchoise.active) {
-            FFW.UI.interactionResponse("SUCCESS", element.choiceID);
-            SDL.States.back();
-        }
-
-    },
-
     /**
      * Method hides sdl activation button and sdl application
-     * 
+     *
      * @param {Number}
      */
     onDeleteApplication: function(appID) {
-
-        if (this.currentAppId == appID) {
-
-            if (SDL.States.media.sdlmedia.active
-                || SDL.SDLController.model) {
-
-                SDL.SDLController.getApplicationModel(appID).set('active', false);
-
-                SDL.States.goToStates('info.apps');
-
-                SDL.MediaController.set('activeState', 'media.player');
-            }
-
-            this.set('currentAppId', null);
+      if (this.currentAppId == appID) {
+        if (SDL.States.media.sdlmedia.active ||
+          SDL.SDLController.model) {
+          SDL.SDLController.getApplicationModel(appID).set('active', false);
+          SDL.States.goToStates('info.apps');
+          SDL.MediaController.set('activeState', 'media.player');
         }
-
-        SDL.SDLModel.stopStream(appID);
-        SDL.SDLModel.data.get('registeredApps').removeObjects(SDL.SDLModel.data.get('registeredApps').filterProperty('appID', appID));
+        this.set('currentAppId', null);
+      }
+      SDL.SDLModel.stopStream(appID);
+      SDL.SDLModel.data.get('registeredApps').removeObjects(
+        SDL.SDLModel.data.get('registeredApps').filterProperty('appID', appID)
+      );
     }
-});
+  }
+);

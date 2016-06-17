@@ -1,4 +1,4 @@
-#settingsView .in_settings_separate_view{
+#settingsView .in_settings_separate_view {
     top: 48px;
     width: 800px;
     height: 382px;
@@ -14,18 +14,20 @@
     border-radius: 2px;
     left: 25px;
 }
-#settingsView .in_settings_separate_view .list{
+
+#settingsView .in_settings_separate_view .list {
     height: 251px;
     width: 700px;
     top: 106px;
     left: 50px;
 }
-#settingsView .in_settings_separate_view .list-item{
+
+#settingsView .in_settings_separate_view .list-item {
     width: 639px;
     padding-left: 10px;
 }
 
-#settingsView .in_settings_separate_view .label{
+#settingsView .in_settings_separate_view .label {
     top: 35px;
     left: 100px;
     width: 620px;
@@ -38,51 +40,73 @@
     padding-right: 15px;
 }
 
+#policies_settings_appPermissions .appIDSelectTitle {
+    top: 315px !important;
+    left: 420px !important;
+    width: 100px !important;
+}
+
+#policies_settings_appPermissions .appIDSelect {
+    top: 320px !important;
+    left: 575px !important;
+}
+
+#policies_settings_appPermissions .privacyModeTitle {
+    top: 315px !important;
+    left: 20px !important;
+    width: 100px !important;
+}
+
+#policies_settings_appPermissions .privacyModeSelect {
+    top: 320px !important;
+    left: 175px !important;
+}
+
 #settingsView .backButton .ico {
     margin-top: 13px;
     margin-left: 8px;
 }
 
 #settings_leftMenu {
-	background: #333;
-	width: 150px;
-	height: 300px;
-	top: 90px;
+    background: #333;
+    width: 150px;
+    height: 300px;
+    top: 90px;
 }
 
 #settings_leftMenu .menu-item.info_active {
-	background: url("../images/info/menu_active.png") repeat-x;
+    background: url("../images/info/menu_active.png") repeat-x;
 }
 
 #settings_leftMenu .menu-item {
-	z-index: 201;
-	position: relative;
-	width: 150px;
-	height: 50px;
-	cursor: pointer;
+    z-index: 201;
+    position: relative;
+    width: 150px;
+    height: 50px;
+    cursor: pointer;
 }
 
 #settings_leftMenu .menu-item span {
-	position: absolute;
-	left: 50px;
-	width: 100px;
-	height: 50px;
-	font-size: 18px;
-	line-height: 50px;
-	white-space: nowrap;
-	overflow: hidden;
+    position: absolute;
+    left: 50px;
+    width: 100px;
+    height: 50px;
+    font-size: 18px;
+    line-height: 50px;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 #settings_leftMenu .ico {
-	height: 50px;
-	width: 50px;
+    height: 50px;
+    width: 50px;
 }
 
 #settings_leftMenu .settings_active {
-	background: url("../images/info/menu_active.png") repeat-x;
+    background: url("../images/info/menu_active.png") repeat-x;
 }
 
-#settingsView .in_settings_view{
+#settingsView .in_settings_view {
     position: absolute;
     top: 48px;
     left: 153px;
@@ -93,18 +117,18 @@
     margin-top: 70px;
 }
 
-#settingsView .policies_settings_list{
+#settingsView .policies_settings_list {
     height: 251px;
     width: 598px;
     left: 10px;
 }
 
-#policies_settings_list .list-content .ffw-button{
+#policies_settings_list .list-content .ffw-button {
     width: 537px;
     padding-left: 10px;
 }
 
-#settingsView .settingsButton{
+#settingsView .settingsButton {
     float: left;
     width: 536px;
     margin-right: 10px;
@@ -118,7 +142,7 @@
 }
 
 #policies_settings_system_error .listSelect,
-#policies_settings_status_info .listSelect{
+#policies_settings_status_info .listSelect {
     top: 125px;
     position: absolute;
     width: 150px;
