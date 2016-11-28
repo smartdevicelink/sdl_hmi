@@ -43,9 +43,7 @@ SDL.AppPermissionsView = Em.ContainerView.create(
       'appList',
       'label',
       'appIDSelectTitle',
-      'appIDSelect',
-      'privacyModeTitle',
-      'privacyModeSelect'
+      'appIDSelect'
     ],
     currentAppId: null,
     /**
@@ -65,18 +63,29 @@ SDL.AppPermissionsView = Em.ContainerView.create(
         action: function(element) {
           SDL.SettingsController.onState(element);
           var permissions = [];
-          for (var i = 0; i <
-          SDL.AppPermissionsView.appList.list._childViews.length; i++) {
-            permissions.push(
+          var ccs_status = [];
+          var childViews = SDL.AppPermissionsView.appList.list._childViews;
+          for (var i = 0; i < childViews.length; i++) {
+            if (childViews[i].entityID != -1) {
+              ccs_status.push(
               {
-                'name': SDL.AppPermissionsView.appList.list._childViews[i].name,
-                'id': SDL.AppPermissionsView.appList.list._childViews[i].id,
-                'allowed': SDL.AppPermissionsView.appList.list._childViews[i].allowed
+                'entity_id': childViews[i].entityID,
+                'entity_type': childViews[i].entityType,
+                'status': (childViews[i].allowed) ? "ON" : "OFF"
               }
-            );
+              );
+            } else {
+              permissions.push(
+                {
+                  'name': childViews[i].name,
+                  'id': childViews[i].id,
+                  'allowed': childViews[i].allowed
+                }
+              );
+            }
           }
           FFW.BasicCommunication.OnAppPermissionConsent(
-            permissions, 'GUI', SDL.AppPermissionsView.currentAppId
+            permissions, ccs_status, 'GUI', SDL.AppPermissionsView.currentAppId
           );
           SDL.AppPermissionsView.currentAppId = null;
         },
@@ -93,25 +102,26 @@ SDL.AppPermissionsView = Em.ContainerView.create(
       this.appList.items = [];
       for (var i = 0; i < message.length; i++) {
         var text = ' - Undefined';
-        if (message[i].allowed === true) {
-          text = ' - Allowed';
-        } else if (message[i].allowed === false) {
-          text = ' - Not allowed';
-        }
-        this.appList.items.push(
-          {
-            type: SDL.Button,
-            params: {
+        text = (message[i].allowed === true) ? ' - Allowed' : ' - Not allowed';
+        this.appList.items.push({
+          type: SDL.Button,
+          params: {
               action: 'changeAppPermission',
               target: 'SDL.SettingsController',
-              text: message[i].name + text,
+              text: message[i].name 
+                  +(("entityID" in message[i]) 
+                      ? ", entityID: " + message[i].entityID 
+                      + ", entityType: " + message[i].entityType 
+                      : "") 
+                  + text,
               name: message[i].name,
               allowed: message[i].allowed,
               id: message[i].id,
+              entityID: (("entityID" in message[i]) ? message[i].entityID : -1),
+              entityType: (("entityType" in message[i]) ? message[i].entityType : -1),
               appID: appID
-            }
           }
-        );
+        });
       }
       this.appList.list.refresh();
     },
@@ -151,27 +161,6 @@ SDL.AppPermissionsView = Em.ContainerView.create(
           return list;
         }.property('SDL.SDLModel.data.registeredApps.@each'),
         valueBinding: 'SDL.SDLModel.data.appPermChangeAppID'
-      }
-    ),
-    /**
-     * Title of privacyMode group of parameters
-     */
-    privacyModeTitle: SDL.Label.extend(
-      {
-        elementId: 'privacyModeTitlePermission',
-        classNames: 'privacyModeTitle',
-        content: 'Privacy Mode'
-      }
-    ),
-    /**
-     * HMI element Select with parameters of privacyMode enum
-     */
-    privacyModeSelect: Em.Select.extend(
-      {
-        elementId: 'privacyModePermission',
-        classNames: 'privacyModeSelect',
-        content: ['ON','OFF'],
-        valueBinding: 'SDL.SDLModel.data.appPermChangePrivacy'
       }
     )
   }
