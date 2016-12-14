@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -30,30 +30,37 @@
  * @filesource app/view/home/statusNavigationView.js
  * @version 1.0
  */
-SDL.StatusNavigationView = Em.ContainerView.extend( {
+SDL.StatusNavigationView = Em.ContainerView.extend({
     /** View Id */
     elementId: 'status_nav',
 
     classNames: 'status_bar',
 
+    /** Bind class for visual representation */
+    classNameBindings: [
+      'SDL.States.navigation.active:selected'
+    ],
+
     /** Navigation components */
     childViews: [
-        'statusHome'
+      'statusHome'
     ],
 
     /** Label for Home screen */
-    statusHome: SDL.Label.create( {
+    statusHome: SDL.Label.create({
         elementId: 'navigation_status_label',
         classNames: 'visible',
         content: 'Navigation'
-    }),
+      }
+    ),
 
     /**
      * Select phone state should be called when user press phone statusbar
      */
     actionUp: function(event) {
 
-        SDL.States.goToStates('navigation');
+      SDL.States.goToStates('navigation');
     }
 
-});
+  }
+);

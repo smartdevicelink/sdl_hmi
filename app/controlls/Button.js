@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,139 +31,152 @@
  * @version 1.0
  */
 
-SDL.Button = Em.View
-    .extend(Ember.TargetActionSupport,
-        {
-            classNames: [
-                'ffw-button', 'notpressed'
-            ],
+SDL.Button = Em.View.extend(Ember.TargetActionSupport,
+  {
+    classNames: [
+      'ffw-button', 'notpressed'
+    ],
 
-            classNameBindings: [
-                'pressed', 'disabled', 'hidden'
-            ],
+    classNameBindings: [
+      'pressed', 'disabled', 'hidden'
+    ],
 
-            /** Pressed state binding */
-            pressed: false,
+    /** Pressed state binding */
+    pressed: false,
 
-            /** Disable actions on button */
-            disabled: false,
+    /** Disable actions on button */
+    disabled: false,
 
-            /** Button icon class */
-            icon: null,
+    /** Button icon class */
+    icon: null,
 
-            /** Button text */
-            text: null,
+    /** Button rightIcon class */
+    righticon: null,
 
-            rightText: null,
+    /** Button text */
+    text: null,
 
-            target: this.target ? this.target : this,
+    rightText: null,
 
-            /** Arrow icon */
-            arrow: false,
+    target: this.target ? this.target : this,
 
-            /** Button timer flag */
-            timer: 0,
+    /** Arrow icon */
+    arrow: false,
 
-            timerId: null,
-            /** Touch leave event flag */
-            touchleave: false,
+    /** Button timer flag */
+    timer: 0,
 
-            onDown: true,
+    timerId: null,
+    /** Touch leave event flag */
+    touchleave: false,
 
-            helpMode: false,
-            /**  */
-            targetElement: null,
+    onDown: true,
 
-            actionDown: function(event) {
+    helpMode: false,
+    /**  */
+    targetElement: null,
 
-                if (this.get('disabled')) { return; }
+    actionDown: function(event) {
 
-                var self = this;
+      if (this.get('disabled')) {
+        return;
+      }
 
-                this.set('pressed', true);
-                /** Set Mouse Leave Event Flag to false */
-                this.set('mouseleave', false);
+      var self = this;
 
-                // Default trigger action
-                if (this.onDown) {
-                    this.triggerAction();
-                }
+      this.set('pressed', true);
+      /** Set Mouse Leave Event Flag to false */
+      this.set('mouseleave', false);
 
-                // Call trigger with timeout
-                if (this.timer) {
-                    this.timerId = setInterval(function() {
+      // Default trigger action
+      if (this.onDown) {
+        this.triggerAction();
+      }
 
-                        self.triggerAction();
-                    }, this.timer);
-                }
-            },
+      // Call trigger with timeout
+      if (this.timer) {
+        this.timerId = setInterval(function() {
 
-            actionUp: function(event) {
+          self.triggerAction();
+        }, this.timer
+      );
+      }
+    },
 
-                this.set('pressed', false);
+    actionUp: function(event) {
 
-                if (this.timer) {
-                    clearInterval(this.timerId);
-                }
+      this.set('pressed', false);
 
-                if (this.get('disabled')) {
-                    if (this.touchleave == true) {
-                        this.set('touchleave', false);
-                    }
-                    return;
-                }
+      if (this.timer) {
+        clearInterval(this.timerId);
+      }
 
-                if (!this.onDown) {
-                    this.triggerAction();
-                }
-            },
+      if (this.get('disabled')) {
+        if (this.touchleave == true) {
+          this.set('touchleave', false);
+        }
+        return;
+      }
 
-            /** Only for desktop */
-            mouseLeave: function(event) {
+      if (!this.onDown) {
+        this.triggerAction();
+      }
+    },
 
-                this.set('pressed', false);
+    /** Only for desktop */
+    mouseLeave: function(event) {
 
-                if (this.timer) {
-                    clearInterval(this.timerId);
-                }
-            },
+      this.set('pressed', false);
 
-            /**
-             * Only for IOS Simulation of mouseleave event for touch devices If
-             * target element looses focus during touch move event events dont
-             * trigger
-             */
-            touchMove: function(event) {
+      if (this.timer) {
+        clearInterval(this.timerId);
+      }
+    },
 
-                /** Set Mouse Leave Event Flag to true */
-                this.set('touchleave', this.targetElement !== document
-                    .elementFromPoint(event.originalEvent.touches[0].pageX,
-                        event.originalEvent.touches[0].pageY));
-            },
+    /**
+     * Only for IOS Simulation of mouseleave event for touch devices If
+     * target element looses focus during touch move event events dont
+     * trigger
+     */
+    touchMove: function(event) {
 
-            // component default template
-            defaultTemplate: Em.Handlebars
-                .compile('<img class="ico" {{bindAttr src="view.icon"}} />'
-                    + '<span>{{view.text}}</span>'),
+      /** Set Mouse Leave Event Flag to true */
+      this.set('touchleave', this.targetElement !==
+        document.elementFromPoint(event.originalEvent.touches[0].pageX,
+          event.originalEvent.touches[0].pageY
+        )
+      );
+    },
 
-            templates: {
-                text: Em.Handlebars.compile('<span class="text">{{view.text}}</span>'),
+    // component default template
+    defaultTemplate: Em.Handlebars.compile(
+      '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+      '<span>{{view.text}}</span>'
+    ),
 
-                icon: Em.Handlebars
-                    .compile('<img class="ico" {{bindAttr src="view.icon"}} />'),
+    templates: {
+      text: Em.Handlebars.compile('<span class="text">{{view.text}}</span>'),
 
-                rightText: Em.Handlebars
-                    .compile('<img class="ico" {{bindAttr src="view.icon"}} />'
-                        + '<span class="right_text">{{view.text}}</span>'),
+      icon: Em.Handlebars.compile(
+        '<img class="ico" {{bindAttr src="view.icon"}} />'
+      ),
 
-                arrow: Em.Handlebars
-                    .compile('<img class="ico" {{bindAttr src="view.icon"}} />'
-                        + '<span>{{view.text}}</span>'
-                        + '<img class="arrow-ico" src="images/common/arrow_ico.png" />'),
+      rightText: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span class="right_text">{{view.text}}</span>'
+      ),
 
-                rightIcon: Em.Handlebars
-                    .compile('<img class="ico" {{bindAttr src="view.icon"}} />'
-                        + '<span>{{view.text}}</span>'
-                        + '<img class="right_ico" {{bindAttr src="view.righticon"}} />')
-            }
-        });
+      arrow: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.text}}</span>' +
+        '<img class="arrow-ico" src="images/common/arrow_ico.png" />'
+      ),
+
+      rightIcon: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.text}}</span>' +
+        '<img class="right_ico" {{bindAttr src="view.righticon"}} />'
+      )
+    }
+  }
+);

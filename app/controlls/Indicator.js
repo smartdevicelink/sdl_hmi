@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -33,102 +33,111 @@
 
 SDL.Indicator = Em.View.extend(Ember.TargetActionSupport, {
 
-    /** Content binding */
-    content: null,
+  /** Content binding */
+  content: null,
 
-    /** internal indicators array */
-    indicators: null,
+  /** internal indicators array */
+  indicators: null,
 
-    /** indicator active class */
-    indActiveClass: null,
+  /** indicator active class */
+  indActiveClass: null,
 
-    /** indicator default class */
-    indDefaultClass: null,
+  /** indicator default class */
+  indDefaultClass: null,
 
-    /** Set active indicator from the start */
-    startFrom: null,
+  /** Set active indicator from the start */
+  startFrom: null,
 
-    /** binding property to enable/disable indicators */
-    enabledBinding: 'content.enabled',
+  /** binding property to enable/disable indicators */
+  enabledBinding: 'content.enabled',
 
-    /**
-     * Before rendering view handeler need to generate indicators array based on
-     * indicator range value
-     */
-    beforeRender: function() {
+  /**
+   * Before rendering view handeler need to generate indicators array based on
+   * indicator range value
+   */
+  beforeRender: function() {
 
-        // define variables
-        var length = this.content.range, view = this, i;
+    // define variables
+    var length = this.content.range, view = this, i;
 
-        // generate indicators
-        this.indicators = [];
+    // generate indicators
+    this.indicators = [];
 
-        for (i = 0; i < length; i++) {
-            this.indicators.push(Em.Object.create( {
-                index: i,
-                className: this.indDefaultClass
-            }));
-        }
-        // apply indicator visualization rule
-        view.setRecord();
+    for (i = 0; i < length; i++) {
+      this.indicators.push(Em.Object.create({
+            index: i,
+            className: this.indDefaultClass
+          }
+          )
+        );
+    }
+    // apply indicator visualization rule
+    view.setRecord();
 
-        if (this.startFrom) {
-            this.indicators[this.startFrom].set('className',
-                this.indActiveClass);
-        }
+    if (this.startFrom) {
+      this.indicators[this.startFrom].set('className',
+        this.indActiveClass
+      );
+    }
 
-        // add observer to content record
-        this.addObserver('content', function() {
+    // add observer to content record
+    this.addObserver('content', function() {
 
-            view.setRecord();
-        });
+      view.setRecord();
+    }
+  );
 
-        // view internal call
-        this.applyAttributesToBuffer(this.buffer);
-    },
+    // view internal call
+    this.applyAttributesToBuffer(this.buffer);
+  },
 
-    actionDown: function() {
+  actionDown: function() {
 
-        this.triggerAction();
-    },
+    this.triggerAction();
+  },
 
-    // change record binding
-    setRecord: function() {
+  // change record binding
+  setRecord: function() {
 
-        var view = this;
+    var view = this;
 
-        if (this.content.observersForKey('value').length == 0) {
+    if (this.content.observersForKey('value').length == 0) {
 
-            this.content.addObserver('value', function() {
+      this.content.addObserver('value', function() {
 
-                view.toggleIndicators();
-            });
+        view.toggleIndicators();
+      }
+    );
 
-        }
+    }
 
-        this.toggleIndicators();
-    },
+    this.toggleIndicators();
+  },
 
-    // Toggle indicator handeler
-    toggleIndicators: function() {
+  // Toggle indicator handeler
+  toggleIndicators: function() {
 
-        var length = this.indicators.length, i;
+    var length = this.indicators.length, i;
 
-        for (i = 0; i < length; i++) {
-            if (i >= this.content.value) {
-                this.indicators[i].set('className', 'SDL_indicator '
-                    + this.indDefaultClass);
-            } else {
-                this.indicators[i].set('className', 'SDL_indicator '
-                    + this.indActiveClass);
-            }
-        }
-    },
+    for (i = 0; i < length; i++) {
+      if (i >= this.content.value) {
+        this.indicators[i].set('className', 'SDL_indicator ' +
+          this.indDefaultClass
+        );
+      } else {
+        this.indicators[i].set('className', 'SDL_indicator ' +
+          this.indActiveClass
+        );
+      }
+    }
+  },
 
-    /** Define indicator template */
-    template: Ember.Handlebars.compile('{{#with view}}'
-        + '{{#each indicators}}'
-        + '<div {{bindAttr class="className view.enabled:show"}}></div>'
-        + '{{/each}}' + '{{/with}}')
+  /** Define indicator template */
+  template: Ember.Handlebars.compile('{{#with view}}' +
+    '{{#each indicators}}' +
+    '<div {{bindAttr class="className view.enabled:show"}}></div>' +
+    '{{/each}}' + '{{/with}}'
+  )
 
-});
+}
+);

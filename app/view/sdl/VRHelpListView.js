@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,76 +31,69 @@
  * @version 1.0
  */
 
-SDL.VRHelpListView = SDL.SDLAbstractView.create( {
-
+SDL.VRHelpListView = SDL.SDLAbstractView.create(
+  {
     elementId: 'vr_help_list_view',
-
     childViews: [
-        'backButton', 'captionText', 'helpList'
+      'backButton', 'captionText', 'helpList'
     ],
-
-    helpList: SDL.List.extend( {
+    helpList: SDL.List.extend(
+      {
         elementId: 'vr_help_list_view_list',
         itemsOnPage: 5,
         items: []
-    }),
-
+      }
+    ),
     /**
      * Deactivate window
      */
     deactivate: function() {
-
-        this._super();
-
-        if (SDL.SDLController.model && SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
-            SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode['ABORTED']);
-        }
-
-        SDL.SDLController.VRMove();
+      this._super();
+      if (SDL.SDLController.model &&
+        SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
+        SDL.SDLController.vrInteractionResponse(
+          SDL.SDLModel.data.resultCode['ABORTED']
+        );
+      }
+      SDL.SDLController.VRMove();
     },
-
     /**
      * Clean choices caption and list before new proform
      */
     clean: function() {
-
-        this.set('captionText.content', 'vrHelp');
-        this.helpList.items = [];
-        this.helpList.list.refresh();
+      this.set('captionText.content', 'vrHelp');
+      this.helpList.items = [];
+      this.helpList.list.refresh();
     },
-
     /**
      * Update choises list with actual set id
-     * 
+     *
      * @param data:
      *            Array
      */
     showVRHelp: function(vrHelpTitle, vrHelp) {
-
-        this.clean();
-
-        this.set('active', true);
-        
-        SDL.SDLController.VRMove();
-
-        if (vrHelpTitle) {
-            this.captionText.set('content', vrHelpTitle);
-        }
-
-        if (vrHelp) {
-            for (i = 0; i < vrHelp.length; i++) {
-                this.helpList.items.push( {
-                    type: SDL.Label,
-                    params: {
-                        content: vrHelp[i].text,
-                        icon: vrHelp[i].image
-                            ? vrHelp[i].image.value : null,
-                        templateName: vrHelp[i].image ? "icon" : null
-                    }
-                });
+      this.clean();
+      this.set('active', true);
+      SDL.SDLController.VRMove();
+      if (vrHelpTitle) {
+        this.captionText.set('content', vrHelpTitle);
+      }
+      if (vrHelp) {
+        for (i = 0; i < vrHelp.length; i++) {
+          this.helpList.items.push(
+            {
+              type: SDL.Label,
+              params: {
+                content: vrHelp[i].text,
+                icon: vrHelp[i].image ?
+                  vrHelp[i].image.value : null,
+                templateName: vrHelp[i].image ? 'icon' : null
+              }
             }
+          );
         }
-
-        this.helpList.list.refresh();
+      }
+      this.helpList.list.refresh();
     }
-});
+  }
+);

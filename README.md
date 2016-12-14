@@ -5,19 +5,15 @@ HTML5 based utility to see how the SDL works. It connects via WebSocket to [SDLC
 # Getting Started
 A quick guide to installing, configuring, and running HMI.
 
-	1. Run SDLCore
-	2. Open index.html via Chromium browser
-
-```
-%cd [root of cloned sdl_hmi repo]
-% chromium-browser index.html
-```
+	1. run SmartDeviceLinkCore
+	2. run chromium-browser [root_of_cloned_sdl_hmi_repo/index.html]
 
 ## A quick note about dependencies
-All dependencies are installed after the SDL Core is successfuly installed.
+All dependencies are installed after the SDL Core is successfully installed.
 
 ## Note
 SDL HMI utility is only for acquaintance with the SDL project.
 
-# HMI Initiated Policy Table Update
-There is a "Policy Update" button located next to the vehicle info on the right side of the HMI emulator. This button initiates an OnPolicyTableReceived notification to core which updates the policy database from the file "/IVSU/POLICY_UPDATE_TEST". This file is a clone of the current PT json file located in the SDL core repo in the /src/appMain folder. Changes made to "/IVSU/POLICY_UPDATE_TEST" will be refelected in the main policy table db upon using the HMI "Policy Update" button.
+## Look at configuration file app/FLAGS.js. You can found there:
+ - SDL WebSocket connection string -
+WEBSOCKET_URL

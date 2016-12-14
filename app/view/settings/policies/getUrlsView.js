@@ -31,73 +31,69 @@
  * @version 1.0
  */
 
-SDL.GetUrlsView = Em.ContainerView.create( {
-
+SDL.GetUrlsView = Em.ContainerView.create(
+  {
     elementId: 'policies_settings_get_urls',
-
     classNames: 'in_settings_separate_view',
-
     classNameBindings: [
-        'SDL.States.settings.policies.getUrls.active:active_state:inactive_state'
+      'SDL.States.settings.policies.getUrls.active:active_state:inactive_state'
     ],
-
     childViews: [
-        'backButton',
-        'label',
-        'listInput',
-        'sendButton'
+      'backButton',
+      'label',
+      'listInput',
+      'sendButton'
     ],
-
     /**
      * Label in title
      */
-    label: SDL.Label.extend( {
-
+    label: SDL.Label.extend(
+      {
         elementId: 'label',
-
         classNames: 'label',
-
         content: 'Enter service id:'
-    }),
-
+      }
+    ),
     /**
      * Input for policyAppId value changes
      */
-    listInput: Ember.TextField.extend({
-        elementId: "listInput",
-        classNames: "listInput",
-        value: "7"
-    }),
-
+    listInput: Ember.TextField.extend(
+      {
+        elementId: 'listInput',
+        classNames: 'listInput',
+        value: '7'
+      }
+    ),
     /**
      * Button to send OnSystemRequest notification to SDL
      */
-    sendButton: SDL.Button.extend( {
+    sendButton: SDL.Button.extend(
+      {
         classNames: 'button sendButton',
         text: 'Send GetURLs request',
-        action: function (element) {
-
-            var temp = parseInt(element._parentView.listInput.value);
-
-            if (!isNaN(temp) && element._parentView.listInput.value.match(/^[0-9]+$/) != null) {
-                FFW.BasicCommunication.GetURLS(temp);
-            } else {
-                FFW.BasicCommunication.GetURLS(element._parentView.listInput.value);
-            }
-
+        action: function(element) {
+          var temp = parseInt(element._parentView.listInput.value);
+          if (!isNaN(temp) &&
+            element._parentView.listInput.value.match(/^[0-9]+$/) != null) {
+            FFW.BasicCommunication.GetURLS(temp);
+          } else {
+            FFW.BasicCommunication.GetURLS(element._parentView.listInput.value);
+          }
         },
         onDown: false
-    }),
-
-    backButton: SDL.Button.extend( {
-        classNames:
-            [
-                'backButton'
-            ],
+      }
+    ),
+    backButton: SDL.Button.extend(
+      {
+        classNames: [
+          'backButton'
+        ],
         action: 'onState',
         target: 'SDL.SettingsController',
         goToState: 'policies',
         icon: 'images/media/ico_back.png',
         onDown: false
-    } )
-});
+      }
+    )
+  }
+);

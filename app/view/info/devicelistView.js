@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,130 +31,134 @@
  * @version 1.0
  */
 
-SDL.DeviceListView = Em.ContainerView.create( {
+SDL.DeviceListView = Em.ContainerView.create({
 
-    classNames: [
-        'info_apps_deviceList_view'
-    ],
+  classNames: [
+    'info_apps_deviceList_view'
+  ],
 
-    classNameBindings: [
-        'SDL.States.info.devicelist.active:active_state:inactive_state'
-    ],
+  classNameBindings: [
+    'SDL.States.info.devicelist.active:active_state:inactive_state'
+  ],
 
-    /**
-     * View Id
-     */
-    elementId: 'info_apps_deviceList_view',
+  /**
+   * View Id
+   */
+  elementId: 'info_apps_deviceList_view',
 
-    /**
-     * View Components
-     */
-    childViews: [
-        'backButton',
-        'listOfDevices',
-        'deviceListLabel',
-        'progress',
-        'primaryDevice'
-    ],
+  /**
+   * View Components
+   */
+  childViews: [
+    'backButton',
+    'listOfDevices',
+    'deviceListLabel',
+    'progress',
+    'primaryDevice'
+  ],
 
-    /**
-     * Animation of search devices progress
-     */
-    progress: Em.View.extend( {
+  /**
+   * Animation of search devices progress
+   */
+  progress: Em.View.extend({
         classNames: [
-            'progress'
+          'progress'
         ],
         classNameBindings: ['SDL.SDLModel.data.deviceSearchProgress:progress']
-    }),
+      }
+    ),
 
-
-    /**
-     * Button to return to previous view
-     */
-    backButton: SDL.Button.extend( {
+  /**
+   * Button to return to previous view
+   */
+  backButton: SDL.Button.extend({
         classNames: [
-            'backButton', 'button'
+          'backButton', 'button'
         ],
         action: 'turnChangeDeviceViewBack',
         target: 'SDL.SDLController',
         icon: 'images/media/ico_back.png'
-    }),
+      }
+    ),
 
-    /**
-     * Button to open window to choose primary device
-     */
-    primaryDevice: SDL.Button.extend( {
+  /**
+   * Button to open window to choose primary device
+   */
+  primaryDevice: SDL.Button.extend({
         classNames: [
-            'primaryDevice', 'button'
+          'primaryDevice', 'button'
         ],
-        classNameBindings:
-            [
-                'SDL.FuncSwitcher.rev::is-disabled'
-            ],
-        action: 'openPrimaryDeviceWindow',
+        classNameBindings: [
+          'SDL.FuncSwitcher.rev::is-disabled'
+        ],
+        action: 'toggleDriverDeviceWindow',
         target: 'SDL.SDLController',
-        text: 'Primary',
+        text: 'Driver',
         templateName: 'text'
-    }),
+      }
+    ),
 
-    /**
-     * Label in title
-     */
-    deviceListLabel: SDL.Label.extend( {
+  /**
+   * Label in title
+   */
+  deviceListLabel: SDL.Label.extend({
 
-        elementId: 'deviceListLabel',
+    elementId: 'deviceListLabel',
 
-        classNames: 'deviceListLabel',
+    classNames: 'deviceListLabel',
 
-        content: 'Change Devices'
-    }),
+    content: 'Change Devices'
+  }
+),
 
-    /**
-     * Function calls when notification from RPC comes and creates buttons to
-     * choose devices
-     */
-    ShowDeviceList: function(params) {
+  /**
+   * Function calls when notification from RPC comes and creates buttons to
+   * choose devices
+   */
+  ShowDeviceList: function(params) {
 
-        this.clearDeviceList();
+    this.clearDeviceList();
 
-        var i, len = params.deviceList.length;
-        for (i = 0; i < len; i++) {
-            this.get('listOfDevices.list.childViews').pushObject(SDL.Button
-                .create( {
-                    deviceName: params.deviceList[i].name,
-                    icon: params.deviceList[i].icon,
-                    text: params.deviceList[i].name,
-                    classNames: 'ffw-button notpressed list-item',
-                    templateName: params.deviceList[i].icon ? 'rightIcon'
-                        : 'text',
-                    action: 'onDeviceChoosed',
-                    target: 'SDL.SDLController',
-                    onDown: false,
-                    id: params.deviceList[i].id
-                }));
-        }
-    },
+    for (var i = 0; i < params.deviceList.length; i++) {
+      this.get('listOfDevices.list.childViews').pushObject(SDL.Button.create({
+            deviceName: params.deviceList[i].name,
+            icon: params.deviceList[i].icon,
+            text: params.deviceList[i].name,
+            classNames: 'ffw-button notpressed list-item',
+            templateName: params.deviceList[i].icon ? 'rightIcon'
+              : 'text',
+            action: 'onDeviceChoosed',
+            target: 'SDL.SDLController',
+            onDown: false,
+            id: params.deviceList[i].id
+          }
+          )
+        );
+    }
+  },
 
-    /**
-     * Function calls each time when user enters Change Device menu and clear
-     * all old data about devices
-     */
-    clearDeviceList: function() {
+  /**
+   * Function calls each time when user enters Change Device menu and clear
+   * all old data about devices
+   */
+  clearDeviceList: function() {
 
-        this.get('listOfDevices.list').removeAllChildren();
-        this.listOfDevices.rerender();
-    },
+    this.get('listOfDevices.list').removeAllChildren();
+    this.listOfDevices.rerender();
+  },
 
-    /**
-     * List for option on DeviceListView screen
-     */
-    listOfDevices: SDL.List.extend( {
+  /**
+   * List for option on DeviceListView screen
+   */
+  listOfDevices: SDL.List.extend({
 
-        elementId: 'info_apps_deviceList_list',
+    elementId: 'info_apps_deviceList_list',
 
-        itemsOnPage: 5,
+    itemsOnPage: 5,
 
-        /** Items array */
-        items: []
-    })
-});
+    /** Items array */
+    items: []
+  }
+)
+}
+);

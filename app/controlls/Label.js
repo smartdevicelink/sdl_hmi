@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2013, Ford Motor Company All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
  * Redistributions of source code must retain the above copyright notice, this
@@ -10,7 +10,7 @@
  * with the distribution. · Neither the name of the Ford Motor Company nor the
  * names of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -31,9 +31,9 @@
  * @version 1.0
  */
 
-SDL.Label = Em.View.extend( {
+SDL.Label = Em.View.extend({
     classNameBindings: [
-        'disabled'
+      'disabled'
     ],
     classNames: 'label',
 
@@ -41,15 +41,17 @@ SDL.Label = Em.View.extend( {
     defaultTemplate: Em.Handlebars.compile('<span>{{view.content}}</span>'),
 
     templates: {
-        icon: Em.Handlebars
-            .compile('<img class="ico" {{bindAttr src="view.icon"}} />'
-                + '<span>{{view.content}}</span>')
+      icon: Em.Handlebars.compile(
+        '<img class="ico" {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.content}}</span>'
+      )
     }
 
-/** Define button template */
-/*
- * template: Ember.Handlebars.compile( '{{#with view}}'+ '{{#if icon}}<img
- * class="ico" {{bindAttr src="icon"}} />{{/if}}'+ '<span>{{content}}</span>'+
- * '{{/with}}' )
- */
-});
+    /** Define button template */
+    /*
+     * template: Ember.Handlebars.compile( '{{#with view}}'+ '{{#if icon}}<img
+     * class="ico" {{bindAttr src="icon"}} />{{/if}}'+ '<span>{{content}}</span>'+
+     * '{{/with}}' )
+     */
+  }
+);

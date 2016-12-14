@@ -31,58 +31,51 @@
  * @version 1.0
  */
 
-SDL.SystemErrorView = Em.ContainerView.create( {
-
+SDL.SystemErrorView = Em.ContainerView.create(
+  {
     elementId: 'policies_settings_system_error',
-
     classNames: 'in_settings_separate_view',
-
     classNameBindings: [
-        'SDL.States.settings.policies.systemError.active:active_state:inactive_state'
+      'SDL.States.settings.policies.systemError.active:active_state:inactive_state'
     ],
-
     childViews: [
-        'backButton',
-        'label',
-        'listSelect'
+      'backButton',
+      'label',
+      'listSelect'
     ],
-
     /**
      * HMI element Select with parameters of transmission state from VehicleInfo
      * Model
      */
-    listSelect: Em.Select.extend( {
-
+    listSelect: Em.Select.extend(
+      {
         elementId: 'systemErrorListSelect',
-
         classNames: 'listSelect',
-
         contentBinding: 'SDL.SDLModel.data.systemErrorList',
-
         valueBinding: 'SDL.SDLModel.data.systemErrorListState'
-    } ),
-
+      }
+    ),
     /**
      * Label in title
      */
-    label: SDL.Label.extend( {
-
+    label: SDL.Label.extend(
+      {
         elementId: 'label',
-
         classNames: 'label',
-
         content: 'Send OnSystemError notification:'
-    }),
-
-    backButton: SDL.Button.extend( {
-        classNames:
-            [
-                'backButton'
-            ],
+      }
+    ),
+    backButton: SDL.Button.extend(
+      {
+        classNames: [
+          'backButton'
+        ],
         action: 'onState',
         target: 'SDL.SettingsController',
         goToState: 'policies',
         icon: 'images/media/ico_back.png',
         onDown: false
-    } )
-});
+      }
+    )
+  }
+);

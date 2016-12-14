@@ -484,6 +484,52 @@
 	top: 174px;
 }
 
+/******************* For Info.DeviceLocation *******************/
+#info_view .info_apps_deviceLocation_view {
+	background: black;
+	width: 800px;
+	height: 480px;
+	z-index: 201;
+}
+
+#PrimaryDevice .backButton,
+#info_apps_deviceLocation_view .backButton {
+	top: 80px;
+	width: 48px;
+	height: 48px;
+	border: 1px solid #333;
+	border-radius: 2px;
+	left: 5px;
+}
+
+#PrimaryDevice .backButton{
+	top: 5px !important;
+}
+
+#PrimaryDevice .backButton .ico,
+#info_apps_deviceLocation_view .backButton .ico {
+	margin-top: 13px;
+	margin-left: 8px;
+}
+
+#info_apps_deviceLocation_view .list {
+	position: absolute;
+	width: 629px;
+	height: 251px;
+	border-radius: 2px;
+	left: 100px;
+	top: 154px;
+}
+
+#info_apps_deviceLocation_view .list-content {
+	width: 578px;
+	border: none;
+}
+
+#info_apps_deviceLocation_view .list-item {
+	border: 1px solid #393939 !important;
+}
+
 /******************* For Info.DeviceList *******************/
 #info_view .info_apps_deviceList_view {
 	background: black;
@@ -492,6 +538,7 @@
 	z-index: 201;
 }
 
+#PrimaryDevice .backButton,
 #info_apps_deviceList_view .backButton {
 	top: 80px;
 	width: 48px;
@@ -501,6 +548,11 @@
 	left: 5px;
 }
 
+#PrimaryDevice .backButton{
+    top: 5px !important;
+}
+
+#PrimaryDevice .backButton .ico,
 #info_apps_deviceList_view .backButton .ico {
 	margin-top: 13px;
 	margin-left: 8px;
@@ -611,7 +663,7 @@
 	top: 122px;
 }
 
-#info_apps .installButton {
+#info_apps .deviceLocation {
 	top: 174px;
 }
 
@@ -619,6 +671,7 @@
 	top: 226px;
 }
 
+#info_apps .deviceLocation img,
 #info_apps .findNewApps img {
 	margin: 9px;
 	width: 32px;

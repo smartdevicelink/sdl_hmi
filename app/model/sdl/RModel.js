@@ -31,59 +31,210 @@
  * @version 1.0
  */
 
-SDL.RModel = SDL.ABSModel.extend({
+SDL.RModel = SDL.SDLModel.extend({
 
-    /**
-     * Parameter of controll permissions deligation to mobile app
-     *
-     * @type {number}
-     */
-    givenControl: null,
+  /**
+   * Parameter of controll permissions deligation to mobile app
+   *
+   * @type {number}
+   */
+  givenControl: null,
 
-    /**
-     * Parameter of controll permissions deligation to mobile app
-     *
-     * @type {number}
-     */
-    givenControlFlag: false,
+  /**
+   * Parameter of controll permissions deligation to mobile app
+   *
+   * @type {number}
+   */
+  givenControlFlag: false,
 
-    /**
-     * Id of current processed VehicleInfo.GrantAccess request
-     *
-     * @param {Number}
-     */
-    controlRequestID: null,
+  /**
+   * Id of current processed RC.GrantAccess request
+   *
+   * @param {Number}
+   */
+  controlRequestID: null,
 
-    /**
-     * SwitchPopUp activation
-     *
-     * @param {Object}
-     */
-    giveControl: function (message) {
+  /**
+   * Current drivers device flag
+   *
+   * @param {Object}
+   */
+  driverDevice: false,
 
-        var appID = message.params.appID,
-            appName = SDL.SDLController.getApplicationModel(appID).appName;
+  /**
+   * Current drivers device flag
+   *
+   * @param {Object}
+   */
+  driverDeviceInfo: null,
 
-        SDL.PopUp.create().appendTo('body').popupActivate(
-            'Mobile Device '+ appName +' is requesting access to take control of the onboard HD Radio system.',
-            function(value){
-                SDL.SDLController.ControlAccessAction(appID, value);
-            });
+  /**
+   * Flag to set ability to send error responses for GetInteriorVehicleDataCapabilities
+   *
+   * @param {Object}
+   */
+  errorResponse: false,
 
-        SDL.SDLModel.controlRequestID = message.id;
+  /**
+   * Map for OnDeviceRankChanged notification param 'deviceRank'
+   */
+  deviceRank: {
+      0: 'DRIVER',
+      1: 'PASSENGER'
     },
 
-    resetControl: function () {
-        if (SDL.SDLController && SDL.SDLModel.givenControl != null) {
-            FFW.VehicleInfo.OnControlChanged();
-            SDL.SDLModel.givenControl = null;
-        }
-    },
+  /**
+   * Interior zones for OnDeviceLocationChanged notification
+   */
+  interiorZone: [
+    'driver',
+    'back_left',
+    'front_passenger',
+    'back_right'
+  ],
 
-    cancelControl: function (request) {
-        FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode["SUCCESS"], request.id, "VehicleInfo.CancelAccess");
-        SDL.SDLModel.givenControl = null;
-        SDL.SDLModel.set('givenControlFlag', false);
+  /**
+   * Radio app indetificator
+   * HMI must reject the second passenger's app's request for the radio module
+   */
+  radioFirstConsentedApp: null,
+
+  /**
+   * Climate app indetificator
+   * HMI must reject the second passenger's app's request for the climate module
+   */
+  climateFirstConsentedApp: null,
+
+  /**
+   * Method to add activation button to VR commands and set device
+   * parameters to model
+   *
+   * @param {Object}
+   */
+  onAppRegistered: function(params, vrSynonyms) {
+
+    if (!params.appType) {              // According to APPLINK-19979 if appType parameter is empty
+      params.appType = [];            // HMI should use "DEFAULT" value from AppHMIType enum of
+      params.appType.push('DEFAULT'); // HMI_API documentation
     }
 
-});
+    var message = {};
+
+    var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
+      app = SDL.SDLController.getApplicationModel(params.appID);
+
+    if (app != undefined && app.initialized == false) {
+
+      if (app.isMedia != params.isMediaApplication) { // If current not initialized model doe not matches the registered application type
+        this.convertModel(params);                   // then model should be changed
+      } else {
+        app.disabledToActivate = params.greyOut;
+      }
+      return;
+    } else if (app != undefined && app.initialized == true) {
+      console.log(
+        'Application with appID ' + params.appID + ' already registered!'
+      );
+      return; // if application already registered and correctly initialized and BC.UpdateAppList came from SDL than nothing shoul happend
+    }
+
+    if (params.isMediaApplication === true) {
+      //Magic number 0 - Default media model
+      applicationType = 0;
+    } else if (params.isMediaApplication === false) {
+      //Magic number 1 - Default non-media model
+      applicationType = 1;
+    }
+
+    if (params.appType === -1) {
+      //Magic number 2 - Default RC application with non-media model
+      applicationType = 2;
+    }
+
+    SDL.SDLController.registerApplication(params, applicationType);
+
+    if (SDL.SDLModel.data.unRegisteredApps.indexOf(params.appID) >= 0) {
+      setTimeout(function() {
+            SDL.PopUp.create().appendTo('body').popupActivate(
+              'Connection with ' + params.appName + '  is re-established.'
+            );
+          }, 1000
+        );
+      this.data.unRegisteredApps.pop(params.appID);
+    }
+
+    //Magic number if predefined VR command USER_EXIT
+    message = {
+        'cmdID': -2,
+        'vrCommands': ['USER_EXIT ' + params.appName],
+        'appID': params.appID,
+        'type': 'Command'
+      };
+    this.addCommandVR(message);
+
+    if (vrSynonyms) {
+
+      message = {
+          'cmdID': 0,
+          'vrCommands': vrSynonyms,
+          'appID': params.appID,
+          'type': 'Application'
+        };
+      this.addCommandVR(message);
+    }
+  },
+
+  /**
+   * Method to delete activation button from VR commands and delete device
+   * parameters from model
+   *
+   * @param {Object}
+   */
+  onAppUnregistered: function(params) {
+
+    if (SDL.SDLController.getApplicationModel(params.appID)) {
+
+      this._super(params);
+
+      SDL.SDLController.removeConsentForApp(params.appID);
+    }
+  },
+
+  /**
+   * SwitchPopUp activation
+   *
+   * @param {Object}
+   */
+  giveControl: function(message) {
+
+    var appID = message.params.appID,
+      appName = SDL.SDLController.getApplicationModel(appID).appName;
+
+    SDL.PopUp.create().appendTo('body').popupActivate(
+      'Mobile Device ' + appName +
+      ' is requesting access to take control of the onboard HD Radio system.',
+        function(value) {
+          SDL.SDLController.ControlAccessAction(appID, value);
+        }
+      );
+
+    SDL.SDLModel.controlRequestID = message.id;
+  },
+
+  resetControl: function() {
+      if (SDL.SDLController && SDL.SDLModel.givenControl != null) {
+        FFW.RC.OnControlChanged();
+        SDL.SDLModel.givenControl = null;
+      }
+    },
+
+  cancelControl: function(request) {
+      FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode.SUCCESS,
+        request.id, 'VehicleInfo.CancelAccess'
+      );
+      SDL.SDLModel.givenControl = null;
+      SDL.SDLModel.set('givenControlFlag', false);
+    }
+
+}
+);

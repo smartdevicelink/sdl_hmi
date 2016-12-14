@@ -31,148 +31,157 @@
  * @version 1.0
  */
 
-SDL.PoliciesView = Em.ContainerView.create( {
-
+SDL.PoliciesView = Em.ContainerView.create(
+  {
     elementId: 'policies_settings',
-
     classNames: 'in_settings_view',
-
     classNameBindings: [
-        'SDL.States.settings.policies.active:active_state:inactive_state'
+      'SDL.States.settings.policies.active:active_state:inactive_state'
     ],
-
     childViews: [
-        'SettingsList'
+      'SettingsList'
     ],
-
     afterRender: function() {
-
-        if (FLAGS.SimpleFunctionality === 2) { // R project
-            this.get('SettingsList.list.childViews').pushObject(SDL.Button.create( {
-                action: 'OnReverseAppsAllowing',
-                target: 'SDL.SDLController',
-                textBinding: 'this.allowedProp',
-                allowedProp: function () {
-                    var text;
-
-                    if (this.allowed) {
-                        text = "RSDL functionality - Allowed";
-                    } else {
-                        text = "RSDL functionality - Not allowed";
-                    }
-
-                    return text;
-                }.property('this.allowed'),
-                allowed: true,
-                classNames: 'list-item button'
-            }));
-        }
+      if (FLAGS.SimpleFunctionality === 1) { // R project
+        this.get('SettingsList.list.childViews').pushObject(
+          SDL.Button.create(
+            {
+              action: 'OnReverseAppsAllowing',
+              target: 'SDL.SDLController',
+              textBinding: 'this.allowedProp',
+              allowedProp: function() {
+                var text;
+                if (this.allowed) {
+                  text = 'RSDL functionality - Allowed';
+                } else {
+                  text = 'RSDL functionality - Not allowed';
+                }
+                return text;
+              }.property('this.allowed'),
+              allowed: true,
+              classNames: 'list-item button'
+            }
+          )
+        );
+        this.get('SettingsList.list.childViews').pushObject(
+          SDL.Button.create(
+            {
+              action: 'setRCCapabilitiesErrorResponse',
+              target: 'SDL.SDLController',
+              textBinding: 'this.allowedProp',
+              allowedProp: function() {
+                return SDL.SDLModel.errorResponse ? 'RC error resultCode - ON' :
+                  'RC error resultCode - OFF';
+              }.property('SDL.SDLModel.errorResponse'),
+              classNames: 'list-item button'
+            }
+          )
+        );
+      }
     },
-
-    SettingsList: SDL.List.extend( {
-
+    SettingsList: SDL.List.extend(
+      {
         elementId: 'policies_settings_list',
-
         classNames: 'policies_settings_list',
-
         itemsOnPage: 5,
-
         /** Items */
         items: [
-            {
-                type: SDL.Button,
-                params: {
-                    goToState: 'policies.deviceConfig',
-                    text: 'Allow SDL Functionality',
-                    action: 'onState',
-                    target: 'SDL.SettingsController',
-                    templateName: 'arrow',
-                    onDown: false
-                }
-            },
-            {
-                type: SDL.Button,
-                params: {
-                    text: 'Update SDL',
-                    action: 'updateSDL',
-                    target: 'SDL.SettingsController',
-                    onDown: false
-                }
-            },
-            {
-                type: SDL.Button,
-                params: {
-                    text: 'Policy table update status',
-                    action: 'getStatusUpdate',
-                    target: 'SDL.SettingsController',
-                    onDown: false
-                }
-            },
-            {
-                type: SDL.Button,
-                params: {
-                    text: 'Request GetURLS',
-                    action: 'onState',
-                    target: 'SDL.SettingsController',
-                    templateName: 'arrow',
-                    goToState: 'policies.getUrls',
-                    onDown: false
-                }
-            },
-            {
-                type: SDL.Button,
-                params: {
-                    text: 'Statistics Info settings',
-                    action: 'onState',
-                    target: 'SDL.SettingsController',
-                    templateName: 'arrow',
-                    goToState: 'policies.statisticsInfo',
-                    onDown: false
-                }
-            },
-            {
-                type: SDL.Button,
-                params: {
-                    text: 'App permissions',
-                    action: 'onState',
-                    target: 'SDL.SettingsController',
-                    templateName: 'arrow',
-                    goToState: 'policies.appPermissionsList',
-                    onDown: false
-                }
-            },
-            {
-                type: SDL.Button,
-                params: {
-                    text: 'Get list of permissions',
-                    click: function () {
-                        FFW.BasicCommunication.GetListOfPermissions();
-                    },
-                    onDown: false
-                }
-            },
-            {
-                type: SDL.Button,
-                params: {
-                    text: 'Device state change',
-                    action: 'onState',
-                    target: 'SDL.SettingsController',
-                    templateName: 'arrow',
-                    goToState: 'policies.deviceStateChange',
-                    onDown: false
-                }
-            },
-            {
-                type: SDL.Button,
-                params: {
-                    text: 'System Error',
-                    action: 'onState',
-                    target: 'SDL.SettingsController',
-                    templateName: 'arrow',
-                    goToState: 'policies.systemError',
-                    onDown: false
-                }
+          {
+            type: SDL.Button,
+            params: {
+              goToState: 'policies.deviceConfig',
+              text: 'Allow SDL Functionality',
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              templateName: 'arrow',
+              onDown: false
             }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'Update SDL',
+              action: 'updateSDL',
+              target: 'SDL.SettingsController',
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'Policy table update status',
+              action: 'getStatusUpdate',
+              target: 'SDL.SettingsController',
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'Request GetURLS',
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              templateName: 'arrow',
+              goToState: 'policies.getUrls',
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'Statistics Info settings',
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              templateName: 'arrow',
+              goToState: 'policies.statisticsInfo',
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'App permissions',
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              templateName: 'arrow',
+              goToState: 'policies.appPermissionsList',
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'Get list of permissions',
+              click: function() {
+                FFW.BasicCommunication.GetListOfPermissions();
+              },
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'Device state change',
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              templateName: 'arrow',
+              goToState: 'policies.deviceStateChange',
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'System Error',
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              templateName: 'arrow',
+              goToState: 'policies.systemError',
+              onDown: false
+            }
+          }
         ]
-    })
-});
+      }
+    )
+  }
+);

@@ -24,59 +24,46 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @name SDL.GController
+ * @name SDL.FuncSwitcher
  * @desc SDL abstract application controller
  * @category Controller
- * @filesource app/controller/sdl/GController.js
+ * @filesource app/controller/sdl/FuncSwitcher.js
  * @version 1.0
  */
 
-SDL.FuncSwitcher = Em.Object.create({
-
+SDL.FuncSwitcher = Em.Object.create(
+  {
     init: function() {
-
-        switch (FLAGS.SimpleFunctionality) {
-            case 0:{
-
-                SDL.set('SDLModel', SDL.GModel.create());
-                SDL.set('SDLController', SDL.GController.create());
-                FLAGS.CAN = false;
-
-                break;
-            }
-            case 1:{
-
-                SDL.set('SDLModel', SDL.PModel.create());
-                SDL.set('SDLController', SDL.PController.create());
-                FLAGS.CAN = false;
-
-                break;
-            }
-            case 2:{
-
-                SDL.set('SDLModel', SDL.RModel.create());
-                SDL.set('SDLController', SDL.RController.create());
-
-                break;
-            }
+      switch (parseInt(FLAGS.SimpleFunctionality)) {
+        case 0: {
+          SDL.set('SDLModel', SDL.GModel.create());
+          SDL.set('SDLController', SDL.GController.create());
+          FLAGS.CAN = false;
+          break;
         }
+        case 1: {
+          SDL.set('SDLModel', SDL.RModel.create());
+          SDL.set('SDLController', SDL.RController.create());
+          break;
+        }
+        case 2: {
+          SDL.set('SDLModel', SDL.PModel.create());
+          SDL.set('SDLController', SDL.PController.create());
+          FLAGS.CAN = false;
+          break;
+        }
+      }
     },
-
     gen: function() {
-
-        return FLAGS.SimpleFunctionality === 0;
-
+      return parseInt(FLAGS.SimpleFunctionality) === 0;
     }.property('FLAGS.SimpleFunctionality'),
-
-    pan: function() {
-
-        return FLAGS.SimpleFunctionality === 1;
-
-    }.property('FLAGS.SimpleFunctionality'),
-
     rev: function() {
-
-        return FLAGS.SimpleFunctionality === 2;
-
+      var result = parseInt(FLAGS.SimpleFunctionality) === 1;
+      SDL.NavigationModel.set('poi', !result);
+      return result;
+    }.property('FLAGS.SimpleFunctionality'),
+    pan: function() {
+      return parseInt(FLAGS.SimpleFunctionality) === 2;
     }.property('FLAGS.SimpleFunctionality')
-});
+  }
+);

@@ -28,16 +28,17 @@
  *
  * @desc Component for Climate Home Widget
  *
- * @category	view
- * @filesource	app/view/home/widgetClimateView.js
- * @version		1.0
+ * @category  view
+ * @filesource  app/view/home/widgetClimateView.js
+ * @version    1.0
  */
 
 SDL.WidgetClimateView = Em.ContainerView.extend({
 
-    elementId:	'home_widgetClimate',
+  elementId: 'home_widgetClimate',
 
-    classNameBindings: [
-        'SDL.FuncSwitcher.rev::is-disabled'
-    ]
-});
+  classNameBindings: [
+    'SDL.FuncSwitcher.rev::is-disabled'
+  ]
+}
+);
