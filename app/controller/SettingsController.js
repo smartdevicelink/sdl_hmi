@@ -130,13 +130,14 @@ SDL.SettingsController = Em.Object.create(
       }
     },
     changeAppPermission: function(element) {
+      var text = "";
       if (element.allowed) {
-        element.allowed = false;
-        element.set('text', element.name + ' - Not allowed');
+        text = element.text.replace(' - Not allowed', ' - Allowed');
       } else {
-        element.allowed = true;
-        element.set('text', element.name + ' - Allowed');
+        text = element.text.replace(' - Allowed', ' - Not allowed');
       }
+      element.set('text', text);
+      element.allowed = !element.allowed;
     },
     /**
      * Method to send request to update array with app permissions
@@ -146,6 +147,8 @@ SDL.SettingsController = Em.Object.create(
      */
     GetListOfPermissions: function(element) {
       FFW.BasicCommunication.GetListOfPermissions(element.appID);
+      SDL.AppPermissionsView.update(SDL.SDLModelData.defaultCCS, 0);
+      SDL.States.goToStates('settings.policies.appPermissions');
     },
     /**
      * Method to update array with app permissions which came from SDL
