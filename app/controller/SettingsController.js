@@ -147,7 +147,7 @@ SDL.SettingsController = Em.Object.create(
      */
     GetListOfPermissions: function(element) {
       FFW.BasicCommunication.GetListOfPermissions(element.appID);
-      SDL.AppPermissionsView.update(SDL.SDLModelData.defaultCCS, 0);
+      SDL.AppPermissionsView.update(SDL.SDLModelData.defaultExternalConsent, 0);
       SDL.States.goToStates('settings.policies.appPermissions');
     },
     /**

@@ -104,7 +104,7 @@ SDL.warningView = Em.ContainerView
            * Check for webkit fillmode animation support Android < 4 version
            * doesnt support webkit animation fillmode
            */
-          checkForCCS3AnimationSupport: function() {
+          checkForExternalConsent3AnimationSupport: function() {
             if (FFW.isAndroid) {
               return $('body')[0].style.webkitAnimationFillMode === '';
             } else {
@@ -424,7 +424,7 @@ SDL.warningView = Em.ContainerView
             var self = this;
             this._parentView.set(
               'fade', this
-                .checkForCCS3AnimationSupport()
+                .checkForExternalConsent3AnimationSupport()
             );
             setTimeout(
               function() {

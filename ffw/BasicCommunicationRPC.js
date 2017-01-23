@@ -866,7 +866,7 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @param {String} source
        * @param {String} appID
        */
-      OnAppPermissionConsent: function(consentedFunctions, ccsStatus, source, appID) {
+      OnAppPermissionConsent: function(consentedFunctions, externalConsentStatus, source, appID) {
         Em.Logger.log('FFW.SDL.OnAppPermissionConsent');
         // send repsonse
         var JSONMessage = {
@@ -880,8 +880,8 @@ FFW.BasicCommunication = FFW.RPCObserver
         if (consentedFunctions.length > 0) {
           JSONMessage.params.consented_functions = consentedFunctions; 
         }
-        if (ccsStatus.length > 0) {
-          JSONMessage.params.ccs_status = ccsStatus; 
+        if (externalConsentStatus.length > 0) {
+          JSONMessage.params.external_consent_status = externalConsentStatus; 
         }
         if (appID) {
           JSONMessage.params.appID = appID;
