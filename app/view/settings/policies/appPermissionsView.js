@@ -63,11 +63,11 @@ SDL.AppPermissionsView = Em.ContainerView.create(
         action: function(element) {
           SDL.SettingsController.onState(element);
           var permissions = [];
-          var ccs_status = [];
+          var external_consent_status = [];
           var childViews = SDL.AppPermissionsView.appList.list._childViews;
           for (var i = 0; i < childViews.length; i++) {
             if (childViews[i].entityID != -1) {
-              ccs_status.push(
+              external_consent_status.push(
               {
                 'entity_id': childViews[i].entityID,
                 'entity_type': childViews[i].entityType,
@@ -85,7 +85,7 @@ SDL.AppPermissionsView = Em.ContainerView.create(
             }
           }
           FFW.BasicCommunication.OnAppPermissionConsent(
-            permissions, ccs_status, 'GUI', SDL.AppPermissionsView.currentAppId
+            permissions, external_consent_status, 'GUI', SDL.AppPermissionsView.currentAppId
           );
           SDL.AppPermissionsView.currentAppId = null;
         },

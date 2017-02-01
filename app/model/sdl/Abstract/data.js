@@ -41,24 +41,24 @@ SDL.SDLModelData = Em.Object.create(
     /** 
     *  List of default app permissions entityes for AppPermissionsView
     */
-    defaultCCS : [
+    defaultExternalConsent : [
         {
           allowed: false, 
-          name: "SomeCCSEntity", 
+          name: "SomeExternalConsentEntity", 
           entityID : 0,
           entityType : 0, 
           id : 0
         },
         {
           allowed: false, 
-          name: "SomeCCSEntity", 
+          name: "SomeExternalConsentEntity", 
           entityID : 1,
           entityType : 1, 
           id : 1
         },
         {
           allowed: false, 
-          name: "SomeCCSEntity", 
+          name: "SomeExternalConsentEntity", 
           entityID : 2,
           entityType : 2, 
           id : 2
