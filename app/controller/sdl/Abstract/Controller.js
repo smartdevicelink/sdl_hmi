@@ -397,7 +397,8 @@ SDL.SDLController = Em.Object.extend(
       );
     },
     /**
-     * Notify SDLCore that HMI is ready and all components are registered
+     * Notify SDLCore that HMI is ready and all components are registered.
+     * Also notify SDLCore that HMI is ready to provide system time.
      *
      * @type {String}
      */
@@ -409,6 +410,7 @@ SDL.SDLController = Em.Object.extend(
         }
       }
       FFW.BasicCommunication.onReady();
+      FFW.BasicCommunication.onSystemTimeReady();
     }.observes('SDL.SDLModel.data.registeredComponents.@each.state'),
     /**
      * Show VrHelpItems popup with necessary params
