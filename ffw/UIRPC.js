@@ -293,6 +293,9 @@ FFW.UI = FFW.RPCObserver.create(
               request.params.appID
             ).sdlSetMediaClockTimer(request.params);
             if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+              if(params.enableSeek) {
+                this.OnSeekMediaClockTimer(params.startTime, params.appID);
+              }
               this.sendUIResult(resultCode, request.id, request.method);
             } else {
               this.sendError(
@@ -1724,6 +1727,25 @@ FFW.UI = FFW.RPCObserver.create(
         'params': {
           'data': value,
           'event': event
+        }
+      };
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Callback for the seek media clock timer notification
+     *
+     * @param {Object}
+     *            seekTime
+     */
+    OnSeekMediaClockTimer: function(seekTime, appID) {
+      Em.Logger.log('FFW.UI.OnSeekMediaClockTimer');
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnSeekMediaClockTimer',
+        'params': {
+          'seekTime': seekTime,
+          'appID': appID
         }
       };
       this.client.send(JSONMessage);
