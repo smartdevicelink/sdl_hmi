@@ -416,7 +416,7 @@ SDL.RadioView = Em.ContainerView
                         target: 'SDL.RadioModel',
                         disabledBinding: 'isDisabled',
                         isDisabled: function() {
-                          if (!SDL.RadioModel.radioControlStruct.radioEnable) {
+                          if (SDL.RadioModel.radioControlStruct.radioEnable) {
                             return true;
                           }
                           if (this.preset == 'X') {
