@@ -748,7 +748,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           'minute' : current_time.getUTCMinutes(),
           'hour' : current_time.getUTCHours(),
           'day' : current_time.getUTCDate(),
-          'month' : current_time.getUTCMonth(),
+          // According to APPLINK-21928 month should be in range 1..12
+          'month' : current_time.getUTCMonth() + 1,
           'year' : current_time.getUTCFullYear(),
 
           // According to APPLINK-33109 fields below should be set to 0
