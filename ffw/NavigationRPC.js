@@ -447,7 +447,7 @@ FFW.Navigation = FFW.RPCObserver.create(
      * @param {Object} data
      * @param {number} id
      */
-    wayPointSend: function(resultCode, data, id) {
+    wayPointSend: function(resultCode, data, id, appID) {
       if (resultCode == SDL.SDLModel.data.resultCode.SUCCESS &&
         data && id) {
         // send repsonse
@@ -455,7 +455,9 @@ FFW.Navigation = FFW.RPCObserver.create(
           'jsonrpc': '2.0',
           'id': id,
           'result': {
+            'code': resultCode,
             'wayPoints': data,
+            'appID': appID,
             'method': 'Navigation.GetWayPoints'
           }
         };

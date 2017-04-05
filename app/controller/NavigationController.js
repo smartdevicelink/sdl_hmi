@@ -109,7 +109,8 @@ SDL.NavigationController = Em.Object.create(
             FFW.Navigation.wayPointSend(
               SDL.SDLModel.data.resultCode.SUCCESS,
               SDL.NavigationModel.LocationDetails,
-              request.id
+              request.id,
+              request.params.appID
             );
             SDL.NavigationModel.appReqPull.splice(
               SDL.NavigationModel.appReqPull.indexOf(request.params.appID), 1
