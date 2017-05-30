@@ -166,6 +166,14 @@ var StateManager = Em.StateManager.extend(
             getUrls: Em.State.create(
               {}
             ),
+            connectionSettings: Em.State.create(
+              {
+                enter: function() {
+                  this._super();
+                  SDL.ConnectionSettingsView.showEntitiesList();
+                }
+              }
+            ),
             deviceConfig: Em.State.create(
               {
                 enter: function() {

@@ -132,9 +132,9 @@ SDL.SettingsController = Em.Object.create(
     changeAppPermission: function(element) {
       var text = "";
       if (element.allowed) {
-        text = element.text.replace(' - Not allowed', ' - Allowed');
-      } else {
         text = element.text.replace(' - Allowed', ' - Not allowed');
+      } else {
+        text = element.text.replace(' - Not allowed', ' - Allowed');
       }
       element.set('text', text);
       element.allowed = !element.allowed;
@@ -147,7 +147,7 @@ SDL.SettingsController = Em.Object.create(
      */
     GetListOfPermissions: function(element) {
       FFW.BasicCommunication.GetListOfPermissions(element.appID);
-      SDL.AppPermissionsView.update(SDL.SDLModelData.defaultEUCS, 0);
+      SDL.AppPermissionsView.update(SDL.SDLModelData.externalConsentStatus, 0);
       SDL.States.goToStates('settings.policies.appPermissions');
     },
     /**
@@ -170,6 +170,40 @@ SDL.SettingsController = Em.Object.create(
         SDL.AppPermissionsView.update(message.result.allowedFunctions, appID);
         delete SDL.SDLModel.data.getListOfPermissionsPull[message.id];
       }
+    },
+     /**
+     * Method to update externalConsentStatus for Location
+     *
+     * @param {Object} message
+     *
+     */
+    changeUcsLocation: function(event) {
+      var ucs = SDL.SDLModel.data.externalConsentStatus;
+      if (ucs[0].status == "OFF") {
+        ucs[0].status = "ON";
+      }
+      else {
+        ucs[0].status = "OFF";
+      }
+      FFW.BasicCommunication.OnAppPermissionConsent(null, [{entityType: 1, entityID: 1, status: ucs[0].status}], "GUI", null);
+      event.set('text', event.name + ' - ' + ucs[0].status);
+    },
+     /**
+     * Method to update externalConsentStatus for Vehicle
+     *
+     * @param {Object} message
+     *
+     */
+    changeUcsVehicle: function(event) {
+      var ucs = SDL.SDLModel.data.externalConsentStatus;
+      if (ucs[1].status == "OFF") {
+        ucs[1].status = "ON";
+      }
+      else {
+        ucs[1].status = "OFF";
+      }
+      FFW.BasicCommunication.OnAppPermissionConsent(null, [{entityType: 1, entityID: 2, status: ucs[1].status}], "GUI", null);
+      event.set('text', event.name + ' - ' + ucs[1].status);
     },
     /**
      * Method to update array with app permissions with UserFriendlyMessage

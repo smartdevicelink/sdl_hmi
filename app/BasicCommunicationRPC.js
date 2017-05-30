@@ -880,7 +880,7 @@ FFW.BasicCommunication = FFW.RPCObserver
         if (consentedFunctions != null) {
           JSONMessage.params.consentedFunctions = consentedFunctions;
         }
-        if (eucsStatus  != null) {
+        if (eucsStatus != null) {
           JSONMessage.params.externalConsentStatus = eucsStatus;
         }
         if (appID != null) {

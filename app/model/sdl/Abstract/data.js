@@ -34,36 +34,14 @@
 SDL.SDLModelData = Em.Object.create(
   {
     /**
+    *  List of default app permissions entityes for AppPermissionsView
+    */
+    externalConsentStatus: [{entityType: 1, entityID: 1, status: "Undefined"},
+                            {entityType: 1, entityID: 2, status: "Undefined"}],
+    /**
      * Selected appID from AppPermissionsView
      */
     appPermChangeAppID: null,
-
-    /** 
-    *  List of default app permissions entityes for AppPermissionsView
-    */
-    defaultEUCS : [
-        {
-          allowed: false, 
-          name: "SomeEUCSEntity", 
-          entityID : 0,
-          entityType : 0, 
-          id : 0
-        },
-        {
-          allowed: false, 
-          name: "SomeEUCSEntity", 
-          entityID : 1,
-          entityType : 1, 
-          id : 1
-        },
-        {
-          allowed: false, 
-          name: "SomeEUCSEntity", 
-          entityID : 2,
-          entityType : 2, 
-          id : 2
-        }
-      ], 
 
     /**
      * Data came from UI.PerformInteractionRequest for ShowVRHelpItems popup
