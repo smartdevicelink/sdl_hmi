@@ -1289,8 +1289,8 @@ input[type=radio]:checked ~ .label {
 }
 
 #warning_view .components{
-    margin-top: 20px;
-    width: 420px;
+    margin-top: 30px;
+    width: 600px;
 }
 
 #warning_view .component{

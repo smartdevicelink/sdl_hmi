@@ -398,7 +398,11 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
             SDL.SettingsController.policyUpdateRetry('ABORT');
-            this.OnReceivedPolicyUpdate(request.params.fileName);
+            if(FLAGS.ExternalPolicies === true) {
+              FFW.ExternalPolicies.unpack(request.params.fileName);
+            } else {
+              this.OnReceivedPolicyUpdate(request.params.fileName);
+            }
             SDL.SettingsController.policyUpdateFile = null;
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS,

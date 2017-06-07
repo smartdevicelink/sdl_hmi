@@ -59,6 +59,7 @@ FLAGS = Em.Object.create(
      * 1 - R
      * 2 - P
      */
-    SimpleFunctionality: 1
+    SimpleFunctionality: 1,
+    ExternalPolicies: false
   }
 );
