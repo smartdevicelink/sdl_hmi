@@ -42,7 +42,6 @@ SDL.InfoAppsView = Em.ContainerView.create({
   childViews: [
     'vehicleHealthReport',
     'Asist911',
-    'DeviceLocationButton',
     'findNewApps',
     'getDeviceList',
     'listOfApplications'
@@ -129,19 +128,6 @@ SDL.InfoAppsView = Em.ContainerView.create({
         textBinding: 'SDL.locale.label.view_info_apps_911Assist',
         elementId: 'infoAppsAsist911',
         arrow: true,
-        onDown: false
-      }
-    ),
-
-  DeviceLocationButton: SDL.Button.extend({
-        goToState: 'settings.system.installApplications',
-        icon: 'images/info/location.png',
-        textBinding: 'SDL.locale.label.view_info_apps_vehicle_DeviceLocation',
-        elementId: 'infoAppsLocationButton',
-        classNames: 'button deviceLocation leftButtons',
-        arrow: true,
-        action: 'onGetDeviceLocation',
-        target: 'SDL.SDLController',
         onDown: false
       }
     ),

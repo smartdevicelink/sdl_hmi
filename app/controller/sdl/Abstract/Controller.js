@@ -1033,12 +1033,6 @@ SDL.SDLController = Em.Object.extend(
       SDL.SDLModel.data.set('deviceSearchProgress', true);
     },
     /**
-     * Enter screen vith list of devices application model
-     */
-    onGetDeviceLocation: function() {
-      SDL.States.goToStates('info.devicelocation');
-    },
-    /**
      * Send notification if device was choosed
      *
      * @param element:
