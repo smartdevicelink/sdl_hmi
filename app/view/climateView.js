@@ -66,13 +66,6 @@ SDL.ClimateView = Em.ContainerView.create(
           'dualModeEnable',
           'recirculateAirEnable'
         ],
-        disabled: function() {
-          if (SDL.ClimateController.model.zoneSelect === 'Driver') {
-            return false;
-          } else {
-            return true;
-          }
-        }.property('SDL.ClimateController.model.zoneSelect'),
         desiredTemp: Em.ContainerView.extend(
           {
             elementId: 'desiredTemp_container',
@@ -97,25 +90,25 @@ SDL.ClimateView = Em.ContainerView.create(
               {
                 elementId: 'desiredTemp_label',
                 temp: function() {
-                  switch (SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit) {
+                  switch (SDL.ClimateController.model.climateControlData.temperatureUnit) {
                     case 'KELVIN':
                     {
-                      return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp +
+                      return SDL.ClimateController.model.climateControlData.desiredTemp +
                         273;
                     }
                     case 'CELSIUS':
                     {
-                      return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp;
+                      return SDL.ClimateController.model.climateControlData.desiredTemp;
                     }
                     case 'FAHRENHEIT':
                     {
-                      return SDL.ClimateController.model.currentSet.climateControlData.desiredTemp *
+                      return SDL.ClimateController.model.climateControlData.desiredTemp *
                         9 / 5 + 32;
                     }
                   }
                 }.property(
-                  'SDL.ClimateController.model.currentSet.climateControlData.desiredTemp',
-                  'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit'
+                  'SDL.ClimateController.model.climateControlData.desiredTemp',
+                  'SDL.ClimateController.model.climateControlData.temperatureUnit'
                 ),
                 contentBinding: 'temp'
               }
@@ -162,7 +155,7 @@ SDL.ClimateView = Em.ContainerView.create(
             fanSpeed_label: SDL.Label.extend(
               {
                 elementId: 'fanSpeed_label',
-                contentBinding: 'SDL.ClimateController.model.currentSet.climateControlData.fanSpeed'
+                contentBinding: 'SDL.ClimateController.model.climateControlData.fanSpeed'
               }
             ),
             fanSpeed_plus: SDL.Button.extend(
@@ -208,25 +201,25 @@ SDL.ClimateView = Em.ContainerView.create(
               {
                 elementId: 'currentTemp_label',
                 temp: function() {
-                  switch (SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit) {
+                  switch (SDL.ClimateController.model.climateControlData.temperatureUnit) {
                     case 'KELVIN':
                     {
-                      return SDL.ClimateController.model.currentSet.climateControlData.currentTemp +
+                      return SDL.ClimateController.model.climateControlData.currentTemp +
                         273;
                     }
                     case 'CELSIUS':
                     {
-                      return SDL.ClimateController.model.currentSet.climateControlData.currentTemp;
+                      return SDL.ClimateController.model.climateControlData.currentTemp;
                     }
                     case 'FAHRENHEIT':
                     {
-                      return SDL.ClimateController.model.currentSet.climateControlData.currentTemp *
+                      return SDL.ClimateController.model.climateControlData.currentTemp *
                         9 / 5 + 32;
                     }
                   }
                 }.property(
-                  'SDL.ClimateController.model.currentSet.climateControlData.currentTemp',
-                  'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit'
+                  'SDL.ClimateController.model.climateControlData.currentTemp',
+                  'SDL.ClimateController.model.climateControlData.temperatureUnit'
                 ),
                 contentBinding: 'temp'
               }
@@ -259,7 +252,7 @@ SDL.ClimateView = Em.ContainerView.create(
               'defrostZone_Front',
               'defrostZone_All'
             ],
-            selectedBinding: 'SDL.ClimateController.model.currentSet.climateControlData.defrostZone',
+            selectedBinding: 'SDL.ClimateController.model.climateControlData.defrostZone',
             defrostZone_Rear: SDL.Button.extend(
               {
                 elementId: 'defrostZoneRear',
@@ -318,7 +311,7 @@ SDL.ClimateView = Em.ContainerView.create(
               'fahrenheit',
               'celsius'
             ],
-            selectedBinding: 'SDL.ClimateController.model.currentSet.climateControlData.temperatureUnit',
+            selectedBinding: 'SDL.ClimateController.model.climateControlData.temperatureUnit',
             kelvin: SDL.Button.extend(
               {
                 elementId: 'kelvin',
@@ -374,13 +367,13 @@ SDL.ClimateView = Em.ContainerView.create(
             disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function() {
-              if (SDL.ClimateController.model.currentSet.climateControlData.acEnable) {
+              if (SDL.ClimateController.model.climateControlData.acEnable) {
                 return 'images/media/active_horiz_led.png';
               } else {
                 return 'images/media/passiv_horiz_led.png';
               }
             }.property(
-              'SDL.ClimateController.model.currentSet.climateControlData.acEnable'
+              'SDL.ClimateController.model.climateControlData.acEnable'
             ),
             action: 'toggleAcEnable',
             target: 'SDL.ClimateController.model',
@@ -396,13 +389,13 @@ SDL.ClimateView = Em.ContainerView.create(
             disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function() {
-              if (SDL.ClimateController.model.currentSet.climateControlData.autoModeEnable) {
+              if (SDL.ClimateController.model.climateControlData.autoModeEnable) {
                 return 'images/media/active_horiz_led.png';
               } else {
                 return 'images/media/passiv_horiz_led.png';
               }
             }.property(
-              'SDL.ClimateController.model.currentSet.climateControlData.autoModeEnable'
+              'SDL.ClimateController.model.climateControlData.autoModeEnable'
             ),
             action: 'toggleAutoModeEnable',
             target: 'SDL.ClimateController.model',
@@ -418,13 +411,13 @@ SDL.ClimateView = Em.ContainerView.create(
             disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function() {
-              if (SDL.ClimateController.model.currentSet.climateControlData.dualModeEnable) {
+              if (SDL.ClimateController.model.climateControlData.dualModeEnable) {
                 return 'images/media/active_horiz_led.png';
               } else {
                 return 'images/media/passiv_horiz_led.png';
               }
             }.property(
-              'SDL.ClimateController.model.currentSet.climateControlData.dualModeEnable'
+              'SDL.ClimateController.model.climateControlData.dualModeEnable'
             ),
             action: 'toggleDualMode',
             target: 'SDL.ClimateController.model',
@@ -440,13 +433,13 @@ SDL.ClimateView = Em.ContainerView.create(
             disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function() {
-              if (SDL.ClimateController.model.currentSet.climateControlData.circulateAirEnable) {
+              if (SDL.ClimateController.model.climateControlData.circulateAirEnable) {
                 return 'images/media/active_horiz_led.png';
               } else {
                 return 'images/media/passiv_horiz_led.png';
               }
             }.property(
-              'SDL.ClimateController.model.currentSet.climateControlData.circulateAirEnable'
+              'SDL.ClimateController.model.climateControlData.circulateAirEnable'
             ),
             righticon: 'images/climate/recycle_ico.png',
             action: 'toggleRecirculateAir',

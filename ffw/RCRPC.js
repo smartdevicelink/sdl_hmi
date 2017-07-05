@@ -294,8 +294,7 @@ FFW.RC = FFW.RPCObserver.create(
               }
             }
             if (request.params.moduleDescription.moduleType === 'CLIMATE') {
-              climateControlData
-                = SDL.ClimateController.model.climateSet[newModuleZone].climateControlData;
+              climateControlData = SDL.ClimateController.model.climateControlData;
             } else if (request.params.moduleDescription.moduleType ===
               'RADIO') {
               radioControlData = SDL.RadioModel.get('radioControlData');
@@ -490,7 +489,7 @@ FFW.RC = FFW.RPCObserver.create(
                   = SDL.RadioModel.get('radioControlData');
               } else {
                 climateControlData = SDL.SDLController.correctTemp(
-                  SDL.ClimateController.model.climateSet.climateControlData,
+                  SDL.ClimateController.model.climateControlData,
                   'get'
                 );
                 JSONMessage.params.moduleData.climateControlData

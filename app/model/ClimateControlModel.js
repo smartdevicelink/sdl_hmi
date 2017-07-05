@@ -1,8 +1,6 @@
 SDL.ClimateControlModel = Em.Object.create({
 
-  init: function() {
-      this.set('currentSet', this.climateSet.driver);
-    },
+  init: function() {},
 
   currentFanSpeed: 0,
   autoModeEnableString: 'OFF',
@@ -17,374 +15,213 @@ SDL.ClimateControlModel = Em.Object.create({
    */
   consentedApp: null,
 
-  driverZone: {
-      'col': 0,
-      'row': 0,
-      'level': 0,
-      'colspan': 1,
-      'rowspan': 1,
-      'levelspan': 1
-    },
+  climateControlData: {
+    fanSpeed: 0,
+    currentTemp: 72,
+    desiredTemp: 72,
+    temperatureUnit: 'CELSIUS',
+    acEnable: true,
+    circulateAirEnable: true,
+    autoModeEnable: true,
+    defrostZone: 'ALL',
+    dualModeEnable: true
+  },
 
-  zoneSet: [
-    'Driver',
-    'Front Passenger',
-    'Back Left',
-    'Back Right'
-  ],
-
-  zoneSelect: 'Driver',
-
-  passengerZone: {
-      'col': 1,
-      'row': 0,
-      'level': 0,
-      'colspan': 1,
-      'rowspan': 1,
-      'levelspan': 1
-    },
-
-  climateSet: {
-      driver: {
-        moduleZone: {
-          'col': 0,
-          'row': 0,
-          'level': 0,
-          'colspan': 2,
-          'rowspan': 2,
-          'levelspan': 1
-        },
-        climateControlData: {
-          fanSpeed: 0,
-          currentTemp: 72,
-          desiredTemp: 72,
-          temperatureUnit: 'CELSIUS',
-          acEnable: true,
-          circulateAirEnable: true,
-          autoModeEnable: true,
-          defrostZone: 'ALL',
-          dualModeEnable: true
-        }
-      },
-      front_passenger: {
-        moduleZone: {
-          'col': 1,
-          'row': 0,
-          'level': 0,
-          'colspan': 2,
-          'rowspan': 2,
-          'levelspan': 1
-        },
-        climateControlData: {
-          fanSpeed: 0,
-          currentTemp: 72,
-          desiredTemp: 72,
-          temperatureUnit: 'CELSIUS',
-          acEnable: true,
-          circulateAirEnable: true,
-          autoModeEnable: true,
-          defrostZone: 'ALL',
-          dualModeEnable: true
-        }
-      },
-      back_left: {
-        moduleZone: {
-          'col': 0,
-          'row': 1,
-          'level': 0,
-          'colspan': 2,
-          'rowspan': 2,
-          'levelspan': 1
-        },
-        climateControlData: {
-          fanSpeed: 0,
-          currentTemp: 72,
-          desiredTemp: 72,
-          temperatureUnit: 'CELSIUS',
-          acEnable: true,
-          circulateAirEnable: true,
-          autoModeEnable: true,
-          defrostZone: 'ALL',
-          dualModeEnable: true
-        }
-      },
-      back_right: {
-        moduleZone: {
-          'col': 1,
-          'row': 1,
-          'level': 0,
-          'colspan': 2,
-          'rowspan': 2,
-          'levelspan': 1
-        },
-        climateControlData: {
-          fanSpeed: 0,
-          currentTemp: 72,
-          desiredTemp: 72,
-          temperatureUnit: 'CELSIUS',
-          acEnable: true,
-          circulateAirEnable: true,
-          autoModeEnable: true,
-          defrostZone: 'ALL',
-          dualModeEnable: true
-        }
-      }
-    },
-
-  currentSet: null,
-
-  zoneSelectObserver: function() {
-      switch (this.zoneSelect) {
-        case 'Driver' : {
-
-          this.set('currentSet', this.climateSet.driver);
-
-          break;
-        }
-        case 'Front Passenger' : {
-
-          this.set('currentSet', this.climateSet.front_passenger);
-
-          break;
-        }
-        case 'Back Left' : {
-
-          this.set('currentSet', this.climateSet.back_left);
-
-          break;
-        }
-        case 'Back Right' : {
-
-          this.set('currentSet', this.climateSet.back_right);
-
-          break;
-        }
-        default : {
-          break;
-        }
-      }
-    }.observes('this.zoneSelect'),
-
-  setClimateData: function(data, zone) {
+  setClimateData: function(data) {
 
     if (data.fanSpeed) {
-      this.setFanSpeed(data.fanSpeed, zone);
+      this.setFanSpeed(data.fanSpeed);
     }
 
     if (data.currentTemp) {
-      this.setCurrentTemp(data.currentTemp, zone);
+      this.setCurrentTemp(data.currentTemp);
     }
 
     if (data.desiredTemp) {
-      this.setDesiredTemp(data.desiredTemp, zone);
+      this.setDesiredTemp(data.desiredTemp);
     }
 
     if (data.temperatureUnit) {
-      this.setTemperatureUnitCelsiusEnable(data.temperatureUnit, zone);
+      this.setTemperatureUnitCelsiusEnable(data.temperatureUnit);
     }
 
     if (data.acEnable) {
-      this.setAcEnable(data.acEnable, zone);
+      this.setAcEnable(data.acEnable);
     }
 
     if (data.circulateAirEnable) {
-      this.setReciRCulateAirEnable(data.circulateAirEnable, zone);
+      this.setReciRCulateAirEnable(data.circulateAirEnable);
     }
 
     if (data.autoModeEnable) {
-      this.setAutoModeEnable(data.autoModeEnable, zone);
+      this.setAutoModeEnable(data.autoModeEnable);
     }
 
     if (data.defrostZone) {
-      this.setDefrostZone(data.defrostZone, zone);
+      this.setDefrostZone(data.defrostZone);
     }
 
     if (data.dualModeEnable) {
-      this.setDualModeEnable(data.dualModeEnable, zone);
+      this.setDualModeEnable(data.dualModeEnable);
     }
 
     FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-      this.climateSet[zone].moduleZone, null,
-      this.climateSet[zone].climateControlData
-    );
+      null, this.climateControlData);
   },
 
   fanSpeedUp: function() {
-      if (this.currentSet.climateControlData.fanSpeed < 100) {
-        this.set('currentSet.climateControlData.fanSpeed',
-          this.currentSet.climateControlData.fanSpeed + 1
-        );
+      if (this.climateControlData.fanSpeed < 100) {
+        this.set('climateControlData.fanSpeed', 
+          this.climateControlData.fanSpeed + 1);
         FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-          this.currentSet.moduleZone, null, this.currentSet.climateControlData
-        );
+          null, this.climateControlData);
       }
     },
 
   fanSpeedDown: function() {
-      if (this.currentSet.climateControlData.fanSpeed > 0) {
-        this.set('currentSet.climateControlData.fanSpeed',
-          this.currentSet.climateControlData.fanSpeed - 1
+      if (this.climateControlData.fanSpeed > 0) {
+        this.set('climateControlData.fanSpeed',
+          this.climateControlData.fanSpeed - 1
         );
         FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-          this.currentSet.moduleZone, null, this.currentSet.climateControlData
-        );
+          null, this.climateControlData);
       }
     },
 
   currentTempUp: function() {
-      if (this.currentSet.climateControlData.currentTemp < 100) {
-        this.set('currentSet.climateControlData.currentTemp',
-          this.currentSet.climateControlData.currentTemp + 1
+      if (this.climateControlData.currentTemp < 100) {
+        this.set('climateControlData.currentTemp',
+          this.climateControlData.currentTemp + 1
         );
         FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-          this.currentSet.moduleZone, null, this.currentSet.climateControlData
-        );
+          null, this.climateControlData);
       }
     },
 
   currentTempDown: function() {
-      if (this.currentSet.climateControlData.currentTemp > 0) {
-        this.set('currentSet.climateControlData.currentTemp',
-          this.currentSet.climateControlData.currentTemp - 1
+      if (this.climateControlData.currentTemp > 0) {
+        this.set('climateControlData.currentTemp',
+          this.climateControlData.currentTemp - 1
         );
         FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-          this.currentSet.moduleZone, null, this.currentSet.climateControlData
-        );
+          null, this.climateControlData);
       }
     },
 
   desiredTempUp: function() {
-      if (this.currentSet.climateControlData.desiredTemp < 100) {
-        this.set('currentSet.climateControlData.desiredTemp',
-          this.currentSet.climateControlData.desiredTemp + 1
+      if (this.climateControlData.desiredTemp < 100) {
+        this.set('climateControlData.desiredTemp',
+          this.climateControlData.desiredTemp + 1
         );
         FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-          this.currentSet.moduleZone, null, this.currentSet.climateControlData
-        );
+          null, this.climateControlData);
       }
     },
 
   desiredTempDown: function() {
-      if (this.currentSet.climateControlData.desiredTemp > 0) {
-        this.set('currentSet.climateControlData.desiredTemp',
-          this.currentSet.climateControlData.desiredTemp - 1
+      if (this.climateControlData.desiredTemp > 0) {
+        this.set('climateControlData.desiredTemp',
+          this.climateControlData.desiredTemp - 1
         );
         FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-          this.currentSet.moduleZone, null, this.currentSet.climateControlData
-        );
+          null, this.climateControlData);
       }
     },
 
   temperatureUnitKelvinEnable: function() {
-      this.set('currentSet.climateControlData.temperatureUnit', 'KELVIN');
+      this.set('climateControlData.temperatureUnit', 'KELVIN');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
   temperatureUnitFahrenheitEnable: function() {
-      this.set('currentSet.climateControlData.temperatureUnit', 'FAHRENHEIT');
+      this.set('climateControlData.temperatureUnit', 'FAHRENHEIT');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
   temperatureUnitCelsiusEnable: function() {
-      this.set('currentSet.climateControlData.temperatureUnit', 'CELSIUS');
+      this.set('climateControlData.temperatureUnit', 'CELSIUS');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
   defrostFrontEnable: function() {
-      this.set('currentSet.climateControlData.defrostZone', 'FRONT');
+      this.set('climateControlData.defrostZone', 'FRONT');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
   defrostRearEnable: function() {
-      this.set('currentSet.climateControlData.defrostZone', 'REAR');
+      this.set('climateControlData.defrostZone', 'REAR');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
   defrostAllEnable: function() {
-      this.set('currentSet.climateControlData.defrostZone', 'ALL');
+      this.set('climateControlData.defrostZone', 'ALL');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
   toggleDualMode: function() {
-      this.toggleProperty('currentSet.climateControlData.dualModeEnable');
+      this.toggleProperty('climateControlData.dualModeEnable');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
   toggleRecirculateAir: function() {
-      this.toggleProperty('currentSet.climateControlData.circulateAirEnable');
+      this.toggleProperty('climateControlData.circulateAirEnable');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
   toggleAcEnable: function() {
-      this.toggleProperty('currentSet.climateControlData.acEnable');
+      this.toggleProperty('climateControlData.acEnable');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
   toggleAutoModeEnable: function() {
-      this.toggleProperty('currentSet.climateControlData.autoModeEnable');
+      this.toggleProperty('climateControlData.autoModeEnable');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        this.currentSet.moduleZone, null, this.currentSet.climateControlData
-      );
+        null, this.climateControlData);
     },
 
-  setFanSpeed: function(speed, zone) {
-      this.set('climateSet.' + zone + '.climateControlData.fanSpeed', speed);
+  setFanSpeed: function(speed) {
+      this.set('climateControlData.fanSpeed', speed);
     },
 
-  setCurrentTemp: function(temp, zone) {
-      this.set('climateSet.' + zone + '.climateControlData.currentTemp', temp);
+  setCurrentTemp: function(temp) {
+      this.set('climateControlData.currentTemp', temp);
     },
 
-  setDesiredTemp: function(temp, zone) {
-      this.set('climateSet.' + zone + '.climateControlData.desiredTemp', temp);
+  setDesiredTemp: function(temp) {
+      this.set('climateControlData.desiredTemp', temp);
     },
 
-  setTemperatureUnitCelsiusEnable: function(tempUnit, zone) {
-      this.set('climateSet.' + zone + '.climateControlData.temperatureUnit',
-        tempUnit
-      );
+  setTemperatureUnitCelsiusEnable: function(tempUnit) {
+      this.set('climateControlData.temperatureUnit', tempUnit);
     },
 
-  setAcEnable: function(state, zone) {
-      this.set('climateSet.' + zone + '.climateControlData.acEnable', state);
+  setAcEnable: function(state) {
+      this.set('climateControlData.acEnable', state);
     },
 
-  setReciRCulateAirEnable: function(state, zone) {
-      this.set('climateSet.' + zone + '.climateControlData.circulateAirEnable',
-        state
-      );
+  setReciRCulateAirEnable: function(state) {
+      this.set('climateControlData.circulateAirEnable', state);
     },
 
-  setAutoModeEnable: function(state, zone) {
-      this.set('climateSet.' + zone + '.climateControlData.autoModeEnable', state
-      );
+  setAutoModeEnable: function(state) {
+      this.set('climateControlData.autoModeEnable', state);
     },
 
-  setDefrostZone: function(defZone, zone) {
-      this.set('climateSet.' + zone + '.climateControlData.defrostZone', defZone);
+  setDefrostZone: function(defZone) {
+      this.set('climateControlData.defrostZone', defZone);
     },
 
-  setDualModeEnable: function(state, zone) {
-      this.set('climateSet.' + zone + '.climateControlData.dualModeEnable', state
-      );
+  setDualModeEnable: function(state) {
+      this.set('climateControlData.dualModeEnable', state);
     }
 }
 );
