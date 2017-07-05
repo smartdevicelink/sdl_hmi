@@ -54,7 +54,6 @@ SDL.DeviceLocationView = Em.ContainerView.create({
     'backButton',
     'deviceLocationLabel',
     'devicesSelect',
-    'locationSelect',
     'setButton'
   ],
 
@@ -103,22 +102,6 @@ SDL.DeviceLocationView = Em.ContainerView.create({
     selectUpdate: function() {
           this.selection = this.content[0];
         }.observes('this.content')
-  }
-),
-
-  /**
-   * HMI element Select with parameters of transmission state from VehicleInfo
-   * Model
-   */
-  locationSelect: Em.Select.extend({
-
-    elementId: 'locationSelect',
-
-    classNames: 'locationSelect',
-
-    contentBinding: 'SDL.SDLModel.interiorZone',
-
-    valueBinding: 'this._parentView.location'
   }
 ),
 

@@ -661,7 +661,6 @@
 #VehicleInfo .fuelLevelInput,
 #VehicleInfo .speedInput,
 #info_apps_deviceLocation_view .devicesSelect,
-#info_apps_deviceLocation_view .locationSelect,
 #systemRequestView .appIDSelect,
 #PrimaryDevice .deviceSelect,
 #policies_settings_appPermissions .privacyModeSelect,
@@ -691,11 +690,6 @@
     left: 100px;
     top: 170px;
     width: 280px;
-}
-
-#info_apps_deviceLocation_view .locationSelect {
-    left: 400px;
-    top: 170px;
 }
 
 #info_apps_deviceLocation_view .sendLocationButton {

@@ -465,25 +465,15 @@ FFW.RC = FFW.RPCObserver.create(
       this.client.send(JSONMessage);
     },
     /**
-     *
      * @param moduleType
-     * @param moduleZone
-     * @param radioControlData
-     * @param climateControlData
      */
-    onInteriorVehicleDataNotification: function(moduleType, moduleZone) {
+    onInteriorVehicleDataNotification: function(moduleType) {
       var apps = SDL.SDLModel.data.registeredApps;
-      var zoneFilter = {};
-      var changedInteriorZone = SDL.SDLController.getInteriorZone(moduleZone);
       apps.forEach(
         function(app, index) {
           //search for app subscribed for module the data changed for
           app.moduleSubscriptions[moduleType].zone.forEach(
             function(zone, index) {
-              if (zone in zoneFilter ||
-                (zone != changedInteriorZone && moduleType === 'CLIMATE')) {
-                return;
-              }
               // send repsonse
               var JSONMessage = {
                 'jsonrpc': '2.0',
@@ -500,7 +490,7 @@ FFW.RC = FFW.RPCObserver.create(
                   = SDL.RadioModel.get('radioControlData');
               } else {
                 climateControlData = SDL.SDLController.correctTemp(
-                  SDL.ClimateController.model.climateSet[zone].climateControlData,
+                  SDL.ClimateController.model.climateSet.climateControlData,
                   'get'
                 );
                 JSONMessage.params.moduleData.climateControlData
@@ -508,7 +498,6 @@ FFW.RC = FFW.RPCObserver.create(
               }
               Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
               FFW.RC.client.send(JSONMessage);
-              zoneFilter[zone] = 'exist';
             }
           );
         }
