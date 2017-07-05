@@ -458,63 +458,6 @@ SDL.RController = SDL.SDLController.extend(
         }
       }
     },
-    unMapInteriorZone: function(moduleZone) {
-      var zone = {};
-      switch (moduleZone) {
-        case 'driver':
-        {
-          zone = {
-            'col': 0,
-            'row': 0,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'front_passenger':
-        {
-          zone = {
-            'col': 1,
-            'row': 0,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'back_left':
-        {
-          zone = {
-            'col': 0,
-            'row': 1,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'back_right':
-        {
-          zone = {
-            'col': 1,
-            'row': 1,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-      }
-    },
     getInteriorZone: function(moduleZone) {
       var zone;
       zone = null;

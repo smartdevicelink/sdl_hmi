@@ -481,8 +481,7 @@ FFW.RC = FFW.RPCObserver.create(
                 'method': 'RC.OnInteriorVehicleData',
                 'params': {
                   'moduleData': {
-                    'moduleType': moduleType,
-                    'moduleZone': SDL.SDLController.unMapInteriorZone(zone)
+                    'moduleType': moduleType
                   }
                 }
               };
