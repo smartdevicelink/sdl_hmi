@@ -53,8 +53,7 @@ SDL.DeviceLocationView = Em.ContainerView.create({
   childViews: [
     'backButton',
     'deviceLocationLabel',
-    'devicesSelect',
-    'setButton'
+    'devicesSelect'
   ],
 
   /**
@@ -103,22 +102,7 @@ SDL.DeviceLocationView = Em.ContainerView.create({
           this.selection = this.content[0];
         }.observes('this.content')
   }
-),
+)
 
-  /**
-   * Button to set device location
-   */
-  setButton: SDL.Button.extend({
-        classNames: 'button sendLocationButton',
-        text: 'Set location',
-        click: function() {
-          FFW.RC.OnDeviceLocationChanged(this._parentView.devicesSelect.selection,
-            this._parentView.location
-          );
-        },
-        enabled: false,
-        onDown: false
-      }
-    )
 }
 );
