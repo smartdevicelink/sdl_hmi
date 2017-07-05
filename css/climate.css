@@ -133,6 +133,14 @@
     left: 200px;
 }
 
+.quattro_container .topLeft{
+    width: 45px;
+    height: 44px;
+    border: 1px solid #393939;
+    padding: 12px;
+    line-height: 15px;
+}
+
 .quattro_container .topRight{
     width: 39px;
     height: 29px;

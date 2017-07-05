@@ -146,6 +146,12 @@ SDL.ClimateControlModel = Em.Object.create({
         null, this.climateControlData);
     },
 
+  defrostNoneEnable: function() {
+      this.set('climateControlData.defrostZone', 'NONE');
+      FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
+        null, this.climateControlData);
+    },
+
   defrostFrontEnable: function() {
       this.set('climateControlData.defrostZone', 'FRONT');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',

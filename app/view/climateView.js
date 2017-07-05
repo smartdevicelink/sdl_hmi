@@ -248,11 +248,27 @@ SDL.ClimateView = Em.ContainerView.create(
             elementId: 'defrostZone',
             classNames: 'quattro_container',
             childViews: [
+              'defrostZone_None',
               'defrostZone_Rear',
               'defrostZone_Front',
               'defrostZone_All'
             ],
             selectedBinding: 'SDL.ClimateController.model.climateControlData.defrostZone',
+            defrostZone_None: SDL.Button.extend(
+              {
+                elementId: 'defrostZoneNone',
+                classNames: 'defrostZoneNone topLeft',
+                classNameBindings: 'highlighted',
+                highlighted: function() {
+                  return this._parentView.selected === 'NONE';
+                }.property('parentView.selected'),
+                text: 'NONE',
+                onDown: false,
+                disabledBinding: 'parentView.parentView.disabled',
+                action: 'defrostNoneEnable',
+                target: 'SDL.ClimateController.model'
+              }
+            ),
             defrostZone_Rear: SDL.Button.extend(
               {
                 elementId: 'defrostZoneRear',
