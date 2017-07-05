@@ -75,16 +75,6 @@
     left: 518px;
 }
 
-#climate_control .zoneSelection {
-    bottom: 20px;
-    right: 50px;
-    position: absolute;
-    width: 150px;
-    height: 40px;
-    color: white;
-    background: #393939;
-}
-
 #desiredTemp_container.calc_container {
     top: 71px;
     left: 20px;

@@ -64,8 +64,7 @@ SDL.ClimateView = Em.ContainerView.create(
           'acEnable',
           'autoModeEnable',
           'dualModeEnable',
-          'recirculateAirEnable',
-          'zoneSelection'
+          'recirculateAirEnable'
         ],
         disabled: function() {
           if (SDL.ClimateController.model.zoneSelect === 'Driver') {
@@ -454,14 +453,6 @@ SDL.ClimateView = Em.ContainerView.create(
             target: 'SDL.ClimateController.model',
             templateName: 'rightIcon',
             onDown: false
-          }
-        ),
-        zoneSelection: Em.Select.extend(
-          {
-            elementId: 'zoneSelection',
-            classNames: 'zoneSelection',
-            contentBinding: 'SDL.ClimateController.model.zoneSet',
-            valueBinding: 'SDL.ClimateController.model.zoneSelect'
           }
         )
       }
