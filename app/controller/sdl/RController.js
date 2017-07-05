@@ -457,27 +457,6 @@ SDL.RController = SDL.SDLController.extend(
           }
         }
       }
-    },
-    getInteriorZone: function(moduleZone) {
-      var zone;
-      zone = null;
-      if (moduleZone == null) {
-        return zone;
-      }
-      if (moduleZone.col === 0) {
-        if (moduleZone.row === 0) {
-          zone = 'driver';
-        } else if (moduleZone.row === 1) {
-          zone = 'back_left';
-        }
-      } else if (moduleZone.col === 1) {
-        if (moduleZone.row === 0) {
-          zone = 'front_passenger';
-        } else if (moduleZone.row === 1) {
-          zone = 'back_right';
-        }
-      }
-      return zone;
     }
   }
 );

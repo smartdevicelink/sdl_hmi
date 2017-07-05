@@ -123,16 +123,6 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.GetInteriorVehicleDataCapabilities':
           {
             Em.Logger.log('FFW.' + request.method + 'Response');
-            if (SDL.SDLController.getInteriorZone(request.params.zone) ===
-              null) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
-                request.id,
-                request.method,
-                'Unsupported interior zone!'
-              );
-              return;
-            }
             if (!SDL.SDLModel.errorResponse) {
               var interiorVehicleDataCapabilities = [];
               if (request.params.moduleTypes) {
@@ -208,24 +198,12 @@ FFW.RC = FFW.RPCObserver.create(
             if (!this.conssetAppCheck(request)) {
               return;
             }
-            var zone = SDL.SDLController.getInteriorZone(
-              request.params.moduleData.moduleZone
-            );
-            if (zone === null) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
-                request.id,
-                request.method,
-                'Unsupported interior zone!'
-              );
-              return;
-            }
             if (request.params.moduleData.climateControlData) {
               var climateControlData = SDL.SDLController.correctTemp(
                 request.params.moduleData.climateControlData, 'set'
               );
               SDL.ClimateController.model.setClimateData(
-                request.params.moduleData.climateControlData, zone
+                request.params.moduleData.climateControlData
               );
             }
             if (request.params.moduleData.radioControlData) {
@@ -259,42 +237,13 @@ FFW.RC = FFW.RPCObserver.create(
               );
               return;
             }
-            var newModuleZone = SDL.SDLController.getInteriorZone(
-              request.params.moduleDescription.moduleZone
-            );
-            if (newModuleZone === null) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
-                request.id, request.method, 'Unsupported interior zone!'
-              );
-              return;
-            }
             var radioControlData = null;
             var climateControlData = null;
             var app = SDL.SDLController.getApplicationModel(
               request.params.appID
             );
-            if (request.params.subscribe === true) {
-              app.moduleSubscriptions[request.params.moduleDescription.moduleType].subscription
+            app.moduleSubscriptions[request.params.moduleDescription.moduleType].subscription
                 = request.params.subscribe;
-              if (app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone
-                  .indexOf(newModuleZone) < 0) {
-                app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone
-                  .push(newModuleZone);
-              }
-            } else if (request.params.subscribe === false) {
-              var index = app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone
-                .indexOf(newModuleZone);
-              if (index >= 0) {
-                app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone
-                  .splice(index, 1);
-              }
-              if (app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone.length ===
-                0) {
-                app.moduleSubscriptions[request.params.moduleDescription.moduleType].subscription
-                  = false;
-              }
-            }
             if (request.params.moduleDescription.moduleType === 'CLIMATE') {
               climateControlData = SDL.ClimateController.model.climateControlData;
             } else if (request.params.moduleDescription.moduleType ===
@@ -309,8 +258,7 @@ FFW.RC = FFW.RPCObserver.create(
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
                 'moduleData': {
-                  'moduleType': request.params.moduleDescription.moduleType,
-                  'moduleZone': request.params.moduleDescription.moduleZone
+                  'moduleType': request.params.moduleDescription.moduleType
                 }
               }
             };
