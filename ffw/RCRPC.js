@@ -127,18 +127,9 @@ FFW.RC = FFW.RPCObserver.create(
               var interiorVehicleDataCapabilities = [];
               if (request.params.moduleTypes) {
                 for (var i = 0; i < request.params.moduleTypes.length; i++) {
-                  interiorVehicleDataCapabilities.push(
-                    {
-                      'moduleZone': request.params.zone,
-                      'moduleType': request.params.moduleTypes[i]
-                    }
-                  );
-                }
-              } else {
-                interiorVehicleDataCapabilities.push(
-                  {
-                    'moduleZone': request.params.zone,
-                    'moduleType': 'CLIMATE'
+                  if (request.params.moduleTypes[i] === 'CLIMATE') {
+                    interiorVehicleDataCapabilities.climateControlCapabilities =
+                      SDL.ClimateController.model.climateControlData;
                   }
                   if (request.params.moduleTypes[i] === 'RADIO') {
                     interiorVehicleDataCapabilities.push(
@@ -148,7 +139,7 @@ FFW.RC = FFW.RPCObserver.create(
                       }
                     );
                   }
-                );
+                }
               }
               // send repsonse
               var JSONMessage = {
@@ -166,7 +157,7 @@ FFW.RC = FFW.RPCObserver.create(
                 SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'],
                 request.id,
                 request.method,
-                'Error response example.'
+                'Requested module data is not available'
               );
             }
             break;
