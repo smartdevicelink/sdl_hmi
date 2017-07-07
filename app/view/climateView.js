@@ -61,8 +61,11 @@ SDL.ClimateView = Em.ContainerView.create(
           'currentTempSwitcher',
           'curentTempLabel',
           'defrostZone',
+          'defrostZoneLabel',
           'temperatureUnit',
+          'temperatureUnitLabel',
           'ventilationMode',
+          'ventilationModeLabel',
           'acEnable',
           'acMaxEnable',
           'autoModeEnable',
@@ -333,6 +336,12 @@ SDL.ClimateView = Em.ContainerView.create(
             )
           }
         ),
+        defrostZoneLabel: SDL.Label.extend(
+          {
+            elementId: 'defrostZoneLabel',
+            content: 'Defrost Zone'
+          }
+        ),
         temperatureUnit: Em.ContainerView.extend(
           {
             elementId: 'temperatureUnit',
@@ -372,6 +381,12 @@ SDL.ClimateView = Em.ContainerView.create(
                 target: 'SDL.ClimateController.model'
               }
             )
+          }
+        ),
+        temperatureUnitLabel: SDL.Label.extend(
+          {
+            elementId: 'temperatureUnitLabel',
+            content: 'Temperature Unit'
           }
         ),
         ventilationMode: Em.ContainerView.extend(
@@ -445,6 +460,12 @@ SDL.ClimateView = Em.ContainerView.create(
                 target: 'SDL.ClimateController.model'
               }
             )
+          }
+        ),
+        ventilationModeLabel: SDL.Label.extend(
+          {
+            elementId: 'ventilationModeLabel',
+            content: 'Ventilation Mode'
           }
         ),
         acEnable: SDL.Button.extend(

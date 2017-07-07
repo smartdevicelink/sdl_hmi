@@ -116,6 +116,21 @@
     right: 20px;
 }
 
+#defrostZoneLabel.label {
+    top: 300px;
+    left: 125px;
+}
+
+#temperatureUnitLabel.label {
+    top: 300px;
+    left: 317px;
+}
+
+#ventilationModeLabel.label {
+    top: 300px;
+    left: 520px;
+}
+
 .calc_container {
     width: 170px;
     height: 40px;
