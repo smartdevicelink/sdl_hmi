@@ -62,7 +62,9 @@ SDL.ClimateView = Em.ContainerView.create(
           'curentTempLabel',
           'defrostZone',
           'temperatureUnit',
+          'ventilationMode',
           'acEnable',
+          'acMaxEnable',
           'autoModeEnable',
           'dualModeEnable',
           'recirculateAirEnable'
@@ -372,6 +374,79 @@ SDL.ClimateView = Em.ContainerView.create(
             )
           }
         ),
+        ventilationMode: Em.ContainerView.extend(
+          {
+            elementId: 'ventilationMode',
+            classNames: 'quattro_container',
+            childViews: [
+              'ventilationMode_None',
+              'ventilationMode_Upper',
+              'ventilationMode_Lower',
+              'ventilationMode_Both'
+            ],
+            selectedBinding: 'SDL.ClimateController.model.climateControlData.currentVentilationMode',
+            ventilationMode_None: SDL.Button.extend(
+              {
+                elementId: 'ventilationModeNone',
+                classNames: 'ventilationModeNone topLeft',
+                classNameBindings: 'highlighted',
+                highlighted: function() {
+                  return this._parentView.selected === 'NONE';
+                }.property('parentView.selected'),
+                text: 'NONE',
+                onDown: false,
+                disabledBinding: 'parentView.parentView.disabled',
+                action: 'ventilationModeNoneEnable',
+                target: 'SDL.ClimateController.model'
+              }
+            ),
+            ventilationMode_Upper: SDL.Button.extend(
+              {
+                elementId: 'ventilationModeUpper',
+                classNames: 'ventilationModeUpper topRight',
+                classNameBindings: 'highlighted',
+                highlighted: function() {
+                  return this._parentView.selected === 'UPPER';
+                }.property('parentView.selected'),
+                text: 'UP',
+                onDown: false,
+                disabledBinding: 'parentView.parentView.disabled',
+                action: 'ventilationModeUpperEnable',
+                target: 'SDL.ClimateController.model'
+              }
+            ),
+            ventilationMode_Lower: SDL.Button.extend(
+              {
+                elementId: 'ventilationModeLower',
+                classNames: 'ventilationModeLower bottomLeft',
+                classNameBindings: 'highlighted',
+                highlighted: function() {
+                  return this._parentView.selected === 'LOWER';
+                }.property('parentView.selected'),
+                text: 'LOW',
+                onDown: false,
+                disabledBinding: 'parentView.parentView.disabled',
+                action: 'ventilationModeLowerEnable',
+                target: 'SDL.ClimateController.model'
+              }
+            ),
+            ventilationMode_Both: SDL.Button.extend(
+              {
+                elementId: 'ventilationModeBoth',
+                classNames: 'ventilationModeBoth bottomRight',
+                classNameBindings: 'highlighted',
+                highlighted: function() {
+                  return this._parentView.selected === 'BOTH';
+                }.property('parentView.selected'),
+                text: 'BOTH',
+                onDown: false,
+                disabledBinding: 'parentView.parentView.disabled',
+                action: 'ventilationModeBothEnable',
+                target: 'SDL.ClimateController.model'
+              }
+            )
+          }
+        ),
         acEnable: SDL.Button.extend(
           {
             elementId: 'acEnable',
@@ -392,6 +467,27 @@ SDL.ClimateView = Em.ContainerView.create(
             target: 'SDL.ClimateController.model',
             onDown: false,
             text: 'AC'
+          }
+        ),
+        acMaxEnable: SDL.Button.extend(
+          {
+            elementId: 'acMaxEnable',
+            classNames: 'acMaxEnable switcher',
+            iconBinding: 'onIconChange',
+            disabledBinding: 'parentView.disabled',
+            onIconChange: function() {
+              if (SDL.ClimateController.model.climateControlData.acMaxEnable) {
+                return 'images/media/active_horiz_led.png';
+              } else {
+                return 'images/media/passiv_horiz_led.png';
+              }
+            }.property(
+              'SDL.ClimateController.model.climateControlData.acMaxEnable'
+            ),
+            action: 'toggleAcMaxEnable',
+            target: 'SDL.ClimateController.model',
+            onDown: false,
+            text: 'AC max'
           }
         ),
         autoModeEnable: SDL.Button.extend(

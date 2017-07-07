@@ -45,6 +45,7 @@
 
 #climate_control .smallSwitcher{
     border: 1px solid #393939;
+    border-radius: 3px;
     width: 20px;
     height: 40px;
 }
@@ -76,19 +77,28 @@
 
 #climate_control .acEnable{
     top: 340px;
-    left: 170px;
+    left: 74px;
 }
-#climate_control .autoModeEnable{
+
+#climate_control .acMaxEnable{
     top: 340px;
-    left: 286px;
+    left: 190px;
+    width: 150px;
 }
-#climate_control .dualModeEnable{
-    top: 340px;
-    left: 402px;
-}
+
 #climate_control .recirculateAirEnable{
     top: 340px;
-    left: 518px;
+    left: 341px;
+}
+
+#climate_control .autoModeEnable{
+    top: 340px;
+    left: 457px;
+}
+
+#climate_control .dualModeEnable{
+    top: 340px;
+    left: 573px;
 }
 
 #desiredTemp_container.calc_container {
@@ -146,7 +156,7 @@
 
 #defrostZone.quattro_container{
     top: 150px;
-    left: 200px;
+    left: 100px;
 }
 
 .quattro_container .topLeft{
@@ -186,10 +196,11 @@
 
 #temperatureUnit.quattro_container{
     top: 150px;
-    right: 200px;
+    right: 350px;
     font-size: 35px;
     line-height: 70px;
 }
+
 #temperatureUnit .topRight{
     width: 69px;
     height: 69px;
@@ -216,5 +227,14 @@
     line-height: 70px;
     margin-left: 70px;
     margin-top: 70px;
+    text-align: center;
+}
+
+#ventilationMode.quattro_container{
+    top: 150px;
+    right: 150px;
+}
+
+#ventilationMode .topRight{
     text-align: center;
 }

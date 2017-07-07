@@ -16,16 +16,18 @@ SDL.ClimateControlModel = Em.Object.create({
   consentedApp: null,
 
   climateControlData: {
-    fanSpeed: 0,
     currentTempEditDisabled: true,
+    temperatureUnit: 'CELSIUS',
     currentTemp: 20,
     desiredTemp: 25,
-    temperatureUnit: 'CELSIUS',
     acEnable: true,
+    acMaxEnable: true,
     circulateAirEnable: true,
     autoModeEnable: true,
     defrostZone: 'ALL',
-    dualModeEnable: true
+    dualModeEnable: true,
+    fanSpeed: 0,
+    currentVentilationMode: 'BOTH'
   },
 
   setClimateData: function(data) {
@@ -50,6 +52,10 @@ SDL.ClimateControlModel = Em.Object.create({
       this.setAcEnable(data.acEnable);
     }
 
+    if (data.acMaxEnable) {
+      this.setAcMaxEnable(data.acMaxEnable);
+    }
+
     if (data.circulateAirEnable) {
       this.setReciRCulateAirEnable(data.circulateAirEnable);
     }
@@ -64,6 +70,10 @@ SDL.ClimateControlModel = Em.Object.create({
 
     if (data.dualModeEnable) {
       this.setDualModeEnable(data.dualModeEnable);
+    }
+
+    if (data.currentVentilationMode) {
+      this.setCurrentVentilationMode(data.currentVentilationMode);
     }
 
     FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
@@ -170,6 +180,30 @@ SDL.ClimateControlModel = Em.Object.create({
         null, this.climateControlData);
     },
 
+  ventilationModeNoneEnable: function() {
+      this.set('climateControlData.currentVentilationMode', 'NONE');
+      FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
+        null, this.climateControlData);
+  },
+
+  ventilationModeUpperEnable: function() {
+      this.set('climateControlData.currentVentilationMode', 'UPPER');
+      FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
+        null, this.climateControlData);
+  },
+
+  ventilationModeLowerEnable: function() {
+      this.set('climateControlData.currentVentilationMode', 'LOWER');
+      FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
+        null, this.climateControlData);
+  },
+
+  ventilationModeBothEnable: function() {
+      this.set('climateControlData.currentVentilationMode', 'BOTH');
+      FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
+        null, this.climateControlData);
+  },
+
   toggleDualMode: function() {
       this.toggleProperty('climateControlData.dualModeEnable');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
@@ -184,6 +218,12 @@ SDL.ClimateControlModel = Em.Object.create({
 
   toggleAcEnable: function() {
       this.toggleProperty('climateControlData.acEnable');
+      FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
+        null, this.climateControlData);
+    },
+
+  toggleAcMaxEnable: function() {
+      this.toggleProperty('climateControlData.acMaxEnable');
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
         null, this.climateControlData);
     },
@@ -214,6 +254,10 @@ SDL.ClimateControlModel = Em.Object.create({
       this.set('climateControlData.acEnable', state);
     },
 
+  setAcMaxEnable: function(state) {
+      this.set('climateControlData.acMaxEnable', state);
+  },
+
   setReciRCulateAirEnable: function(state) {
       this.set('climateControlData.circulateAirEnable', state);
     },
@@ -228,6 +272,10 @@ SDL.ClimateControlModel = Em.Object.create({
 
   setDualModeEnable: function(state) {
       this.set('climateControlData.dualModeEnable', state);
-    }
+    },
+
+  setCurrentVentilationMode: function(state) {
+      this.set('climateControlData.currentVentilationMode', state);
+  }
 }
 );
