@@ -17,8 +17,9 @@ SDL.ClimateControlModel = Em.Object.create({
 
   climateControlData: {
     fanSpeed: 0,
-    currentTemp: 72,
-    desiredTemp: 72,
+    currentTempEditDisabled: true,
+    currentTemp: 20,
+    desiredTemp: 25,
     temperatureUnit: 'CELSIUS',
     acEnable: true,
     circulateAirEnable: true,
@@ -88,8 +89,13 @@ SDL.ClimateControlModel = Em.Object.create({
       }
     },
 
+  currentTempAvailableClick: function() {
+    this.set('climateControlData.currentTempEditDisabled',
+          !this.climateControlData.currentTempEditDisabled);
+  },
+
   currentTempUp: function() {
-      if (this.climateControlData.currentTemp < 100) {
+      if (this.climateControlData.currentTemp < 40) {
         this.set('climateControlData.currentTemp',
           this.climateControlData.currentTemp + 1
         );
@@ -99,7 +105,7 @@ SDL.ClimateControlModel = Em.Object.create({
     },
 
   currentTempDown: function() {
-      if (this.climateControlData.currentTemp > 0) {
+      if (this.climateControlData.currentTemp > -30) {
         this.set('climateControlData.currentTemp',
           this.climateControlData.currentTemp - 1
         );
@@ -109,7 +115,7 @@ SDL.ClimateControlModel = Em.Object.create({
     },
 
   desiredTempUp: function() {
-      if (this.climateControlData.desiredTemp < 100) {
+      if (this.climateControlData.desiredTemp < 30) {
         this.set('climateControlData.desiredTemp',
           this.climateControlData.desiredTemp + 1
         );
@@ -119,19 +125,13 @@ SDL.ClimateControlModel = Em.Object.create({
     },
 
   desiredTempDown: function() {
-      if (this.climateControlData.desiredTemp > 0) {
+      if (this.climateControlData.desiredTemp > 14) {
         this.set('climateControlData.desiredTemp',
           this.climateControlData.desiredTemp - 1
         );
         FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
           null, this.climateControlData);
       }
-    },
-
-  temperatureUnitKelvinEnable: function() {
-      this.set('climateControlData.temperatureUnit', 'KELVIN');
-      FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-        null, this.climateControlData);
     },
 
   temperatureUnitFahrenheitEnable: function() {

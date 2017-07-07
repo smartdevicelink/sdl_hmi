@@ -58,6 +58,7 @@ SDL.ClimateView = Em.ContainerView.create(
           'fanSpeed',
           'fanSpeedLabel',
           'currentTemp',
+          'currentTempSwitcher',
           'curentTempLabel',
           'defrostZone',
           'temperatureUnit',
@@ -91,11 +92,6 @@ SDL.ClimateView = Em.ContainerView.create(
                 elementId: 'desiredTemp_label',
                 temp: function() {
                   switch (SDL.ClimateController.model.climateControlData.temperatureUnit) {
-                    case 'KELVIN':
-                    {
-                      return SDL.ClimateController.model.climateControlData.desiredTemp +
-                        273;
-                    }
                     case 'CELSIUS':
                     {
                       return SDL.ClimateController.model.climateControlData.desiredTemp;
@@ -188,6 +184,7 @@ SDL.ClimateView = Em.ContainerView.create(
             ],
             currentTemp_minus: SDL.Button.extend(
               {
+                disabledBinding: 'SDL.ClimateController.model.climateControlData.currentTempEditDisabled',
                 elementId: 'currentTemp_minus',
                 classNames: 'minus',
                 templateName: 'icon',
@@ -202,11 +199,6 @@ SDL.ClimateView = Em.ContainerView.create(
                 elementId: 'currentTemp_label',
                 temp: function() {
                   switch (SDL.ClimateController.model.climateControlData.temperatureUnit) {
-                    case 'KELVIN':
-                    {
-                      return SDL.ClimateController.model.climateControlData.currentTemp +
-                        273;
-                    }
                     case 'CELSIUS':
                     {
                       return SDL.ClimateController.model.climateControlData.currentTemp;
@@ -226,6 +218,7 @@ SDL.ClimateView = Em.ContainerView.create(
             ),
             currentTemp_plus: SDL.Button.extend(
               {
+                disabledBinding: 'SDL.ClimateController.model.climateControlData.currentTempEditDisabled',
                 elementId: 'currentTemp_plus',
                 classNames: 'plus',
                 templateName: 'icon',
@@ -235,6 +228,26 @@ SDL.ClimateView = Em.ContainerView.create(
                 target: 'SDL.ClimateController.model'
               }
             )
+          }
+        ),
+        currentTempSwitcher: SDL.Button.extend(
+          {
+            elementId: 'currentTempSwitcher',
+            classNames: 'currentTempSwitcher smallSwitcher',
+            iconBinding: 'onIconChange',
+            disabledBinding: 'parentView.disabled',
+            onIconChange: function() {
+              if (SDL.ClimateController.model.climateControlData.currentTempEditDisabled) {
+                return 'images/media/passiv_horiz_led.png';
+              } else {
+                return 'images/media/active_horiz_led.png';
+              }
+            }.property(
+              'SDL.ClimateController.model.climateControlData.currentTempEditDisabled'
+            ),
+            action: 'currentTempAvailableClick',
+            target: 'SDL.ClimateController.model',
+            onDown: false
           }
         ),
         curentTempLabel: SDL.Label.extend(
@@ -323,26 +336,10 @@ SDL.ClimateView = Em.ContainerView.create(
             elementId: 'temperatureUnit',
             classNames: 'quattro_container',
             childViews: [
-              'kelvin',
               'fahrenheit',
               'celsius'
             ],
             selectedBinding: 'SDL.ClimateController.model.climateControlData.temperatureUnit',
-            kelvin: SDL.Button.extend(
-              {
-                elementId: 'kelvin',
-                classNames: 'kelvin topRight',
-                classNameBindings: 'highlighted',
-                highlighted: function() {
-                  return this._parentView.selected === 'KELVIN';
-                }.property('parentView.selected'),
-                text: 'K',
-                onDown: false,
-                disabledBinding: 'parentView.parentView.disabled',
-                action: 'temperatureUnitKelvinEnable',
-                target: 'SDL.ClimateController.model'
-              }
-            ),
             fahrenheit: SDL.Button.extend(
               {
                 elementId: 'fahrenheit',
