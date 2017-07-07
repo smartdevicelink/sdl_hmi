@@ -29,6 +29,25 @@ SDL.ClimateControlModel = Em.Object.create({
     currentVentilationMode: 'BOTH'
   },
 
+  getClimateControlCapabilities: function() {
+    var result = {
+      name: 'Climate Control Module',
+      fanSpeedAvailable: true,
+      desiredTemperatureAvailable: true,
+      acEnableAvailable: true,
+      acMaxEnableAvailable: true,
+      circulateAirEnableAvailable: true,
+      autoModeEnableAvailable: true,
+      dualModeEnableAvailable: true,
+      defrostZoneAvailable: true,
+      defrostZone: ['ALL', 'FRONT', 'REAR', 'NONE'],
+      ventilationModeAvailable: true,
+      ventilationMode: ['UPPER', 'LOWER', 'BOTH', 'NONE']
+    };
+
+    return result;
+  },
+
   setClimateData: function(data) {
 
     if (data.fanSpeed) {

@@ -414,12 +414,6 @@ SDL.RController = SDL.SDLController.extend(
       var d = SDL.deepCopy(data);
       if (type === 'get') {
         switch (d.temperatureUnit) {
-          case 'KELVIN':
-          {
-            d.currentTemp += 273;
-            d.desiredTemp += 273;
-            return d;
-          }
           case 'CELSIUS':
           {
             return d;
@@ -433,12 +427,6 @@ SDL.RController = SDL.SDLController.extend(
         }
       } else {
         switch (d.temperatureUnit) {
-          case 'KELVIN':
-          {
-            d.currentTemp -= 273;
-            d.desiredTemp -= 273;
-            return d;
-          }
           case 'CELSIUS':
           {
             return d;

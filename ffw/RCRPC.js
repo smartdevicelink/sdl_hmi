@@ -128,8 +128,12 @@ FFW.RC = FFW.RPCObserver.create(
               if (request.params.moduleTypes) {
                 for (var i = 0; i < request.params.moduleTypes.length; i++) {
                   if (request.params.moduleTypes[i] === 'CLIMATE') {
-                    interiorVehicleDataCapabilities.climateControlCapabilities =
-                      SDL.ClimateController.model.climateControlData;
+                    interiorVehicleDataCapabilities.push(
+                      {
+                          'climateControlCapabilities':
+                            SDL.ClimateController.model.getClimateControlCapabilities()
+                      }
+                    );
                   }
                   if (request.params.moduleTypes[i] === 'RADIO') {
                     interiorVehicleDataCapabilities.push(
