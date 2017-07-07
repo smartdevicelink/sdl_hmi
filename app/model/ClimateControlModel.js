@@ -99,11 +99,6 @@ SDL.ClimateControlModel = Em.Object.create({
       }
     },
 
-  currentTempAvailableClick: function() {
-    this.set('climateControlData.currentTempEditDisabled',
-          !this.climateControlData.currentTempEditDisabled);
-  },
-
   currentTempUp: function() {
       if (this.climateControlData.currentTemp < 40) {
         this.set('climateControlData.currentTemp',
@@ -233,6 +228,10 @@ SDL.ClimateControlModel = Em.Object.create({
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
         null, this.climateControlData);
     },
+
+  toggleCurrentTempAvailable: function() {
+    this.toggleProperty('climateControlData.currentTempEditDisabled');
+  },
 
   setFanSpeed: function(speed) {
       this.set('climateControlData.fanSpeed', speed);

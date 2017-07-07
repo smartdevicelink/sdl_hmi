@@ -250,7 +250,7 @@ SDL.ClimateView = Em.ContainerView.create(
             }.property(
               'SDL.ClimateController.model.climateControlData.currentTempEditDisabled'
             ),
-            action: 'currentTempAvailableClick',
+            action: 'toggleCurrentTempAvailable',
             target: 'SDL.ClimateController.model',
             onDown: false
           }
