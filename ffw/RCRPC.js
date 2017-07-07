@@ -150,11 +150,13 @@ FFW.RC = FFW.RPCObserver.create(
                     'moduleZone': request.params.zone,
                     'moduleType': 'CLIMATE'
                   }
-                );
-                interiorVehicleDataCapabilities.push(
-                  {
-                    'moduleZone': request.params.zone,
-                    'moduleType': 'RADIO'
+                  if (request.params.moduleTypes[i] === 'RADIO') {
+                    interiorVehicleDataCapabilities.push(
+                      {
+                        'radioControlCapabilities':
+                          SDL.RadioModel.getRadioControlCapabilities()
+                      }
+                    );
                   }
                 );
               }

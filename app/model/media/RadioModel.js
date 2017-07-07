@@ -61,6 +61,8 @@ SDL.RadioModel = Em.Object.create({
    */
   consentedApp: null,
 
+  radioDisabled: true,
+
   optionsEnabled: false,
 
   tuneUpTimer: null,
@@ -182,6 +184,23 @@ SDL.RadioModel = Em.Object.create({
       radioEnable: true,
       state: 'MULTICAST'
     },
+
+  getRadioControlCapabilities: function() {
+    var result = {
+      name: 'Radio Control Module',
+      radioEnableAvailable: true,
+      radioBandAvailable: true,
+      radioFrequencyAvailable: true,
+      hdChannelAvailable: true,
+      rdsDataAvailable: true,
+      availableHDsAvailable: true,
+      stateAvailable: true,
+      signalStrengthAvailable: true,
+      signalChangeThresholdAvailable: true
+    };
+
+    return result;
+  },
 
   radioControlData: function() {
 
@@ -636,7 +655,7 @@ SDL.RadioModel = Em.Object.create({
     },
 
   radioEnableKeyPress: function() {
-
+    SDL.RadioModel.toggleProperty('radioDisabled');
     SDL.RadioModel.toggleProperty('radioControlStruct.radioEnable');
 
     SDL.SDLModel.resetControl();
