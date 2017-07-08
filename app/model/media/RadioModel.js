@@ -61,8 +61,6 @@ SDL.RadioModel = Em.Object.create({
    */
   consentedApp: null,
 
-  radioDisabled: true,
-
   optionsEnabled: false,
 
   tuneUpTimer: null,
@@ -655,8 +653,16 @@ SDL.RadioModel = Em.Object.create({
     },
 
   radioEnableKeyPress: function() {
-    SDL.RadioModel.toggleProperty('radioDisabled');
     SDL.RadioModel.toggleProperty('radioControlStruct.radioEnable');
+
+    if (this.scanState) {
+      this.stopScan();
+    }
+
+    if (this.directTuneKeyItems.length) {
+      this.set('directTuneKeypressed', false);
+      this.set('station', this.temp);
+    }
 
     SDL.SDLModel.resetControl();
   },
