@@ -87,6 +87,12 @@ SDL.RadioModel = Em.Object.create({
 
   band: 'FM',
 
+  hdChannelsStruct: [
+    1,
+    2,
+    3
+  ],
+
   stateStruct: [
     'ACQUIRING',
     'ACQUIRED',
@@ -662,6 +668,10 @@ SDL.RadioModel = Em.Object.create({
     if (this.directTuneKeyItems.length) {
       this.set('directTuneKeypressed', false);
       this.set('station', this.temp);
+    }
+
+    if (this.optionsEnabled) {
+      this.toggleProperty('optionsEnabled');
     }
 
     SDL.SDLModel.resetControl();

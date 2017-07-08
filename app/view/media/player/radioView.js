@@ -258,13 +258,11 @@ SDL.RadioView = Em.ContainerView
               content: 'availableHDs'
             }
           ),
-          /**
-           * Input
-           */
-          availableHDsInput: Ember.TextField.extend(
+          availableHDsInput: Em.Select.extend(
             {
               elementId: 'availableHDsInput',
               classNames: 'availableHDsInput',
+              contentBinding: 'SDL.RadioModel.hdChannelsStruct',
               valueBinding: 'SDL.RadioModel.radioControlStruct.availableHDs'
             }
           ),
@@ -275,13 +273,11 @@ SDL.RadioView = Em.ContainerView
               content: 'hdChannel'
             }
           ),
-          /**
-           * Input
-           */
-          hdChannelInput: Ember.TextField.extend(
+          hdChannelInput: Em.Select.extend(
             {
               elementId: 'hdChannelInput',
               classNames: 'hdChannelInput',
+              contentBinding: 'SDL.RadioModel.hdChannelsStruct',
               valueBinding: 'SDL.RadioModel.radioControlStruct.hdChannel'
             }
           ),
@@ -344,6 +340,7 @@ SDL.RadioView = Em.ContainerView
                 FFW.RC.onInteriorVehicleDataNotification(
                   'RADIO', null, SDL.RadioModel.get('radioControlData')
                 );
+                SDL.RadioModel.toggleProperty('optionsEnabled');
               }
             }
           )
@@ -592,9 +589,9 @@ SDL.RadioView = Em.ContainerView
               // Change Icon for Frequency Scan
               onIconChange: function() {
                 if (SDL.RadioModel.radioControlStruct.radioEnable) {
-                  this.set('icon', 'images/media/active_horiz_led.png');
-                } else {
                   this.set('icon', 'images/media/passiv_horiz_led.png');
+                } else {
+                  this.set('icon', 'images/media/active_horiz_led.png');
                 }
               }.observes('SDL.RadioModel.radioControlStruct.radioEnable')
             }
