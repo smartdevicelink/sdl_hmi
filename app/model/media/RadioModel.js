@@ -87,6 +87,12 @@ SDL.RadioModel = Em.Object.create({
 
   band: 'FM',
 
+  hdChannelsStruct: [
+    1,
+    2,
+    3
+  ],
+
   stateStruct: [
     'ACQUIRING',
     'ACQUIRED',
@@ -182,6 +188,23 @@ SDL.RadioModel = Em.Object.create({
       radioEnable: true,
       state: 'MULTICAST'
     },
+
+  getRadioControlCapabilities: function() {
+    var result = {
+      name: 'Radio Control Module',
+      radioEnableAvailable: true,
+      radioBandAvailable: true,
+      radioFrequencyAvailable: true,
+      hdChannelAvailable: true,
+      rdsDataAvailable: true,
+      availableHDsAvailable: true,
+      stateAvailable: true,
+      signalStrengthAvailable: true,
+      signalChangeThresholdAvailable: true
+    };
+
+    return result;
+  },
 
   radioControlData: function() {
 
@@ -636,8 +659,20 @@ SDL.RadioModel = Em.Object.create({
     },
 
   radioEnableKeyPress: function() {
-
     SDL.RadioModel.toggleProperty('radioControlStruct.radioEnable');
+
+    if (this.scanState) {
+      this.stopScan();
+    }
+
+    if (this.directTuneKeyItems.length) {
+      this.set('directTuneKeypressed', false);
+      this.set('station', this.temp);
+    }
+
+    if (this.optionsEnabled) {
+      this.toggleProperty('optionsEnabled');
+    }
 
     SDL.SDLModel.resetControl();
   },
