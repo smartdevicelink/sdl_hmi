@@ -43,18 +43,6 @@
     right: 10px;
 }
 
-#climate_control .smallSwitcher{
-    border: 1px solid #393939;
-    border-radius: 3px;
-    width: 20px;
-    height: 40px;
-}
-
-#climate_control .smallSwitcher .ico{
-    position: absolute;
-    top: -5px;
-}
-
 #desiredTempLabel.label{
     top: 120px;
     left: 54px;
@@ -63,11 +51,6 @@
 #fanSpeedLabel.label{
     top: 120px;
     left: 363px;
-}
-
-#climate_control .currentTempSwitcher {
-    top: 71px;
-    right: 198px;
 }
 
 #curentTempLabel.label{

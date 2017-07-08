@@ -16,7 +16,6 @@ SDL.ClimateControlModel = Em.Object.create({
   consentedApp: null,
 
   climateControlData: {
-    currentTempEditDisabled: true,
     temperatureUnit: 'CELSIUS',
     currentTemp: 20,
     desiredTemp: 25,
@@ -228,10 +227,6 @@ SDL.ClimateControlModel = Em.Object.create({
       FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
         null, this.climateControlData);
     },
-
-  toggleCurrentTempAvailable: function() {
-    this.toggleProperty('climateControlData.currentTempEditDisabled');
-  },
 
   setFanSpeed: function(speed) {
       this.set('climateControlData.fanSpeed', speed);

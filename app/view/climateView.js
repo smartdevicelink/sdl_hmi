@@ -58,7 +58,6 @@ SDL.ClimateView = Em.ContainerView.create(
           'fanSpeed',
           'fanSpeedLabel',
           'currentTemp',
-          'currentTempSwitcher',
           'curentTempLabel',
           'defrostZone',
           'defrostZoneLabel',
@@ -189,7 +188,6 @@ SDL.ClimateView = Em.ContainerView.create(
             ],
             currentTemp_minus: SDL.Button.extend(
               {
-                disabledBinding: 'SDL.ClimateController.model.climateControlData.currentTempEditDisabled',
                 elementId: 'currentTemp_minus',
                 classNames: 'minus',
                 templateName: 'icon',
@@ -223,7 +221,6 @@ SDL.ClimateView = Em.ContainerView.create(
             ),
             currentTemp_plus: SDL.Button.extend(
               {
-                disabledBinding: 'SDL.ClimateController.model.climateControlData.currentTempEditDisabled',
                 elementId: 'currentTemp_plus',
                 classNames: 'plus',
                 templateName: 'icon',
@@ -233,26 +230,6 @@ SDL.ClimateView = Em.ContainerView.create(
                 target: 'SDL.ClimateController.model'
               }
             )
-          }
-        ),
-        currentTempSwitcher: SDL.Button.extend(
-          {
-            elementId: 'currentTempSwitcher',
-            classNames: 'currentTempSwitcher smallSwitcher',
-            iconBinding: 'onIconChange',
-            disabledBinding: 'parentView.disabled',
-            onIconChange: function() {
-              if (SDL.ClimateController.model.climateControlData.currentTempEditDisabled) {
-                return 'images/media/passiv_horiz_led.png';
-              } else {
-                return 'images/media/active_horiz_led.png';
-              }
-            }.property(
-              'SDL.ClimateController.model.climateControlData.currentTempEditDisabled'
-            ),
-            action: 'toggleCurrentTempAvailable',
-            target: 'SDL.ClimateController.model',
-            onDown: false
           }
         ),
         curentTempLabel: SDL.Label.extend(
