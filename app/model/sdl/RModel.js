@@ -59,7 +59,7 @@ SDL.RModel = SDL.SDLModel.extend({
    *
    * @param {Object}
    */
-  driverDevice: false,
+  driverDevice: true,
 
   /**
    * Current drivers device flag

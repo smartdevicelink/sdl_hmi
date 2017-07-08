@@ -77,12 +77,7 @@ SDL.InfoAppsView = Em.ContainerView.create({
                  }
                  )
                );
-      } else if (apps[i].appType.indexOf('REMOTE_CONTROL') != -1 &&
-        apps[i].level != 'NONE' &&
-        apps[i].level != 'BACKGROUND' ||
-        SDL.SDLModel.driverDeviceInfo &&
-        apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name) {
-
+      } else if (apps[i].appType.indexOf('REMOTE_CONTROL') != -1) {
         var driverDevice = (
         SDL.SDLModel.driverDeviceInfo &&
         apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
@@ -102,9 +97,8 @@ SDL.InfoAppsView = Em.ContainerView.create({
                    classNames: 'list-item button',
                    iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
                    '.appIcon',
-                   disabled: false
-                 }
-                 )
+                   disabled: driverDevice ? apps[i].disabledToActivate : true
+                 })
                );
       }
     }
