@@ -129,15 +129,6 @@ FFW.Buttons = FFW.RPCObserver.create(
       this._super();
       if (request.method == 'Buttons.ButtonPress') {
         Em.Logger.log('FFW.' + request.method + 'Response');
-        if (SDL.SDLController.getInteriorZone(request.params.zone) === null) {
-          this.sendError(
-            SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
-            request.id,
-            request.method,
-            'Unsupported interior zone!'
-          );
-          return;
-        }
         var deviceName = SDL.SDLController.getApplicationModel(
           request.params.appID
         ).deviceName;

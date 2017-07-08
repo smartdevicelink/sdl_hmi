@@ -91,8 +91,8 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
     this.set('moduleSubscriptions', {
-          'CLIMATE': {'subscription': false, zone: []},
-          'RADIO': {'subscription': false, zone: []}
+          'CLIMATE': {'subscription': false},
+          'RADIO': {'subscription': false}
         }
       );
   },

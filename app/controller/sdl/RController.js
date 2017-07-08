@@ -414,12 +414,6 @@ SDL.RController = SDL.SDLController.extend(
       var d = SDL.deepCopy(data);
       if (type === 'get') {
         switch (d.temperatureUnit) {
-          case 'KELVIN':
-          {
-            d.currentTemp += 273;
-            d.desiredTemp += 273;
-            return d;
-          }
           case 'CELSIUS':
           {
             return d;
@@ -433,12 +427,6 @@ SDL.RController = SDL.SDLController.extend(
         }
       } else {
         switch (d.temperatureUnit) {
-          case 'KELVIN':
-          {
-            d.currentTemp -= 273;
-            d.desiredTemp -= 273;
-            return d;
-          }
           case 'CELSIUS':
           {
             return d;
@@ -457,84 +445,6 @@ SDL.RController = SDL.SDLController.extend(
           }
         }
       }
-    },
-    unMapInteriorZone: function(moduleZone) {
-      var zone = {};
-      switch (moduleZone) {
-        case 'driver':
-        {
-          zone = {
-            'col': 0,
-            'row': 0,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'front_passenger':
-        {
-          zone = {
-            'col': 1,
-            'row': 0,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'back_left':
-        {
-          zone = {
-            'col': 0,
-            'row': 1,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'back_right':
-        {
-          zone = {
-            'col': 1,
-            'row': 1,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-      }
-    },
-    getInteriorZone: function(moduleZone) {
-      var zone;
-      zone = null;
-      if (moduleZone == null) {
-        return zone;
-      }
-      if (moduleZone.col === 0) {
-        if (moduleZone.row === 0) {
-          zone = 'driver';
-        } else if (moduleZone.row === 1) {
-          zone = 'back_left';
-        }
-      } else if (moduleZone.col === 1) {
-        if (moduleZone.row === 0) {
-          zone = 'front_passenger';
-        } else if (moduleZone.row === 1) {
-          zone = 'back_right';
-        }
-      }
-      return zone;
     }
   }
 );
