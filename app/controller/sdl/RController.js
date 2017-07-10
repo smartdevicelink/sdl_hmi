@@ -53,7 +53,7 @@ SDL.RController = SDL.SDLController.extend(
         FFW.RC.onInteriorVehicleDataNotification(
           'RADIO',
           null,
-          SDL.RadioModel.get('radioControlData')
+          SDL.RadioModel.getRadioControlData()
         );
       } else {
         FFW.RC.sendError(
@@ -409,6 +409,15 @@ SDL.RController = SDL.SDLController.extend(
         ).deviceName === deviceName) {
         SDL.SDLModel.data.climateFirstConsentedApp = null;
       }
+    },
+    getTemperatureStruct: function(type, value) {
+      var t = value * 9 / 5 + 32;
+      var result = {
+        unit: type,
+        valueC: value,
+        valueF: t.toFixed(1)
+      }
+      return result;
     },
     correctTemp: function(data, type) {
       var d = SDL.deepCopy(data);
