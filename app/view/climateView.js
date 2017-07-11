@@ -95,15 +95,19 @@ SDL.ClimateView = Em.ContainerView.create(
               {
                 elementId: 'desiredTemp_label',
                 temp: function() {
-                  switch (SDL.ClimateController.model.climateControlData.temperatureUnit) {
+                  temperature_struct = SDL.SDLController.getTemperatureStruct(
+                    SDL.ClimateController.model.climateControlData.temperatureUnit,
+                    SDL.ClimateController.model.climateControlData.desiredTemp
+                  );
+
+                  switch (temperature_struct.unit) {
                     case 'CELSIUS':
                     {
-                      return SDL.ClimateController.model.climateControlData.desiredTemp;
+                      return temperature_struct.valueC;
                     }
                     case 'FAHRENHEIT':
                     {
-                      return SDL.ClimateController.model.climateControlData.desiredTemp *
-                        9 / 5 + 32;
+                      return temperature_struct.valueF;
                     }
                   }
                 }.property(
@@ -201,15 +205,19 @@ SDL.ClimateView = Em.ContainerView.create(
               {
                 elementId: 'currentTemp_label',
                 temp: function() {
-                  switch (SDL.ClimateController.model.climateControlData.temperatureUnit) {
+                  temperature_struct = SDL.SDLController.getTemperatureStruct(
+                    SDL.ClimateController.model.climateControlData.temperatureUnit,
+                    SDL.ClimateController.model.climateControlData.currentTemp
+                  );
+
+                  switch (temperature_struct.unit) {
                     case 'CELSIUS':
                     {
-                      return SDL.ClimateController.model.climateControlData.currentTemp;
+                      return temperature_struct.valueC;
                     }
                     case 'FAHRENHEIT':
                     {
-                      return SDL.ClimateController.model.climateControlData.currentTemp *
-                        9 / 5 + 32;
+                      return temperature_struct.valueF;
                     }
                   }
                 }.property(
