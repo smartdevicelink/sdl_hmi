@@ -31,7 +31,7 @@ SDL.ClimateControlModel = Em.Object.create({
 
   getClimateControlCapabilities: function() {
     var result = {
-      name: 'Climate Control Module',
+      name: this.getModuleName(),
       fanSpeedAvailable: true,
       desiredTemperatureAvailable: true,
       acEnableAvailable: true,
@@ -46,6 +46,33 @@ SDL.ClimateControlModel = Em.Object.create({
     };
 
     return result;
+  },
+
+  getClimateControlData: function() {
+    var result = {
+      fanSpeed: this.climateControlData.fanSpeed,
+      currentTemperature: SDL.SDLController.getTemperatureStruct(
+        this.climateControlData.temperatureUnit,
+        this.climateControlData.currentTemp
+      ),
+      desiredTemperature: SDL.SDLController.getTemperatureStruct(
+        this.climateControlData.temperatureUnit,
+        this.climateControlData.desiredTemp
+      ),
+      acEnable: this.climateControlData.acEnable,
+      circulateAirEnable: this.climateControlData.circulateAirEnable,
+      autoModeEnable: this.climateControlData.autoModeEnable,
+      defrostZone: this.climateControlData.defrostZone,
+      dualModeEnable: this.climateControlData.dualModeEnable,
+      acMaxEnable: this.climateControlData.acMaxEnable,
+      ventilationMode: this.climateControlData.currentVentilationMode
+    };
+
+    return result;
+  },
+
+  getModuleName: function() {
+    return 'Climate Control Module';
   },
 
   setClimateData: function(data) {

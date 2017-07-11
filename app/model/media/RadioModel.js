@@ -189,9 +189,13 @@ SDL.RadioModel = Em.Object.create({
       state: 'MULTICAST'
     },
 
+  getModuleName: function() {
+    return 'Radio Control Module';
+  },
+
   getRadioControlCapabilities: function() {
     var result = {
-      name: 'Radio Control Module',
+      name: this.getModuleName(),
       radioEnableAvailable: true,
       radioBandAvailable: true,
       radioFrequencyAvailable: true,
@@ -206,59 +210,33 @@ SDL.RadioModel = Em.Object.create({
     return result;
   },
 
-  radioControlData: function() {
-
+  getRadioControlData: function() {
     var result = {
-        frequencyInteger: SDL.RadioModel.radioControlStruct.frequencyInteger,
-        frequencyFraction: SDL.RadioModel.radioControlStruct.frequencyFraction,
-        band: SDL.RadioModel.radioControlStruct.band,
+        frequencyInteger: this.radioControlStruct.frequencyInteger,
+        frequencyFraction: this.radioControlStruct.frequencyFraction,
+        band: this.radioControlStruct.band,
         rdsData: {
-          PS: SDL.RadioModel.radioControlStruct.rdsData.PS,
-          RT: SDL.RadioModel.radioControlStruct.rdsData.RT,
-          CT: SDL.RadioModel.radioControlStruct.rdsData.CT,
-          PI: SDL.RadioModel.radioControlStruct.rdsData.PI,
-          PTY: parseInt(SDL.RadioModel.radioControlStruct.rdsData.PTY),
-          TP: SDL.RadioModel.radioControlStruct.rdsData.TP,
-          TA: SDL.RadioModel.radioControlStruct.rdsData.TA,
-          REG: SDL.RadioModel.radioControlStruct.rdsData.REG
+          PS: this.radioControlStruct.rdsData.PS,
+          RT: this.radioControlStruct.rdsData.RT,
+          CT: this.radioControlStruct.rdsData.CT,
+          PI: this.radioControlStruct.rdsData.PI,
+          PTY: parseInt(this.radioControlStruct.rdsData.PTY),
+          TP: this.radioControlStruct.rdsData.TP,
+          TA: this.radioControlStruct.rdsData.TA,
+          REG: this.radioControlStruct.rdsData.REG
         },
-        availableHDs: parseInt(SDL.RadioModel.radioControlStruct.availableHDs),
-        hdChannel: parseInt(SDL.RadioModel.radioControlStruct.hdChannel),
-        signalStrength: parseInt(SDL.RadioModel.radioControlStruct.signalStrength
-        ),
+        availableHDs: this.radioControlStruct.availableHDs,
+        hdChannel: this.radioControlStruct.hdChannel,
+        signalStrength: parseInt(this.radioControlStruct.signalStrength),
         signalChangeThreshold: parseInt(
-          SDL.RadioModel.radioControlStruct.signalChangeThreshold
+          this.radioControlStruct.signalChangeThreshold
         ),
-        radioEnable: SDL.RadioModel.radioControlStruct.radioEnable,
-        state: SDL.RadioModel.radioControlStruct.state
+        radioEnable: this.radioControlStruct.radioEnable,
+        state: this.radioControlStruct.state
       };
 
-    this.set('station',
-      result.frequencyInteger + '.' + result.frequencyFraction
-    );
-
     return result;
-  }.property(
-    'SDL.RadioModel.radioControlStruct.frequencyInteger',
-    'SDL.RadioModel.radioControlStruct.frequencyFraction',
-    'SDL.RadioModel.radioControlStruct.band',
-    'SDL.RadioModel.radioControlStruct.rdsData.PS',
-    'SDL.RadioModel.radioControlStruct.rdsData.RT',
-    'SDL.RadioModel.radioControlStruct.rdsData.CT',
-    'SDL.RadioModel.radioControlStruct.rdsData.PI',
-    'SDL.RadioModel.radioControlStruct.rdsData.PTY',
-    'SDL.RadioModel.radioControlStruct.rdsData.TP',
-    'SDL.RadioModel.radioControlStruct.rdsData.TA',
-    'SDL.RadioModel.radioControlStruct.rdsData.REG',
-    'SDL.RadioModel.radioControlStruct.availableHDs',
-    'SDL.RadioModel.radioControlStruct.hdChannel',
-    'SDL.RadioModel.radioControlStruct.signalStrength',
-    'SDL.RadioModel.radioControlStruct.signalChangeThreshold',
-    'SDL.RadioModel.radioControlStruct.radioEnable',
-    'SDL.RadioModel.radioControlStruct.state',
-    'SDL.RadioModel.radioDetails.radioStation.availableHDs',
-    'SDL.RadioModel.radioDetails.radioStation.currentHD'
-  ),
+  },
 
   radioZone: {
       'col': 0,
@@ -472,7 +450,7 @@ SDL.RadioModel = Em.Object.create({
     }
 
     FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-      this.get('radioControlData')
+      this.getRadioControlData()
     );
   },
 
@@ -606,7 +584,7 @@ SDL.RadioModel = Em.Object.create({
         parseInt(SDL.RadioModel.station.slice(-1))
       );
       FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-        this.get('radioControlData')
+        this.getRadioControlData()
       );
 
       SDL.SDLModel.resetControl();
@@ -640,7 +618,7 @@ SDL.RadioModel = Em.Object.create({
         this.findStationPresets();
 
         FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-          this.get('radioControlData')
+          this.getRadioControlData()
         );
 
         SDL.SDLModel.resetControl();
@@ -804,12 +782,12 @@ SDL.RadioModel = Em.Object.create({
       this.updateSongInfo(this.stationsData[data].songInfo);
 
       FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-        this.get('radioControlData')
+        this.getRadioControlData()
       );
     } else {
 
       FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-        this.get('radioControlData')
+        this.getRadioControlData()
       );
     }
   },
