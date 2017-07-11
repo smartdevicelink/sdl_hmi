@@ -124,24 +124,20 @@ FFW.RC = FFW.RPCObserver.create(
           {
             Em.Logger.log('FFW.' + request.method + 'Response');
             if (!SDL.SDLModel.errorResponse) {
-              var interiorVehicleDataCapabilities = [];
+              var interiorVehicleDataCapabilities = {};
               if (request.params.moduleTypes) {
                 for (var i = 0; i < request.params.moduleTypes.length; i++) {
                   if (request.params.moduleTypes[i] === 'CLIMATE') {
-                    interiorVehicleDataCapabilities.push(
-                      {
-                          'climateControlCapabilities':
-                            SDL.ClimateController.model.getClimateControlCapabilities()
-                      }
-                    );
+                    interiorVehicleDataCapabilities.climateControlCapabilities =
+                      [
+                        SDL.ClimateController.model.getClimateControlCapabilities()
+                      ]
                   }
                   if (request.params.moduleTypes[i] === 'RADIO') {
-                    interiorVehicleDataCapabilities.push(
-                      {
-                        'radioControlCapabilities':
-                          SDL.RadioModel.getRadioControlCapabilities()
-                      }
-                    );
+                    interiorVehicleDataCapabilities.radioControlCapabilities =
+                      [
+                        SDL.RadioModel.getRadioControlCapabilities()
+                      ]
                   }
                 }
               }
