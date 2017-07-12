@@ -522,29 +522,30 @@ SDL.RadioModel = Em.Object.create({
       }
     }
   },
-  //
-  //updateRadioFrequency: function(params) {
-  //    if (SDL.RadioModel.activeBand == 'fm') {
-  //
-  //        if (params.frequency != null) {
-  //            SDL.RadioModel.radioControlStruct.frequencyInteger = params.frequency;
-  //        }
-  //        if (params.fraction != null) {
-  //            SDL.RadioModel.radioDetails.radioStation.fraction = params.fraction;
-  //        }
-  //        if (params.availableHDs != null) {
-  //            SDL.RadioModel.radioDetails.radioStation.availableHDs = params.availableHDs;
-  //        }
-  //        if (params.currentHD != null) {
-  //            SDL.RadioModel.radioDetails.radioStation.currentHD = params.currentHD;
-  //        }
-  //        SDL.RadioModel.set('station', SDL.RadioModel.radioControlStruct.frequencyInteger
-  //            + '.'
-  //            + SDL.RadioModel.radioDetails.radioStation.fraction);
-  //
-  //        SDL.RadioModel.findStationPresets();
-  //    }
-  //},
+
+  updateRadioFrequency: function(params) {
+    if (params) {
+      if (params.frequency != null) {
+        this.set('radioControlStruct.frequencyInteger', params.frequency);
+      }
+      if (params.fraction != null) {
+        this.set('radioControlStruct.frequencyFraction', params.fraction);
+      }
+      if (params.availableHDs != null) {
+        this.set('radioControlStruct.availableHDs', params.availableHDs);
+      }
+      if (params.currentHD != null) {
+        this.set('radioControlStruct.currentHD', params.currentHD);
+      }
+    }
+
+    this.set('station',
+      this.radioControlStruct.frequencyInteger + '.' +
+      this.radioControlStruct.frequencyFraction
+    );
+
+    SDL.RadioModel.findStationPresets();
+  },
 
   /**
    * Keys for direct tune component
@@ -738,6 +739,7 @@ SDL.RadioModel = Em.Object.create({
       this.set('radioControlStruct.frequencyInteger', Math.floor(data / 10));
       this.set('radioControlStruct.frequencyFraction', data % 10);
 
+      this.updateRadioFrequency();
       this.checkRadioDetailsSongInfo(data);
     },
 
