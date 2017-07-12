@@ -757,6 +757,7 @@ SDL.RadioModel = Em.Object.create({
       this.set('radioControlStruct.frequencyInteger', Math.floor(data / 10));
       this.set('radioControlStruct.frequencyFraction', data % 10);
 
+      this.updateRadioFrequency();
       this.checkRadioDetailsSongInfo(data);
     },
 
