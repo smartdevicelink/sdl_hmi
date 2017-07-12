@@ -103,11 +103,11 @@ SDL.ClimateView = Em.ContainerView.create(
                   switch (temperature_struct.unit) {
                     case 'CELSIUS':
                     {
-                      return temperature_struct.valueC;
+                      return temperature_struct.valueC.toFixed(1);
                     }
                     case 'FAHRENHEIT':
                     {
-                      return temperature_struct.valueF;
+                      return temperature_struct.valueF.toFixed(1);
                     }
                   }
                 }.property(
@@ -213,11 +213,11 @@ SDL.ClimateView = Em.ContainerView.create(
                   switch (temperature_struct.unit) {
                     case 'CELSIUS':
                     {
-                      return temperature_struct.valueC;
+                      return temperature_struct.valueC.toFixed(1);
                     }
                     case 'FAHRENHEIT':
                     {
-                      return temperature_struct.valueF;
+                      return temperature_struct.valueF.toFixed(1);
                     }
                   }
                 }.property(

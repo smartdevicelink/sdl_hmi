@@ -414,8 +414,8 @@ SDL.RController = SDL.SDLController.extend(
       var t = value * 9 / 5 + 32;
       var result = {
         unit: type,
-        valueC: value,
-        valueF: t.toFixed(1)
+        valueC: parseFloat(value.toFixed(1)),
+        valueF: parseFloat(t.toFixed(1))
       }
       return result;
     },
