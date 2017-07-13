@@ -189,13 +189,8 @@ SDL.RadioModel = Em.Object.create({
       state: 'MULTICAST'
     },
 
-  getModuleName: function() {
-    return 'Radio Control Module';
-  },
-
   getRadioControlCapabilities: function() {
     var result = {
-      name: this.getModuleName(),
       radioEnableAvailable: true,
       radioBandAvailable: true,
       radioFrequencyAvailable: true,

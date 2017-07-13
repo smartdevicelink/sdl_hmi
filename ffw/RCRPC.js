@@ -230,7 +230,6 @@ FFW.RC = FFW.RPCObserver.create(
             }
 
             var moduleType = request.params.moduleDescription.moduleType;
-            var moduleName = null;
             var climateControlData = null;
             var radioControlData = null;
 
@@ -242,10 +241,8 @@ FFW.RC = FFW.RPCObserver.create(
                 request.params.subscribe;
             }
             if (moduleType === 'CLIMATE') {
-              moduleName = SDL.ClimateController.model.getModuleName();
               climateControlData = SDL.ClimateController.model.getClimateControlData();
             } else if (moduleType === 'RADIO') {
-              moduleName = SDL.RadioModel.getModuleName();
               radioControlData = SDL.RadioModel.getRadioControlData();
             }
 
@@ -256,8 +253,7 @@ FFW.RC = FFW.RPCObserver.create(
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
                 'moduleData': {
-                  'moduleType': moduleType,
-                  'moduleName': moduleName
+                  'moduleType': moduleType
                 }
               }
             };
