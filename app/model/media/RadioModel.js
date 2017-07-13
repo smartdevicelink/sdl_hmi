@@ -185,7 +185,7 @@ SDL.RadioModel = Em.Object.create({
       hdChannel: 1,
       signalStrength: 50,
       signalChangeThreshold: 60,
-      radioEnable: true,
+      radioEnable: false,
       state: 'MULTICAST'
     },
 
