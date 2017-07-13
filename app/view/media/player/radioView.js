@@ -416,7 +416,7 @@ SDL.RadioView = Em.ContainerView
                         target: 'SDL.RadioModel',
                         disabledBinding: 'isDisabled',
                         isDisabled: function() {
-                          if (SDL.RadioModel.radioControlStruct.radioEnable) {
+                          if (!SDL.RadioModel.radioControlStruct.radioEnable) {
                             return true;
                           }
                           if (this.preset == 'X') {
@@ -459,7 +459,7 @@ SDL.RadioView = Em.ContainerView
                 {
                   onEnableRadioClick: function() {
                     this.set('disabled',
-                      SDL.RadioModel.radioControlStruct.radioEnable);
+                      !SDL.RadioModel.radioControlStruct.radioEnable);
                   }.observes(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
@@ -476,7 +476,7 @@ SDL.RadioView = Em.ContainerView
                 {
                   onEnableRadioClick: function() {
                     this.set('disabled',
-                      SDL.RadioModel.radioControlStruct.radioEnable);
+                      !SDL.RadioModel.radioControlStruct.radioEnable);
                   }.observes(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
@@ -493,7 +493,7 @@ SDL.RadioView = Em.ContainerView
                 {
                   onEnableRadioClick: function() {
                     this.set('disabled',
-                      SDL.RadioModel.radioControlStruct.radioEnable);
+                      !SDL.RadioModel.radioControlStruct.radioEnable);
                   }.observes(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
@@ -510,7 +510,7 @@ SDL.RadioView = Em.ContainerView
                 {
                   onEnableRadioClick: function() {
                     this.set('disabled',
-                      SDL.RadioModel.radioControlStruct.radioEnable);
+                      !SDL.RadioModel.radioControlStruct.radioEnable);
                   }.observes(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
@@ -527,7 +527,7 @@ SDL.RadioView = Em.ContainerView
                 {
                   onEnableRadioClick: function() {
                     this.set('disabled',
-                      SDL.RadioModel.radioControlStruct.radioEnable);
+                      !SDL.RadioModel.radioControlStruct.radioEnable);
                   }.observes(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
@@ -544,7 +544,7 @@ SDL.RadioView = Em.ContainerView
                 {
                   onEnableRadioClick: function() {
                     this.set('disabled',
-                      SDL.RadioModel.radioControlStruct.radioEnable);
+                      !SDL.RadioModel.radioControlStruct.radioEnable);
                   }.observes(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
@@ -589,9 +589,9 @@ SDL.RadioView = Em.ContainerView
               // Change Icon for Frequency Scan
               onIconChange: function() {
                 if (SDL.RadioModel.radioControlStruct.radioEnable) {
-                  this.set('icon', 'images/media/passiv_horiz_led.png');
-                } else {
                   this.set('icon', 'images/media/active_horiz_led.png');
+                } else {
+                  this.set('icon', 'images/media/passiv_horiz_led.png');
                 }
               }.observes('SDL.RadioModel.radioControlStruct.radioEnable')
             }
@@ -600,7 +600,7 @@ SDL.RadioView = Em.ContainerView
             {
               onEnableRadioClick: function() {
                 this.set('disabled',
-                  SDL.RadioModel.radioControlStruct.radioEnable);
+                  !SDL.RadioModel.radioControlStruct.radioEnable);
               }.observes(
                 'SDL.RadioModel.radioControlStruct.radioEnable'
               ),
@@ -626,7 +626,7 @@ SDL.RadioView = Em.ContainerView
             {
               onEnableRadioClick: function() {
                 this.set('disabled',
-                  SDL.RadioModel.radioControlStruct.radioEnable);
+                  !SDL.RadioModel.radioControlStruct.radioEnable);
               }.observes(
                 'SDL.RadioModel.radioControlStruct.radioEnable'
               ),
@@ -645,7 +645,7 @@ SDL.RadioView = Em.ContainerView
             {
               onEnableRadioClick: function() {
                 this.set('disabled',
-                  SDL.RadioModel.radioControlStruct.radioEnable);
+                  !SDL.RadioModel.radioControlStruct.radioEnable);
               }.observes(
                 'SDL.RadioModel.radioControlStruct.radioEnable'
               ),
@@ -666,7 +666,7 @@ SDL.RadioView = Em.ContainerView
             {
               onEnableRadioClick: function() {
                 this.set('disabled',
-                  SDL.RadioModel.radioControlStruct.radioEnable);
+                  !SDL.RadioModel.radioControlStruct.radioEnable);
               }.observes(
                 'SDL.RadioModel.radioControlStruct.radioEnable'
               ),
@@ -694,7 +694,7 @@ SDL.RadioView = Em.ContainerView
                 {
                   onEnableRadioClick: function() {
                     this.set('disabled',
-                      SDL.RadioModel.radioControlStruct.radioEnable);
+                      !SDL.RadioModel.radioControlStruct.radioEnable);
                   }.observes(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
@@ -711,7 +711,7 @@ SDL.RadioView = Em.ContainerView
                 {
                   onEnableRadioClick: function() {
                     this.set('disabled',
-                      SDL.RadioModel.radioControlStruct.radioEnable);
+                      !SDL.RadioModel.radioControlStruct.radioEnable);
                   }.observes(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
