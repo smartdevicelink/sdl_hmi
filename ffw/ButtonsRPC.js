@@ -117,8 +117,10 @@ FFW.Buttons = FFW.RPCObserver.create(
       this._super();
 
       if (notification.method == this.onButtonSubscriptionNotification) {
-        SDL.SDLController.getApplicationModel(notification.params.appID).
-        set(notification.params.name, notification.params.isSubscribed);
+        var model = SDL.SDLController.getApplicationModel(notification.params.appID);
+        if (model) {
+          model.set(notification.params.name, notification.params.isSubscribed);
+        }
       }
     },
     /*
