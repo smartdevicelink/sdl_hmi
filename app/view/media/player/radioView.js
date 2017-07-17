@@ -337,9 +337,8 @@ SDL.RadioView = Em.ContainerView
               text: 'Send',
               onDown: false,
               action: function() {
-                FFW.RC.onInteriorVehicleDataNotification(
-                  'RADIO', null, SDL.RadioModel.getRadioControlData()
-                );
+                FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
+                  SDL.RadioModel.getRadioControlData());
                 SDL.RadioModel.toggleProperty('optionsEnabled');
               }
             }

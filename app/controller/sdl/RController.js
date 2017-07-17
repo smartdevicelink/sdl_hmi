@@ -50,11 +50,11 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.set('givenControlFlag', true);
         //FFW.CAN.OnRadioDetails({"radioStation":
         // SDL.RadioModel.radioDetails.radioStation});
-        FFW.RC.onInteriorVehicleDataNotification(
-          'RADIO',
-          null,
-          SDL.RadioModel.getRadioControlData()
-        );
+        // FFW.RC.onInteriorVehicleDataNotification(
+        //   'RADIO',
+        //   null,
+        //   SDL.RadioModel.getRadioControlData()
+        // );
       } else {
         FFW.RC.sendError(
           SDL.SDLModel.dataresultCode.REJECTED,
