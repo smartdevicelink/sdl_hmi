@@ -426,15 +426,14 @@ FFW.RC = FFW.RPCObserver.create(
                   }
                 }
               };
-              // TODO
-              // if (climateControlData) {
-              //   JSONMessage.params.moduleData.climateControlData =
-              //     climateControlData;
-              // }
-              // if (radioControlData) {
-              //   JSONMessage.params.moduleData.radioControlData =
-              //     radioControlData;
-              // }
+              if (climateControlData) {
+                JSONMessage.params.moduleData.climateControlData =
+                  climateControlData;
+              }
+              if (radioControlData) {
+                JSONMessage.params.moduleData.radioControlData =
+                  radioControlData;
+              }
               Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
               FFW.RC.client.send(JSONMessage);
           }
