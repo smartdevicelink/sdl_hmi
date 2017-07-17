@@ -53,7 +53,6 @@ SDL.RadioModel = Em.Object.create({
     }
 
     this.updateRadioFrequency();
-    this.set('active', true);
   },
 
   /**
