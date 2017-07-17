@@ -52,6 +52,7 @@ SDL.RadioModel = Em.Object.create({
       }
     }
 
+    this.updateRadioFrequency();
     this.set('active', true);
   },
 
@@ -168,8 +169,8 @@ SDL.RadioModel = Em.Object.create({
   directTuneKeypressed: false,
 
   radioControlStruct: {
-      frequencyInteger: 99,
-      frequencyFraction: 3,
+      frequencyInteger: 87,
+      frequencyFraction: 9,
       band: 'FM',
       rdsData: {
         PS: 'name',
@@ -539,7 +540,7 @@ SDL.RadioModel = Em.Object.create({
       this.radioControlStruct.frequencyFraction
     );
 
-    SDL.RadioModel.findStationPresets();
+    this.findStationPresets();
   },
 
   /**
