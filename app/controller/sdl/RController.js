@@ -411,11 +411,10 @@ SDL.RController = SDL.SDLController.extend(
       }
     },
     getTemperatureStruct: function(type, value) {
-      var t = value * 9 / 5 + 32;
+      var t = (type == 'CELSIUS' ? value : value * 9 / 5 + 32);
       var result = {
         unit: type,
-        valueC: parseFloat(value.toFixed(1)),
-        valueF: parseFloat(t.toFixed(1))
+        value: parseFloat(t.toFixed(1))
       }
       return result;
     },
