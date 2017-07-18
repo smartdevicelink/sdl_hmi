@@ -236,10 +236,6 @@ FFW.RC = FFW.RPCObserver.create(
             var app = SDL.SDLController.getApplicationModel(
               request.params.appID
             );
-            if (request.params.subscribe !== undefined) {
-              app.moduleSubscriptions[moduleType].subscription =
-                request.params.subscribe;
-            }
             if (moduleType === 'CLIMATE') {
               climateControlData = SDL.ClimateController.model.getClimateControlData();
             } else if (moduleType === 'RADIO') {
@@ -268,7 +264,7 @@ FFW.RC = FFW.RPCObserver.create(
             }
             if (request.params.subscribe !== undefined) {
               JSONMessage.result.isSubscribed =
-                app.moduleSubscriptions[moduleType].subscription;
+                request.params.subscribe;
             }
 
             this.client.send(JSONMessage);
@@ -413,32 +409,25 @@ FFW.RC = FFW.RPCObserver.create(
      * @param moduleType
      */
     onInteriorVehicleDataNotification: function(moduleType, climateControlData, radioControlData) {
-      var apps = SDL.SDLModel.data.registeredApps;
-      apps.forEach(
-        function(app, index) {
-          if (app.moduleSubscriptions[moduleType].subscription) {
-            var JSONMessage = {
-                'jsonrpc': '2.0',
-                'method': 'RC.OnInteriorVehicleData',
-                'params': {
-                  'moduleData': {
-                    'moduleType': moduleType
-                  }
-                }
-              };
-              if (climateControlData) {
-                JSONMessage.params.moduleData.climateControlData =
-                  climateControlData;
-              }
-              if (radioControlData) {
-                JSONMessage.params.moduleData.radioControlData =
-                  radioControlData;
-              }
-              Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
-              FFW.RC.client.send(JSONMessage);
+      var JSONMessage = {
+          'jsonrpc': '2.0',
+          'method': 'RC.OnInteriorVehicleData',
+          'params': {
+            'moduleData': {
+              'moduleType': moduleType
+            }
           }
+        };
+        if (climateControlData) {
+          JSONMessage.params.moduleData.climateControlData =
+            climateControlData;
         }
-      );
+        if (radioControlData) {
+          JSONMessage.params.moduleData.radioControlData =
+            radioControlData;
+        }
+        Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
+        FFW.RC.client.send(JSONMessage);
     },
     /**
      * Verification for consented apps
