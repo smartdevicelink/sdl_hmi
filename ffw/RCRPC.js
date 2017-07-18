@@ -178,21 +178,8 @@ FFW.RC = FFW.RPCObserver.create(
           //}
           case 'RC.SetInteriorVehicleData':
           {
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            if (request.params.moduleData == undefined) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED, request.id,
-                request.method, 'moduleData parameter missing!'
-              );
-              return;
-            }
-            if (!this.conssetAppCheck(request)) {
-              return;
-            }
+            Em.Logger.log('FFW.' + request.method + ' Request');
             if (request.params.moduleData.climateControlData) {
-              var climateControlData = SDL.SDLController.correctTemp(
-                request.params.moduleData.climateControlData, 'set'
-              );
               SDL.ClimateController.model.setClimateData(
                 request.params.moduleData.climateControlData
               );
