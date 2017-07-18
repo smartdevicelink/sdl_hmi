@@ -218,6 +218,9 @@ SDL.SDLController = Em.Object.extend(
       if (!eventName) {
         return;
       }
+      if ('AUDIO_SOURCE' == eventName) {
+        SDL.SDLModel.data.mediaPlayerActive = status;
+      }
       FFW.BasicCommunication.OnEventChanged(eventName, status);
     },
     /**
