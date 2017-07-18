@@ -446,8 +446,7 @@ SDL.RadioModel = Em.Object.create({
     }
 
     FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-      this.getRadioControlData()
-    );
+      this.getRadioControlData());
   },
 
   bandSelect: function(element) {
@@ -581,8 +580,7 @@ SDL.RadioModel = Em.Object.create({
         parseInt(SDL.RadioModel.station.slice(-1))
       );
       FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-        this.getRadioControlData()
-      );
+        this.getRadioControlData());
 
       SDL.SDLModel.resetControl();
     },
@@ -615,8 +613,7 @@ SDL.RadioModel = Em.Object.create({
         this.findStationPresets();
 
         FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-          this.getRadioControlData()
-        );
+          this.getRadioControlData());
 
         SDL.SDLModel.resetControl();
       }
@@ -648,6 +645,9 @@ SDL.RadioModel = Em.Object.create({
     if (this.optionsEnabled) {
       this.toggleProperty('optionsEnabled');
     }
+
+    FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
+      this.getRadioControlData());
 
     SDL.SDLModel.resetControl();
   },
@@ -781,13 +781,11 @@ SDL.RadioModel = Em.Object.create({
       this.updateSongInfo(this.stationsData[data].songInfo);
 
       FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-        this.getRadioControlData()
-      );
+        this.getRadioControlData());
     } else {
 
       FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-        this.getRadioControlData()
-      );
+        this.getRadioControlData());
     }
   },
 
