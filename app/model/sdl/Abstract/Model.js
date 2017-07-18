@@ -1238,10 +1238,6 @@ SDL.SDLModel = Em.Object.extend({
           reason = 'NAVIGATIONMAP';
           break;
         }
-        case 'climate': {
-          reason = 'CLIMATE';
-          break;
-        }
         case 'settings': {
           reason = 'SYNCSETTINGS';
           break;
@@ -1267,7 +1263,7 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.TurnByTurnView.deactivate();
 
-      if (!SDL.SDLModel.data.phoneCallActive) {
+      if (!SDL.SDLModel.data.phoneCallActive && reason == 'GENERAL') {
         FFW.BasicCommunication.OnAppDeactivated(appID);
       }
     }
