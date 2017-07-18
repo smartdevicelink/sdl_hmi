@@ -122,7 +122,7 @@ FFW.RC = FFW.RPCObserver.create(
         switch (request.method) {
           case 'RC.GetInteriorVehicleDataCapabilities':
           {
-            Em.Logger.log('FFW.' + request.method + 'Response');
+            Em.Logger.log('FFW.' + request.method + ' Request');
             if (!SDL.SDLModel.errorResponse) {
               var interiorVehicleDataCapabilities = {};
               if (request.params.moduleTypes) {
@@ -217,7 +217,7 @@ FFW.RC = FFW.RPCObserver.create(
           }
           case 'RC.GetInteriorVehicleData':
           {
-            Em.Logger.log('FFW.' + request.method + 'Response');
+            Em.Logger.log('FFW.' + request.method + ' Request');
             if (request.params.appID == undefined) {
              this.sendError(
                SDL.SDLModel.data.resultCode.INVALID_DATA, request.id,
@@ -272,6 +272,7 @@ FFW.RC = FFW.RPCObserver.create(
           }
           case 'RC.GetInteriorVehicleDataConsent':
           {
+            Em.Logger.log('FFW.' + request.method + ' Request');
             SDL.SDLController.interiorDataConsent(request);
             break;
           }
