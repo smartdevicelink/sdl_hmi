@@ -41,7 +41,6 @@ SDL.CDModel = Em.Object.create({
       this._super();
       this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
       this.set('player.name', 'CD');
-      this.set('active', true);
     },
 
   PlayList: SDL.Playlist.create({

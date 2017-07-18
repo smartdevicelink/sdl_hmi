@@ -225,7 +225,11 @@ var StateManager = Em.StateManager.extend(
               {
                 exit: function() {
                   this._super();
-                  SDL.MediaController.deactivateRadio();
+                  //SDL.MediaController.deactivateRadio();
+                  SDL.MediaController.deactivateCD();
+                  SDL.MediaController.currentSelectedPlayer.pause();
+                  SDL.MediaController.deactivateUSB();
+
                 }
               }
             ),
@@ -233,8 +237,10 @@ var StateManager = Em.StateManager.extend(
               {
                 exit: function() {
                   this._super();
+                  SDL.MediaController.deactivateRadio();
+                  //SDL.MediaController.deactivateCD();
+                  //SDL.MediaController.currentSelectedPlayer.pause();
                   SDL.MediaController.deactivateUSB();
-                  SDL.MediaController.currentSelectedPlayer.pause();
                 },
                 options: Em.State.create(
                   {}
@@ -260,8 +266,10 @@ var StateManager = Em.StateManager.extend(
               {
                 exit: function() {
                   this._super();
+                  SDL.MediaController.deactivateRadio();
                   SDL.MediaController.deactivateCD();
                   SDL.MediaController.currentSelectedPlayer.pause();
+                  //SDL.MediaController.deactivateUSB();
                   //SDL.MediaController.resetUpdatingMessage();
                 },
                 options: Em.State.create(
@@ -305,6 +313,7 @@ var StateManager = Em.StateManager.extend(
           {
             enter: function() {
               this._super();
+              SDL.MediaController.deactivateRadio();
               SDL.MediaController.deactivateUSB();
               SDL.MediaController.deactivateCD();
               SDL.SDLController.activateTBT();
@@ -327,7 +336,7 @@ var StateManager = Em.StateManager.extend(
         exit: function() {
           this._super();
           SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
-          //SDL.SDLModel.data.set('limitedExist', true);
+          SDL.SDLModel.data.set('limitedExist', true);
           SDL.SDLController.deactivateApp();
         }
       }
