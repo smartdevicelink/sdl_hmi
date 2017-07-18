@@ -214,12 +214,8 @@ var StateManager = Em.StateManager.extend(
               if (SDL.SDLController.model) {
                 SDL.SDLController.model.set('active', false);
               }
-              this._super();
               SDL.SDLController.onEventChanged(this.name, true);
-            },
-            exit: function() {
               this._super();
-              SDL.SDLController.onEventChanged(this.name, false);
             },
             radio: Em.State.create(
               {
@@ -316,6 +312,10 @@ var StateManager = Em.StateManager.extend(
               SDL.MediaController.deactivateRadio();
               SDL.MediaController.deactivateUSB();
               SDL.MediaController.deactivateCD();
+              if (SDL.SDLModel.data.mediaPlayerActive) {
+                SDL.SDLController.onEventChanged('player', false);
+              }
+
               SDL.SDLController.activateTBT();
             },
             exit: function() {
@@ -336,7 +336,7 @@ var StateManager = Em.StateManager.extend(
         exit: function() {
           this._super();
           SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
-          SDL.SDLModel.data.set('limitedExist', true);
+          //SDL.SDLModel.data.set('limitedExist', true);
           SDL.SDLController.deactivateApp();
         }
       }

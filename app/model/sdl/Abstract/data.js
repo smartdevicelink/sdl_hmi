@@ -136,6 +136,10 @@ SDL.SDLModelData = Em.Object.create(
      */
     stateLimited: null,
     /**
+     * Active state of media player on HMI for Deactivate app to handle event
+     */
+    mediaPlayerActive: false,
+    /**
      * Active state of phone call on HMI for Deactivate app to handle event
      */
     phoneCallActive: false,

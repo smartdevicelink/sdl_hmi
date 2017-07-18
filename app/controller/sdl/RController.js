@@ -84,6 +84,7 @@ SDL.RController = SDL.SDLController.extend(
         }
         default:
         {
+          this._super(reason, status);
           return;
         }
       }
