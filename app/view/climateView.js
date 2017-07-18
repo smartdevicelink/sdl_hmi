@@ -99,17 +99,7 @@ SDL.ClimateView = Em.ContainerView.create(
                     SDL.ClimateController.model.climateControlData.temperatureUnit,
                     SDL.ClimateController.model.climateControlData.desiredTemp
                   );
-
-                  switch (temperature_struct.unit) {
-                    case 'CELSIUS':
-                    {
-                      return temperature_struct.valueC.toFixed(1);
-                    }
-                    case 'FAHRENHEIT':
-                    {
-                      return temperature_struct.valueF.toFixed(1);
-                    }
-                  }
+                  return temperature_struct.value.toFixed(1);
                 }.property(
                   'SDL.ClimateController.model.climateControlData.desiredTemp',
                   'SDL.ClimateController.model.climateControlData.temperatureUnit'
@@ -209,17 +199,7 @@ SDL.ClimateView = Em.ContainerView.create(
                     SDL.ClimateController.model.climateControlData.temperatureUnit,
                     SDL.ClimateController.model.climateControlData.currentTemp
                   );
-
-                  switch (temperature_struct.unit) {
-                    case 'CELSIUS':
-                    {
-                      return temperature_struct.valueC.toFixed(1);
-                    }
-                    case 'FAHRENHEIT':
-                    {
-                      return temperature_struct.valueF.toFixed(1);
-                    }
-                  }
+                  return temperature_struct.value.toFixed(1);
                 }.property(
                   'SDL.ClimateController.model.climateControlData.currentTemp',
                   'SDL.ClimateController.model.climateControlData.temperatureUnit'
