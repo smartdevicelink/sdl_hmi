@@ -73,48 +73,57 @@ SDL.ClimateControlModel = Em.Object.create({
 
   setClimateData: function(data) {
 
-    if (data.fanSpeed) {
+    if (data.fanSpeed != null) {
       this.setFanSpeed(data.fanSpeed);
     }
 
-    if (data.currentTemperature) {
+    if (data.currentTemperature != null) {
       this.setCurrentTemp(data.currentTemperature);
     }
 
-    if (data.desiredTemperature) {
+    if (data.desiredTemperature != null) {
       this.setDesiredTemp(data.desiredTemperature);
     }
 
-    if (data.acEnable) {
+    if (data.acEnable != null) {
       this.setAcEnable(data.acEnable);
     }
 
-    if (data.circulateAirEnable) {
+    if (data.circulateAirEnable != null) {
       this.setRecirculateAirEnable(data.circulateAirEnable);
     }
 
-    if (data.autoModeEnable) {
+    if (data.autoModeEnable != null) {
       this.setAutoModeEnable(data.autoModeEnable);
     }
 
-    if (data.defrostZone) {
+    if (data.defrostZone != null) {
       this.setDefrostZone(data.defrostZone);
     }
 
-    if (data.dualModeEnable) {
+    if (data.dualModeEnable != null) {
       this.setDualModeEnable(data.dualModeEnable);
     }
 
-    if (data.acMaxEnable) {
+    if (data.acMaxEnable != null) {
       this.setAcMaxEnable(data.acMaxEnable);
     }
 
-    if (data.ventilationMode) {
+    if (data.ventilationMode != null) {
       this.setCurrentVentilationMode(data.ventilationMode);
     }
 
+    var result = this.getClimateControlData();
+    for (var key in result) {
+      if (!data.hasOwnProperty(key)) {
+        delete result[key];
+      }
+    }
+
     // FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-    //   this.getClimateControlData(), null);
+    //   result, null);
+
+    return result;
   },
 
   fanSpeedUp: function() {

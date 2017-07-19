@@ -179,15 +179,19 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.SetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
+
+            var newClimateControlData = null;
+            var newRadioControlData = null;
+
             if (request.params.moduleData.climateControlData) {
-              SDL.ClimateController.model.setClimateData(
-                request.params.moduleData.climateControlData
-              );
+              newClimateControlData =
+                SDL.ClimateController.model.setClimateData(
+                  request.params.moduleData.climateControlData);
             }
             if (request.params.moduleData.radioControlData) {
-              SDL.RadioModel.setRadioData(
-                request.params.moduleData.radioControlData
-              );
+              newRadioControlData =
+                SDL.RadioModel.setRadioData(
+                  request.params.moduleData.radioControlData);
             }
             // send repsonse
             var JSONMessage = {
@@ -196,9 +200,22 @@ FFW.RC = FFW.RPCObserver.create(
               'result': {
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
-                'moduleData': request.params.moduleData
+                'moduleData': {
+                  'moduleType': request.params.moduleData.moduleType
+                }
               }
             };
+
+            if (newClimateControlData) {
+              JSONMessage.result.moduleData.climateControlData =
+                newClimateControlData;
+            }
+
+            if (newRadioControlData) {
+              JSONMessage.result.moduleData.radioControlData =
+                newRadioControlData;
+            }
+
             this.client.send(JSONMessage);
             break;
           }

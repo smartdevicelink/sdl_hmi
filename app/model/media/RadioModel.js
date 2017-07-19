@@ -398,52 +398,62 @@ SDL.RadioModel = Em.Object.create({
 
   setRadioData: function(data) {
 
-    if (data.frequencyInteger) {
+    if (data.frequencyInteger != null) {
       this.setFrequencyInteger(data.frequencyInteger);
     }
 
-    if (data.frequencyFraction) {
+    if (data.frequencyFraction != null) {
       this.setFrequencyFraction(data.frequencyFraction);
     }
 
-    if (data.frequencyInteger || data.frequencyFraction) {
+    if (data.frequencyInteger != null ||
+        data.frequencyFraction != null) {
       this.updateRadioFrequency();
     }
 
-    if (data.band) {
+    if (data.band  != null) {
       this.setRadioBand(data.band);
     }
 
-    if (data.rdsData) {
+    if (data.rdsData != null) {
       this.setRadioRdsData(data.rdsData);
     }
 
-    if (data.availableHDs) {
+    if (data.availableHDs != null) {
       this.setAvailableHDs(data.availableHDs);
     }
 
-    if (data.hdChannel) {
+    if (data.hdChannel != null) {
       this.setCurrentHdChannel(data.hdChannel);
     }
 
-    if (data.SignalStrength) {
+    if (data.SignalStrength != null) {
       this.setSignalStrength(data.SignalStrength);
     }
 
-    if (data.signalChangeThreshold) {
+    if (data.signalChangeThreshold != null) {
       this.setSignalChangeThreshold(data.signalChangeThreshold);
     }
 
-    if (data.radioEnable) {
+    if (data.radioEnable != null) {
       this.setRadioEnable(data.radioEnable);
     }
 
-    if (data.state) {
+    if (data.state != null) {
       this.setRadioState(data.state);
+    }
+
+    var result = this.getRadioControlData();
+    for (var key in result) {
+      if (!data.hasOwnProperty(key)) {
+        delete result[key];
+      }
     }
 
     // FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
     //   this.getRadioControlData());
+
+    return result;
   },
 
   bandSelect: function(element) {
@@ -815,28 +825,28 @@ SDL.RadioModel = Em.Object.create({
   },
 
   setRadioRdsData: function(data) {
-    if (data.PS) {
+    if (data.PS != null) {
       this.set('radioControlStruct.rdsData.PS', data.PS);
     }
-    if (data.RT) {
+    if (data.RT != null) {
       this.set('radioControlStruct.rdsData.RT', data.RT);
     }
-    if (data.CT) {
+    if (data.CT != null) {
       this.set('radioControlStruct.rdsData.CT', data.CT);
     }
-    if (data.PI) {
+    if (data.PI != null) {
       this.set('radioControlStruct.rdsData.PI', data.PI);
     }
-    if (data.PTY) {
+    if (data.PTY != null) {
       this.set('radioControlStruct.rdsData.PTY', data.PTY);
     }
-    if (data.TP) {
+    if (data.TP != null) {
       this.set('radioControlStruct.rdsData.TP', data.TP);
     }
-    if (data.TA) {
+    if (data.TA != null) {
       this.set('radioControlStruct.rdsData.TA', data.TA);
     }
-    if (data.REG) {
+    if (data.REG != null) {
       this.set('radioControlStruct.rdsData.REG', data.REG);
     }
   },
