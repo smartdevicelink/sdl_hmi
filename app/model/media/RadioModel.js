@@ -399,54 +399,51 @@ SDL.RadioModel = Em.Object.create({
   setRadioData: function(data) {
 
     if (data.frequencyInteger) {
-      this.set('radioControlStruct.frequencyInteger', data.frequencyInteger);
+      this.setFrequencyInteger(data.frequencyInteger);
     }
 
     if (data.frequencyFraction) {
-      this.set('radioControlStruct.frequencyFraction', data.frequencyFraction);
+      this.setFrequencyFraction(data.frequencyFraction);
     }
 
-    this.set('station',
-      this.radioControlStruct.frequencyInteger + '.' +
-      this.radioControlStruct.frequencyFraction
-    );
+    if (data.frequencyInteger || data.frequencyFraction) {
+      this.updateRadioFrequency();
+    }
 
     if (data.band) {
-      this.set('radioControlStruct.band', data.band);
+      this.setRadioBand(data.band);
     }
 
     if (data.rdsData) {
-      this.set('radioControlStruct.rdsData', data.rdsData);
+      this.setRadioRdsData(data.rdsData);
     }
 
     if (data.availableHDs) {
-      this.set('radioControlStruct.availableHDs', data.availableHDs);
+      this.setAvailableHDs(data.availableHDs);
     }
 
     if (data.hdChannel) {
-      this.set('radioControlStruct.hdChannel', data.hdChannel);
+      this.setCurrentHdChannel(data.hdChannel);
     }
 
-    if (data.signalStrength) {
-      this.set('radioControlStruct.signalStrength', data.signalStrength);
+    if (data.SignalStrength) {
+      this.setSignalStrength(data.SignalStrength);
     }
 
     if (data.signalChangeThreshold) {
-      this.set('radioControlStruct.signalChangeThreshold',
-        data.signalChangeThreshold
-      );
+      this.setSignalChangeThreshold(data.signalChangeThreshold);
     }
 
     if (data.radioEnable) {
-      this.set('radioControlStruct.radioEnable', data.radioEnable);
+      this.setRadioEnable(data.radioEnable);
     }
 
     if (data.state) {
-      this.set('radioControlStruct.state', data.state);
+      this.setRadioState(data.state);
     }
 
-    FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-      this.getRadioControlData());
+    // FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
+    //   this.getRadioControlData());
   },
 
   bandSelect: function(element) {
@@ -801,6 +798,76 @@ SDL.RadioModel = Em.Object.create({
           break;
         }
       }
+    },
+
+  setFrequencyInteger: function(value) {
+    this.set('radioControlStruct.frequencyInteger', value);
+  },
+
+  setFrequencyFraction: function(value) {
+    this.set('radioControlStruct.frequencyFraction', value);
+  },
+
+  setRadioBand: function(value) {
+    if (this.bandStruct.indexOf(value) >= 0) {
+      this.set('radioControlStruct.band', value);
     }
+  },
+
+  setRadioRdsData: function(data) {
+    if (data.PS) {
+      this.set('radioControlStruct.rdsData.PS', data.PS);
+    }
+    if (data.RT) {
+      this.set('radioControlStruct.rdsData.RT', data.RT);
+    }
+    if (data.CT) {
+      this.set('radioControlStruct.rdsData.CT', data.CT);
+    }
+    if (data.PI) {
+      this.set('radioControlStruct.rdsData.PI', data.PI);
+    }
+    if (data.PTY) {
+      this.set('radioControlStruct.rdsData.PTY', data.PTY);
+    }
+    if (data.TP) {
+      this.set('radioControlStruct.rdsData.TP', data.TP);
+    }
+    if (data.TA) {
+      this.set('radioControlStruct.rdsData.TA', data.TA);
+    }
+    if (data.REG) {
+      this.set('radioControlStruct.rdsData.REG', data.REG);
+    }
+  },
+
+  setAvailableHDs: function(value) {
+    if (this.hdChannelsStruct.indexOf(value) >= 0) {
+      this.set('radioControlStruct.availableHDs', value);
+    }
+  },
+
+  setCurrentHdChannel: function(value) {
+    if (this.hdChannelsStruct.indexOf(value) >= 0) {
+      this.set('radioControlStruct.hdChannel', value);
+    }
+  },
+
+  setSignalStrength: function(value) {
+    this.set('radioControlStruct.signalStrength', value);
+  },
+
+  setSignalChangeThreshold: function(value) {
+    this.set('radioControlStruct.signalChangeThreshold', value);
+  },
+
+  setRadioEnable: function(state) {
+    this.set('radioControlStruct.radioEnable', state);
+  },
+
+  setRadioState: function(state) {
+    this.set('radioControlStruct.state', state);
+  }
+
 }
 );
