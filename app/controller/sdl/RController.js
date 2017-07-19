@@ -419,6 +419,11 @@ SDL.RController = SDL.SDLController.extend(
       }
       return result;
     },
+    extractTemperatureFromStruct: function(data) {
+      return (data.unit == 'CELSIUS'
+        ? data.value
+        : Math.round((data.value - 32) * 5 / 9));
+    },
     correctTemp: function(data, type) {
       var d = SDL.deepCopy(data);
       if (type === 'get') {
