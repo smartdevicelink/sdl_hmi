@@ -584,15 +584,12 @@ SDL.RadioView = Em.ContainerView
               onDown: false,
               action: 'radioEnableKeyPress',
               target: 'SDL.RadioModel',
-              icon: 'images/media/passiv_horiz_led.png',
+              iconBinding: 'onIconChange',
               // Change Icon for Frequency Scan
               onIconChange: function() {
-                if (SDL.RadioModel.radioControlStruct.radioEnable) {
-                  this.set('icon', 'images/media/active_horiz_led.png');
-                } else {
-                  this.set('icon', 'images/media/passiv_horiz_led.png');
-                }
-              }.observes('SDL.RadioModel.radioControlStruct.radioEnable')
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.RadioModel.radioControlStruct.radioEnable);
+              }.property('SDL.RadioModel.radioControlStruct.radioEnable')
             }
           ),
           scanButton: SDL.Button.extend(
@@ -606,15 +603,12 @@ SDL.RadioView = Em.ContainerView
               disabled: true,
               elementId: 'media_fm_scanButton',
               classNames: ['rs-item'],
-              icon: 'images/media/passiv_horiz_led.png',
+              iconBinding: 'onIconChange',
               // Change Icon for Frequency Scan
               onIconChange: function() {
-                if (SDL.RadioModel.scanState) {
-                  this.set('icon', 'images/media/active_horiz_led.png');
-                } else {
-                  this.set('icon', 'images/media/passiv_horiz_led.png');
-                }
-              }.observes('SDL.RadioModel.scanState'),
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.RadioModel.scanState);
+              }.property('SDL.RadioModel.scanState'),
               action: 'scanKeyPress',
               target: 'SDL.RadioModel',
               onDown: false,

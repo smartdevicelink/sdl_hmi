@@ -411,6 +411,13 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.data.climateFirstConsentedApp = null;
       }
     },
+    getLedIndicatorImagePath: function(state) {
+      if (state) {
+        return 'images/media/active_horiz_led.png';
+      } else {
+        return 'images/media/passiv_horiz_led.png';
+      }
+    },
     getTemperatureStruct: function(type, value) {
       var t = (type == 'CELSIUS' ? value : value * 9 / 5 + 32);
       var result = {
