@@ -51,11 +51,11 @@ SDL.ClimateControlModel = Em.Object.create({
   getClimateControlData: function() {
     var result = {
       fanSpeed: this.climateControlData.fanSpeed,
-      currentTemperature: SDL.SDLController.getTemperatureStruct(
+      currentTemperature: SDL.ClimateController.getTemperatureStruct(
         this.climateControlData.temperatureUnit,
         this.climateControlData.currentTemp
       ),
-      desiredTemperature: SDL.SDLController.getTemperatureStruct(
+      desiredTemperature: SDL.ClimateController.getTemperatureStruct(
         this.climateControlData.temperatureUnit,
         this.climateControlData.desiredTemp
       ),
@@ -73,52 +73,57 @@ SDL.ClimateControlModel = Em.Object.create({
 
   setClimateData: function(data) {
 
-    if (data.fanSpeed) {
+    if (data.fanSpeed != null) {
       this.setFanSpeed(data.fanSpeed);
     }
 
-    if (data.currentTemp) {
-      this.setCurrentTemp(data.currentTemp);
+    if (data.currentTemperature != null) {
+      this.setCurrentTemp(data.currentTemperature);
     }
 
-    if (data.desiredTemp) {
-      this.setDesiredTemp(data.desiredTemp);
+    if (data.desiredTemperature != null) {
+      this.setDesiredTemp(data.desiredTemperature);
     }
 
-    if (data.temperatureUnit) {
-      this.setTemperatureUnitCelsiusEnable(data.temperatureUnit);
-    }
-
-    if (data.acEnable) {
+    if (data.acEnable != null) {
       this.setAcEnable(data.acEnable);
     }
 
-    if (data.acMaxEnable) {
-      this.setAcMaxEnable(data.acMaxEnable);
+    if (data.circulateAirEnable != null) {
+      this.setRecirculateAirEnable(data.circulateAirEnable);
     }
 
-    if (data.circulateAirEnable) {
-      this.setReciRCulateAirEnable(data.circulateAirEnable);
-    }
-
-    if (data.autoModeEnable) {
+    if (data.autoModeEnable != null) {
       this.setAutoModeEnable(data.autoModeEnable);
     }
 
-    if (data.defrostZone) {
+    if (data.defrostZone != null) {
       this.setDefrostZone(data.defrostZone);
     }
 
-    if (data.dualModeEnable) {
+    if (data.dualModeEnable != null) {
       this.setDualModeEnable(data.dualModeEnable);
     }
 
-    if (data.currentVentilationMode) {
-      this.setCurrentVentilationMode(data.currentVentilationMode);
+    if (data.acMaxEnable != null) {
+      this.setAcMaxEnable(data.acMaxEnable);
     }
 
-    FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
-      this.getClimateControlData(), null);
+    if (data.ventilationMode != null) {
+      this.setCurrentVentilationMode(data.ventilationMode);
+    }
+
+    var result = this.getClimateControlData();
+    for (var key in result) {
+      if (!data.hasOwnProperty(key)) {
+        delete result[key];
+      }
+    }
+
+    // FFW.RC.onInteriorVehicleDataNotification('CLIMATE',
+    //   result, null);
+
+    return result;
   },
 
   fanSpeedUp: function() {
@@ -263,11 +268,13 @@ SDL.ClimateControlModel = Em.Object.create({
     },
 
   setCurrentTemp: function(temp) {
-      this.set('climateControlData.currentTemp', temp);
+      this.set('climateControlData.currentTemperature',
+        SDL.ClimateController.extractTemperatureFromStruct(temp));
     },
 
   setDesiredTemp: function(temp) {
-      this.set('climateControlData.desiredTemp', temp);
+      this.set('climateControlData.desiredTemperature',
+        SDL.ClimateController.extractTemperatureFromStruct(temp));
     },
 
   setTemperatureUnitCelsiusEnable: function(tempUnit) {
@@ -282,7 +289,7 @@ SDL.ClimateControlModel = Em.Object.create({
       this.set('climateControlData.acMaxEnable', state);
   },
 
-  setReciRCulateAirEnable: function(state) {
+  setRecirculateAirEnable: function(state) {
       this.set('climateControlData.circulateAirEnable', state);
     },
 
@@ -298,8 +305,8 @@ SDL.ClimateControlModel = Em.Object.create({
       this.set('climateControlData.dualModeEnable', state);
     },
 
-  setCurrentVentilationMode: function(state) {
-      this.set('climateControlData.currentVentilationMode', state);
+  setCurrentVentilationMode: function(ventMode) {
+      this.set('climateControlData.currentVentilationMode', ventMode);
   }
 }
 );

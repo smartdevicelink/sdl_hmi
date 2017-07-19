@@ -95,7 +95,7 @@ SDL.ClimateView = Em.ContainerView.create(
               {
                 elementId: 'desiredTemp_label',
                 temp: function() {
-                  temperature_struct = SDL.SDLController.getTemperatureStruct(
+                  temperature_struct = SDL.ClimateController.getTemperatureStruct(
                     SDL.ClimateController.model.climateControlData.temperatureUnit,
                     SDL.ClimateController.model.climateControlData.desiredTemp
                   );
@@ -195,7 +195,7 @@ SDL.ClimateView = Em.ContainerView.create(
               {
                 elementId: 'currentTemp_label',
                 temp: function() {
-                  temperature_struct = SDL.SDLController.getTemperatureStruct(
+                  temperature_struct = SDL.ClimateController.getTemperatureStruct(
                     SDL.ClimateController.model.climateControlData.temperatureUnit,
                     SDL.ClimateController.model.climateControlData.currentTemp
                   );
@@ -437,15 +437,11 @@ SDL.ClimateView = Em.ContainerView.create(
           {
             elementId: 'acEnable',
             classNames: 'acEnable switcher',
-            iconBinding: 'onIconChange',
             disabledBinding: 'parentView.disabled',
-            // Change Icon for Frequency Scan
+            iconBinding: 'onIconChange',
             onIconChange: function() {
-              if (SDL.ClimateController.model.climateControlData.acEnable) {
-                return 'images/media/active_horiz_led.png';
-              } else {
-                return 'images/media/passiv_horiz_led.png';
-              }
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.ClimateController.model.climateControlData.acEnable);
             }.property(
               'SDL.ClimateController.model.climateControlData.acEnable'
             ),
@@ -462,11 +458,8 @@ SDL.ClimateView = Em.ContainerView.create(
             iconBinding: 'onIconChange',
             disabledBinding: 'parentView.disabled',
             onIconChange: function() {
-              if (SDL.ClimateController.model.climateControlData.acMaxEnable) {
-                return 'images/media/active_horiz_led.png';
-              } else {
-                return 'images/media/passiv_horiz_led.png';
-              }
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.ClimateController.model.climateControlData.acMaxEnable);
             }.property(
               'SDL.ClimateController.model.climateControlData.acMaxEnable'
             ),
@@ -484,11 +477,8 @@ SDL.ClimateView = Em.ContainerView.create(
             disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function() {
-              if (SDL.ClimateController.model.climateControlData.autoModeEnable) {
-                return 'images/media/active_horiz_led.png';
-              } else {
-                return 'images/media/passiv_horiz_led.png';
-              }
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.ClimateController.model.climateControlData.autoModeEnable);
             }.property(
               'SDL.ClimateController.model.climateControlData.autoModeEnable'
             ),
@@ -506,11 +496,8 @@ SDL.ClimateView = Em.ContainerView.create(
             disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function() {
-              if (SDL.ClimateController.model.climateControlData.dualModeEnable) {
-                return 'images/media/active_horiz_led.png';
-              } else {
-                return 'images/media/passiv_horiz_led.png';
-              }
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.ClimateController.model.climateControlData.dualModeEnable);
             }.property(
               'SDL.ClimateController.model.climateControlData.dualModeEnable'
             ),
@@ -528,11 +515,8 @@ SDL.ClimateView = Em.ContainerView.create(
             disabledBinding: 'parentView.disabled',
             // Change Icon for Frequency Scan
             onIconChange: function() {
-              if (SDL.ClimateController.model.climateControlData.circulateAirEnable) {
-                return 'images/media/active_horiz_led.png';
-              } else {
-                return 'images/media/passiv_horiz_led.png';
-              }
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.ClimateController.model.climateControlData.circulateAirEnable);
             }.property(
               'SDL.ClimateController.model.climateControlData.circulateAirEnable'
             ),

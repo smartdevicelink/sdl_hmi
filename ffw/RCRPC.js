@@ -122,7 +122,7 @@ FFW.RC = FFW.RPCObserver.create(
         switch (request.method) {
           case 'RC.GetInteriorVehicleDataCapabilities':
           {
-            Em.Logger.log('FFW.' + request.method + 'Response');
+            Em.Logger.log('FFW.' + request.method + ' Request');
             if (!SDL.SDLModel.errorResponse) {
               var interiorVehicleDataCapabilities = {};
               if (request.params.moduleTypes) {
@@ -178,29 +178,20 @@ FFW.RC = FFW.RPCObserver.create(
           //}
           case 'RC.SetInteriorVehicleData':
           {
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            if (request.params.moduleData == undefined) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED, request.id,
-                request.method, 'moduleData parameter missing!'
-              );
-              return;
-            }
-            if (!this.conssetAppCheck(request)) {
-              return;
-            }
+            Em.Logger.log('FFW.' + request.method + ' Request');
+
+            var newClimateControlData = null;
+            var newRadioControlData = null;
+
             if (request.params.moduleData.climateControlData) {
-              var climateControlData = SDL.SDLController.correctTemp(
-                request.params.moduleData.climateControlData, 'set'
-              );
-              SDL.ClimateController.model.setClimateData(
-                request.params.moduleData.climateControlData
-              );
+              newClimateControlData =
+                SDL.ClimateController.model.setClimateData(
+                  request.params.moduleData.climateControlData);
             }
             if (request.params.moduleData.radioControlData) {
-              SDL.RadioModel.setRadioData(
-                request.params.moduleData.radioControlData
-              );
+              newRadioControlData =
+                SDL.RadioModel.setRadioData(
+                  request.params.moduleData.radioControlData);
             }
             // send repsonse
             var JSONMessage = {
@@ -209,15 +200,28 @@ FFW.RC = FFW.RPCObserver.create(
               'result': {
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
-                'moduleData': request.params.moduleData
+                'moduleData': {
+                  'moduleType': request.params.moduleData.moduleType
+                }
               }
             };
+
+            if (newClimateControlData) {
+              JSONMessage.result.moduleData.climateControlData =
+                newClimateControlData;
+            }
+
+            if (newRadioControlData) {
+              JSONMessage.result.moduleData.radioControlData =
+                newRadioControlData;
+            }
+
             this.client.send(JSONMessage);
             break;
           }
           case 'RC.GetInteriorVehicleData':
           {
-            Em.Logger.log('FFW.' + request.method + 'Response');
+            Em.Logger.log('FFW.' + request.method + ' Request');
             if (request.params.appID == undefined) {
              this.sendError(
                SDL.SDLModel.data.resultCode.INVALID_DATA, request.id,
@@ -272,6 +276,7 @@ FFW.RC = FFW.RPCObserver.create(
           }
           case 'RC.GetInteriorVehicleDataConsent':
           {
+            Em.Logger.log('FFW.' + request.method + ' Request');
             SDL.SDLController.interiorDataConsent(request);
             break;
           }
