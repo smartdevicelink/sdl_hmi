@@ -417,55 +417,6 @@ SDL.RController = SDL.SDLController.extend(
       } else {
         return 'images/media/passiv_horiz_led.png';
       }
-    },
-    getTemperatureStruct: function(type, value) {
-      var t = (type == 'CELSIUS' ? value : value * 9 / 5 + 32);
-      var result = {
-        unit: type,
-        value: parseFloat(t.toFixed(1))
-      }
-      return result;
-    },
-    extractTemperatureFromStruct: function(data) {
-      return (data.unit == 'CELSIUS'
-        ? data.value
-        : Math.round((data.value - 32) * 5 / 9));
-    },
-    correctTemp: function(data, type) {
-      var d = SDL.deepCopy(data);
-      if (type === 'get') {
-        switch (d.temperatureUnit) {
-          case 'CELSIUS':
-          {
-            return d;
-          }
-          case 'FAHRENHEIT':
-          {
-            d.currentTemp = Math.round(d.currentTemp * 9 / 5 + 32);
-            d.desiredTemp = Math.round(d.desiredTemp * 9 / 5 + 32);
-            return d;
-          }
-        }
-      } else {
-        switch (d.temperatureUnit) {
-          case 'CELSIUS':
-          {
-            return d;
-          }
-          case 'FAHRENHEIT':
-          {
-            d.currentTemp = Math.round(
-              (
-              d.currentTemp - 32) * 5 / 9
-            );
-            d.desiredTemp = Math.round(
-              (
-              d.currentTemp - 32) * 5 / 9
-            );
-            return d;
-          }
-        }
-      }
     }
   }
 );

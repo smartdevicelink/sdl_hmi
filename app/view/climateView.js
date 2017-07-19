@@ -95,7 +95,7 @@ SDL.ClimateView = Em.ContainerView.create(
               {
                 elementId: 'desiredTemp_label',
                 temp: function() {
-                  temperature_struct = SDL.SDLController.getTemperatureStruct(
+                  temperature_struct = SDL.ClimateController.getTemperatureStruct(
                     SDL.ClimateController.model.climateControlData.temperatureUnit,
                     SDL.ClimateController.model.climateControlData.desiredTemp
                   );
@@ -195,7 +195,7 @@ SDL.ClimateView = Em.ContainerView.create(
               {
                 elementId: 'currentTemp_label',
                 temp: function() {
-                  temperature_struct = SDL.SDLController.getTemperatureStruct(
+                  temperature_struct = SDL.ClimateController.getTemperatureStruct(
                     SDL.ClimateController.model.climateControlData.temperatureUnit,
                     SDL.ClimateController.model.climateControlData.currentTemp
                   );

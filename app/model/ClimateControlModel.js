@@ -51,11 +51,11 @@ SDL.ClimateControlModel = Em.Object.create({
   getClimateControlData: function() {
     var result = {
       fanSpeed: this.climateControlData.fanSpeed,
-      currentTemperature: SDL.SDLController.getTemperatureStruct(
+      currentTemperature: SDL.ClimateController.getTemperatureStruct(
         this.climateControlData.temperatureUnit,
         this.climateControlData.currentTemp
       ),
-      desiredTemperature: SDL.SDLController.getTemperatureStruct(
+      desiredTemperature: SDL.ClimateController.getTemperatureStruct(
         this.climateControlData.temperatureUnit,
         this.climateControlData.desiredTemp
       ),
@@ -269,12 +269,12 @@ SDL.ClimateControlModel = Em.Object.create({
 
   setCurrentTemp: function(temp) {
       this.set('climateControlData.currentTemperature',
-        SDL.SDLController.extractTemperatureFromStruct(temp));
+        SDL.ClimateController.extractTemperatureFromStruct(temp));
     },
 
   setDesiredTemp: function(temp) {
       this.set('climateControlData.desiredTemperature',
-        SDL.SDLController.extractTemperatureFromStruct(temp));
+        SDL.ClimateController.extractTemperatureFromStruct(temp));
     },
 
   setTemperatureUnitCelsiusEnable: function(tempUnit) {
