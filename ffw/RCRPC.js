@@ -180,6 +180,10 @@ FFW.RC = FFW.RPCObserver.create(
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
 
+            if (!this.consentedAppCheck(request)) {
+              return;
+            }
+
             var newClimateControlData = null;
             var newRadioControlData = null;
 
@@ -222,6 +226,7 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.GetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
+
             if (request.params.appID == undefined) {
              this.sendError(
                SDL.SDLModel.data.resultCode.INVALID_DATA, request.id,
@@ -229,7 +234,8 @@ FFW.RC = FFW.RPCObserver.create(
              );
              return;
             }
-            if (!this.conssetAppCheck(request)) {
+
+            if (!this.consentedAppCheck(request)) {
               return;
             }
 
@@ -439,74 +445,51 @@ FFW.RC = FFW.RPCObserver.create(
      * HMI should reject secon unconsented app
      * @param request
      */
-    conssetAppCheck: function(request) {
-      var deviceName = SDL.SDLController.getApplicationModel(
-        request.params.appID
-      ).deviceName;
+    consentedAppCheck: function(request) {
+      var appID = request.params.appID;
+      var moduleType = null;
+      if (request.params.moduleDescription) {
+        moduleType = request.params.moduleDescription.moduleType;
+      } else if (request.params.moduleData) {
+        moduleType = request.params.moduleData.moduleType;
+      } else {
+        moduleType = request.params.moduleType;
+      }
+
+      var deviceName = SDL.SDLController.getApplicationModel(appID)
+        .deviceName;
+
       if ((SDL.SDLModel.driverDeviceInfo &&
         deviceName == SDL.SDLModel.driverDeviceInfo.name) ||
         !SDL.SDLController.reverseAppsAllowed) {
         return true;
       }
-      if (request.params.moduleDescription) {
-        if (request.params.moduleDescription.moduleType === 'CLIMATE') {
-          if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
-            SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
-            return true;
-          } else if (SDL.SDLModel.data.climateFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED,
-              request.id,
-              request.method,
-              'To many unconsented requests!'
-            );
-            return false;
-          }
-        } else {
-          if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
-            SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
-            return true;
-          } else if (SDL.SDLModel.data.radioFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED,
-              request.id,
-              request.method,
-              'To many unconsented requests!'
-            );
-            return false;
-          }
+
+      if (moduleType === 'CLIMATE') {
+        if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
+          SDL.SDLModel.data.climateFirstConsentedApp = appID;
+          return true;
+        } else if (SDL.SDLModel.data.climateFirstConsentedApp != appID) {
+          this.sendError(
+            SDL.SDLModel.data.resultCode.REJECTED,
+            request.id,
+            request.method,
+            'To many unconsented requests!'
+          );
+          return false;
         }
-      } else {
-        if (request.params.moduleData.moduleType === 'CLIMATE') {
-          if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
-            SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
-            return true;
-          } else if (SDL.SDLModel.data.climateFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED,
-              request.id,
-              request.method,
-              'To many unconsented requests!'
-            );
-            return false;
-          }
-        } else {
-          if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
-            SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
-            return true;
-          } else if (SDL.SDLModel.data.radioFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED,
-              request.id,
-              request.method,
-              'To many unconsented requests!'
-            );
-            return false;
-          }
+      } else if (moduleType === 'RADIO') {
+        if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
+          SDL.SDLModel.data.radioFirstConsentedApp = appID;
+          return true;
+        } else if (SDL.SDLModel.data.radioFirstConsentedApp != appID) {
+          this.sendError(
+            SDL.SDLModel.data.resultCode.REJECTED,
+            request.id,
+            request.method,
+            'To many unconsented requests!'
+          );
+          return false;
         }
       }
       return true;
