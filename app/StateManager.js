@@ -139,10 +139,14 @@ var StateManager = Em.StateManager.extend(
           {
             enter: function() {
               this._super();
+              if (SDL.SDLModel.data.mediaPlayerActive) {
+                SDL.SDLController.onEventChanged('player', false);
+              }
               SDL.SDLController.activateTBT();
             },
             exit: function() {
               this._super();
+              SDL.SDLModel.data.set('limitedExist', false);
               SDL.SDLController.deactivateApp();
             }
           }
@@ -333,10 +337,16 @@ var StateManager = Em.StateManager.extend(
         baseNavigation: Em.State.create(
           {}
         ),
+        enter: function() {
+          this._super();
+          if (SDL.SDLModel.data.mediaPlayerActive) {
+            SDL.SDLController.onEventChanged('player', false);
+          }
+        },
         exit: function() {
           this._super();
           SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
-          //SDL.SDLModel.data.set('limitedExist', true);
+          SDL.SDLModel.data.set('limitedExist', false);
           SDL.SDLController.deactivateApp();
         }
       }
