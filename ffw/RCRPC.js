@@ -120,48 +120,48 @@ FFW.RC = FFW.RPCObserver.create(
       Em.Logger.log('FFW.RC.onRPCRequest');
       if (this.validationCheck(request)) {
         switch (request.method) {
-          case 'RC.GetInteriorVehicleDataCapabilities':
-          {
-            Em.Logger.log('FFW.' + request.method + ' Request');
-            if (!SDL.SDLModel.errorResponse) {
-              var interiorVehicleDataCapabilities = {};
-              if (request.params.moduleTypes) {
-                for (var i = 0; i < request.params.moduleTypes.length; i++) {
-                  if (request.params.moduleTypes[i] === 'CLIMATE') {
-                    interiorVehicleDataCapabilities.climateControlCapabilities =
-                      [
-                        SDL.ClimateController.model.getClimateControlCapabilities()
-                      ]
-                  }
-                  if (request.params.moduleTypes[i] === 'RADIO') {
-                    interiorVehicleDataCapabilities.radioControlCapabilities =
-                      [
-                        SDL.RadioModel.getRadioControlCapabilities()
-                      ]
-                  }
-                }
-              }
-              // send repsonse
-              var JSONMessage = {
-                'jsonrpc': '2.0',
-                'id': request.id,
-                'result': {
-                  'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                  'method': request.method,
-                  'interiorVehicleDataCapabilities': interiorVehicleDataCapabilities
-                }
-              };
-              this.client.send(JSONMessage);
-            } else {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'],
-                request.id,
-                request.method,
-                'Requested module data is not available'
-              );
-            }
-            break;
-          }
+          // case 'RC.GetInteriorVehicleDataCapabilities':
+          // {
+          //   Em.Logger.log('FFW.' + request.method + ' Request');
+          //   if (!SDL.SDLModel.errorResponse) {
+          //     var interiorVehicleDataCapabilities = {};
+          //     if (request.params.moduleTypes) {
+          //       for (var i = 0; i < request.params.moduleTypes.length; i++) {
+          //         if (request.params.moduleTypes[i] === 'CLIMATE') {
+          //           interiorVehicleDataCapabilities.climateControlCapabilities =
+          //             [
+          //               SDL.ClimateController.model.getClimateControlCapabilities()
+          //             ]
+          //         }
+          //         if (request.params.moduleTypes[i] === 'RADIO') {
+          //           interiorVehicleDataCapabilities.radioControlCapabilities =
+          //             [
+          //               SDL.RadioModel.getRadioControlCapabilities()
+          //             ]
+          //         }
+          //       }
+          //     }
+          //     // send repsonse
+          //     var JSONMessage = {
+          //       'jsonrpc': '2.0',
+          //       'id': request.id,
+          //       'result': {
+          //         'code': SDL.SDLModel.data.resultCode.SUCCESS,
+          //         'method': request.method,
+          //         'interiorVehicleDataCapabilities': interiorVehicleDataCapabilities
+          //       }
+          //     };
+          //     this.client.send(JSONMessage);
+          //   } else {
+          //     this.sendError(
+          //       SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'],
+          //       request.id,
+          //       request.method,
+          //       'Requested module data is not available'
+          //     );
+          //   }
+          //   break;
+          // }
 
           //case "RC.GrantAccess": {
           //
