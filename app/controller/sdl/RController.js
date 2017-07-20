@@ -89,6 +89,125 @@ SDL.RController = SDL.SDLController.extend(
         }
       }
     },
+    onButtonPressEvent: function(params) {
+      if (params.moduleType == 'CLIMATE') {
+        var model = SDL.ClimateController.model;
+
+        switch (params.buttonName) {
+          case 'AC_MAX': {
+            model.toggleAcMaxEnable();
+            break;
+          }
+          case 'AC': {
+            model.toggleAcEnable();
+            break;
+          }
+          case 'RECIRCULATE': {
+            model.toggleRecirculateAir();
+            break;
+          }
+          case 'FAN_UP': {
+            model.fanSpeedUp();
+            break;
+          }
+          case 'FAN_DOWN': {
+            model.fanSpeedDown();
+            break;
+          }
+          case 'TEMP_UP': {
+            model.desiredTempUp();
+            break;
+          }
+          case 'TEMP_DOWN': {
+            model.desiredTempDown();
+            break;
+          }
+          case 'DEFROST_MAX': {
+            model.defrostAllEnable();
+            break;
+          }
+          case 'DEFROST': {
+            model.defrostFrontEnable();
+            break;
+          }
+          case 'DEFROST_REAR': {
+            model.defrostRearEnable();
+            break;
+          }
+          case 'UPPER_VENT': {
+            model.ventilationModeUpperEnable();
+            break;
+          }
+          case 'LOWER_VENT': {
+            model.ventilationModeLowerEnable();
+            break;
+          }
+          default: {
+            return SDL.SDLModel.data.resultCode.GENERIC_ERROR;
+          }
+        }
+        return SDL.SDLModel.data.resultCode.SUCCESS;
+      }
+
+      if (params.moduleType == 'RADIO') {
+        switch (params.buttonName) {
+          case 'VOLUME_UP': {
+            if (SDL.MediaController.activeState == 'media.player.radio') {
+              model.tuneUpPress();
+            } else {
+              return SDL.SDLModel.data.resultCode.IGNORED;
+            }
+            break;
+          }
+          case 'VOLUME_DOWN': {
+            if (SDL.MediaController.activeState == 'media.player.radio') {
+              model.tuneDownPress();
+            } else {
+              return SDL.SDLModel.data.resultCode.IGNORED;
+            }
+            break;
+          }
+          case 'EJECT': {
+            if (SDL.MediaController.activeState == 'media.player.cd') {
+              // TODO
+            } else {
+              return SDL.SDLModel.data.resultCode.IGNORED;
+            }
+            break;
+          }
+          case 'SOURCE': {
+            // TODO
+            break;
+          }
+          case 'SHUFFLE': {
+            if (SDL.MediaController.activeState == 'media.player.cd') {
+              SDL.CDModel.player.shufflePress();
+            } else if (SDL.MediaController.activeState == 'media.player.usb') {
+              SDL.USBModel.player.shufflePress();
+            } else {
+              return SDL.SDLModel.data.resultCode.IGNORED;
+            }
+            break;
+          }
+          case 'REPEAT': {
+            if (SDL.MediaController.activeState == 'media.player.cd') {
+              SDL.CDModel.player.repeatPress();
+            } else if (SDL.MediaController.activeState == 'media.player.usb') {
+              SDL.USBModel.player.repeatPress();
+            } else {
+              return SDL.SDLModel.data.resultCode.IGNORED;
+            }
+            break;
+          }
+          default: {
+            return SDL.SDLModel.data.resultCode.GENERIC_ERROR;
+          }
+        }
+        return SDL.SDLModel.data.resultCode.SUCCESS;
+      }
+
+      return SDL.SDLModel.data.resultCode.GENERIC_ERROR;
+    },
     /**
      * Send notification to SDL about changes of SDL functionality
      * @param {Object} element

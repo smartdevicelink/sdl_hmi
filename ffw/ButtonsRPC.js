@@ -130,44 +130,16 @@ FFW.Buttons = FFW.RPCObserver.create(
       Em.Logger.log('FFW.Buttons.onRPCRequest');
       this._super();
       if (request.method == 'Buttons.ButtonPress') {
-        Em.Logger.log('FFW.' + request.method + 'Response');
-        var deviceName = SDL.SDLController.getApplicationModel(
-          request.params.appID
-        ).deviceName;
-        if ((SDL.SDLModel.driverDeviceInfo &&
-          deviceName == SDL.SDLModel.driverDeviceInfo.name) ||
-          !SDL.SDLController.reverseAppsAllowed) {
-          this.sendButtonsResult(
-            SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-          );
+        Em.Logger.log('FFW.' + request.method + ' Reqeust');
+
+        if (!FFW.RC.consentedAppCheck(request)) {
           return;
         }
-        if (request.params.moduleType === 'CLIMATE') {
-          if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
-            SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
-          } else if (SDL.SDLModel.data.climateFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method,
-              'To many unconsented requests!'
-            );
-            return;
-          }
-        } else {
-          if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
-            SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
-          } else if (SDL.SDLModel.data.radioFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method,
-              'To many unconsented requests!'
-            );
-            return;
-          }
-        }
-        this.sendButtonsResult(
-          SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-        );
+
+        var resultCode =
+          SDL.SDLController.onButtonPressEvent(request.params);
+
+        this.sendButtonsResult(resultCode, request.id, request.method);
       }
       if (request.method == 'Buttons.GetCapabilities') {
 
@@ -285,7 +257,7 @@ FFW.Buttons = FFW.RPCObserver.create(
      *            method
      */
     sendButtonsResult: function(resultCode, id, method) {
-      Em.Logger.log('FFW.' + method + 'Response');
+      Em.Logger.log('FFW.' + method + ' Response');
       if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
         // send repsonse
@@ -311,7 +283,7 @@ FFW.Buttons = FFW.RPCObserver.create(
      *            method
      */
     sendError: function(resultCode, id, method, message) {
-      Em.Logger.log('FFW.' + method + 'Response');
+      Em.Logger.log('FFW.' + method + ' Response');
       if (resultCode) {
 
         // send repsonse
