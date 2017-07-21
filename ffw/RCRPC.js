@@ -122,41 +122,24 @@ FFW.RC = FFW.RPCObserver.create(
         switch (request.method) {
           case 'RC.GetInteriorVehicleDataCapabilities':
           {
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            if (SDL.SDLController.getInteriorZone(request.params.zone) ===
-              null) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
-                request.id,
-                request.method,
-                'Unsupported interior zone!'
-              );
-              return;
-            }
+            Em.Logger.log('FFW.' + request.method + ' Request');
             if (!SDL.SDLModel.errorResponse) {
-              var interiorVehicleDataCapabilities = [];
+              var interiorVehicleDataCapabilities = {};
               if (request.params.moduleTypes) {
                 for (var i = 0; i < request.params.moduleTypes.length; i++) {
-                  interiorVehicleDataCapabilities.push(
-                    {
-                      'moduleZone': request.params.zone,
-                      'moduleType': request.params.moduleTypes[i]
-                    }
-                  );
+                  if (request.params.moduleTypes[i] === 'CLIMATE') {
+                    interiorVehicleDataCapabilities.climateControlCapabilities =
+                      [
+                        SDL.ClimateController.model.getClimateControlCapabilities()
+                      ]
+                  }
+                  if (request.params.moduleTypes[i] === 'RADIO') {
+                    interiorVehicleDataCapabilities.radioControlCapabilities =
+                      [
+                        SDL.RadioModel.getRadioControlCapabilities()
+                      ]
+                  }
                 }
-              } else {
-                interiorVehicleDataCapabilities.push(
-                  {
-                    'moduleZone': request.params.zone,
-                    'moduleType': 'CLIMATE'
-                  }
-                );
-                interiorVehicleDataCapabilities.push(
-                  {
-                    'moduleZone': request.params.zone,
-                    'moduleType': 'RADIO'
-                  }
-                );
               }
               // send repsonse
               var JSONMessage = {
@@ -174,7 +157,7 @@ FFW.RC = FFW.RPCObserver.create(
                 SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'],
                 request.id,
                 request.method,
-                'Error response example.'
+                'Requested module data is not available'
               );
             }
             break;
@@ -195,110 +178,20 @@ FFW.RC = FFW.RPCObserver.create(
           //}
           case 'RC.SetInteriorVehicleData':
           {
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            if (request.params.moduleData == undefined) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED, request.id,
-                request.method, 'moduleData parameter missing!'
-              );
-              return;
-            }
-            if (!this.conssetAppCheck(request)) {
-              return;
-            }
-            var zone = SDL.SDLController.getInteriorZone(
-              request.params.moduleData.moduleZone
-            );
-            if (zone === null) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
-                request.id,
-                request.method,
-                'Unsupported interior zone!'
-              );
-              return;
-            }
+            Em.Logger.log('FFW.' + request.method + ' Request');
+
+            var newClimateControlData = null;
+            var newRadioControlData = null;
+
             if (request.params.moduleData.climateControlData) {
-              var climateControlData = SDL.SDLController.correctTemp(
-                request.params.moduleData.climateControlData, 'set'
-              );
-              SDL.ClimateController.model.setClimateData(
-                request.params.moduleData.climateControlData, zone
-              );
+              newClimateControlData =
+                SDL.ClimateController.model.setClimateData(
+                  request.params.moduleData.climateControlData);
             }
             if (request.params.moduleData.radioControlData) {
-              SDL.RadioModel.setRadioData(
-                request.params.moduleData.radioControlData
-              );
-            }
-            // send repsonse
-            var JSONMessage = {
-              'jsonrpc': '2.0',
-              'id': request.id,
-              'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                'method': request.method,
-                'moduleData': request.params.moduleData
-              }
-            };
-            this.client.send(JSONMessage);
-            break;
-          }
-          case 'RC.GetInteriorVehicleData':
-          {
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            if (!this.conssetAppCheck(request)) {
-              return;
-            }
-            if (request.params.moduleDescription == undefined) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED, request.id,
-                request.method, 'ModuleDescription parameter missing!'
-              );
-              return;
-            }
-            var newModuleZone = SDL.SDLController.getInteriorZone(
-              request.params.moduleDescription.moduleZone
-            );
-            if (newModuleZone === null) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
-                request.id, request.method, 'Unsupported interior zone!'
-              );
-              return;
-            }
-            var radioControlData = null;
-            var climateControlData = null;
-            var app = SDL.SDLController.getApplicationModel(
-              request.params.appID
-            );
-            if (request.params.subscribe === true) {
-              app.moduleSubscriptions[request.params.moduleDescription.moduleType].subscription
-                = request.params.subscribe;
-              if (app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone
-                  .indexOf(newModuleZone) < 0) {
-                app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone
-                  .push(newModuleZone);
-              }
-            } else if (request.params.subscribe === false) {
-              var index = app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone
-                .indexOf(newModuleZone);
-              if (index >= 0) {
-                app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone
-                  .splice(index, 1);
-              }
-              if (app.moduleSubscriptions[request.params.moduleDescription.moduleType].zone.length ===
-                0) {
-                app.moduleSubscriptions[request.params.moduleDescription.moduleType].subscription
-                  = false;
-              }
-            }
-            if (request.params.moduleDescription.moduleType === 'CLIMATE') {
-              climateControlData
-                = SDL.ClimateController.model.climateSet[newModuleZone].climateControlData;
-            } else if (request.params.moduleDescription.moduleType ===
-              'RADIO') {
-              radioControlData = SDL.RadioModel.get('radioControlData');
+              newRadioControlData =
+                SDL.RadioModel.setRadioData(
+                  request.params.moduleData.radioControlData);
             }
             // send repsonse
             var JSONMessage = {
@@ -308,29 +201,82 @@ FFW.RC = FFW.RPCObserver.create(
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
                 'moduleData': {
-                  'moduleType': request.params.moduleDescription.moduleType,
-                  'moduleZone': request.params.moduleDescription.moduleZone
+                  'moduleType': request.params.moduleData.moduleType
                 }
               }
             };
+
+            if (newClimateControlData) {
+              JSONMessage.result.moduleData.climateControlData =
+                newClimateControlData;
+            }
+
+            if (newRadioControlData) {
+              JSONMessage.result.moduleData.radioControlData =
+                newRadioControlData;
+            }
+
+            this.client.send(JSONMessage);
+            break;
+          }
+          case 'RC.GetInteriorVehicleData':
+          {
+            Em.Logger.log('FFW.' + request.method + ' Request');
+            if (request.params.appID == undefined) {
+             this.sendError(
+               SDL.SDLModel.data.resultCode.INVALID_DATA, request.id,
+               request.method, 'appID parameter missing!'
+             );
+             return;
+            }
+            if (!this.conssetAppCheck(request)) {
+              return;
+            }
+
+            var moduleType = request.params.moduleDescription.moduleType;
+            var climateControlData = null;
+            var radioControlData = null;
+
+            var app = SDL.SDLController.getApplicationModel(
+              request.params.appID
+            );
+            if (moduleType === 'CLIMATE') {
+              climateControlData = SDL.ClimateController.model.getClimateControlData();
+            } else if (moduleType === 'RADIO') {
+              radioControlData = SDL.RadioModel.getRadioControlData();
+            }
+
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                'method': request.method,
+                'moduleData': {
+                  'moduleType': moduleType
+                }
+              }
+            };
+
             if (radioControlData) {
-              JSONMessage.result.moduleData.radioControlData = radioControlData;
+              JSONMessage.result.moduleData.radioControlData =
+                radioControlData;
             }
             if (climateControlData) {
-              climateControlData = SDL.SDLController.correctTemp(
-                climateControlData, 'get'
-              );
               JSONMessage.result.moduleData.climateControlData
                 = climateControlData;
             }
             if (request.params.subscribe !== undefined) {
-              JSONMessage.result.isSubscribed = request.params.subscribe;
+              JSONMessage.result.isSubscribed =
+                request.params.subscribe;
             }
+
             this.client.send(JSONMessage);
             break;
           }
           case 'RC.GetInteriorVehicleDataConsent':
           {
+            Em.Logger.log('FFW.' + request.method + ' Request');
             SDL.SDLController.interiorDataConsent(request);
             break;
           }
@@ -465,67 +411,28 @@ FFW.RC = FFW.RPCObserver.create(
       this.client.send(JSONMessage);
     },
     /**
-     *
      * @param moduleType
-     * @param moduleZone
-     * @param radioControlData
-     * @param climateControlData
      */
-    onInteriorVehicleDataNotification: function(moduleType, moduleZone) {
-      var apps = SDL.SDLModel.data.registeredApps;
-      var zoneFilter = {};
-      var changedInteriorZone = SDL.SDLController.getInteriorZone(moduleZone);
-      apps.forEach(
-        function(app, index) {
-          //search for app subscribed for module the data changed for
-          app.moduleSubscriptions[moduleType].zone.forEach(
-            function(zone, index) {
-              if (zone in zoneFilter ||
-                (zone != changedInteriorZone && moduleType === 'CLIMATE')) {
-                return;
-              }
-              // send repsonse
-              var JSONMessage = {
-                'jsonrpc': '2.0',
-                'method': 'RC.OnInteriorVehicleData',
-                'params': {
-                  'moduleData': {
-                    'moduleType': moduleType,
-                    'moduleZone': SDL.SDLController.unMapInteriorZone(zone)
-                  }
-                }
-              };
-              if (moduleType === 'RADIO') {
-                JSONMessage.params.moduleData.radioControlData
-                  = SDL.RadioModel.get('radioControlData');
-              } else {
-                climateControlData = SDL.SDLController.correctTemp(
-                  SDL.ClimateController.model.climateSet[zone].climateControlData,
-                  'get'
-                );
-                JSONMessage.params.moduleData.climateControlData
-                  = climateControlData;
-              }
-              Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
-              FFW.RC.client.send(JSONMessage);
-              zoneFilter[zone] = 'exist';
-            }
-          );
-        }
-      );
-    },
-    OnDeviceLocationChanged: function(device, deviceLocation) {
-      // send repsonse
+    onInteriorVehicleDataNotification: function(moduleType, climateControlData, radioControlData) {
       var JSONMessage = {
-        'jsonrpc': '2.0',
-        'method': 'RC.OnDeviceLocationChanged',
-        'params': {
-          'device': device,
-          'deviceLocation': SDL.SDLController.unMapInteriorZone(deviceLocation)
+          'jsonrpc': '2.0',
+          'method': 'RC.OnInteriorVehicleData',
+          'params': {
+            'moduleData': {
+              'moduleType': moduleType
+            }
+          }
+        };
+        if (climateControlData) {
+          JSONMessage.params.moduleData.climateControlData =
+            climateControlData;
         }
-      };
-      SDL.SDLController.removeConsentForDevice(device.name);
-      FFW.RC.client.send(JSONMessage);
+        if (radioControlData) {
+          JSONMessage.params.moduleData.radioControlData =
+            radioControlData;
+        }
+        Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
+        FFW.RC.client.send(JSONMessage);
     },
     /**
      * Verification for consented apps

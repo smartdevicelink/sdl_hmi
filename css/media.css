@@ -826,6 +826,14 @@
     background: url(../images/media/ico_cd.png) no-repeat !important
 }
 
+.fmIco {
+    background: url(../images/media/ico_fm.png) no-repeat !important
+}
+
+.usbIco {
+    background: url(../images/media/ico_usb.png) no-repeat !important
+}
+
 .appIco {
     background: url(../images/info/info_leftMenu_apps_ico.png) no-repeat !important
 }

@@ -58,6 +58,9 @@ SDL.RadioPresetButton = SDL.Button.extend({
   ),
 
   actionDown: function() {
+    if (this.disabled) {
+      return;
+    }
 
     this._super();
     SDL.SDLController.onSoftButtonActionDown(this);
@@ -73,6 +76,9 @@ SDL.RadioPresetButton = SDL.Button.extend({
   },
 
   actionUp: function() {
+    if (this.disabled) {
+      return;
+    }
 
     this._super();
     SDL.SDLController.onSoftButtonActionUp(this);
