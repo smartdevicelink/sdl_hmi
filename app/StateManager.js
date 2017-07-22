@@ -206,12 +206,6 @@ var StateManager = Em.StateManager.extend(
     /** Media state */
     media: Em.State.create(
       {
-        exit: function() {
-          SDL.MediaController.set(
-            'activeState', SDL.States.currentState.get('path')
-          );
-          this._super();
-        },
         player: Em.State.create(
           {
             enter: function() {
@@ -223,40 +217,34 @@ var StateManager = Em.StateManager.extend(
             },
             radio: Em.State.create(
               {
-                exit: function() {
+                enter: function() {
+                  SDL.MediaController.set('activeState',
+                    SDL.States.nextState);
                   this._super();
+                },
+                exit: function() {
                   //SDL.MediaController.deactivateRadio();
                   SDL.MediaController.deactivateCD();
                   SDL.MediaController.currentSelectedPlayer.pause();
                   SDL.MediaController.deactivateUSB();
-
+                  this._super();
                 }
               }
             ),
             cd: Em.State.create(
               {
-                exit: function() {
+                enter: function() {
+                  SDL.MediaController.set('activeState',
+                    SDL.States.nextState);
                   this._super();
+                },
+                exit: function() {
                   SDL.MediaController.deactivateRadio();
                   //SDL.MediaController.deactivateCD();
                   //SDL.MediaController.currentSelectedPlayer.pause();
                   SDL.MediaController.deactivateUSB();
+                  this._super();
                 },
-                options: Em.State.create(
-                  {}
-                ),
-                browse: Em.State.create(
-                  {
-                    browseall: Em.State.create(
-                      {
-                        enter: function() {
-                          this._super();
-                          // SDL.MediaController.resetDirectTune();
-                        }
-                      }
-                    )
-                  }
-                ),
                 moreinfo: Em.State.create(
                   {}
                 )
@@ -264,38 +252,19 @@ var StateManager = Em.StateManager.extend(
             ),
             usb: Em.State.create(
               {
+                enter: function() {
+                  SDL.MediaController.set('activeState',
+                    SDL.States.nextState);
+                  this._super();
+                },
                 exit: function() {
                   this._super();
                   SDL.MediaController.deactivateRadio();
                   SDL.MediaController.deactivateCD();
-                  SDL.MediaController.currentSelectedPlayer.pause();
+                  //SDL.MediaController.currentSelectedPlayer.pause();
                   //SDL.MediaController.deactivateUSB();
                   //SDL.MediaController.resetUpdatingMessage();
                 },
-                options: Em.State.create(
-                  {
-                    deviceInformation: Em.State.create(
-                      {}
-                    )
-                  }
-                ),
-                browse: Em.State.create(
-                  {
-                    enter: function() {
-                      this._super();
-                      // reset Messages
-                      //SDL.MediaController.resetUpdatingMessage();
-                    },
-                    browseall: Em.State.create(
-                      {
-                        enter: function() {
-                          this._super();
-                          //SDL.MediaController.resetDirectTune();
-                        }
-                      }
-                    )
-                  }
-                ),
                 moreinfo: Em.State.create(
                   {
                     enter: function() {
@@ -312,15 +281,17 @@ var StateManager = Em.StateManager.extend(
         sdlmedia: Em.State.create(
           {
             enter: function() {
-              this._super();
               SDL.MediaController.deactivateRadio();
               SDL.MediaController.deactivateUSB();
               SDL.MediaController.deactivateCD();
               if (SDL.SDLModel.data.mediaPlayerActive) {
                 SDL.SDLController.onEventChanged('player', false);
               }
-
               SDL.SDLController.activateTBT();
+
+              SDL.MediaController.set('activeState',
+                SDL.States.nextState);
+              this._super();
             },
             exit: function() {
               this._super();
@@ -338,10 +309,12 @@ var StateManager = Em.StateManager.extend(
           {}
         ),
         enter: function() {
-          this._super();
           if (SDL.SDLModel.data.mediaPlayerActive) {
             SDL.SDLController.onEventChanged('player', false);
           }
+          SDL.MediaController.set('activeState',
+            SDL.States.nextState);
+          this._super();
         },
         exit: function() {
           this._super();
