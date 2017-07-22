@@ -239,7 +239,7 @@ FFW.RC = FFW.RPCObserver.create(
               return;
             }
 
-            var moduleType = request.params.moduleDescription.moduleType;
+            var moduleType = request.params.moduleType;
             var climateControlData = null;
             var radioControlData = null;
 
