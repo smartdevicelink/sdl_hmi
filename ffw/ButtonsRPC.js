@@ -136,10 +136,21 @@ FFW.Buttons = FFW.RPCObserver.create(
           return;
         }
 
-        var resultCode =
+        var result_struct =
           SDL.SDLController.onButtonPressEvent(request.params);
+        var result_code = result_struct.resultCode;
+        var result_info = (result_struct.resultInfo === "" ?
+                           null : result_struct.resultInfo);
 
-        this.sendButtonsResult(resultCode, request.id, request.method);
+        if (result_code == SDL.SDLModel.data.resultCode.SUCCESS) {
+          this.sendButtonsResult(
+            result_code, request.id, request.method
+          );
+        } else {
+          this.sendError(
+            result_code, request.id, request.method, result_info
+          );
+        }
       }
       if (request.method == 'Buttons.GetCapabilities') {
 
