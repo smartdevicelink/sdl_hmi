@@ -91,7 +91,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               'bc-item-big',
               'playcd'
             ],
-            classNameBindings: 'SDL.SDLController.model.PLAY_PAUSE::unsubscribed',
+            //classNameBindings: 'SDL.SDLController.model.PLAY_PAUSE::unsubscribed',
             presetName: 'PLAY_PAUSE',
             textBinding: 'SDL.SDLController.model.bufferingIndicator',
             actionUp: function() {
@@ -113,7 +113,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
                 ' class="SDL.SDLController.model.playPauseIndicator:visible:not-visible"}} ' +
                 'src="images/media/ico_play_pause.png" />' +
                 '<img class="playIcon not-visible" {{bindAttr' +
-                ' class="SDL.SDLController.model.playIndicator:visible"}}' +
+                ' class="SDL.SDLController.model.playIndicator:visible::not-visible"}}' +
                 ' src="images/media/ico-play.png" />' +
                 '<span>{{view.text}}</span>'
               )
