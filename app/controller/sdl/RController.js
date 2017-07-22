@@ -89,6 +89,142 @@ SDL.RController = SDL.SDLController.extend(
         }
       }
     },
+    onButtonPressEvent: function(params) {
+      var result_struct = {
+        resultCode: SDL.SDLModel.data.resultCode.SUCCESS,
+        resultInfo: ""
+      };
+
+      if (params.moduleType == 'CLIMATE') {
+        if (SDL.States.currentState.get('path') != 'climate') {
+          result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+          result_struct.resultInfo = 'Climate module must be activated';
+          return result_struct;
+        }
+
+        var model = SDL.ClimateController.model;
+        switch (params.buttonName) {
+          case 'AC_MAX': {
+            model.toggleAcMaxEnable();
+            break;
+          }
+          case 'AC': {
+            model.toggleAcEnable();
+            break;
+          }
+          case 'RECIRCULATE': {
+            model.toggleRecirculateAir();
+            break;
+          }
+          case 'FAN_UP': {
+            model.fanSpeedUp();
+            break;
+          }
+          case 'FAN_DOWN': {
+            model.fanSpeedDown();
+            break;
+          }
+          case 'TEMP_UP': {
+            model.desiredTempUp();
+            break;
+          }
+          case 'TEMP_DOWN': {
+            model.desiredTempDown();
+            break;
+          }
+          case 'DEFROST_MAX': {
+            model.defrostAllEnable();
+            break;
+          }
+          case 'DEFROST': {
+            model.defrostFrontEnable();
+            break;
+          }
+          case 'DEFROST_REAR': {
+            model.defrostRearEnable();
+            break;
+          }
+          case 'UPPER_VENT': {
+            model.ventilationModeUpperEnable();
+            break;
+          }
+          case 'LOWER_VENT': {
+            model.ventilationModeLowerEnable();
+            break;
+          }
+          default: {
+            result_struct.resultCode = SDL.SDLModel.data.resultCode.GENERIC_ERROR;
+            result_struct.resultInfo = 'Unknown climate module button';
+            return result_struct;
+          }
+        }
+        return result_struct;
+      }
+
+      if (params.moduleType == 'RADIO') {
+        if (SDL.States.currentState.get('path').indexOf('media.') < 0) {
+          result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+          result_struct.resultInfo = 'Media module must be activated';
+          return result_struct;
+        }
+
+
+        switch (params.buttonName) {
+          case 'VOLUME_UP': {
+            SDL.MediaController.volumeUpPress();
+            break;
+          }
+          case 'VOLUME_DOWN': {
+            SDL.MediaController.volumeDownPress();
+            break;
+          }
+          case 'EJECT': {
+            if (SDL.MediaController.activeState == 'media.player.cd') {
+              SDL.MediaController.ejectCD();
+            } else {
+              result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+              result_struct.resultInfo = 'CD audio source must be selected';
+              return result_struct;
+            }
+            break;
+          }
+          case 'SOURCE': {
+            SDL.MediaController.changeSource();
+            break;
+          }
+          case 'SHUFFLE': {
+            if (SDL.MediaController.activeState == 'media.player.cd' ||
+                SDL.MediaController.activeState == 'media.player.usb') {
+              SDL.MediaController.turnOnShuffle();
+            } else {
+              result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+              result_struct.resultInfo = 'CD or USB audio source must be selected';
+              return result_struct;
+            }
+            break;
+          }
+          case 'REPEAT': {
+            if (SDL.MediaController.activeState == 'media.player.cd' ||
+                SDL.MediaController.activeState == 'media.player.usb') {
+              SDL.MediaController.repeatPress();
+            } else {
+              result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+              result_struct.resultInfo = 'CD or USB audio source must be selected';
+              return result_struct;
+            }
+            break;
+          }
+          default: {
+            result_struct.resultCode = SDL.SDLModel.data.resultCode.GENERIC_ERROR;
+            result_struct.resultInfo = 'Unknown radio module button';
+            return result_struct;
+          }
+        }
+        return result_struct;
+      }
+
+      return result_struct;
+    },
     /**
      * Send notification to SDL about changes of SDL functionality
      * @param {Object} element

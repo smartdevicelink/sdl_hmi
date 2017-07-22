@@ -120,48 +120,48 @@ FFW.RC = FFW.RPCObserver.create(
       Em.Logger.log('FFW.RC.onRPCRequest');
       if (this.validationCheck(request)) {
         switch (request.method) {
-          case 'RC.GetInteriorVehicleDataCapabilities':
-          {
-            Em.Logger.log('FFW.' + request.method + ' Request');
-            if (!SDL.SDLModel.errorResponse) {
-              var interiorVehicleDataCapabilities = {};
-              if (request.params.moduleTypes) {
-                for (var i = 0; i < request.params.moduleTypes.length; i++) {
-                  if (request.params.moduleTypes[i] === 'CLIMATE') {
-                    interiorVehicleDataCapabilities.climateControlCapabilities =
-                      [
-                        SDL.ClimateController.model.getClimateControlCapabilities()
-                      ]
-                  }
-                  if (request.params.moduleTypes[i] === 'RADIO') {
-                    interiorVehicleDataCapabilities.radioControlCapabilities =
-                      [
-                        SDL.RadioModel.getRadioControlCapabilities()
-                      ]
-                  }
-                }
-              }
-              // send repsonse
-              var JSONMessage = {
-                'jsonrpc': '2.0',
-                'id': request.id,
-                'result': {
-                  'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                  'method': request.method,
-                  'interiorVehicleDataCapabilities': interiorVehicleDataCapabilities
-                }
-              };
-              this.client.send(JSONMessage);
-            } else {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'],
-                request.id,
-                request.method,
-                'Requested module data is not available'
-              );
-            }
-            break;
-          }
+          // case 'RC.GetInteriorVehicleDataCapabilities':
+          // {
+          //   Em.Logger.log('FFW.' + request.method + ' Request');
+          //   if (!SDL.SDLModel.errorResponse) {
+          //     var interiorVehicleDataCapabilities = {};
+          //     if (request.params.moduleTypes) {
+          //       for (var i = 0; i < request.params.moduleTypes.length; i++) {
+          //         if (request.params.moduleTypes[i] === 'CLIMATE') {
+          //           interiorVehicleDataCapabilities.climateControlCapabilities =
+          //             [
+          //               SDL.ClimateController.model.getClimateControlCapabilities()
+          //             ]
+          //         }
+          //         if (request.params.moduleTypes[i] === 'RADIO') {
+          //           interiorVehicleDataCapabilities.radioControlCapabilities =
+          //             [
+          //               SDL.RadioModel.getRadioControlCapabilities()
+          //             ]
+          //         }
+          //       }
+          //     }
+          //     // send repsonse
+          //     var JSONMessage = {
+          //       'jsonrpc': '2.0',
+          //       'id': request.id,
+          //       'result': {
+          //         'code': SDL.SDLModel.data.resultCode.SUCCESS,
+          //         'method': request.method,
+          //         'interiorVehicleDataCapabilities': interiorVehicleDataCapabilities
+          //       }
+          //     };
+          //     this.client.send(JSONMessage);
+          //   } else {
+          //     this.sendError(
+          //       SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'],
+          //       request.id,
+          //       request.method,
+          //       'Requested module data is not available'
+          //     );
+          //   }
+          //   break;
+          // }
 
           //case "RC.GrantAccess": {
           //
@@ -179,6 +179,10 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.SetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
+
+            if (!this.consentedAppCheck(request)) {
+              return;
+            }
 
             var newClimateControlData = null;
             var newRadioControlData = null;
@@ -222,6 +226,7 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.GetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
+
             if (request.params.appID == undefined) {
              this.sendError(
                SDL.SDLModel.data.resultCode.INVALID_DATA, request.id,
@@ -229,7 +234,8 @@ FFW.RC = FFW.RPCObserver.create(
              );
              return;
             }
-            if (!this.conssetAppCheck(request)) {
+
+            if (!this.consentedAppCheck(request)) {
               return;
             }
 
@@ -439,74 +445,51 @@ FFW.RC = FFW.RPCObserver.create(
      * HMI should reject secon unconsented app
      * @param request
      */
-    conssetAppCheck: function(request) {
-      var deviceName = SDL.SDLController.getApplicationModel(
-        request.params.appID
-      ).deviceName;
+    consentedAppCheck: function(request) {
+      var appID = request.params.appID;
+      var moduleType = null;
+      if (request.params.moduleDescription) {
+        moduleType = request.params.moduleDescription.moduleType;
+      } else if (request.params.moduleData) {
+        moduleType = request.params.moduleData.moduleType;
+      } else {
+        moduleType = request.params.moduleType;
+      }
+
+      var deviceName = SDL.SDLController.getApplicationModel(appID)
+        .deviceName;
+
       if ((SDL.SDLModel.driverDeviceInfo &&
         deviceName == SDL.SDLModel.driverDeviceInfo.name) ||
         !SDL.SDLController.reverseAppsAllowed) {
         return true;
       }
-      if (request.params.moduleDescription) {
-        if (request.params.moduleDescription.moduleType === 'CLIMATE') {
-          if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
-            SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
-            return true;
-          } else if (SDL.SDLModel.data.climateFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED,
-              request.id,
-              request.method,
-              'To many unconsented requests!'
-            );
-            return false;
-          }
-        } else {
-          if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
-            SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
-            return true;
-          } else if (SDL.SDLModel.data.radioFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED,
-              request.id,
-              request.method,
-              'To many unconsented requests!'
-            );
-            return false;
-          }
+
+      if (moduleType === 'CLIMATE') {
+        if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
+          SDL.SDLModel.data.climateFirstConsentedApp = appID;
+          return true;
+        } else if (SDL.SDLModel.data.climateFirstConsentedApp != appID) {
+          this.sendError(
+            SDL.SDLModel.data.resultCode.REJECTED,
+            request.id,
+            request.method,
+            'To many unconsented requests!'
+          );
+          return false;
         }
-      } else {
-        if (request.params.moduleData.moduleType === 'CLIMATE') {
-          if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
-            SDL.SDLModel.data.climateFirstConsentedApp = request.params.appID;
-            return true;
-          } else if (SDL.SDLModel.data.climateFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED,
-              request.id,
-              request.method,
-              'To many unconsented requests!'
-            );
-            return false;
-          }
-        } else {
-          if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
-            SDL.SDLModel.data.radioFirstConsentedApp = request.params.appID;
-            return true;
-          } else if (SDL.SDLModel.data.radioFirstConsentedApp !=
-            request.params.appID) {
-            this.sendError(
-              SDL.SDLModel.data.resultCode.REJECTED,
-              request.id,
-              request.method,
-              'To many unconsented requests!'
-            );
-            return false;
-          }
+      } else if (moduleType === 'RADIO') {
+        if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
+          SDL.SDLModel.data.radioFirstConsentedApp = appID;
+          return true;
+        } else if (SDL.SDLModel.data.radioFirstConsentedApp != appID) {
+          this.sendError(
+            SDL.SDLModel.data.resultCode.REJECTED,
+            request.id,
+            request.method,
+            'To many unconsented requests!'
+          );
+          return false;
         }
       }
       return true;
