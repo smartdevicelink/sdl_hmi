@@ -41,6 +41,10 @@ SDL.MediaController = Em.Object.create(
     /** Current selected player object  reference*/
     currentSelectedPlayer: SDL.CDModel.player,
     /**
+     * Current volume level in percents
+     */
+    currentVolume: 50,
+    /**
      * Turn on CD
      */
     turnOnCD: function() {
@@ -93,6 +97,22 @@ SDL.MediaController = Em.Object.create(
         }
       }
       SDL.States.goToStates('media.sdlmedia');
+    },
+    /**
+     * Volume level up
+     */
+    volumeUpPress: function() {
+      if (this.currentVolume < 100) {
+        this.set('currentVolume', this.currentVolume + 1);
+      }
+    },
+    /**
+     * Volume level down
+     */
+    volumeDownPress: function() {
+      if (this.currentVolume > 0) {
+        this.set('currentVolume', this.currentVolume - 1);
+      }
     },
     /**
      * Switching off CD
