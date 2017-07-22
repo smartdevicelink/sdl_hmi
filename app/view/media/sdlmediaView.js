@@ -78,6 +78,7 @@ SDL.sdlView = Em.ContainerView
               }
             }.observes('SDL.SDLController.model.softButtons.@each'),
             groupName: 'MediaView',
+            elementId: 'sdl_view_container_menu',
             content: Em.ContainerView.extend(
               {
                 classNames: [
