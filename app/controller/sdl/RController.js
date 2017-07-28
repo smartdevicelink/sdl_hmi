@@ -50,11 +50,11 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.set('givenControlFlag', true);
         //FFW.CAN.OnRadioDetails({"radioStation":
         // SDL.RadioModel.radioDetails.radioStation});
-        FFW.RC.onInteriorVehicleDataNotification(
-          'RADIO',
-          null,
-          SDL.RadioModel.get('radioControlData')
-        );
+        // FFW.RC.onInteriorVehicleDataNotification(
+        //   'RADIO',
+        //   null,
+        //   SDL.RadioModel.getRadioControlData()
+        // );
       } else {
         FFW.RC.sendError(
           SDL.SDLModel.dataresultCode.REJECTED,
@@ -84,9 +84,146 @@ SDL.RController = SDL.SDLController.extend(
         }
         default:
         {
+          this._super(reason, status);
           return;
         }
       }
+    },
+    onButtonPressEvent: function(params) {
+      var result_struct = {
+        resultCode: SDL.SDLModel.data.resultCode.SUCCESS,
+        resultInfo: ""
+      };
+
+      if (params.moduleType == 'CLIMATE') {
+        if (SDL.States.currentState.get('path') != 'climate') {
+          result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+          result_struct.resultInfo = 'Climate module must be activated';
+          return result_struct;
+        }
+
+        var model = SDL.ClimateController.model;
+        switch (params.buttonName) {
+          case 'AC_MAX': {
+            model.toggleAcMaxEnable();
+            break;
+          }
+          case 'AC': {
+            model.toggleAcEnable();
+            break;
+          }
+          case 'RECIRCULATE': {
+            model.toggleRecirculateAir();
+            break;
+          }
+          case 'FAN_UP': {
+            model.fanSpeedUp();
+            break;
+          }
+          case 'FAN_DOWN': {
+            model.fanSpeedDown();
+            break;
+          }
+          case 'TEMP_UP': {
+            model.desiredTempUp();
+            break;
+          }
+          case 'TEMP_DOWN': {
+            model.desiredTempDown();
+            break;
+          }
+          case 'DEFROST_MAX': {
+            model.defrostAllEnable();
+            break;
+          }
+          case 'DEFROST': {
+            model.defrostFrontEnable();
+            break;
+          }
+          case 'DEFROST_REAR': {
+            model.defrostRearEnable();
+            break;
+          }
+          case 'UPPER_VENT': {
+            model.ventilationModeUpperEnable();
+            break;
+          }
+          case 'LOWER_VENT': {
+            model.ventilationModeLowerEnable();
+            break;
+          }
+          default: {
+            result_struct.resultCode = SDL.SDLModel.data.resultCode.GENERIC_ERROR;
+            result_struct.resultInfo = 'Unknown climate module button';
+            return result_struct;
+          }
+        }
+        return result_struct;
+      }
+
+      if (params.moduleType == 'RADIO') {
+        if (SDL.States.currentState.get('path').indexOf('media.') < 0) {
+          result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+          result_struct.resultInfo = 'Media module must be activated';
+          return result_struct;
+        }
+
+
+        switch (params.buttonName) {
+          case 'VOLUME_UP': {
+            SDL.MediaController.volumeUpPress();
+            break;
+          }
+          case 'VOLUME_DOWN': {
+            SDL.MediaController.volumeDownPress();
+            break;
+          }
+          case 'EJECT': {
+            if (SDL.MediaController.activeState == 'media.player.cd') {
+              SDL.MediaController.ejectCD();
+            } else {
+              result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+              result_struct.resultInfo = 'CD audio source must be selected';
+              return result_struct;
+            }
+            break;
+          }
+          case 'SOURCE': {
+            SDL.MediaController.changeSource();
+            break;
+          }
+          case 'SHUFFLE': {
+            if (SDL.MediaController.activeState == 'media.player.cd' ||
+                SDL.MediaController.activeState == 'media.player.usb') {
+              SDL.MediaController.turnOnShuffle();
+            } else {
+              result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+              result_struct.resultInfo = 'CD or USB audio source must be selected';
+              return result_struct;
+            }
+            break;
+          }
+          case 'REPEAT': {
+            if (SDL.MediaController.activeState == 'media.player.cd' ||
+                SDL.MediaController.activeState == 'media.player.usb') {
+              SDL.MediaController.repeatPress();
+            } else {
+              result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+              result_struct.resultInfo = 'CD or USB audio source must be selected';
+              return result_struct;
+            }
+            break;
+          }
+          default: {
+            result_struct.resultCode = SDL.SDLModel.data.resultCode.GENERIC_ERROR;
+            result_struct.resultInfo = 'Unknown radio module button';
+            return result_struct;
+          }
+        }
+        return result_struct;
+      }
+
+      return result_struct;
     },
     /**
      * Send notification to SDL about changes of SDL functionality
@@ -126,7 +263,7 @@ SDL.RController = SDL.SDLController.extend(
               // for not initialized applications
               appID: params.appID,
               appName: params.appName,
-              deviceName: params.deviceName,
+              deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: 0,
               disabledToActivate: params.greyOut ? true : false
@@ -141,7 +278,7 @@ SDL.RController = SDL.SDLController.extend(
               //Magic number 1 - Default non-media model
               appID: params.appID,
               appName: params.appName,
-              deviceName: params.deviceName,
+              deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: false,
               initialized: true,
@@ -155,7 +292,7 @@ SDL.RController = SDL.SDLController.extend(
             {
               appID: params.appID,
               appName: params.appName,
-              deviceName: params.deviceName,
+              deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: applicationType == 0,
               initialized: true,
@@ -410,131 +547,12 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.data.climateFirstConsentedApp = null;
       }
     },
-    correctTemp: function(data, type) {
-      var d = SDL.deepCopy(data);
-      if (type === 'get') {
-        switch (d.temperatureUnit) {
-          case 'KELVIN':
-          {
-            d.currentTemp += 273;
-            d.desiredTemp += 273;
-            return d;
-          }
-          case 'CELSIUS':
-          {
-            return d;
-          }
-          case 'FAHRENHEIT':
-          {
-            d.currentTemp = Math.round(d.currentTemp * 9 / 5 + 32);
-            d.desiredTemp = Math.round(d.desiredTemp * 9 / 5 + 32);
-            return d;
-          }
-        }
+    getLedIndicatorImagePath: function(state) {
+      if (state) {
+        return 'images/media/active_horiz_led.png';
       } else {
-        switch (d.temperatureUnit) {
-          case 'KELVIN':
-          {
-            d.currentTemp -= 273;
-            d.desiredTemp -= 273;
-            return d;
-          }
-          case 'CELSIUS':
-          {
-            return d;
-          }
-          case 'FAHRENHEIT':
-          {
-            d.currentTemp = Math.round(
-              (
-              d.currentTemp - 32) * 5 / 9
-            );
-            d.desiredTemp = Math.round(
-              (
-              d.currentTemp - 32) * 5 / 9
-            );
-            return d;
-          }
-        }
+        return 'images/media/passiv_horiz_led.png';
       }
-    },
-    unMapInteriorZone: function(moduleZone) {
-      var zone = {};
-      switch (moduleZone) {
-        case 'driver':
-        {
-          zone = {
-            'col': 0,
-            'row': 0,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'front_passenger':
-        {
-          zone = {
-            'col': 1,
-            'row': 0,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'back_left':
-        {
-          zone = {
-            'col': 0,
-            'row': 1,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'back_right':
-        {
-          zone = {
-            'col': 1,
-            'row': 1,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-      }
-    },
-    getInteriorZone: function(moduleZone) {
-      var zone;
-      zone = null;
-      if (moduleZone == null) {
-        return zone;
-      }
-      if (moduleZone.col === 0) {
-        if (moduleZone.row === 0) {
-          zone = 'driver';
-        } else if (moduleZone.row === 1) {
-          zone = 'back_left';
-        }
-      } else if (moduleZone.col === 1) {
-        if (moduleZone.row === 0) {
-          zone = 'front_passenger';
-        } else if (moduleZone.row === 1) {
-          zone = 'back_right';
-        }
-      }
-      return zone;
     }
   }
 );

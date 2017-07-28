@@ -77,17 +77,20 @@ SDL.StatusMediaView = Em.ContainerView.extend({
             /** Define module layout */
             template: Em.Handlebars.compile('<div class="statusInfo">' +
               '<div class="station">' +
+              // HMI media
               '<span {{bindAttr class="SDL.CDModel.active:visible_display"}}>{{SDL.CDModel.statusBar}}</span>' +
-              // title
-              '<span {{bindAttr class="SDL.SDLModel.data.limitedExist:visible_display"}}>{{SDL.SDLModel.applicationStatusBar}}</span>' +
+              '<span {{bindAttr class="SDL.USBModel.active:visible_display"}}>{{SDL.USBModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.RadioModel.active:visible_display"}}>{{SDL.RadioModel.statusBar}}</span>' +
               // SDL
+              '<span {{bindAttr class="SDL.SDLModel.data.limitedExist:visible_display"}}>{{SDL.SDLModel.applicationStatusBar}}</span>' +
               '</div>' +
               '<div class="icon cdIco"' +
+              // HMI media
               '{{bindAttr class="SDL.CDModel.active:cdIco"}}' +
-              // CD
-              // icon
-              '{{bindAttr class="SDL.SDLModel.data.limitedExist:appIco"}}>' +
+              '{{bindAttr class="SDL.USBModel.active:usbIco"}}' +
+              '{{bindAttr class="SDL.RadioModel.active:fmIco"}}' +
               // SDL
+              '{{bindAttr class="SDL.SDLModel.data.limitedExist:appIco"}}>' +
               '</div>' + '</div>'
             )
           }

@@ -331,7 +331,7 @@
     border: 1px solid #393939;
     border-bottom: none;
     border-radius: 3px;
-    top: 20px;
+    top: 60px;
     left: 485px;
 }
 
@@ -347,7 +347,7 @@
     border: 1px solid #393939;
     border-bottom: none;
     border-radius: 3px;
-    top: 20px;
+    top: 60px;
     left: 485px;
 }
 
@@ -584,7 +584,7 @@
 
 .playIcon {
     position: absolute;
-    left: 66px;
+    left: 50px;
 }
 
 .playIcon.hideicon {
@@ -826,8 +826,57 @@
     background: url(../images/media/ico_cd.png) no-repeat !important
 }
 
+.fmIco {
+    background: url(../images/media/ico_fm.png) no-repeat !important
+}
+
+.usbIco {
+    background: url(../images/media/ico_usb.png) no-repeat !important
+}
+
 .appIco {
     background: url(../images/info/info_leftMenu_apps_ico.png) no-repeat !important
+}
+
+.calc_container {
+    width: 150px;
+    height: 40px;
+    border-radius: 3px;
+    border: 1px solid #393939;
+}
+
+.calc_container .minus {
+    height: 24px;
+    width: 31px;
+    float: left;
+    padding: 8px;
+    padding-left: 14px;
+}
+
+.calc_container .label{
+    width: 100%;
+    text-align: center;
+    line-height: 40px;
+}
+
+.calc_container .plus{
+    float: right;
+    position: relative;
+    height: 24px;
+    width: 31px;
+    padding: 8px;
+    padding-left: 14px;
+}
+
+#volume_label {
+    top: 55px;
+    left: 695px;
+}
+
+#currentVolume_container.calc_container {
+    top: 77px;
+    left: 646px;
+    z-index: 502;
 }
 
 #media_player_view_container {
@@ -838,12 +887,11 @@
     left: 161px;
     z-index: 501;
 }
-
-#sdl_view_container .ffw_list_menu,
-#radio_view_container .ffw_list_menu {
-    top: 90px;
+#sdl_view_container_menu {
+    top: 125px;
     left: 650px;
     width: 140px;
+    height: 265px !important;
 }
 
 #media_fm_tuneButtons {

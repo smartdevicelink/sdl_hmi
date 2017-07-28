@@ -89,8 +89,12 @@ SDL.SDLMediaController = Em.Object.create(
           SDL.SDLController.model) {
           SDL.SDLController.getApplicationModel(appID).set('active', false);
           SDL.States.goToStates('info.apps');
-          SDL.MediaController.set('activeState', 'media.player');
         }
+        if (SDL.MediaController.activeState == 'media.sdlmedia') {
+          SDL.MediaController.set('activeState', 'media.player.cd');
+          SDL.CDModel.set('active', true);
+        }
+        SDL.SDLModel.data.set('limitedExist', false);
         this.set('currentAppId', null);
       }
       SDL.SDLModel.stopStream(appID);

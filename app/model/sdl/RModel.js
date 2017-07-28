@@ -59,7 +59,7 @@ SDL.RModel = SDL.SDLModel.extend({
    *
    * @param {Object}
    */
-  driverDevice: false,
+  driverDevice: true,
 
   /**
    * Current drivers device flag
@@ -82,16 +82,6 @@ SDL.RModel = SDL.SDLModel.extend({
       0: 'DRIVER',
       1: 'PASSENGER'
     },
-
-  /**
-   * Interior zones for OnDeviceLocationChanged notification
-   */
-  interiorZone: [
-    'driver',
-    'back_left',
-    'front_passenger',
-    'back_right'
-  ],
 
   /**
    * Radio app indetificator

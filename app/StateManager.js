@@ -139,10 +139,14 @@ var StateManager = Em.StateManager.extend(
           {
             enter: function() {
               this._super();
+              if (SDL.SDLModel.data.mediaPlayerActive) {
+                SDL.SDLController.onEventChanged('player', false);
+              }
               SDL.SDLController.activateTBT();
             },
             exit: function() {
               this._super();
+              SDL.SDLModel.data.set('limitedExist', false);
               SDL.SDLController.deactivateApp();
             }
           }
@@ -202,55 +206,45 @@ var StateManager = Em.StateManager.extend(
     /** Media state */
     media: Em.State.create(
       {
-        exit: function() {
-          SDL.MediaController.set(
-            'activeState', SDL.States.currentState.get('path')
-          );
-          this._super();
-        },
         player: Em.State.create(
           {
             enter: function() {
               if (SDL.SDLController.model) {
                 SDL.SDLController.model.set('active', false);
               }
-              this._super();
               SDL.SDLController.onEventChanged(this.name, true);
-            },
-            exit: function() {
               this._super();
-              SDL.SDLController.onEventChanged(this.name, false);
             },
             radio: Em.State.create(
               {
-                exit: function() {
+                enter: function() {
+                  SDL.MediaController.set('activeState',
+                    SDL.States.nextState);
                   this._super();
-                  SDL.MediaController.deactivateRadio();
+                },
+                exit: function() {
+                  //SDL.MediaController.deactivateRadio();
+                  SDL.MediaController.deactivateCD();
+                  SDL.MediaController.currentSelectedPlayer.pause();
+                  SDL.MediaController.deactivateUSB();
+                  this._super();
                 }
               }
             ),
             cd: Em.State.create(
               {
-                exit: function() {
+                enter: function() {
+                  SDL.MediaController.set('activeState',
+                    SDL.States.nextState);
                   this._super();
-                  SDL.MediaController.deactivateUSB();
-                  SDL.MediaController.currentSelectedPlayer.pause();
                 },
-                options: Em.State.create(
-                  {}
-                ),
-                browse: Em.State.create(
-                  {
-                    browseall: Em.State.create(
-                      {
-                        enter: function() {
-                          this._super();
-                          // SDL.MediaController.resetDirectTune();
-                        }
-                      }
-                    )
-                  }
-                ),
+                exit: function() {
+                  SDL.MediaController.deactivateRadio();
+                  //SDL.MediaController.deactivateCD();
+                  //SDL.MediaController.currentSelectedPlayer.pause();
+                  SDL.MediaController.deactivateUSB();
+                  this._super();
+                },
                 moreinfo: Em.State.create(
                   {}
                 )
@@ -258,36 +252,19 @@ var StateManager = Em.StateManager.extend(
             ),
             usb: Em.State.create(
               {
+                enter: function() {
+                  SDL.MediaController.set('activeState',
+                    SDL.States.nextState);
+                  this._super();
+                },
                 exit: function() {
                   this._super();
+                  SDL.MediaController.deactivateRadio();
                   SDL.MediaController.deactivateCD();
-                  SDL.MediaController.currentSelectedPlayer.pause();
+                  //SDL.MediaController.currentSelectedPlayer.pause();
+                  //SDL.MediaController.deactivateUSB();
                   //SDL.MediaController.resetUpdatingMessage();
                 },
-                options: Em.State.create(
-                  {
-                    deviceInformation: Em.State.create(
-                      {}
-                    )
-                  }
-                ),
-                browse: Em.State.create(
-                  {
-                    enter: function() {
-                      this._super();
-                      // reset Messages
-                      //SDL.MediaController.resetUpdatingMessage();
-                    },
-                    browseall: Em.State.create(
-                      {
-                        enter: function() {
-                          this._super();
-                          //SDL.MediaController.resetDirectTune();
-                        }
-                      }
-                    )
-                  }
-                ),
                 moreinfo: Em.State.create(
                   {
                     enter: function() {
@@ -304,10 +281,17 @@ var StateManager = Em.StateManager.extend(
         sdlmedia: Em.State.create(
           {
             enter: function() {
-              this._super();
+              SDL.MediaController.deactivateRadio();
               SDL.MediaController.deactivateUSB();
               SDL.MediaController.deactivateCD();
+              if (SDL.SDLModel.data.mediaPlayerActive) {
+                SDL.SDLController.onEventChanged('player', false);
+              }
               SDL.SDLController.activateTBT();
+
+              SDL.MediaController.set('activeState',
+                SDL.States.nextState);
+              this._super();
             },
             exit: function() {
               this._super();
@@ -324,10 +308,18 @@ var StateManager = Em.StateManager.extend(
         baseNavigation: Em.State.create(
           {}
         ),
+        enter: function() {
+          if (SDL.SDLModel.data.mediaPlayerActive) {
+            SDL.SDLController.onEventChanged('player', false);
+          }
+          SDL.MediaController.set('activeState',
+            SDL.States.nextState);
+          this._super();
+        },
         exit: function() {
           this._super();
           SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
-          //SDL.SDLModel.data.set('limitedExist', true);
+          SDL.SDLModel.data.set('limitedExist', false);
           SDL.SDLController.deactivateApp();
         }
       }

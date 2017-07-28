@@ -218,6 +218,9 @@ SDL.SDLController = Em.Object.extend(
       if (!eventName) {
         return;
       }
+      if ('AUDIO_SOURCE' == eventName) {
+        SDL.SDLModel.data.mediaPlayerActive = status;
+      }
       FFW.BasicCommunication.OnEventChanged(eventName, status);
     },
     /**
@@ -1031,12 +1034,6 @@ SDL.SDLController = Em.Object.extend(
     onGetDeviceList: function() {
       SDL.States.goToStates('info.devicelist');
       SDL.SDLModel.data.set('deviceSearchProgress', true);
-    },
-    /**
-     * Enter screen vith list of devices application model
-     */
-    onGetDeviceLocation: function() {
-      SDL.States.goToStates('info.devicelocation');
     },
     /**
      * Send notification if device was choosed

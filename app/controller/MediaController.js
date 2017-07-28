@@ -41,6 +41,10 @@ SDL.MediaController = Em.Object.create(
     /** Current selected player object  reference*/
     currentSelectedPlayer: SDL.CDModel.player,
     /**
+     * Current volume level in percents
+     */
+    currentVolume: 50,
+    /**
      * Turn on CD
      */
     turnOnCD: function() {
@@ -95,6 +99,22 @@ SDL.MediaController = Em.Object.create(
       SDL.States.goToStates('media.sdlmedia');
     },
     /**
+     * Volume level up
+     */
+    volumeUpPress: function() {
+      if (this.currentVolume < 100) {
+        this.set('currentVolume', this.currentVolume + 1);
+      }
+    },
+    /**
+     * Volume level down
+     */
+    volumeDownPress: function() {
+      if (this.currentVolume > 0) {
+        this.set('currentVolume', this.currentVolume - 1);
+      }
+    },
+    /**
      * Switching off CD
      */
     deactivateCD: function() {
@@ -141,9 +161,51 @@ SDL.MediaController = Em.Object.create(
       this.currentSelectedPlayer.nextTrackPress();
     },
     /**
-     * turn on shuffle help video event
+     * Turn on shuffle help video event
      */
     turnOnShuffle: function() {
+      this.currentSelectedPlayer.shufflePress();
+    },
+    /**
+     * Repeat mode pressed
+     */
+    repeatPress: function() {
+      this.currentSelectedPlayer.repeatPress();
+    },
+    /**
+     * Eject/insert CD
+     */
+    ejectCD: function() {
+      this.currentSelectedPlayer.ejectPress();
+    },
+    /**
+     * Change media audio source
+     */
+    changeSource: function() {
+      switch (SDL.MediaController.activeState) {
+        case 'media.player.radio': {
+          this.deactivateRadio();
+          this.turnOnCD();
+          break;
+        }
+        case 'media.player.cd': {
+          this.deactivateCD();
+          this.turnOnUSB();
+          break;
+        }
+        case 'media.player.usb': {
+          this.deactivateUSB();
+          if (SDL.SDLMediaController.currentAppId != null) {
+            SDL.SDLMediaController.activateCurrentApp();
+          } else {
+            this.turnOnRadio();
+          }
+          break;
+        }
+        default: {
+          this.turnOnRadio();
+        }
+      }
     },
     /**
      * turn on scan event

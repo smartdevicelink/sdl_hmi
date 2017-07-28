@@ -786,48 +786,18 @@ SDL.SDLModel = Em.Object.extend({
    *            message Object with parameters come from SDLCore.
    */
   setProperties: function(params) {
-
+    function mergeKeyboardProperties(properties) {
+      for (var name in properties) {
+        SDL.SDLController.getApplicationModel(params.appID).
+            set('globalProperties.keyboardProperties.' + name,
+              properties[name]
+            );
+      }
+    }
     if (SDL.SDLController.getApplicationModel(params.appID)) {
       for (var i in params) {
         if (i === 'keyboardProperties') {
-          if (params[i].language) {
-            SDL.SDLController.getApplicationModel(params.appID).
-                set('globalProperties.keyboardProperties.language',
-                  params[i].language
-                );
-          }
-          if (params[i].keyboardLayout) {
-            SDL.SDLController.getApplicationModel(params.appID).
-                set('globalProperties.keyboardProperties.keyboardLayout',
-                  params[i].keyboardLayout
-                );
-          }
-          if (params[i].keypressMode) {
-            SDL.SDLController.getApplicationModel(params.appID).
-                set('globalProperties.keyboardProperties.keypressMode',
-                  params[i].keypressMode
-                );
-          }
-          if (params[i].limitedCharacterList) {
-            SDL.SDLController.getApplicationModel(params.appID).
-                set('globalProperties.keyboardProperties.limitedCharacterList',
-                  params[i].limitedCharacterList
-                );
-          } else {
-            SDL.SDLController.getApplicationModel(params.appID).
-                set('globalProperties.keyboardProperties.limitedCharacterList',
-                  []
-                );
-          }
-          if (params[i].autoCompleteText) {
-            SDL.SDLController.getApplicationModel(params.appID).
-                set('globalProperties.keyboardProperties.autoCompleteText',
-                  params[i].autoCompleteText
-                );
-          } else {
-            SDL.SDLController.getApplicationModel(params.appID).
-                set('globalProperties.keyboardProperties.autoCompleteText', '');
-          }
+          mergeKeyboardProperties(params[i]);
         } else {
           SDL.SDLController.getApplicationModel(params.appID).
               set('globalProperties.' + i, params[i]);
@@ -1293,12 +1263,8 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.TurnByTurnView.deactivate();
 
-      if (!SDL.SDLModel.data.phoneCallActive) {
-
-        if ('GENERAL' === reason) {
-          FFW.BasicCommunication.OnAppDeactivated(appID);
-        }
-
+      if (!SDL.SDLModel.data.phoneCallActive && reason == 'GENERAL') {
+        FFW.BasicCommunication.OnAppDeactivated(appID);
       }
     }
   }
