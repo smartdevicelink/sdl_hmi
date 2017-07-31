@@ -208,6 +208,11 @@ SDL.RadioModel = Em.Object.create({
 
   getRadioControlData: function() {
     var result = {
+      radioEnable: this.radioControlStruct.radioEnable
+    };
+
+    if (result.radioEnable) {
+      result = {
         frequencyInteger: this.radioControlStruct.frequencyInteger,
         frequencyFraction: this.radioControlStruct.frequencyFraction,
         band: this.radioControlStruct.band,
@@ -230,6 +235,7 @@ SDL.RadioModel = Em.Object.create({
         radioEnable: this.radioControlStruct.radioEnable,
         state: this.radioControlStruct.state
       };
+    }
 
     return result;
   },

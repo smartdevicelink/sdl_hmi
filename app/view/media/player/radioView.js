@@ -369,6 +369,9 @@ SDL.RadioView = Em.ContainerView
             'SDL.RadioModel.radioDetails.songInfo.artist',
             'SDL.RadioModel.radioDetails.songInfo.name'
           ),
+          classNameBindings: [
+            'SDL.RadioModel.radioControlStruct.radioEnable:active_state:inactive_state'
+          ],
           template: Em.Handlebars
             .compile(
               '{{#with view}}' +
