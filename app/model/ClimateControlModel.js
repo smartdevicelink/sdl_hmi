@@ -268,12 +268,12 @@ SDL.ClimateControlModel = Em.Object.create({
     },
 
   setCurrentTemp: function(temp) {
-      this.set('climateControlData.currentTemperature',
+      this.set('climateControlData.currentTemp',
         SDL.ClimateController.extractTemperatureFromStruct(temp));
     },
 
   setDesiredTemp: function(temp) {
-      this.set('climateControlData.desiredTemperature',
+      this.set('climateControlData.desiredTemp',
         SDL.ClimateController.extractTemperatureFromStruct(temp));
     },
 
