@@ -360,7 +360,6 @@ FFW.RC = FFW.RPCObserver.create(
       }
     },
     GetInteriorVehicleDataConsentResponse: function(request, allowed) {
-
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
@@ -368,7 +367,7 @@ FFW.RC = FFW.RPCObserver.create(
         'result': {
           'code': SDL.SDLModel.data.resultCode.SUCCESS,
           'method': request.method,
-          allowed: allowed
+          'allowed': allowed
         }
       };
       this.client.send(JSONMessage);

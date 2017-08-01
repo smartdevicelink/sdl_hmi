@@ -454,54 +454,29 @@ SDL.RController = SDL.SDLController.extend(
       var appName = SDL.SDLController.getApplicationModel(
         request.params.appID
       ).appName;
-      var req = request;
-      var popUp = null;
-      if (request.params.moduleType === 'RADIO') {
-        if (SDL.RadioModel.consentedApp) {
-          FFW.RC.sendError(
-            SDL.SDLModel.data.resultCode.REJECTED, request.id,
-            request.method, 'Already consented!'
-          );
-        } else {
-          popUp = SDL.PopUp.create().appendTo('body').popupActivate(
-            'Would you like to grant access for ' + appName +
-            ' application - moduleType: Radio?',
-            function(result) {
-              FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
-              if (result) {
-                SDL.SDLModel.set('givenControlFlag', true);
-                SDL.RadioModel.consentedApp = request.params.appID;
-              }
-            }
-          );
-        }
-      } else {
-        if (SDL.ClimateController.model.consentedApp) {
-          FFW.RC.sendError(
-            SDL.SDLModel.data.resultCode.REJECTED, request.id,
-            request.method, 'Already consented!'
-          );
-        } else {
-          popUp = SDL.PopUp.create().appendTo('body').popupActivate(
-            'Would you like to grant access for ' + appName +
-            ' application - moduleType: Climate?',
-            function(result) {
-              FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
-              if (result) {
-                SDL.SDLModel.set('givenControlFlag', true);
-                SDL.ClimateController.model.consentedApp = request.params.appID;
-              }
-            }
-          );
-        }
+
+      var module = 'Unknown';
+      if (request.params.moduleType == 'CLIMATE') {
+        module = 'Climate';
+      } else if (request.params.moduleType == 'RADIO') {
+        module = 'Radio';
       }
+
+      var popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+        'Would you like to grant access for ' + appName +
+        ' application for module ' + module + '?',
+        function(result) {
+          FFW.RC.GetInteriorVehicleDataConsentResponse(request, result);
+        }
+      );
+
       setTimeout(
         function() {
           if (popUp && popUp.active) {
             popUp.deactivate();
             FFW.RC.sendError(
-              SDL.SDLModel.data.resultCode['TIMED_OUT'], req.id,
-              req.method, 'Timed out!'
+              SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
+              request.method, 'The resource is in use and the driver did not respond in time'
             );
           }
         }, 10000

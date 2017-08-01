@@ -2082,20 +2082,6 @@ SDL.RPCController = Em.Object.create(
             };
             return this.resultStruct;
           }
-          if (params.zone == null) {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Parameter \'zone\' does not exists!'
-            };
-            return this.resultStruct;
-          }
-          if (typeof params.zone != 'object') {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Wrong type of parameter \'zone\'!'
-            };
-            return this.resultStruct;
-          }
           this.resultStruct = {
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
