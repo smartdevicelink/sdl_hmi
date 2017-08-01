@@ -45,8 +45,6 @@ SDL.RController = SDL.SDLController.extend(
           SDL.SDLModel.controlRequestID,
           'RC.GrantAccess'
         );
-        SDL.SDLModel.set('givenControl', appID);
-        SDL.SDLModel.set('givenControlFlag', true);
         //FFW.CAN.OnRadioDetails({"radioStation":
         // SDL.RadioModel.radioDetails.radioStation});
         // FFW.RC.onInteriorVehicleDataNotification(
@@ -225,22 +223,6 @@ SDL.RController = SDL.SDLController.extend(
       return result_struct;
     },
     /**
-     * Send notification to SDL about changes of SDL functionality
-     * @param {Object} element
-     * @constructor
-     */
-    OnReverseAppsAllowing: function(element) {
-      element.toggleProperty('allowed');
-      if (!element.allowed) {
-        SDL.RadioModel.consentedApp = null;
-        SDL.ClimateController.model.consentedApp = null;
-        SDL.SDLModel.data.radioFirstConsentedApp = null;
-        SDL.SDLModel.data.climateFirstConsentedApp = null;
-      }
-      SDL.SDLModel.set('reverseFunctionalityEnabled', element.allowed);
-      FFW.RC.OnReverseAppsAllowing(element.allowed);
-    },
-    /**
      * Go to RSDL options menu on click menu header
      */
     onRSDLOptionsClick: function() {
@@ -407,9 +389,6 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.set('driverDeviceInfo', device);
         SDL.InfoAppsView.showAppList();
         FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
-        SDL.SDLController.removeConsentForDevice(
-          SDL.SDLModel.driverDeviceInfo.name
-        );
       }
     },
     /**
@@ -435,10 +414,6 @@ SDL.RController = SDL.SDLController.extend(
               SDL.SDLController.model.appID,
               'USER_EXIT'
             );
-            SDL.SDLController.removeConsentForApp(
-              SDL.SDLController.model.appID
-            );
-            SDL.SDLModel.set('givenControlFlag', false);
             break;
           }
           case -3:
@@ -544,46 +519,6 @@ SDL.RController = SDL.SDLController.extend(
           }
         }
       );
-    },
-    removeConsentForApp: function(appID) {
-      if (SDL.RadioModel.consentedApp === appID) {
-        SDL.RadioModel.consentedApp = null;
-      }
-      if (SDL.ClimateController.model.consentedApp === appID) {
-        SDL.ClimateController.model.consentedApp = null;
-      }
-      if (SDL.SDLModel.data.radioFirstConsentedApp === appID) {
-        SDL.SDLModel.data.radioFirstConsentedApp = null;
-      }
-      if (SDL.SDLModel.data.climateFirstConsentedApp === appID) {
-        SDL.SDLModel.data.climateFirstConsentedApp = null;
-      }
-    },
-    removeConsentForDevice: function(deviceName) {
-      if (SDL.RadioModel.consentedApp &&
-        SDL.SDLController.getApplicationModel(
-          SDL.RadioModel.consentedApp
-        ).deviceName === deviceName) {
-        SDL.RadioModel.consentedApp = null;
-      }
-      if (SDL.ClimateController.model.consentedApp &&
-        SDL.SDLController.getApplicationModel(
-          SDL.ClimateController.model.consentedApp
-        ).deviceName === deviceName) {
-        SDL.ClimateController.model.consentedApp = null;
-      }
-      if (SDL.SDLModel.data.radioFirstConsentedApp &&
-        SDL.SDLController.getApplicationModel(
-          SDL.SDLModel.data.radioFirstConsentedApp
-        ).deviceName === deviceName) {
-        SDL.SDLModel.data.radioFirstConsentedApp = null;
-      }
-      if (SDL.SDLModel.data.climateFirstConsentedApp &&
-        SDL.SDLController.getApplicationModel(
-          SDL.SDLModel.data.climateFirstConsentedApp
-        ).deviceName === deviceName) {
-        SDL.SDLModel.data.climateFirstConsentedApp = null;
-      }
     },
     getLedIndicatorImagePath: function(state) {
       if (state) {

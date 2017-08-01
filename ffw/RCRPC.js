@@ -415,20 +415,6 @@ FFW.RC = FFW.RPCObserver.create(
       this.client.send(JSONMessage);
     },
     /**
-     * Notification about trigered action by user touchstart
-     *
-     */
-    OnControlChanged: function() {
-      SDL.SDLModel.set('givenControlFlag', false);
-      Em.Logger.log('FFW.RC.OnControlChanged Notification');
-      // send repsonse
-      var JSONMessage = {
-        'jsonrpc': '2.0',
-        'method': 'RC.OnControlChanged'
-      };
-      this.client.send(JSONMessage);
-    },
-    /**
      * @param moduleType
      */
     onInteriorVehicleDataNotification: function(moduleType, climateControlData, radioControlData) {

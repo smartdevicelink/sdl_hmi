@@ -80,9 +80,6 @@ SDL.SDLController = Em.Object.extend(
               SDL.SDLController.model.appID,
               'USER_EXIT'
             );
-            SDL.SDLController.removeConsentForApp(
-              SDL.SDLController.model.appID
-            );
             break;
           }
           case -3:
@@ -166,7 +163,6 @@ SDL.SDLController = Em.Object.extend(
       }
     },
     userExitAction: function(appID) {
-      SDL.SDLController.removeConsentForApp(appID);
       FFW.BasicCommunication.ExitApplication(appID, 'USER_EXIT');
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia') {

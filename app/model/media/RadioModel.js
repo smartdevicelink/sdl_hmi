@@ -55,12 +55,6 @@ SDL.RadioModel = Em.Object.create({
     this.updateRadioFrequency();
   },
 
-  /**
-   * GetInteriorVehicleDataConsent
-   * Consented app for RADIO noduleType
-   */
-  consentedApp: null,
-
   optionsEnabled: false,
 
   tuneUpTimer: null,
@@ -594,8 +588,6 @@ SDL.RadioModel = Em.Object.create({
       );
       FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
         this.getRadioControlData());
-
-      SDL.SDLModel.resetControl();
     },
 
   tuneRadioStation: function(element) {
@@ -627,8 +619,6 @@ SDL.RadioModel = Em.Object.create({
 
         FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
           this.getRadioControlData());
-
-        SDL.SDLModel.resetControl();
       }
       if (element.preset == 'X') {
         SDL.RadioModel.set('station', SDL.RadioModel.station.slice(0, -1));
@@ -661,8 +651,6 @@ SDL.RadioModel = Em.Object.create({
 
     FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
       this.getRadioControlData());
-
-    SDL.SDLModel.resetControl();
   },
 
   scanKeyPress: function() {
@@ -671,8 +659,6 @@ SDL.RadioModel = Em.Object.create({
       } else {
         this.stopScan();
       }
-
-      SDL.SDLModel.resetControl();
     },
 
   startScan: function() {
@@ -724,14 +710,10 @@ SDL.RadioModel = Em.Object.create({
 
   tuneUpPress: function() {
       this.tuneUp();
-
-      SDL.SDLModel.resetControl();
     },
 
   tuneDownPress: function() {
       this.tuneDown();
-
-      SDL.SDLModel.resetControl();
     },
 
   tuneUp: function() {

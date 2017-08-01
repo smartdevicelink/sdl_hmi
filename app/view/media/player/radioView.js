@@ -632,7 +632,6 @@ SDL.RadioView = Em.ContainerView
               icon: 'images/media/active_arrow.png',
               text: 'Options',
               action: function() {
-                SDL.SDLModel.resetControl();
                 SDL.RadioModel.toggleProperty('optionsEnabled');
               }
             }
