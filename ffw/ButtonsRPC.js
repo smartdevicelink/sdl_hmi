@@ -133,6 +133,10 @@ FFW.Buttons = FFW.RPCObserver.create(
         Em.Logger.log('FFW.' + request.method + ' Reqeust');
 
         if (!FFW.RC.consentedAppCheck(request)) {
+          this.sendError(
+            SDL.SDLModel.data.resultCode.REJECTED,
+            request.id, request.method
+          );
           return;
         }
 

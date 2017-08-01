@@ -9,12 +9,6 @@ SDL.ClimateControlModel = Em.Object.create({
   reciRCulateAirEnableString: 'OFF',
   acEnableString: 'OFF',
 
-  /**
-   * GetInteriorVehicleDataConsent
-   * Consented app for CLIMATE noduleType
-   */
-  consentedApp: null,
-
   climateControlData: {
     temperatureUnit: 'CELSIUS',
     currentTemp: 20,

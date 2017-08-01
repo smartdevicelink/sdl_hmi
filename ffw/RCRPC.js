@@ -173,24 +173,15 @@ FFW.RC = FFW.RPCObserver.create(
           //   break;
           // }
 
-          //case "RC.GrantAccess": {
-          //
-          //    SDL.SDLModel.giveControl(request);
-          //
-          //    break;
-          //}
-          //
-          //case "RC.CancelAccess": {
-          //
-          //    SDL.SDLModel.cancelControl(request);
-          //
-          //    break;
-          //}
           case 'RC.SetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
 
             if (!this.consentedAppCheck(request)) {
+              this.sendError(
+                SDL.SDLModel.data.resultCode.REJECTED,
+                request.id, request.method
+              );
               return;
             }
 
@@ -246,6 +237,10 @@ FFW.RC = FFW.RPCObserver.create(
             }
 
             if (!this.consentedAppCheck(request)) {
+              this.sendError(
+                SDL.SDLModel.data.resultCode.REJECTED,
+                request.id, request.method
+              );
               return;
             }
 
@@ -360,7 +355,6 @@ FFW.RC = FFW.RPCObserver.create(
       }
     },
     GetInteriorVehicleDataConsentResponse: function(request, allowed) {
-
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
@@ -368,7 +362,7 @@ FFW.RC = FFW.RPCObserver.create(
         'result': {
           'code': SDL.SDLModel.data.resultCode.SUCCESS,
           'method': request.method,
-          allowed: allowed
+          'allowed': allowed
         }
       };
       this.client.send(JSONMessage);
@@ -415,20 +409,6 @@ FFW.RC = FFW.RPCObserver.create(
       this.client.send(JSONMessage);
     },
     /**
-     * Notification about trigered action by user touchstart
-     *
-     */
-    OnControlChanged: function() {
-      SDL.SDLModel.set('givenControlFlag', false);
-      Em.Logger.log('FFW.RC.OnControlChanged Notification');
-      // send repsonse
-      var JSONMessage = {
-        'jsonrpc': '2.0',
-        'method': 'RC.OnControlChanged'
-      };
-      this.client.send(JSONMessage);
-    },
-    /**
      * @param moduleType
      */
     onInteriorVehicleDataNotification: function(moduleType, climateControlData, radioControlData) {
@@ -472,38 +452,11 @@ FFW.RC = FFW.RPCObserver.create(
         .deviceName;
 
       if ((SDL.SDLModel.driverDeviceInfo &&
-        deviceName == SDL.SDLModel.driverDeviceInfo.name) ||
+        deviceName != SDL.SDLModel.driverDeviceInfo.name) ||
         !SDL.SDLModel.reverseFunctionalityEnabled) {
-        return true;
+        return false;
       }
 
-      if (moduleType === 'CLIMATE') {
-        if (SDL.SDLModel.data.climateFirstConsentedApp == null) {
-          SDL.SDLModel.data.climateFirstConsentedApp = appID;
-          return true;
-        } else if (SDL.SDLModel.data.climateFirstConsentedApp != appID) {
-          this.sendError(
-            SDL.SDLModel.data.resultCode.REJECTED,
-            request.id,
-            request.method,
-            'To many unconsented requests!'
-          );
-          return false;
-        }
-      } else if (moduleType === 'RADIO') {
-        if (SDL.SDLModel.data.radioFirstConsentedApp == null) {
-          SDL.SDLModel.data.radioFirstConsentedApp = appID;
-          return true;
-        } else if (SDL.SDLModel.data.radioFirstConsentedApp != appID) {
-          this.sendError(
-            SDL.SDLModel.data.resultCode.REJECTED,
-            request.id,
-            request.method,
-            'To many unconsented requests!'
-          );
-          return false;
-        }
-      }
       return true;
     }
   }

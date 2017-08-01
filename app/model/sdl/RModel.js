@@ -34,20 +34,6 @@
 SDL.RModel = SDL.SDLModel.extend({
 
   /**
-   * Parameter of controll permissions deligation to mobile app
-   *
-   * @type {number}
-   */
-  givenControl: null,
-
-  /**
-   * Parameter of controll permissions deligation to mobile app
-   *
-   * @type {number}
-   */
-  givenControlFlag: false,
-
-  /**
    * Id of current processed RC.GrantAccess request
    *
    * @param {Number}
@@ -82,18 +68,6 @@ SDL.RModel = SDL.SDLModel.extend({
       0: 'DRIVER',
       1: 'PASSENGER'
     },
-
-  /**
-   * Radio app indetificator
-   * HMI must reject the second passenger's app's request for the radio module
-   */
-  radioFirstConsentedApp: null,
-
-  /**
-   * Climate app indetificator
-   * HMI must reject the second passenger's app's request for the climate module
-   */
-  climateFirstConsentedApp: null,
 
   /**
    * RC functionality flag
@@ -206,8 +180,6 @@ SDL.RModel = SDL.SDLModel.extend({
     if (SDL.SDLController.getApplicationModel(params.appID)) {
 
       this._super(params);
-
-      SDL.SDLController.removeConsentForApp(params.appID);
     }
   },
 
@@ -230,22 +202,6 @@ SDL.RModel = SDL.SDLModel.extend({
       );
 
     SDL.SDLModel.controlRequestID = message.id;
-  },
-
-  resetControl: function() {
-      if (SDL.SDLController && SDL.SDLModel.givenControl != null) {
-        FFW.RC.OnControlChanged();
-        SDL.SDLModel.givenControl = null;
-      }
-    },
-
-  cancelControl: function(request) {
-      FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode.SUCCESS,
-        request.id, 'VehicleInfo.CancelAccess'
-      );
-      SDL.SDLModel.givenControl = null;
-      SDL.SDLModel.set('givenControlFlag', false);
-    }
-
+  }
 }
 );
