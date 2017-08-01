@@ -73,6 +73,16 @@ FFW.RC = FFW.RPCObserver.create(
      */
     onRPCRegistered: function() {
       Em.Logger.log('FFW.RC.onRPCRegistered');
+      // send notification after some time after registration
+      setTimeout(
+        function() {
+          FFW.RC.OnRemoteControlSettings(
+            SDL.SDLModel.reverseFunctionalityEnabled,
+            SDL.SDLModel.reverseAccessMode
+          );
+        },
+        500
+      );
       this._super();
     },
     /**
@@ -388,18 +398,20 @@ FFW.RC = FFW.RPCObserver.create(
      * From HMI to RSDL
      * notifies if User selected to disallow RSDL functionality or if he
      * changed his mind and allowed it.
-     * @constructor
      */
-    OnReverseAppsAllowing: function(allowed) {
-      Em.Logger.log('FFW.VehicleInfo.OnReverseAppsAllowing Notification');
+    OnRemoteControlSettings: function(allowed, accessMode) {
+      Em.Logger.log('FFW.RC.OnRemoteControlSettings Notification');
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
-        'method': 'VehicleInfo.OnReverseAppsAllowing',
+        'method': 'RC.OnRemoteControlSettings',
         'params': {
           'allowed': allowed
         }
       };
+      if (allowed === true) {
+        JSONMessage.params.accessMode = accessMode;
+      }
       this.client.send(JSONMessage);
     },
     /**
@@ -461,7 +473,7 @@ FFW.RC = FFW.RPCObserver.create(
 
       if ((SDL.SDLModel.driverDeviceInfo &&
         deviceName == SDL.SDLModel.driverDeviceInfo.name) ||
-        !SDL.SDLController.reverseAppsAllowed) {
+        !SDL.SDLModel.reverseFunctionalityEnabled) {
         return true;
       }
 

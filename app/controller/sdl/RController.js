@@ -33,7 +33,6 @@
 
 SDL.RController = SDL.SDLController.extend(
   {
-    reverseAppsAllowed: true,
     /**
      * Button action to sent response for RC.GrantAccess request
      *
@@ -238,8 +237,47 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.data.radioFirstConsentedApp = null;
         SDL.SDLModel.data.climateFirstConsentedApp = null;
       }
-      this.set('reverseAppsAllowed', element.allowed);
+      SDL.SDLModel.set('reverseFunctionalityEnabled', element.allowed);
       FFW.RC.OnReverseAppsAllowing(element.allowed);
+    },
+    /**
+     * Go to RSDL options menu on click menu header
+     */
+    onRSDLOptionsClick: function() {
+      SDL.States.goToStates('settings.policies.rsdlOptionsList');
+    },
+    /**
+     * Toggle RSDL functionality flag option
+     */
+    toggleRSDLFunctionality: function() {
+      SDL.SDLModel.toggleProperty('reverseFunctionalityEnabled');
+      FFW.RC.OnRemoteControlSettings(
+        SDL.SDLModel.reverseFunctionalityEnabled,
+        SDL.SDLModel.reverseAccessMode
+      );
+    },
+    /**
+     * Toggle RSDL access mode option
+     */
+    toggleRCAccessMode: function() {
+      var arr_length = SDL.SDLModel.reverseAccessModesStruct.length;
+      for (var i = 0; i < arr_length; i++) {
+        if (SDL.SDLModel.reverseAccessModesStruct[i] ==
+            SDL.SDLModel.reverseAccessMode) {
+          if (i + 1 >= arr_length) {
+            SDL.SDLModel.set('reverseAccessMode',
+              SDL.SDLModel.reverseAccessModesStruct[0]);
+          } else {
+            SDL.SDLModel.set('reverseAccessMode',
+              SDL.SDLModel.reverseAccessModesStruct[i + 1]);
+          }
+          break;
+        }
+      }
+      FFW.RC.OnRemoteControlSettings(
+        SDL.SDLModel.reverseFunctionalityEnabled,
+        SDL.SDLModel.reverseAccessMode
+      );
     },
     /**
      * Change responses to error for GetInteriorVehicleDataCapabilities

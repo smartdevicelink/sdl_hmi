@@ -96,6 +96,27 @@ SDL.RModel = SDL.SDLModel.extend({
   climateFirstConsentedApp: null,
 
   /**
+   * RC functionality flag
+   * HMI must disallow RC functions when this functionality disabled
+   */
+  reverseFunctionalityEnabled: true,
+
+  /**
+   * Array of allowed values for access mode param of OnRemoteControlSettings
+   */
+  reverseAccessModesStruct: [
+    'AUTO_ALLOW',
+    'AUTO_DENY',
+    'ASK_DRIVER'
+  ],
+
+  /**
+   * RC access mode indicator
+   * Used for OnRemoteControlSettings notification
+   */
+  reverseAccessMode: 'AUTO_ALLOW',
+
+  /**
    * Method to add activation button to VR commands and set device
    * parameters to model
    *
