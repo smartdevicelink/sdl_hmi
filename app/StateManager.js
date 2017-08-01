@@ -198,6 +198,13 @@ var StateManager = Em.StateManager.extend(
                   SDL.DeviceStateChangeView.showDeviceList();
                 }
               }
+            ),
+            rsdlOptionsList: Em.State.create(
+              {
+                enter: function() {
+                  this._super();
+                }
+              }
             )
           }
         )
