@@ -466,12 +466,41 @@ SDL.RController = SDL.SDLController.extend(
         }
       );
     },
+    /**
+     * Returns indicator image path depending on state
+     * @param state
+     */
     getLedIndicatorImagePath: function(state) {
       if (state) {
         return 'images/media/active_horiz_led.png';
       } else {
         return 'images/media/passiv_horiz_led.png';
       }
+    },
+    /**
+     * Filter objects properties according to filter param
+     * @param data contains input object to filter
+     * @param properties contains properties to keep
+     */
+    filterObjectProperty: function(data, properties, stack) {
+      if (stack == null) {
+        stack = '';
+      }
+
+      var result = data;
+      for (var key in result) {
+        if (typeof result[key] == 'object') {
+          result[key] = this.filterObjectProperty(
+            result[key], properties, key + '.'
+          );
+          if (Object.keys(result[key]).length === 0) {
+            delete result[key];
+          }
+        } else if (properties.indexOf(stack + key) < 0) {
+          delete result[key];
+        }
+      }
+      return result;
     }
   }
 );
