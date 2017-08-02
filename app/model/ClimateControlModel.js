@@ -240,8 +240,14 @@ SDL.ClimateControlModel = Em.Object.create({
     },
 
   toggleAcEnable: function() {
+      var properties = ['acEnable'];
       this.toggleProperty('climateControlData.acEnable');
-      this.sendClimateChangeNotification(['acEnable']);
+      if (!this.climateControlData.acEnable &&
+          this.climateControlData.acMaxEnable) {
+        properties.push('acMaxEnable');
+        this.toggleProperty('climateControlData.acMaxEnable');
+      }
+      this.sendClimateChangeNotification(properties);
     },
 
   toggleAcMaxEnable: function() {
