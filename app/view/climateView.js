@@ -231,34 +231,18 @@ SDL.ClimateView = Em.ContainerView.create(
             elementId: 'defrostZone',
             classNames: 'quattro_container',
             childViews: [
-              'defrostZone_None',
               'defrostZone_Rear',
-              'defrostZone_Front',
-              'defrostZone_All'
+              'defrostZone_Front'
             ],
             selectedBinding: 'SDL.ClimateController.model.climateControlData.defrostZone',
-            defrostZone_None: SDL.Button.extend(
-              {
-                elementId: 'defrostZoneNone',
-                classNames: 'defrostZoneNone topLeft',
-                classNameBindings: 'highlighted',
-                highlighted: function() {
-                  return this._parentView.selected === 'NONE';
-                }.property('parentView.selected'),
-                text: 'NONE',
-                onDown: false,
-                disabledBinding: 'parentView.parentView.disabled',
-                action: 'defrostNoneEnable',
-                target: 'SDL.ClimateController.model'
-              }
-            ),
             defrostZone_Rear: SDL.Button.extend(
               {
                 elementId: 'defrostZoneRear',
                 classNames: 'defrostZoneRear topRight',
                 classNameBindings: 'highlighted',
                 highlighted: function() {
-                  return this._parentView.selected === 'REAR';
+                  return this._parentView.selected === 'REAR' ||
+                         this._parentView.selected === 'ALL';
                 }.property('parentView.selected'),
                 templateName: 'icon',
                 icon: 'images/climate/defrost_ico.png',
@@ -271,31 +255,17 @@ SDL.ClimateView = Em.ContainerView.create(
             defrostZone_Front: SDL.Button.extend(
               {
                 elementId: 'defrostZoneFront',
-                classNames: 'defrostZoneFront bottomLeft',
+                classNames: 'defrostZoneFront topLeft',
                 classNameBindings: 'highlighted',
                 highlighted: function() {
-                  return this._parentView.selected === 'FRONT';
+                  return this._parentView.selected === 'FRONT' ||
+                         this._parentView.selected === 'ALL';
                 }.property('parentView.selected'),
                 templateName: 'icon',
                 icon: 'images/climate/windsheald_ico.png',
                 onDown: false,
                 disabledBinding: 'parentView.parentView.disabled',
                 action: 'defrostFrontEnable',
-                target: 'SDL.ClimateController.model'
-              }
-            ),
-            defrostZone_All: SDL.Button.extend(
-              {
-                elementId: 'defrostZoneAll',
-                classNames: 'defrostZoneAll bottomRight',
-                classNameBindings: 'highlighted',
-                highlighted: function() {
-                  return this._parentView.selected === 'ALL';
-                }.property('parentView.selected'),
-                text: 'BOTH',
-                onDown: false,
-                disabledBinding: 'parentView.parentView.disabled',
-                action: 'defrostAllEnable',
                 target: 'SDL.ClimateController.model'
               }
             )
@@ -319,7 +289,7 @@ SDL.ClimateView = Em.ContainerView.create(
             fahrenheit: SDL.Button.extend(
               {
                 elementId: 'fahrenheit',
-                classNames: 'fahrenheit bottomLeft',
+                classNames: 'fahrenheit topLeft',
                 classNameBindings: 'highlighted',
                 highlighted: function() {
                   return this._parentView.selected === 'FAHRENHEIT';
@@ -334,7 +304,7 @@ SDL.ClimateView = Em.ContainerView.create(
             celsius: SDL.Button.extend(
               {
                 elementId: 'celsius',
-                classNames: 'celsius bottomRight',
+                classNames: 'celsius topRight',
                 classNameBindings: 'highlighted',
                 highlighted: function() {
                   return this._parentView.selected === 'CELSIUS';
@@ -359,34 +329,18 @@ SDL.ClimateView = Em.ContainerView.create(
             elementId: 'ventilationMode',
             classNames: 'quattro_container',
             childViews: [
-              'ventilationMode_None',
               'ventilationMode_Upper',
-              'ventilationMode_Lower',
-              'ventilationMode_Both'
+              'ventilationMode_Lower'
             ],
-            selectedBinding: 'SDL.ClimateController.model.climateControlData.currentVentilationMode',
-            ventilationMode_None: SDL.Button.extend(
-              {
-                elementId: 'ventilationModeNone',
-                classNames: 'ventilationModeNone topLeft',
-                classNameBindings: 'highlighted',
-                highlighted: function() {
-                  return this._parentView.selected === 'NONE';
-                }.property('parentView.selected'),
-                text: 'NONE',
-                onDown: false,
-                disabledBinding: 'parentView.parentView.disabled',
-                action: 'ventilationModeNoneEnable',
-                target: 'SDL.ClimateController.model'
-              }
-            ),
+            selectedBinding: 'SDL.ClimateController.model.climateControlData.ventilationMode',
             ventilationMode_Upper: SDL.Button.extend(
               {
                 elementId: 'ventilationModeUpper',
                 classNames: 'ventilationModeUpper topRight',
                 classNameBindings: 'highlighted',
                 highlighted: function() {
-                  return this._parentView.selected === 'UPPER';
+                  return this._parentView.selected === 'UPPER' ||
+                         this._parentView.selected === 'BOTH';
                 }.property('parentView.selected'),
                 text: 'UP',
                 onDown: false,
@@ -398,30 +352,16 @@ SDL.ClimateView = Em.ContainerView.create(
             ventilationMode_Lower: SDL.Button.extend(
               {
                 elementId: 'ventilationModeLower',
-                classNames: 'ventilationModeLower bottomLeft',
+                classNames: 'ventilationModeLower topLeft',
                 classNameBindings: 'highlighted',
                 highlighted: function() {
-                  return this._parentView.selected === 'LOWER';
+                  return this._parentView.selected === 'LOWER' ||
+                         this._parentView.selected === 'BOTH';
                 }.property('parentView.selected'),
                 text: 'LOW',
                 onDown: false,
                 disabledBinding: 'parentView.parentView.disabled',
                 action: 'ventilationModeLowerEnable',
-                target: 'SDL.ClimateController.model'
-              }
-            ),
-            ventilationMode_Both: SDL.Button.extend(
-              {
-                elementId: 'ventilationModeBoth',
-                classNames: 'ventilationModeBoth bottomRight',
-                classNameBindings: 'highlighted',
-                highlighted: function() {
-                  return this._parentView.selected === 'BOTH';
-                }.property('parentView.selected'),
-                text: 'BOTH',
-                onDown: false,
-                disabledBinding: 'parentView.parentView.disabled',
-                action: 'ventilationModeBothEnable',
                 target: 'SDL.ClimateController.model'
               }
             )
