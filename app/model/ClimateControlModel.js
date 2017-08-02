@@ -17,10 +17,14 @@ SDL.ClimateControlModel = Em.Object.create({
     acMaxEnable: true,
     circulateAirEnable: true,
     autoModeEnable: true,
-    defrostZone: 'ALL',
+    defrostZone: 'FRONT',
+    defrostZoneFrontEnable: true,
+    defrostZoneRearEnable: false,
     dualModeEnable: true,
     fanSpeed: 0,
-    currentVentilationMode: 'BOTH'
+    ventilationMode: 'UPPER',
+    ventilationModeLowEnable: false,
+    ventilationModeUpEnable: true
   },
 
   getClimateControlCapabilities: function() {
@@ -59,7 +63,7 @@ SDL.ClimateControlModel = Em.Object.create({
       defrostZone: this.climateControlData.defrostZone,
       dualModeEnable: this.climateControlData.dualModeEnable,
       acMaxEnable: this.climateControlData.acMaxEnable,
-      ventilationMode: this.climateControlData.currentVentilationMode
+      ventilationMode: this.climateControlData.ventilationMode
     };
 
     return result;
@@ -104,7 +108,7 @@ SDL.ClimateControlModel = Em.Object.create({
     }
 
     if (data.ventilationMode != null) {
-      this.setCurrentVentilationMode(data.ventilationMode);
+      this.setVentilationMode(data.ventilationMode);
     }
 
     var properties = [];
@@ -189,127 +193,139 @@ SDL.ClimateControlModel = Em.Object.create({
       );
     },
 
-  defrostNoneEnable: function() {
+  refreshDefrostZoneValue: function() {
+    if (this.climateControlData.defrostZoneFrontEnable &&
+        this.climateControlData.defrostZoneRearEnable) {
+      this.set('climateControlData.defrostZone', 'ALL');
+    } else if (!this.climateControlData.defrostZoneFrontEnable &&
+               !this.climateControlData.defrostZoneRearEnable) {
       this.set('climateControlData.defrostZone', 'NONE');
-      this.sendClimateChangeNotification(['defrostZone']);
-    },
+    } else if (this.climateControlData.defrostZoneFrontEnable) {
+      this.set('climateControlData.defrostZone', 'FRONT');
+    } else if (this.climateControlData.defrostZoneRearEnable) {
+      this.set('climateControlData.defrostZone', 'REAR');
+    }
+
+    this.sendClimateChangeNotification(['defrostZone']);
+  },
 
   defrostFrontEnable: function() {
-      this.set('climateControlData.defrostZone', 'FRONT');
-      this.sendClimateChangeNotification(['defrostZone']);
-    },
+    this.toggleProperty('climateControlData.defrostZoneFrontEnable');
+    this.refreshDefrostZoneValue();
+  },
 
   defrostRearEnable: function() {
-      this.set('climateControlData.defrostZone', 'REAR');
-      this.sendClimateChangeNotification(['defrostZone']);
-    },
+    this.toggleProperty('climateControlData.defrostZoneRearEnable');
+    this.refreshDefrostZoneValue();
+  },
 
-  defrostAllEnable: function() {
-      this.set('climateControlData.defrostZone', 'ALL');
-      this.sendClimateChangeNotification(['defrostZone']);
-    },
+  refreshVentilationModeValue: function() {
+    if (this.climateControlData.ventilationModeUpEnable &&
+        this.climateControlData.ventilationModeLowEnable) {
+      this.set('climateControlData.ventilationMode', 'BOTH');
+    } else if (!this.climateControlData.ventilationModeUpEnable &&
+               !this.climateControlData.ventilationModeLowEnable) {
+      this.set('climateControlData.ventilationMode', 'NONE');
+    } else if (this.climateControlData.ventilationModeUpEnable) {
+      this.set('climateControlData.ventilationMode', 'UPPER');
+    } else if (this.climateControlData.ventilationModeLowEnable) {
+      this.set('climateControlData.ventilationMode', 'LOWER');
+    }
 
-  ventilationModeNoneEnable: function() {
-      this.set('climateControlData.currentVentilationMode', 'NONE');
-      this.sendClimateChangeNotification(['ventilationMode']);
+    this.sendClimateChangeNotification(['ventilationMode']);
   },
 
   ventilationModeUpperEnable: function() {
-      this.set('climateControlData.currentVentilationMode', 'UPPER');
-      this.sendClimateChangeNotification(['ventilationMode']);
+    this.toggleProperty('climateControlData.ventilationModeUpEnable');
+    this.refreshVentilationModeValue();
   },
 
   ventilationModeLowerEnable: function() {
-      this.set('climateControlData.currentVentilationMode', 'LOWER');
-      this.sendClimateChangeNotification(['ventilationMode']);
-  },
-
-  ventilationModeBothEnable: function() {
-      this.set('climateControlData.currentVentilationMode', 'BOTH');
-      this.sendClimateChangeNotification(['ventilationMode']);
+    this.toggleProperty('climateControlData.ventilationModeLowEnable');
+    this.refreshVentilationModeValue();
   },
 
   toggleDualMode: function() {
-      this.toggleProperty('climateControlData.dualModeEnable');
-      this.sendClimateChangeNotification(['dualModeEnable']);
-    },
+    this.toggleProperty('climateControlData.dualModeEnable');
+    this.sendClimateChangeNotification(['dualModeEnable']);
+  },
 
   toggleRecirculateAir: function() {
-      this.toggleProperty('climateControlData.circulateAirEnable');
-      this.sendClimateChangeNotification(['circulateAirEnable']);
-    },
+    this.toggleProperty('climateControlData.circulateAirEnable');
+    this.sendClimateChangeNotification(['circulateAirEnable']);
+  },
 
   toggleAcEnable: function() {
-      var properties = ['acEnable'];
-      this.toggleProperty('climateControlData.acEnable');
-      if (!this.climateControlData.acEnable &&
-          this.climateControlData.acMaxEnable) {
-        properties.push('acMaxEnable');
-        this.toggleProperty('climateControlData.acMaxEnable');
-      }
-      this.sendClimateChangeNotification(properties);
-    },
+    var properties = ['acEnable'];
+    this.toggleProperty('climateControlData.acEnable');
+    if (!this.climateControlData.acEnable &&
+        this.climateControlData.acMaxEnable) {
+      properties.push('acMaxEnable');
+      this.toggleProperty('climateControlData.acMaxEnable');
+    }
+    this.sendClimateChangeNotification(properties);
+  },
 
   toggleAcMaxEnable: function() {
-      var properties = ['acMaxEnable'];
-      this.toggleProperty('climateControlData.acMaxEnable');
-      if (!this.climateControlData.acEnable &&
-          this.climateControlData.acMaxEnable) {
-        properties.push('acEnable');
-        this.toggleProperty('climateControlData.acEnable');
-      }
-      this.sendClimateChangeNotification(properties);
-    },
+    var properties = ['acMaxEnable'];
+    this.toggleProperty('climateControlData.acMaxEnable');
+    if (!this.climateControlData.acEnable &&
+         this.climateControlData.acMaxEnable) {
+      properties.push('acEnable');
+      this.toggleProperty('climateControlData.acEnable');
+    }
+    this.sendClimateChangeNotification(properties);
+  },
 
   toggleAutoModeEnable: function() {
-      this.toggleProperty('climateControlData.autoModeEnable');
-      this.sendClimateChangeNotification(['autoModeEnable']);
-    },
+    this.toggleProperty('climateControlData.autoModeEnable');
+    this.sendClimateChangeNotification(['autoModeEnable']);
+  },
 
   setFanSpeed: function(speed) {
-      this.set('climateControlData.fanSpeed', speed);
-    },
+    this.set('climateControlData.fanSpeed', speed);
+  },
 
   setCurrentTemp: function(temp) {
-      this.set('climateControlData.currentTemp',
-        SDL.ClimateController.extractTemperatureFromStruct(temp));
-    },
+    this.set('climateControlData.currentTemp',
+      SDL.ClimateController.extractTemperatureFromStruct(temp));
+  },
 
   setDesiredTemp: function(temp) {
-      this.set('climateControlData.desiredTemp',
-        SDL.ClimateController.extractTemperatureFromStruct(temp));
-    },
+    this.set('climateControlData.desiredTemp',
+      SDL.ClimateController.extractTemperatureFromStruct(temp));
+  },
 
   setTemperatureUnitCelsiusEnable: function(tempUnit) {
-      this.set('climateControlData.temperatureUnit', tempUnit);
-    },
+    this.set('climateControlData.temperatureUnit', tempUnit);
+  },
 
   setAcEnable: function(state) {
-      this.set('climateControlData.acEnable', state);
-    },
+    this.set('climateControlData.acEnable', state);
+  },
 
   setAcMaxEnable: function(state) {
-      this.set('climateControlData.acMaxEnable', state);
+    this.set('climateControlData.acMaxEnable', state);
   },
 
   setRecirculateAirEnable: function(state) {
-      this.set('climateControlData.circulateAirEnable', state);
-    },
+    this.set('climateControlData.circulateAirEnable', state);
+  },
 
   setAutoModeEnable: function(state) {
-      this.set('climateControlData.autoModeEnable', state);
-    },
+    this.set('climateControlData.autoModeEnable', state);
+  },
 
   setDefrostZone: function(defZone) {
-      this.set('climateControlData.defrostZone', defZone);
-    },
+    this.set('climateControlData.defrostZone', defZone);
+  },
 
   setDualModeEnable: function(state) {
-      this.set('climateControlData.dualModeEnable', state);
-    },
+    this.set('climateControlData.dualModeEnable', state);
+  },
 
-  setCurrentVentilationMode: function(ventMode) {
-      this.set('climateControlData.currentVentilationMode', ventMode);
+  setVentilationMode: function(ventMode) {
+    this.set('climateControlData.ventilationMode', ventMode);
   }
 }
 );
