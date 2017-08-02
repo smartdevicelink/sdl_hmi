@@ -17,10 +17,14 @@ SDL.ClimateControlModel = Em.Object.create({
     acMaxEnable: true,
     circulateAirEnable: true,
     autoModeEnable: true,
-    defrostZone: 'ALL',
+    defrostZone: 'FRONT',
+    defrostZoneFrontEnable: true,
+    defrostZoneRearEnable: false,
     dualModeEnable: true,
     fanSpeed: 0,
-    currentVentilationMode: 'BOTH'
+    ventilationMode: 'UPPER',
+    ventilationModeLowEnable: false,
+    ventilationModeUpEnable: true
   },
 
   getClimateControlCapabilities: function() {
@@ -59,7 +63,7 @@ SDL.ClimateControlModel = Em.Object.create({
       defrostZone: this.climateControlData.defrostZone,
       dualModeEnable: this.climateControlData.dualModeEnable,
       acMaxEnable: this.climateControlData.acMaxEnable,
-      ventilationMode: this.climateControlData.currentVentilationMode
+      ventilationMode: this.climateControlData.ventilationMode
     };
 
     return result;
@@ -104,7 +108,7 @@ SDL.ClimateControlModel = Em.Object.create({
     }
 
     if (data.ventilationMode != null) {
-      this.setCurrentVentilationMode(data.ventilationMode);
+      this.setVentilationMode(data.ventilationMode);
     }
 
     var properties = [];
