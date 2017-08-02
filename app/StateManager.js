@@ -227,6 +227,9 @@ var StateManager = Em.StateManager.extend(
                 enter: function() {
                   SDL.MediaController.set('activeState',
                     SDL.States.nextState);
+                  if (!SDL.RadioModel.radioControlStruct.radioEnable) {
+                    SDL.RadioModel.radioEnableKeyPress();
+                  }
                   this._super();
                 },
                 exit: function() {
@@ -234,6 +237,9 @@ var StateManager = Em.StateManager.extend(
                   SDL.MediaController.deactivateCD();
                   SDL.MediaController.currentSelectedPlayer.pause();
                   SDL.MediaController.deactivateUSB();
+                  if (SDL.RadioModel.radioControlStruct.radioEnable) {
+                    SDL.RadioModel.radioEnableKeyPress();
+                  }
                   this._super();
                 }
               }
