@@ -336,11 +336,8 @@ SDL.RadioView = Em.ContainerView
               classNames: 'sendButton button',
               text: 'Send',
               onDown: false,
-              action: function() {
-                FFW.RC.onInteriorVehicleDataNotification('RADIO', null,
-                  SDL.RadioModel.getRadioControlData());
-                SDL.RadioModel.toggleProperty('optionsEnabled');
-              }
+              target: 'SDL.RadioModel',
+              action: 'sendButtonPress'
             }
           )
         }
@@ -631,9 +628,8 @@ SDL.RadioView = Em.ContainerView
               classNames: ['rs-item'],
               icon: 'images/media/active_arrow.png',
               text: 'Options',
-              action: function() {
-                SDL.RadioModel.toggleProperty('optionsEnabled');
-              }
+              target: 'SDL.RadioModel',
+              action: 'toggleOptions'
             }
           ),
           directTuneButton: SDL.Button.extend(
