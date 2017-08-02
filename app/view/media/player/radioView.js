@@ -277,8 +277,20 @@ SDL.RadioView = Em.ContainerView
             {
               elementId: 'hdChannelInput',
               classNames: 'hdChannelInput',
-              contentBinding: 'SDL.RadioModel.hdChannelsStruct',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.hdChannel'
+              availableHDValueChanged: function() {
+                var result = SDL.RadioModel.hdChannelsStruct.slice();
+                var index = result.indexOf(
+                  SDL.RadioModel.radioControlStruct.availableHDs);
+                result.splice(index + 1, index + result.length - 1);
+                var maxHdValue = result[result.length - 1];
+                if (SDL.RadioModel.radioControlStruct.hdChannel > maxHdValue) {
+                  SDL.RadioModel.setCurrentHdChannel(maxHdValue);
+                }
+                this.set('content', result);
+              }.observes(
+                'SDL.RadioModel.radioControlStruct.availableHDs'
+              ),
+              valueBinding: 'SDL.RadioModel.radioControlStruct.hdChannel',
             }
           ),
           signalStrengthLabel: SDL.Label.extend(
