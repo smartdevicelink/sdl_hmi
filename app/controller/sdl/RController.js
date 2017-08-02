@@ -33,35 +33,6 @@
 
 SDL.RController = SDL.SDLController.extend(
   {
-    /**
-     * Button action to sent response for RC.GrantAccess request
-     *
-     * @type {Object}
-     */
-    ControlAccessAction: function(appID, value) {
-      if (value) {
-        FFW.RC.sendRCResult(
-          SDL.SDLModel.data.resultCode.SUCCESS,
-          SDL.SDLModel.controlRequestID,
-          'RC.GrantAccess'
-        );
-        //FFW.CAN.OnRadioDetails({"radioStation":
-        // SDL.RadioModel.radioDetails.radioStation});
-        // FFW.RC.onInteriorVehicleDataNotification(
-        //   'RADIO',
-        //   null,
-        //   SDL.RadioModel.getRadioControlData()
-        // );
-      } else {
-        FFW.RC.sendError(
-          SDL.SDLModel.dataresultCode.REJECTED,
-          SDL.SDLModel.controlRequestID,
-          'RC.GrantAccess',
-          'Request cancelled.'
-        );
-      }
-      SDL.SDLModel.set('controlRequestID', null);
-    },
     onEventChanged: function(reason, status) {
       switch (reason) {
         case 'phoneCall':

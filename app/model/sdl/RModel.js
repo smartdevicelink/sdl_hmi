@@ -181,27 +181,6 @@ SDL.RModel = SDL.SDLModel.extend({
 
       this._super(params);
     }
-  },
-
-  /**
-   * SwitchPopUp activation
-   *
-   * @param {Object}
-   */
-  giveControl: function(message) {
-
-    var appID = message.params.appID,
-      appName = SDL.SDLController.getApplicationModel(appID).appName;
-
-    SDL.PopUp.create().appendTo('body').popupActivate(
-      'Mobile Device ' + appName +
-      ' is requesting access to take control of the onboard HD Radio system.',
-        function(value) {
-          SDL.SDLController.ControlAccessAction(appID, value);
-        }
-      );
-
-    SDL.SDLModel.controlRequestID = message.id;
   }
 }
 );
