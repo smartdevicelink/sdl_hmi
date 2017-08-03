@@ -477,7 +477,13 @@ SDL.RadioView = Em.ContainerView
                   disabled: true,
                   elementId: 'radio_media_preset_button1',
                   classNames: 'a0',
-                  textBinding: 'SDL.RadioModel.preset.0',
+                  getPresetText: function() {
+                    var band = SDL.RadioModel.radioControlStruct.band;
+                    return SDL.RadioModel.preset[band][0];
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.band'
+                  ),
+                  textBinding: 'getPresetText',
                   templateName: 'text',
                   preset: 0,
                   presetName: 'PRESET_1'
@@ -494,7 +500,13 @@ SDL.RadioView = Em.ContainerView
                   disabled: true,
                   elementId: 'radio_media_preset_button2',
                   classNames: 'a1',
-                  textBinding: 'SDL.RadioModel.preset.1',
+                  getPresetText: function() {
+                    var band = SDL.RadioModel.radioControlStruct.band;
+                    return SDL.RadioModel.preset[band][1];
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.band'
+                  ),
+                  textBinding: 'getPresetText',
                   templateName: 'text',
                   preset: 1,
                   presetName: 'PRESET_2'
@@ -511,7 +523,13 @@ SDL.RadioView = Em.ContainerView
                   disabled: true,
                   elementId: 'radio_media_preset_button3',
                   classNames: 'a2',
-                  textBinding: 'SDL.RadioModel.preset.2',
+                  getPresetText: function() {
+                    var band = SDL.RadioModel.radioControlStruct.band;
+                    return SDL.RadioModel.preset[band][2];
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.band'
+                  ),
+                  textBinding: 'getPresetText',
                   templateName: 'text',
                   preset: 2,
                   presetName: 'PRESET_3'
@@ -528,7 +546,13 @@ SDL.RadioView = Em.ContainerView
                   disabled: true,
                   elementId: 'radio_media_preset_button4',
                   classNames: 'a3',
-                  textBinding: 'SDL.RadioModel.preset.3',
+                  getPresetText: function() {
+                    var band = SDL.RadioModel.radioControlStruct.band;
+                    return SDL.RadioModel.preset[band][3];
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.band'
+                  ),
+                  textBinding: 'getPresetText',
                   templateName: 'text',
                   preset: 3,
                   presetName: 'PRESET_4'
@@ -545,7 +569,13 @@ SDL.RadioView = Em.ContainerView
                   disabled: true,
                   elementId: 'radio_media_preset_button5',
                   classNames: 'a4',
-                  textBinding: 'SDL.RadioModel.preset.4',
+                  getPresetText: function() {
+                    var band = SDL.RadioModel.radioControlStruct.band;
+                    return SDL.RadioModel.preset[band][4];
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.band'
+                  ),
+                  textBinding: 'getPresetText',
                   templateName: 'text',
                   preset: 4,
                   presetName: 'PRESET_5'
@@ -562,7 +592,13 @@ SDL.RadioView = Em.ContainerView
                   disabled: true,
                   elementId: 'radio_media_preset_button6',
                   classNames: 'a5',
-                  textBinding: 'SDL.RadioModel.preset.5',
+                  getPresetText: function() {
+                    var band = SDL.RadioModel.radioControlStruct.band;
+                    return SDL.RadioModel.preset[band][5];
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.band'
+                  ),
+                  textBinding: 'getPresetText',
                   templateName: 'text',
                   preset: 5,
                   presetName: 'PRESET_6'

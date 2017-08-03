@@ -46,7 +46,7 @@ SDL.eng = {
   view_info_leftmenu_alerts: 'Alerts',
   view_info_leftmenu_calendar: 'Calendar',
   view_info_leftmenu_apps: 'Apps',
-  view_media_radio: 'FM',
+  view_media_radio: 'Radio',
   view_media_cd: 'CD',
   view_media_usb: 'USB',
   view_phone_dial: 'Dial',
