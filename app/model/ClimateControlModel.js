@@ -114,6 +114,14 @@ SDL.ClimateControlModel = Em.Object.create({
     var properties = [];
     for (var key in data) {
       properties.push(key);
+      if (key == 'currentTemperature') {
+        properties.push('currentTemperature.unit');
+        properties.push('currentTemperature.value');
+      }
+      if (key == 'desiredTemperature') {
+        properties.push('desiredTemperature.unit');
+        properties.push('desiredTemperature.value');
+      }
     }
 
     var result = this.getClimateControlData();
