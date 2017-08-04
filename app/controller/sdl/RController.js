@@ -450,7 +450,7 @@ SDL.RController = SDL.SDLController.extend(
               request.method, 'The resource is in use and the driver did not respond in time'
             );
           }
-        }, 10000
+        }, 9500
       ); //Magic number is timeout for RC consent popUp
     },
     /**
