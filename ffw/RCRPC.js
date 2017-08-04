@@ -254,7 +254,7 @@ FFW.RC = FFW.RPCObserver.create(
             if (moduleType === 'CLIMATE') {
               climateControlData = SDL.ClimateController.model.getClimateControlData();
             } else if (moduleType === 'RADIO') {
-              radioControlData = SDL.RadioModel.getRadioControlData();
+              radioControlData = SDL.RadioModel.getRadioControlData(false);
             }
 
             var JSONMessage = {

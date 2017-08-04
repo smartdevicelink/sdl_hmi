@@ -60,37 +60,58 @@ SDL.RadioView = Em.ContainerView
            * View Components
            */
           childViews: [
+            'bandCheckbox',
             'bandLabel',
             'bandSelect',
             'rdsDataLabel',
+            'PSCheckbox',
             'PSLabel',
             'PSInput',
+            'RTCheckbox',
             'RTLabel',
             'RTInput',
+            'CTCheckbox',
             'CTLabel',
             'CTInput',
+            'PICheckbox',
             'PILabel',
             'PIInput',
+            'PTYCheckbox',
             'PTYLabel',
             'PTYInput',
+            'TPCheckbox',
             'TPLabel',
             'TPSelect',
+            'TACheckbox',
             'TALabel',
             'TASelect',
+            'REGCheckbox',
             'REGLabel',
             'REGInput',
+            'availableHDsCheckbox',
             'availableHDsLabel',
             'availableHDsInput',
+            'hdChannelCheckbox',
             'hdChannelLabel',
             'hdChannelInput',
+            'signalStrengthCheckbox',
             'signalStrengthLabel',
             'signalStrengthInput',
+            'signalChangeThresholdCheckbox',
             'signalChangeThresholdLabel',
             'signalChangeThresholdInput',
+            'stateCheckbox',
             'stateLabel',
             'stateSelect',
             'send'
           ],
+          bandCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'bandCheckbox',
+              classNames: 'bandCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.band'
+            }
+          ),
           bandLabel: SDL.Label.extend(
             {
               elementId: 'bandLabel',
@@ -100,10 +121,23 @@ SDL.RadioView = Em.ContainerView
           ),
           bandSelect: Em.Select.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'bandSelect',
               classNames: 'bandSelect',
               contentBinding: 'SDL.RadioModel.bandStruct',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.band'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.band',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.band) {
+                  var data = {
+                    'band': SDL.RadioModel.lastOptionParams.band
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.band;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.band'
+              ),
+              disabledBinding: 'isDisabled'
             }
           ),
           rdsDataLabel: SDL.Label.extend(
@@ -111,6 +145,13 @@ SDL.RadioView = Em.ContainerView
               elementId: 'rdsDataLabel',
               classNames: 'rdsDataLabel',
               content: 'RDS Data list'
+            }
+          ),
+          PSCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'PSCheckbox',
+              classNames: 'PSCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.rdsData.PS'
             }
           ),
           PSLabel: SDL.Label.extend(
@@ -125,9 +166,31 @@ SDL.RadioView = Em.ContainerView
            */
           PSInput: Ember.TextField.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'PSInput',
               classNames: 'PSInput',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.PS'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.PS',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.rdsData.PS) {
+                  var data = {
+                    'rdsData': {
+                      'PS': SDL.RadioModel.lastOptionParams.rdsData.PS
+                    }
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.rdsData.PS;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.rdsData.PS'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          RTCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'RTCheckbox',
+              classNames: 'RTCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.rdsData.RT'
             }
           ),
           RTLabel: SDL.Label.extend(
@@ -142,9 +205,31 @@ SDL.RadioView = Em.ContainerView
            */
           RTInput: Ember.TextField.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'RTInput',
               classNames: 'RTInput',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.RT'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.RT',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.rdsData.RT) {
+                  var data = {
+                    'rdsData': {
+                      'RT': SDL.RadioModel.lastOptionParams.rdsData.RT
+                    }
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.rdsData.RT;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.rdsData.RT'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          CTCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'CTCheckbox',
+              classNames: 'CTCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.rdsData.CT'
             }
           ),
           CTLabel: SDL.Label.extend(
@@ -159,9 +244,31 @@ SDL.RadioView = Em.ContainerView
            */
           CTInput: Ember.TextField.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'CTInput',
               classNames: 'CTInput',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.CT'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.CT',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.rdsData.CT) {
+                  var data = {
+                    'rdsData': {
+                      'CT': SDL.RadioModel.lastOptionParams.rdsData.CT
+                    }
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.rdsData.CT;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.rdsData.CT'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          PICheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'PICheckbox',
+              classNames: 'PICheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.rdsData.PI'
             }
           ),
           PILabel: SDL.Label.extend(
@@ -176,9 +283,31 @@ SDL.RadioView = Em.ContainerView
            */
           PIInput: Ember.TextField.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'PIInput',
               classNames: 'PIInput',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.PI'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.PI',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.rdsData.PI) {
+                  var data = {
+                    'rdsData': {
+                      'PI': SDL.RadioModel.lastOptionParams.rdsData.PI
+                    }
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.rdsData.PI;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.rdsData.PI'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          PTYCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'PTYCheckbox',
+              classNames: 'PTYCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.rdsData.PTY'
             }
           ),
           PTYLabel: SDL.Label.extend(
@@ -193,9 +322,31 @@ SDL.RadioView = Em.ContainerView
            */
           PTYInput: Ember.TextField.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'PTYInput',
               classNames: 'PTYInput',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.PTY'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.PTY',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.rdsData.PTY) {
+                  var data = {
+                    'rdsData': {
+                      'PTY': SDL.RadioModel.lastOptionParams.rdsData.PTY
+                    }
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.rdsData.PTY;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.rdsData.PTY'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          TPCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'TPCheckbox',
+              classNames: 'TPCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.rdsData.TP'
             }
           ),
           TPLabel: SDL.Label.extend(
@@ -210,10 +361,32 @@ SDL.RadioView = Em.ContainerView
            */
           TPSelect: Em.Select.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'TPSelect',
               classNames: 'TPSelect',
               contentBinding: 'SDL.RadioModel.boolStruct',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.TP'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.TP',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.rdsData.TP) {
+                  var data = {
+                    'rdsData': {
+                      'TP': SDL.RadioModel.lastOptionParams.rdsData.TP
+                    }
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.rdsData.TP;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.rdsData.TP'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          TACheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'TACheckbox',
+              classNames: 'TACheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.rdsData.TA'
             }
           ),
           TALabel: SDL.Label.extend(
@@ -228,10 +401,32 @@ SDL.RadioView = Em.ContainerView
            */
           TASelect: Em.Select.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'TASelect',
               classNames: 'TASelect',
               contentBinding: 'SDL.RadioModel.boolStruct',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.TA'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.TA',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.rdsData.TA) {
+                  var data = {
+                    'rdsData': {
+                      'TA': SDL.RadioModel.lastOptionParams.rdsData.TA
+                    }
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.rdsData.TA;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.rdsData.TA'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          REGCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'REGCheckbox',
+              classNames: 'REGCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.rdsData.REG'
             }
           ),
           REGLabel: SDL.Label.extend(
@@ -246,9 +441,31 @@ SDL.RadioView = Em.ContainerView
            */
           REGInput: Ember.TextField.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'REGInput',
               classNames: 'REGInput',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.REG'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.rdsData.REG',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.rdsData.REG) {
+                  var data = {
+                    'rdsData': {
+                      'REG': SDL.RadioModel.lastOptionParams.rdsData.REG
+                    }
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.rdsData.REG;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.rdsData.REG'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          availableHDsCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'availableHDsCheckbox',
+              classNames: 'availableHDsCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.availableHDs'
             }
           ),
           availableHDsLabel: SDL.Label.extend(
@@ -260,10 +477,30 @@ SDL.RadioView = Em.ContainerView
           ),
           availableHDsInput: Em.Select.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'availableHDsInput',
               classNames: 'availableHDsInput',
               contentBinding: 'SDL.RadioModel.hdChannelsStruct',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.availableHDs'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.availableHDs',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.availableHDs) {
+                  var data = {
+                    'availableHDs': SDL.RadioModel.lastOptionParams.availableHDs
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.availableHDs;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.availableHDs'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          hdChannelCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'hdChannelCheckbox',
+              classNames: 'hdChannelCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.hdChannel'
             }
           ),
           hdChannelLabel: SDL.Label.extend(
@@ -275,6 +512,7 @@ SDL.RadioView = Em.ContainerView
           ),
           hdChannelInput: Em.Select.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'hdChannelInput',
               classNames: 'hdChannelInput',
               availableHDValueChanged: function() {
@@ -291,6 +529,25 @@ SDL.RadioView = Em.ContainerView
                 'SDL.RadioModel.radioControlStruct.availableHDs'
               ),
               valueBinding: 'SDL.RadioModel.radioControlStruct.hdChannel',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.hdChannel) {
+                  var data = {
+                    'hdChannel': SDL.RadioModel.lastOptionParams.hdChannel
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.hdChannel;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.hdChannel'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          signalStrengthCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'signalStrengthCheckbox',
+              classNames: 'signalStrengthCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.signalStrength'
             }
           ),
           signalStrengthLabel: SDL.Label.extend(
@@ -305,9 +562,29 @@ SDL.RadioView = Em.ContainerView
            */
           signalStrengthInput: Ember.TextField.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'signalStrengthInput',
               classNames: 'signalStrengthInput',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.signalStrength'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.signalStrength',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.signalStrength) {
+                  var data = {
+                    'signalStrength': SDL.RadioModel.lastOptionParams.signalStrength
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.signalStrength;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.signalStrength'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          signalChangeThresholdCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'signalChangeThresholdCheckbox',
+              classNames: 'signalChangeThresholdCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.signalChangeThreshold'
             }
           ),
           signalChangeThresholdLabel: SDL.Label.extend(
@@ -322,9 +599,29 @@ SDL.RadioView = Em.ContainerView
            */
           signalChangeThresholdInput: Ember.TextField.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'signalChangeThresholdInput',
               classNames: 'signalChangeThresholdInput',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.signalChangeThreshold'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.signalChangeThreshold',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.signalChangeThreshold) {
+                  var data = {
+                    'signalChangeThreshold': SDL.RadioModel.lastOptionParams.signalChangeThreshold
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.signalChangeThreshold;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.signalChangeThreshold'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          stateCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'stateCheckbox',
+              classNames: 'stateCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.state'
             }
           ),
           stateLabel: SDL.Label.extend(
@@ -336,10 +633,23 @@ SDL.RadioView = Em.ContainerView
           ),
           stateSelect: Em.Select.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'stateSelect',
               classNames: 'stateSelect',
               contentBinding: 'SDL.RadioModel.stateStruct',
-              valueBinding: 'SDL.RadioModel.radioControlStruct.state'
+              valueBinding: 'SDL.RadioModel.radioControlStruct.state',
+              isDisabled: function() {
+                if (!SDL.RadioModel.radioControlCheckboxes.state) {
+                  var data = {
+                    'state': SDL.RadioModel.lastOptionParams.state
+                  };
+                  SDL.RadioModel.setRadioData(data);
+                }
+                return !SDL.RadioModel.radioControlCheckboxes.state;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.state'
+              ),
+              disabledBinding: 'isDisabled'
             }
           ),
           send: SDL.Button.extend(
