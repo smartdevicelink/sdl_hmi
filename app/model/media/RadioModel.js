@@ -173,26 +173,45 @@ SDL.RadioModel = Em.Object.create({
   directTuneKeypressed: false,
 
   radioControlStruct: {
-      frequencyInteger: 87,
-      frequencyFraction: 9,
-      band: 'FM',
-      rdsData: {
-        PS: 'name',
-        RT: 'radio',
-        CT: 'YYYY-MM-DDThh:mm:ss.sTZD',
-        PI: 'Sign',
-        PTY: 1,
-        TP: true,
-        TA: true,
-        REG: 'Murica'
-      },
-      availableHDs: 3,
-      hdChannel: 1,
-      signalStrength: 50,
-      signalChangeThreshold: 60,
-      radioEnable: false,
-      state: 'MULTICAST'
+    frequencyInteger: 87,
+    frequencyFraction: 9,
+    band: 'FM',
+    rdsData: {
+      PS: 'name',
+      RT: 'radio',
+      CT: 'YYYY-MM-DDThh:mm:ss.sTZD',
+      PI: 'Sign',
+      PTY: 1,
+      TP: true,
+      TA: true,
+      REG: 'Murica'
     },
+    availableHDs: 3,
+    hdChannel: 1,
+    signalStrength: 50,
+    signalChangeThreshold: 60,
+    radioEnable: false,
+    state: 'MULTICAST'
+  },
+
+  radioControlCheckboxes: {
+    band: true,
+    rdsData: {
+      PS: true,
+      RT: true,
+      CT: true,
+      PI: true,
+      PTY: true,
+      TP: true,
+      TA: true,
+      REG: true
+    },
+    availableHDs: true,
+    hdChannel: true,
+    signalStrength: true,
+    signalChangeThreshold: true,
+    state: true
+  },
 
   stationsData: {
     'FM': {
@@ -450,7 +469,7 @@ SDL.RadioModel = Em.Object.create({
     return result;
   },
 
-  getRadioControlData: function() {
+  getRadioControlData: function(forceGetAll) {
     var result = {
       radioEnable: this.radioControlStruct.radioEnable
     };
@@ -459,26 +478,57 @@ SDL.RadioModel = Em.Object.create({
       result = {
         frequencyInteger: this.radioControlStruct.frequencyInteger,
         frequencyFraction: this.radioControlStruct.frequencyFraction,
-        band: this.radioControlStruct.band,
-        rdsData: {
-          PS: this.radioControlStruct.rdsData.PS,
-          RT: this.radioControlStruct.rdsData.RT,
-          CT: this.radioControlStruct.rdsData.CT,
-          PI: this.radioControlStruct.rdsData.PI,
-          PTY: parseInt(this.radioControlStruct.rdsData.PTY),
-          TP: this.radioControlStruct.rdsData.TP,
-          TA: this.radioControlStruct.rdsData.TA,
-          REG: this.radioControlStruct.rdsData.REG
-        },
-        availableHDs: this.radioControlStruct.availableHDs,
-        hdChannel: this.radioControlStruct.hdChannel,
-        signalStrength: parseInt(this.radioControlStruct.signalStrength),
-        signalChangeThreshold: parseInt(
-          this.radioControlStruct.signalChangeThreshold
-        ),
         radioEnable: this.radioControlStruct.radioEnable,
-        state: this.radioControlStruct.state
+        rdsData: {}
       };
+
+      if (forceGetAll || this.radioControlCheckboxes.band) {
+        result.band = this.radioControlStruct.band;
+      }
+      if (forceGetAll || this.radioControlCheckboxes.rdsData.PS) {
+        result.rdsData.PS = this.radioControlStruct.rdsData.PS;
+      }
+      if (forceGetAll || this.radioControlCheckboxes.rdsData.RT) {
+        result.rdsData.RT = this.radioControlStruct.rdsData.RT;
+      }
+      if (forceGetAll || this.radioControlCheckboxes.rdsData.CT) {
+        result.rdsData.CT = this.radioControlStruct.rdsData.CT;
+      }
+      if (forceGetAll || this.radioControlCheckboxes.rdsData.PI) {
+        result.rdsData.PI = this.radioControlStruct.rdsData.PI;
+      }
+      if (forceGetAll || this.radioControlCheckboxes.rdsData.PTY) {
+        result.rdsData.PTY = parseInt(this.radioControlStruct.rdsData.PTY);
+      }
+      if (forceGetAll || this.radioControlCheckboxes.rdsData.TP) {
+        result.rdsData.TP = this.radioControlStruct.rdsData.TP;
+      }
+      if (forceGetAll || this.radioControlCheckboxes.rdsData.TA) {
+        result.rdsData.TA = this.radioControlStruct.rdsData.TA;
+      }
+      if (forceGetAll || this.radioControlCheckboxes.rdsData.REG) {
+        result.rdsData.REG = this.radioControlStruct.rdsData.REG;
+      }
+
+      if (forceGetAll || this.radioControlCheckboxes.availableHDs) {
+        result.availableHDs = this.radioControlStruct.availableHDs;
+      }
+      if (forceGetAll || this.radioControlCheckboxes.hdChannel) {
+        result.hdChannel = this.radioControlStruct.hdChannel;
+      }
+      if (forceGetAll || this.radioControlCheckboxes.signalStrength) {
+        result.signalStrength = parseInt(this.radioControlStruct.signalStrength);
+      }
+      if (forceGetAll || this.radioControlCheckboxes.signalChangeThreshold) {
+        result.signalChangeThreshold = parseInt(this.radioControlStruct.signalChangeThreshold);
+      }
+      if (forceGetAll || this.radioControlCheckboxes.state) {
+        result.state = this.radioControlStruct.state;
+      }
+
+      if (Object.keys(result.rdsData).length == 0) {
+        delete result['rdsData'];
+      }
     }
 
     return result;
@@ -508,6 +558,7 @@ SDL.RadioModel = Em.Object.create({
 
       if (data.band  != null) {
         this.setRadioBand(data.band);
+        this.switchRadioBandFrequency(data.frequencyInteger == null);
       }
 
       if (data.rdsData != null) {
@@ -538,14 +589,21 @@ SDL.RadioModel = Em.Object.create({
       for (var key in data) {
         properties.push(key);
       }
+
+      if (properties.indexOf('band') >= 0) {
+        properties.push('frequencyInteger');
+        if (data.band == 'FM') {
+          properties.push('frequencyFraction');
+        }
+      }
     }
 
-    var result = this.getRadioControlData();
+    var result = this.getRadioControlData(true);
     return SDL.SDLController.filterObjectProperty(result, properties);
   },
 
   sendRadioChangeNotification: function(properties) {
-    var data = this.getRadioControlData();
+    var data = this.getRadioControlData(false);
     data = SDL.SDLController.filterObjectProperty(data, properties);
     if (Object.keys(data).length > 0) {
       FFW.RC.onInteriorVehicleDataNotification('RADIO', null, data);
@@ -554,23 +612,23 @@ SDL.RadioModel = Em.Object.create({
 
   saveCurrentOptions: function() {
     this.lastOptionParams = {
-     'band': this.radioControlStruct.band,
-     'rdsData': {
-       'PS': this.radioControlStruct.rdsData.PS,
-       'RT': this.radioControlStruct.rdsData.RT,
-       'CT': this.radioControlStruct.rdsData.CT,
-       'PI': this.radioControlStruct.rdsData.PI,
-       'PTY': this.radioControlStruct.rdsData.PTY,
-       'TP': this.radioControlStruct.rdsData.TP,
-       'TA': this.radioControlStruct.rdsData.TA,
-       'REG': this.radioControlStruct.rdsData.REG
-     },
-     'availableHDs': this.radioControlStruct.availableHDs,
-     'hdChannel': this.radioControlStruct.hdChannel,
-     'signalStrength': this.radioControlStruct.signalStrength,
-     'signalChangeThreshold': this.radioControlStruct.signalChangeThreshold,
-     'state': this.radioControlStruct.state
-   };
+      'band': this.radioControlStruct.band,
+      'rdsData': {
+        'PS': this.radioControlStruct.rdsData.PS,
+        'RT': this.radioControlStruct.rdsData.RT,
+        'CT': this.radioControlStruct.rdsData.CT,
+        'PI': this.radioControlStruct.rdsData.PI,
+        'PTY': this.radioControlStruct.rdsData.PTY,
+        'TP': this.radioControlStruct.rdsData.TP,
+        'TA': this.radioControlStruct.rdsData.TA,
+        'REG': this.radioControlStruct.rdsData.REG
+      },
+      'availableHDs': this.radioControlStruct.availableHDs,
+      'hdChannel': this.radioControlStruct.hdChannel,
+      'signalStrength': this.radioControlStruct.signalStrength,
+      'signalChangeThreshold': this.radioControlStruct.signalChangeThreshold,
+      'state': this.radioControlStruct.state
+    };
   },
 
   restoreCurrentOptions: function() {
@@ -741,6 +799,7 @@ SDL.RadioModel = Em.Object.create({
       data = this.changeFrequency(0);
       this.updateRadioFrequency();
       this.checkRadioDetailsSongInfo(data);
+      this.sendFrequencyChangeNotification();
 
       SDL.RadioModel.set('activePreset', element.preset);
     },
@@ -769,6 +828,7 @@ SDL.RadioModel = Em.Object.create({
         data = this.changeFrequency(0);
         this.updateRadioFrequency();
         this.checkRadioDetailsSongInfo(data);
+        this.sendFrequencyChangeNotification();
 
         this.set('temp', this.station);
         this.set('directTuneFinished', false);
@@ -916,12 +976,14 @@ SDL.RadioModel = Em.Object.create({
       var data = this.changeFrequency(1);
       this.updateRadioFrequency();
       this.checkRadioDetailsSongInfo(data);
+      this.sendFrequencyChangeNotification();
     },
 
   tuneDown: function() {
       var data = this.changeFrequency(-1);
       this.updateRadioFrequency();
       this.checkRadioDetailsSongInfo(data);
+      this.sendFrequencyChangeNotification();
     },
 
   checkRadioDetailsSongInfo: function(data) {
@@ -946,7 +1008,9 @@ SDL.RadioModel = Em.Object.create({
     } else {
       this.updateSongInfo();
     }
+  },
 
+  sendFrequencyChangeNotification: function() {
     if (this.radioControlStruct.band === 'FM') {
       this.sendRadioChangeNotification(
         ['frequencyInteger', 'frequencyFraction']
@@ -979,28 +1043,35 @@ SDL.RadioModel = Em.Object.create({
     }
   },
 
-  sendButtonPress: function() {
-    var beforeChange = this.lastOptionParams;
-    this.saveCurrentOptions();
-    var afterChange = this.lastOptionParams;
-    var properties = this.getChangedProperties(beforeChange, afterChange);
-
-    if (properties.indexOf('band') >= 0) {
+  switchRadioBandFrequency: function(useDefault) {
+    if (useDefault === true) {
       if (this.radioControlStruct.band === 'FM') {
         this.setFrequencyInteger(87);
         this.setFrequencyFraction(9);
       } else {
         this.setFrequencyInteger(540);
       }
-      this.set('statusBar', this.radioControlStruct.band + ' Radio');
-
-      var data = this.changeFrequency(0);
-      this.updateRadioFrequency();
-      this.checkRadioDetailsSongInfo(data);
     }
+    this.set('statusBar', this.radioControlStruct.band + ' Radio');
+
+    var data = this.changeFrequency(0);
+    this.updateRadioFrequency();
+    this.checkRadioDetailsSongInfo(data);
+  },
+
+  sendButtonPress: function() {
+    var beforeChange = SDL.deepCopy(this.lastOptionParams);
+    this.saveCurrentOptions();
+    var afterChange = SDL.deepCopy(this.lastOptionParams);
+    var properties = this.getChangedProperties(beforeChange, afterChange);
 
     SDL.RadioModel.toggleProperty('optionsEnabled');
     this.sendRadioChangeNotification(properties);
+
+    if (properties.indexOf('band') >= 0) {
+      this.switchRadioBandFrequency(true);
+      this.sendFrequencyChangeNotification();
+    }
   },
 
   setFrequencyInteger: function(value) {
