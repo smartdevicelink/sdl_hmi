@@ -557,8 +557,10 @@ SDL.RadioModel = Em.Object.create({
       }
 
       if (data.band  != null) {
-        this.setRadioBand(data.band);
-        this.switchRadioBandFrequency(data.frequencyInteger == null);
+        if (data.band != this.radioControlStruct.band) {
+          this.setRadioBand(data.band);
+          this.switchRadioBandFrequency(data.frequencyInteger == null);
+        }
       }
 
       if (data.rdsData != null) {
@@ -1008,6 +1010,45 @@ SDL.RadioModel = Em.Object.create({
     } else {
       this.updateSongInfo();
     }
+  },
+
+  checkRadioFrequencyBoundaries: function(data) {
+    var band = (data.band != null
+      ? data.band : this.radioControlStruct.band
+    );
+
+    if (band == 'FM') {
+      if (data.frequencyInteger == null && data.frequencyFraction == null) {
+        return true;
+      }
+
+      var frequencyInteger = (data.frequencyInteger != null
+        ? data.frequencyInteger : this.radioControlStruct.frequencyInteger
+      );
+      var frequencyFraction = (data.frequencyFraction != null
+        ? data.frequencyFraction : this.radioControlStruct.frequencyFraction
+      );
+      var frequencyTotal = frequencyInteger * 10 + frequencyFraction;
+
+      return (frequencyTotal >= 875 && frequencyTotal <= 1080);
+    }
+
+    if (band == 'AM') {
+      if (data.frequencyFraction != null) {
+        return false;
+      }
+      if (data.frequencyInteger == null) {
+        return true;
+      }
+
+      var frequencyTotal = (data.frequencyInteger != null
+        ? data.frequencyInteger : this.radioControlStruct.frequencyInteger
+      );
+
+      return (frequencyTotal >= 525 && frequencyTotal <= 1705);
+    }
+
+    return true;
   },
 
   sendFrequencyChangeNotification: function() {

@@ -185,6 +185,18 @@ FFW.RC = FFW.RPCObserver.create(
               return;
             }
 
+            if (request.params.moduleData.radioControlData != null) {
+              if (!SDL.RadioModel.checkRadioFrequencyBoundaries(
+                    request.params.moduleData.radioControlData)) {
+                this.sendError(
+                  SDL.SDLModel.data.resultCode.INVALID_DATA,
+                  request.id, request.method,
+                  'Invalid radio frequency for desination radio band.'
+                );
+                return;
+              }
+            }
+
             var newClimateControlData = null;
             var newRadioControlData = null;
 
@@ -197,6 +209,9 @@ FFW.RC = FFW.RPCObserver.create(
               newRadioControlData =
                 SDL.RadioModel.setRadioData(
                   request.params.moduleData.radioControlData);
+              if (SDL.RadioModel.optionsEnabled) {
+                SDL.RadioModel.saveCurrentOptions();
+              }
             }
             // send repsonse
             var JSONMessage = {
