@@ -34,20 +34,6 @@
 SDL.RModel = SDL.SDLModel.extend({
 
   /**
-   * Parameter of controll permissions deligation to mobile app
-   *
-   * @type {number}
-   */
-  givenControl: null,
-
-  /**
-   * Parameter of controll permissions deligation to mobile app
-   *
-   * @type {number}
-   */
-  givenControlFlag: false,
-
-  /**
    * Id of current processed RC.GrantAccess request
    *
    * @param {Number}
@@ -59,7 +45,7 @@ SDL.RModel = SDL.SDLModel.extend({
    *
    * @param {Object}
    */
-  driverDevice: false,
+  driverDevice: true,
 
   /**
    * Current drivers device flag
@@ -84,26 +70,25 @@ SDL.RModel = SDL.SDLModel.extend({
     },
 
   /**
-   * Interior zones for OnDeviceLocationChanged notification
+   * RC functionality flag
+   * HMI must disallow RC functions when this functionality disabled
    */
-  interiorZone: [
-    'driver',
-    'back_left',
-    'front_passenger',
-    'back_right'
+  reverseFunctionalityEnabled: true,
+
+  /**
+   * Array of allowed values for access mode param of OnRemoteControlSettings
+   */
+  reverseAccessModesStruct: [
+    'AUTO_ALLOW',
+    'AUTO_DENY',
+    'ASK_DRIVER'
   ],
 
   /**
-   * Radio app indetificator
-   * HMI must reject the second passenger's app's request for the radio module
+   * RC access mode indicator
+   * Used for OnRemoteControlSettings notification
    */
-  radioFirstConsentedApp: null,
-
-  /**
-   * Climate app indetificator
-   * HMI must reject the second passenger's app's request for the climate module
-   */
-  climateFirstConsentedApp: null,
+  reverseAccessMode: 'AUTO_ALLOW',
 
   /**
    * Method to add activation button to VR commands and set device
@@ -195,46 +180,7 @@ SDL.RModel = SDL.SDLModel.extend({
     if (SDL.SDLController.getApplicationModel(params.appID)) {
 
       this._super(params);
-
-      SDL.SDLController.removeConsentForApp(params.appID);
     }
-  },
-
-  /**
-   * SwitchPopUp activation
-   *
-   * @param {Object}
-   */
-  giveControl: function(message) {
-
-    var appID = message.params.appID,
-      appName = SDL.SDLController.getApplicationModel(appID).appName;
-
-    SDL.PopUp.create().appendTo('body').popupActivate(
-      'Mobile Device ' + appName +
-      ' is requesting access to take control of the onboard HD Radio system.',
-        function(value) {
-          SDL.SDLController.ControlAccessAction(appID, value);
-        }
-      );
-
-    SDL.SDLModel.controlRequestID = message.id;
-  },
-
-  resetControl: function() {
-      if (SDL.SDLController && SDL.SDLModel.givenControl != null) {
-        FFW.RC.OnControlChanged();
-        SDL.SDLModel.givenControl = null;
-      }
-    },
-
-  cancelControl: function(request) {
-      FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode.SUCCESS,
-        request.id, 'VehicleInfo.CancelAccess'
-      );
-      SDL.SDLModel.givenControl = null;
-      SDL.SDLModel.set('givenControlFlag', false);
-    }
-
+  }
 }
 );

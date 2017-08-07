@@ -139,10 +139,6 @@ SDL.ABSAppModel = Em.Object.extend(
      */
     navigationAudioStream: null,
     /**
-     * List of maps of AppID and subscribed module for REVSDL app
-     */
-    moduleSubscriptions: [],
-    /**
      * Chosen device name
      *
      * @type {String}

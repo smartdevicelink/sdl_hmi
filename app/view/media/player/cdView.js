@@ -27,12 +27,25 @@ SDL.cdView = Em.ContainerView.create(
         elementId: 'media_player_cd_view_info',
         template: Em.Handlebars.compile(
           '<div class="track-info">' +
-          '<div class="total">{{SDL.MediaController.currentSelectedPlayer.currentTrack}}/{{SDL.MediaController.currentSelectedPlayer.totalTracks}}</div>' +
-          '<div class="divider_o"></div>' +
-          '<div class="title">{{SDL.MediaController.currentSelectedPlayer.data.selectedItem.album}}</div>' +
-          '<div class="track-number" >{{SDL.MediaController.currentSelectedPlayer.data.selectedItem.name}}</div>' +
-          '<div class="time">{{SDL.MediaController.currentSelectedPlayer.formatTimeToString}}</div>' +
-          '<div id="cd_logo"></div>' +
+            '<div class="total">' +
+              '<div class="total-label" {{bindAttr class="SDL.CDModel.player.ejected:inactive_state:active_state"}}>' +
+                '{{SDL.MediaController.currentSelectedPlayer.currentTrack}}/{{SDL.MediaController.currentSelectedPlayer.totalTracks}}' +
+              '</div>'+
+              '<div class="total-label inactive_state" {{bindAttr class="SDL.CDModel.player.ejected:active_state:inactive_state"}}>' +
+                'No disk' +
+              '</div>'+
+            '</div>' +
+            '<div class="divider_o"></div>' +
+            '<div class="title" {{bindAttr class="SDL.CDModel.player.ejected:inactive_state"}}>' +
+              '{{SDL.MediaController.currentSelectedPlayer.data.selectedItem.album}}' +
+            '</div>' +
+            '<div class="track-number" {{bindAttr class="SDL.CDModel.player.ejected:inactive_state"}}>' +
+              '{{SDL.MediaController.currentSelectedPlayer.data.selectedItem.name}}' +
+            '</div>' +
+            '<div class="time" {{bindAttr class="SDL.CDModel.player.ejected:inactive_state"}}>' +
+              '{{SDL.MediaController.currentSelectedPlayer.formatTimeToString}}' +
+            '</div>' +
+            '<div id="cd_logo" {{bindAttr class="SDL.CDModel.player.ejected:inactive_state"}}></div>' +
           '</div>'
         )
       }
@@ -40,6 +53,9 @@ SDL.cdView = Em.ContainerView.create(
     controlls: Em.ContainerView.extend(
       {
         elementId: 'media_player_cd_view_controlls',
+        classNameBindings: [
+          'SDL.CDModel.player.ejected:inactive_state:active_state'
+        ],
         /** View components*/
         childViews: [
           'PrevTrackButton',
@@ -87,57 +103,72 @@ SDL.cdView = Em.ContainerView.create(
         /** Class Names */
         classNames: ['player-right-stock'],
         classNameBindings: [
-          'SDL.States.media.player.cd.options.active:hidden',
-          'SDL.States.media.player.cd.browse.active:hidden',
           'SDL.States.media.player.cd.moreinfo.active:hidden'
         ],
         /** View Components*/
         childViews: [
+          'ejectButton',
           'repeatButton',
           'shuffleButton',
-          'scanButton',
-          'moreInfoButton',
-          'optionsButton',
-          'browseButton'
+          'moreInfoButton'
         ],
+        ejectButton: SDL.Button.extend(
+          {
+            elementId: 'media_cd_rightmenu_ejectButton',
+            classNames: ['rs-item', 'helpmode_box_shadow'],
+            onIconChange: function() {
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.CDModel.player.ejected);
+            }.property('SDL.CDModel.player.ejected'),
+            iconBinding: 'onIconChange',
+            target: 'SDL.MediaController',
+            action: 'ejectCD',
+            onDown: false,
+            textBinding: 'SDL.locale.label.view_media_eject',
+            disabledBinding: 'SDL.reversHelpModeBoolean'
+          }
+        ),
         repeatButton: SDL.Button.extend(
           {
             elementId: 'media_cd_rightmenu_repeatButton',
             classNames: ['rs-item'],
-            classNameBindings: ['SDL.helpMode: hide_icon'],
-            icon: 'images/media/passiv_horiz_led.png',
-            textBinding: Ember.Binding.oneWay(
-              'SDL.locale.label.view_media_repeat'
+            onRepeatPressed: function() {
+              switch (SDL.CDModel.player.repeat) {
+                case 'NONE':
+                  return SDL.locale.label.view_media_repeat_no;
+                case 'ALL':
+                  return SDL.locale.label.view_media_repeat_all;
+                case 'ONE':
+                  return SDL.locale.label.view_media_repeat_one;
+              }
+            }.property(
+              'SDL.CDModel.player.repeat'
             ),
-            disabled: true
+            textBinding: 'onRepeatPressed',
+            disabledBinding: 'SDL.CDModel.player.ejected',
+            target: 'SDL.MediaController',
+            action: 'repeatPress'
           }
         ),
         shuffleButton: SDL.Button.extend(
           {
-            classNameBindings: ['SDL.helpMode:shuffleButton_help'],
             elementId: 'media_cd_rightmenu_shuffleButton',
-            classNames: ['rs-item', 'helpmode_box_shadow'],
-            icon: 'images/media/passiv_horiz_led.png',
+            classNames: ['rs-item'],
+            onIconChange: function() {
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.CDModel.player.shuffle
+              );
+            }.property(
+              'SDL.CDModel.player.shuffle'
+            ),
+            iconBinding: 'onIconChange',
             textBinding: Ember.Binding.oneWay(
               'SDL.locale.label.view_media_shuffle'
             ),
             target: 'SDL.MediaController',
             action: 'turnOnShuffle',
             onDown: false,
-            disabledBinding: 'SDL.reversHelpModeBoolean'
-          }
-        ),
-        scanButton: SDL.Button.extend(
-          {
-            elementId: 'media_cd_rightmenu_scanButton',
-            classNameBindings: ['SDL.helpMode:scan_button_help'],
-            classNames: ['rs-item', 'helpmode_box_shadow'],
-            icon: 'images/media/passiv_horiz_led.png',
-            target: 'SDL.MediaController',
-            action: 'turnOnScan',
-            onDown: false,
-            textBinding: 'SDL.locale.label.view_media_scan',
-            disabledBinding: 'SDL.reversHelpModeBoolean'
+            disabledBinding: 'SDL.CDModel.player.ejected'
           }
         ),
         moreInfoButton: SDL.Button.extend(
@@ -146,46 +177,13 @@ SDL.cdView = Em.ContainerView.create(
             elementId: 'media_cd_rightmenu_moreinfoButton',
             action: 'turnOnMoreInfo',
             target: 'SDL.MediaController',
-            classNames: ['rs-item', 'helpmode_box_shadow'],
+            classNames: ['rs-item'],
             icon: 'images/media/active_arrow.png',
             textBinding: Ember.Binding.oneWay(
               'SDL.locale.label.view_media_moreInfo'
             ),
-            onDown: false
-          }
-        ),
-        optionsButton: SDL.Button.extend(
-          {
-            elementId: 'media_cd_rightmenu_optionButton',
-            classNames: ['rs-item'],
-            icon: 'images/media/active_arrow.png',
-            textBinding: Ember.Binding.oneWay(
-              'SDL.locale.label.view_media_options'
-            ),
-            action: 'turnOnOptions',
-            target: 'SDL.MediaController',
-            disabledBinding: 'SDL.helpMode',
-            // Define button template
-            template: Ember.Handlebars.compile(
-              '{{#with view}}' +
-              '<img class="ico" {{bindAttr src="icon"}} />' +
-              '<span>{{text}}</span>' +
-              '{{/with}}'
-            )
-          }
-        ),
-        browseButton: SDL.Button.extend(
-          {
-            classNameBindings: ['SDL.helpMode:browse_button_help'],
-            elementId: 'media_cd_rightmenu_browseButton',
-            action: 'turnOnBrowse',
-            target: 'SDL.MediaController',
-            classNames: ['rs-item', 'helpmode_box_shadow'],
-            icon: 'images/media/active_arrow.png',
-            textBinding: Ember.Binding.oneWay(
-              'SDL.locale.label.view_media_browse'
-            ),
-            onDown: false
+            onDown: false,
+            disabled: true // TODO - add more info view
           }
         )
       }
