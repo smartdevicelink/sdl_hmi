@@ -673,15 +673,23 @@ SDL.RadioModel = Em.Object.create({
       //FFW.RC.OnPresetsChanged(this.preset);
     },
 
+  afterDirectTune: function() {
+      this.set('station', this.temp);
+      this.set('directTuneFinished', false);
+      this.set('directTuneKeypressed', false);
+      this.set('directTuneKeyItems', []);
+  },
+
+  beforeDirectTune: function() {
+      this.set('temp', this.station);
+  },
+
   directTune: function() {
       this.toggleProperty('tuneRadio');
       if (this.tuneRadio) {
-        this.set('temp', this.station);
+        this.beforeDirectTune();
       } else {
-        this.set('station', this.temp);
-        this.set('directTuneFinished', false);
-        this.set('directTuneKeypressed', false);
-        this.set('directTuneKeyItems', []);
+        this.afterDirectTune();
       }
     },
 
@@ -975,6 +983,9 @@ SDL.RadioModel = Em.Object.create({
   },
 
   tuneUp: function() {
+      if (this.tuneRadio) {
+        this.afterDirectTune();
+      }
       var data = this.changeFrequency(1);
       this.updateRadioFrequency();
       this.checkRadioDetailsSongInfo(data);
@@ -982,6 +993,9 @@ SDL.RadioModel = Em.Object.create({
     },
 
   tuneDown: function() {
+      if (this.tuneRadio) {
+        this.afterDirectTune();
+      }
       var data = this.changeFrequency(-1);
       this.updateRadioFrequency();
       this.checkRadioDetailsSongInfo(data);
