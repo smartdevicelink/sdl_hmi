@@ -8,6 +8,8 @@ SDL.ClimateControlModel = Em.Object.create({
   passengerDesiredTemp: 70,
   reciRCulateAirEnableString: 'OFF',
   acEnableString: 'OFF',
+  defrostZoneStruct: ['FRONT', 'REAR', 'ALL', 'NONE'],
+  ventilationModeStruct: ['UPPER', 'LOWER', 'BOTH', 'NONE'],
 
   climateControlData: {
     temperatureUnit: 'CELSIUS',
@@ -286,14 +288,14 @@ SDL.ClimateControlModel = Em.Object.create({
   refreshDefrostZoneValue: function() {
     if (this.climateControlData.defrostZoneFrontEnable &&
         this.climateControlData.defrostZoneRearEnable) {
-      this.set('climateControlData.defrostZone', 'ALL');
+      this.set('climateControlData.defrostZone', this.defrostZoneStruct[2]);
     } else if (!this.climateControlData.defrostZoneFrontEnable &&
                !this.climateControlData.defrostZoneRearEnable) {
-      this.set('climateControlData.defrostZone', 'NONE');
+      this.set('climateControlData.defrostZone', this.defrostZoneStruct[3]);
     } else if (this.climateControlData.defrostZoneFrontEnable) {
-      this.set('climateControlData.defrostZone', 'FRONT');
+      this.set('climateControlData.defrostZone', this.defrostZoneStruct[0]);
     } else if (this.climateControlData.defrostZoneRearEnable) {
-      this.set('climateControlData.defrostZone', 'REAR');
+      this.set('climateControlData.defrostZone', this.defrostZoneStruct[1]);
     }
 
     this.sendClimateChangeNotification(['defrostZone']);
@@ -312,14 +314,14 @@ SDL.ClimateControlModel = Em.Object.create({
   refreshVentilationModeValue: function() {
     if (this.climateControlData.ventilationModeUpEnable &&
         this.climateControlData.ventilationModeLowEnable) {
-      this.set('climateControlData.ventilationMode', 'BOTH');
+      this.set('climateControlData.ventilationMode', this.ventilationModeStruct[2]);
     } else if (!this.climateControlData.ventilationModeUpEnable &&
                !this.climateControlData.ventilationModeLowEnable) {
-      this.set('climateControlData.ventilationMode', 'NONE');
+      this.set('climateControlData.ventilationMode', this.ventilationModeStruct[3]);
     } else if (this.climateControlData.ventilationModeUpEnable) {
-      this.set('climateControlData.ventilationMode', 'UPPER');
+      this.set('climateControlData.ventilationMode', this.ventilationModeStruct[0]);
     } else if (this.climateControlData.ventilationModeLowEnable) {
-      this.set('climateControlData.ventilationMode', 'LOWER');
+      this.set('climateControlData.ventilationMode', this.ventilationModeStruct[1]);
     }
 
     this.sendClimateChangeNotification(['ventilationMode']);
