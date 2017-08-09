@@ -28,7 +28,9 @@ SDL.ClimateControlModel = Em.Object.create({
   },
 
   getClimateControlCapabilities: function() {
-    var result = {
+    var result = [];
+
+    var capabilities = {
       moduleName: 'Climate Control Module',
       fanSpeedAvailable: true,
       desiredTemperatureAvailable: true,
@@ -38,11 +40,91 @@ SDL.ClimateControlModel = Em.Object.create({
       autoModeEnableAvailable: true,
       dualModeEnableAvailable: true,
       defrostZoneAvailable: true,
-      defrostZone: ['ALL', 'FRONT', 'REAR', 'NONE'],
+      defrostZone: this.defrostZoneStruct,
       ventilationModeAvailable: true,
-      ventilationMode: ['UPPER', 'LOWER', 'BOTH', 'NONE']
+      ventilationMode: this.ventilationModeStruct
     };
 
+    result.push(capabilities);
+
+    return result;
+  },
+
+  getClimateButtonCapabilities: function() {
+    var result = [
+      {
+        'name': 'AC_MAX',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'AC',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'RECIRCULATE',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'FAN_UP',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'FAN_DOWN',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'TEMP_UP',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'TEMP_DOWN',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'DEFROST_MAX',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'DEFROST',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'DEFROST_REAR',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'UPPER_VENT',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'LOWER_VENT',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      }
+    ];
     return result;
   },
 

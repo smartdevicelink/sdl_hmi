@@ -1977,7 +1977,13 @@ SDL.RPCController = Em.Object.create(
     RC: Em.Object.create(
       {
         resultStruct: {},
-        GetInteriorVehicleDataCapabilities: function(params) {
+        IsReady: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        GetCapabilities: function(params) {
           this.resultStruct = {
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };

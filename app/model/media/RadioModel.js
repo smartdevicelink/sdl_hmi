@@ -453,7 +453,8 @@ SDL.RadioModel = Em.Object.create({
   statusBar: 'FM Radio',
 
   getRadioControlCapabilities: function() {
-    var result = {
+    var result = [];
+    var capabilities = {
       moduleName: 'Radio Control Module',
       radioEnableAvailable: true,
       radioBandAvailable: true,
@@ -466,6 +467,50 @@ SDL.RadioModel = Em.Object.create({
       signalChangeThresholdAvailable: true
     };
 
+    result.push(capabilities);
+
+    return result;
+  },
+
+  getRadioButtonCapabilities: function() {
+    var result = [
+      {
+        'name': 'VOLUME_UP',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'VOLUME_DOWN',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'EJECT',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'SOURCE',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'SHUFFLE',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      },
+      {
+        'name': 'REPEAT',
+        'shortPressAvailable': true,
+        'longPressAvailable': false,
+        'upDownAvailable': false
+      }
+    ];
     return result;
   },
 
