@@ -47,6 +47,13 @@ SDL.InfoAppsView = Em.ContainerView.create({
     'listOfApplications'
   ],
 
+  isRcAppDisabled: function(app, driverDevice) {
+    if (!SDL.SDLModel.reverseFunctionalityEnabled) {
+      return true;
+    }
+    return driverDevice ? app.disabledToActivate : true;
+  },
+
   /**
    * Function to add application to application list
    */
@@ -96,7 +103,7 @@ SDL.InfoAppsView = Em.ContainerView.create({
                    classNames: 'list-item button',
                    iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
                    '.appIcon',
-                   disabled: driverDevice ? apps[i].disabledToActivate : true
+                   disabled: SDL.InfoAppsView.isRcAppDisabled(apps[i], driverDevice)
                  })
                );
       }
