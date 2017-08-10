@@ -79,11 +79,9 @@ SDL.SDLMediaController = Em.Object.create(
       FFW.BasicCommunication.ActivateApp(this.currentAppId);
     },
     /**
-     * Method hides sdl activation button and sdl application
-     *
-     * @param {Number}
+     * Deactivate specific application
      */
-    onDeleteApplication: function(appID) {
+    deactivateApp: function(appID) {
       if (this.currentAppId == appID) {
         if (SDL.States.media.sdlmedia.active ||
           SDL.SDLController.model) {
@@ -97,6 +95,26 @@ SDL.SDLMediaController = Em.Object.create(
         SDL.SDLModel.data.set('limitedExist', false);
         this.set('currentAppId', null);
       }
+    },
+    /**
+     * Deactivate currently active RC application
+     */
+    deactivateActiveRcApp: function() {
+      if (this.currentAppId) {
+        var app_model =
+          SDL.SDLController.getApplicationModel(this.currentAppId);
+        if (app_model.appType.indexOf('REMOTE_CONTROL') != -1) {
+          this.deactivateApp(this.currentAppId);
+        }
+      }
+    },
+    /**
+     * Method hides sdl activation button and sdl application
+     *
+     * @param {Number}
+     */
+    onDeleteApplication: function(appID) {
+      this.deactivateApp(appID);
       SDL.SDLModel.stopStream(appID);
       SDL.SDLModel.data.get('registeredApps').removeObjects(
         SDL.SDLModel.data.get('registeredApps').filterProperty('appID', appID)
