@@ -204,6 +204,9 @@ SDL.RController = SDL.SDLController.extend(
      */
     toggleRSDLFunctionality: function() {
       SDL.SDLModel.toggleProperty('reverseFunctionalityEnabled');
+      SDL.SDLMediaController.deactivateActiveRcApp();
+      SDL.NonMediaController.deactivateActiveRcApp();
+      SDL.InfoAppsView.showAppList();
       FFW.RC.OnRemoteControlSettings(
         SDL.SDLModel.reverseFunctionalityEnabled,
         SDL.SDLModel.reverseAccessMode
