@@ -779,12 +779,19 @@ SDL.RadioView = Em.ContainerView
               1: SDL.RadioPresetButton.extend(
                 {
                   onEnableRadioClick: function() {
-                    this.set('disabled',
-                      !SDL.RadioModel.radioControlStruct.radioEnable);
-                  }.observes(
-                    'SDL.RadioModel.radioControlStruct.radioEnable'
+                    if (!SDL.RadioModel.radioControlStruct.radioEnable) {
+                      return true;
+                    }
+                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
+                    }
+                    return false;
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.radioEnable',
+                    'SDL.RadioModel.radioControlStruct.band',
+                    'SDL.RadioModel.radioControlStruct.availableHDs'
                   ),
-                  disabled: true,
+                  disabledBinding: 'onEnableRadioClick',
                   elementId: 'radio_media_preset_button1',
                   classNames: 'a0',
                   getPresetText: function() {
@@ -802,12 +809,19 @@ SDL.RadioView = Em.ContainerView
               2: SDL.RadioPresetButton.extend(
                 {
                   onEnableRadioClick: function() {
-                    this.set('disabled',
-                      !SDL.RadioModel.radioControlStruct.radioEnable);
-                  }.observes(
-                    'SDL.RadioModel.radioControlStruct.radioEnable'
+                    if (!SDL.RadioModel.radioControlStruct.radioEnable) {
+                      return true;
+                    }
+                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
+                    }
+                    return false;
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.radioEnable',
+                    'SDL.RadioModel.radioControlStruct.band',
+                    'SDL.RadioModel.radioControlStruct.availableHDs'
                   ),
-                  disabled: true,
+                  disabledBinding: 'onEnableRadioClick',
                   elementId: 'radio_media_preset_button2',
                   classNames: 'a1',
                   getPresetText: function() {
@@ -825,12 +839,19 @@ SDL.RadioView = Em.ContainerView
               3: SDL.RadioPresetButton.extend(
                 {
                   onEnableRadioClick: function() {
-                    this.set('disabled',
-                      !SDL.RadioModel.radioControlStruct.radioEnable);
-                  }.observes(
-                    'SDL.RadioModel.radioControlStruct.radioEnable'
+                    if (!SDL.RadioModel.radioControlStruct.radioEnable) {
+                      return true;
+                    }
+                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
+                    }
+                    return false;
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.radioEnable',
+                    'SDL.RadioModel.radioControlStruct.band',
+                    'SDL.RadioModel.radioControlStruct.availableHDs'
                   ),
-                  disabled: true,
+                  disabledBinding: 'onEnableRadioClick',
                   elementId: 'radio_media_preset_button3',
                   classNames: 'a2',
                   getPresetText: function() {
@@ -848,12 +869,19 @@ SDL.RadioView = Em.ContainerView
               4: SDL.RadioPresetButton.extend(
                 {
                   onEnableRadioClick: function() {
-                    this.set('disabled',
-                      !SDL.RadioModel.radioControlStruct.radioEnable);
-                  }.observes(
-                    'SDL.RadioModel.radioControlStruct.radioEnable'
+                    if (!SDL.RadioModel.radioControlStruct.radioEnable) {
+                      return true;
+                    }
+                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
+                    }
+                    return false;
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.radioEnable',
+                    'SDL.RadioModel.radioControlStruct.band',
+                    'SDL.RadioModel.radioControlStruct.availableHDs'
                   ),
-                  disabled: true,
+                  disabledBinding: 'onEnableRadioClick',
                   elementId: 'radio_media_preset_button4',
                   classNames: 'a3',
                   getPresetText: function() {
@@ -871,12 +899,19 @@ SDL.RadioView = Em.ContainerView
               5: SDL.RadioPresetButton.extend(
                 {
                   onEnableRadioClick: function() {
-                    this.set('disabled',
-                      !SDL.RadioModel.radioControlStruct.radioEnable);
-                  }.observes(
-                    'SDL.RadioModel.radioControlStruct.radioEnable'
+                    if (!SDL.RadioModel.radioControlStruct.radioEnable) {
+                      return true;
+                    }
+                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
+                    }
+                    return false;
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.radioEnable',
+                    'SDL.RadioModel.radioControlStruct.band',
+                    'SDL.RadioModel.radioControlStruct.availableHDs'
                   ),
-                  disabled: true,
+                  disabledBinding: 'onEnableRadioClick',
                   elementId: 'radio_media_preset_button5',
                   classNames: 'a4',
                   getPresetText: function() {
@@ -894,12 +929,19 @@ SDL.RadioView = Em.ContainerView
               6: SDL.RadioPresetButton.extend(
                 {
                   onEnableRadioClick: function() {
-                    this.set('disabled',
-                      !SDL.RadioModel.radioControlStruct.radioEnable);
-                  }.observes(
-                    'SDL.RadioModel.radioControlStruct.radioEnable'
+                    if (!SDL.RadioModel.radioControlStruct.radioEnable) {
+                      return true;
+                    }
+                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
+                    }
+                    return false;
+                  }.property(
+                    'SDL.RadioModel.radioControlStruct.radioEnable',
+                    'SDL.RadioModel.radioControlStruct.band',
+                    'SDL.RadioModel.radioControlStruct.availableHDs'
                   ),
-                  disabled: true,
+                  disabledBinding: 'onEnableRadioClick',
                   elementId: 'radio_media_preset_button6',
                   classNames: 'a5',
                   getPresetText: function() {
@@ -952,13 +994,16 @@ SDL.RadioView = Em.ContainerView
           ),
           scanButton: SDL.Button.extend(
             {
-              onEnableRadioClick: function() {
-                this.set('disabled',
-                  !SDL.RadioModel.radioControlStruct.radioEnable);
-              }.observes(
-                'SDL.RadioModel.radioControlStruct.radioEnable'
+              isDisabled: function() {
+                if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+                  return true;
+                }
+                return !SDL.RadioModel.radioControlStruct.radioEnable;
+              }.property(
+                'SDL.RadioModel.radioControlStruct.radioEnable',
+                'SDL.RadioModel.radioControlStruct.band'
               ),
-              disabled: true,
+              disabledBinding: 'isDisabled',
               elementId: 'media_fm_scanButton',
               classNames: ['rs-item'],
               iconBinding: 'onIconChange',
@@ -976,12 +1021,11 @@ SDL.RadioView = Em.ContainerView
           optionsButton: SDL.Button.extend(
             {
               onEnableRadioClick: function() {
-                this.set('disabled',
-                  !SDL.RadioModel.radioControlStruct.radioEnable);
-              }.observes(
+                return !SDL.RadioModel.radioControlStruct.radioEnable;
+              }.property(
                 'SDL.RadioModel.radioControlStruct.radioEnable'
               ),
-              disabled: true,
+              disabledBinding: 'onEnableRadioClick',
               elementId: 'media_fm_optionButton',
               classNames: ['rs-item'],
               icon: 'images/media/active_arrow.png',
@@ -992,13 +1036,16 @@ SDL.RadioView = Em.ContainerView
           ),
           directTuneButton: SDL.Button.extend(
             {
-              onEnableRadioClick: function() {
-                this.set('disabled',
-                  !SDL.RadioModel.radioControlStruct.radioEnable);
-              }.observes(
-                'SDL.RadioModel.radioControlStruct.radioEnable'
+              isDisabled: function() {
+                if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+                  return true;
+                }
+                return false;
+              }.property(
+                'SDL.RadioModel.radioControlStruct.radioEnable',
+                'SDL.RadioModel.radioControlStruct.band'
               ),
-              disabled: true,
+              disabledBinding: 'isDisabled',
               elementId: 'media_fm_directButton',
               classNameBindings: [
                 'SDL.RadioModel.tuneRadio:hidden'
@@ -1014,12 +1061,11 @@ SDL.RadioView = Em.ContainerView
           presetsButton: SDL.Button.extend(
             {
               onEnableRadioClick: function() {
-                this.set('disabled',
-                  !SDL.RadioModel.radioControlStruct.radioEnable);
-              }.observes(
+                return !SDL.RadioModel.radioControlStruct.radioEnable;
+              }.property(
                 'SDL.RadioModel.radioControlStruct.radioEnable'
               ),
-              disabled: true,
+              disabledBinding: 'onEnableRadioClick',
               elementId: 'media_fm_presetsButton',
               classNameBindings: [
                 'SDL.RadioModel.tuneRadio::hidden'
@@ -1041,13 +1087,12 @@ SDL.RadioView = Em.ContainerView
               ],
               tuneUp: SDL.Button.extend(
                 {
-                  onEnableRadioClick: function() {
-                    this.set('disabled',
-                      !SDL.RadioModel.radioControlStruct.radioEnable);
-                  }.observes(
+                  isDisabled: function() {
+                    return !SDL.RadioModel.radioControlStruct.radioEnable;
+                  }.property(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
-                  disabled: true,
+                  disabledBinding: 'isDisabled',
                   elementId: 'media_fm_tuneUpButton',
                   target: 'SDL.RadioModel',
                   action: 'tuneUpPress',
@@ -1058,13 +1103,12 @@ SDL.RadioView = Em.ContainerView
               ),
               tuneDown: SDL.Button.extend(
                 {
-                  onEnableRadioClick: function() {
-                    this.set('disabled',
-                      !SDL.RadioModel.radioControlStruct.radioEnable);
-                  }.observes(
+                  isDisabled: function() {
+                    return !SDL.RadioModel.radioControlStruct.radioEnable;
+                  }.property(
                     'SDL.RadioModel.radioControlStruct.radioEnable'
                   ),
-                  disabled: true,
+                  disabledBinding: 'isDisabled',
                   elementId: 'media_fm_tuneDownButton',
                   target: 'SDL.RadioModel',
                   action: 'tuneDownPress',
