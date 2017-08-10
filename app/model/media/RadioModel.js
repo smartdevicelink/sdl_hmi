@@ -685,26 +685,6 @@ SDL.RadioModel = Em.Object.create({
     this.setRadioData(this.lastOptionParams);
   },
 
-  getChangedProperties: function(lhs, rhs, stack) {
-    if (stack == null) {
-        stack = '';
-    }
-
-    var properties = [];
-    for (var key in rhs) {
-      if (typeof rhs[key] == 'object') {
-        var obj_properties = this.getChangedProperties(
-          lhs[key], rhs[key], key + '.'
-        );
-        properties = properties.concat(obj_properties);
-      } else if (lhs[key] != rhs[key]) {
-        properties.push(stack + key);
-      }
-    }
-
-    return properties;
-  },
-
   bandSelect: function(element) {
       SDL.RadioModel.band = element.selection.name;
     },
@@ -1163,7 +1143,7 @@ SDL.RadioModel = Em.Object.create({
     var beforeChange = SDL.deepCopy(this.lastOptionParams);
     this.saveCurrentOptions();
     var afterChange = SDL.deepCopy(this.lastOptionParams);
-    var properties = this.getChangedProperties(beforeChange, afterChange);
+    var properties = SDL.SDLController.getChangedProperties(beforeChange, afterChange);
 
     SDL.RadioModel.toggleProperty('optionsEnabled');
     this.sendRadioChangeNotification(properties);

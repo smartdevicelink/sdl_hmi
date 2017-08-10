@@ -504,6 +504,31 @@ SDL.RController = SDL.SDLController.extend(
         }
       }
       return result;
+    },
+    /**
+     * Get diff between lhs and rhs object properties recursively
+     * @param lhs contains reference to first object of comparison
+     * @param rhs contains reference to second object of comparison
+     * @param stack contains prefix name for current object propery
+     */
+    getChangedProperties: function(lhs, rhs, stack) {
+      if (stack == null) {
+          stack = '';
+      }
+
+      var properties = [];
+      for (var key in rhs) {
+        if (typeof rhs[key] == 'object') {
+          var obj_properties = this.getChangedProperties(
+            lhs[key], rhs[key], key + '.'
+          );
+          properties = properties.concat(obj_properties);
+        } else if (lhs[key] != rhs[key]) {
+          properties.push(stack + key);
+        }
+      }
+
+      return properties;
     }
   }
 );
