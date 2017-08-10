@@ -154,6 +154,7 @@ SDL.ClimateControlModel = Em.Object.create({
   },
 
   setClimateData: function(data) {
+    var before_set = SDL.deepCopy(this.getClimateControlData());
 
     if (data.fanSpeed != null) {
       this.setFanSpeed(data.fanSpeed);
@@ -165,6 +166,10 @@ SDL.ClimateControlModel = Em.Object.create({
 
     if (data.desiredTemperature != null) {
       this.setDesiredTemp(data.desiredTemperature);
+    }
+
+    if (data.acMaxEnable != null) {
+      this.setAcMaxEnable(data.acMaxEnable);
     }
 
     if (data.acEnable != null) {
@@ -187,17 +192,18 @@ SDL.ClimateControlModel = Em.Object.create({
       this.setDualModeEnable(data.dualModeEnable);
     }
 
-    if (data.acMaxEnable != null) {
-      this.setAcMaxEnable(data.acMaxEnable);
-    }
-
     if (data.ventilationMode != null) {
       this.setVentilationMode(data.ventilationMode);
     }
 
-    var properties = [];
+    var after_set = SDL.deepCopy(this.getClimateControlData());
+
+    var properties =
+      SDL.SDLController.getChangedProperties(before_set, after_set);
     for (var key in data) {
-      properties.push(key);
+      if (properties.indexOf(key) < 0) {
+        properties.push(key);
+      }
       if (key == 'currentTemperature') {
         properties.push('currentTemperature.unit');
         properties.push('currentTemperature.value');
@@ -208,8 +214,7 @@ SDL.ClimateControlModel = Em.Object.create({
       }
     }
 
-    var result = this.getClimateControlData();
-    return SDL.SDLController.filterObjectProperty(result, properties);
+    return SDL.SDLController.filterObjectProperty(after_set, properties);
   },
 
   sendClimateChangeNotification: function(properties) {
@@ -348,30 +353,42 @@ SDL.ClimateControlModel = Em.Object.create({
   },
 
   toggleAcEnable: function() {
-    var properties = ['acEnable'];
     this.toggleProperty('climateControlData.acEnable');
-    if (!this.climateControlData.acEnable &&
-        this.climateControlData.acMaxEnable) {
-      properties.push('acMaxEnable');
-      this.toggleProperty('climateControlData.acMaxEnable');
-    }
-    this.sendClimateChangeNotification(properties);
+    this.onAcEnableChanged(true);
   },
 
   toggleAcMaxEnable: function() {
-    var properties = ['acMaxEnable'];
     this.toggleProperty('climateControlData.acMaxEnable');
-    if (!this.climateControlData.acEnable &&
-         this.climateControlData.acMaxEnable) {
-      properties.push('acEnable');
-      this.toggleProperty('climateControlData.acEnable');
-    }
-    this.sendClimateChangeNotification(properties);
+    this.onAcMaxEnableChanged(true);
   },
 
   toggleAutoModeEnable: function() {
     this.toggleProperty('climateControlData.autoModeEnable');
     this.sendClimateChangeNotification(['autoModeEnable']);
+  },
+
+  onAcEnableChanged: function(sendNotification) {
+    var properties = ['acEnable'];
+    if (!this.climateControlData.acEnable &&
+        this.climateControlData.acMaxEnable) {
+      properties.push('acMaxEnable');
+      this.toggleProperty('climateControlData.acMaxEnable');
+    }
+    if (sendNotification) {
+      this.sendClimateChangeNotification(properties);
+    }
+  },
+
+  onAcMaxEnableChanged: function(sendNotification) {
+    var properties = ['acMaxEnable'];
+    if (!this.climateControlData.acEnable &&
+         this.climateControlData.acMaxEnable) {
+      properties.push('acEnable');
+      this.toggleProperty('climateControlData.acEnable');
+    }
+    if (sendNotification) {
+      this.sendClimateChangeNotification(properties);
+    }
   },
 
   setFanSpeed: function(speed) {
@@ -394,10 +411,12 @@ SDL.ClimateControlModel = Em.Object.create({
 
   setAcEnable: function(state) {
     this.set('climateControlData.acEnable', state);
+    this.onAcEnableChanged(false);
   },
 
   setAcMaxEnable: function(state) {
     this.set('climateControlData.acMaxEnable', state);
+    this.onAcMaxEnableChanged(false);
   },
 
   setRecirculateAirEnable: function(state) {
