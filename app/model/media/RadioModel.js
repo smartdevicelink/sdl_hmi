@@ -1146,12 +1146,15 @@ SDL.RadioModel = Em.Object.create({
     var properties = SDL.SDLController.getChangedProperties(beforeChange, afterChange);
 
     SDL.RadioModel.toggleProperty('optionsEnabled');
-    this.sendRadioChangeNotification(properties);
 
     if (properties.indexOf('band') >= 0) {
       this.switchRadioBandFrequency(true);
-      this.sendFrequencyChangeNotification();
+      properties.push('frequencyInteger');
+      if (this.radioControlStruct.band == 'FM') {
+        properties.push('frequencyFraction');
+      }
     }
+    this.sendRadioChangeNotification(properties);
   },
 
   setFrequencyInteger: function(value) {
