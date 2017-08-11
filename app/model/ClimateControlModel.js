@@ -316,6 +316,23 @@ SDL.ClimateControlModel = Em.Object.create({
     this.refreshDefrostZoneValue();
   },
 
+  defrostAllEnable: function() {
+    if (this.climateControlData.defrostZoneFrontEnable ==
+        this.climateControlData.defrostZoneRearEnable) {
+      this.toggleProperty('climateControlData.defrostZoneFrontEnable');
+      this.toggleProperty('climateControlData.defrostZoneRearEnable');
+    } else if (this.climateControlData.defrostZoneFrontEnable ||
+               this.climateControlData.defrostZoneRearEnable) {
+      this.set('climateControlData.defrostZoneRearEnable', true);
+      this.set('climateControlData.defrostZoneFrontEnable', true);
+    } else {
+      this.set('climateControlData.defrostZoneRearEnable', false);
+      this.set('climateControlData.defrostZoneFrontEnable', false);
+    }
+
+    this.refreshDefrostZoneValue();
+  },
+
   refreshVentilationModeValue: function() {
     if (this.climateControlData.ventilationModeUpEnable &&
         this.climateControlData.ventilationModeLowEnable) {
