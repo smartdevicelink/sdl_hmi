@@ -64,12 +64,6 @@ SDL.RController = SDL.SDLController.extend(
       };
 
       if (params.moduleType == 'CLIMATE') {
-        if (SDL.States.currentState.get('path') != 'climate') {
-          result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
-          result_struct.resultInfo = 'Climate module must be activated';
-          return result_struct;
-        }
-
         var model = SDL.ClimateController.model;
         switch (params.buttonName) {
           case 'AC_MAX': {

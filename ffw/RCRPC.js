@@ -196,7 +196,16 @@ FFW.RC = FFW.RPCObserver.create(
               return;
             }
 
-            if (request.params.moduleData.radioControlData != null) {
+            if (request.params.moduleData.radioControlData) {
+              if (request.params.moduleData.radioControlData.radioEnable == null
+                  && SDL.RadioModel.radioControlStruct.radioEnable == false) {
+                this.sendError(
+                  SDL.SDLModel.data.resultCode.IGNORED,
+                  request.id, request.method,
+                  'Radio module must be activated.'
+                );
+                return;
+              }
               if (!SDL.RadioModel.checkRadioFrequencyBoundaries(
                     request.params.moduleData.radioControlData)) {
                 this.sendError(
