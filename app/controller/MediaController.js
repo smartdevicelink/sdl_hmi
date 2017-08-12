@@ -52,7 +52,6 @@ SDL.MediaController = Em.Object.create(
       if (!SDL.States.media.player.cd.active) {
         SDL.States.goToStates('media.player.cd');
       }
-      SDL.CDModel.set('active', true);
       this.onPlayerEnter(SDL.CDModel, 'cd');
     },
     /**
@@ -96,6 +95,7 @@ SDL.MediaController = Em.Object.create(
           }
         }
       }
+
       SDL.States.goToStates('media.sdlmedia');
     },
     /**
@@ -138,9 +138,10 @@ SDL.MediaController = Em.Object.create(
         this.currentSelectedPlayer.pause();
       }
       data.set('active', true);
-      SDL.States.goToState('media.player.' + state);
-      //this.set('currentPlayerModuleData',data.PlayList);
       this.set('currentSelectedPlayer', data.player);
+      if (state) {
+        SDL.States.goToState('media.player.' + state);
+      }
     },
     /**
      * Player Prev track event
@@ -182,29 +183,76 @@ SDL.MediaController = Em.Object.create(
      * Change media audio source
      */
     changeSource: function() {
+      var is_background =
+        SDL.States.currentState.get('path').indexOf('media.') < 0;
+
       switch (SDL.MediaController.activeState) {
         case 'media.player.radio': {
-          this.deactivateRadio();
-          this.turnOnCD();
+          this.changeSourceFromRadio(is_background);
           break;
         }
         case 'media.player.cd': {
-          this.deactivateCD();
-          this.turnOnUSB();
+          this.changeSourceFromCD(is_background);
           break;
         }
         case 'media.player.usb': {
-          this.deactivateUSB();
-          if (SDL.SDLMediaController.currentAppId != null) {
-            SDL.SDLMediaController.activateCurrentApp();
-          } else {
-            this.turnOnRadio();
-          }
+          this.changeSourceFromUSB(is_background);
           break;
         }
         default: {
-          this.turnOnRadio();
+          this.changeSourceFromUnknown(is_background);
         }
+      }
+    },
+    /**
+     * Switches to next after radio source
+     * @param is source switched from background or not
+     */
+    changeSourceFromRadio: function(is_background) {
+      var old_state = SDL.States.currentState.get('path');
+      this.deactivateRadio();
+      this.turnOnCD();
+      if (is_background) {
+        SDL.States.goToStates(old_state);
+      }
+    },
+    /**
+     * Switches to next after CD source
+     * @param is source switched from background or not
+     */
+    changeSourceFromCD: function(is_background) {
+      var old_state = SDL.States.currentState.get('path');
+      this.deactivateCD();
+      this.turnOnUSB();
+      if (is_background) {
+        SDL.States.goToStates(old_state);
+      }
+    },
+    /**
+     * Switches to next after USB source
+     * @param is source switched from background or not
+     */
+    changeSourceFromUSB: function(is_background) {
+      var old_state = SDL.States.currentState.get('path');
+      this.deactivateUSB();
+      if (SDL.SDLMediaController.currentAppId != null && !is_background) {
+        SDL.SDLMediaController.activateCurrentApp();
+      } else {
+        this.turnOnRadio();
+      }
+      if (is_background) {
+        SDL.States.goToStates(old_state);
+      }
+    },
+    /**
+     * Switches to next after unknown source
+     * @param is source switched from background or not
+     */
+    changeSourceFromUnknown: function(is_background) {
+      var old_state = SDL.States.currentState.get('path');
+      this.turnOnRadio();
+      if (is_background) {
+        SDL.States.goToStates(old_state);
       }
     },
     /**
