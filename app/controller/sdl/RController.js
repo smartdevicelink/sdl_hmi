@@ -124,13 +124,6 @@ SDL.RController = SDL.SDLController.extend(
       }
 
       if (params.moduleType == 'RADIO') {
-        if (SDL.States.currentState.get('path').indexOf('media.') < 0) {
-          result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
-          result_struct.resultInfo = 'Media module must be activated';
-          return result_struct;
-        }
-
-
         switch (params.buttonName) {
           case 'VOLUME_UP': {
             SDL.MediaController.volumeUpPress();
