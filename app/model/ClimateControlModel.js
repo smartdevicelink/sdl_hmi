@@ -33,7 +33,7 @@ SDL.ClimateControlModel = Em.Object.create({
     var result = [];
 
     var capabilities = {
-      moduleName: 'Climate Control Module',
+      name: 'Climate Control Module',
       fanSpeedAvailable: true,
       desiredTemperatureAvailable: true,
       acEnableAvailable: true,
@@ -75,25 +75,25 @@ SDL.ClimateControlModel = Em.Object.create({
       {
         'name': 'FAN_UP',
         'shortPressAvailable': true,
-        'longPressAvailable': false,
+        'longPressAvailable': true,
         'upDownAvailable': false
       },
       {
         'name': 'FAN_DOWN',
         'shortPressAvailable': true,
-        'longPressAvailable': false,
+        'longPressAvailable': true,
         'upDownAvailable': false
       },
       {
         'name': 'TEMP_UP',
         'shortPressAvailable': true,
-        'longPressAvailable': false,
+        'longPressAvailable': true,
         'upDownAvailable': false
       },
       {
         'name': 'TEMP_DOWN',
         'shortPressAvailable': true,
-        'longPressAvailable': false,
+        'longPressAvailable': true,
         'upDownAvailable': false
       },
       {
