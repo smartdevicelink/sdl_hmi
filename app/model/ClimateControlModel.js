@@ -33,7 +33,8 @@ SDL.ClimateControlModel = Em.Object.create({
     var result = [];
 
     var capabilities = {
-      name: 'Climate Control Module',
+      moduleName: 'Climate Control Module',
+      currentTemperatureAvailable: true,
       fanSpeedAvailable: true,
       desiredTemperatureAvailable: true,
       acEnableAvailable: true,
