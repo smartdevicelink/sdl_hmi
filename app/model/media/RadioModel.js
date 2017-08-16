@@ -501,7 +501,7 @@ SDL.RadioModel = Em.Object.create({
   getRadioControlCapabilities: function() {
     var result = [];
     var capabilities = {
-      name: 'Radio Control Module',
+      moduleName: 'Radio Control Module',
       radioEnableAvailable: true,
       radioBandAvailable: true,
       radioFrequencyAvailable: true,
