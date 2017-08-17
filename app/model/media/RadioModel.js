@@ -979,7 +979,14 @@ SDL.RadioModel = Em.Object.create({
     }
 
     SDL.RadioModel.toggleProperty('radioControlStruct.radioEnable');
-    this.sendRadioChangeNotification(['radioEnable']);
+    var data = this.getRadioControlData(true);
+    data = SDL.SDLController.filterObjectProperty(data, 'band');
+    if (data.band == 'FM' || data.band == 'AM') {
+      this.sendRadioChangeNotification(['radioEnable', 'frequencyInteger', 'frequencyFraction', 'band']);
+    } 
+    else {
+      this.sendRadioChangeNotification(['radioEnable']);
+    }
   },
 
   scanKeyPress: function() {
