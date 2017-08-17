@@ -1056,10 +1056,10 @@ SDL.RadioModel = Em.Object.create({
         data -= 2;
       }
 
-      if (data > 1079) {
-        data = 879;
-      } else if (data < 879) {
-        data = 1079
+      if (data > 1080) {
+        data = 875;
+      } else if (data < 875) {
+        data = 1080
       }
 
       this.setFrequencyInteger(Math.floor(data / 10));
