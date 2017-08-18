@@ -1164,8 +1164,19 @@ SDL.RadioModel = Em.Object.create({
       ? data.band : this.radioControlStruct.band
     );
 
+    var getAvailableHDs = function() {
+      var currentRadioData = SDL.RadioModel.getRadioControlData(true);
+      currentRadioData = SDL.SDLController.filterObjectProperty(currentRadioData, 'availableHDs');
+      if (currentRadioData.availableHDs != null) {
+        return currentRadioData.availableHDs;
+      }
+      else {
+        return 0;
+      }
+    }
+
     if (band == 'FM') {
-      if (data.frequencyInteger == null && data.frequencyFraction == null) {
+      if (data.frequencyInteger == null && data.frequencyFraction == null && data.hdChannel == null) {
         return true;
       }
 
@@ -1176,36 +1187,31 @@ SDL.RadioModel = Em.Object.create({
         ? data.frequencyFraction : this.radioControlStruct.frequencyFraction
       );
       var frequencyTotal = frequencyInteger * 10 + frequencyFraction;
+      
+      var channel = (data.hdChannel != null 
+        ? data.hdChannel : this.radioControlStruct.hdChannel);
+      var maxChannels = getAvailableHDs();
 
-      return (frequencyTotal >= 875 && frequencyTotal <= 1080);
+      return (frequencyTotal >= 875 && frequencyTotal <= 1080 && channel >= 1 && channel <= maxChannels);
     }
 
     if (band == 'AM') {
       if (data.frequencyFraction != null) {
         return false;
       }
-      if (data.frequencyInteger == null) {
+      if (data.frequencyInteger == null && data.hdChannel == null) {
         return true;
       }
 
       var frequencyTotal = (data.frequencyInteger != null
         ? data.frequencyInteger : this.radioControlStruct.frequencyInteger
       );
+      
+      var channel = (data.hdChannel != null 
+        ? data.hdChannel : this.radioControlStruct.hdChannel);
+      var maxChannels = getAvailableHDs();
 
-      return (frequencyTotal >= 525 && frequencyTotal <= 1705);
-    }
-
-    if (band == 'XM') {
-      if (data.hdChannel == null && data.availableHDs == null) {
-        return true;
-      }
-
-      var channel = data.hdChannel != null ?
-        data.hdChannel : this.radioControlStruct.hdChannel;
-      var max_channel = data.availableHDs != null ?
-        data.availableHDs : this.radioControlStruct.availableHDs;
-
-      return (channel >= 1 && channel <= max_channel);
+      return (frequencyTotal >= 525 && frequencyTotal <= 1705 && channel >= 1 && channel <= maxChannels);
     }
 
     return true;
