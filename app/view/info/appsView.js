@@ -88,8 +88,6 @@ SDL.InfoAppsView = Em.ContainerView.create({
         SDL.SDLModel.driverDeviceInfo &&
         apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
 
-        var ownerMarker = driverDevice ? '"D" ' : '"P" ';
-
         appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
         this.get('listOfApplications.list.childViews').
@@ -97,7 +95,7 @@ SDL.InfoAppsView = Em.ContainerView.create({
                    action: driverDevice ? 'onActivateSDLApp' :
                      'onDeactivatePassengerApp',
                    target: 'SDL.SDLController',
-                   text: ownerMarker + apps[i].appName + ' - ' + apps[i].deviceName,
+                   text: apps[i].appName + ' - ' + apps[i].deviceName,
                    appName: apps[i].appName,
                    appID: apps[i].appID,
                    classNames: 'list-item button',
