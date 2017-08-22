@@ -347,8 +347,8 @@ SDL.RadioModel = Em.Object.create({
       },
       '650': {
         'radioStation': {
-          'frequency': 95,
-          'fraction': 3,
+          'frequency': 65,
+          'fraction': 0,
           'availableHDs': 0,
           'currentHD': 0
         },
@@ -363,8 +363,8 @@ SDL.RadioModel = Em.Object.create({
       },
       '800': {
         'radioStation': {
-          'frequency': 100,
-          'fraction': 1,
+          'frequency': 800,
+          'fraction': 0,
           'availableHDs': 0,
           'currentHD': 0
         },
@@ -379,8 +379,8 @@ SDL.RadioModel = Em.Object.create({
       },
       '1095': {
         'radioStation': {
-          'frequency': 103,
-          'fraction': 5,
+          'frequency': 1095,
+          'fraction': 0,
           'availableHDs': 0,
           'currentHD': 0
         },
@@ -395,8 +395,8 @@ SDL.RadioModel = Em.Object.create({
       },
       '1450': {
         'radioStation': {
-          'frequency': 105,
-          'fraction': 3,
+          'frequency': 1450,
+          'fraction': 0,
           'availableHDs': 0,
           'currentHD': 0
         },
