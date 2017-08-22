@@ -233,7 +233,6 @@ var StateManager = Em.StateManager.extend(
                   this._super();
                 },
                 exit: function() {
-                  //SDL.MediaController.deactivateRadio();
                   SDL.MediaController.deactivateCD();
                   SDL.MediaController.currentSelectedPlayer.pause();
                   SDL.MediaController.deactivateUSB();
@@ -253,8 +252,6 @@ var StateManager = Em.StateManager.extend(
                 },
                 exit: function() {
                   SDL.MediaController.deactivateRadio();
-                  //SDL.MediaController.deactivateCD();
-                  //SDL.MediaController.currentSelectedPlayer.pause();
                   SDL.MediaController.deactivateUSB();
                   this._super();
                 },
@@ -274,16 +271,12 @@ var StateManager = Em.StateManager.extend(
                   this._super();
                   SDL.MediaController.deactivateRadio();
                   SDL.MediaController.deactivateCD();
-                  //SDL.MediaController.currentSelectedPlayer.pause();
-                  //SDL.MediaController.deactivateUSB();
-                  //SDL.MediaController.resetUpdatingMessage();
                 },
                 moreinfo: Em.State.create(
                   {
                     enter: function() {
                       this._super();
                       // reset Messages
-                      //SDL.MediaController.resetUpdatingMessage();
                     }
                   }
                 )
