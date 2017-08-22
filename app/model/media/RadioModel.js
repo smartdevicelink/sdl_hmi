@@ -77,6 +77,8 @@ SDL.RadioModel = Em.Object.create({
 
   band: 'FM',
 
+  availableHDs: 3,
+
   hdChannelsStruct: [
     1,
     2,
@@ -113,12 +115,38 @@ SDL.RadioModel = Em.Object.create({
       '1530'
     ],
     'XM': [
-      'Channel 1',
-      'Channel 2',
-      'Channel 3'
+      'SiriusXM Hits',
+      'The Pulse',
+      'The Highway',
+      'The Joint',
+      'Y2Kountry',
+      'Laugh USA'
     ]
   },
 
+  xmStations: {2: "SiriusXM Hits 1", 3: "Venus", 4: "SiriusXM Spotlight",
+   5: "50s on 5", 6: "60s on 6", 7: "70s on 7", 8: "80s on 8", 9: "90s on 9",
+   10: "Pop2K", 11: "KIIS-Los Angeles", 12: "Z100/NY", 13: "Pitbull", 14: "The Coffee House",
+   15: "The Pulse", 16: "The Blend", 17: "PopRocks", 18: "The Beatles Channel",
+   19: "Elvis Radio", 20: "E Street Radio", 21: "Underground Garage", 22: "Pearl Jam Radio",
+   23: "Grateful Dead Channel", 24: "Radio Margaritaville", 25: "Classic Rewind",
+   26: "Classic Vinyl", 27: "Deep Tracks", 28: "The Spectrum", 29: "Jam_ON", 30: "The Loft",
+   31: "Tom Petty Radio", 32: "The Bridge", 33: "1st Wave", 34: "Lithium", 35: "SiriusXMU",
+   36: "Alt Nation", 37: "Octane", 38: "Ozzys Boneyard", 39: "Hair Nation", 40: "Liquid Metal",
+   41: "SiriusXM Turbo", 42: "The Joint", 43: "Backspin", 44: "Hip-Hop Nation", 45: "Shade 45",
+   46: "The Heat", 47: "SiriusXM FLY", 48: "Heart & Soul", 49: "Soul Town", 50: "The Groove",
+   51: "BPM", 52: "Electric Area", 53: "SiriusXM Chill", 54: "Studio 54 Radio",
+   55: "The Garth Channel", 56: "The Highway", 57: "No Shoes Radio", 58: "Prime Country",
+   59: "Willies Roadhouse", 60: "Outlaw Country", 61: "Y2Kountry", 62: "Bluegrass Junction",
+   63: "The Message", 64: "Kirk Praise", 65: "enLighten", 66: "Watercolors", 67: "Real Jazz",
+   68: "Spa", 69: "Escape", 70: "SiriusXM Love", 71: "Siriusly Sinatra", 72: "On Broadway",
+   73: "40s Junction", 74: "BB King", 75: "Met Opera Radio", 76: "Symphony Hall",
+   77: "KIDZ BOP Radio", 78: "Kids Place Live", 79: "Radio Disney", 80: "ESPN Radio",
+   81: "ESPN Xtra", 82: "Mad Dog Sports Radio", 83: "FOX Sports on SiriusXM",
+   84: "SiriusXM College Sports Nation", 85: "SiriusXM FC", 88: "SiriusXM NFL Radio",
+   90: "SiriusXM NASCAR Radio", 91: "SiriusXM NHL Network Radio™", 93: "SiriusXM Rush",
+   94: "SiriusXM Comedy Greats", 95: "Comedy Central Radio", 96: "The Foxxhole",
+   97: "Jeff & Larrys Comedy Roundup", 98: "Laugh USA", 99: "Raw Dog Comedy Hits", 100: "Howard 100"},
   presetMetaData: [
       {
         songInfo: {
@@ -735,6 +763,13 @@ SDL.RadioModel = Em.Object.create({
     return result;
   },
 
+  getStation: function(stationID) {
+    if (stationID in this.xmStations) {
+      return this.xmStations[stationID].substring(0, 12);  
+    }
+    return "SiriusXM";
+  },
+
   saveCurrentOptions: function() {
     var result = this.getCurrentOptions();
     this.set('lastOptionParams.band', result.band);
@@ -859,7 +894,7 @@ SDL.RadioModel = Em.Object.create({
       this.set('station', this.radioControlStruct.frequencyInteger);
     }
     if (this.radioControlStruct.band === 'XM') {
-      this.set('station', 'Channel ' + this.radioControlStruct.hdChannel);
+      this.set('station', this.getStation(this.radioControlStruct.frequencyInteger));
     }
 
     this.findStationPresets();
@@ -913,7 +948,15 @@ SDL.RadioModel = Em.Object.create({
         this.setFrequencyInteger(parseInt(data));
       }
       if (this.radioControlStruct.band === 'XM') {
-        this.setCurrentHdChannel(parseInt(data.slice(-1)))
+        this.setFrequencyInteger(parseInt(
+          (function(value){
+            var kArray = Object.keys(SDL.RadioModel.xmStations);
+            var vArray = Object.values(SDL.RadioModel.xmStations);
+            var vIndex = vArray.indexOf(value);
+
+            return kArray[vIndex];
+          })(data)
+        ));
       }
 
       this.updateCurrentFrequencyInfo();
@@ -1179,20 +1222,28 @@ SDL.RadioModel = Em.Object.create({
       if (data.frequencyInteger == null && data.frequencyFraction == null && data.hdChannel == null) {
         return true;
       }
+      if ((data.frequencyInteger != null || data.frequencyFraction != null) && data.hdChannel != null) {
+        return false;
+      }
 
-      var frequencyInteger = (data.frequencyInteger != null
+      if (data.frequencyInteger != null || data.frequencyFraction != null) {
+        var frequencyInteger = (data.frequencyInteger != null
         ? data.frequencyInteger : this.radioControlStruct.frequencyInteger
-      );
-      var frequencyFraction = (data.frequencyFraction != null
-        ? data.frequencyFraction : this.radioControlStruct.frequencyFraction
-      );
-      var frequencyTotal = frequencyInteger * 10 + frequencyFraction;
-      
-      var channel = (data.hdChannel != null 
-        ? data.hdChannel : this.radioControlStruct.hdChannel);
-      var maxChannels = getAvailableHDs();
+        );
+        var frequencyFraction = (data.frequencyFraction != null
+          ? data.frequencyFraction : this.radioControlStruct.frequencyFraction
+        );
+        var frequencyTotal = frequencyInteger * 10 + frequencyFraction;
+        
+        return (frequencyTotal >= 875 && frequencyTotal <= 1080);
+      }
+      else {
+        var channel = (data.hdChannel != null 
+          ? data.hdChannel : this.radioControlStruct.hdChannel);
+        var maxChannels = getAvailableHDs();
 
-      return (frequencyTotal >= 875 && frequencyTotal <= 1080 && channel >= 1 && channel <= maxChannels);
+        return (channel >= 1 && channel <= maxChannels);
+      }
     }
 
     if (band == 'AM') {
@@ -1202,16 +1253,25 @@ SDL.RadioModel = Em.Object.create({
       if (data.frequencyInteger == null && data.hdChannel == null) {
         return true;
       }
+      if (data.frequencyInteger != null && data.hdChannel != null) {
+        return false;
+      }
 
-      var frequencyTotal = (data.frequencyInteger != null
-        ? data.frequencyInteger : this.radioControlStruct.frequencyInteger
-      );
-      
-      var channel = (data.hdChannel != null 
-        ? data.hdChannel : this.radioControlStruct.hdChannel);
-      var maxChannels = getAvailableHDs();
+      if (data.frequencyInteger != null) {
+        var frequencyTotal = (data.frequencyInteger != null
+          ? data.frequencyInteger : this.radioControlStruct.frequencyInteger);
+        return (frequencyTotal >= 525 && frequencyTotal <= 1705);
+      }
+      else {
+        var channel = (data.hdChannel != null 
+          ? data.hdChannel : this.radioControlStruct.hdChannel);
+        var maxChannels = getAvailableHDs();  
+        return (channel >= 1 && channel <= maxChannels);
+      }
+    }
 
-      return (frequencyTotal >= 525 && frequencyTotal <= 1705 && channel >= 1 && channel <= maxChannels);
+    if (band == 'XM') {
+      return (data.frequencyInteger != null && data.frequencyInteger >= 1 && data.frequencyInteger <= 1710);
     }
 
     return true;
@@ -1262,7 +1322,7 @@ SDL.RadioModel = Em.Object.create({
         this.setFrequencyInteger(540);
       }
       if (this.radioControlStruct.band === 'XM') {
-        this.setCurrentHdChannel(1);
+        this.setFrequencyInteger(2);
       }
     }
     this.set('statusBar', this.radioControlStruct.band + ' Radio');
@@ -1297,8 +1357,7 @@ SDL.RadioModel = Em.Object.create({
         this.switchRadioBandFrequency(true);
       }
       if (this.radioControlStruct.band == 'XM') {
-        properties.push('hdChannel');
-        properties.push('availableHDs');
+        properties.push('frequencyInteger');
         this.switchRadioBandFrequency(false);
       }
     }

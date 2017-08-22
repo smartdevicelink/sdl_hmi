@@ -70,6 +70,7 @@ SDL.MediaController = Em.Object.create(
       if (!SDL.States.media.player.radio.active) {
         SDL.States.goToStates('media.player.radio');
       }
+      SDL.RadioModel.saveCurrentOptions();
       SDL.RadioModel.set('active', true);
     },
     /**

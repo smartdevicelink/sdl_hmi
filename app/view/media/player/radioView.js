@@ -570,6 +570,27 @@ SDL.RadioView = Em.ContainerView
       genre: '',
       info: Em.View.extend(
         {
+          HDRadio: function() {
+            return (SDL.RadioModel.radioControlCheckboxes.availableHDs > 0);
+          }.property('SDL.RadioModel.radioControlCheckboxes.availableHDs'),
+          HDChannel1: function() {
+            return (SDL.RadioModel.lastOptionParams.hdChannel == 1);
+          }.property('SDL.RadioModel.lastOptionParams.hdChannel'),
+          HDChannel1Availability: function() {
+            return (SDL.RadioModel.lastOptionParams.availableHDs >= 1);
+          }.property('SDL.RadioModel.lastOptionParams.availableHDs'),
+          HDChannel2: function() {
+            return (SDL.RadioModel.lastOptionParams.hdChannel == 2);
+          }.property('SDL.RadioModel.lastOptionParams.hdChannel'),
+          HDChannel2Availability: function() {
+            return (SDL.RadioModel.lastOptionParams.availableHDs >= 2);
+          }.property('SDL.RadioModel.lastOptionParams.availableHDs'),
+          HDChannel3: function() {
+            return (SDL.RadioModel.lastOptionParams.hdChannel == 3);
+          }.property('SDL.RadioModel.lastOptionParams.hdChannel'),
+          HDChannel3Availability: function() {
+            return (SDL.RadioModel.lastOptionParams.availableHDs >= 3);
+          }.property('SDL.RadioModel.lastOptionParams.availableHDs'),
           STAName: function() {
             return 'STA-' + SDL.RadioModel.station.toString().replace('.', '');
           }.property('SDL.RadioModel.station'),
@@ -597,6 +618,32 @@ SDL.RadioView = Em.ContainerView
             .compile(
               '{{#with view}}' +
               '<div class="track-info">' +
+              '<div class = "HDRadio" style="display: inline-flex; align-items: center;">' + 
+              '{{#if HDRadio}}' +
+              '<img src="images/media/hd_logo.png" style="width:27px;height:27px;">' +
+              '{{#if HDChannel1Availability}}' +
+              '{{#if HDChannel1}}' +
+              '<span style="padding: 5px;color: orange;"> 1 </span>' + 
+              '{{else}}' +
+              '<span style="padding: 5px;"> 1 </span>' + 
+              '{{/if}}' +
+              '{{/if}}' +
+              '{{#if HDChannel2Availability}}' +
+              '{{#if HDChannel2}}' +
+              '<span style="padding: 5px;color: orange;"> 2 </span>' + 
+              '{{else}}' +
+              '<span style="padding: 5px;"> 2 </span>' + 
+              '{{/if}}' +
+              '{{/if}}' +
+              '{{#if HDChannel3Availability}}' +
+              '{{#if HDChannel3}}' +
+              '<span style="padding: 5px;color: orange;"> 3 </span>' + 
+              '{{else}}' +
+              '<span style="padding: 5px;"> 3 </span>' + 
+              '{{/if}}' +
+              '{{/if}}' +
+              '{{/if}}' +
+              '</div>' +
               '<div class="STAName">{{STAName}}</div>' +
               '<div class="station">{{SDL.RadioModel.station}}</div>' +
               '<div class="divider_o"></div>' +
@@ -684,9 +731,6 @@ SDL.RadioView = Em.ContainerView
                     if (!SDL.RadioModel.radioControlStruct.radioEnable) {
                       return true;
                     }
-                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
-                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
-                    }
                     return false;
                   }.property(
                     'SDL.RadioModel.radioControlStruct.radioEnable',
@@ -713,9 +757,6 @@ SDL.RadioView = Em.ContainerView
                   onEnableRadioClick: function() {
                     if (!SDL.RadioModel.radioControlStruct.radioEnable) {
                       return true;
-                    }
-                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
-                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
                     }
                     return false;
                   }.property(
@@ -744,9 +785,6 @@ SDL.RadioView = Em.ContainerView
                     if (!SDL.RadioModel.radioControlStruct.radioEnable) {
                       return true;
                     }
-                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
-                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
-                    }
                     return false;
                   }.property(
                     'SDL.RadioModel.radioControlStruct.radioEnable',
@@ -773,9 +811,6 @@ SDL.RadioView = Em.ContainerView
                   onEnableRadioClick: function() {
                     if (!SDL.RadioModel.radioControlStruct.radioEnable) {
                       return true;
-                    }
-                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
-                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
                     }
                     return false;
                   }.property(
@@ -804,9 +839,6 @@ SDL.RadioView = Em.ContainerView
                     if (!SDL.RadioModel.radioControlStruct.radioEnable) {
                       return true;
                     }
-                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
-                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
-                    }
                     return false;
                   }.property(
                     'SDL.RadioModel.radioControlStruct.radioEnable',
@@ -833,9 +865,6 @@ SDL.RadioView = Em.ContainerView
                   onEnableRadioClick: function() {
                     if (!SDL.RadioModel.radioControlStruct.radioEnable) {
                       return true;
-                    }
-                    if (SDL.RadioModel.radioControlStruct.band == 'XM') {
-                      return SDL.RadioModel.radioControlStruct.availableHDs <= this.preset
                     }
                     return false;
                   }.property(
