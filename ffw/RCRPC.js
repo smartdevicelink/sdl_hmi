@@ -229,7 +229,7 @@ FFW.RC = FFW.RPCObserver.create(
               newRadioControlData =
                 SDL.RadioModel.setRadioData(
                   request.params.moduleData.radioControlData);
-              if (SDL.RadioModel.optionsEnabled) {
+              if (SDL.RadioModel.radioControlStruct.radioEnable) {
                 SDL.RadioModel.saveCurrentOptions();
               }
             }
