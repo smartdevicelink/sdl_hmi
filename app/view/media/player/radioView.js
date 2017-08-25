@@ -571,29 +571,42 @@ SDL.RadioView = Em.ContainerView
       info: Em.View.extend(
         {
           HDRadio: function() {
-            return (SDL.RadioModel.radioControlCheckboxes.availableHDs > 0);
-          }.property('SDL.RadioModel.radioControlCheckboxes.availableHDs'),
+            if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+              return false;
+            }
+            return (SDL.RadioModel.radioControlStruct.availableHDs > 0);
+          }.property('SDL.RadioModel.radioControlStruct.band',
+                     'SDL.RadioModel.radioControlStruct.availableHDs'),
           HDChannel1: function() {
-            return (SDL.RadioModel.lastOptionParams.hdChannel == 1);
-          }.property('SDL.RadioModel.lastOptionParams.hdChannel'),
+            return (SDL.RadioModel.radioControlStruct.hdChannel == 1);
+          }.property('SDL.RadioModel.radioControlStruct.hdChannel'),
           HDChannel1Availability: function() {
-            return (SDL.RadioModel.lastOptionParams.availableHDs >= 1);
-          }.property('SDL.RadioModel.lastOptionParams.availableHDs'),
+            return (SDL.RadioModel.radioControlStruct.availableHDs >= 1);
+          }.property('SDL.RadioModel.radioControlStruct.availableHDs'),
           HDChannel2: function() {
-            return (SDL.RadioModel.lastOptionParams.hdChannel == 2);
-          }.property('SDL.RadioModel.lastOptionParams.hdChannel'),
+            return (SDL.RadioModel.radioControlStruct.hdChannel == 2);
+          }.property('SDL.RadioModel.radioControlStruct.hdChannel'),
           HDChannel2Availability: function() {
-            return (SDL.RadioModel.lastOptionParams.availableHDs >= 2);
-          }.property('SDL.RadioModel.lastOptionParams.availableHDs'),
+            return (SDL.RadioModel.radioControlStruct.availableHDs >= 2);
+          }.property('SDL.RadioModel.radioControlStruct.availableHDs'),
           HDChannel3: function() {
-            return (SDL.RadioModel.lastOptionParams.hdChannel == 3);
-          }.property('SDL.RadioModel.lastOptionParams.hdChannel'),
+            return (SDL.RadioModel.radioControlStruct.hdChannel == 3);
+          }.property('SDL.RadioModel.radioControlStruct.hdChannel'),
           HDChannel3Availability: function() {
-            return (SDL.RadioModel.lastOptionParams.availableHDs >= 3);
-          }.property('SDL.RadioModel.lastOptionParams.availableHDs'),
+            return (SDL.RadioModel.radioControlStruct.availableHDs >= 3);
+          }.property('SDL.RadioModel.radioControlStruct.availableHDs'),
           STAName: function() {
             return 'STA-' + SDL.RadioModel.station.toString().replace('.', '');
           }.property('SDL.RadioModel.station'),
+          StationName: function() {
+            var station = SDL.RadioModel.station;
+            if (SDL.RadioModel.radioControlStruct.availableHDs > 0) {
+              station += '-' + SDL.RadioModel.radioControlStruct.hdChannel;
+            }
+            return station;
+          }.property('SDL.RadioModel.station',
+                     'SDL.RadioModel.radioControlStruct.hdChannel',
+                     'SDL.RadioModel.radioControlStruct.availableHDs'),
           songInfo: function() {
             var data = SDL.RadioModel.radioDetails;
             if (data) {
@@ -645,7 +658,7 @@ SDL.RadioView = Em.ContainerView
               '{{/if}}' +
               '</div>' +
               '<div class="STAName">{{STAName}}</div>' +
-              '<div class="station">{{SDL.RadioModel.station}}</div>' +
+              '<div class="station">{{StationName}}</div>' +
               '<div class="divider_o"></div>' +
               '<div class="genre">{{SDL.RadioModel.radioDetails.songInfo.genre}}</div>' +
               '<div class="songInfo">{{songInfo}}</div>' +

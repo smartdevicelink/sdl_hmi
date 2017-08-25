@@ -80,6 +80,7 @@ SDL.RadioModel = Em.Object.create({
   availableHDs: 3,
 
   hdChannelsStruct: [
+    0,
     1,
     2,
     3
@@ -247,12 +248,12 @@ SDL.RadioModel = Em.Object.create({
 
   stationsData: {
     'FM': {
-      '895': {
+      '879': {
         'radioStation': {
           'frequency': 89,
           'fraction': 5,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 3,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song1',
@@ -267,8 +268,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 95,
           'fraction': 3,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 2,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song2',
@@ -283,8 +284,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 100,
           'fraction': 1,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 1,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song3',
@@ -315,8 +316,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 105,
           'fraction': 3,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 3,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song5',
@@ -333,8 +334,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 89,
           'fraction': 5,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 3,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song1',
@@ -349,8 +350,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 65,
           'fraction': 0,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 2,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song2',
@@ -365,8 +366,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 800,
           'fraction': 0,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 1,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song3',
@@ -397,8 +398,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 1450,
           'fraction': 0,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 3,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song5',
