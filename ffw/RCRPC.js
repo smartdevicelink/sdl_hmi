@@ -206,12 +206,14 @@ FFW.RC = FFW.RPCObserver.create(
                 );
                 return;
               }
-              if (!SDL.RadioModel.checkRadioFrequencyBoundaries(
-                    request.params.moduleData.radioControlData)) {
+              var result = SDL.RadioModel.checkRadioFrequencyBoundaries(
+                request.params.moduleData.radioControlData
+              );
+              if (!result.success) {
                 this.sendError(
                   SDL.SDLModel.data.resultCode.INVALID_DATA,
                   request.id, request.method,
-                  'Invalid radio frequency for desination radio band.'
+                  result.info
                 );
                 return;
               }

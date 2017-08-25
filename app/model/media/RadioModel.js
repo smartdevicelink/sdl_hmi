@@ -1203,6 +1203,10 @@ SDL.RadioModel = Em.Object.create({
   },
 
   checkRadioFrequencyBoundaries: function(data) {
+    var resultTable = {
+      'success': true,
+      'info': ''
+    };
     var band = (data.band != null
       ? data.band : this.radioControlStruct.band
     );
@@ -1220,10 +1224,12 @@ SDL.RadioModel = Em.Object.create({
 
     if (band == 'FM') {
       if (data.frequencyInteger == null && data.frequencyFraction == null && data.hdChannel == null) {
-        return true;
+        return resultTable;
       }
       if ((data.frequencyInteger != null || data.frequencyFraction != null) && data.hdChannel != null) {
-        return false;
+        resultTable.success = false;
+        resultTable.info = 'Frequency and HD channel could not be set at once';
+        return resultTable;
       }
 
       if (data.frequencyInteger != null || data.frequencyFraction != null) {
@@ -1234,47 +1240,77 @@ SDL.RadioModel = Em.Object.create({
           ? data.frequencyFraction : this.radioControlStruct.frequencyFraction
         );
         var frequencyTotal = frequencyInteger * 10 + frequencyFraction;
-        
-        return (frequencyTotal >= 875 && frequencyTotal <= 1080);
+
+        resultTable.success = (frequencyTotal >= 875 && frequencyTotal <= 1080);
+        resultTable.info = (resultTable.success ?
+          '' : 'Invalid radio frequency for desination radio band');
+
+        return resultTable;
       }
       else {
-        var channel = (data.hdChannel != null 
+        var channel = (data.hdChannel != null
           ? data.hdChannel : this.radioControlStruct.hdChannel);
-        var maxChannels = getAvailableHDs();
+        var maxChannels = (data.availableHDs != null
+          ? data.availableHDs : this.radioControlStruct.availableHDs);
+        resultTable.success = (channel >= 1 && channel <= maxChannels);
+        resultTable.info = resultTable.success ?
+          '' : 'Selected HD channel is not available';
 
-        return (channel >= 1 && channel <= maxChannels);
+        return resultTable;
       }
     }
 
     if (band == 'AM') {
       if (data.frequencyFraction != null) {
-        return false;
+        resultTable.success = false;
+        resultTable.info = 'Invalid radio frequency for desination radio band';
+        return resultTable;
       }
       if (data.frequencyInteger == null && data.hdChannel == null) {
-        return true;
+        return resultTable;
       }
       if (data.frequencyInteger != null && data.hdChannel != null) {
-        return false;
+        resultTable.success = false;
+        resultTable.info = 'Frequency and HD channel could not be set at once';
+        return resultTable;
       }
 
       if (data.frequencyInteger != null) {
         var frequencyTotal = (data.frequencyInteger != null
           ? data.frequencyInteger : this.radioControlStruct.frequencyInteger);
-        return (frequencyTotal >= 525 && frequencyTotal <= 1705);
+        resultTable.success = (frequencyTotal >= 525 && frequencyTotal <= 1705);
+        resultTable.info = (resultTable.success ?
+          '' : 'Invalid radio frequency for desination radio band');
+        return resultTable;
       }
       else {
-        var channel = (data.hdChannel != null 
+        var channel = (data.hdChannel != null
           ? data.hdChannel : this.radioControlStruct.hdChannel);
-        var maxChannels = getAvailableHDs();  
-        return (channel >= 1 && channel <= maxChannels);
+        var maxChannels = (data.availableHDs != null
+          ? data.availableHDs : this.radioControlStruct.availableHDs);
+        resultTable.success = (channel >= 1 && channel <= maxChannels);
+        resultTable.info = (resultTable.success ?
+          '' : 'Selected HD channel is not available');
+        return resultTable;
       }
     }
 
     if (band == 'XM') {
-      return (data.frequencyInteger != null && data.frequencyInteger >= 1 && data.frequencyInteger <= 1710);
+      if (data.hdChannel != null) {
+        resultTable.success = false;
+        resultTable.info = 'HD channel is not supported for XM radio band';
+        return resultTable;
+      }
+
+      resultTable.success =
+        (data.frequencyInteger != null && data.frequencyInteger >= 1 && data.frequencyInteger <= 1710);
+      resultTable.info = (resultTable.success ?
+          '' : 'Invalid radio frequency for desination radio band');
+
+      return resultTable;
     }
 
-    return true;
+    return resultTable;
   },
 
   sendFrequencyChangeNotification: function() {
