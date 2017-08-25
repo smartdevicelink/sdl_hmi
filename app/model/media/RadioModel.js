@@ -148,50 +148,6 @@ SDL.RadioModel = Em.Object.create({
    90: "SiriusXM NASCAR Radio", 91: "SiriusXM NHL Network Radio™", 93: "SiriusXM Rush",
    94: "SiriusXM Comedy Greats", 95: "Comedy Central Radio", 96: "The Foxxhole",
    97: "Jeff & Larrys Comedy Roundup", 98: "Laugh USA", 99: "Raw Dog Comedy Hits", 100: "Howard 100"},
-  presetMetaData: [
-      {
-        songInfo: {
-          genre: 'Pop',
-          name: 'BlUE SKY',
-          artist: 'THE MAX'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Club',
-          name: 'JUMP AND DOWN',
-          artist: 'THE PROJECT X'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Rock',
-          name: 'WELCOME HOME',
-          artist: 'TODD SULLIVAN'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Pop',
-          name: 'LETS DANCE',
-          artist: 'MICHAEL JOHNSON'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Pop Rock',
-          name: 'YESTERDAY NIGHT',
-          artist: 'JOHN SMITH'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Classic',
-          name: 'TENTH SYMPHONY',
-          artist: 'SPENCER M.'
-        }
-      }
-    ],
 
   directTuneItems: {
     'FM': [],
