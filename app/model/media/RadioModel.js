@@ -826,7 +826,7 @@ SDL.RadioModel = Em.Object.create({
     var station = this.changeFrequency(0);
     var stationData = this.stationsData[band][station];
 
-    if (stationData != null) {
+    if (stationData != null && band != 'XM') {
       var availableHDs = stationData.radioStation.availableHDs;
       var hdChannel = stationData.radioStation.currentHD;
       hdChannel = (hdChannel < 1 && availableHDs > 0 ? 1 : hdChannel);
@@ -844,6 +844,9 @@ SDL.RadioModel = Em.Object.create({
 
   updateRadioStationHdChannelInfo: function(params) {
     var band = this.radioControlStruct.band;
+    if (band == 'XM') {
+      return;
+    }
     var station = this.changeFrequency(0);
     var stationData = this.stationsData[band][station];
 
