@@ -80,6 +80,7 @@ SDL.RadioModel = Em.Object.create({
   availableHDs: 3,
 
   hdChannelsStruct: [
+    0,
     1,
     2,
     3
@@ -147,50 +148,6 @@ SDL.RadioModel = Em.Object.create({
    90: "SiriusXM NASCAR Radio", 91: "SiriusXM NHL Network Radio™", 93: "SiriusXM Rush",
    94: "SiriusXM Comedy Greats", 95: "Comedy Central Radio", 96: "The Foxxhole",
    97: "Jeff & Larrys Comedy Roundup", 98: "Laugh USA", 99: "Raw Dog Comedy Hits", 100: "Howard 100"},
-  presetMetaData: [
-      {
-        songInfo: {
-          genre: 'Pop',
-          name: 'BlUE SKY',
-          artist: 'THE MAX'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Club',
-          name: 'JUMP AND DOWN',
-          artist: 'THE PROJECT X'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Rock',
-          name: 'WELCOME HOME',
-          artist: 'TODD SULLIVAN'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Pop',
-          name: 'LETS DANCE',
-          artist: 'MICHAEL JOHNSON'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Pop Rock',
-          name: 'YESTERDAY NIGHT',
-          artist: 'JOHN SMITH'
-        }
-      },
-      {
-        songInfo: {
-          genre: 'Classic',
-          name: 'TENTH SYMPHONY',
-          artist: 'SPENCER M.'
-        }
-      }
-    ],
 
   directTuneItems: {
     'FM': [],
@@ -247,12 +204,12 @@ SDL.RadioModel = Em.Object.create({
 
   stationsData: {
     'FM': {
-      '895': {
+      '879': {
         'radioStation': {
           'frequency': 89,
           'fraction': 5,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 3,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song1',
@@ -267,8 +224,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 95,
           'fraction': 3,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 2,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song2',
@@ -283,8 +240,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 100,
           'fraction': 1,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 1,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song3',
@@ -315,8 +272,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 105,
           'fraction': 3,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 3,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song5',
@@ -333,8 +290,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 89,
           'fraction': 5,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 3,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song1',
@@ -349,8 +306,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 65,
           'fraction': 0,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 2,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song2',
@@ -365,8 +322,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 800,
           'fraction': 0,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 1,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song3',
@@ -397,8 +354,8 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 1450,
           'fraction': 0,
-          'availableHDs': 0,
-          'currentHD': 0
+          'availableHDs': 3,
+          'currentHD': 1
         },
         'songInfo': {
           'name': 'Song5',
@@ -636,6 +593,10 @@ SDL.RadioModel = Em.Object.create({
         this.setCurrentHdChannel(data.hdChannel);
       }
 
+      if (data.availableHDs != null || data.hdChannel != null) {
+        this.updateRadioStationHdChannelInfo(data);
+      }
+
       if (data.band  != null && data.band != this.radioControlStruct.band) {
         this.setRadioBand(data.band);
         if (data.band == 'FM') {
@@ -645,7 +606,7 @@ SDL.RadioModel = Em.Object.create({
           this.switchRadioBandFrequency(data.frequencyInteger == null);
         }
         if (data.band == 'XM') {
-          this.switchRadioBandFrequency(data.hdChannel == null);
+          this.switchRadioBandFrequency(data.frequencyInteger == null);
         }
       } else {
         this.updateCurrentFrequencyInfo();
@@ -681,8 +642,7 @@ SDL.RadioModel = Em.Object.create({
           properties.push('frequencyInteger');
         }
         if (this.radioControlStruct.band == 'XM') {
-          properties.push('hdChannel');
-          properties.push('availableHDs');
+          properties.push('frequencyInteger');
         }
       }
     }
@@ -855,6 +815,62 @@ SDL.RadioModel = Em.Object.create({
     }
 
     this.findStationPresets();
+    this.updateHdChannelInfo();
+  },
+
+  /**
+   * Update HD channel info for current station
+   */
+  updateHdChannelInfo: function() {
+    var band = this.radioControlStruct.band;
+    var station = this.changeFrequency(0);
+    var stationData = this.stationsData[band][station];
+
+    if (stationData != null && band != 'XM') {
+      var availableHDs = stationData.radioStation.availableHDs;
+      var hdChannel = stationData.radioStation.currentHD;
+      hdChannel = (hdChannel < 1 && availableHDs > 0 ? 1 : hdChannel);
+      if (availableHDs != this.radioControlStruct.availableHDs) {
+        this.setAvailableHDs(availableHDs);
+        this.setCurrentHdChannel(hdChannel);
+      } else if (hdChannel != this.radioControlStruct.hdChannel) {
+        this.setCurrentHdChannel(hdChannel);
+      }
+    } else {
+      this.setAvailableHDs(0);
+      this.setCurrentHdChannel(0);
+    }
+  },
+
+  updateRadioStationHdChannelInfo: function(params) {
+    var band = this.radioControlStruct.band;
+    if (band == 'XM') {
+      return;
+    }
+    var station = this.changeFrequency(0);
+    var stationData = this.stationsData[band][station];
+
+    var availableHDs = (params.availableHDs != null ?
+      params.availableHDs : this.radioControlStruct.availableHDs
+    );
+    var hdChannel = (params.hdChannel ?
+      params.hdChannel : this.radioControlStruct.hdChannel
+    );
+
+    if (stationData != null) {
+      stationData.radioStation.availableHDs = availableHDs;
+      stationData.radioStation.currentHD = hdChannel;
+    } else {
+      hdChannel = (hdChannel < 1 && availableHDs > 0 ? 1 : hdChannel);
+      this.stationsData[band][station] = {
+        'radioStation': {
+          'frequency': this.radioControlStruct.frequencyInteger,
+          'fraction': this.radioControlStruct.frequencyFraction,
+          'availableHDs': availableHDs,
+          'currentHD': hdChannel
+        }
+      };
+    }
   },
 
   /**
@@ -1142,7 +1158,7 @@ SDL.RadioModel = Em.Object.create({
 
   checkRadioDetailsSongInfo: function(data) {
     var band = this.radioControlStruct.band;
-    if (this.stationsData[band][data]) {
+    if (this.stationsData[band][data] && this.stationsData[band][data].songInfo) {
       if (this.tuneUpTimer != null) {
         clearInterval(this.tuneUpTimer);
         this.tuneUpTimer = null;
