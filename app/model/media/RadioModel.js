@@ -124,7 +124,7 @@ SDL.RadioModel = Em.Object.create({
     ]
   },
 
-  xmStations: {2: "SiriusXM Hits 1", 3: "Venus", 4: "SiriusXM Spotlight",
+  xmStations: {2: "SiriusXM Hits", 3: "Venus", 4: "SiriusXM Spotlight",
    5: "50s on 5", 6: "60s on 6", 7: "70s on 7", 8: "80s on 8", 9: "90s on 9",
    10: "Pop2K", 11: "KIIS-Los Angeles", 12: "Z100/NY", 13: "Pitbull", 14: "The Coffee House",
    15: "The Pulse", 16: "The Blend", 17: "PopRocks", 18: "The Beatles Channel",
@@ -411,48 +411,6 @@ SDL.RadioModel = Em.Object.create({
       }
     },
     'XM': {
-      '1': {
-        'radioStation': {
-          'availableHDs': 1,
-          'currentHD': 1
-        },
-        'songInfo': {
-          'name': 'Song1',
-          'artist': 'Artist1',
-          'genre': 'Genre1',
-          'album': 'Album1',
-          'year': 2001,
-          'duration': 10
-        }
-      },
-      '2': {
-        'radioStation': {
-          'availableHDs': 2,
-          'currentHD': 2
-        },
-        'songInfo': {
-          'name': 'Song2',
-          'artist': 'Artist2',
-          'genre': 'Genre2',
-          'album': 'Album2',
-          'year': 2002,
-          'duration': 20
-        }
-      },
-      '3': {
-        'radioStation': {
-          'availableHDs': 3,
-          'currentHD': 3
-        },
-        'songInfo': {
-          'name': 'Song3',
-          'artist': 'Artist3',
-          'genre': 'Genre3',
-          'album': 'Album3',
-          'year': 2003,
-          'duration': 30
-        }
-      }
     }
   },
 

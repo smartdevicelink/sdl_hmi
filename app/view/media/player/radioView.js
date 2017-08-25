@@ -618,28 +618,28 @@ SDL.RadioView = Em.ContainerView
             .compile(
               '{{#with view}}' +
               '<div class="track-info">' +
-              '<div class = "HDRadio" style="display: inline-flex; align-items: center;">' + 
+              '<div class = "HDRadio" style="display: inline-flex; align-items: center;">' +
               '{{#if HDRadio}}' +
               '<img src="images/media/hd_logo.png" style="width:27px;height:27px;">' +
               '{{#if HDChannel1Availability}}' +
               '{{#if HDChannel1}}' +
-              '<span style="padding: 5px;color: orange;"> 1 </span>' + 
+              '<span style="padding: 5px;color: orange;"> 1 </span>' +
               '{{else}}' +
-              '<span style="padding: 5px;"> 1 </span>' + 
+              '<span style="padding: 5px;"> 1 </span>' +
               '{{/if}}' +
               '{{/if}}' +
               '{{#if HDChannel2Availability}}' +
               '{{#if HDChannel2}}' +
-              '<span style="padding: 5px;color: orange;"> 2 </span>' + 
+              '<span style="padding: 5px;color: orange;"> 2 </span>' +
               '{{else}}' +
-              '<span style="padding: 5px;"> 2 </span>' + 
+              '<span style="padding: 5px;"> 2 </span>' +
               '{{/if}}' +
               '{{/if}}' +
               '{{#if HDChannel3Availability}}' +
               '{{#if HDChannel3}}' +
-              '<span style="padding: 5px;color: orange;"> 3 </span>' + 
+              '<span style="padding: 5px;color: orange;"> 3 </span>' +
               '{{else}}' +
-              '<span style="padding: 5px;"> 3 </span>' + 
+              '<span style="padding: 5px;"> 3 </span>' +
               '{{/if}}' +
               '{{/if}}' +
               '{{/if}}' +
