@@ -1285,14 +1285,23 @@ SDL.RadioModel = Em.Object.create({
     }
 
     if (band == 'XM') {
+      if (data.frequencyFraction != null) {
+        resultTable.success = false;
+        resultTable.info = 'Invalid radio frequency for desination radio band';
+        return resultTable;
+      }
       if (data.hdChannel != null) {
         resultTable.success = false;
         resultTable.info = 'HD channel is not supported for XM radio band';
         return resultTable;
       }
 
+      if (data.frequencyInteger == null) {
+        return resultTable;
+      }
+
       resultTable.success =
-        (data.frequencyInteger != null && data.frequencyInteger >= 1 && data.frequencyInteger <= 1710);
+        (data.frequencyInteger >= 1 && data.frequencyInteger <= 1710);
       resultTable.info = (resultTable.success ?
           '' : 'Invalid radio frequency for desination radio band');
 
