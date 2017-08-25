@@ -593,6 +593,10 @@ SDL.RadioModel = Em.Object.create({
         this.setCurrentHdChannel(data.hdChannel);
       }
 
+      if (data.availableHDs != null || data.hdChannel != null) {
+        this.updateRadioStationHdChannelInfo(data);
+      }
+
       if (data.band  != null && data.band != this.radioControlStruct.band) {
         this.setRadioBand(data.band);
         if (data.band == 'FM') {
@@ -602,7 +606,7 @@ SDL.RadioModel = Em.Object.create({
           this.switchRadioBandFrequency(data.frequencyInteger == null);
         }
         if (data.band == 'XM') {
-          this.switchRadioBandFrequency(data.hdChannel == null);
+          this.switchRadioBandFrequency(data.frequencyInteger == null);
         }
       } else {
         this.updateCurrentFrequencyInfo();
@@ -638,8 +642,7 @@ SDL.RadioModel = Em.Object.create({
           properties.push('frequencyInteger');
         }
         if (this.radioControlStruct.band == 'XM') {
-          properties.push('hdChannel');
-          properties.push('availableHDs');
+          properties.push('frequencyInteger');
         }
       }
     }
@@ -812,6 +815,59 @@ SDL.RadioModel = Em.Object.create({
     }
 
     this.findStationPresets();
+    this.updateHdChannelInfo();
+  },
+
+  /**
+   * Update HD channel info for current station
+   */
+  updateHdChannelInfo: function() {
+    var band = this.radioControlStruct.band;
+    var station = this.changeFrequency(0);
+    var stationData = this.stationsData[band][station];
+
+    if (stationData != null) {
+      var availableHDs = stationData.radioStation.availableHDs;
+      var hdChannel = stationData.radioStation.currentHD;
+      hdChannel = (hdChannel < 1 && availableHDs > 0 ? 1 : hdChannel);
+      if (availableHDs != this.radioControlStruct.availableHDs) {
+        this.setAvailableHDs(availableHDs);
+        this.setCurrentHdChannel(hdChannel);
+      } else if (hdChannel != this.radioControlStruct.hdChannel) {
+        this.setCurrentHdChannel(hdChannel);
+      }
+    } else {
+      this.setAvailableHDs(0);
+      this.setCurrentHdChannel(0);
+    }
+  },
+
+  updateRadioStationHdChannelInfo: function(params) {
+    var band = this.radioControlStruct.band;
+    var station = this.changeFrequency(0);
+    var stationData = this.stationsData[band][station];
+
+    var availableHDs = (params.availableHDs != null ?
+      params.availableHDs : this.radioControlStruct.availableHDs
+    );
+    var hdChannel = (params.hdChannel ?
+      params.hdChannel : this.radioControlStruct.hdChannel
+    );
+
+    if (stationData != null) {
+      stationData.radioStation.availableHDs = availableHDs;
+      stationData.radioStation.currentHD = hdChannel;
+    } else {
+      hdChannel = (hdChannel < 1 && availableHDs > 0 ? 1 : hdChannel);
+      this.stationsData[band][station] = {
+        'radioStation': {
+          'frequency': this.radioControlStruct.frequencyInteger,
+          'fraction': this.radioControlStruct.frequencyFraction,
+          'availableHDs': availableHDs,
+          'currentHD': hdChannel
+        }
+      };
+    }
   },
 
   /**
@@ -1099,7 +1155,7 @@ SDL.RadioModel = Em.Object.create({
 
   checkRadioDetailsSongInfo: function(data) {
     var band = this.radioControlStruct.band;
-    if (this.stationsData[band][data]) {
+    if (this.stationsData[band][data] && this.stationsData[band][data].songInfo) {
       if (this.tuneUpTimer != null) {
         clearInterval(this.tuneUpTimer);
         this.tuneUpTimer = null;

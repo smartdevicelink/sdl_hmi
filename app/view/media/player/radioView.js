@@ -445,11 +445,15 @@ SDL.RadioView = Em.ContainerView
                   SDL.RadioModel.lastOptionParams.availableHDs);
                 result.splice(index + 1, index + result.length - 1);
                 var maxHdValue = result[result.length - 1];
-                if (SDL.RadioModel.lastOptionParams.hdChannel > maxHdValue) {
-                  SDL.RadioModel.set('lastOptionParams.hdChannel', maxHdValue);
+                if (maxHdValue > 0) {
+                  result.splice(0, 1);
                 }
-                if (!this.content || this.content.length != result.length) {
+                if (!this.content || result) {
                   this.set('content', result);
+                }
+                if (SDL.RadioModel.lastOptionParams.hdChannel === undefined ||
+                    SDL.RadioModel.lastOptionParams.hdChannel > maxHdValue) {
+                  SDL.RadioModel.set('lastOptionParams.hdChannel', maxHdValue);
                 }
               }.observes(
                 'SDL.RadioModel.lastOptionParams.availableHDs'
