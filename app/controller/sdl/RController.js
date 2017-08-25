@@ -486,7 +486,8 @@ SDL.RController = SDL.SDLController.extend(
           if (Object.keys(result[key]).length === 0) {
             delete result[key];
           }
-        } else if (properties.indexOf(stack + key) < 0) {
+        } else if (properties.indexOf(stack + key) < 0 &&
+                   properties.indexOf(stack + '*') < 0) {
           delete result[key];
         }
       }
