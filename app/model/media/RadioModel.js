@@ -1211,17 +1211,6 @@ SDL.RadioModel = Em.Object.create({
       ? data.band : this.radioControlStruct.band
     );
 
-    var getAvailableHDs = function() {
-      var currentRadioData = SDL.RadioModel.getRadioControlData(true);
-      currentRadioData = SDL.SDLController.filterObjectProperty(currentRadioData, 'availableHDs');
-      if (currentRadioData.availableHDs != null) {
-        return currentRadioData.availableHDs;
-      }
-      else {
-        return 0;
-      }
-    }
-
     if (band == 'FM') {
       if (data.frequencyInteger == null && data.frequencyFraction == null && data.hdChannel == null) {
         return resultTable;
