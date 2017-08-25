@@ -124,7 +124,7 @@ SDL.RadioModel = Em.Object.create({
     ]
   },
 
-  xmStations: {2: "SiriusXM Hits 1", 3: "Venus", 4: "SiriusXM Spotlight",
+  xmStations: {2: "SiriusXM Hits", 3: "Venus", 4: "SiriusXM Spotlight",
    5: "50s on 5", 6: "60s on 6", 7: "70s on 7", 8: "80s on 8", 9: "90s on 9",
    10: "Pop2K", 11: "KIIS-Los Angeles", 12: "Z100/NY", 13: "Pitbull", 14: "The Coffee House",
    15: "The Pulse", 16: "The Blend", 17: "PopRocks", 18: "The Beatles Channel",
@@ -411,48 +411,6 @@ SDL.RadioModel = Em.Object.create({
       }
     },
     'XM': {
-      '1': {
-        'radioStation': {
-          'availableHDs': 1,
-          'currentHD': 1
-        },
-        'songInfo': {
-          'name': 'Song1',
-          'artist': 'Artist1',
-          'genre': 'Genre1',
-          'album': 'Album1',
-          'year': 2001,
-          'duration': 10
-        }
-      },
-      '2': {
-        'radioStation': {
-          'availableHDs': 2,
-          'currentHD': 2
-        },
-        'songInfo': {
-          'name': 'Song2',
-          'artist': 'Artist2',
-          'genre': 'Genre2',
-          'album': 'Album2',
-          'year': 2002,
-          'duration': 20
-        }
-      },
-      '3': {
-        'radioStation': {
-          'availableHDs': 3,
-          'currentHD': 3
-        },
-        'songInfo': {
-          'name': 'Song3',
-          'artist': 'Artist3',
-          'genre': 'Genre3',
-          'album': 'Album3',
-          'year': 2003,
-          'duration': 30
-        }
-      }
     }
   },
 
@@ -765,7 +723,7 @@ SDL.RadioModel = Em.Object.create({
 
   getStation: function(stationID) {
     if (stationID in this.xmStations) {
-      return this.xmStations[stationID].substring(0, 12);  
+      return this.xmStations[stationID];
     }
     return "SiriusXM";
   },
@@ -794,15 +752,12 @@ SDL.RadioModel = Em.Object.create({
     },
 
   saveStationToPreset: function(element) {
-      var band = this.radioControlStruct.band;
-      if (band != 'XM') {
-        element.set('text', this.station);
-        this.preset[band][element.preset] = this.station;
+    var band = this.radioControlStruct.band;
+    element.set('text', this.station);
+    this.preset[band][element.preset] = this.station;
 
-        SDL.RadioModel.set('activePreset', element.preset);
-        //FFW.RC.OnPresetsChanged(this.preset);
-      }
-    },
+    SDL.RadioModel.set('activePreset', element.preset);
+  },
 
   afterDirectTune: function() {
       this.set('station', this.temp);
@@ -894,7 +849,9 @@ SDL.RadioModel = Em.Object.create({
       this.set('station', this.radioControlStruct.frequencyInteger);
     }
     if (this.radioControlStruct.band === 'XM') {
-      this.set('station', this.getStation(this.radioControlStruct.frequencyInteger));
+      this.set('station',
+        this.getStation(this.radioControlStruct.frequencyInteger).substring(0, 12)
+      );
     }
 
     this.findStationPresets();
@@ -950,8 +907,12 @@ SDL.RadioModel = Em.Object.create({
       if (this.radioControlStruct.band === 'XM') {
         this.setFrequencyInteger(parseInt(
           (function(value){
-            var kArray = Object.keys(SDL.RadioModel.xmStations);
-            var vArray = Object.values(SDL.RadioModel.xmStations);
+            var kArray = [], vArray = [];
+            for (key in SDL.RadioModel.xmStations) {
+              kArray.push(key);
+              vArray.push(SDL.RadioModel.xmStations[key]);
+            }
+
             var vIndex = vArray.indexOf(value);
 
             return kArray[vIndex];
@@ -1138,7 +1099,7 @@ SDL.RadioModel = Em.Object.create({
       return data;
     }
     if (this.radioControlStruct.band === 'XM') {
-      var data = this.radioControlStruct.hdChannel;
+      var data = this.radioControlStruct.frequencyInteger;
 
       if (incement > 0) {
         data += 1;
@@ -1146,13 +1107,14 @@ SDL.RadioModel = Em.Object.create({
         data -= 1;
       }
 
-      if (data > this.radioControlStruct.availableHDs) {
+      if (data > 100) {
         data = 1;
       } else if (data < 1) {
-        data = this.radioControlStruct.availableHDs;
+        data = 100;
       }
 
-      this.setCurrentHdChannel(data);
+      this.setFrequencyInteger(data);
+      this.setFrequencyFraction(0);
 
       return data;
     }
@@ -1203,27 +1165,22 @@ SDL.RadioModel = Em.Object.create({
   },
 
   checkRadioFrequencyBoundaries: function(data) {
+    var resultTable = {
+      'success': true,
+      'info': ''
+    };
     var band = (data.band != null
       ? data.band : this.radioControlStruct.band
     );
 
-    var getAvailableHDs = function() {
-      var currentRadioData = SDL.RadioModel.getRadioControlData(true);
-      currentRadioData = SDL.SDLController.filterObjectProperty(currentRadioData, 'availableHDs');
-      if (currentRadioData.availableHDs != null) {
-        return currentRadioData.availableHDs;
-      }
-      else {
-        return 0;
-      }
-    }
-
     if (band == 'FM') {
       if (data.frequencyInteger == null && data.frequencyFraction == null && data.hdChannel == null) {
-        return true;
+        return resultTable;
       }
       if ((data.frequencyInteger != null || data.frequencyFraction != null) && data.hdChannel != null) {
-        return false;
+        resultTable.success = false;
+        resultTable.info = 'Frequency and HD channel could not be set at once';
+        return resultTable;
       }
 
       if (data.frequencyInteger != null || data.frequencyFraction != null) {
@@ -1234,47 +1191,86 @@ SDL.RadioModel = Em.Object.create({
           ? data.frequencyFraction : this.radioControlStruct.frequencyFraction
         );
         var frequencyTotal = frequencyInteger * 10 + frequencyFraction;
-        
-        return (frequencyTotal >= 875 && frequencyTotal <= 1080);
+
+        resultTable.success = (frequencyTotal >= 875 && frequencyTotal <= 1080);
+        resultTable.info = (resultTable.success ?
+          '' : 'Invalid radio frequency for desination radio band');
+
+        return resultTable;
       }
       else {
-        var channel = (data.hdChannel != null 
+        var channel = (data.hdChannel != null
           ? data.hdChannel : this.radioControlStruct.hdChannel);
-        var maxChannels = getAvailableHDs();
+        var maxChannels = (data.availableHDs != null
+          ? data.availableHDs : this.radioControlStruct.availableHDs);
+        resultTable.success = (channel >= 1 && channel <= maxChannels);
+        resultTable.info = resultTable.success ?
+          '' : 'Selected HD channel is not available';
 
-        return (channel >= 1 && channel <= maxChannels);
+        return resultTable;
       }
     }
 
     if (band == 'AM') {
       if (data.frequencyFraction != null) {
-        return false;
+        resultTable.success = false;
+        resultTable.info = 'Invalid radio frequency for desination radio band';
+        return resultTable;
       }
       if (data.frequencyInteger == null && data.hdChannel == null) {
-        return true;
+        return resultTable;
       }
       if (data.frequencyInteger != null && data.hdChannel != null) {
-        return false;
+        resultTable.success = false;
+        resultTable.info = 'Frequency and HD channel could not be set at once';
+        return resultTable;
       }
 
       if (data.frequencyInteger != null) {
         var frequencyTotal = (data.frequencyInteger != null
           ? data.frequencyInteger : this.radioControlStruct.frequencyInteger);
-        return (frequencyTotal >= 525 && frequencyTotal <= 1705);
+        resultTable.success = (frequencyTotal >= 525 && frequencyTotal <= 1705);
+        resultTable.info = (resultTable.success ?
+          '' : 'Invalid radio frequency for desination radio band');
+        return resultTable;
       }
       else {
-        var channel = (data.hdChannel != null 
+        var channel = (data.hdChannel != null
           ? data.hdChannel : this.radioControlStruct.hdChannel);
-        var maxChannels = getAvailableHDs();  
-        return (channel >= 1 && channel <= maxChannels);
+        var maxChannels = (data.availableHDs != null
+          ? data.availableHDs : this.radioControlStruct.availableHDs);
+        resultTable.success = (channel >= 1 && channel <= maxChannels);
+        resultTable.info = (resultTable.success ?
+          '' : 'Selected HD channel is not available');
+        return resultTable;
       }
     }
 
     if (band == 'XM') {
-      return (data.frequencyInteger != null && data.frequencyInteger >= 1 && data.frequencyInteger <= 1710);
+      if (data.frequencyFraction != null) {
+        resultTable.success = false;
+        resultTable.info = 'Invalid radio frequency for desination radio band';
+        return resultTable;
+      }
+      if (data.hdChannel != null) {
+        resultTable.success = false;
+        resultTable.info = 'HD channel is not supported for XM radio band';
+        return resultTable;
+      }
+
+      if (data.frequencyInteger == null) {
+        return resultTable;
+      }
+
+      resultTable.success =
+        (data.frequencyInteger >= 1 && data.frequencyInteger <= 1710);
+      resultTable.info = (resultTable.success ?
+          '' : 'Invalid radio frequency for desination radio band');
+
+      return resultTable;
     }
 
-    return true;
+    return resultTable;
   },
 
   sendFrequencyChangeNotification: function() {
@@ -1294,11 +1290,15 @@ SDL.RadioModel = Em.Object.create({
   findStationPresets: function() {
     var i = 0;
     var band = this.radioControlStruct.band;
+    var station = (band == 'XM' ?
+      this.getStation(this.radioControlStruct.frequencyInteger) :
+      this.station
+    );
 
     this.set('activePreset', null);
 
     for (i; i < this.preset[band].length; i++) {
-      if (this.station == this.preset[band][i]) {
+      if (station == this.preset[band][i]) {
         this.set('activePreset', i);
         break;
       }
@@ -1337,8 +1337,6 @@ SDL.RadioModel = Em.Object.create({
     SDL.RadioModel.toggleProperty('optionsEnabled');
 
     var properties = SDL.SDLController.getChangedProperties(changedData, currentData);
-    var isHDChannelChanged = properties.indexOf('hdChannel') >= 0
-      || properties.indexOf('availableHDs') >= 0;
 
     if (properties.indexOf('band') >= 0) {
       if (this.tuneRadio) {
@@ -1358,12 +1356,8 @@ SDL.RadioModel = Em.Object.create({
       }
       if (this.radioControlStruct.band == 'XM') {
         properties.push('frequencyInteger');
-        this.switchRadioBandFrequency(false);
+        this.switchRadioBandFrequency(true);
       }
-    }
-    if (this.radioControlStruct.band == 'XM'
-        && properties.indexOf('band') < 0 && isHDChannelChanged) {
-      this.switchRadioBandFrequency(false);
     }
     this.sendRadioChangeNotification(properties);
   },

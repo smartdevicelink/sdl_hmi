@@ -658,6 +658,7 @@
 
 #info_apps .list-item span {
 	height: 23px;
+	white-space: nowrap;
 }
 
 #info_apps .inner-wrapper {
