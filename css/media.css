@@ -883,6 +883,9 @@
     top: 30px;
     left: 8px;
     position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 400px;
 }
 
 .track-info > .genre {
@@ -908,6 +911,9 @@
     top: 50px;
     left: 8px;
     font-size: 62px;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 400px;
 }
 
 #radio_view_container .divider_o {

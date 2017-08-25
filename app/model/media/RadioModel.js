@@ -810,7 +810,7 @@ SDL.RadioModel = Em.Object.create({
     }
     if (this.radioControlStruct.band === 'XM') {
       this.set('station',
-        this.getStation(this.radioControlStruct.frequencyInteger).substring(0, 12)
+        this.getStation(this.radioControlStruct.frequencyInteger)
       );
     }
 
