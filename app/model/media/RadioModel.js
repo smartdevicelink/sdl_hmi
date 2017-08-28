@@ -545,10 +545,14 @@ SDL.RadioModel = Em.Object.create({
       }
 
       if (forceGetAll || this.radioControlCheckboxes.availableHDs) {
-        result.availableHDs = this.radioControlStruct.availableHDs;
+        if (this.radioControlStruct.availableHDs > 0) {
+          result.availableHDs = this.radioControlStruct.availableHDs;
+        }
       }
       if (forceGetAll || this.radioControlCheckboxes.hdChannel) {
-        result.hdChannel = this.radioControlStruct.hdChannel;
+        if (this.radioControlStruct.hdChannel > 0) {
+          result.hdChannel = this.radioControlStruct.hdChannel;
+        }
       }
       if (forceGetAll || this.radioControlCheckboxes.signalStrength) {
         result.signalStrength = parseInt(this.radioControlStruct.signalStrength);
@@ -810,7 +814,7 @@ SDL.RadioModel = Em.Object.create({
     }
     if (this.radioControlStruct.band === 'XM') {
       this.set('station',
-        this.getStation(this.radioControlStruct.frequencyInteger).substring(0, 12)
+        this.getStation(this.radioControlStruct.frequencyInteger)
       );
     }
 
@@ -1001,11 +1005,27 @@ SDL.RadioModel = Em.Object.create({
     SDL.RadioModel.toggleProperty('radioControlStruct.radioEnable');
     var data = this.getRadioControlData(true);
     data = SDL.SDLController.filterObjectProperty(data, 'band');
-    if (data.band == 'FM' || data.band == 'AM') {
-      this.sendRadioChangeNotification(['radioEnable', 'frequencyInteger', 'frequencyFraction', 'band']);
-    } 
-    else {
-      this.sendRadioChangeNotification(['radioEnable']);
+    if (data.band == 'FM') {
+      this.sendRadioChangeNotification(['radioEnable',
+                                        'frequencyInteger',
+                                        'frequencyFraction',
+                                        'band',
+                                        'availableHDs',
+                                        'hdChannel',
+                                        'rdsData.*']);
+    } else if (data.band == 'AM') {
+      this.sendRadioChangeNotification(['radioEnable',
+                                        'frequencyInteger',
+                                        'band',
+                                        'availableHDs',
+                                        'hdChannel']);
+    } else {
+      this.sendRadioChangeNotification(['radioEnable',
+                                        'frequencyInteger',
+                                        'band',
+                                        'signalStrength',
+                                        'signalChangeThreshold',
+                                        'state']);
     }
   },
 
@@ -1292,29 +1312,30 @@ SDL.RadioModel = Em.Object.create({
   sendFrequencyChangeNotification: function() {
     if (this.radioControlStruct.band === 'FM') {
       this.sendRadioChangeNotification(
-        ['frequencyInteger', 'frequencyFraction']
+        ['frequencyInteger',
+         'frequencyFraction',
+         'availableHDs',
+         'hdChannel']
       );
     }
     if (this.radioControlStruct.band === 'AM') {
-      this.sendRadioChangeNotification(['frequencyInteger']);
+      this.sendRadioChangeNotification(['frequencyInteger',
+                                        'availableHDs',
+                                        'hdChannel']);
     }
     if (this.radioControlStruct.band === 'XM') {
-      this.sendRadioChangeNotification(['hdChannel']);
+      this.sendRadioChangeNotification(['frequencyInteger']);
     }
   },
 
   findStationPresets: function() {
     var i = 0;
     var band = this.radioControlStruct.band;
-    var station = (band == 'XM' ?
-      this.getStation(this.radioControlStruct.frequencyInteger) :
-      this.station
-    );
 
     this.set('activePreset', null);
 
     for (i; i < this.preset[band].length; i++) {
-      if (station == this.preset[band][i]) {
+      if (this.station == this.preset[band][i]) {
         this.set('activePreset', i);
         break;
       }
