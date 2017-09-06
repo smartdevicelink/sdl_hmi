@@ -1582,39 +1582,6 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         /**
-         * Validate method for request SetGlobalProperties
-         *
-         * @param {Object}
-         *            params
-         */
-        SetGlobalProperties: function(params) {
-          if (params == null) {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Parameter \'params\' does not exists!'
-            };
-            return this.resultStruct;
-          }
-          if (params.appID == null) {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Parameter \'appID\' does not exists!'
-            };
-            return this.resultStruct;
-          }
-          if (typeof params.appID != 'number') {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Wrong type of parameter \'appID\'!'
-            };
-            return this.resultStruct;
-          }
-          this.resultStruct = {
-            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
-          };
-          return this.resultStruct;
-        },
-        /**
          * Validate method for request GetCapabilities
          *
          * @param {Object}
@@ -2010,7 +1977,13 @@ SDL.RPCController = Em.Object.create(
     RC: Em.Object.create(
       {
         resultStruct: {},
-        GetInteriorVehicleDataCapabilities: function(params) {
+        IsReady: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        GetCapabilities: function(params) {
           this.resultStruct = {
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
@@ -2112,20 +2085,6 @@ SDL.RPCController = Em.Object.create(
             this.resultStruct = {
               'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
               'resultMessage': 'Wrong type of parameter \'moduleType\'!'
-            };
-            return this.resultStruct;
-          }
-          if (params.zone == null) {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Parameter \'zone\' does not exists!'
-            };
-            return this.resultStruct;
-          }
-          if (typeof params.zone != 'object') {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Wrong type of parameter \'zone\'!'
             };
             return this.resultStruct;
           }

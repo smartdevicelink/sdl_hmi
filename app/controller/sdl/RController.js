@@ -33,38 +33,6 @@
 
 SDL.RController = SDL.SDLController.extend(
   {
-    reverseAppsAllowed: true,
-    /**
-     * Button action to sent response for RC.GrantAccess request
-     *
-     * @type {Object}
-     */
-    ControlAccessAction: function(appID, value) {
-      if (value) {
-        FFW.RC.sendRCResult(
-          SDL.SDLModel.data.resultCode.SUCCESS,
-          SDL.SDLModel.controlRequestID,
-          'RC.GrantAccess'
-        );
-        SDL.SDLModel.set('givenControl', appID);
-        SDL.SDLModel.set('givenControlFlag', true);
-        //FFW.CAN.OnRadioDetails({"radioStation":
-        // SDL.RadioModel.radioDetails.radioStation});
-        FFW.RC.onInteriorVehicleDataNotification(
-          'RADIO',
-          null,
-          SDL.RadioModel.get('radioControlData')
-        );
-      } else {
-        FFW.RC.sendError(
-          SDL.SDLModel.dataresultCode.REJECTED,
-          SDL.SDLModel.controlRequestID,
-          'RC.GrantAccess',
-          'Request cancelled.'
-        );
-      }
-      SDL.SDLModel.set('controlRequestID', null);
-    },
     onEventChanged: function(reason, status) {
       switch (reason) {
         case 'phoneCall':
@@ -84,25 +52,175 @@ SDL.RController = SDL.SDLController.extend(
         }
         default:
         {
+          this._super(reason, status);
           return;
         }
       }
     },
-    /**
-     * Send notification to SDL about changes of SDL functionality
-     * @param {Object} element
-     * @constructor
-     */
-    OnReverseAppsAllowing: function(element) {
-      element.toggleProperty('allowed');
-      if (!element.allowed) {
-        SDL.RadioModel.consentedApp = null;
-        SDL.ClimateController.model.consentedApp = null;
-        SDL.SDLModel.data.radioFirstConsentedApp = null;
-        SDL.SDLModel.data.climateFirstConsentedApp = null;
+    onButtonPressEvent: function(params) {
+      var result_struct = {
+        resultCode: SDL.SDLModel.data.resultCode.SUCCESS,
+        resultInfo: ""
+      };
+
+      if (params.moduleType == 'CLIMATE') {
+        var model = SDL.ClimateController.model;
+        switch (params.buttonName) {
+          case 'AC_MAX': {
+            model.toggleAcMaxEnable();
+            break;
+          }
+          case 'AC': {
+            model.toggleAcEnable();
+            break;
+          }
+          case 'RECIRCULATE': {
+            model.toggleRecirculateAir();
+            break;
+          }
+          case 'FAN_UP': {
+            model.fanSpeedUp();
+            break;
+          }
+          case 'FAN_DOWN': {
+            model.fanSpeedDown();
+            break;
+          }
+          case 'TEMP_UP': {
+            model.desiredTempUp();
+            break;
+          }
+          case 'TEMP_DOWN': {
+            model.desiredTempDown();
+            break;
+          }
+          case 'DEFROST_MAX': {
+            model.defrostAllEnable();
+            break;
+          }
+          case 'DEFROST': {
+            model.defrostFrontEnable();
+            break;
+          }
+          case 'DEFROST_REAR': {
+            model.defrostRearEnable();
+            break;
+          }
+          case 'UPPER_VENT': {
+            model.ventilationModeUpperEnable();
+            break;
+          }
+          case 'LOWER_VENT': {
+            model.ventilationModeLowerEnable();
+            break;
+          }
+          default: {
+            result_struct.resultCode = SDL.SDLModel.data.resultCode.GENERIC_ERROR;
+            result_struct.resultInfo = 'Unknown climate module button';
+            return result_struct;
+          }
+        }
+        return result_struct;
       }
-      this.set('reverseAppsAllowed', element.allowed);
-      FFW.RC.OnReverseAppsAllowing(element.allowed);
+
+      if (params.moduleType == 'RADIO') {
+        switch (params.buttonName) {
+          case 'VOLUME_UP': {
+            SDL.MediaController.volumeUpPress();
+            break;
+          }
+          case 'VOLUME_DOWN': {
+            SDL.MediaController.volumeDownPress();
+            break;
+          }
+          case 'EJECT': {
+            if (SDL.MediaController.activeState == 'media.player.cd') {
+              SDL.MediaController.ejectCD();
+            } else {
+              result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+              result_struct.resultInfo = 'CD audio source must be selected';
+              return result_struct;
+            }
+            break;
+          }
+          case 'SOURCE': {
+            SDL.MediaController.changeSource();
+            break;
+          }
+          case 'SHUFFLE': {
+            if (SDL.MediaController.activeState == 'media.player.cd' ||
+                SDL.MediaController.activeState == 'media.player.usb') {
+              SDL.MediaController.turnOnShuffle();
+            } else {
+              result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+              result_struct.resultInfo = 'CD or USB audio source must be selected';
+              return result_struct;
+            }
+            break;
+          }
+          case 'REPEAT': {
+            if (SDL.MediaController.activeState == 'media.player.cd' ||
+                SDL.MediaController.activeState == 'media.player.usb') {
+              SDL.MediaController.repeatPress();
+            } else {
+              result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
+              result_struct.resultInfo = 'CD or USB audio source must be selected';
+              return result_struct;
+            }
+            break;
+          }
+          default: {
+            result_struct.resultCode = SDL.SDLModel.data.resultCode.GENERIC_ERROR;
+            result_struct.resultInfo = 'Unknown radio module button';
+            return result_struct;
+          }
+        }
+        return result_struct;
+      }
+
+      return result_struct;
+    },
+    /**
+     * Go to RSDL options menu on click menu header
+     */
+    onRSDLOptionsClick: function() {
+      SDL.States.goToStates('settings.policies.rsdlOptionsList');
+    },
+    /**
+     * Toggle RSDL functionality flag option
+     */
+    toggleRSDLFunctionality: function() {
+      SDL.SDLModel.toggleProperty('reverseFunctionalityEnabled');
+      SDL.SDLMediaController.deactivateActiveRcApp();
+      SDL.NonMediaController.deactivateActiveRcApp();
+      SDL.InfoAppsView.showAppList();
+      FFW.RC.OnRemoteControlSettings(
+        SDL.SDLModel.reverseFunctionalityEnabled,
+        SDL.SDLModel.reverseAccessMode
+      );
+    },
+    /**
+     * Toggle RSDL access mode option
+     */
+    toggleRCAccessMode: function() {
+      var arr_length = SDL.SDLModel.reverseAccessModesStruct.length;
+      for (var i = 0; i < arr_length; i++) {
+        if (SDL.SDLModel.reverseAccessModesStruct[i] ==
+            SDL.SDLModel.reverseAccessMode) {
+          if (i + 1 >= arr_length) {
+            SDL.SDLModel.set('reverseAccessMode',
+              SDL.SDLModel.reverseAccessModesStruct[0]);
+          } else {
+            SDL.SDLModel.set('reverseAccessMode',
+              SDL.SDLModel.reverseAccessModesStruct[i + 1]);
+          }
+          break;
+        }
+      }
+      FFW.RC.OnRemoteControlSettings(
+        SDL.SDLModel.reverseFunctionalityEnabled,
+        SDL.SDLModel.reverseAccessMode
+      );
     },
     /**
      * Change responses to error for GetInteriorVehicleDataCapabilities
@@ -126,7 +244,7 @@ SDL.RController = SDL.SDLController.extend(
               // for not initialized applications
               appID: params.appID,
               appName: params.appName,
-              deviceName: params.deviceName,
+              deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: 0,
               disabledToActivate: params.greyOut ? true : false
@@ -141,7 +259,7 @@ SDL.RController = SDL.SDLController.extend(
               //Magic number 1 - Default non-media model
               appID: params.appID,
               appName: params.appName,
-              deviceName: params.deviceName,
+              deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: false,
               initialized: true,
@@ -155,7 +273,7 @@ SDL.RController = SDL.SDLController.extend(
             {
               appID: params.appID,
               appName: params.appName,
-              deviceName: params.deviceName,
+              deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: applicationType == 0,
               initialized: true,
@@ -232,9 +350,6 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.set('driverDeviceInfo', device);
         SDL.InfoAppsView.showAppList();
         FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
-        SDL.SDLController.removeConsentForDevice(
-          SDL.SDLModel.driverDeviceInfo.name
-        );
       }
     },
     /**
@@ -260,10 +375,6 @@ SDL.RController = SDL.SDLController.extend(
               SDL.SDLController.model.appID,
               'USER_EXIT'
             );
-            SDL.SDLController.removeConsentForApp(
-              SDL.SDLController.model.appID
-            );
-            SDL.SDLModel.set('givenControlFlag', false);
             break;
           }
           case -3:
@@ -304,57 +415,32 @@ SDL.RController = SDL.SDLController.extend(
       var appName = SDL.SDLController.getApplicationModel(
         request.params.appID
       ).appName;
-      var req = request;
-      var popUp = null;
-      if (request.params.moduleType === 'RADIO') {
-        if (SDL.RadioModel.consentedApp) {
-          FFW.RC.sendError(
-            SDL.SDLModel.data.resultCode.REJECTED, request.id,
-            request.method, 'Already consented!'
-          );
-        } else {
-          popUp = SDL.PopUp.create().appendTo('body').popupActivate(
-            'Would you like to grant access for ' + appName +
-            ' application - moduleType: Radio?',
-            function(result) {
-              FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
-              if (result) {
-                SDL.SDLModel.set('givenControlFlag', true);
-                SDL.RadioModel.consentedApp = request.params.appID;
-              }
-            }
-          );
-        }
-      } else {
-        if (SDL.ClimateController.model.consentedApp) {
-          FFW.RC.sendError(
-            SDL.SDLModel.data.resultCode.REJECTED, request.id,
-            request.method, 'Already consented!'
-          );
-        } else {
-          popUp = SDL.PopUp.create().appendTo('body').popupActivate(
-            'Would you like to grant access for ' + appName +
-            ' application - moduleType: Climate?',
-            function(result) {
-              FFW.RC.GetInteriorVehicleDataConsentResponse(req, result);
-              if (result) {
-                SDL.SDLModel.set('givenControlFlag', true);
-                SDL.ClimateController.model.consentedApp = request.params.appID;
-              }
-            }
-          );
-        }
+
+      var module = 'Unknown';
+      if (request.params.moduleType == 'CLIMATE') {
+        module = 'Climate';
+      } else if (request.params.moduleType == 'RADIO') {
+        module = 'Radio';
       }
+
+      var popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+        'Would you like to grant access for ' + appName +
+        ' application for module ' + module + '?',
+        function(result) {
+          FFW.RC.GetInteriorVehicleDataConsentResponse(request, result);
+        }
+      );
+
       setTimeout(
         function() {
           if (popUp && popUp.active) {
             popUp.deactivate();
             FFW.RC.sendError(
-              SDL.SDLModel.data.resultCode['TIMED_OUT'], req.id,
-              req.method, 'Timed out!'
+              SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
+              request.method, 'The resource is in use and the driver did not respond in time'
             );
           }
-        }, 10000
+        }, 9500
       ); //Magic number is timeout for RC consent popUp
     },
     /**
@@ -370,171 +456,67 @@ SDL.RController = SDL.SDLController.extend(
         }
       );
     },
-    removeConsentForApp: function(appID) {
-      if (SDL.RadioModel.consentedApp === appID) {
-        SDL.RadioModel.consentedApp = null;
-      }
-      if (SDL.ClimateController.model.consentedApp === appID) {
-        SDL.ClimateController.model.consentedApp = null;
-      }
-      if (SDL.SDLModel.data.radioFirstConsentedApp === appID) {
-        SDL.SDLModel.data.radioFirstConsentedApp = null;
-      }
-      if (SDL.SDLModel.data.climateFirstConsentedApp === appID) {
-        SDL.SDLModel.data.climateFirstConsentedApp = null;
-      }
-    },
-    removeConsentForDevice: function(deviceName) {
-      if (SDL.RadioModel.consentedApp &&
-        SDL.SDLController.getApplicationModel(
-          SDL.RadioModel.consentedApp
-        ).deviceName === deviceName) {
-        SDL.RadioModel.consentedApp = null;
-      }
-      if (SDL.ClimateController.model.consentedApp &&
-        SDL.SDLController.getApplicationModel(
-          SDL.ClimateController.model.consentedApp
-        ).deviceName === deviceName) {
-        SDL.ClimateController.model.consentedApp = null;
-      }
-      if (SDL.SDLModel.data.radioFirstConsentedApp &&
-        SDL.SDLController.getApplicationModel(
-          SDL.SDLModel.data.radioFirstConsentedApp
-        ).deviceName === deviceName) {
-        SDL.SDLModel.data.radioFirstConsentedApp = null;
-      }
-      if (SDL.SDLModel.data.climateFirstConsentedApp &&
-        SDL.SDLController.getApplicationModel(
-          SDL.SDLModel.data.climateFirstConsentedApp
-        ).deviceName === deviceName) {
-        SDL.SDLModel.data.climateFirstConsentedApp = null;
-      }
-    },
-    correctTemp: function(data, type) {
-      var d = SDL.deepCopy(data);
-      if (type === 'get') {
-        switch (d.temperatureUnit) {
-          case 'KELVIN':
-          {
-            d.currentTemp += 273;
-            d.desiredTemp += 273;
-            return d;
-          }
-          case 'CELSIUS':
-          {
-            return d;
-          }
-          case 'FAHRENHEIT':
-          {
-            d.currentTemp = Math.round(d.currentTemp * 9 / 5 + 32);
-            d.desiredTemp = Math.round(d.desiredTemp * 9 / 5 + 32);
-            return d;
-          }
-        }
+    /**
+     * Returns indicator image path depending on state
+     * @param state
+     */
+    getLedIndicatorImagePath: function(state) {
+      if (state) {
+        return 'images/media/active_horiz_led.png';
       } else {
-        switch (d.temperatureUnit) {
-          case 'KELVIN':
-          {
-            d.currentTemp -= 273;
-            d.desiredTemp -= 273;
-            return d;
-          }
-          case 'CELSIUS':
-          {
-            return d;
-          }
-          case 'FAHRENHEIT':
-          {
-            d.currentTemp = Math.round(
-              (
-              d.currentTemp - 32) * 5 / 9
-            );
-            d.desiredTemp = Math.round(
-              (
-              d.currentTemp - 32) * 5 / 9
-            );
-            return d;
-          }
-        }
+        return 'images/media/passiv_horiz_led.png';
       }
     },
-    unMapInteriorZone: function(moduleZone) {
-      var zone = {};
-      switch (moduleZone) {
-        case 'driver':
-        {
-          zone = {
-            'col': 0,
-            'row': 0,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'front_passenger':
-        {
-          zone = {
-            'col': 1,
-            'row': 0,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'back_left':
-        {
-          zone = {
-            'col': 0,
-            'row': 1,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
-        }
-        case 'back_right':
-        {
-          zone = {
-            'col': 1,
-            'row': 1,
-            'level': 0,
-            'colspan': 2,
-            'rowspan': 2,
-            'levelspan': 1
-          };
-          return zone;
-          break;
+    /**
+     * Filter objects properties according to filter param
+     * @param data contains input object to filter
+     * @param properties contains properties to keep
+     */
+    filterObjectProperty: function(data, properties, stack) {
+      if (stack == null) {
+        stack = '';
+      }
+
+      var result = data;
+      for (var key in result) {
+        if (typeof result[key] == 'object') {
+          result[key] = this.filterObjectProperty(
+            result[key], properties, key + '.'
+          );
+          if (Object.keys(result[key]).length === 0) {
+            delete result[key];
+          }
+        } else if (properties.indexOf(stack + key) < 0 &&
+                   properties.indexOf(stack + '*') < 0) {
+          delete result[key];
         }
       }
+      return result;
     },
-    getInteriorZone: function(moduleZone) {
-      var zone;
-      zone = null;
-      if (moduleZone == null) {
-        return zone;
+    /**
+     * Get diff between lhs and rhs object properties recursively
+     * @param lhs contains reference to first object of comparison
+     * @param rhs contains reference to second object of comparison
+     * @param stack contains prefix name for current object propery
+     */
+    getChangedProperties: function(lhs, rhs, stack) {
+      if (stack == null) {
+          stack = '';
       }
-      if (moduleZone.col === 0) {
-        if (moduleZone.row === 0) {
-          zone = 'driver';
-        } else if (moduleZone.row === 1) {
-          zone = 'back_left';
-        }
-      } else if (moduleZone.col === 1) {
-        if (moduleZone.row === 0) {
-          zone = 'front_passenger';
-        } else if (moduleZone.row === 1) {
-          zone = 'back_right';
+
+      var properties = [];
+      for (var key in rhs) {
+        if (typeof rhs[key] == 'object') {
+          var obj_properties = this.getChangedProperties(
+            lhs[key], rhs[key], key + '.'
+          );
+          properties = properties.concat(obj_properties);
+        } else if (lhs[key] != rhs[key]) {
+          properties.push(stack + key);
         }
       }
-      return zone;
+
+      return properties;
     }
   }
 );

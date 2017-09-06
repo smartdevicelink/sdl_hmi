@@ -866,17 +866,23 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @param {String} source
        * @param {String} appID
        */
-      OnAppPermissionConsent: function(consentedFunctions, source, appID) {
+      OnAppPermissionConsent: function(consentedFunctions, eucsStatus, source, appID) {
         Em.Logger.log('FFW.SDL.OnAppPermissionConsent');
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'SDL.OnAppPermissionConsent',
           'params': {
-            'consentedFunctions': consentedFunctions,
             'source': source
           }
-        };
+        }
+
+        if (consentedFunctions.length > 0) {
+          JSONMessage.params.consented_functions = consentedFunctions; 
+        }
+        if (eucsStatus.length > 0) {
+          JSONMessage.params.ccs_status = eucsStatus; 
+        }
         if (appID) {
           JSONMessage.params.appID = appID;
         }

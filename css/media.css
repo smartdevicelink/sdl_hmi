@@ -143,125 +143,255 @@
     padding: 10px;
 }
 
+#radio_options_view_container .bandCheckbox {
+    position: absolute;
+    left: 10px;
+    top: 11px;
+}
+
+#radio_options_view_container .bandLabel {
+    top: 9px;
+    left: 30px;
+}
+
 #radio_options_view_container .bandSelect {
-    margin-left: 200px;
+    position: absolute;
+    left: 220px;
+}
+
+#radio_options_view_container .rdsDataLabel {
+    left: 10px;
+    top: 27px;
+}
+
+#radio_options_view_container .PSCheckbox {
+    position: absolute;
+    left: 30px;
+    top: 46px;
 }
 
 #radio_options_view_container .PSLabel {
+    left: 50px;
     top: 45px;
 }
 
 #radio_options_view_container .PSInput {
-    top: 45px;
     position: absolute;
+    top: 45px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .RTCheckbox {
+    position: absolute;
+    left: 30px;
+    top: 61px;
 }
 
 #radio_options_view_container .RTLabel {
+    left: 50px;
     top: 60px;
 }
 
 #radio_options_view_container .RTInput {
-    top: 60px;
     position: absolute;
+    top: 60px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .CTCheckbox {
+    position: absolute;
+    left: 30px;
+    top: 76px;
 }
 
 #radio_options_view_container .CTLabel {
+    left: 50px;
     top: 75px;
 }
 
 #radio_options_view_container .CTInput {
-    top: 75px;
     position: absolute;
+    top: 75px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .PICheckbox {
+    position: absolute;
+    left: 30px;
+    top: 91px;
 }
 
 #radio_options_view_container .PILabel {
+    left: 50px;
     top: 90px;
 }
 
 #radio_options_view_container .PIInput {
-    top: 90px;
     position: absolute;
+    top: 90px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .PTYCheckbox {
+    position: absolute;
+    left: 30px;
+    top: 106px;
 }
 
 #radio_options_view_container .PTYLabel {
+    left: 50px;
     top: 105px;
 }
 
 #radio_options_view_container .PTYInput {
-    top: 105px;
     position: absolute;
+    top: 105px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .TPCheckbox {
+    position: absolute;
+    left: 30px;
+    top: 121px;
 }
 
 #radio_options_view_container .TPLabel {
+    left: 50px;
     top: 120px;
 }
 
 #radio_options_view_container .TPSelect {
-    top: 120px;
     position: absolute;
+    top: 120px;
+    left: 220px;
+}
+
+#radio_options_view_container .TACheckbox {
+    position: absolute;
+    left: 30px;
+    top: 136px;
 }
 
 #radio_options_view_container .TALabel {
+    left: 50px;
     top: 135px;
 }
 
 #radio_options_view_container .TASelect {
-    top: 135px;
     position: absolute;
+    top: 135px;
+    left: 220px;
+}
+
+#radio_options_view_container .REGCheckbox {
+    position: absolute;
+    left: 30px;
+    top: 151px;
 }
 
 #radio_options_view_container .REGLabel {
+    left: 50px;
     top: 150px;
 }
 
 #radio_options_view_container .REGInput {
-    top: 150px;
     position: absolute;
+    top: 150px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .availableHDsCheckbox {
+    position: absolute;
+    left: 10px;
+    top: 168px;
 }
 
 #radio_options_view_container .availableHDsLabel {
+    left: 30px;
     top: 165px;
 }
 
 #radio_options_view_container .availableHDsInput {
-    top: 165px;
     position: absolute;
+    top: 165px;
+    left: 220px;
+}
+
+#radio_options_view_container .hdChannelCheckbox {
+    position: absolute;
+    left: 10px;
+    top: 183px;
 }
 
 #radio_options_view_container .hdChannelLabel {
+    left: 30px;
     top: 180px;
 }
 
 #radio_options_view_container .hdChannelInput {
-    top: 180px;
     position: absolute;
+    top: 180px;
+    left: 220px;
+}
+
+#radio_options_view_container .signalStrengthCheckbox {
+    position: absolute;
+    left: 10px;
+    top: 198px;
 }
 
 #radio_options_view_container .signalStrengthLabel {
+    left: 30px;
     top: 195px;
 }
 
 #radio_options_view_container .signalStrengthInput {
-    top: 195px;
     position: absolute;
+    top: 195px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .signalChangeThresholdCheckbox {
+    position: absolute;
+    left: 10px;
+    top: 213px;
 }
 
 #radio_options_view_container .signalChangeThresholdLabel {
+    left: 30px;
     top: 210px;
 }
 
 #radio_options_view_container .signalChangeThresholdInput {
-    top: 210px;
     position: absolute;
+    top: 210px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .stateCheckbox {
+    position: absolute;
+    left: 10px;
+    top: 228px;
 }
 
 #radio_options_view_container .stateLabel {
+    left: 30px;
     top: 225px;
 }
 
 #radio_options_view_container .stateSelect {
-    top: 225px;
     position: absolute;
+    top: 225px;
+    left: 220px;
+    width: 200px;
 }
 
 #radio_options_view_container .sendButton {
@@ -331,7 +461,7 @@
     border: 1px solid #393939;
     border-bottom: none;
     border-radius: 3px;
-    top: 20px;
+    top: 60px;
     left: 485px;
 }
 
@@ -347,7 +477,7 @@
     border: 1px solid #393939;
     border-bottom: none;
     border-radius: 3px;
-    top: 20px;
+    top: 60px;
     left: 485px;
 }
 
@@ -584,7 +714,7 @@
 
 .playIcon {
     position: absolute;
-    left: 66px;
+    left: 50px;
 }
 
 .playIcon.hideicon {
@@ -753,6 +883,9 @@
     top: 30px;
     left: 8px;
     position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 400px;
 }
 
 .track-info > .genre {
@@ -778,6 +911,9 @@
     top: 50px;
     left: 8px;
     font-size: 62px;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 400px;
 }
 
 #radio_view_container .divider_o {
@@ -826,8 +962,57 @@
     background: url(../images/media/ico_cd.png) no-repeat !important
 }
 
+.fmIco {
+    background: url(../images/media/ico_fm.png) no-repeat !important
+}
+
+.usbIco {
+    background: url(../images/media/ico_usb.png) no-repeat !important
+}
+
 .appIco {
     background: url(../images/info/info_leftMenu_apps_ico.png) no-repeat !important
+}
+
+.calc_container {
+    width: 150px;
+    height: 40px;
+    border-radius: 3px;
+    border: 1px solid #393939;
+}
+
+.calc_container .minus {
+    height: 24px;
+    width: 31px;
+    float: left;
+    padding: 8px;
+    padding-left: 14px;
+}
+
+.calc_container .label{
+    width: 100%;
+    text-align: center;
+    line-height: 40px;
+}
+
+.calc_container .plus{
+    float: right;
+    position: relative;
+    height: 24px;
+    width: 31px;
+    padding: 8px;
+    padding-left: 14px;
+}
+
+#volume_label {
+    top: 55px;
+    left: 695px;
+}
+
+#currentVolume_container.calc_container {
+    top: 77px;
+    left: 646px;
+    z-index: 502;
 }
 
 #media_player_view_container {
@@ -838,12 +1023,11 @@
     left: 161px;
     z-index: 501;
 }
-
-#sdl_view_container .ffw_list_menu,
-#radio_view_container .ffw_list_menu {
-    top: 90px;
+#sdl_view_container_menu {
+    top: 125px;
     left: 650px;
     width: 140px;
+    height: 265px !important;
 }
 
 #media_fm_tuneButtons {
