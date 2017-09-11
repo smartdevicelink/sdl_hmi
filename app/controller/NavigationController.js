@@ -84,14 +84,18 @@ SDL.NavigationController = Em.Object.create(
       SDL.NavigationView.codeEditor.activate(
         function(data, isDeleted) {
           if (isDeleted) {
-            SDL.NavigationModel.get('LocationDetails').removeObject(
-              SDL.NavigationModel.LocationDetails[itemID]
-            );
+            var location = SDL.NavigationModel.LocationDetails[itemID];
+            SDL.NavigationModel.LocationDetails.removeObject(location);
+            if (SDL.NavigationModel.LocationDetails.length == 0) {
+              SDL.NavigationModel.set('poi', false);
+            }
           } else {
-            SDL.NavigationModel.LocationDetails[itemID] = JSON.parse(data);
-            FFW.Navigation.onWayPointChange(
-              [SDL.NavigationModel.LocationDetails[itemID]]
-            );
+            var locations = SDL.deepCopy(SDL.NavigationModel.LocationDetails);
+            var old_coords = locations[itemID].coordinate;
+            locations[itemID] = JSON.parse(data);
+            SDL.NavigationModel.set('LocationDetails', locations);
+
+            FFW.Navigation.onWayPointChange([location]);
           }
         }
       );
@@ -168,15 +172,15 @@ SDL.NavigationController = Em.Object.create(
     },
     isInitialized: false,
     isRouteSet: false,
+    isAnimateStarted: false,
     map: null,
     directionsService: null,
+    directionsRenderer: null,
     marker: null,
     polyline: null,
-    polyline2: [],
-    startLocation: null,
-    endLocation: null,
     timerHandle: null,
     infowindow: null,
+
     initialize: function() {
       if (!this.isInitialized && SDL.States.navigation.active) {
         this.isInitialized = true;
@@ -190,11 +194,13 @@ SDL.NavigationController = Em.Object.create(
       );
       var myOptions = {
         zoom: 16,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        //mapTypeId: google.maps.MapTypeId.ROADMAP,
+        streetViewControl: false,
+        mapTypeControl: false
       };
       SDL.NavigationController.map =
         new google.maps.Map(document.getElementById('map'), myOptions);
-      address = SDL.NavigationController.model.startLoc;
+      address = SDL.NavigationController.model.initialLoc;
       geocoder = new google.maps.Geocoder();
       geocoder.geocode(
         {'address': address}, function(results, status) {
@@ -202,6 +208,7 @@ SDL.NavigationController = Em.Object.create(
             SDL.NavigationController.map.fitBounds(
               results[0].geometry.viewport
             );
+            SDL.NavigationController.addCarMarker(results[0].geometry.location);
           } else {
             SDL.PopUp.create().appendTo('body').popupActivate(
               'Navigation error: ' + status + '. Resend ShowConstantTBT!'
@@ -209,31 +216,6 @@ SDL.NavigationController = Em.Object.create(
           }
         }
       );
-    },
-    createMarker: function(latlng, label, html) {
-      var contentString = '<b>' + label + '</b><br>' + html;
-      var marker = new google.maps.Marker(
-        {
-          position: latlng,
-          map: SDL.NavigationController.map,
-          title: label,
-          zIndex: Math.round(latlng.lat() * -100000) << 5
-        }
-      );
-      marker.myname = label;
-      google.maps.event.addListener(
-        marker, 'click', function() {
-          SDL.NavigationController.infowindow.setContent(contentString);
-          SDL.NavigationController.infowindow.open(
-            SDL.NavigationController.map,
-            marker
-          );
-        }
-      );
-      return marker;
-    },
-    setRoutes: function() {
-      SDL.NavigationController.polyline = null;
       var rendererOptions = {
         map: SDL.NavigationController.map,
         suppressMarkers: true,
@@ -241,84 +223,307 @@ SDL.NavigationController = Em.Object.create(
       };
       SDL.NavigationController.directionsService =
         new google.maps.DirectionsService();
+      SDL.NavigationController.directionsRenderer =
+        new google.maps.DirectionsRenderer(rendererOptions);
+
+      this.map.addListener('click', function(e) {
+        SDL.NavigationController.addPOIMarker(
+          e.latLng.lat(), e.latLng.lng()
+        );
+      });
+    },
+    setLocationInfoFromItem: function(item, info) {
+      if (item.types == null) {
+        return;
+      }
+
+      // country info
+      if (item.types.indexOf('country') >= 0) {
+        var country_obj =
+          item.address_components ? item.address_components[0] : item;
+        if (country_obj.long_name) {
+          info.searchAddress.countryName = country_obj.long_name;
+        }
+        if (country_obj.short_name) {
+          info.searchAddress.countryCode = country_obj.short_name;
+        }
+        return;
+      }
+
+      // postal code
+      if (item.types.indexOf('postal_code') >= 0) {
+        var postal_code_obj =
+          item.address_components ? item.address_components[0] : item;
+        if (postal_code_obj.long_name) {
+          info.searchAddress.postalCode = postal_code_obj.long_name;
+        }
+        return;
+      }
+
+      //administrative area
+      if (item.types.indexOf('administrative_area_level_1') >= 0) {
+        var adm_area_obj =
+          item.address_components ? item.address_components[0] : item;
+        if (adm_area_obj.long_name) {
+          info.searchAddress.administrativeArea = adm_area_obj.long_name;
+        }
+        return;
+      }
+
+      //sub administrative area
+      if (item.types.indexOf('administrative_area_level_2') >= 0) {
+        var adm_subarea_obj =
+          item.address_components ? item.address_components[0] : item;
+        if (adm_subarea_obj.long_name) {
+          info.searchAddress.subAdministrativeArea = adm_subarea_obj.long_name;
+        }
+        return;
+      }
+
+      //locality
+      if (item.types.indexOf('locality') >= 0) {
+        var locality_obj =
+          item.address_components ? item.address_components[0] : item;
+        if (locality_obj.long_name) {
+          info.searchAddress.locality = locality_obj.long_name;
+        }
+        return;
+      }
+
+      //sublocality
+      if (item.types.indexOf('sublocality') >= 0) {
+        var sublocality_obj =
+          item.address_components ? item.address_components[0] : item;
+        if (sublocality_obj.long_name) {
+          info.searchAddress.subLocality = sublocality_obj.long_name;
+        }
+        return;
+      }
+
+      //thoroughfare
+      if (item.types.indexOf('route') >= 0) {
+        var route_obj =
+          item.address_components ? item.address_components[0] : item;
+        if (route_obj.long_name) {
+          info.searchAddress.thoroughfare = route_obj.long_name;
+        }
+        return;
+      }
+
+      //subthoroughfare
+      if (item.types.indexOf('street_number') >= 0) {
+        var street_obj =
+          item.address_components ? item.address_components[0] : item;
+        if (street_obj.long_name) {
+          info.searchAddress.subThoroughfare = street_obj.long_name;
+        }
+        return;
+      }
+    },
+    getLocationByCoord: function(lat, lng) {
+      for (var i = 0; i < this.model.LocationDetails.length; ++i) {
+        var point = this.model.LocationDetails[i];
+        if (point.coordinate.latitudeDegrees == lat &&
+            point.coordinate.longitudeDegrees == lng) {
+              return {
+                location: point,
+                index: i
+              };
+        }
+      }
+      return {
+        location: null,
+        index: -1
+      };;
+    },
+    addCarMarker: function(latLng) {
+      var marker = new google.maps.Marker({
+          //animation: google.maps.Animation.BOUNCE,
+          position: latLng,
+          map: this.map,
+          icon: 'images/nav/marker.png',
+          title: 'You are here'
+      });
+      this.model.set('vehicleLocationMarker', marker);
+    },
+    addPOIMarker: function(lat, lng) {
+      var latlng = new google.maps.LatLng(lat, lng);
+      var marker = this.model.selectedLocationMarker;
+      if (!marker) {
+        marker = new google.maps.Marker({
+          animation: google.maps.Animation.DROP,
+          position: latlng,
+          map: this.map
+        });
+        this.model.selectedLocationMarker = marker;
+      } else {
+        marker.setMap(this.map);
+        marker.setPosition(latlng);
+        marker.setAnimation(google.maps.Animation.DROP);
+      }
+      this.map.panTo(marker.getPosition());
+    },
+    addWaypointLocation: function(latlng) {
+      var res = SDL.NavigationController.getLocationByCoord(
+        latlng.lat(), latlng.lng()
+      );
+
+      if (res.index >= 0) {
+        return;
+      }
+
+      var location = {
+        coordinate: {
+          latitudeDegrees: latlng.lat(),
+          longitudeDegrees: latlng.lng()
+        },
+        locationName: 'Unknown Location',
+        addressLines: [],
+        locationDescription: '',
+        phoneNumber: '',
+        locationImage: {
+          value: '',
+          imageType: 'DYNAMIC'
+        },
+        searchAddress: {
+          countryName: '',
+          countryCode: '',
+          postalCode: '',
+          administrativeArea: '',
+          subAdministrativeArea: '',
+          locality: '',
+          subLocality: '',
+          thoroughfare: '',
+          subThoroughfare: ''
+        }
+      };
+
+      var locations = SDL.deepCopy(SDL.NavigationModel.LocationDetails);
+      locations.push(location);
+      SDL.NavigationModel.set('LocationDetails', locations);
+
+      geocoder = new google.maps.Geocoder();
+      geocoder.geocode({'location': latlng}, function(results, status) {
+        if (status === 'OK') {
+          var res = SDL.NavigationController.getLocationByCoord(
+            latlng.lat(), latlng.lng()
+          );
+          if (res.index < 0) {
+            return;
+          }
+          if (results[0]) {
+            res.location.addressLines = [results[0].formatted_address];
+          }
+          if (results[1]) {
+            res.location.locationName = results[1].formatted_address;
+          }
+
+          for (i = 0; i < results.length; ++i) {
+            var item = results[i];
+            for (j = 0; j < item.address_components.length; ++j) {
+              SDL.NavigationController.setLocationInfoFromItem(
+                item.address_components[j], res.location
+              );
+            }
+          }
+
+          var locations = SDL.deepCopy(SDL.NavigationModel.LocationDetails);
+          locations[res.index] = res.location;
+          SDL.NavigationModel.set('LocationDetails', locations);
+        } else {
+          Em.Logger.error('Navigation: Geocoder failed due to: ' + status);
+        }
+      });
+    },
+    waypointSelected: function() {
+      var data = SDL.NavigationView.codeEditor.content;
+      var location = JSON.parse(data);
+      var latlng = new google.maps.LatLng(
+        location.coordinate.latitudeDegrees,
+        location.coordinate.longitudeDegrees
+      );
+
+      this.model.selectedLocationMarker.setMap(this.map);
+      this.model.selectedLocationMarker.setPosition(latlng);
+      this.map.panTo(this.model.selectedLocationMarker.getPosition());
+      SDL.NavigationView.codeEditor.deactivate();
+    },
+    makeRouteCallback: function() {
+      return function(response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+          SDL.NavigationModel.selectedLocationMarker.setMap(null);
+          SDL.NavigationController.directionsRenderer.setMap(SDL.NavigationController.map);
+          SDL.NavigationController.directionsRenderer.setDirections(response);
+          var route = response.routes[0].legs[0];
+          var marker = SDL.NavigationModel.destinationLocationMarker;
+          if (!marker) {
+            marker = new google.maps.Marker({
+              animation: google.maps.Animation.DROP,
+              position: route.end_location,
+              map: SDL.NavigationController.map,
+              title: 'Destination point'
+            });
+            SDL.NavigationModel.destinationLocationMarker = marker;
+          } else {
+            marker.setMap(SDL.NavigationController.map);
+            marker.setPosition(route.end_location);
+            marker.setAnimation(google.maps.Animation.DROP);
+          }
+
+          var steps = route.steps;
+          for (j = 0; j < steps.length; j++) {
+            var nextSegment = steps[j].path;
+            for (k = 0; k < nextSegment.length; k++) {
+              SDL.NavigationController.polyline.getPath().push(
+                nextSegment[k]
+              );
+            }
+          }
+          SDL.NavigationController.set('isRouteSet', true);
+          // SDL.NavigationController.polyline.setMap(
+          //   SDL.NavigationController.map
+          // );
+        } else {
+          SDL.PopUp.create().appendTo('body').popupActivate(
+            'Navigation error: ' + status
+          );
+          return;
+        }
+      };
+    },
+    setRoutes: function() {
+      if (SDL.NavigationModel.selectedLocationMarker == null) {
+        SDL.PopUp.create().appendTo('body').popupActivate(
+            'Navigation error: Destination point is not set'
+        );
+        return;
+      }
+
+      SDL.NavigationController.addWaypointLocation(
+        SDL.NavigationModel.selectedLocationMarker.getPosition()
+      );
+
+      if (SDL.NavigationController.polyline) {
+        SDL.NavigationController.polyline.setMap(null);
+      }
+      SDL.NavigationController.polyline = new google.maps.Polyline(
+        {
+          path: [],
+          strokeColor: '#0000FF',
+          strokeWeight: 3
+        }
+      );
+
       var travelMode = google.maps.DirectionsTravelMode.DRIVING;
       var request = {
-        origin: SDL.NavigationController.model.startLoc,
-        destination: SDL.NavigationController.model.endLoc,
+        origin: SDL.NavigationModel.vehicleLocationMarker.getPosition(),
+        destination: SDL.NavigationModel.selectedLocationMarker.getPosition(),
         travelMode: travelMode
       };
       SDL.NavigationController.directionsService.route(
         request,
-        makeRouteCallback()
+        SDL.NavigationController.makeRouteCallback()
       );
-      function makeRouteCallback() {
-        var disp;
-        if (SDL.NavigationController.polyline && (
-          SDL.NavigationController.polyline.getMap() != null)) {
-          SDL.NavigationController.startAnimation();
-          return;
-        }
-        return function(response, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            SDL.NavigationController.startLocation = {};
-            SDL.NavigationController.endLocation = {};
-            SDL.NavigationController.polyline = new google.maps.Polyline(
-              {
-                path: [],
-                strokeColor: '#FFFF00',
-                strokeWeight: 3
-              }
-            );
-            SDL.NavigationController.polyline2 = new google.maps.Polyline(
-              {
-                path: [],
-                strokeColor: '#FFFF00',
-                strokeWeight: 3
-              }
-            );
-            var route = response.routes[0].legs[0];
-            disp = new google.maps.DirectionsRenderer(rendererOptions);
-            disp.setMap(SDL.NavigationController.map);
-            disp.setDirections(response);
-            SDL.NavigationController.startLocation.latlng =
-              route.start_location;
-            SDL.NavigationController.startLocation.address =
-              route.start_address;
-            if (SDL.NavigationController.marker) {
-              SDL.NavigationController.marker.setMap(null);
-            }
-            SDL.NavigationController.marker =
-              SDL.NavigationController.createMarker(
-                route.start_location,
-                'start',
-                route.start_address,
-                'green'
-              );
-            SDL.NavigationController.endLocation.latlng =
-              route.end_location;
-            SDL.NavigationController.endLocation.address =
-              route.end_address;
-            var steps = route.steps;
-            for (j = 0; j < steps.length; j++) {
-              var nextSegment = steps[j].path;
-              for (k = 0; k < nextSegment.length; k++) {
-                SDL.NavigationController.polyline.getPath().push(
-                  nextSegment[k]
-                );
-              }
-            }
-          } else {
-            SDL.PopUp.create().appendTo('body').popupActivate(
-              'Navigation error: ' + status
-            );
-            return;
-          }
-          SDL.NavigationController.polyline.setMap(
-            SDL.NavigationController.map
-          );
-          SDL.NavigationController.startAnimation();
-        };
-      };
     },
     lastVertex: 1,
     step: function() {
@@ -327,55 +532,37 @@ SDL.NavigationController = Em.Object.create(
     }.property('SDL.SDLVehicleInfoModel.vehicleData.speed'),
     tick: 500, // milliseconds
     eol: [],
-    updatePoly: function(d) {
-      // Spawn a new polyline every 20 vertices, because updating a 100-vertex
-      // poly is too slow
-      if (SDL.NavigationController.polyline2.getPath().getLength() > 20) {
-        SDL.NavigationController.polyline2 = new google.maps.Polyline(
-          {
-            path: [
-              SDL.NavigationController.polyline.getPath().getAt(
-                SDL.NavigationController.lastVertex - 1
-              )
-            ],
-            strokeColor: '#FFFF00',
-            strokeWeight: 3
-          }
-        );
-      }
-      if (SDL.NavigationController.polyline.GetIndexAtDistance(d) <
-        SDL.NavigationController.lastVertex + 2) {
-        if (SDL.NavigationController.polyline2.getPath().getLength() > 1) {
-          SDL.NavigationController.polyline2.getPath().removeAt(
-            SDL.NavigationController.polyline2.getPath().getLength() - 1
-          );
-        }
-        SDL.NavigationController.polyline2.getPath().insertAt(
-          SDL.NavigationController.polyline2.getPath().getLength(),
-          SDL.NavigationController.polyline.GetPointAtDistance(d)
-        );
-      } else {
-        SDL.NavigationController.polyline2.getPath().insertAt(
-          SDL.NavigationController.polyline2.getPath().getLength(),
-          SDL.NavigationController.endLocation.latlng
-        );
-      }
-    },
     animate: function(d) {
       if (d > SDL.NavigationController.eol) {
-        SDL.NavigationController.marker.setPosition(
-          SDL.NavigationController.endLocation.latlng
+        var endLocation =
+          SDL.NavigationModel.destinationLocationMarker.getPosition();
+        SDL.NavigationModel.destinationLocationMarker.setMap(null);
+        SDL.NavigationController.directionsRenderer.setMap(null);
+        SDL.NavigationModel.vehicleLocationMarker.setAnimation(null);
+
+        SDL.NavigationModel.vehicleLocationMarker.setPosition(
+          endLocation
         );
-        SDL.NavigationController.marker.setAnimation(
+        SDL.NavigationModel.vehicleLocationMarker.setAnimation(
           google.maps.Animation.BOUNCE
         );
+        SDL.NavigationController.set('isRouteSet', false);
+        SDL.NavigationController.toggleProperty('isAnimateStarted');
+
+        setTimeout(
+          function() {
+            SDL.NavigationModel.vehicleLocationMarker.setAnimation(null);
+          },
+          5000
+        );
+
         return;
       }
+
       var p = SDL.NavigationController.polyline.GetPointAtDistance(d);
       SDL.NavigationController.map.panTo(p);
-      SDL.NavigationController.marker.setPosition(p);
-      SDL.SDLVehicleInfoModel.onGPSDataChanged(p.lat(), p.lng());
-      SDL.NavigationController.updatePoly(d);
+      SDL.NavigationModel.vehicleLocationMarker.setPosition(p);
+      // SDL.SDLVehicleInfoModel.onGPSDataChanged(p.lat(), p.lng());
       SDL.NavigationController.timerHandle = setTimeout(
         function() {
           SDL.NavigationController.animate(
@@ -386,20 +573,25 @@ SDL.NavigationController = Em.Object.create(
       );
     },
     startAnimation: function() {
-      if (SDL.NavigationController.timerHandle) {
-        clearTimeout(SDL.NavigationController.timerHandle);
+      if (SDL.NavigationController.isAnimateStarted) {
+        if (SDL.NavigationController.timerHandle) {
+          clearTimeout(SDL.NavigationController.timerHandle);
+        }
+        SDL.NavigationController.toggleProperty('isAnimateStarted');
+        return;
       }
+      if (this.model.poi) {
+        this.model.toggleProperty('poi');
+      }
+      if (SDL.SDLVehicleInfoModel.vehicleData.speed == 0) {
+        SDL.SDLVehicleInfoModel.set('vehicleData.speed', 80);
+      }
+
+      SDL.NavigationController.toggleProperty('isAnimateStarted');
       SDL.NavigationController.eol =
         SDL.NavigationController.polyline.Distance();
       SDL.NavigationController.map.setCenter(
         SDL.NavigationController.polyline.getPath().getAt(0)
-      );
-      SDL.NavigationController.polyline2 = new google.maps.Polyline(
-        {
-          path: [SDL.NavigationController.polyline.getPath().getAt(0)],
-          strokeColor: '#FFFF00',
-          strokeWeight: 3
-        }
       );
       SDL.NavigationController.timerHandle = setTimeout(
         function() {

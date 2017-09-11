@@ -40,14 +40,9 @@ SDL.NavigationModel = Em.Object.create({
   appReqPull: [],
 
   /**
-   * Start navigation point
+   * Initial location point
    */
-  startLoc: '98 Walker St, New York, NY 10013, USA',
-
-  /**
-   * End navigation point
-   */
-  endLoc: '128 Seaman Ave, New York, NY 10034, USA',
+  initialLoc: '230 Canal St, New York, NY 10013, USA',
 
   /**
    * POI list switcher flag
@@ -70,108 +65,25 @@ SDL.NavigationModel = Em.Object.create({
    */
   wpProcessTime: 4000,
 
-  LocationDetails: [
-      {
-        coordinate: {
-          latitudeDegrees: 0,
-          longitudeDegrees: 0
-        },
-        locationName: 'locationName',
-        addressLines: ['addressLines'],
-        locationDescription: 'locationDescription',
-        phoneNumber: 'phoneNumber',
-        locationImage: {
-          value: 'images/common/defaultButtonImage.png',
-          imageType: 'DYNAMIC'
-        },
-        searchAddress: {
-          countryName: 'countryName',
-          countryCode: 'countryCode',
-          postalCode: 'postalCode',
-          administrativeArea: 'administrativeArea',
-          subAdministrativeArea: 'subAdministrativeArea',
-          locality: 'locality',
-          subLocality: 'subLocality',
-          thoroughfare: 'thoroughfare',
-          subThoroughfare: 'subThoroughfare'
-        }
-      },
-      {
-        coordinate: {
-          latitudeDegrees: 0,
-          longitudeDegrees: 0
-        },
-        locationName: 'locationName',
-        addressLines: ['addressLines'],
-        locationDescription: 'locationDescription',
-        phoneNumber: 'phoneNumber',
-        locationImage: {
-          value: 'images/common/defaultButtonImage.png',
-          imageType: 'DYNAMIC'
-        },
-        searchAddress: {
-          countryName: 'countryName',
-          countryCode: 'countryCode',
-          postalCode: 'postalCode',
-          administrativeArea: 'administrativeArea',
-          subAdministrativeArea: 'subAdministrativeArea',
-          locality: 'locality',
-          subLocality: 'subLocality',
-          thoroughfare: 'thoroughfare',
-          subThoroughfare: 'subThoroughfare'
-        }
-      },
-      {
-        coordinate: {
-          latitudeDegrees: 0,
-          longitudeDegrees: 0
-        },
-        locationName: 'locationName',
-        addressLines: ['addressLines'],
-        locationDescription: 'locationDescription',
-        phoneNumber: 'phoneNumber',
-        locationImage: {
-          value: 'images/common/defaultButtonImage.png',
-          imageType: 'DYNAMIC'
-        },
-        searchAddress: {
-          countryName: 'countryName',
-          countryCode: 'countryCode',
-          postalCode: 'postalCode',
-          administrativeArea: 'administrativeArea',
-          subAdministrativeArea: 'subAdministrativeArea',
-          locality: 'locality',
-          subLocality: 'subLocality',
-          thoroughfare: 'thoroughfare',
-          subThoroughfare: 'subThoroughfare'
-        }
-      },
-      {
-        coordinate: {
-          latitudeDegrees: 0,
-          longitudeDegrees: 0
-        },
-        locationName: 'locationName',
-        addressLines: ['addressLines'],
-        locationDescription: 'locationDescription',
-        phoneNumber: 'phoneNumber',
-        locationImage: {
-          value: 'images/common/defaultButtonImage.png',
-          imageType: 'DYNAMIC'
-        },
-        searchAddress: {
-          countryName: 'countryName',
-          countryCode: 'countryCode',
-          postalCode: 'postalCode',
-          administrativeArea: 'administrativeArea',
-          subAdministrativeArea: 'subAdministrativeArea',
-          locality: 'locality',
-          subLocality: 'subLocality',
-          thoroughfare: 'thoroughfare',
-          subThoroughfare: 'subThoroughfare'
-        }
-      }
-    ]
+  /**
+   * Current location of the vehicle
+   */
+  vehicleLocationMarker: null,
+
+  /**
+   * Destination location
+   */
+  destinationLocationMarker: null,
+
+  /**
+   * Selected location
+   */
+  selectedLocationMarker: null,
+
+  /**
+   * Saved destination waypoints array
+   */
+  LocationDetails: []
 
 }
 );
