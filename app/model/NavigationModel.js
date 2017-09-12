@@ -47,7 +47,12 @@ SDL.NavigationModel = Em.Object.create({
   /**
    * POI list switcher flag
    */
-  poi: true,
+  poi: false,
+
+  /**
+   * WP list switcher flag
+   */
+  wp: false,
 
   /**
    * Content for code editor view to display current waypoint data
@@ -63,7 +68,7 @@ SDL.NavigationModel = Em.Object.create({
    * Delay Time in ms
    * used to set the delay of GetWayPoints response
    */
-  wpProcessTime: 4000,
+  wpProcessTime: 1000,
 
   /**
    * Current location of the vehicle
