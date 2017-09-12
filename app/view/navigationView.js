@@ -55,18 +55,18 @@ SDL.NavigationView = Em.ContainerView.create(
         itemGenerator: function() {
           var items = [];
           for (var i = 0; i < SDL.NavigationModel.LocationDetails.length; i++) {
+            var details = SDL.deepCopy(SDL.NavigationModel.LocationDetails[i]);
             items.push(
               {
                 type: SDL.Button,
                 params: {
                   itemID: i,
                   className: 'button',
-                  text: SDL.NavigationModel.LocationDetails[i].locationName,
+                  text: details.locationName ? details.locationName : "Unknown location",
                   disabled: false,
-                  icon: SDL.NavigationModel.LocationDetails[i].locationImage.value,
-                  templateName: SDL.NavigationModel.LocationDetails[i].locationImage
-                    ? '' : 'text',
-                  action: 'openWayPoint',
+                  icon: details.locationImage ? details.locationImage.value : null,
+                  templateName: details.locationImage ? '' : 'text',
+                  action: 'openDestPoint',
                   target: 'SDL.NavigationController'
                 }
               }

@@ -71,19 +71,24 @@ SDL.NavigationModel = Em.Object.create({
   vehicleLocationMarker: null,
 
   /**
-   * Destination location
-   */
-  destinationLocationMarker: null,
-
-  /**
    * Selected location
    */
   selectedLocationMarker: null,
 
   /**
-   * Saved destination waypoints array
+   * Saved destination points array
    */
-  LocationDetails: []
+  LocationDetails: [],
+
+  /**
+   * Saved waypoints array
+   */
+  WayPointDetails: [],
+
+  /**
+   * Waypoint markers array
+   */
+  WayPointMarkers: []
 
 }
 );
