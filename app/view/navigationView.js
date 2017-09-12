@@ -40,8 +40,10 @@ SDL.NavigationView = Em.ContainerView.create(
     ],
     childViews: [
       'POIList',
+      'WPList',
       'codeEditor',
       'POIButton',
+      'WPButton',
       'map',
       'navigate',
       'animate'
@@ -77,6 +79,37 @@ SDL.NavigationView = Em.ContainerView.create(
         }.property('SDL.NavigationModel.LocationDetails.@each')
       }
     ),
+    WPList: SDL.List.extend(
+      {
+        elementId: 'wpList',
+        itemsOnPage: 5,
+        classNameBindings: ['SDL.NavigationModel.wp::hidden'],
+        itemsBinding: 'this.itemGenerator',
+        itemGenerator: function() {
+          var items = [];
+          for (var i = 0; i < SDL.NavigationModel.WayPointDetails.length; i++) {
+            var details = SDL.deepCopy(SDL.NavigationModel.WayPointDetails[i]);
+            items.push(
+              {
+                type: SDL.Button,
+                params: {
+                  itemID: i,
+                  className: 'button',
+                  text: details.locationName ? details.locationName : "Unknown waypoint",
+                  disabled: false,
+                  icon: details.locationImage ? details.locationImage.value : null,
+                  templateName: details.locationImage ? 'rightText' : 'text',
+                  action: 'selectWayPoint',
+                  target: 'SDL.NavigationController'
+                }
+              }
+            );
+          }
+          this.set('disableScrollbar', items.length <= this.itemsOnPage);
+          return items;
+        }.property('SDL.NavigationModel.WayPointDetails.@each')
+      }
+    ),
     codeEditor: SDL.CodeEditor.extend(
       {
         codeEditorId: 'navigationEditor',
@@ -107,8 +140,18 @@ SDL.NavigationView = Em.ContainerView.create(
           'SDL.NavigationController.isAnimateStarted'
         ),
         classNames: 'POIButton button',
-        text: 'Waypoints',
+        text: 'Places',
         action: 'showPoiList',
+        target: 'SDL.NavigationController'
+      }
+    ),
+    WPButton: SDL.Button.extend(
+      {
+        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+        elementId: 'WPButton',
+        classNames: 'WPButton button',
+        text: 'Waypoints',
+        action: 'showWpList',
         target: 'SDL.NavigationController'
       }
     ),
