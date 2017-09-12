@@ -41,7 +41,117 @@ SDL.NavigationController = Em.Object.create(
      * POI list switcher method
      */
     showPoiList: function() {
+      if (!this.model.poi && this.model.LocationDetails.length == 0) {
+        SDL.PopUp.create().appendTo('body').popupActivate(
+          'List is empty. Please navigate to some new places!'
+        );
+        return;
+      }
+      if (this.model.poi == false && this.model.wp) {
+        this.model.toggleProperty('wp');
+      }
       this.model.toggleProperty('poi');
+    },
+    /**
+     * WP list switcher method
+     */
+    showWpList: function() {
+      if (!this.model.wp && this.model.WayPointDetails.length == 0) {
+        SDL.PopUp.create().appendTo('body').popupActivate(
+          'List is empty. Please setup navigation route!'
+        );
+        return;
+      }
+      if (this.model.wp == false && this.model.poi) {
+        this.model.toggleProperty('poi');
+      }
+      this.model.toggleProperty('wp');
+    },
+    /**
+     * Callback for location prompt
+     */
+    onSendLocationPromptAnswered: function(request, result) {
+      if (result) {
+        if (SDL.NavigationController.isAnimateStarted) {
+          SDL.NavigationController.startAnimation();
+        }
+
+        SDL.NavigationController.addPOIMarker(
+          request.params.latitudeDegrees,
+          request.params.longitudeDegrees
+        );
+        SDL.NavigationController.setRoutes();
+
+        FFW.Navigation.sendNavigationResult(
+          SDL.SDLModel.data.resultCode.SUCCESS,
+          request.id,
+          request.method
+        );
+      } else {
+        FFW.Navigation.sendError(
+          SDL.SDLModel.data.resultCode.DISALLOWED,
+          request.id,
+          request.method,
+          "Navigation to destination point was rejected by driver"
+        );
+      }
+    },
+    /**
+     * Converts DateTime structure from request to Date object
+     *
+     * @param {Object} timeStamp
+     */
+    convertDateTimeStructure: function(timeStamp) {
+      var dt = new Date();
+      if (timeStamp) {
+        if (timeStamp.millisecond) {
+          dt.setUTCMilliseconds(timeStamp.millisecond);
+        }
+        if (timeStamp.second) {
+          dt.setUTCSeconds(timeStamp.second);
+        }
+        if (timeStamp.minute) {
+          dt.setUTCMinutes(timeStamp.minute);
+        }
+        if (timeStamp.hour) {
+          dt.setUTCHours(timeStamp.hour);
+        }
+        if (timeStamp.day) {
+          dt.setUTCDate(timeStamp.day);
+        }
+        if (timeStamp.month) {
+          dt.setUTCMonth(timeStamp.month - 1);
+        }
+        if (timeStamp.year) {
+          dt.setUTCFullYear(timeStamp.year);
+        }
+        if (timeStamp.tz_hour) {
+          dt.setUTCHours(dt.getUTCHours() - timeStamp.tz_hour);
+        }
+        if (timeStamp.tz_minute) {
+          dt.setUTCMinutes(dt.getUTCMinutes() - timeStamp.tz_minute);
+        }
+      }
+      return dt;
+    },
+    /**
+     * Converts Date object to DateTime structure
+     *
+     * @param {Object} dt
+     */
+    convertDateObject: function(dt) {
+      var res = {
+        millisecond: dt.getMilliseconds(),
+        second: dt.getSeconds(),
+        minute: dt.getMinutes(),
+        hour: dt.getHours(),
+        day: dt.getDate(),
+        month: dt.getMonth() + 1,
+        year: dt.getFullYear(),
+        tz_hour: Math.floor(dt.getTimezoneOffset() / 60 * -1),
+        tz_minute: dt.getTimezoneOffset() % 60 * -1
+      };
+      return res;
     },
     /**
      * Navigation.SendLocation request handler
@@ -49,25 +159,123 @@ SDL.NavigationController = Em.Object.create(
      * @param {Object} request
      */
     sendLocation: function(request) {
-      this.model.LocationDetails.push(
-        {
-          coordinate: {
-            latitudeDegrees: request.params.latitudeDegrees,
-            longitudeDegrees: request.params.longitudeDegrees
-          },
-          locationName: request.params.locationName,
-          addressLines: request.params.addressLines,
-          locationDescription: request.params.locationDescription,
-          phoneNumber: request.params.phoneNumber,
-          locationImage: request.params.locationImage,
-          searchAddress: request.params.address
+      var deliveryMode =
+        request.params.deliveryMode ? request.params.deliveryMode : 'PROMPT';
+
+      if (deliveryMode == 'PROMPT') {
+        var popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+          'Would you like to start navigation to destination point at (' + request.params.latitudeDegrees +
+          ', ' + request.params.longitudeDegrees + ')?',
+          function(result) {
+            SDL.NavigationController.onSendLocationPromptAnswered(request, result);
+          }
+        );
+
+        setTimeout(
+          function() {
+            if (popUp && popUp.active) {
+              popUp.deactivate();
+              FFW.Navigation.sendError(
+                SDL.SDLModel.data.resultCode.TIMED_OUT,
+                request.id,
+                request.method,
+                'Driver did not respond in time'
+              );
+            }
+          }, 9500
+        );
+
+        return;
+      }
+
+      if (deliveryMode == 'DESTINATION') {
+        if (SDL.NavigationController.isAnimateStarted) {
+          SDL.NavigationController.startAnimation();
         }
-      );
-      FFW.Navigation.sendNavigationResult(
-        SDL.SDLModel.data.resultCode.SUCCESS,
+
+        SDL.NavigationController.addPOIMarker(
+          request.params.latitudeDegrees,
+          request.params.longitudeDegrees
+        );
+        SDL.NavigationController.setRoutes();
+
+        FFW.Navigation.sendNavigationResult(
+          SDL.SDLModel.data.resultCode.SUCCESS,
+          request.id,
+          request.method
+        );
+        return;
+      }
+
+      if (deliveryMode == 'QUEUE') {
+        var res = SDL.NavigationController.getLocationByCoord(
+          request.params.latitudeDegrees,
+          request.params.longitudeDegrees
+        );
+
+        if (res.index < 0) {
+          var dt =
+            SDL.NavigationController.convertDateTimeStructure(request.params.timeStamp);
+
+          var locations = SDL.deepCopy(SDL.NavigationModel.LocationDetails);
+          var insertInd = SDL.NavigationController.getInsertLocationIndex(locations, dt);
+          var timeStampStuct = SDL.NavigationController.convertDateObject(dt);
+          var location = {
+            coordinate: {
+              latitudeDegrees: request.params.latitudeDegrees,
+              longitudeDegrees: request.params.longitudeDegrees
+            },
+            locationName: request.params.locationName,
+            addressLines: request.params.addressLines,
+            locationDescription: request.params.locationDescription,
+            phoneNumber: request.params.phoneNumber,
+            locationImage: request.params.locationImage,
+            searchAddress: request.params.address,
+            timeStamp: timeStampStuct
+          };
+
+          if (insertInd >= 0) {
+            locations.splice(insertInd, 0, location);
+          } else {
+            locations.push(location);
+          }
+          SDL.NavigationModel.set('LocationDetails', locations);
+        }
+
+        FFW.Navigation.sendNavigationResult(
+          SDL.SDLModel.data.resultCode.SUCCESS,
+          request.id,
+          request.method
+        );
+        return;
+      }
+
+      FFW.Navigation.sendError(
+        SDL.SDLModel.data.resultCode.INVALID_DATA,
         request.id,
         request.method
       );
+    },
+    /**
+     * Gets index to insert item with specified dt
+     *
+     * @param {Object} locations
+     * @param {Object} dt
+     */
+    getInsertLocationIndex: function(locations, dt) {
+      for (var i = 0; i < locations.length; ++i) {
+        var item = locations[i];
+        if (item.timeStamp == null) {
+          return i;
+        }
+        var stamp =
+          SDL.NavigationController.convertDateTimeStructure(item.timeStamp);
+        if (dt >= stamp) {
+          return i;
+          break;
+        }
+      }
+      return -1;
     },
     /**
      * Navigation view List Button action handler
@@ -75,7 +283,7 @@ SDL.NavigationController = Em.Object.create(
      *
      * @param {Object} element
      */
-    openWayPoint: function(element) {
+    openDestPoint: function(element) {
       var itemID = element.itemID;
       this.model.set(
         'currentWayPointData',
@@ -92,13 +300,46 @@ SDL.NavigationController = Em.Object.create(
           } else {
             var locations = SDL.deepCopy(SDL.NavigationModel.LocationDetails);
             var old_coords = locations[itemID].coordinate;
-            locations[itemID] = JSON.parse(data);
-            SDL.NavigationModel.set('LocationDetails', locations);
+            var new_location = JSON.parse(data);
+            locations.splice(itemID, 1);
+            var dt =
+              SDL.NavigationController.convertDateTimeStructure(new_location.timeStamp);
+            var insertInd =
+              SDL.NavigationController.getInsertLocationIndex(locations, dt);
 
-            FFW.Navigation.onWayPointChange([location]);
+            if (insertInd >= 0) {
+              locations.splice(insertInd, 0, new_location);
+            } else {
+              locations.push(new_location);
+            }
+            SDL.NavigationModel.set('LocationDetails', locations);
           }
         }
       );
+    },
+    /**
+     * Navigation view List Button action handler
+     * Selects current WayPoint
+     *
+     * @param {Object} element
+     */
+    selectWayPoint: function(element) {
+      var itemID = element.itemID;
+      var marker = this.model.WayPointMarkers[itemID];
+      this.map.panTo(marker.getPosition());
+    },
+    /**
+     * Navigation view List Button action handler
+     * Selects current WayPoint
+     *
+     * @param {Object} element
+     */
+    getLastWayPoint: function(element) {
+      var wp = SDL.NavigationModel.WayPointMarkers;
+      if (wp.length == 0) {
+        return null;
+      }
+      return wp[wp.length - 1];
     },
     /**
      * GetWayPoints request handler method
@@ -179,7 +420,6 @@ SDL.NavigationController = Em.Object.create(
     marker: null,
     polyline: null,
     timerHandle: null,
-    infowindow: null,
 
     initialize: function() {
       if (!this.isInitialized && SDL.States.navigation.active) {
@@ -187,14 +427,9 @@ SDL.NavigationController = Em.Object.create(
       } else {
         return false;
       }
-      infowindow = new google.maps.InfoWindow(
-        {
-          size: new google.maps.Size(150, 50)
-        }
-      );
       var myOptions = {
         zoom: 16,
-        //mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
         streetViewControl: false,
         mapTypeControl: false
       };
@@ -369,9 +604,11 @@ SDL.NavigationController = Em.Object.create(
       );
 
       if (res.index >= 0) {
+        FFW.Navigation.onWayPointChange([res.location]);
         return;
       }
 
+      var dt = new Date();
       var location = {
         coordinate: {
           latitudeDegrees: latlng.lat(),
@@ -395,11 +632,17 @@ SDL.NavigationController = Em.Object.create(
           subLocality: '',
           thoroughfare: '',
           subThoroughfare: ''
-        }
+        },
+        timeStamp: SDL.NavigationController.convertDateObject(dt)
       };
 
       var locations = SDL.deepCopy(SDL.NavigationModel.LocationDetails);
-      locations.push(location);
+      var insertInd = SDL.NavigationController.getInsertLocationIndex(locations, dt);
+      if (insertInd >= 0) {
+        locations.splice(insertInd, 0, location);
+      } else {
+        locations.push(location);
+      }
       SDL.NavigationModel.set('LocationDetails', locations);
 
       geocoder = new google.maps.Geocoder();
@@ -498,6 +741,18 @@ SDL.NavigationController = Em.Object.create(
         );
         return;
       }
+      if (SDL.NavigationController.isRouteSet == false &&
+          SDL.NavigationModel.selectedLocationMarker.getMap() == null) {
+        SDL.PopUp.create().appendTo('body').popupActivate(
+            'Navigation error: Destination point is not selected'
+        );
+        return;
+      }
+      if (SDL.NavigationController.isRouteSet &&
+          SDL.NavigationModel.selectedLocationMarker.getMap() == null) {
+        SDL.NavigationController.clearRoutes();
+        return;
+      }
 
       SDL.NavigationController.addWaypointLocation(
         SDL.NavigationModel.selectedLocationMarker.getPosition()
@@ -578,6 +833,7 @@ SDL.NavigationController = Em.Object.create(
           clearTimeout(SDL.NavigationController.timerHandle);
         }
         SDL.NavigationController.toggleProperty('isAnimateStarted');
+        SDL.NavigationController.setRoutes();
         return;
       }
       if (this.model.poi) {
@@ -597,7 +853,7 @@ SDL.NavigationController = Em.Object.create(
         function() {
           SDL.NavigationController.animate(0);
         },
-        2000
+        500
       );  // Allow time for the initial map display
     }
   }
