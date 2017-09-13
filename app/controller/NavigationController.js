@@ -351,19 +351,37 @@ SDL.NavigationController = Em.Object.create(
         this.model.appReqPull.push(request.params.appID);
         setTimeout(
           function() {
+            var data = [];
+            if (SDL.NavigationModel.WayPointDetails.length > 0) {
+              if (request.params.wayPointType == 'ALL') {
+                data = SDL.NavigationModel.WayPointDetails;
+              }
+              if (request.params.wayPointType == 'DESTINATION') {
+                var wp = SDL.NavigationModel.WayPointDetails;
+                if (wp.length > 0) {
+                  data.push(wp[wp.length - 1]);
+                }
+              }
+            }
             FFW.Navigation.wayPointSend(
               SDL.SDLModel.data.resultCode.SUCCESS,
-              SDL.NavigationModel.LocationDetails,
-              request.id
+              data,
+              request
             );
             SDL.NavigationModel.appReqPull.splice(
               SDL.NavigationModel.appReqPull.indexOf(request.params.appID), 1
             );
           },
-          SDL.NavigationModel.wpProcessTime
+          SDL.NavigationModel.wpProcessTime *
+          SDL.NavigationModel.WayPointDetails.length + 10
         );
       } else {
-        FFW.Navigation.wayPointSend(SDL.SDLModel.data.resultCode.IN_USE);
+        FFW.Navigation.sendError(
+          SDL.SDLModel.data.resultCode.IN_USE,
+          request.id,
+          request.method,
+          'Current GetWayPoint request is under processing'
+        );
       }
     },
     /**
@@ -379,6 +397,11 @@ SDL.NavigationController = Em.Object.create(
           request.id,
           request.method
         );
+        if (SDL.NavigationModel.WayPointDetails.length > 0) {
+          FFW.Navigation.onWayPointChange(
+            SDL.NavigationModel.WayPointDetails
+          );
+        }
       } else {
         FFW.Navigation.sendError(
           SDL.SDLModel.data.resultCode.REJECTED,
@@ -603,7 +626,6 @@ SDL.NavigationController = Em.Object.create(
       );
 
       if (res.index >= 0) {
-        FFW.Navigation.onWayPointChange([res.location]);
         return;
       }
 
@@ -685,10 +707,111 @@ SDL.NavigationController = Em.Object.create(
         location.coordinate.longitudeDegrees
       );
 
-      this.model.selectedLocationMarker.setMap(this.map);
-      this.model.selectedLocationMarker.setPosition(latlng);
-      this.map.panTo(this.model.selectedLocationMarker.getPosition());
+      SDL.NavigationController.addPOIMarker(latlng.lat(), latlng.lng());
       SDL.NavigationView.codeEditor.deactivate();
+    },
+    getManeuverImageName: function(maneuver, instructions) {
+      var locationImageValue = '';
+      switch (maneuver) {
+        case 'fork-left': locationImageValue = 'direction_fork_left.png'; break;
+        case 'fork-right': locationImageValue = 'direction_fork_right.png'; break;
+        case 'keep-left': locationImageValue = 'direction_continue_left.png'; break;
+        case 'keep-right': locationImageValue = 'direction_continue_right.png'; break;
+        case 'merge': locationImageValue = 'direction_merge_straight.png'; break;
+        case 'ramp-left': locationImageValue = 'direction_on_ramp_left.png'; break;
+        case 'ramp-right': locationImageValue = 'direction_on_ramp_right.png'; break;
+        case 'roundabout-left': locationImageValue = 'direction_roundabout_left.png'; break;
+        case 'roundabout-right': locationImageValue = 'direction_roundabout_right.png'; break;
+        case 'straight': locationImageValue = 'direction_continue_straight.png'; break;
+        case 'turn-left': locationImageValue = 'direction_turn_left.png'; break;
+        case 'turn-right': locationImageValue = 'direction_turn_right.png'; break;
+        case 'turn-sharp-left': locationImageValue = 'direction_turn_sharp_left.png'; break;
+        case 'turn-sharp-right': locationImageValue = 'direction_turn_sharp_right.png'; break;
+        case 'turn-slight-left': locationImageValue = 'direction_turn_slight_left.png'; break;
+        case 'turn-slight-right': locationImageValue = 'direction_turn_slight_right.png'; break;
+        case 'uturn-left': locationImageValue = 'direction_uturn.png'; break;
+        case 'uturn-right': locationImageValue = 'direction_uturn.png'; break;
+      }
+      if (locationImageValue == '' && instructions) {
+        if (instructions.search(/head/i) == 0) locationImageValue = 'direction_continue.png';
+        if (instructions.search(/continue/i) == 0) locationImageValue = 'direction_continue.png';
+        if (instructions.search(/take the ramp on the left/i) == 0) locationImageValue = 'direction_on_ramp_left.png';
+        if (instructions.search(/take the ramp on the right/i) == 0) locationImageValue = 'direction_on_ramp_right.png';
+        if (instructions.search(/take the ramp to/i) == 0) locationImageValue = 'direction_continue.png';
+        if (instructions.search(/take the /i) == 0) locationImageValue = 'direction_continue.png';
+        if (instructions.search(/at the traffic circle/i) == 0) locationImageValue = 'direction_rotary.png';
+        if (instructions.search(/merge on/i) == 0) locationImageValue = 'direction_merge_straight.png';
+        if (instructions.search(/slight left to merge/i) == 0) locationImageValue = 'direction_merge_slight_left.png';
+        if (instructions.search(/slight right to merge/i) == 0) locationImageValue = 'direction_merge_slight_right.png';
+        if (instructions.search(/left to merge/i) == 0) locationImageValue = 'direction_merge_left.png';
+        if (instructions.search(/right to merge/i) == 0) locationImageValue = 'direction_merge_right.png';
+        if (instructions.search(/turn left/i) == 0) locationImageValue = 'direction_turn_left.png';
+        if (instructions.search(/turn right/i) == 0) locationImageValue = 'direction_turn_right.png';
+        if (instructions.search(/finish/i) == 0) locationImageValue = 'direction_flag.png';
+      }
+      return locationImageValue;
+    },
+    clearWaypointMarkers: function() {
+      for (i = 0; i < SDL.NavigationModel.WayPointMarkers.length; ++i) {
+        var marker = SDL.NavigationModel.WayPointMarkers[i];
+        marker.setMap(null);
+      }
+      SDL.NavigationModel.set('WayPointMarkers', []);
+      SDL.NavigationModel.set('WayPointDetails', []);
+    },
+    addWayPointItem: function(latlng, ldescr, limage) {
+      var location = {
+        coordinate: {
+          latitudeDegrees: latlng.lat(),
+          longitudeDegrees: latlng.lng()
+        },
+        locationName: 'Waypoint ' +
+          (SDL.NavigationModel.WayPointMarkers.length + 1),
+        locationDescription: ldescr
+      };
+      if (limage != '') {
+        location.locationImage = {
+          value: 'images/nav/' + limage,
+          imageType: "DYNAMIC"
+        };
+      }
+
+      var marker = new google.maps.Marker({
+        position: latlng,
+        map: SDL.NavigationController.map
+      });
+      SDL.NavigationModel.WayPointMarkers.push(marker);
+
+      return location;
+    },
+    updateWaypointSteps: function(steps, dest) {
+      SDL.NavigationController.clearWaypointMarkers();
+      if (steps.length == 0) {
+        return;
+      }
+      var data = [];
+      for (i = 0; i < steps.length; ++i) {
+        var locationDescription =
+          steps[i].instructions.replace(/(<([^>]+)>)/ig, '');
+        var locationImageValue =
+          SDL.NavigationController.getManeuverImageName(
+            steps[i].maneuver, locationDescription
+        );
+        var wp = SDL.NavigationController.addWayPointItem(
+          steps[i].path[0], locationDescription, locationImageValue
+        );
+        data.push(wp);
+        if (i + 1 == steps.length) {
+          var wp = SDL.NavigationController.addWayPointItem(
+            steps[i].path[steps[i].path.length - 1],
+            'Finish',
+            SDL.NavigationController.getManeuverImageName('', 'finish')
+          );
+          data.push(wp);
+        }
+      }
+      SDL.NavigationModel.set('WayPointDetails', data);
+      FFW.Navigation.onWayPointChange(data);
     },
     makeRouteCallback: function() {
       return function(response, status) {
@@ -697,21 +820,6 @@ SDL.NavigationController = Em.Object.create(
           SDL.NavigationController.directionsRenderer.setMap(SDL.NavigationController.map);
           SDL.NavigationController.directionsRenderer.setDirections(response);
           var route = response.routes[0].legs[0];
-          var marker = SDL.NavigationModel.destinationLocationMarker;
-          if (!marker) {
-            marker = new google.maps.Marker({
-              animation: google.maps.Animation.DROP,
-              position: route.end_location,
-              map: SDL.NavigationController.map,
-              title: 'Destination point'
-            });
-            SDL.NavigationModel.destinationLocationMarker = marker;
-          } else {
-            marker.setMap(SDL.NavigationController.map);
-            marker.setPosition(route.end_location);
-            marker.setAnimation(google.maps.Animation.DROP);
-          }
-
           var steps = route.steps;
           for (j = 0; j < steps.length; j++) {
             var nextSegment = steps[j].path;
@@ -721,10 +829,10 @@ SDL.NavigationController = Em.Object.create(
               );
             }
           }
+          SDL.NavigationController.updateWaypointSteps(
+            steps, response.request.destination.location
+          );
           SDL.NavigationController.set('isRouteSet', true);
-          // SDL.NavigationController.polyline.setMap(
-          //   SDL.NavigationController.map
-          // );
         } else {
           SDL.PopUp.create().appendTo('body').popupActivate(
             'Navigation error: ' + status
@@ -732,6 +840,15 @@ SDL.NavigationController = Em.Object.create(
           return;
         }
       };
+    },
+    clearRoutes: function() {
+      SDL.NavigationController.toggleProperty('isRouteSet');
+      SDL.NavigationController.clearWaypointMarkers();
+      SDL.NavigationController.directionsRenderer.setMap(null);
+      SDL.NavigationModel.vehicleLocationMarker.setAnimation(null);
+      if (SDL.NavigationModel.wp) {
+        SDL.NavigationModel.toggleProperty('wp');
+      }
     },
     setRoutes: function() {
       if (SDL.NavigationModel.selectedLocationMarker == null) {
@@ -788,26 +905,23 @@ SDL.NavigationController = Em.Object.create(
     eol: [],
     animate: function(d) {
       if (d > SDL.NavigationController.eol) {
-        var endLocation =
-          SDL.NavigationModel.destinationLocationMarker.getPosition();
-        SDL.NavigationModel.destinationLocationMarker.setMap(null);
-        SDL.NavigationController.directionsRenderer.setMap(null);
-        SDL.NavigationModel.vehicleLocationMarker.setAnimation(null);
-
+        var endLocation = SDL.NavigationController.getLastWayPoint().getPosition();
         SDL.NavigationModel.vehicleLocationMarker.setPosition(
           endLocation
         );
+
+        SDL.NavigationController.toggleProperty('isAnimateStarted');
+        SDL.NavigationController.clearRoutes();
+
         SDL.NavigationModel.vehicleLocationMarker.setAnimation(
           google.maps.Animation.BOUNCE
         );
-        SDL.NavigationController.set('isRouteSet', false);
-        SDL.NavigationController.toggleProperty('isAnimateStarted');
 
         setTimeout(
           function() {
             SDL.NavigationModel.vehicleLocationMarker.setAnimation(null);
           },
-          5000
+          4000
         );
 
         return;
@@ -816,7 +930,45 @@ SDL.NavigationController = Em.Object.create(
       var p = SDL.NavigationController.polyline.GetPointAtDistance(d);
       SDL.NavigationController.map.panTo(p);
       SDL.NavigationModel.vehicleLocationMarker.setPosition(p);
-      // SDL.SDLVehicleInfoModel.onGPSDataChanged(p.lat(), p.lng());
+      SDL.SDLVehicleInfoModel.onGPSDataChanged(p.lat(), p.lng());
+
+      points = SDL.NavigationController.polyline.getPath().getArray();
+      var distLine = 0;
+      var markerIndex = 0;
+      var markersToRemove = [];
+      for (var i = 1; i < points.length; ++i) {
+        if (markerIndex < SDL.NavigationModel.WayPointMarkers.length) {
+          var pos =
+            SDL.NavigationModel.WayPointMarkers[markerIndex].getPosition();
+          if (pos.lat() == points[i - 1].lat() &&
+              pos.lng() == points[i - 1].lng()) {
+            markersToRemove.push(SDL.NavigationModel.WayPointMarkers[markerIndex]);
+            ++markerIndex;
+          }
+        }
+        distLine +=
+          google.maps.geometry.spherical.computeDistanceBetween(
+            points[i - 1], points[i]
+        );
+        if (d <= distLine) {
+          break;
+        }
+      }
+      if (markersToRemove.length > 0 ) {
+        for (var i = markersToRemove.length - 1; i >= 0; --i) {
+          markersToRemove[i].setMap(null);
+          SDL.NavigationModel.WayPointMarkers.removeObject(
+            markersToRemove[i]
+          );
+          SDL.NavigationModel.WayPointDetails.removeObject(
+            SDL.NavigationModel.WayPointDetails[i]
+          );
+        }
+        FFW.Navigation.onWayPointChange(
+            SDL.NavigationModel.WayPointDetails
+        );
+      }
+
       SDL.NavigationController.timerHandle = setTimeout(
         function() {
           SDL.NavigationController.animate(
@@ -832,7 +984,7 @@ SDL.NavigationController = Em.Object.create(
           clearTimeout(SDL.NavigationController.timerHandle);
         }
         SDL.NavigationController.toggleProperty('isAnimateStarted');
-        SDL.NavigationController.setRoutes();
+        SDL.NavigationController.clearRoutes();
         return;
       }
       if (this.model.poi) {
