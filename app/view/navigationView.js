@@ -95,7 +95,7 @@ SDL.NavigationView = Em.ContainerView.create(
                 params: {
                   itemID: i,
                   className: 'button',
-                  text: details.locationName ? details.locationName : "Unknown waypoint",
+                  text: details.locationDescription ? details.locationDescription : "Unknown waypoint",
                   disabled: false,
                   icon: details.locationImage ? details.locationImage.value : null,
                   templateName: details.locationImage ? 'rightText' : 'text',

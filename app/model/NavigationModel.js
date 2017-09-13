@@ -68,7 +68,7 @@ SDL.NavigationModel = Em.Object.create({
    * Delay Time in ms
    * used to set the delay of GetWayPoints response
    */
-  wpProcessTime: 1000,
+  wpProcessTime: 5,
 
   /**
    * Current location of the vehicle
