@@ -17,20 +17,65 @@
     top: 70px;
     left: 15px;
     z-index: 1;
+    position: absolute;
+}
+
+#poiList .list-content {
+    border-top: 0px;
+}
+
+#poiList .list-item {
+    overflow: hidden;
+}
+
+#wpList {
+    top: 70px;
+    left: 15px;
+    z-index: 1;
+    position: absolute;
+}
+
+#wpList .list-content {
+    border-top: 0px;
+}
+
+#wpList .list-item {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#wpList .right_text{
+    position: absolute;
 }
 
 .POIButton {
     z-index: 1;
     top: 335px;
     left: 20px;
-    width: 50px;
+    width: 80px;
+    text-align: center;
+}
+
+.WPButton {
+    z-index: 1;
+    top: 335px;
+    left: 110px;
+    width: 125px;
     text-align: center;
 }
 
 .navigationButton {
+    z-index: 1;
     bottom: 60px;
     left: 20px;
     width: 80px;
+    text-align: center;
+}
+
+.animateButton {
+    bottom: 60px;
+    left: 110px;
+    width: 125px;
     text-align: center;
 }
 

@@ -40,10 +40,13 @@ SDL.NavigationView = Em.ContainerView.create(
     ],
     childViews: [
       'POIList',
+      'WPList',
       'codeEditor',
       'POIButton',
+      'WPButton',
       'map',
-      'navigate'
+      'navigate',
+      'animate'
     ],
     POIList: SDL.List.extend(
       {
@@ -54,31 +57,79 @@ SDL.NavigationView = Em.ContainerView.create(
         itemGenerator: function() {
           var items = [];
           for (var i = 0; i < SDL.NavigationModel.LocationDetails.length; i++) {
+            var details = SDL.deepCopy(SDL.NavigationModel.LocationDetails[i]);
             items.push(
               {
                 type: SDL.Button,
                 params: {
                   itemID: i,
                   className: 'button',
-                  text: SDL.NavigationModel.LocationDetails[i].locationName,
+                  text: details.locationName ? details.locationName : "Unknown location",
                   disabled: false,
-                  icon: SDL.NavigationModel.LocationDetails[i].locationImage.value,
-                  templateName: SDL.NavigationModel.LocationDetails[i].locationImage
-                    ? '' : 'text',
-                  action: 'openWayPoint',
+                  icon: details.locationImage ? details.locationImage.value : null,
+                  templateName: details.locationImage ? '' : 'text',
+                  action: 'openDestPoint',
                   target: 'SDL.NavigationController'
                 }
               }
             );
           }
+          this.set('disableScrollbar', items.length <= this.itemsOnPage);
           return items;
         }.property('SDL.NavigationModel.LocationDetails.@each')
+      }
+    ),
+    WPList: SDL.List.extend(
+      {
+        elementId: 'wpList',
+        itemsOnPage: 5,
+        classNameBindings: ['SDL.NavigationModel.wp::hidden'],
+        itemsBinding: 'this.itemGenerator',
+        itemGenerator: function() {
+          var items = [];
+          for (var i = 0; i < SDL.NavigationModel.WayPointDetails.length; i++) {
+            var details = SDL.deepCopy(SDL.NavigationModel.WayPointDetails[i]);
+            items.push(
+              {
+                type: SDL.Button,
+                params: {
+                  itemID: i,
+                  className: 'button',
+                  text: details.locationDescription ? details.locationDescription : "Unknown waypoint",
+                  disabled: false,
+                  icon: details.locationImage ? details.locationImage.value : null,
+                  templateName: details.locationImage ? 'rightText' : 'text',
+                  action: 'selectWayPoint',
+                  target: 'SDL.NavigationController'
+                }
+              }
+            );
+          }
+          this.set('disableScrollbar', items.length <= this.itemsOnPage);
+          return items;
+        }.property('SDL.NavigationModel.WayPointDetails.@each')
       }
     ),
     codeEditor: SDL.CodeEditor.extend(
       {
         codeEditorId: 'navigationEditor',
-        contentBinding: 'SDL.NavigationModel.currentWayPointData'
+        contentBinding: 'SDL.NavigationModel.currentWayPointData',
+        childViews: [
+          'editor',
+          'buttonOk',
+          'buttonSelect',
+          'buttonDelete',
+          'backButton'
+        ],
+        buttonSelect: SDL.Button.extend(
+          {
+            classNames: 'button ResetButton',
+            text: 'Select',
+            action: 'waypointSelected',
+            target: 'SDL.NavigationController',
+            onDown: false
+          }
+        )
       }
     ),
     POIButton: SDL.Button.extend(
@@ -86,11 +137,21 @@ SDL.NavigationView = Em.ContainerView.create(
         classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
         elementId: 'POIButton',
         disabledBinding: Em.Binding.oneWay(
-          'SDL.NavigationController.isRouteSet'
+          'SDL.NavigationController.isAnimateStarted'
         ),
         classNames: 'POIButton button',
-        text: 'POI',
+        text: 'Places',
         action: 'showPoiList',
+        target: 'SDL.NavigationController'
+      }
+    ),
+    WPButton: SDL.Button.extend(
+      {
+        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+        elementId: 'WPButton',
+        classNames: 'WPButton button',
+        text: 'Waypoints',
+        action: 'showWpList',
         target: 'SDL.NavigationController'
       }
     ),
@@ -105,13 +166,35 @@ SDL.NavigationView = Em.ContainerView.create(
         classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
         elementId: 'navigationButton',
         disabledBinding: Em.Binding.oneWay(
-          'SDL.NavigationController.isRouteSet'
+          'SDL.NavigationController.isAnimateStarted'
         ),
         classNames: 'navigationButton button',
         text: 'Navigate',
         action: 'setRoutes',
         target: 'SDL.NavigationController'
       }
-    )
+    ),
+    animate: SDL.Button.extend(
+      {
+        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+        elementId: 'animateButton',
+        classNames: 'animateButton button',
+        disabledBinding: 'getDisabled',
+        getDisabled: function() {
+          return !SDL.NavigationController.isRouteSet;
+        }
+        .property('SDL.NavigationController.isRouteSet'),
+        textBinding: 'getAnimateText',
+        getAnimateText: function() {
+          return !SDL.NavigationController.isAnimateStarted ?
+                 'Start animation' :
+                 'Stop animation';
+        }
+        .property('SDL.NavigationController.isAnimateStarted'),
+        action: 'startAnimation',
+        target: 'SDL.NavigationController'
+      }
+    ),
+
   }
 );
