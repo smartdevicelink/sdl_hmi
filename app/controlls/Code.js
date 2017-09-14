@@ -45,6 +45,7 @@ SDL.Code = Em.View.extend({
     activate: function() {
       this.editor = ace.edit(this._parentView.codeEditorId);
       this.editor.setTheme('ace/theme/monokai');
+      this.editor.$blockScrolling = Infinity;
     }
   }
 );
