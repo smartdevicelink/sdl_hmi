@@ -66,6 +66,9 @@ SDL.RPCController = Em.Object.create(
       if (FLAGS.Navigation) {
         FFW.Navigation.connect();
       }
+      if (FLAGS.ExternalPolicies) {
+        FFW.ExternalPolicies.connect();
+      }
     },
     capabilitiesCheck: function(key, value) {
       if (key == 'imageType' && value == 'STATIC') {
