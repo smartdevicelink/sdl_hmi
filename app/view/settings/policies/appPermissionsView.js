@@ -52,7 +52,7 @@ SDL.AppPermissionsView = Em.ContainerView.create(
     label: SDL.Label.extend(
       {
         classNames: 'label',
-        content: 'Choose devices to be allowed for SDL functionality:'
+        content: 'Allowed groups for the App:'
       }
     ),
     backButton: SDL.Button.extend(
@@ -63,29 +63,18 @@ SDL.AppPermissionsView = Em.ContainerView.create(
         action: function(element) {
           SDL.SettingsController.onState(element);
           var permissions = [];
-          var eucs_status = [];
           var childViews = SDL.AppPermissionsView.appList.list._childViews;
           for (var i = 0; i < childViews.length; i++) {
-            if (childViews[i].entityID != -1) {
-              eucs_status.push(
-              {
-                'entity_id': childViews[i].entityID,
-                'entity_type': childViews[i].entityType,
-                'status': (childViews[i].allowed) ? "ON" : "OFF"
-              }
-              );
-            } else {
-              permissions.push(
+            permissions.push(
                 {
                   'name': childViews[i].name,
                   'id': childViews[i].id,
                   'allowed': childViews[i].allowed
                 }
               );
-            }
           }
           FFW.BasicCommunication.OnAppPermissionConsent(
-            permissions, eucs_status, 'GUI', SDL.AppPermissionsView.currentAppId
+            permissions, null, 'GUI', SDL.AppPermissionsView.currentAppId
           );
           SDL.AppPermissionsView.currentAppId = null;
         },
@@ -108,17 +97,10 @@ SDL.AppPermissionsView = Em.ContainerView.create(
           params: {
               action: 'changeAppPermission',
               target: 'SDL.SettingsController',
-              text: message[i].name 
-                  +(("entityID" in message[i]) 
-                      ? ", entityID: " + message[i].entityID 
-                      + ", entityType: " + message[i].entityType 
-                      : "") 
-                  + text,
+              text: message[i].name + text,
               name: message[i].name,
               allowed: message[i].allowed,
               id: message[i].id,
-              entityID: (("entityID" in message[i]) ? message[i].entityID : -1),
-              entityType: (("entityType" in message[i]) ? message[i].entityType : -1),
               appID: appID
           }
         });

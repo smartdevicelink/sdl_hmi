@@ -139,6 +139,17 @@ SDL.PoliciesView = Em.ContainerView.create(
           {
             type: SDL.Button,
             params: {
+              text: 'Consent Settings',
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              templateName: 'arrow',
+              goToState: 'policies.connectionSettings',
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
               text: 'Device state change',
               action: 'onState',
               target: 'SDL.SettingsController',

@@ -398,11 +398,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
             SDL.SettingsController.policyUpdateRetry('ABORT');
-            if(FLAGS.ExternalPolicies === true) {
-              FFW.ExternalPolicies.unpack(request.params.fileName);
-            } else {
-              this.OnReceivedPolicyUpdate(request.params.fileName);
-            }
+            this.OnReceivedPolicyUpdate(request.params.fileName);
             SDL.SettingsController.policyUpdateFile = null;
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS,
@@ -884,7 +880,7 @@ FFW.BasicCommunication = FFW.RPCObserver
         if (consentedFunctions != null) {
           JSONMessage.params.consentedFunctions = consentedFunctions;
         }
-        if (eucsStatus  != null) {
+        if (eucsStatus != null) {
           JSONMessage.params.externalConsentStatus = eucsStatus;
         }
         if (appID != null) {
