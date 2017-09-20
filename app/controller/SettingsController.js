@@ -304,12 +304,21 @@ SDL.SettingsController = Em.Object.create(
               'WARNING! No appID in GetURLs response'
             );
           }
-          FFW.BasicCommunication.OnSystemRequest(
-            'PROPRIETARY',
-            SDL.SettingsController.policyUpdateFile,
-            url.url,
-            appID
-          );
+          if(FLAGS.ExternalPolicies === true) {
+            FFW.ExternalPolicies.pack({
+              type: 'PROPRIETARY',
+              policyUpdateFile: SDL.SettingsController.policyUpdateFile,
+              url: url.url,
+              appID: appID
+            })
+          } else {
+            FFW.BasicCommunication.OnSystemRequest(
+              'PROPRIETARY',
+              SDL.SettingsController.policyUpdateFile,
+              url.url,
+              appID
+            );
+          }
         }
       }
     },
@@ -332,12 +341,21 @@ SDL.SettingsController = Em.Object.create(
           1000;
         SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
           function() {
-            FFW.BasicCommunication.OnSystemRequest(
-              'PROPRIETARY',
-              SDL.SettingsController.policyUpdateFile,
-              SDL.SDLModel.data.policyURLs[0].url,
-              SDL.SDLModel.data.policyURLs[0].appID
-            );
+            if(FLAGS.ExternalPolicies === true) {
+              FFW.ExternalPolicies.pack({
+                type: 'PROPRIETARY',
+                policyUpdateFile: SDL.SettingsController.policyUpdateFile,
+                url: SDL.SDLModel.data.policyURLs[0].url,
+                appID: SDL.SDLModel.data.policyURLs[0].appID
+              })
+            } else {
+              FFW.BasicCommunication.OnSystemRequest(
+                'PROPRIETARY',
+                SDL.SettingsController.policyUpdateFile,
+                SDL.SDLModel.data.policyURLs[0].url,
+                SDL.SDLModel.data.policyURLs[0].appID
+              );
+            }
             SDL.SettingsController.policyUpdateRetry();
           }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
         );

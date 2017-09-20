@@ -1263,12 +1263,8 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.TurnByTurnView.deactivate();
 
-      if (!SDL.SDLModel.data.phoneCallActive) {
-
-        if ('GENERAL' === reason) {
-          FFW.BasicCommunication.OnAppDeactivated(appID);
-        }
-
+      if (!SDL.SDLModel.data.phoneCallActive && reason == 'GENERAL') {
+        FFW.BasicCommunication.OnAppDeactivated(appID);
       }
     }
   }

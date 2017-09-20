@@ -1,89 +1,18 @@
 SDL.ClimateController = Em.Object.create(
   {
     modelBinding: 'SDL.ClimateControlModel',
-    setClimate: function(request) {
-      Em.Logger.log(
-        'Climate controller set climate: ' +
-        JSON.stringify(request)
-      );
-      this.model.setFanSpeed(
-        request.params.moduleData.climateControlData.fanSpeed
-      );
-      //FFW.RC.onInteriorVehicleDataNotification("CLIMATE");
-      return (
-        this.model.currentFanSpeed);
+    getTemperatureStruct: function(type, value) {
+      var t = (type == 'CELSIUS' ? value : value * 9 / 5 + 32);
+      var result = {
+        unit: type,
+        value: parseFloat(t.toFixed(1))
+      }
+      return result;
     },
-    setTemp: function(request) {
-      Em.Logger.log(
-        'Climate controller set temperature: ' + JSON.stringify(request)
-      );
-      this.model.setTemp(
-        request.params.moduleData.climateControlData.desiredTemp
-      );
-      return (
-        this.model.desiredTemp);
-    },
-    setAcEnable: function(request) {
-      this.model.setAcEnable(
-        request.params.moduleData.climateControlData.acEnable
-      );
-      return (
-        this.model.acEnable);
-    },
-    setRecirculateAirEnable: function(request) {
-      this.model.setRecirculateAirEnable(
-        request.params.moduleData.climateControlData.recirculateAirEnable
-      );
-      return (
-        this.model.recirculateAirEnable);
-    },
-    setAutoModeEnable: function(request) {
-      this.model.setAutoModeEnable(
-        request.params.moduleData.climateControlData.autoModeEnable
-      );
-      return (
-        this.model.autoModeEnable);
-    },
-    setDefrostZone: function(request) {
-      this.model.setDefrostZone(
-        request.params.moduleData.climateControlData.defrostZone
-      );
-      return (
-        this.model.defrostZone);
-    },
-    setDualModeEnable: function(request) {
-      this.model.setDualModeEnable(
-        request.params.moduleData.climateControlData.dualModeEnable
-      );
-      return (
-        this.model.dualModeEnable);
-    },
-    setPassengerTemp: function(request) {
-      Em.Logger.log(
-        'Climate controller set  passenger temperature: ' +
-        JSON.stringify(request)
-      );
-      this.model.setPassengerTemp(
-        request.params.moduleData.climateControlData.desiredTemp
-      );
-      return (
-        this.model.passengerDesiredTemp);
-    },
-    setFrequencyInteger: function(request) {
-      Em.Logger.log('climate controller set frequency integer');
-      this.model.setFrequencyInteger(
-        request.params.moduleData.radioControlData.frequencyInteger
-      );
-      return (
-        this.model.frequencyInteger);
-    },
-    setFrequencyFraction: function(request) {
-      Em.Logger.log('climate controller set frequency fraction');
-      this.model.setFrequencyFraction(
-        request.params.moduleData.radioControlData.frequencyFraction
-      );
-      return (
-        this.model.frequencyFraction);
+    extractTemperatureFromStruct: function(data) {
+      return (data.unit == 'CELSIUS'
+        ? data.value
+        : Math.round((data.value - 32) * 5 / 9));
     }
   }
 );

@@ -66,6 +66,9 @@ SDL.RPCController = Em.Object.create(
       if (FLAGS.Navigation) {
         FFW.Navigation.connect();
       }
+      if (FLAGS.ExternalPolicies) {
+        FFW.ExternalPolicies.connect();
+      }
     },
     capabilitiesCheck: function(key, value) {
       if (key == 'imageType' && value == 'STATIC') {
@@ -1977,7 +1980,13 @@ SDL.RPCController = Em.Object.create(
     RC: Em.Object.create(
       {
         resultStruct: {},
-        GetInteriorVehicleDataCapabilities: function(params) {
+        IsReady: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        GetCapabilities: function(params) {
           this.resultStruct = {
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
@@ -2079,20 +2088,6 @@ SDL.RPCController = Em.Object.create(
             this.resultStruct = {
               'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
               'resultMessage': 'Wrong type of parameter \'moduleType\'!'
-            };
-            return this.resultStruct;
-          }
-          if (params.zone == null) {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Parameter \'zone\' does not exists!'
-            };
-            return this.resultStruct;
-          }
-          if (typeof params.zone != 'object') {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Wrong type of parameter \'zone\'!'
             };
             return this.resultStruct;
           }

@@ -80,9 +80,6 @@ SDL.SDLController = Em.Object.extend(
               SDL.SDLController.model.appID,
               'USER_EXIT'
             );
-            SDL.SDLController.removeConsentForApp(
-              SDL.SDLController.model.appID
-            );
             break;
           }
           case -3:
@@ -166,7 +163,6 @@ SDL.SDLController = Em.Object.extend(
       }
     },
     userExitAction: function(appID) {
-      SDL.SDLController.removeConsentForApp(appID);
       FFW.BasicCommunication.ExitApplication(appID, 'USER_EXIT');
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia') {
@@ -217,6 +213,9 @@ SDL.SDLController = Em.Object.extend(
       var eventName = SDL.SDLModel.data.onEventChangedEnum[reason];
       if (!eventName) {
         return;
+      }
+      if ('AUDIO_SOURCE' == eventName) {
+        SDL.SDLModel.data.mediaPlayerActive = status;
       }
       FFW.BasicCommunication.OnEventChanged(eventName, status);
     },
@@ -945,13 +944,13 @@ SDL.SDLController = Em.Object.extend(
      * @constructor
      */
     UpdateAppList: function(params) {
-      var message = 'Was found ' + params.applications.length + ' apps';
-      SDL.PopUp.create().appendTo('body').popupActivate(message);
+      var list_changed = false;
       for (var i = SDL.SDLModel.data.registeredApps.length - 1; i >= 0; i--) {
         if (params.applications.filterProperty(
             'appID',
             SDL.SDLModel.data.registeredApps[i].appID
           ).length === 0) {
+          list_changed = true;
           SDL.SDLModel.onAppUnregistered(SDL.SDLModel.data.registeredApps[i]);
         }
       }
@@ -960,11 +959,25 @@ SDL.SDLController = Em.Object.extend(
             'appID',
             params.applications[i].appID
           ).length === 0) {
+          list_changed = true;
           SDL.SDLModel.onAppRegistered(params.applications[i]);
-        } else {
           SDL.SDLController.getApplicationModel(params.applications[i].appID)
-            .set('disabledToActivate', params.applications[i].greyOut);
+            .set('isUpdatedByAppList', true);
+        } else {
+          var appModel =
+            SDL.SDLController.getApplicationModel(
+              params.applications[i].appID
+          );
+          if (!appModel.isUpdatedByAppList) {
+            list_changed = true;
+            appModel.set('isUpdatedByAppList', true);
+          }
+          appModel.set('disabledToActivate', params.applications[i].greyOut);
         }
+      }
+      if (list_changed) {
+        var message = 'Was found ' + params.applications.length + ' apps';
+        SDL.PopUp.create().appendTo('body').popupActivate(message);
       }
       SDL.InfoAppsView.showAppList();
     },
@@ -1031,12 +1044,6 @@ SDL.SDLController = Em.Object.extend(
     onGetDeviceList: function() {
       SDL.States.goToStates('info.devicelist');
       SDL.SDLModel.data.set('deviceSearchProgress', true);
-    },
-    /**
-     * Enter screen vith list of devices application model
-     */
-    onGetDeviceLocation: function() {
-      SDL.States.goToStates('info.devicelocation');
     },
     /**
      * Send notification if device was choosed
