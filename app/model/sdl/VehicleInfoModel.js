@@ -269,7 +269,32 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'engineTorque': 2.5E0,
       'accPedalPosition': 10.5E0,
       'steeringWheelAngle': 1.2E0,
-      'fuelRange': 10.5E0,
+      'fuelRange': [
+        {
+          'type': 'DIESEL',
+          'range': 45.5E0
+        },
+        {
+          'type': 'GASOLINE',
+          'range': 55.5E0
+        },
+        {
+          'type': 'CNG',
+          'range': 65.5E0
+        },
+        {
+          'type': 'LPG',
+          'range': 60.5E0
+        },
+        {
+          'type': 'HYDROGEN',
+          'range': 30.5E0
+        },
+        {
+          'type': 'BATTERY',
+          'range': 20.5E0
+        }
+      ],
       'abs_State': 'ACTIVE',
       'turnSignal': 'ACTIVE',
       'tirePressureValue': {
