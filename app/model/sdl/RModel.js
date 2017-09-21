@@ -136,6 +136,12 @@ SDL.RModel = SDL.SDLModel.extend({
       applicationType = 2;
     }
 
+    if (this.driverDevice && this.driverDeviceInfo == null) {
+      if (params.deviceInfo) {
+        this.set('driverDeviceInfo', params.deviceInfo);
+      }
+    }
+
     SDL.SDLController.registerApplication(params, applicationType);
 
     if (SDL.SDLModel.data.unRegisteredApps.indexOf(params.appID) >= 0) {
