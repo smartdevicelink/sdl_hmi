@@ -125,6 +125,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'wiperStatus': 'VEHICLEDATA_WIPERSTATUS',
       'headLampStatus': 'VEHICLEDATA_HEADLAMPSTATUS',
       'engineTorque': 'VEHICLEDATA_ENGINETORQUE',
+      'engineOilLife': 'VEHICLEDATA_ENGINEOILLIFE',
       'accPedalPosition': 'VEHICLEDATA_ACCPEDAL',
       'steeringWheelAngle': 'VEHICLEDATA_STEERINGWHEEL',
       'fuelRange': 'VEHICLEDATA_FUELRANGE',
@@ -267,6 +268,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         'ambientLightSensorStatus': 'NIGHT'
       },
       'engineTorque': 2.5E0,
+      'engineOilLife': 54.2E0,
       'accPedalPosition': 10.5E0,
       'steeringWheelAngle': 1.2E0,
       'fuelRange': 10.5E0,
