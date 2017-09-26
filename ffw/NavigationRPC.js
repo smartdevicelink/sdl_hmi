@@ -315,6 +315,43 @@ FFW.Navigation = FFW.RPCObserver.create(
             );
             break;
           }
+          case 'Navigation.SetVideoConfig':
+          {
+            var rejectedParams = [];
+            if ('protocol' in request.params.config) {
+              if (request.params.config.protocol != 'RAW') {
+                Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
+                              + request.params.config.protocol);
+                rejectedParams.push('protocol');
+              }
+            }
+            if ('codec' in request.params.config) {
+              if (request.params.config.codec != 'H264') {
+                Em.Logger.log('FFW.' + request.method + ' rejects codec: '
+                              + request.params.config.codec);
+                rejectedParams.push('codec');
+              }
+            }
+            if (rejectedParams.length > 0) {
+              var JSONMessage = {
+                'jsonrpc': '2.0',
+                'id': request.id,
+                'result': {
+                  'code': SDL.SDLModel.data.resultCode.REJECTED,
+                  'method': request.method,
+                  'rejectedParams': rejectedParams
+                }
+              };
+              this.client.send(JSONMessage);
+            } else {
+              this.sendNavigationResult(
+                SDL.SDLModel.data.resultCode.SUCCESS,
+                request.id,
+                request.method
+              );
+            }
+            break;
+          }
           case 'Navigation.StartStream':
           {
             var text = 'Would you like to start Video stream?';
