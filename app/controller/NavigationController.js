@@ -421,7 +421,7 @@ SDL.NavigationController = Em.Object.create(
     timerHandle: null,
 
     initialize: function() {
-      if (!this.isInitialized && SDL.States.navigation.active) {
+      if (!this.isInitialized) {
         this.isInitialized = true;
       } else {
         return false;
