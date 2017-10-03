@@ -690,6 +690,14 @@ SDL.NavigationController = Em.Object.create(
       this.map.panTo(this.model.selectedLocationMarker.getPosition());
       SDL.NavigationView.codeEditor.deactivate();
     },
+    clearWaypointMarkers: function() {
+      for (i = 0; i < SDL.NavigationModel.WayPointMarkers.length; ++i) {
+        var marker = SDL.NavigationModel.WayPointMarkers[i];
+        marker.setMap(null);
+      }
+      SDL.NavigationModel.set('WayPointMarkers', []);
+      SDL.NavigationModel.set('WayPointDetails', []);
+    },
     makeRouteCallback: function() {
       return function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
@@ -732,6 +740,13 @@ SDL.NavigationController = Em.Object.create(
           return;
         }
       };
+    },
+    clearRoutes: function() {
+      SDL.NavigationController.toggleProperty('isRouteSet');
+      SDL.NavigationController.clearWaypointMarkers();
+      SDL.NavigationController.directionsRenderer.setMap(null);
+      SDL.NavigationModel.vehicleLocationMarker.setAnimation(null);
+      SDL.NavigationModel.destinationLocationMarker.setMap(null);
     },
     setRoutes: function() {
       if (SDL.NavigationModel.selectedLocationMarker == null) {
