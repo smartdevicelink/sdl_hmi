@@ -74,11 +74,7 @@ SDL.VehicleInfo = Em.ContainerView.create(
       {
         elementId: 'odometrInput',
         classNames: 'odometrInput',
-        keyUp: function(event, view) {
-          if (event.which == 13) {
-            SDL.SDLVehicleInfoModel.set('odometrInput', parseInt(this.value));
-          }
-        }
+        valueBinding: 'SDL.SDLVehicleInfoModel.odometrInput'
       }
     ),
     /**
@@ -206,13 +202,7 @@ SDL.VehicleInfo = Em.ContainerView.create(
       {
         elementId: 'fuelLevelInput',
         classNames: 'fuelLevelInput',
-        keyUp: function(event, view) {
-          if (event.which == 13) {
-            SDL.SDLVehicleInfoModel.set(
-              'fuelLevelInput', parseFloat(this.value)
-            );
-          }
-        }
+        valueBinding: 'SDL.SDLVehicleInfoModel.fuelLevelInput'
       }
     ),
     /**
@@ -222,11 +212,7 @@ SDL.VehicleInfo = Em.ContainerView.create(
       {
         elementId: 'speedInput',
         classNames: 'speedInput',
-        keyUp: function(event, view) {
-          if (event.which == 13) {
-            SDL.SDLVehicleInfoModel.set('speedInput', parseFloat(this.value));
-          }
-        }
+        valueBinding: 'SDL.SDLVehicleInfoModel.speedInput'
       }
     ),
     /**

@@ -368,32 +368,25 @@ SDL.SDLController = Em.Object.extend(
       return 0;
     },
     /**
+     * Filters object properties using predicate and returns
+     * object where properties are equal to predicate
+     */
+    filterObjectByPredicate: function(obj, predicate) {
+      var result = {}, key;
+
+      for (key in obj) {
+        if (obj.hasOwnProperty(key) && key == predicate) {
+          result[key] = obj[key];
+        }
+      }
+
+      return result;
+    },
+    /**
      * vehicleDataChange button handler on VehicleInfo View
      */
     vehicleDataChange: function() {
-      SDL.VehicleInfo.vehicleDataCodeEditor.activate(
-        function(data) {
-          var params = {};
-          var parsedData = JSON.parse(data);
-          for (var i in parsedData) {
-            if (SDL.SDLController.compareObjects(
-                SDL.SDLVehicleInfoModel.vehicleData[i],
-                parsedData[i]
-              )
-            ) {
-              params[i] = parsedData[i];
-            }
-          }
-          SDL.SDLVehicleInfoModel.vehicleData = parsedData;
-          if (params) {
-            FFW.VehicleInfo.OnVehicleData(params);
-          }
-        }
-      );
-      SDL.VehicleInfo.vehicleDataCodeEditor.editor.set(
-        'code',
-        JSON.stringify(SDL.SDLVehicleInfoModel.vehicleData, null, 2)
-      );
+      SDL.EditVehicleDataView.toggleActivity();
     },
     /**
      * Notify SDLCore that HMI is ready and all components are registered
