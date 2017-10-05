@@ -89,7 +89,7 @@ SDL.NavigationController = Em.Object.create(
         );
       } else {
         FFW.Navigation.sendError(
-          SDL.SDLModel.data.resultCode.DISALLOWED,
+          SDL.SDLModel.data.resultCode.REJECTED,
           request.id,
           request.method,
           "Navigation to destination point was rejected by driver"
