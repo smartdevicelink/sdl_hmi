@@ -37,16 +37,6 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
 
     this._super();
 
-    var subscribeVIData = {};
-
-    for (var key in SDL.SDLVehicleInfoModel.vehicleData) {
-      if (key != 'externalTemperature') {
-        subscribeVIData[key] = false;
-      }
-    }
-
-    this.set('subscribedData', subscribeVIData);
-
     // init properties here
     this.set('appInfo', Em.Object.create({
           field1: '<field1>',
