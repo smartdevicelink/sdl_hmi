@@ -189,9 +189,12 @@ SDL.EditVehicleDataController = Em.Object.create({
    * Applies new parameter value for currently selected key
    */
   applyParamChanges: function() {
-    this.setParameterValueForMap(
-      this.currentParameterName, this.paramValue
-    );
+    if (this.validateParam(
+      this.currentParameterName, this.paramValue)) {
+      this.setParameterValueForMap(
+        this.currentParameterName, this.paramValue
+      );
+    }
     this.set('currentParameterName', '');
     this.toggleProperty('isParamEditing');
   },
@@ -212,7 +215,20 @@ SDL.EditVehicleDataController = Em.Object.create({
     if (path.length > 1) path.pop();
 
     this.set('currentParameterPath', path.join('/'));
-  }
+  },
 
+  /**
+  * Validate engineOilLife param
+  */
+  validateParam: function(key, value) {
+    if (key == 'engineOilLife') {
+      if (value < 0 || value > 100) {
+        SDL.PopUp.create().appendTo('body').popupActivate(
+              'Please enter value from 0 to 100');
+        return false;
+      }
+    }
+    return true;
+  }
 }
 );
