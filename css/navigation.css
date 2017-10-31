@@ -64,6 +64,14 @@
     text-align: center;
 }
 
+.AddWP {
+    z-index: 1;
+    top: 335px;
+    left: 245px;
+    width: 125px;
+    text-align: center;
+}
+
 .navigationButton {
     z-index: 1;
     bottom: 60px;

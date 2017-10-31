@@ -44,6 +44,7 @@ SDL.NavigationView = Em.ContainerView.create(
       'codeEditor',
       'POIButton',
       'WPButton',
+      'AddWP',
       'map',
       'navigate',
       'animate'
@@ -152,6 +153,16 @@ SDL.NavigationView = Em.ContainerView.create(
         classNames: 'WPButton button',
         text: 'Waypoints',
         action: 'showWpList',
+        target: 'SDL.NavigationController'
+      }
+    ),
+    AddWP: SDL.Button.extend(
+      {
+        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+        elementId: 'AddWP',
+        classNames: 'AddWP button',
+        text: 'Add waypoint',
+        action: 'addWP',
         target: 'SDL.NavigationController'
       }
     ),
