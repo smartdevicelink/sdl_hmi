@@ -93,7 +93,12 @@ SDL.NavigationModel = Em.Object.create({
   /**
    * Waypoint markers array
    */
-  WayPointMarkers: []
+  WayPointMarkers: [],
+
+  /**
+   *
+   */
+  waypoints: []
 
 }
 );

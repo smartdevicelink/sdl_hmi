@@ -325,8 +325,41 @@ SDL.NavigationController = Em.Object.create(
      */
     selectWayPoint: function(element) {
       var itemID = element.itemID;
-      var marker = this.model.WayPointMarkers[itemID];
-      this.map.panTo(marker.getPosition());
+      this.model.set(
+        'currentWayPointData',
+        JSON.stringify(SDL.NavigationModel.WayPointDetails[itemID], null, 2)
+      );
+      SDL.NavigationView.codeEditor.activate(
+        function(data, isDeleted) {
+          if (isDeleted) {
+            var location = SDL.NavigationModel.WayPointDetails[itemID];
+            SDL.NavigationModel.WayPointDetails.removeObject(location);
+            var wp = SDL.NavigationModel.waypoints[itemID];
+            SDL.NavigationModel.waypoints.removeObject(wp);
+            var marker = SDL.NavigationModel.WayPointMarkers[itemID];
+            marker.setMap(null);
+            if (SDL.NavigationModel.WayPointDetails.length == 0) {
+              SDL.NavigationModel.set('wp', false);
+            }
+          } else {
+            var locations = SDL.deepCopy(SDL.NavigationModel.WayPointDetails);
+            var old_coords = locations[itemID].coordinate;
+            var new_location = JSON.parse(data);
+            locations.splice(itemID, 1);
+            var dt =
+              SDL.NavigationController.convertDateTimeStructure(new_location.timeStamp);
+            var insertInd =
+              SDL.NavigationController.getInsertLocationIndex(locations, dt);
+
+            if (insertInd >= 0) {
+              locations.splice(insertInd, 0, new_location);
+            } else {
+              locations.push(new_location);
+            }
+            SDL.NavigationModel.set('WayPointDetails', locations);
+          }
+        }
+      );
     },
     /**
      * Navigation view List Button action handler
@@ -442,6 +475,7 @@ SDL.NavigationController = Em.Object.create(
     marker: null,
     polyline: null,
     timerHandle: null,
+    endLocation: null,
 
     initialize: function() {
       if (!this.isInitialized && SDL.States.navigation.active) {
@@ -620,6 +654,23 @@ SDL.NavigationController = Em.Object.create(
       }
       this.map.panTo(marker.getPosition());
     },
+    addWP: function() {
+      if (SDL.NavigationModel.selectedLocationMarker == null) {
+        SDL.PopUp.create().appendTo('body').popupActivate(
+            'Error: Please, select WayPoint'
+        );
+        return;
+      }
+      var marker = new google.maps.Marker({
+        position: SDL.NavigationModel.selectedLocationMarker.getPosition(),
+        map: SDL.NavigationController.map
+      });
+      SDL.NavigationModel.WayPointMarkers.push(marker);
+      SDL.NavigationModel.waypoints.push({
+        location: SDL.NavigationModel.selectedLocationMarker.getPosition(),
+        stopover: true
+      });
+    },
     addWaypointLocation: function(latlng) {
       var res = SDL.NavigationController.getLocationByCoord(
         latlng.lat(), latlng.lng()
@@ -784,31 +835,23 @@ SDL.NavigationController = Em.Object.create(
 
       return location;
     },
-    updateWaypointSteps: function(steps, dest) {
+    updateWaypoints: function(legs) {
       SDL.NavigationController.clearWaypointMarkers();
-      if (steps.length == 0) {
+      if (legs.length == 0) {
         return;
       }
       var data = [];
-      for (i = 0; i < steps.length; ++i) {
+      for (i = 0; i < legs.length; ++i) {
         var locationDescription =
-          steps[i].instructions.replace(/(<([^>]+)>)/ig, '');
+          legs[i].end_address.replace(/(<([^>]+)>)/ig, '');
         var locationImageValue =
           SDL.NavigationController.getManeuverImageName(
-            steps[i].maneuver, locationDescription
+            legs[i].maneuver, locationDescription
         );
         var wp = SDL.NavigationController.addWayPointItem(
-          steps[i].path[0], locationDescription, locationImageValue
+          legs[i].end_location, locationDescription, locationImageValue
         );
         data.push(wp);
-        if (i + 1 == steps.length) {
-          var wp = SDL.NavigationController.addWayPointItem(
-            steps[i].path[steps[i].path.length - 1],
-            'Finish',
-            SDL.NavigationController.getManeuverImageName('', 'finish')
-          );
-          data.push(wp);
-        }
       }
       SDL.NavigationModel.set('WayPointDetails', data);
       FFW.Navigation.onWayPointChange(data);
@@ -819,19 +862,20 @@ SDL.NavigationController = Em.Object.create(
           SDL.NavigationModel.selectedLocationMarker.setMap(null);
           SDL.NavigationController.directionsRenderer.setMap(SDL.NavigationController.map);
           SDL.NavigationController.directionsRenderer.setDirections(response);
-          var route = response.routes[0].legs[0];
-          var steps = route.steps;
-          for (j = 0; j < steps.length; j++) {
-            var nextSegment = steps[j].path;
-            for (k = 0; k < nextSegment.length; k++) {
-              SDL.NavigationController.polyline.getPath().push(
-                nextSegment[k]
-              );
+          var legs = response.routes[0].legs;
+          for (i = 0; i < legs.length; i++){
+            var steps = legs[i].steps;
+            for (j = 0; j < steps.length; j++) {
+              var nextSegment = steps[j].path;
+              for (k = 0; k < nextSegment.length; k++) {
+                SDL.NavigationController.polyline.getPath().push(
+                  nextSegment[k]
+                );
+              }
             }
           }
-          SDL.NavigationController.updateWaypointSteps(
-            steps, response.request.destination.location
-          );
+          SDL.NavigationController.updateWaypoints(legs);
+          SDL.NavigationController.set('endLocation', legs[legs.length - 1].end_location);
           SDL.NavigationController.set('isRouteSet', true);
         } else {
           SDL.PopUp.create().appendTo('body').popupActivate(
@@ -846,9 +890,12 @@ SDL.NavigationController = Em.Object.create(
       SDL.NavigationController.clearWaypointMarkers();
       SDL.NavigationController.directionsRenderer.setMap(null);
       SDL.NavigationModel.vehicleLocationMarker.setAnimation(null);
+      SDL.NavigationController.set('endLocation', null);
+      SDL.NavigationModel.set('waypoints', []);
       if (SDL.NavigationModel.wp) {
         SDL.NavigationModel.toggleProperty('wp');
       }
+
     },
     setRoutes: function() {
       if (SDL.NavigationModel.selectedLocationMarker == null) {
@@ -889,6 +936,8 @@ SDL.NavigationController = Em.Object.create(
       var request = {
         origin: SDL.NavigationModel.vehicleLocationMarker.getPosition(),
         destination: SDL.NavigationModel.selectedLocationMarker.getPosition(),
+        waypoints: SDL.NavigationModel.waypoints,
+        optimizeWaypoints: true,
         travelMode: travelMode
       };
       SDL.NavigationController.directionsService.route(
@@ -905,9 +954,8 @@ SDL.NavigationController = Em.Object.create(
     eol: [],
     animate: function(d) {
       if (d > SDL.NavigationController.eol) {
-        var endLocation = SDL.NavigationController.getLastWayPoint().getPosition();
         SDL.NavigationModel.vehicleLocationMarker.setPosition(
-          endLocation
+          SDL.NavigationController.endLocation
         );
 
         SDL.NavigationController.toggleProperty('isAnimateStarted');
@@ -933,25 +981,26 @@ SDL.NavigationController = Em.Object.create(
       SDL.SDLVehicleInfoModel.onGPSDataChanged(p.lat(), p.lng());
 
       points = SDL.NavigationController.polyline.getPath().getArray();
-      var distLine = 0;
-      var markerIndex = 0;
       var markersToRemove = [];
-      for (var i = 1; i < points.length; ++i) {
-        if (markerIndex < SDL.NavigationModel.WayPointMarkers.length) {
+      for (var markerIndex = 0;
+        markerIndex < SDL.NavigationModel.WayPointMarkers.length; ++markerIndex){
+        var distLine = 0;
+        for (var i = 1; i < points.length; ++i) {
           var pos =
             SDL.NavigationModel.WayPointMarkers[markerIndex].getPosition();
-          if (pos.lat() == points[i - 1].lat() &&
-              pos.lng() == points[i - 1].lng()) {
+            var dist_to_nearest_wp = Math.abs(google.maps.geometry.spherical.computeDistanceBetween(
+              pos,
+              SDL.NavigationModel.vehicleLocationMarker.getPosition()));
+          if (dist_to_nearest_wp <= SDL.NavigationController.get('step') / 2) {
             markersToRemove.push(SDL.NavigationModel.WayPointMarkers[markerIndex]);
-            ++markerIndex;
           }
-        }
-        distLine +=
-          google.maps.geometry.spherical.computeDistanceBetween(
+          distLine +=
+            google.maps.geometry.spherical.computeDistanceBetween(
             points[i - 1], points[i]
-        );
-        if (d <= distLine) {
-          break;
+          );
+          if (d <= distLine) {
+            break;
+          }
         }
       }
       if (markersToRemove.length > 0 ) {
@@ -960,15 +1009,13 @@ SDL.NavigationController = Em.Object.create(
           SDL.NavigationModel.WayPointMarkers.removeObject(
             markersToRemove[i]
           );
-          SDL.NavigationModel.WayPointDetails.removeObject(
-            SDL.NavigationModel.WayPointDetails[i]
-          );
         }
+        SDL.NavigationModel.WayPointDetails.removeObject(
+            SDL.NavigationModel.WayPointDetails[0]);
         FFW.Navigation.onWayPointChange(
-            SDL.NavigationModel.WayPointDetails
+          SDL.NavigationModel.WayPointDetails
         );
       }
-
       SDL.NavigationController.timerHandle = setTimeout(
         function() {
           SDL.NavigationController.animate(
