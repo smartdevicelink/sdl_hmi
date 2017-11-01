@@ -64,6 +64,11 @@ SDL.EditVehicleDataController = Em.Object.create({
   isParamEditing: false,
 
   /**
+   * Inner storage for disabled params for every map key
+   */
+  disabledMapParams: {},
+
+  /**
    * Event when user clicks edit parameter button
    */
   onParamButtonClick: function(element) {
@@ -98,6 +103,7 @@ SDL.EditVehicleDataController = Em.Object.create({
   onArrowButtonClick: function(element) {
     var key = element.itemID;
 
+    this.saveMapParametersState();
     this.set('currentParameterPath',
       this.get('currentParameterPath') + '/' + key
     );
@@ -112,6 +118,7 @@ SDL.EditVehicleDataController = Em.Object.create({
       return;
     }
     if (this.currentParameterPath != '.') {
+      this.saveMapParametersState();
       this.gotoUpperLevelMap();
       return;
     }
@@ -132,6 +139,25 @@ SDL.EditVehicleDataController = Em.Object.create({
       }
     }
     return target[key];
+  },
+
+  /**
+   * Converts current parameter path to valid map key name
+   */
+  getMapPathKeyValue: function(path) {
+    var result = '';
+    var path = (typeof(path)==='undefined' ?
+                  this.currentParameterPath.split('/') :
+                  path.split('/'));
+
+    for (var i = 0; i < path.length; ++i) {
+      if (path[i] == '.') {
+        result += 'root';
+      } else {
+        result += '_' + path[i];
+      }
+    }
+    return result;
   },
 
   /**
@@ -163,9 +189,65 @@ SDL.EditVehicleDataController = Em.Object.create({
     }
 
     this.model.set('vehicleData' + target, newValue);
+    this.saveMapParametersState();
     if (newValue != oldValue) {
       this.notifyAboutParamChanges();
     }
+  },
+
+  /**
+   * Checks if map parameter state is disabled according to inner storage data
+   */
+  isMapParameterDisabled: function(paramName) {
+    var disabledCurrentPath =
+      SDL.EditVehicleDataController.getMapPathKeyValue();
+    var disabledCurrentParams =
+      SDL.EditVehicleDataController.get('disabledMapParams.' + disabledCurrentPath);
+
+    if (disabledCurrentParams && disabledCurrentParams.length > 0) {
+      return disabledCurrentParams.indexOf(paramName) >= 0;
+    }
+    return false;
+  },
+
+  /**
+   * Saves map parameters disabled state from UI to inner storage
+   */
+  saveMapParametersState: function() {
+    var disabledCurrentPath = this.getMapPathKeyValue();
+    var disabledCurrentParams = [];
+    var items = SDL.EditVehicleDataView.vehicleDataList.items;
+    for (var i = 0; i < items.length; ++i) {
+      if (items[i].params.disabled) {
+        disabledCurrentParams.push(items[i].params.itemID);
+      }
+    }
+    this.set('disabledMapParams.' + disabledCurrentPath, disabledCurrentParams);
+  },
+
+  /**
+   * Removes map parameters from object which was disabled by user
+   */
+  removeDisabledParams: function(rootKeyName, obj) {
+    var disabledCurrentPath = this.getMapPathKeyValue('./' + rootKeyName);
+    var disabledParams = this.get('disabledMapParams.' + disabledCurrentPath);
+
+    var targetObject = obj[rootKeyName];
+    var isArray = targetObject instanceof Array;
+    var result = isArray ? [] : {};
+    for (var key in targetObject) {
+      if (targetObject.hasOwnProperty(key) && disabledParams.indexOf(key) < 0) {
+        if (isArray) {
+          result.push(targetObject[key]);
+        } else {
+          result[key] = targetObject[key];
+        }
+      }
+    }
+
+    var resultObject = {};
+    resultObject[rootKeyName] = result;
+    return resultObject;
   },
 
   /**
@@ -182,6 +264,8 @@ SDL.EditVehicleDataController = Em.Object.create({
     var rootParamValue = SDL.SDLController.filterObjectByPredicate(
       this.model.vehicleData, rootKeyName
     );
+    var rootParamValue =
+      this.removeDisabledParams(rootKeyName, rootParamValue);
     FFW.VehicleInfo.OnVehicleData(rootParamValue);
   },
 

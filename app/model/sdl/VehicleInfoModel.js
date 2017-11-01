@@ -492,16 +492,11 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         }
       }
       text += ' are not available';
-      if (result) {
-        FFW.VehicleInfo.sendGetVehicleDataResut(
-          SDL.SDLModel.data.resultCode.SUCCESS, message.id, message.method, data
-        );
-      } else {
-        FFW.VehicleInfo.sendGetVehicleDataError(
-          SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'], message.id,
-          message.method, text, data
-        );
-      }
+      return {
+        result : result,
+        data : data,
+        info : text
+      };
     },
     /**
      * Function send gps vehicle conditions on FFW.VehicleInfo.OnVehicleData

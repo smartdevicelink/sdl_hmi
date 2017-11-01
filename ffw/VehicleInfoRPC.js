@@ -122,7 +122,28 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
         switch (request.method) {
           case 'VehicleInfo.GetVehicleData':
           {
-            SDL.SDLVehicleInfoModel.getVehicleData(request);
+            var resTable = SDL.SDLVehicleInfoModel.getVehicleData(request);
+
+            if (resTable.data) {
+              if (SDL.EditVehicleDataView.active) {
+                SDL.EditVehicleDataController.saveMapParametersState();
+              }
+              resTable.data =
+                SDL.EditVehicleDataController.removeDisabledParams(
+                  resTable.data
+                );
+            }
+            if (resTable.result) {
+              FFW.VehicleInfo.sendGetVehicleDataResut(
+                SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method,
+                resTable.data
+              );
+            } else {
+              FFW.VehicleInfo.sendGetVehicleDataError(
+                SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'], request.id,
+                  request.method, resTable.info, resTable.data
+              );
+            }
             break;
           }
           case 'VehicleInfo.ReadDID':

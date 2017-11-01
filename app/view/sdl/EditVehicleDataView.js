@@ -129,6 +129,9 @@ SDL.EditVehicleDataView = Em.ContainerView.create(
             var value = activeObject[key];
             var isComplex =
               typeof value == 'object' || typeof value == 'array';
+            var isDisabled =
+              SDL.EditVehicleDataController.isMapParameterDisabled(key);
+
             items.push(
             {
               type: SDL.Button,
@@ -137,7 +140,7 @@ SDL.EditVehicleDataView = Em.ContainerView.create(
                 className: 'button',
                 text: 'Parameter "' + key + '"' +
                   (!isComplex ? ' = ' + value : ''),
-                disabled: false,
+                disabled: isDisabled,
                 onDown: false,
                 templateName: 'text',
                 templateName: (isComplex ? 'arrow' : 'text'),
