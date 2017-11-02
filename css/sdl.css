@@ -672,8 +672,9 @@
     white-space: nowrap;
 }
 
-#EditVehicleData .list-content {
+#EditVehicleData .vdList .list-content {
     width: 500px;
+    overflow: hidden;
 }
 
 #EditVehicleData .editParameterView {

@@ -72,7 +72,7 @@ SDL.EditVehicleDataController = Em.Object.create({
    * Event when user clicks edit parameter button
    */
   onParamButtonClick: function(element) {
-    var key = element.itemID;
+    var key = element._parentView.itemID;
     this.set('currentParameterName', key);
 
     var value = this.getParameterValueFromMap(key);
@@ -101,7 +101,7 @@ SDL.EditVehicleDataController = Em.Object.create({
    * Event when user clicks arrow button
    */
   onArrowButtonClick: function(element) {
-    var key = element.itemID;
+    var key = element._parentView.itemID;
 
     this.saveMapParametersState();
     this.set('currentParameterPath',
@@ -123,6 +123,36 @@ SDL.EditVehicleDataController = Em.Object.create({
       return;
     }
     SDL.EditVehicleDataView.toggleActivity();
+  },
+
+  /**
+   * Gets pointer to currently displayed map object
+   */
+  getActiveObject: function() {
+    var keys = this.currentParameterPath.split('/');
+    var target;
+    for (var i = 0; i < keys.length; ++i) {
+      if (keys[i] == '.') {
+        target = SDL.SDLVehicleInfoModel.vehicleData;
+      } else {
+        target = target[keys[i]];
+      }
+    }
+    return target;
+  },
+
+  /**
+   * Gets list of passed object own properties sorted alphabetically
+   */
+  getSortedProperties: function(object) {
+    var properties = [];
+    for (var key in object) {
+      if (object.hasOwnProperty(key)) {
+        properties.push(key);
+      }
+    }
+    properties.sort();
+    return properties;
   },
 
   /**
@@ -216,9 +246,12 @@ SDL.EditVehicleDataController = Em.Object.create({
   saveMapParametersState: function() {
     var disabledCurrentPath = this.getMapPathKeyValue();
     var disabledCurrentParams = [];
+    var itemKeyName = SDL.EditVehicleDataView.vehicleDataList.elementId + '_item';
     var items = SDL.EditVehicleDataView.vehicleDataList.items;
     for (var i = 0; i < items.length; ++i) {
-      if (items[i].params.disabled) {
+      var item = document.getElementById(itemKeyName + i);
+      if (item && item.classList.contains('checkboxVisible') &&
+          !item.classList.contains('checkboxChecked')) {
         disabledCurrentParams.push(items[i].params.itemID);
       }
     }
@@ -228,25 +261,32 @@ SDL.EditVehicleDataController = Em.Object.create({
   /**
    * Removes map parameters from object which was disabled by user
    */
-  removeDisabledParams: function(rootKeyName, obj) {
-    var disabledCurrentPath = this.getMapPathKeyValue('./' + rootKeyName);
-    var disabledParams = this.get('disabledMapParams.' + disabledCurrentPath);
+  removeDisabledParams: function(obj) {
+    var resultObject = {};
 
-    var targetObject = obj[rootKeyName];
-    var isArray = targetObject instanceof Array;
-    var result = isArray ? [] : {};
-    for (var key in targetObject) {
-      if (targetObject.hasOwnProperty(key) && disabledParams.indexOf(key) < 0) {
-        if (isArray) {
-          result.push(targetObject[key]);
-        } else {
-          result[key] = targetObject[key];
+    for (var objKey in obj) {
+      if (!obj.hasOwnProperty(objKey)) {
+        continue;
+      }
+
+      var disabledCurrentPath = this.getMapPathKeyValue('./' + objKey);
+      var disabledParams = this.get('disabledMapParams.' + disabledCurrentPath);
+
+      var targetObject = obj[objKey];
+      var isArray = targetObject instanceof Array;
+      var outObjectItem = isArray ? [] : {};
+      for (var targetKey in targetObject) {
+        if (targetObject.hasOwnProperty(targetKey) &&
+            disabledParams.indexOf(targetKey) < 0) {
+          if (isArray) {
+            outObjectItem.push(targetObject[targetKey]);
+          } else {
+            outObjectItem[targetKey] = targetObject[targetKey];
+          }
         }
       }
+      resultObject[objKey] = outObjectItem;
     }
-
-    var resultObject = {};
-    resultObject[rootKeyName] = result;
     return resultObject;
   },
 
@@ -265,7 +305,7 @@ SDL.EditVehicleDataController = Em.Object.create({
       this.model.vehicleData, rootKeyName
     );
     var rootParamValue =
-      this.removeDisabledParams(rootKeyName, rootParamValue);
+      this.removeDisabledParams(rootParamValue);
     FFW.VehicleInfo.OnVehicleData(rootParamValue);
   },
 

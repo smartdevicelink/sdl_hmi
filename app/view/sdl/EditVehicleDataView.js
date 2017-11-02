@@ -94,35 +94,11 @@ SDL.EditVehicleDataView = Em.ContainerView.create(
         elementId: 'vdList',
         itemsOnPage: 5,
         itemsBinding: 'this.itemGenerator',
-        getActiveObject: function(rootObj, path) {
-          var keys = path.split('/');
-          var target;
-          for (var i = 0; i < keys.length; ++i) {
-            if (keys[i] == '.') {
-              target = rootObj;
-            } else {
-              target = target[keys[i]];
-            }
-          }
-          return target;
-        },
-        getSortedProperties: function(object) {
-          var properties = [];
-          for (var key in object) {
-            if (object.hasOwnProperty(key)) {
-              properties.push(key);
-            }
-          }
-          properties.sort();
-          return properties;
-        },
         itemGenerator: function() {
           var activeObject =
-            this.getActiveObject(
-              SDL.SDLVehicleInfoModel.vehicleData,
-              SDL.EditVehicleDataController.currentParameterPath
-            );
-          var properties = this.getSortedProperties(activeObject);
+            SDL.EditVehicleDataController.getActiveObject();
+          var properties =
+            SDL.EditVehicleDataController.getSortedProperties(activeObject);
           var items = [];
           for (var i = 0; i < properties.length; ++i) {
             var key = properties[i];
@@ -134,19 +110,19 @@ SDL.EditVehicleDataView = Em.ContainerView.create(
 
             items.push(
             {
-              type: SDL.Button,
+              type: SDL.CheckableButton,
               params: {
+                className: 'checkableButton',
+                disabled: false,
                 itemID: key,
-                className: 'button',
-                text: 'Parameter "' + key + '"' +
+                checkboxVisible: activeObject instanceof Array,
+                checkboxChecked: !isDisabled,
+                buttonText: 'Parameter "' + key + '"' +
                   (!isComplex ? ' = ' + value : ''),
-                disabled: isDisabled,
-                onDown: false,
-                templateName: 'text',
-                templateName: (isComplex ? 'arrow' : 'text'),
-                action: (isComplex ? 'onArrowButtonClick' :
+                buttonTemplateName: (isComplex ? 'arrow' : 'text'),
+                buttonAction: (isComplex ? 'onArrowButtonClick' :
                   'onParamButtonClick'),
-                target: 'SDL.EditVehicleDataController'
+                buttonTarget: 'SDL.EditVehicleDataController'
               }
             });
           }

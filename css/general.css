@@ -845,6 +845,27 @@ margin-top: 90px;
 
 }
 
+/*************************FOR CHECKABLE BUTTON*************************/
+.checkableButton .checkbox {
+    position: absolute;
+    height: 50%;
+    width: 10%;
+    margin-top: 2.5%;
+    cursor: pointer;
+}
+
+.checkableButton .button {
+    position: absolute;
+    height: 98%;
+    width: 90%;
+    margin-left: 10%;
+}
+
+.checkableButton.checkboxInvisible .button {
+    width: 100%;
+    margin-left: 0%;
+}
+
 /*************************FOR SCROLLBAR*************************/
 /*
 .scrollBar{
