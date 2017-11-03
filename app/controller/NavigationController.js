@@ -329,34 +329,66 @@ SDL.NavigationController = Em.Object.create(
         'currentWayPointData',
         JSON.stringify(SDL.NavigationModel.WayPointDetails[itemID], null, 2)
       );
+
+      function rebuildRoute(){
+        var travelMode = google.maps.DirectionsTravelMode.DRIVING;
+        var waypoints = SDL.NavigationController.getWaypointsRequestParam();
+        var destination = waypoints.pop();
+        var request = {
+          origin: SDL.NavigationModel.vehicleLocationMarker.getPosition(),
+          destination: destination.location,
+          waypoints: waypoints,
+          optimizeWaypoints: true,
+          travelMode: travelMode
+        };
+        SDL.NavigationController.polyline = new google.maps.Polyline({
+          path: [],
+          strokeColor: '#0000FF',
+          strokeWeight: 3
+        });
+        SDL.NavigationController.directionsService.route(
+          request,
+          SDL.NavigationController.makeRouteCallback()
+        );
+      };
+
       SDL.NavigationView.codeEditor.activate(
         function(data, isDeleted) {
           if (isDeleted) {
             var location = SDL.NavigationModel.WayPointDetails[itemID];
             SDL.NavigationModel.WayPointDetails.removeObject(location);
-            var wp = SDL.NavigationModel.waypoints[itemID];
-            SDL.NavigationModel.waypoints.removeObject(wp);
             var marker = SDL.NavigationModel.WayPointMarkers[itemID];
+            SDL.NavigationModel.WayPointMarkers.removeObject(marker);
             marker.setMap(null);
             if (SDL.NavigationModel.WayPointDetails.length == 0) {
-              SDL.NavigationModel.set('wp', false);
+              SDL.NavigationController.clearRoutes();
+              FFW.Navigation.onWayPointChange([]);
+            } else {
+              rebuildRoute();
             }
           } else {
             var locations = SDL.deepCopy(SDL.NavigationModel.WayPointDetails);
-            var old_coords = locations[itemID].coordinate;
-            var new_location = JSON.parse(data);
+            var newLocation = JSON.parse(data);
             locations.splice(itemID, 1);
             var dt =
-              SDL.NavigationController.convertDateTimeStructure(new_location.timeStamp);
+              SDL.NavigationController.convertDateTimeStructure(newLocation.timeStamp);
             var insertInd =
               SDL.NavigationController.getInsertLocationIndex(locations, dt);
 
             if (insertInd >= 0) {
-              locations.splice(insertInd, 0, new_location);
+              locations.splice(insertInd, 0, newLocation);
             } else {
-              locations.push(new_location);
+              locations.push(newLocation);
             }
             SDL.NavigationModel.set('WayPointDetails', locations);
+
+            var marker = SDL.NavigationModel.WayPointMarkers[itemID];
+            var newCoords = new google.maps.LatLng(
+              newLocation.coordinate.latitudeDegrees,
+              newLocation.coordinate.longitudeDegrees
+            );
+            marker.setPosition(newCoords);
+            rebuildRoute();
           }
         }
       );
@@ -655,7 +687,8 @@ SDL.NavigationController = Em.Object.create(
       this.map.panTo(marker.getPosition());
     },
     addWP: function() {
-      if (SDL.NavigationModel.selectedLocationMarker == null) {
+      if (SDL.NavigationModel.selectedLocationMarker == null ||
+          SDL.NavigationModel.selectedLocationMarker.getMap() == null) {
         SDL.PopUp.create().appendTo('body').popupActivate(
             'Error: Please, select WayPoint'
         );
@@ -666,10 +699,7 @@ SDL.NavigationController = Em.Object.create(
         map: SDL.NavigationController.map
       });
       SDL.NavigationModel.WayPointMarkers.push(marker);
-      SDL.NavigationModel.waypoints.push({
-        location: SDL.NavigationModel.selectedLocationMarker.getPosition(),
-        stopover: true
-      });
+      SDL.NavigationModel.selectedLocationMarker.setMap(null);
     },
     addWaypointLocation: function(latlng) {
       var res = SDL.NavigationController.getLocationByCoord(
@@ -760,6 +790,16 @@ SDL.NavigationController = Em.Object.create(
 
       SDL.NavigationController.addPOIMarker(latlng.lat(), latlng.lng());
       SDL.NavigationView.codeEditor.deactivate();
+    },
+    getWaypointsRequestParam: function() {
+      var result = [];
+      for (i = 0; i < SDL.NavigationModel.WayPointMarkers.length; ++i) {
+        result.push({
+          location: SDL.NavigationModel.WayPointMarkers[i].getPosition(),
+          stopover: true
+        });
+      }
+      return result;
     },
     getManeuverImageName: function(maneuver, instructions) {
       var locationImageValue = '';
@@ -887,15 +927,16 @@ SDL.NavigationController = Em.Object.create(
     },
     clearRoutes: function() {
       SDL.NavigationController.toggleProperty('isRouteSet');
+      if (SDL.NavigationModel.WayPointDetails.length > 0) {
+        FFW.Navigation.onWayPointChange([]);
+      }
       SDL.NavigationController.clearWaypointMarkers();
       SDL.NavigationController.directionsRenderer.setMap(null);
       SDL.NavigationModel.vehicleLocationMarker.setAnimation(null);
       SDL.NavigationController.set('endLocation', null);
-      SDL.NavigationModel.set('waypoints', []);
       if (SDL.NavigationModel.wp) {
         SDL.NavigationModel.toggleProperty('wp');
       }
-
     },
     setRoutes: function() {
       if (SDL.NavigationModel.selectedLocationMarker == null) {
@@ -936,7 +977,7 @@ SDL.NavigationController = Em.Object.create(
       var request = {
         origin: SDL.NavigationModel.vehicleLocationMarker.getPosition(),
         destination: SDL.NavigationModel.selectedLocationMarker.getPosition(),
-        waypoints: SDL.NavigationModel.waypoints,
+        waypoints: SDL.NavigationController.getWaypointsRequestParam(),
         optimizeWaypoints: true,
         travelMode: travelMode
       };
@@ -953,7 +994,8 @@ SDL.NavigationController = Em.Object.create(
     tick: 500, // milliseconds
     eol: [],
     animate: function(d) {
-      if (d > SDL.NavigationController.eol) {
+      if (d > SDL.NavigationController.eol ||
+          SDL.NavigationModel.WayPointMarkers.length == 0) {
         SDL.NavigationModel.vehicleLocationMarker.setPosition(
           SDL.NavigationController.endLocation
         );
@@ -1009,6 +1051,10 @@ SDL.NavigationController = Em.Object.create(
           SDL.NavigationModel.WayPointMarkers.removeObject(
             markersToRemove[i]
           );
+          if (SDL.NavigationModel.WayPointMarkers.length == 1) {
+            SDL.NavigationController.endLocation =
+              SDL.NavigationModel.WayPointMarkers[0].getPosition();
+          }
         }
         SDL.NavigationModel.WayPointDetails.removeObject(
             SDL.NavigationModel.WayPointDetails[0]);
@@ -1036,6 +1082,9 @@ SDL.NavigationController = Em.Object.create(
       }
       if (this.model.poi) {
         this.model.toggleProperty('poi');
+      }
+      if (this.model.wp) {
+        this.model.toggleProperty('wp');
       }
       if (SDL.SDLVehicleInfoModel.vehicleData.speed == 0) {
         SDL.SDLVehicleInfoModel.set('vehicleData.speed', 80);
