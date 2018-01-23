@@ -155,6 +155,10 @@ SDL.warningView = Em.ContainerView
                   FLAGS.set('VR', true);
                   return;
                 }
+                if (FLAGS.ExternalPolicies === null) {
+                  FLAGS.set('ExternalPolicies', false);
+                  return;                  
+                }
                 clearInterval(timer);
               }, 200
             );
@@ -170,7 +174,8 @@ SDL.warningView = Em.ContainerView
                   'VI',
                   'VR',
                   //'CAN',
-                  'RC'
+                  'RC',
+                  'ExternalPolicies'
                 ],
                 BasicCommunication: Em.ContainerView.extend(
                   {
@@ -408,6 +413,35 @@ SDL.warningView = Em.ContainerView
                         ],
                         classNames: 'canText item',
                         content: 'RC'
+                      }
+                    )
+                  }
+                ),
+                ExternalPolicies: Em.ContainerView.extend(
+                  {
+                    classNames: 'component',
+                    classNameBindings: [
+                      'SDL.FuncSwitcher.rev::not-visible'
+                    ],
+                    childViews: [
+                      'checkBox',
+                      'text'
+                    ],
+                    checkBox: Em.Checkbox.extend(
+                      {
+                        elementId: 'externalPoliciesCheckBox',
+                        classNames: 'externalPoliciesCheckBox item',
+                        checkedBinding: 'FLAGS.ExternalPolicies'
+                      }
+                    ),
+                    text: SDL.Label.extend(
+                      {
+                        tagName: 'label',
+                        attributeBindings: [
+                          'this.parentView.checkBox.elementId:for'
+                        ],
+                        classNames: 'externalPoliciesText item',
+                        content: 'External Policies'
                       }
                     )
                   }

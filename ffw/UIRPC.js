@@ -293,6 +293,9 @@ FFW.UI = FFW.RPCObserver.create(
               request.params.appID
             ).sdlSetMediaClockTimer(request.params);
             if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+              if(params.enableSeek) {
+                this.OnSeekMediaClockTimer(params.startTime, params.appID);
+              }
               this.sendUIResult(resultCode, request.id, request.method);
             } else {
               this.sendError(
@@ -339,45 +342,22 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SetDisplayLayout':
           {
-            var senResponseFlag = false;
+            var sendResponseFlag = false;
             switch (request.params.displayLayout) {
               case 'MEDIA':
-              {
-                senResponseFlag = true;
-                break;
-              }
               case 'NON-MEDIA':
-              {
-                senResponseFlag = true;
-                break;
-              }
               case 'DEFAULT':
-              {
-                senResponseFlag = true;
-                break;
-              }
               case 'ONSCREEN_PRESETS':
-              {
-                senResponseFlag = true;
-                break;
-              }
               case 'NAV_FULLSCREEN_MAP':
-              {
-                senResponseFlag = true;
-                break;
-              }
               case 'NAV_KEYBOARD':
-              {
-                senResponseFlag = true;
-                break;
-              }
               case 'NAV_LIST':
+              case 'REMOTE_CONTROL':
               {
-                senResponseFlag = true;
+                sendResponseFlag = true;
                 break;
               }
             }
-            if (senResponseFlag) {
+            if (sendResponseFlag) {
               Em.Logger.log('FFW.' + request.method + 'Response');
               // send repsonse
               var JSONMessage = {
@@ -792,11 +772,6 @@ FFW.UI = FFW.RPCObserver.create(
                       'upDownAvailable': true
                     }, {
                       'name': 'SEEKLEFT',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PLAY_PAUSE',
                       'shortPressAvailable': true,
                       'longPressAvailable': true,
                       'upDownAvailable': true
@@ -1724,6 +1699,25 @@ FFW.UI = FFW.RPCObserver.create(
         'params': {
           'data': value,
           'event': event
+        }
+      };
+      this.client.send(JSONMessage);
+    },
+    /**
+     * Callback for the seek media clock timer notification
+     *
+     * @param {Object}
+     *            seekTime
+     */
+    OnSeekMediaClockTimer: function(seekTime, appID) {
+      Em.Logger.log('FFW.UI.OnSeekMediaClockTimer');
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnSeekMediaClockTimer',
+        'params': {
+          'seekTime': seekTime,
+          'appID': appID
         }
       };
       this.client.send(JSONMessage);

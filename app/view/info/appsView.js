@@ -42,11 +42,17 @@ SDL.InfoAppsView = Em.ContainerView.create({
   childViews: [
     'vehicleHealthReport',
     'Asist911',
-    'DeviceLocationButton',
     'findNewApps',
     'getDeviceList',
     'listOfApplications'
   ],
+
+  isRcAppDisabled: function(app, driverDevice) {
+    if (!SDL.SDLModel.reverseFunctionalityEnabled) {
+      return true;
+    }
+    return driverDevice ? app.disabledToActivate : true;
+  },
 
   /**
    * Function to add application to application list
@@ -77,17 +83,10 @@ SDL.InfoAppsView = Em.ContainerView.create({
                  }
                  )
                );
-      } else if (apps[i].appType.indexOf('REMOTE_CONTROL') != -1 &&
-        apps[i].level != 'NONE' &&
-        apps[i].level != 'BACKGROUND' ||
-        SDL.SDLModel.driverDeviceInfo &&
-        apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name) {
-
+      } else if (apps[i].appType.indexOf('REMOTE_CONTROL') != -1) {
         var driverDevice = (
         SDL.SDLModel.driverDeviceInfo &&
         apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
-
-        var ownerMarker = driverDevice ? '"D" ' : '"P" ';
 
         appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
 
@@ -96,15 +95,14 @@ SDL.InfoAppsView = Em.ContainerView.create({
                    action: driverDevice ? 'onActivateSDLApp' :
                      'onDeactivatePassengerApp',
                    target: 'SDL.SDLController',
-                   text: ownerMarker + apps[i].appName + ' - ' + apps[i].deviceName,
+                   text: apps[i].appName + ' - ' + apps[i].deviceName,
                    appName: apps[i].appName,
                    appID: apps[i].appID,
                    classNames: 'list-item button',
                    iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
                    '.appIcon',
-                   disabled: false
-                 }
-                 )
+                   disabled: SDL.InfoAppsView.isRcAppDisabled(apps[i], driverDevice)
+                 })
                );
       }
     }
@@ -129,19 +127,6 @@ SDL.InfoAppsView = Em.ContainerView.create({
         textBinding: 'SDL.locale.label.view_info_apps_911Assist',
         elementId: 'infoAppsAsist911',
         arrow: true,
-        onDown: false
-      }
-    ),
-
-  DeviceLocationButton: SDL.Button.extend({
-        goToState: 'settings.system.installApplications',
-        icon: 'images/info/location.png',
-        textBinding: 'SDL.locale.label.view_info_apps_vehicle_DeviceLocation',
-        elementId: 'infoAppsLocationButton',
-        classNames: 'button deviceLocation leftButtons',
-        arrow: true,
-        action: 'onGetDeviceLocation',
-        target: 'SDL.SDLController',
         onDown: false
       }
     ),

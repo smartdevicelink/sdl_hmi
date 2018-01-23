@@ -46,34 +46,12 @@ SDL.PoliciesView = Em.ContainerView.create(
         this.get('SettingsList.list.childViews').pushObject(
           SDL.Button.create(
             {
-              action: 'OnReverseAppsAllowing',
+              classNames: 'list-item button',
+              text: 'RSDL Functionality Options',
+              templateName: 'arrow',
+              onDown: false,
+              action: 'onRSDLOptionsClick',
               target: 'SDL.SDLController',
-              textBinding: 'this.allowedProp',
-              allowedProp: function() {
-                var text;
-                if (this.allowed) {
-                  text = 'RSDL functionality - Allowed';
-                } else {
-                  text = 'RSDL functionality - Not allowed';
-                }
-                return text;
-              }.property('this.allowed'),
-              allowed: true,
-              classNames: 'list-item button'
-            }
-          )
-        );
-        this.get('SettingsList.list.childViews').pushObject(
-          SDL.Button.create(
-            {
-              action: 'setRCCapabilitiesErrorResponse',
-              target: 'SDL.SDLController',
-              textBinding: 'this.allowedProp',
-              allowedProp: function() {
-                return SDL.SDLModel.errorResponse ? 'RC error resultCode - ON' :
-                  'RC error resultCode - OFF';
-              }.property('SDL.SDLModel.errorResponse'),
-              classNames: 'list-item button'
             }
           )
         );
@@ -155,6 +133,17 @@ SDL.PoliciesView = Em.ContainerView.create(
               click: function() {
                 FFW.BasicCommunication.GetListOfPermissions();
               },
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'Consent Settings',
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              templateName: 'arrow',
+              goToState: 'policies.connectionSettings',
               onDown: false
             }
           },

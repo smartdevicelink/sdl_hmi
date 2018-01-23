@@ -130,13 +130,14 @@ SDL.SettingsController = Em.Object.create(
       }
     },
     changeAppPermission: function(element) {
+      var text = "";
       if (element.allowed) {
-        element.allowed = false;
-        element.set('text', element.name + ' - Not allowed');
+        text = element.text.replace(' - Allowed', ' - Not allowed');
       } else {
-        element.allowed = true;
-        element.set('text', element.name + ' - Allowed');
+        text = element.text.replace(' - Not allowed', ' - Allowed');
       }
+      element.set('text', text);
+      element.allowed = !element.allowed;
     },
     /**
      * Method to send request to update array with app permissions
@@ -146,6 +147,8 @@ SDL.SettingsController = Em.Object.create(
      */
     GetListOfPermissions: function(element) {
       FFW.BasicCommunication.GetListOfPermissions(element.appID);
+      SDL.AppPermissionsView.update(SDL.SDLModelData.externalConsentStatus, 0);
+      SDL.States.goToStates('settings.policies.appPermissions');
     },
     /**
      * Method to update array with app permissions which came from SDL
@@ -167,6 +170,40 @@ SDL.SettingsController = Em.Object.create(
         SDL.AppPermissionsView.update(message.result.allowedFunctions, appID);
         delete SDL.SDLModel.data.getListOfPermissionsPull[message.id];
       }
+    },
+     /**
+     * Method to update externalConsentStatus for Location
+     *
+     * @param {Object} message
+     *
+     */
+    changeUcsLocation: function(event) {
+      var ucs = SDL.SDLModel.data.externalConsentStatus;
+      if (ucs[0].status == "OFF") {
+        ucs[0].status = "ON";
+      }
+      else {
+        ucs[0].status = "OFF";
+      }
+      FFW.BasicCommunication.OnAppPermissionConsent(null, [{entityType: 1, entityID: 1, status: ucs[0].status}], "GUI", null);
+      event.set('text', event.name + ' - ' + ucs[0].status);
+    },
+     /**
+     * Method to update externalConsentStatus for Vehicle
+     *
+     * @param {Object} message
+     *
+     */
+    changeUcsVehicle: function(event) {
+      var ucs = SDL.SDLModel.data.externalConsentStatus;
+      if (ucs[1].status == "OFF") {
+        ucs[1].status = "ON";
+      }
+      else {
+        ucs[1].status = "OFF";
+      }
+      FFW.BasicCommunication.OnAppPermissionConsent(null, [{entityType: 1, entityID: 2, status: ucs[1].status}], "GUI", null);
+      event.set('text', event.name + ' - ' + ucs[1].status);
     },
     /**
      * Method to update array with app permissions with UserFriendlyMessage
@@ -267,12 +304,21 @@ SDL.SettingsController = Em.Object.create(
               'WARNING! No appID in GetURLs response'
             );
           }
-          FFW.BasicCommunication.OnSystemRequest(
-            'PROPRIETARY',
-            SDL.SettingsController.policyUpdateFile,
-            url.url,
-            appID
-          );
+          if(FLAGS.ExternalPolicies === true) {
+            FFW.ExternalPolicies.pack({
+              type: 'PROPRIETARY',
+              policyUpdateFile: SDL.SettingsController.policyUpdateFile,
+              url: url.url,
+              appID: appID
+            })
+          } else {
+            FFW.BasicCommunication.OnSystemRequest(
+              'PROPRIETARY',
+              SDL.SettingsController.policyUpdateFile,
+              url.url,
+              appID
+            );
+          }
         }
       }
     },
@@ -295,12 +341,21 @@ SDL.SettingsController = Em.Object.create(
           1000;
         SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
           function() {
-            FFW.BasicCommunication.OnSystemRequest(
-              'PROPRIETARY',
-              SDL.SettingsController.policyUpdateFile,
-              SDL.SDLModel.data.policyURLs[0].url,
-              SDL.SDLModel.data.policyURLs[0].appID
-            );
+            if(FLAGS.ExternalPolicies === true) {
+              FFW.ExternalPolicies.pack({
+                type: 'PROPRIETARY',
+                policyUpdateFile: SDL.SettingsController.policyUpdateFile,
+                url: SDL.SDLModel.data.policyURLs[0].url,
+                appID: SDL.SDLModel.data.policyURLs[0].appID
+              })
+            } else {
+              FFW.BasicCommunication.OnSystemRequest(
+                'PROPRIETARY',
+                SDL.SettingsController.policyUpdateFile,
+                SDL.SDLModel.data.policyURLs[0].url,
+                SDL.SDLModel.data.policyURLs[0].appID
+              );
+            }
             SDL.SettingsController.policyUpdateRetry();
           }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
         );

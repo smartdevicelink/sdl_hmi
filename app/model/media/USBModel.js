@@ -33,6 +33,9 @@
 
 SDL.USBModel = Em.Object.create({
     active: false,
+
+    statusBar: 'Luk Marko',
+
     /** USB Player*/
     init: function() {
       this._super();

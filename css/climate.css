@@ -60,29 +60,28 @@
 
 #climate_control .acEnable{
     top: 340px;
-    left: 170px;
-}
-#climate_control .autoModeEnable{
-    top: 340px;
-    left: 286px;
-}
-#climate_control .dualModeEnable{
-    top: 340px;
-    left: 402px;
-}
-#climate_control .recirculateAirEnable{
-    top: 340px;
-    left: 518px;
+    left: 74px;
 }
 
-#climate_control .zoneSelection {
-    bottom: 20px;
-    right: 50px;
-    position: absolute;
+#climate_control .acMaxEnable{
+    top: 340px;
+    left: 190px;
     width: 150px;
-    height: 40px;
-    color: white;
-    background: #393939;
+}
+
+#climate_control .recirculateAirEnable{
+    top: 340px;
+    left: 341px;
+}
+
+#climate_control .autoModeEnable{
+    top: 340px;
+    left: 457px;
+}
+
+#climate_control .dualModeEnable{
+    top: 340px;
+    left: 573px;
 }
 
 #desiredTemp_container.calc_container {
@@ -98,6 +97,21 @@
 #currentTemp_container.calc_container {
     top: 71px;
     right: 20px;
+}
+
+#defrostZoneLabel.label {
+    top: 270px;
+    left: 125px;
+}
+
+#temperatureUnitLabel.label {
+    top: 270px;
+    left: 317px;
+}
+
+#ventilationModeLabel.label {
+    top: 270px;
+    left: 520px;
 }
 
 .calc_container {
@@ -132,15 +146,23 @@
 
 .quattro_container{
     width: 140px;
-    height: 140px;
+    height: 71px;
     border-radius: 3px;
     border: 1px solid #393939;
     overflow: hidden;
 }
 
 #defrostZone.quattro_container{
-    top: 150px;
-    left: 200px;
+    top: 190px;
+    left: 100px;
+}
+
+.quattro_container .topLeft{
+    width: 45px;
+    height: 44px;
+    border: 1px solid #393939;
+    padding: 25px 4px 0 20px;
+    line-height: 15px;
 }
 
 .quattro_container .topRight{
@@ -148,8 +170,7 @@
     height: 29px;
     border: 1px solid #393939;
     margin-left: 70px;
-    padding: 15px;
-    padding-top: 25px;
+    padding: 24px 14px 16px 16px;
 }
 
 .quattro_container .bottomLeft{
@@ -171,11 +192,12 @@
 }
 
 #temperatureUnit.quattro_container{
-    top: 150px;
-    right: 200px;
+    top: 190px;
+    right: 350px;
     font-size: 35px;
     line-height: 70px;
 }
+
 #temperatureUnit .topRight{
     width: 69px;
     height: 69px;
@@ -203,4 +225,17 @@
     margin-left: 70px;
     margin-top: 70px;
     text-align: center;
+}
+
+#ventilationMode.quattro_container{
+    top: 190px;
+    right: 150px;
+}
+
+#ventilationMode .topRight{
+    text-align: center;
+}
+
+#ventilationMode .topLeft{
+    padding: 25px 8px 0 16px;
 }

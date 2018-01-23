@@ -48,7 +48,9 @@ SDL.SettingsView = Em.ContainerView.create(
       SDL.DeviceConfigView,
       SDL.StatisticsInfoView,
       SDL.GetUrlsView,
-      SDL.SystemErrorView
+      SDL.SystemErrorView,
+      SDL.ConnectionSettingsView,
+      SDL.RSDLOptionsView
     ],
     /** Left menu */
     leftMenu: Em.ContainerView.extend(

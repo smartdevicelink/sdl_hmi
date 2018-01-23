@@ -47,6 +47,16 @@ FFW.Navigation = FFW.RPCObserver.create(
      */
     errorResponsePull: {},
     /**
+     * Contains pointer to currently active popup window with start Audio
+     * streaming in the model or null if does not exists
+     */
+    startAudioStreamingPopup: null,
+    /**
+     * Contains pointer to currently active popup window with start Video
+     * streaming in the model or null if does not exists
+     */
+    startVideoStreamingPopup: null,
+    /**
      * access to basic RPC functionality
      */
     client: FFW.RPCClient.create(
@@ -280,7 +290,11 @@ FFW.Navigation = FFW.RPCObserver.create(
           case 'Navigation.StartAudioStream':
           {
             var text = 'Would you like to start Audio stream?';
-            SDL.PopUp.create().appendTo('body').popupActivate(
+            if (this.startAudioStreamingPopup && this.startAudioStreamingPopup.active) {
+              this.startAudioStreamingPopup.deactivate();
+            }
+
+            this.startAudioStreamingPopup = SDL.PopUp.create().appendTo('body').popupActivate(
               text, function(result) {
                 if (result) {
                   FFW.Navigation.sendNavigationResult(
@@ -308,6 +322,10 @@ FFW.Navigation = FFW.RPCObserver.create(
             SDL.SDLController.getApplicationModel(
               request.params.appID
             ).navigationAudioStream = null;
+            if (this.startAudioStreamingPopup && this.startAudioStreamingPopup.active) {
+              this.startAudioStreamingPopup.deactivate();
+              this.set('startAudioStreamingPopup', null);
+            }
             this.sendNavigationResult(
               SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,
@@ -315,10 +333,51 @@ FFW.Navigation = FFW.RPCObserver.create(
             );
             break;
           }
+          case 'Navigation.SetVideoConfig':
+          {
+            var rejectedParams = [];
+            if ('protocol' in request.params.config) {
+              if (request.params.config.protocol != 'RAW') {
+                Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
+                              + request.params.config.protocol);
+                rejectedParams.push('protocol');
+              }
+            }
+            if ('codec' in request.params.config) {
+              if (request.params.config.codec != 'H264') {
+                Em.Logger.log('FFW.' + request.method + ' rejects codec: '
+                              + request.params.config.codec);
+                rejectedParams.push('codec');
+              }
+            }
+            if (rejectedParams.length > 0) {
+              var JSONMessage = {
+                'jsonrpc': '2.0',
+                'id': request.id,
+                'result': {
+                  'code': SDL.SDLModel.data.resultCode.REJECTED,
+                  'method': request.method,
+                  'rejectedParams': rejectedParams
+                }
+              };
+              this.client.send(JSONMessage);
+            } else {
+              this.sendNavigationResult(
+                SDL.SDLModel.data.resultCode.SUCCESS,
+                request.id,
+                request.method
+              );
+            }
+            break;
+          }
           case 'Navigation.StartStream':
           {
             var text = 'Would you like to start Video stream?';
-            SDL.PopUp.create().appendTo('body').popupActivate(
+            if (this.startVideoStreamingPopup && this.startVideoStreamingPopup.active) {
+              this.startVideoStreamingPopup.deactivate();
+            }
+
+            this.startVideoStreamingPopup = SDL.PopUp.create().appendTo('body').popupActivate(
               text, function(result) {
                 if (result) {
                   SDL.SDLController.getApplicationModel(request.params.appID)
@@ -341,6 +400,7 @@ FFW.Navigation = FFW.RPCObserver.create(
             SDL.SDLController.getApplicationModel(
               request.params.appID
             ).navigationStream = request.params.url;
+
             break;
           }
           case 'Navigation.StopStream':
@@ -348,6 +408,10 @@ FFW.Navigation = FFW.RPCObserver.create(
             SDL.SDLController.getApplicationModel(
               request.params.appID
             ).navigationStream = null;
+            if (this.startVideoStreamingPopup && this.startVideoStreamingPopup.active) {
+              this.startVideoStreamingPopup.deactivate();
+              this.set('startVideoStreamingPopup', null);
+            }
             this.sendNavigationResult(
               SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,

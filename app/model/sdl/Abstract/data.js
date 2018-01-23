@@ -34,13 +34,15 @@
 SDL.SDLModelData = Em.Object.create(
   {
     /**
-     * Value from enum from HMI_API PrivacyModeState
-     */
-    appPermChangePrivacy: 'OFF',
+    *  List of default app permissions entityes for AppPermissionsView
+    */
+    externalConsentStatus: [{entityType: 1, entityID: 1, status: "Undefined"},
+                            {entityType: 1, entityID: 2, status: "Undefined"}],
     /**
      * Selected appID from AppPermissionsView
      */
     appPermChangeAppID: null,
+
     /**
      * Data came from UI.PerformInteractionRequest for ShowVRHelpItems popup
      *
@@ -111,6 +113,10 @@ SDL.SDLModelData = Em.Object.create(
      * ID of app in LIMITED HMI state
      */
     stateLimited: null,
+    /**
+     * Active state of media player on HMI for Deactivate app to handle event
+     */
+    mediaPlayerActive: false,
     /**
      * Active state of phone call on HMI for Deactivate app to handle event
      */

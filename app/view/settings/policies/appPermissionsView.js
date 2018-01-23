@@ -43,9 +43,7 @@ SDL.AppPermissionsView = Em.ContainerView.create(
       'appList',
       'label',
       'appIDSelectTitle',
-      'appIDSelect',
-      'privacyModeTitle',
-      'privacyModeSelect'
+      'appIDSelect'
     ],
     currentAppId: null,
     /**
@@ -54,7 +52,7 @@ SDL.AppPermissionsView = Em.ContainerView.create(
     label: SDL.Label.extend(
       {
         classNames: 'label',
-        content: 'Choose devices to be allowed for SDL functionality:'
+        content: 'Allowed groups for the App:'
       }
     ),
     backButton: SDL.Button.extend(
@@ -65,18 +63,18 @@ SDL.AppPermissionsView = Em.ContainerView.create(
         action: function(element) {
           SDL.SettingsController.onState(element);
           var permissions = [];
-          for (var i = 0; i <
-          SDL.AppPermissionsView.appList.list._childViews.length; i++) {
+          var childViews = SDL.AppPermissionsView.appList.list._childViews;
+          for (var i = 0; i < childViews.length; i++) {
             permissions.push(
-              {
-                'name': SDL.AppPermissionsView.appList.list._childViews[i].name,
-                'id': SDL.AppPermissionsView.appList.list._childViews[i].id,
-                'allowed': SDL.AppPermissionsView.appList.list._childViews[i].allowed
-              }
-            );
+                {
+                  'name': childViews[i].name,
+                  'id': childViews[i].id,
+                  'allowed': childViews[i].allowed
+                }
+              );
           }
           FFW.BasicCommunication.OnAppPermissionConsent(
-            permissions, 'GUI', SDL.AppPermissionsView.currentAppId
+            permissions, null, 'GUI', SDL.AppPermissionsView.currentAppId
           );
           SDL.AppPermissionsView.currentAppId = null;
         },
@@ -93,15 +91,10 @@ SDL.AppPermissionsView = Em.ContainerView.create(
       this.appList.items = [];
       for (var i = 0; i < message.length; i++) {
         var text = ' - Undefined';
-        if (message[i].allowed === true) {
-          text = ' - Allowed';
-        } else if (message[i].allowed === false) {
-          text = ' - Not allowed';
-        }
-        this.appList.items.push(
-          {
-            type: SDL.Button,
-            params: {
+        text = (message[i].allowed === true) ? ' - Allowed' : ' - Not allowed';
+        this.appList.items.push({
+          type: SDL.Button,
+          params: {
               action: 'changeAppPermission',
               target: 'SDL.SettingsController',
               text: message[i].name + text,
@@ -109,9 +102,8 @@ SDL.AppPermissionsView = Em.ContainerView.create(
               allowed: message[i].allowed,
               id: message[i].id,
               appID: appID
-            }
           }
-        );
+        });
       }
       this.appList.list.refresh();
     },
@@ -151,27 +143,6 @@ SDL.AppPermissionsView = Em.ContainerView.create(
           return list;
         }.property('SDL.SDLModel.data.registeredApps.@each'),
         valueBinding: 'SDL.SDLModel.data.appPermChangeAppID'
-      }
-    ),
-    /**
-     * Title of privacyMode group of parameters
-     */
-    privacyModeTitle: SDL.Label.extend(
-      {
-        elementId: 'privacyModeTitlePermission',
-        classNames: 'privacyModeTitle',
-        content: 'Privacy Mode'
-      }
-    ),
-    /**
-     * HMI element Select with parameters of privacyMode enum
-     */
-    privacyModeSelect: Em.Select.extend(
-      {
-        elementId: 'privacyModePermission',
-        classNames: 'privacyModeSelect',
-        content: ['ON','OFF'],
-        valueBinding: 'SDL.SDLModel.data.appPermChangePrivacy'
       }
     )
   }

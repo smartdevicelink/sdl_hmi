@@ -121,7 +121,13 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
           1: SDL.RadioPresetButton.extend({
                 elementId: 'radio_media_home_preset_button1',
                 classNames: 'a0',
-                textBinding: 'SDL.RadioModel.preset.0',
+                getPresetText: function() {
+                  var band = SDL.RadioModel.radioControlStruct.band;
+                  return SDL.RadioModel.preset[band][0];
+                }.property(
+                  'SDL.RadioModel.radioControlStruct.band'
+                ),
+                textBinding: 'getPresetText',
                 templateName: 'text',
                 homePreset: true,
                 preset: 0,
@@ -131,7 +137,13 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
           2: SDL.RadioPresetButton.extend({
                 elementId: 'radio_media_home_preset_button2',
                 classNames: 'a1',
-                textBinding: 'SDL.RadioModel.preset.1',
+                getPresetText: function() {
+                  var band = SDL.RadioModel.radioControlStruct.band;
+                  return SDL.RadioModel.preset[band][1];
+                }.property(
+                  'SDL.RadioModel.radioControlStruct.band'
+                ),
+                textBinding: 'getPresetText',
                 templateName: 'text',
                 homePreset: true,
                 preset: 1,
@@ -141,7 +153,13 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
           3: SDL.RadioPresetButton.extend({
                 elementId: 'radio_media_home_preset_button3',
                 classNames: 'a2',
-                textBinding: 'SDL.RadioModel.preset.2',
+                getPresetText: function() {
+                  var band = SDL.RadioModel.radioControlStruct.band;
+                  return SDL.RadioModel.preset[band][2];
+                }.property(
+                  'SDL.RadioModel.radioControlStruct.band'
+                ),
+                textBinding: 'getPresetText',
                 templateName: 'text',
                 homePreset: true,
                 preset: 2,
@@ -151,7 +169,13 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
           4: SDL.RadioPresetButton.extend({
                 elementId: 'radio_media_home_preset_button4',
                 classNames: 'a3',
-                textBinding: 'SDL.RadioModel.preset.3',
+                getPresetText: function() {
+                  var band = SDL.RadioModel.radioControlStruct.band;
+                  return SDL.RadioModel.preset[band][3];
+                }.property(
+                  'SDL.RadioModel.radioControlStruct.band'
+                ),
+                textBinding: 'getPresetText',
                 templateName: 'text',
                 homePreset: true,
                 preset: 3,
@@ -161,7 +185,13 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
           5: SDL.RadioPresetButton.extend({
                 elementId: 'radio_media_home_preset_button5',
                 classNames: 'a4',
-                textBinding: 'SDL.RadioModel.preset.4',
+                getPresetText: function() {
+                  var band = SDL.RadioModel.radioControlStruct.band;
+                  return SDL.RadioModel.preset[band][4];
+                }.property(
+                  'SDL.RadioModel.radioControlStruct.band'
+                ),
+                textBinding: 'getPresetText',
                 templateName: 'text',
                 homePreset: true,
                 preset: 4,
@@ -171,7 +201,13 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
           6: SDL.RadioPresetButton.extend({
                 elementId: 'radio_media_home_preset_button6',
                 classNames: 'a5',
-                textBinding: 'SDL.RadioModel.preset.5',
+                getPresetText: function() {
+                  var band = SDL.RadioModel.radioControlStruct.band;
+                  return SDL.RadioModel.preset[band][5];
+                }.property(
+                  'SDL.RadioModel.radioControlStruct.band'
+                ),
+                textBinding: 'getPresetText',
                 templateName: 'text',
                 homePreset: true,
                 preset: 5,
