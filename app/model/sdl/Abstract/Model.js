@@ -60,13 +60,6 @@ SDL.SDLModel = Em.Object.extend({
 
   },
 
-  /**
-   * List of subscribed data on VehicleInfo model
-   *
-   * @type {Object}
-   */
-  subscribedData: {},
-
   applicationStatusBar: '',
 
   updateStatusBar: function() {

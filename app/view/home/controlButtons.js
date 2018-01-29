@@ -217,7 +217,9 @@ SDL.ControlButtons = Em.ContainerView.create({
         action: function() {
 
           // this._super();
-          SDL.VehicleInfo.toggleActivity();
+          if (!SDL.EditVehicleDataView.active) {
+            SDL.VehicleInfo.toggleActivity();
+          }
         },
         templateName: 'text'
       }
