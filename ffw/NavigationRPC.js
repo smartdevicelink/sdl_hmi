@@ -168,7 +168,11 @@ FFW.Navigation = FFW.RPCObserver.create(
         switch (request.method) {
           case 'Navigation.IsReady':
           {
-            Em.Logger.log('FFW.' + request.method + 'Response');
+            Em.Logger.log('FFW.' + request.method + ' Response');
+            if (!SDL.NavigationController.isInitialized) {
+              SDL.NavigationController.initialize();
+            }
+            this.set('isReady', SDL.NavigationController.isInitialized);
             // send repsonse
             var JSONMessage = {
               'jsonrpc': '2.0',
