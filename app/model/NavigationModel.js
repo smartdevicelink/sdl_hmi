@@ -77,32 +77,7 @@ SDL.NavigationModel = Em.Object.create({
           longitudeDegrees: 0
         },
         locationName: 'locationName',
-        addressLines: 'addressLines',
-        locationDescription: 'locationDescription',
-        phoneNumber: 'phoneNumber',
-        locationImage: {
-          value: '',
-          imageType: 'DYNAMIC'
-        },
-        searchAddress: {
-          countryName: 'countryName',
-          countryCode: 'countryCode',
-          postalCode: 'postalCode',
-          administrativeArea: 'administrativeArea',
-          subAdministrativeArea: 'subAdministrativeArea',
-          locality: 'locality',
-          subLocality: 'subLocality',
-          thoroughfare: 'thoroughfare',
-          subThoroughfare: 'subThoroughfare'
-        }
-      },
-      {
-        coordinate: {
-          latitudeDegrees: 0,
-          longitudeDegrees: 0
-        },
-        locationName: 'locationName',
-        addressLines: 'addressLines',
+        addressLines: ['addressLines'],
         locationDescription: 'locationDescription',
         phoneNumber: 'phoneNumber',
         locationImage: {
@@ -127,11 +102,11 @@ SDL.NavigationModel = Em.Object.create({
           longitudeDegrees: 0
         },
         locationName: 'locationName',
-        addressLines: 'addressLines',
+        addressLines: ['addressLines'],
         locationDescription: 'locationDescription',
         phoneNumber: 'phoneNumber',
         locationImage: {
-          value: '',
+          value: 'images/common/defaultButtonImage.png',
           imageType: 'DYNAMIC'
         },
         searchAddress: {
@@ -152,7 +127,32 @@ SDL.NavigationModel = Em.Object.create({
           longitudeDegrees: 0
         },
         locationName: 'locationName',
-        addressLines: 'addressLines',
+        addressLines: ['addressLines'],
+        locationDescription: 'locationDescription',
+        phoneNumber: 'phoneNumber',
+        locationImage: {
+          value: 'images/common/defaultButtonImage.png',
+          imageType: 'DYNAMIC'
+        },
+        searchAddress: {
+          countryName: 'countryName',
+          countryCode: 'countryCode',
+          postalCode: 'postalCode',
+          administrativeArea: 'administrativeArea',
+          subAdministrativeArea: 'subAdministrativeArea',
+          locality: 'locality',
+          subLocality: 'subLocality',
+          thoroughfare: 'thoroughfare',
+          subThoroughfare: 'subThoroughfare'
+        }
+      },
+      {
+        coordinate: {
+          latitudeDegrees: 0,
+          longitudeDegrees: 0
+        },
+        locationName: 'locationName',
+        addressLines: ['addressLines'],
         locationDescription: 'locationDescription',
         phoneNumber: 'phoneNumber',
         locationImage: {
