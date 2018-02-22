@@ -293,8 +293,8 @@ FFW.UI = FFW.RPCObserver.create(
               request.params.appID
             ).sdlSetMediaClockTimer(request.params);
             if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-              if(params.enableSeek) {
-                this.OnSeekMediaClockTimer(params.startTime, params.appID);
+              if(request.params.enableSeek) {
+                this.OnSeekMediaClockTimer(request.params.startTime, request.params.appID);
               }
               this.sendUIResult(resultCode, request.id, request.method);
             } else {
