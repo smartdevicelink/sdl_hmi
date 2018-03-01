@@ -48,11 +48,11 @@ SDL.VehicleInfo = Em.ContainerView.create(
       'fuelLevelLabel',
       'speedInput',
       'speedLabel',
-      'ecu1Title',
-      'ecu1',
-      'ecu2',
-      'ecu1Data',
-      'ecu2Data',
+      // 'ecu1Title',
+      // 'ecu1',
+      // 'ecu2',
+      // 'ecu1Data',
+      // 'ecu2Data',
       'odometrTitle',
       'odometrInput',
       'onAwakeSDLButton'
@@ -114,7 +114,7 @@ SDL.VehicleInfo = Em.ContainerView.create(
       {
         elementId: 'ecu1',
         classNames: 'ecu1',
-        content: 'ECU 1:'
+        content: 'ECU 2:'
       }
     ),
     /**
