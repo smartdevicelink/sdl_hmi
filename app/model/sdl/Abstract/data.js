@@ -33,9 +33,90 @@
 
 SDL.SDLModelData = Em.Object.create(
   {
+    init: function() {
+      
+      this.vehicleDataEnumValues.driverAirbagDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.driverCurtainAirbagDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.driverKneeAirbagDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.driverSideAirbagDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.passengerAirbagDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.passengerCurtainAirbagDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.passengerKneeAirbagDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.passengerSideAirbagDeployed= this.vehicleDataEventStatusValues;
+
+      this.vehicleDataEnumValues.driverBeltDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.driverBuckleBelted= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.leftRearInflatableBelted= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.leftRow2BuckleBelted= this.vehicleDataEventStatusValues; 
+      this.vehicleDataEnumValues.leftRow3BuckleBelted= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.middleRow1BeltDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.middleRow1BuckleBelted= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.middleRow2BuckleBelted= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.middleRow3BuckleBelted= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.passengerBeltDeployed= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.passengerBuckleBelted= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.passengerChildDetected= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.rightRearInflatableBelted= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.rightRow2BuckleBelted= this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.rightRow3BuckleBelted= this.vehicleDataEventStatusValues;
+
+      this.vehicleDataEnumValues.driverDoorAjar=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.parkBrakeActive=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.ignitionStableStatus=this.IgnitionStableStatusValues;
+      this.vehicleDataEnumValues.ignitionStatus=this.IgnitionStatusValues;
+      this.vehicleDataEnumValues.passengerDoorAjar=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.rearLeftDoorAjar=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.rearRightDoorAjar=this.EventStatusBooleanValues;
+
+      this.vehicleDataEnumValues.powerModeActive=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.powerModeQualificationStatus=this.PowerModeQualificationStatusValues;
+      this.vehicleDataEnumValues.carModeStatus=this.CarModeStatus;
+      this.vehicleDataEnumValues.powerModeStatus=this.PowerModeStatus;
+
+      this.vehicleDataEnumValues.voiceRecOn=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.btIconOn=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.callActive=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.phoneRoaming=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.textMsgAvailable=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.battLevelStatus=this.DeviceLevelStatus;
+      this.vehicleDataEnumValues.stereoAudioOutputMuted=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.monoAudioOutputMuted=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.signalLevelStatus=this.DeviceLevelStatusvalues;
+      this.vehicleDataEnumValues.primaryAudioSource=this.PrimaryAudioSourceValues;
+      this.vehicleDataEnumValues.eCallEventActive=this.EventStatusBooleanValues;
+
+      this.vehicleDataEnumValues.eCallNotificationStatus=this.vehicleDataNotificationStatus;
+      this.vehicleDataEnumValues.auxECallNotificationStatus=this.vehicleDataNotificationStatus;
+      this.vehicleDataEnumValues.eCallConfirmationStatus=this.ECallConfirmationStatusValues;
+
+      this.vehicleDataEnumValues.emergencyEventType=this.EmergencyEventTypeValues;
+      this.vehicleDataEnumValues.fuelCutoffStatus=this.FuelCutoffStatusValues;
+      this.vehicleDataEnumValues.rolloverEvent=this.vehicleDataEventStatusValues;
+      this.vehicleDataEnumValues.multipleEvents=this.vehicleDataEventStatusValues;
+
+      this.vehicleDataEnumValues.compassDirection=this.CompassDirectionValues;
+      this.vehicleDataEnumValues.actual=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.dimension=this.DimensionValues;
+
+      this.vehicleDataEnumValues.ambientLightSensorStatus=this.AmbientLightStatusValues;
+      this.vehicleDataEnumValues.lowBeamsOn=this.EventStatusBooleanValues;
+      this.vehicleDataEnumValues.highBeamsOn=this.EventStatusBooleanValues;
+
+      this.vehicleDataEnumValues.e911Override=this.vehicleDataStatusValues;
+
+      this.vehicleDataEnumValues.prndl=this.PRNDLValues;
+
+      this.vehicleDataEnumValues.status=this.ComponentVolumesStatusValues;
+
+      this.vehicleDataEnumValues.pressureTelltale=this.warningLightStatusValues;
+
+      this.vehicleDataEnumValues.wiperStatus=this.wiperStatusValues;
+
+    },
     /**
      * Selected appID from AppPermissionsView
      */
+
     appPermChangeAppID: null,
 
     /** 
@@ -647,6 +728,196 @@ SDL.SDLModelData = Em.Object.create(
       'HU-HU',
       'FI-FI',
       'SK-SK'
-    ]
+    ],
+
+
+    vehicleDataEventStatusValues:[
+'NO_EVENT',
+'NO',
+'YES',
+'NOT_SUPPORTED',
+'FAULT'
+    ],
+
+    EventStatusBooleanValues:[
+    'true',
+    'false'
+    ],
+    IgnitionStatusValues:[
+    'UNKNOWN',
+    'OFF',
+    'ACCESSORY',
+    'RUN',
+    'START',
+    'INVALID'
+    ],
+
+IgnitionStableStatusValues:[
+'IGNITION_SWITCH_NOT_STABLE',
+'IGNITION_SWITCH_STABLE',
+'MISSING_FROM_TRANSMITTER'
+],
+
+PowerModeQualificationStatusValues:[
+'POWER_MODE_UNDEFINED',
+'POWER_MODE_EVALUATION_IN_PROGRESS',
+'NOT_DEFINED',
+'POWER_MODE_OK'
+],
+CarModeStatusValues:[
+'NORMAL',
+'FACTORY',
+'TRANSPORT',
+'CRASH'
+],
+
+PowerModeStatusValues:[
+'KEY_OUT',
+'KEY_RECENTLY_OUT',
+'KEY_APPROVED_0',
+'POST_ACCESORY_0',
+'ACCESORY_1',
+'POST_IGNITION_1',
+'IGNITION_ON_2',
+'RUNNING_2',
+'CRANK_3'
+],
+
+DeviceLevelStatusValues:[
+'ZERO_LEVEL_BARS',
+'ONE_LEVEL_BARS',
+'TWO_LEVEL_BARS',
+'THREE_LEVEL_BARS',
+'FOUR_LEVEL_BARS',
+'NOT_PROVIDED'
+],
+
+PrimaryAudioSourceValues:[
+'NO_SOURCE_SELECTED',
+'USB',
+'USB2',
+'BLUETOOTH_STEREO_BTST',
+'LINE_IN',
+'IPOD',
+'MOBILE_APP'
+],
+
+vehicleDataNotificationStatus:[
+'NOT_SUPPORTED',
+'NORMAL',
+'ACTIVE',
+'NOT_USED'],
+
+ECallConfirmationStatusValues:[
+'NORMAL',
+'CALL_IN_PROGRESS',
+'CALL_CANCELLED',
+'CALL_COMPLETED',
+'CALL_UNSUCCESSFUL',
+'ECALL_CONFIGURED_OFF',
+'CALL_COMPLETE_DTMF_TIMEOUT'
+],
+
+EmergencyEventTypeValues:[
+'NO_EVENT',
+'FRONTAL',
+'SIDE',
+'REAR',
+'ROLLOVER',
+'NOT_SUPPORTED',
+'FAULT'
+],
+
+FuelCutoffStatusValues:[
+'TERMINATE_FUEL',
+'NORMAL_OPERATION',
+'FAULT'
+],
+
+CompassDirectionValues:[
+'NORTH',
+'NORTHWEST',
+'WEST',
+'SOUTHWEST',
+'SOUTH',
+'SOUTHEAST',
+'EAST',
+'NORTHEAST'],
+
+DimensionValues:[
+'NO_FIX',
+'2D',
+'3D'
+],
+
+AmbientLightStatusValues:[
+'NIGHT',
+'TWILIGHT_1',
+'TWILIGHT_2',
+'TWILIGHT_3',
+'TWILIGHT_4',
+'DAY',
+'UNKNOWN',
+'INVALID'
+],
+
+vehicleDataStatusValues:[
+'NO_DATA_EXISTS',
+'OFF',
+'ON'
+],
+
+PRNDLValues:[
+'PARK',
+'REVERSE',
+'NEUTRAL',
+'DRIVE',
+'SPORT',
+'LOWGEAR',
+'FIRST',
+'SECOND',
+'THIRD',
+'FOURTH',
+'FIFTH',
+'SIXTH',
+'SEVENTH',
+'EIGHTH',
+'FAULT'],
+
+ComponentVolumesStatusValues:[
+'UNKNOWN',
+'NORMAL',
+'LOW',
+'FAULT',
+'ALERT',
+'NOT_SUPPORTED'],
+
+warningLightStatusValues:[
+'OFF',
+'ON',
+'FLASH',
+'NOT_USED'
+],
+
+wiperStatusValues:[
+'OFF',
+'AUTO_OFF',
+'OFF_MOVING',
+'MAN_INT_OFF',
+'MAN_INT_ON',
+'MAN_LOW',
+'MAN_HIGH',
+'MAN_FLICK',
+'WASH',
+'AUTO_LOW',
+'AUTO_HIGH',
+'COURTESYWIPE',
+'AUTO_ADJUST',
+'STALLED',
+'NO_DATA_EXISTS'],
+
+    vehicleDataEnumValues: {
+      
+    }
   }
 );

@@ -43,6 +43,7 @@ SDL.EditVehicleDataView = Em.ContainerView.create(
       'vehicleEditInfoLabel',
       'vehicleDataList',
       'editParameterView'
+
     ],
     /**
      * Property indicates the activity state of VehicleInfo PopUp
@@ -164,7 +165,8 @@ SDL.EditVehicleDataView = Em.ContainerView.create(
       ],
       childViews: [
         'editParamInput',
-        'applyChangesButton'
+        'applyChangesButton',
+        'selectParamInput'
       ],
       /**
        * Input for speed value changes
@@ -173,14 +175,34 @@ SDL.EditVehicleDataView = Em.ContainerView.create(
         {
           elementId: 'editParamInput',
           classNames: 'editParamInput',
+          classNameBindings: 'this.isElementVisible::not-visible',
           valueBinding: 'SDL.EditVehicleDataController.paramValue',
           keyUp: function(event, view) {
             if (event.key == 'Enter') {
               SDL.EditVehicleDataController.applyParamChanges();
             }
-          }
+          },
+          isElementVisible: function(){
+            return SDL.EditVehicleDataController.paramValueType!='enum';
+          }.property('SDL.EditVehicleDataController.paramValueType')
         }
       ),
+/**
+/* Select param input
+*/
+selectParamInput: Ember.Select.extend(
+{
+  elementId:'selectParamInput',
+  classNames:'selectParamInput',
+  classNameBindings: 'this.isElementVisible::not-visible',
+  valueBinding:'SDL.EditVehicleDataController.paramValue',
+  contentBinding: 'SDL.EditVehicleDataController.paramEnumValues', 
+  isElementVisible: function(){
+    return SDL.EditVehicleDataController.paramValueType=='enum';
+  }.property('SDL.EditVehicleDataController.paramValueType')
+}
+  ),
+
       /**
        * Button to apply param changes
        */

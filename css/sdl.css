@@ -689,6 +689,16 @@
     top: 0px !important;
 }
 
+#EditVehicleData .selectParamInput{
+    left: 0px !important;
+    width: 550px !important;
+    height: 30px;
+    top: 50px !important;
+    color: white;
+    background: #393939;
+    font-size: 13.33px;
+}
+
 #EditVehicleData .applyChangesButton
  {
     line-height: 48px;

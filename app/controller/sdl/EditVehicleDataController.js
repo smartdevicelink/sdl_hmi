@@ -58,6 +58,8 @@ SDL.EditVehicleDataController = Em.Object.create({
    */
   paramValueType: '',
 
+  paramEnumValues: [],
+
   /**
    * Flag to display edit param view or not
    */
@@ -72,6 +74,15 @@ SDL.EditVehicleDataController = Em.Object.create({
 
     var value = this.getParameterValueFromMap(key);
     var valueType = typeof value;
+
+    var enumValues = SDL.SDLModel.data.vehicleDataEnumValues[key];
+if(enumValues)
+{
+  valueType='enum';
+  this.set('paramEnumValues', enumValues);
+  this.set('paramValue', value);
+}
+else{
 
     switch (typeof value) {
       case 'boolean': {
@@ -88,8 +99,10 @@ SDL.EditVehicleDataController = Em.Object.create({
       }
     }
 
+}
     this.set('paramValueType', valueType);
     this.toggleProperty('isParamEditing');
+
   },
 
   /**
