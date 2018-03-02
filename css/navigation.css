@@ -48,7 +48,7 @@
     position: absolute;
 }
 
-.POIButton {
+.navigationButton {
     z-index: 1;
     top: 335px;
     left: 20px;
@@ -72,7 +72,7 @@
     text-align: center;
 }
 
-.navigationButton {
+.clearButton {
     z-index: 1;
     bottom: 60px;
     left: 20px;

@@ -58,7 +58,7 @@ SDL.NavigationController = Em.Object.create(
     showWpList: function() {
       if (!this.model.wp && this.model.WayPointDetails.length == 0) {
         SDL.PopUp.create().appendTo('body').popupActivate(
-          'List is empty. Please setup navigation route!'
+          'List is empty. Please add a new WayPoints!'
         );
         return;
       }
@@ -690,16 +690,27 @@ SDL.NavigationController = Em.Object.create(
       if (SDL.NavigationModel.selectedLocationMarker == null ||
           SDL.NavigationModel.selectedLocationMarker.getMap() == null) {
         SDL.PopUp.create().appendTo('body').popupActivate(
-            'Error: Please, select WayPoint'
+            'Error: Please, select a place on the map'
         );
         return;
       }
-      var marker = new google.maps.Marker({
-        position: SDL.NavigationModel.selectedLocationMarker.getPosition(),
-        map: SDL.NavigationController.map
-      });
-      SDL.NavigationModel.WayPointMarkers.push(marker);
-      SDL.NavigationModel.selectedLocationMarker.setMap(null);
+
+      var data = SDL.deepCopy(SDL.NavigationModel.WayPointDetails);
+      var wp = SDL.NavigationController.addWayPointItem(
+        SDL.NavigationModel.selectedLocationMarker.getPosition(), 
+                                "WayPoint " + (data.length + 1), ''
+      );
+      data.push(wp);
+      SDL.NavigationModel.set("WayPointDetails",data);
+      
+      this.model.set("wp", true);
+      if(SDL.NavigationController.isRouteSet){
+        SDL.NavigationController.setRoutes();
+      }
+      else{
+        SDL.NavigationModel.selectedLocationMarker.setMap(null);
+        FFW.Navigation.onWayPointChange(SDL.NavigationModel.WayPointDetails);
+      }
     },
     addWaypointLocation: function(latlng) {
       var res = SDL.NavigationController.getLocationByCoord(
@@ -938,23 +949,37 @@ SDL.NavigationController = Em.Object.create(
         SDL.NavigationModel.toggleProperty('wp');
       }
     },
-    setRoutes: function() {
+    checkRoutes: function(){
       if (SDL.NavigationModel.selectedLocationMarker == null) {
         SDL.PopUp.create().appendTo('body').popupActivate(
-            'Navigation error: Destination point is not set'
+            'Error: Destination point is not set'
         );
-        return;
+        return false;
       }
       if (SDL.NavigationController.isRouteSet == false &&
           SDL.NavigationModel.selectedLocationMarker.getMap() == null) {
-        SDL.PopUp.create().appendTo('body').popupActivate(
-            'Navigation error: Destination point is not selected'
-        );
-        return;
+            var markerCounts = SDL.NavigationModel.WayPointMarkers.length;
+            if(markerCounts == 0){      
+              SDL.PopUp.create().appendTo('body').popupActivate(
+                  'Error: Destination point is not set. Please select the destination point'
+              );
+              return false;
+            }else{
+              var marker = SDL.NavigationModel.WayPointMarkers.pop();
+              SDL.NavigationModel.selectedLocationMarker.setMap(this.map);
+              SDL.NavigationModel.selectedLocationMarker.setPosition(marker.getPosition());
+              marker.setMap(null);
+            }
       }
       if (SDL.NavigationController.isRouteSet &&
           SDL.NavigationModel.selectedLocationMarker.getMap() == null) {
         SDL.NavigationController.clearRoutes();
+        return false;
+      }
+      return true;
+    },
+    setRoutes: function() {
+      if(!SDL.NavigationController.checkRoutes() ){
         return;
       }
 

@@ -42,7 +42,7 @@ SDL.NavigationView = Em.ContainerView.create(
       'POIList',
       'WPList',
       'codeEditor',
-      'POIButton',
+      'clearButton',
       'WPButton',
       'AddWP',
       'map',
@@ -133,19 +133,22 @@ SDL.NavigationView = Em.ContainerView.create(
         )
       }
     ),
-    POIButton: SDL.Button.extend(
+    clearButton: SDL.Button.extend(
       {
-        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
-        elementId: 'POIButton',
-        disabledBinding: Em.Binding.oneWay(
-          'SDL.NavigationController.isAnimateStarted'
-        ),
-        classNames: 'POIButton button',
-        text: 'Places',
-        action: 'showPoiList',
-        target: 'SDL.NavigationController'
-      }
-    ),
+      isButtonDisabled: function() {
+        return SDL.NavigationModel.WayPointDetails.length == 0 ||
+               SDL.NavigationController.isAnimateStarted;
+      }.property('SDL.NavigationModel.WayPointDetails',
+                 'SDL.NavigationController.isAnimateStarted'),
+      classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+      elementId: 'clearButton',
+      disabledBinding: 'isButtonDisabled',
+      classNames: 'clearButton button',
+      text: 'Clear',
+      action: 'clearRoutes',
+      target: 'SDL.NavigationController'
+    }
+  ),
     WPButton: SDL.Button.extend(
       {
         isButtonDisabled: function() {
@@ -165,7 +168,7 @@ SDL.NavigationView = Em.ContainerView.create(
     AddWP: SDL.Button.extend(
       {
         classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
-        disabledBinding: 'SDL.NavigationController.isRouteSet',
+        disabledBinding: 'SDL.NavigationController.isAnimateStarted',
         elementId: 'AddWP',
         classNames: 'AddWP button',
         text: 'Add waypoint',
