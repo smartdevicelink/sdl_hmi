@@ -39,7 +39,6 @@ SDL.NavigationView = Em.ContainerView.create(
       'SDL.States.navigation.active:active_state:inactive_state'
     ],
     childViews: [
-      'POIList',
       'WPList',
       'codeEditor',
       'clearButton',
@@ -49,37 +48,6 @@ SDL.NavigationView = Em.ContainerView.create(
       'navigate',
       'animate'
     ],
-    POIList: SDL.List.extend(
-      {
-        elementId: 'poiList', //info_apps_list
-        itemsOnPage: 5,
-        classNameBindings: ['SDL.NavigationModel.poi::hidden'],
-        itemsBinding: 'this.itemGenerator',
-        itemGenerator: function() {
-          var items = [];
-          for (var i = 0; i < SDL.NavigationModel.LocationDetails.length; i++) {
-            var details = SDL.deepCopy(SDL.NavigationModel.LocationDetails[i]);
-            items.push(
-              {
-                type: SDL.Button,
-                params: {
-                  itemID: i,
-                  className: 'button',
-                  text: details.locationName ? details.locationName : "Unknown location",
-                  disabled: false,
-                  icon: details.locationImage ? details.locationImage.value : null,
-                  templateName: details.locationImage ? '' : 'text',
-                  action: 'openDestPoint',
-                  target: 'SDL.NavigationController'
-                }
-              }
-            );
-          }
-          this.set('disableScrollbar', items.length <= this.itemsOnPage);
-          return items;
-        }.property('SDL.NavigationModel.LocationDetails.@each')
-      }
-    ),
     WPList: SDL.List.extend(
       {
         elementId: 'wpList',
@@ -135,20 +103,20 @@ SDL.NavigationView = Em.ContainerView.create(
     ),
     clearButton: SDL.Button.extend(
       {
-      isButtonDisabled: function() {
-        return SDL.NavigationModel.WayPointDetails.length == 0 ||
-               SDL.NavigationController.isAnimateStarted;
-      }.property('SDL.NavigationModel.WayPointDetails',
-                 'SDL.NavigationController.isAnimateStarted'),
-      classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
-      elementId: 'clearButton',
-      disabledBinding: 'isButtonDisabled',
-      classNames: 'clearButton button',
-      text: 'Clear',
-      action: 'clearRoutes',
-      target: 'SDL.NavigationController'
-    }
-  ),
+        isButtonDisabled: function() {
+          return SDL.NavigationModel.WayPointDetails.length == 0 ||
+                 SDL.NavigationController.isAnimateStarted;
+        }.property('SDL.NavigationModel.WayPointDetails',
+                   'SDL.NavigationController.isAnimateStarted'),
+        classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+        elementId: 'clearButton',
+        disabledBinding: 'isButtonDisabled',
+        classNames: 'clearButton button',
+        text: 'Clear',
+        action: 'clearRoutes',
+        target: 'SDL.NavigationController'
+      }
+    ),
     WPButton: SDL.Button.extend(
       {
         isButtonDisabled: function() {
@@ -186,9 +154,13 @@ SDL.NavigationView = Em.ContainerView.create(
       {
         classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
         elementId: 'navigationButton',
-        disabledBinding: Em.Binding.oneWay(
-          'SDL.NavigationController.isAnimateStarted'
-        ),
+        getDisabled: function() {
+          return SDL.NavigationController.isRouteSet ||
+                 SDL.NavigationController.isAnimateStarted;
+        }
+        .property('SDL.NavigationController.isRouteSet',
+                  'SDL.NavigationController.isAnimateStarted'),
+        disabledBinding: 'this.getDisabled',
         classNames: 'navigationButton button',
         text: 'Navigate',
         action: 'setRoutes',

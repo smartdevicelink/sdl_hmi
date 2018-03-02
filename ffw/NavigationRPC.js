@@ -545,7 +545,6 @@ FFW.Navigation = FFW.RPCObserver.create(
           'id': request.id,
           'result': {
             'code': resultCode, // type (enum) from SDL protocol
-            'appID': appID,
             'wayPoints': data,
             'method': 'Navigation.GetWayPoints'
           }

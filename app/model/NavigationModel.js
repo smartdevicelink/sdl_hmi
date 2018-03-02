@@ -45,11 +45,6 @@ SDL.NavigationModel = Em.Object.create({
   initialLoc: '230 Canal St, New York, NY 10013, USA',
 
   /**
-   * POI list switcher flag
-   */
-  poi: false,
-
-  /**
    * WP list switcher flag
    */
   wp: false,
@@ -79,11 +74,6 @@ SDL.NavigationModel = Em.Object.create({
    * Selected location
    */
   selectedLocationMarker: null,
-
-  /**
-   * Saved destination points array
-   */
-  LocationDetails: [],
 
   /**
    * Saved waypoints array
