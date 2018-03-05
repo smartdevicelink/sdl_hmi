@@ -176,32 +176,32 @@ SDL.EditVehicleDataView = Em.ContainerView.create(
           elementId: 'editParamInput',
           classNames: 'editParamInput',
           classNameBindings: 'this.isElementVisible::not-visible',
-          valueBinding: 'SDL.EditVehicleDataController.paramValue',
+          valueBinding: 'SDL.EditVehicleDataController.paramValueEditor',
           keyUp: function(event, view) {
             if (event.key == 'Enter') {
               SDL.EditVehicleDataController.applyParamChanges();
             }
           },
           isElementVisible: function(){
-            return SDL.EditVehicleDataController.paramValueType!='enum';
+            return SDL.EditVehicleDataController.paramValueType != 'enum';
           }.property('SDL.EditVehicleDataController.paramValueType')
         }
       ),
-/**
-/* Select param input
-*/
-selectParamInput: Ember.Select.extend(
-{
-  elementId:'selectParamInput',
-  classNames:'selectParamInput',
-  classNameBindings: 'this.isElementVisible::not-visible',
-  valueBinding:'SDL.EditVehicleDataController.paramValue',
-  contentBinding: 'SDL.EditVehicleDataController.paramEnumValues', 
-  isElementVisible: function(){
-    return SDL.EditVehicleDataController.paramValueType=='enum';
-  }.property('SDL.EditVehicleDataController.paramValueType')
-}
-  ),
+      /**
+      /* Select param input
+      */
+      selectParamInput: Ember.Select.extend(
+        {
+          elementId:'selectParamInput',
+          classNames:'selectParamInput',
+          classNameBindings: 'this.isElementVisible::not-visible',
+          valueBinding:'SDL.EditVehicleDataController.paramValue',
+          contentBinding: 'SDL.EditVehicleDataController.paramEnumValues',
+          isElementVisible: function(){
+            return SDL.EditVehicleDataController.paramValueType == 'enum';
+          }.property('SDL.EditVehicleDataController.paramValueType')
+        }
+      ),
 
       /**
        * Button to apply param changes
