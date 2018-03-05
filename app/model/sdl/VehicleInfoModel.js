@@ -128,11 +128,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'engineOilLife': 'VEHICLEDATA_ENGINEOILLIFE',
       'accPedalPosition': 'VEHICLEDATA_ACCPEDAL',
       'steeringWheelAngle': 'VEHICLEDATA_STEERINGWHEEL',
-      'fuelRange': 'VEHICLEDATA_FUELRANGE',
-      'abs_State': 'VEHICLEDATA_ABS_STATE',
-      'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
-      'tirePressureValue': 'VEHICLEDATA_TIREPRESSURE_VALUE',
-      'tpms': 'VEHICLEDATA_TPMS'
+      'fuelRange': 'VEHICLEDATA_FUELRANGE'
     },
     /**
      * Stored VehicleInfo Data
@@ -165,7 +161,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'fuelLevel': 0.2E0,
       'fuelLevel_State': 'UNKNOWN',
       'instantFuelConsumption': 2.2E0,
-      'externalTemperature': null,
+      'externalTemperature': 15.6E0,
       'vin': '52-452-52-752',
       'prndl': 'PARK',
       'tirePressure': {
@@ -272,19 +268,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'accPedalPosition': 10.5E0,
       'steeringWheelAngle': 1.2E0,
       'fuelRange': 10.5E0,
-      'abs_State': 'ACTIVE',
-      'turnSignal': 'ACTIVE',
-      'tirePressureValue': {
-        'leftFront': 2.2E0,
-        'rightFront': 2.2E0,
-        'leftRear': 2.2E0,
-        'rightRear': 2.2E0,
-        'innerLeftRear': 2.2E0,
-        'innerRightRear': 2.2E0,
-        'frontRecommended': 2.2E0,
-        'rearRecommended': 2.2E0
-      },
-      'tpms': 'TIRES_NOT_TRAINED'
       //
       // 'avgFuelEconomy': 0.1,
       // 'batteryVoltage': 12.5,

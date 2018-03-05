@@ -59,6 +59,11 @@ SDL.EditVehicleDataController = Em.Object.create({
   paramValueType: '',
 
   /**
+   * List of allowed values for enum type
+   */
+  paramEnumValues: [],
+
+  /**
    * Flag to display edit param view or not
    */
   isParamEditing: false,
@@ -73,22 +78,31 @@ SDL.EditVehicleDataController = Em.Object.create({
     var value = this.getParameterValueFromMap(key);
     var valueType = typeof value;
 
-    switch (typeof value) {
-      case 'boolean': {
-         this.set('paramValue', value.toString());
-         break;
-      }
-      case 'number':
-      case 'string': {
-         this.set('paramValue', value);
-         break;
-      }
-      default: {
-        this.set('paramValue', '');
-      }
+    var enumValues = SDL.SDLModel.data.vehicleDataEnumValues[key];
+    if (enumValues) {
+      valueType = 'enum';
+      this.set('paramEnumValues', enumValues);
+    } else {
+      this.set('paramEnumValues', []);
     }
 
+    switch (typeof value) {
+        case 'boolean':
+        case 'number': {
+           this.set('paramValue', value.toString());
+           break;
+        }
+        case 'string': {
+           this.set('paramValue', value);
+           break;
+        }
+        default: {
+          this.set('paramValue', '');
+        }
+      }
+
     this.set('paramValueType', valueType);
+    this.set('paramValueEditor', this.paramValue);
     this.toggleProperty('isParamEditing');
   },
 
@@ -157,6 +171,14 @@ SDL.EditVehicleDataController = Em.Object.create({
         newValue = parseFloat(value);
         break;
       }
+      case 'enum': {
+        if (value == 'false' || value == 'true') {
+          newValue = value == 'true';
+        } else {
+          newValue = value;
+        }
+        break;
+      }
       default: {
         newValue = value;
       }
@@ -189,11 +211,10 @@ SDL.EditVehicleDataController = Em.Object.create({
    * Applies new parameter value for currently selected key
    */
   applyParamChanges: function() {
-    if (this.validateParam(
-      this.currentParameterName, this.paramValue)) {
-      this.setParameterValueForMap(
-        this.currentParameterName, this.paramValue
-      );
+    var newValue = this.paramValueType == 'enum' ?
+      this.paramValue : this.paramValueEditor;
+    if (this.validateParam(this.currentParameterName, newValue)) {
+      this.setParameterValueForMap(this.currentParameterName, newValue);
     }
     this.set('currentParameterName', '');
     this.toggleProperty('isParamEditing');

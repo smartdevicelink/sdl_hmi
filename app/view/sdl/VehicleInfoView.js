@@ -48,11 +48,6 @@ SDL.VehicleInfo = Em.ContainerView.create(
       'fuelLevelLabel',
       'speedInput',
       'speedLabel',
-      // 'ecu1Title',
-      // 'ecu1',
-      // 'ecu2',
-      // 'ecu1Data',
-      // 'ecu2Data',
       'odometrTitle',
       'odometrInput',
       'onAwakeSDLButton'
@@ -75,56 +70,6 @@ SDL.VehicleInfo = Em.ContainerView.create(
         elementId: 'odometrInput',
         classNames: 'odometrInput',
         valueBinding: 'SDL.SDLVehicleInfoModel.odometrInput'
-      }
-    ),
-    /**
-     * Label with stored data in VehicleInfo model
-     */
-    ecu2Data: SDL.Label.extend(
-      {
-        elementId: 'ecu2Data',
-        classNames: 'ecu2Data',
-        contentBinding: 'SDL.SDLVehicleInfoModel.ecuDIDData.1.data'
-      }
-    ),
-    /**
-     * Label with stored data in VehicleInfo model
-     */
-    ecu1Data: SDL.Label.extend(
-      {
-        elementId: 'ecu1Data',
-        classNames: 'ecu1Data',
-        contentBinding: 'SDL.SDLVehicleInfoModel.ecuDIDData.0.data'
-      }
-    ),
-    /**
-     * Label with name of some parameter stored data in VehicleInfo model
-     */
-    ecu2: SDL.Label.extend(
-      {
-        elementId: 'ecu2',
-        classNames: 'ecu2',
-        content: 'ECU 2:'
-      }
-    ),
-    /**
-     * Label with name of some parameter stored data in VehicleInfo model
-     */
-    ecu1: SDL.Label.extend(
-      {
-        elementId: 'ecu1',
-        classNames: 'ecu1',
-        content: 'ECU 2:'
-      }
-    ),
-    /**
-     * Title of ecu group of parameters stored data in VehicleInfo model
-     */
-    ecu1Title: SDL.Label.extend(
-      {
-        elementId: 'ecu1Title',
-        classNames: 'ecu1Title',
-        content: 'ECU'
       }
     ),
     /**
