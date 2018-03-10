@@ -2077,6 +2077,12 @@ SDL.RPCController = Em.Object.create(
           };
           return this.resultStruct;
         },
+        OnRCStatus: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
         GetInteriorVehicleData: function(params) {
           this.resultStruct = {
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS

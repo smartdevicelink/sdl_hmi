@@ -46,6 +46,10 @@ FFW.RC = FFW.RPCObserver.create(
      */
     errorResponsePull: {},
     /**
+     * contains method name for RCStatus_Notification
+     */
+    onRCStatusNotification: 'RC.OnRCStatus',
+    /**
      * access to basic RPC functionality
      */
     client: FFW.RPCClient.create(
@@ -84,6 +88,7 @@ FFW.RC = FFW.RPCObserver.create(
         500
       );
       this._super();
+      this.client.subscribeToNotification(this.onRCStatusNotification);
     },
     /**
      * Client is unregistered - no more requests
@@ -91,6 +96,7 @@ FFW.RC = FFW.RPCObserver.create(
     onRPCUnregistered: function() {
       Em.Logger.log('FFW.RC.onRPCUnregistered');
       this._super();
+      this.client.unsubscribeFromNotification(this.onRCStatusNotification);
     },
     /**
      * Client disconnected.
@@ -120,6 +126,28 @@ FFW.RC = FFW.RPCObserver.create(
     onRPCNotification: function(notification) {
       Em.Logger.log('FFW.RC.onRPCNotification');
       this._super();
+      switch (notification.method) {  
+        case 'RC.OnRCStatus':
+          {
+            Em.Logger.log(notification.method);
+            var appID = notification.params.appID;
+            var allocatedModules = notification.params.allocatedModules;
+            var freeModules = notification.params.freeModules;
+            var item = {
+                        allocated : allocatedModules,
+                        free : freeModules
+                       };
+            var map = SDL.deepCopy(SDL.SDLModel.appRCStatus);
+            map[appID] = item;
+            SDL.SDLModel.set('appRCStatus', map);
+            break;
+          }
+        default:
+          {
+            // statements_def
+            break;
+          }
+        }
     },
     /**
      * handle RPC requests here
@@ -418,6 +446,7 @@ FFW.RC = FFW.RPCObserver.create(
             SDL.SDLController.interiorDataConsent(request);
             break;
           }
+
           default:
           {
             // statements_def

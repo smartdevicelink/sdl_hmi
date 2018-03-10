@@ -247,14 +247,14 @@ SDL.SeatModel = Em.Object.create({
    dfs:function(from, to){
  
 
-        var result = from;
+        var result = SDL.deepCopy(from);
         for (var key in from) {
             if(from.hasOwnProperty(key)){
                 if(typeof from[key] == 'object'){
                     if(Array.isArray(from[key])){
                         var lengthFrom = from[key].length;
                         var lengthTo = to[key].length;
-                        if( lengthFrom != lengthTo ){
+                        if((lengthFrom != lengthTo)){
                             result[key] = from[key];
                             continue;
                         }

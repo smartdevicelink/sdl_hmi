@@ -39,6 +39,61 @@ SDL.WidgetPhoneView = Em.ContainerView.extend({
 
   classNameBindings: [
     'SDL.FuncSwitcher.rev::is-disabled'
-  ]
+  ],
+  childViews: [
+    'rcStatusLabel',
+    'phoneStatusImage'
+  ],
+
+  phoneStatusImage: SDL.Button.extend({
+  	elementId:'phoneStatusImage',
+  	templateName:'icon',
+  	icon:'./images/home/home_phoneWidget.png'
+  }),
+
+  rcStatusLabel: SDL.Label.extend(
+			
+          {
+          	getLabelText: function(){
+
+          		if (SDL.SDLModel.appRCStatus.length == 0){
+          			return [];	
+          		} 
+          		else {
+          			var rcStatus = [];
+                    for (var key in SDL.SDLModel.appRCStatus){
+          				var model = SDL.SDLController.getApplicationModel(+key);
+          				var strHeader = model.appName+': ';
+          				rcStatus.push(strHeader);
+          				if (SDL.SDLModel.appRCStatus[+key].allocated.length > 0){
+          					var allocated = SDL.SDLModel.appRCStatus[+key].allocated;
+          					var allocatedStr = 'Allocates:';
+          					for (var i = 0; i < allocated.length; ++i) {
+          						allocatedStr += (i>0)? ', ': ' ';
+          						allocatedStr += allocated[i].moduleType.toLowerCase() ;  							 					
+          					}
+          					rcStatus.push(allocatedStr);
+          				}
+
+          				if (SDL.SDLModel.appRCStatus[+key].free.length > 0){
+          					var free = SDL.SDLModel.appRCStatus[+key].free;
+          					var freeStr = 'Can allocate:';
+          					for (var i = 0; i < free.length; ++i) {
+          						freeStr += (i>0)? ', ': ' ';
+          						freeStr += free[i].moduleType.toLowerCase() ;  							        						
+          					}
+          					rcStatus.push(freeStr);
+          				}
+          			}
+          			return rcStatus;
+          		}
+          	}.property('SDL.SDLModel.appRCStatus'),
+            elementId: 'rcStatusLabel',
+            linesBinding:'getLabelText',
+            templateName: 'multiLine'
+            //'SDL.SDLModel.appRCStatus'
+          }
+
+        )
 }
 );
