@@ -90,6 +90,12 @@ SDL.RModel = SDL.SDLModel.extend({
    */
   reverseAccessMode: 'AUTO_ALLOW',
 
+
+  appRCStatus: 
+  {
+   
+  },
+
   /**
    * Method to add activation button to VR commands and set device
    * parameters to model
@@ -186,7 +192,11 @@ SDL.RModel = SDL.SDLModel.extend({
     if (SDL.SDLController.getApplicationModel(params.appID)) {
 
       this._super(params);
+      var map = SDL.deepCopy(this.appRCStatus);
+      delete map[params.appID];
+      this.set('appRCStatus', map);
     }
   }
-}
+
+  }
 );
