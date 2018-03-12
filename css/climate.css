@@ -59,28 +59,28 @@
 }
 
 #climate_control .acEnable{
-    top: 340px;
+    top: 365px;
     left: 74px;
 }
 
 #climate_control .acMaxEnable{
-    top: 340px;
+    top: 365px;
     left: 190px;
     width: 150px;
 }
 
 #climate_control .recirculateAirEnable{
-    top: 340px;
+    top: 365px;
     left: 341px;
 }
 
 #climate_control .autoModeEnable{
-    top: 340px;
+    top: 365px;
     left: 457px;
 }
 
 #climate_control .dualModeEnable{
-    top: 340px;
+    top: 365px;
     left: 573px;
 }
 
@@ -100,17 +100,17 @@
 }
 
 #defrostZoneLabel.label {
-    top: 270px;
+    top: 225px;
     left: 125px;
 }
 
 #temperatureUnitLabel.label {
-    top: 270px;
+    top: 225px;
     left: 317px;
 }
 
 #ventilationModeLabel.label {
-    top: 270px;
+    top: 225px;
     left: 520px;
 }
 
@@ -153,7 +153,7 @@
 }
 
 #defrostZone.quattro_container{
-    top: 190px;
+    top: 145px;
     left: 100px;
 }
 
@@ -192,7 +192,7 @@
 }
 
 #temperatureUnit.quattro_container{
-    top: 190px;
+    top: 145px;
     right: 350px;
     font-size: 35px;
     line-height: 70px;
@@ -228,7 +228,7 @@
 }
 
 #ventilationMode.quattro_container{
-    top: 190px;
+    top: 145px;
     right: 150px;
 }
 
@@ -239,3 +239,23 @@
 #ventilationMode .topLeft{
     padding: 25px 8px 0 16px;
 }
+
+#climate_control .heatedWindshieldEnable{
+    top: 270px;
+    left: 140px;
+}
+
+#climate_control .heatedRearWindowEnable{
+    top: 270px;
+    left: 256px;
+}
+
+#climate_control .heatedSteeringWheelEnable{
+    top: 270px;
+    left: 372px;
+}
+
+#climate_control .heatedMirrorsEnable{
+    top: 270px;
+    left: 488px;
+} 
