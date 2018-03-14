@@ -151,3 +151,24 @@
     color: white;
     background: #393939;
 }
+
+#settingsView .in_HMIsettings_view {
+    position: absolute;
+    top: 48px;
+    left: 153px;
+    width: 647px;
+    height: 384px;
+    float: left;
+    z-index: 1001;
+    margin-top: 70px;
+}
+
+#settingsView .HMI_settings_list {
+    height: 251px;
+    width: 598px;
+    left: 10px;;
+}
+#HMI_settings_list .list-content .ffw-button {
+    width: 537px;
+    padding-left: 10px;
+}

@@ -215,7 +215,8 @@ var StateManager = Em.StateManager.extend(
               }
             )
           }
-        )
+        ),
+        HMISettings: Em.State.create({})
       }
     ),
     /** Media state */

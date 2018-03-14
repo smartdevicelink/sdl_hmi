@@ -361,6 +361,16 @@ SDL.SettingsController = Em.Object.create(
           oldTimer: 0
         };
       }
+    },
+    turnOnPoliciesSettings: function(){
+      if(!SDL.States.settings.policies.active){
+        SDL.States.goToStates('settings.policies');
+      }
+    },
+    turnOnHMISettings: function(){
+      if(!SDL.States.settings.HMISettings.active){
+        SDL.States.goToStates('settings.HMISettings');
+      }
     }
   }
 );

@@ -157,6 +157,8 @@ FFW.RC = FFW.RPCObserver.create(
               SDL.RadioModel.getRadioControlCapabilities();
             var audioControlCapabilities = 
               SDL.MediaController.getAudioControlCapabilities();
+            var hmiSettingsControlCapabilities = 
+              SDL.HmiSettingsModel.getHmiSettingsCapabilities();
             var buttonCapabilities = [];
 
             buttonCapabilities = buttonCapabilities.concat(
@@ -170,6 +172,8 @@ FFW.RC = FFW.RPCObserver.create(
               climateControlCapabilities;
             remoteControlCapability.radioControlCapabilities =
               radioControlCapabilities;
+            remoteControlCapability.hmiSettingsControlCapabilities =
+              hmiSettingsControlCapabilities;
             remoteControlCapability.buttonCapabilities =
               buttonCapabilities;
               remoteControlCapability.audioControlCapabilities = 
@@ -226,6 +230,7 @@ FFW.RC = FFW.RPCObserver.create(
             var newClimateControlData = null;
             var newRadioControlData = null;
             var newAudioControlData= null;    
+            var newHMISettingsControlData = null;
 
             if (request.params.moduleData.climateControlData) {
               newClimateControlData =
@@ -243,6 +248,10 @@ FFW.RC = FFW.RPCObserver.create(
             if(request.params.moduleData.audioControlData){
               newAudioControlData = 
               SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
+            }
+            if(request.params.moduleData.hmiSettingsControlData){
+              newHMISettingsControlData = SDL.HmiSettingsModel.setHmiSettingsData(
+                request.params.moduleData.hmiSettingsControlData); 
             }
             // send repsonse
             var JSONMessage = {
@@ -265,6 +274,10 @@ FFW.RC = FFW.RPCObserver.create(
             if (newRadioControlData) {
               JSONMessage.result.moduleData.radioControlData =
                 newRadioControlData;
+            }
+            if(newHMISettingsControlData){
+              JSONMessage.result.moduleData.hmiSettingsControlData =
+                newHMISettingsControlData;
             }
 
             this.client.send(JSONMessage);
@@ -294,16 +307,28 @@ FFW.RC = FFW.RPCObserver.create(
             var climateControlData = null;
             var radioControlData = null;
             var audioControlData=null;
+            var hmiSettingsControlData = null;
 
             var app = SDL.SDLController.getApplicationModel(
               request.params.appID
             );
-            if (moduleType === 'CLIMATE') {
-              climateControlData = SDL.ClimateController.model.getClimateControlData();
-            } else if (moduleType === 'RADIO') {
-              radioControlData = SDL.RadioModel.getRadioControlData(false);
-            } else if (moduleType ==='AUDIO'){
-              audioControlData = SDL.MediaController.getAudioControlData(false);
+            switch(moduleType){
+              case 'CLIMATE':{
+                climateControlData = SDL.ClimateController.model.getClimateControlData();
+                break
+              }
+              case 'RADIO':{
+                radioControlData = SDL.RadioModel.getRadioControlData(false);
+                break
+              }
+              case 'HMI_SETTINGS':{
+                hmiSettingsControlData = SDL.HmiSettingsModel.getHmiSettingsControlData(false);
+                break
+              }
+              case 'AUDIO':{
+                audioControlData = SDL.MediaController.getAudioControlData(false);
+                break;
+              }
             }
 
             var JSONMessage = {
@@ -329,6 +354,10 @@ FFW.RC = FFW.RPCObserver.create(
             if (audioControlData) {
               JSONMessage.result.moduleData.audioControlData
                 = audioControlData;
+            }
+            if(hmiSettingsControlData){
+              JSONMessage.result.moduleData.hmiSettingsControlData = 
+              hmiSettingsControlData;
             }
             if (request.params.subscribe !== undefined) {
               JSONMessage.result.isSubscribed =
