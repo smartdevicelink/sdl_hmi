@@ -203,24 +203,58 @@ SDL.RController = SDL.SDLController.extend(
      * Toggle RSDL access mode option
      */
     toggleRCAccessMode: function() {
-      var arr_length = SDL.SDLModel.reverseAccessModesStruct.length;
-      for (var i = 0; i < arr_length; i++) {
-        if (SDL.SDLModel.reverseAccessModesStruct[i] ==
-            SDL.SDLModel.reverseAccessMode) {
-          if (i + 1 >= arr_length) {
-            SDL.SDLModel.set('reverseAccessMode',
-              SDL.SDLModel.reverseAccessModesStruct[0]);
-          } else {
-            SDL.SDLModel.set('reverseAccessMode',
-              SDL.SDLModel.reverseAccessModesStruct[i + 1]);
-          }
-          break;
-        }
-      }
+      var next = this.nextElement(SDL.SDLModel.reverseAccessModesStruct, SDL.SDLModel.reverseAccessMode);
+      SDL.SDLModel.set('reverseAccessMode',next);
       FFW.RC.OnRemoteControlSettings(
         SDL.SDLModel.reverseFunctionalityEnabled,
         SDL.SDLModel.reverseAccessMode
       );
+    },
+    toggleDisplayMode: function() {
+      var next = this.nextElement(SDL.HmiSettingsModel.displayModeStruct, SDL.HmiSettingsModel.displayMode);
+      SDL.HmiSettingsModel.set('displayMode',next);
+      var data = {
+        displayMode: next
+      }
+      this.sendHMISettingsNotification(data);
+    },
+    toggleDistanceUnit: function() {
+      var next = this.nextElement(SDL.HmiSettingsModel.distanceUnitStruct, SDL.HmiSettingsModel.distanceUnit);
+      SDL.HmiSettingsModel.set('distanceUnit',next);
+      var data = {
+        distanceUnit: next
+      }
+      this.sendHMISettingsNotification(data);
+    },
+    toggleTemperatureUnit: function() {
+      var next = this.nextElement(SDL.HmiSettingsModel.temperatureUnitStruct, SDL.HmiSettingsModel.temperatureUnit);
+      SDL.HmiSettingsModel.set('temperatureUnit',next);
+      SDL.ClimateControlModel.set('climateControlData.temperatureUnit', next);
+      var data = {
+        temperatureUnit: next
+      }
+      if(next == 'FAHRENHEIT'){
+        SDL.ClimateControlModel.temperatureUnitFahrenheitEnable();
+      }else{
+        SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
+      }
+    },
+    sendHMISettingsNotification: function(data){
+      if (Object.keys(data).length > 0) {
+        FFW.RC.onInteriorVehicleDataNotification('HMI_SETTINGS', null, null, data);
+      }
+    },
+    nextElement: function(data, currentItem){
+      var arr_length = data.length;
+      for (var i = 0; i < arr_length; i++) {
+        if (data[i] == currentItem) {
+          if (i + 1 >= arr_length) {
+            return data[0];
+          } else {
+            return data[i + 1];
+          }
+        }
+      }
     },
     /**
      * Change responses to error for GetInteriorVehicleDataCapabilities
