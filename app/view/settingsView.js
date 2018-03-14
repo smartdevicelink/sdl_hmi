@@ -50,7 +50,8 @@ SDL.SettingsView = Em.ContainerView.create(
       SDL.GetUrlsView,
       SDL.SystemErrorView,
       SDL.ConnectionSettingsView,
-      SDL.RSDLOptionsView
+      SDL.RSDLOptionsView,
+      SDL.HMISettingsView
     ],
     /** Left menu */
     leftMenu: Em.ContainerView.extend(
@@ -73,7 +74,8 @@ SDL.SettingsView = Em.ContainerView.create(
           {
             classNames: 'ls-items',
             childViews: [
-              'policies'
+              'policies',
+              'HMISettings'
             ],
             policies: SDL.Button.extend(
               {
@@ -85,10 +87,22 @@ SDL.SettingsView = Em.ContainerView.create(
                 ],
                 text: 'Policies',
                 icon: 'images/settings/ico_settings.png',
-                action: 'onState',
+                action: 'turnOnPoliciesSettings',
                 target: 'SDL.SettingsController'
               }
-            )
+            ),
+            HMISettings: SDL.Button.extend({
+              elementId: 'HMISettings_leftMenu',
+              goToState: 'HMISettings',
+              classNames: 'menu-item lsp1_p',
+              classNameBindings: [
+                'SDL.States.settings.HMISettings.active:info_active',
+              ],
+              text: 'HMI',
+              icon: 'images/settings/ico_settings.png',
+              action: 'turnOnHMISettings',
+              target: 'SDL.SettingsController'
+            })
           }
         )
       }
