@@ -32,7 +32,7 @@ SDL.MediaCDPlayer = Em.Object.extend({
       'ALL',
       'ONE'
     ],
-
+    //var volume;
     /** media Player repeat state */
     repeat: 'ALL',
 

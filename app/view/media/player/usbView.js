@@ -22,6 +22,7 @@ SDL.usbView = Em.ContainerView.create(
       'info',
       'rightmenu'
     ],
+    
     info: Em.View.extend(
       {
         elementId: 'media_player_usb_view_info',
@@ -37,6 +38,7 @@ SDL.usbView = Em.ContainerView.create(
         )
       }
     ),
+    
     controlls: Em.ContainerView.extend(
       {
         elementId: 'media_player_usb_view_controlls',
@@ -138,6 +140,7 @@ SDL.usbView = Em.ContainerView.create(
             onDown: false
           }
         ),
+        
         moreInfoButton: SDL.Button.extend(
           {
             classNameBindings: ['SDL.helpMode:moreinfoButton_help'],

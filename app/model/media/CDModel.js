@@ -142,6 +142,18 @@ SDL.CDModel = Em.Object.create({
 
     homeWidgetIcon: 'images/media/cd-ico-home.png'
   }
-)
+),
+sendAudioNotification:function()
+  {
+    this.setSource();
+    var data = SDL.MediaController.getAudioControlData();
+    if(data){
+    FFW.RC.onInteriorVehicleDataNotification('AUDIO',{audioControlData: data});
+  }
+  },
+  setSource:function()
+  {
+    SDL.MediaController.radioControlStruct.source='CD';
+  },
 }
 );

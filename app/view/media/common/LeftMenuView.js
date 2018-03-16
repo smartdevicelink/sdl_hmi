@@ -42,16 +42,23 @@ SDL.LeftMenuView = Em.ContainerView.extend(
       'radio',
       'cdButton',
       'usbButton',
+      'bluetoothButton',
+      'lineInButton',
+      'ipodButton',
       'sdlButton'
+      
     ],
     /** Border decoration */
     border: Em.View.extend(
       {
         elementId: 'media_left_menu_border',
+        
         classNames: 'ls_border'
       }
     ),
-    /** CD Station Button */
+    
+
+    /** Radio Station Button */
     radio: SDL.Button.extend(
       {
         classNameBindings: [
@@ -71,6 +78,7 @@ SDL.LeftMenuView = Em.ContainerView.extend(
       {
         classNameBindings: [
           'SDL.States.media.player.cd.active:active_state'
+        
         ],
         elementId: 'media_cdButton',
         classNames: 'media-ls-item',
@@ -91,10 +99,55 @@ SDL.LeftMenuView = Em.ContainerView.extend(
         classNames: 'media-ls-item',
         action: 'turnOnUSB',
         icon: 'images/media/ico_usb.png',
+
         target: 'SDL.MediaController',
         textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_usb')
       }
     ),
+    bluetoothButton: SDL.Button.extend(
+  {
+    classNameBindings: [
+
+    'SDL.States.media.player.bluetooth.active:active_state'
+    ],
+    action:'turnOnBluetooth',
+    elementId:'media_bluetoothButton',
+    classNames: 'media-ls-item',
+    icon: 'images/media/ico_bluetooth.png',
+    target:'SDL.MediaController',
+    textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_bluetooth')
+
+  }
+  ),
+
+  lineInButton: SDL.Button.extend(
+  {
+    classNameBindings:[
+    'SDL.States.media.player.lineIn.active:active_state'
+    ],
+    action:'turnOnLineIn',
+    elementId:'media_lineInButton',
+    classNames: 'media-ls-item',
+    target:'SDL.MediaController',
+    textBinding:Ember.Binding.oneWay('SDL.locale.label.view_media_lineIn')
+  }),
+
+  ipodButton: SDL.Button.extend(
+  {
+    classNameBindings: [
+
+    'SDL.States.media.player.ipod.active:active_state'
+    ],
+    action:'turnOnIPod',
+    elementId:'media_ipodButton',
+    classNames: 'media-ls-item',
+    icon: 'images/media/ico_ipod.png',
+    target:'SDL.MediaController',
+    textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_ipod')
+  }
+  ),
+
+
     /** SDL Button */
     sdlButton: SDL.Button.extend(
       {
