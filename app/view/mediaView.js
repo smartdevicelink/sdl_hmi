@@ -40,12 +40,14 @@ SDL.MediaView = Em.ContainerView.create(
     childViews: [
       'leftMenu',
       'volumeMenu',
+      'optionsMenu',
       SDL.playerView,
       SDL.sdlView
     ],
     /** Left Menu view component */
     leftMenu: SDL.LeftMenuView,
     /** Volume Menu view component */
-    volumeMenu: SDL.VolumeMenuView
+    volumeMenu: SDL.VolumeMenuView,
+    optionsMenu: SDL.audioView
   }
 );

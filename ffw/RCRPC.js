@@ -221,6 +221,7 @@ FFW.RC = FFW.RPCObserver.create(
 
             var newClimateControlData = null;
             var newRadioControlData = null;
+            var newAudioControlData= null;    
 
             if (request.params.moduleData.climateControlData) {
               newClimateControlData =
@@ -234,6 +235,10 @@ FFW.RC = FFW.RPCObserver.create(
               if (SDL.RadioModel.radioControlStruct.radioEnable) {
                 SDL.RadioModel.saveCurrentOptions();
               }
+            }
+            if(request.params.moduleData.audioControlData){
+              newAudioControlData = 
+              SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
             }
             // send repsonse
             var JSONMessage = {
@@ -284,6 +289,7 @@ FFW.RC = FFW.RPCObserver.create(
             var moduleType = request.params.moduleType;
             var climateControlData = null;
             var radioControlData = null;
+            var audioControlData=null;
 
             var app = SDL.SDLController.getApplicationModel(
               request.params.appID
@@ -292,6 +298,8 @@ FFW.RC = FFW.RPCObserver.create(
               climateControlData = SDL.ClimateController.model.getClimateControlData();
             } else if (moduleType === 'RADIO') {
               radioControlData = SDL.RadioModel.getRadioControlData(false);
+            } else if (moduleType ==='AUDIO'){
+              audioControlData = SDL.MediaController.getAudioControlData();
             }
 
             var JSONMessage = {
@@ -313,6 +321,10 @@ FFW.RC = FFW.RPCObserver.create(
             if (climateControlData) {
               JSONMessage.result.moduleData.climateControlData
                 = climateControlData;
+            }
+            if (audioControlData) {
+              JSONMessage.result.moduleData.audioControlData
+                = audioControlData;
             }
             if (request.params.subscribe !== undefined) {
               JSONMessage.result.isSubscribed =

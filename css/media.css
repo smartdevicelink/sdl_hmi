@@ -26,6 +26,27 @@
     line-height: 48px;
 }
 
+#media_bluetoothButton{
+    font-size: 15px;
+    padding-left: 48px;
+    line-height: 48px;
+}
+
+#media_lineInButton{
+    font-size: 18px;
+    padding-left: 48px;
+    line-height: 48px;
+}
+#media_ipodButton{
+    font-size: 18px;
+    padding-left: 48px;
+    line-height: 48px;
+}
+#media_audioOption{
+    font-size: 13px;
+    padding-left: 48px;
+    line-height: 48px;
+}
 #media_sdlButton {
     font-size: 18px;
     line-height: 48px;
@@ -133,6 +154,11 @@
 .media-ls-item.empty {
     background: #333333;
 }
+#preferences .pref{
+    top: 77px;
+    left: 546px;
+    z-index: 502;
+}
 
 #radio_options_view_container.options {
     width: 458px;
@@ -142,7 +168,6 @@
     z-index: 1000;
     padding: 10px;
 }
-
 #radio_options_view_container .bandCheckbox {
     position: absolute;
     left: 10px;
@@ -969,6 +994,9 @@
 .usbIco {
     background: url(../images/media/ico_usb.png) no-repeat !important
 }
+/* .audioIco {
+    background: url(../images/media/ico_audio.png) no-repeat !important
+} */
 
 .appIco {
     background: url(../images/info/info_leftMenu_apps_ico.png) no-repeat !important
@@ -980,6 +1008,146 @@
     border-radius: 3px;
     border: 1px solid #393939;
 }
+
+.option{
+    top:50px;
+    width: 300px;
+    height: 300px;
+    background-color: black;
+    border: 1px solid white;
+    z-index: 1000;
+    padding: 10px;
+    
+}
+
+.pref{
+    width: 150px;
+    height: 40px;
+    top:77px;
+    left:480px;
+    border-radius: 3px;
+    border: 1px solid #393939;
+    z-index: 900;
+}
+.pref .media_optionButton{
+    height: 24px;
+    width: 128px;
+    float: auto;
+    padding: 8px;
+    padding-left: 14px;
+    z-index: 900;
+    text-align: center;
+}
+.option .keepContextLabel{
+    left:25px;
+    top:20px;
+}
+.option .keepContextSelect{
+    
+    top: 20px;
+    position: absolute;
+    width: 150px;
+    left: 130px;
+    height: 20px;
+    color: white;
+    background: #393939;
+}
+.option .keepContextCheckBox{
+    position: absolute;
+    left: 5px;
+    top: 20px;
+}
+.option .equalizerSettingsLabel
+{
+    left:5px;
+    top:80px;
+}
+.option .equalizerChannelIdLabel{
+    left:25px;
+    top:110px;
+}
+.option .equalizerChannelSettingLabel{
+    left:25px;
+    top:170px;
+    font-size: 5;
+}
+.option .equalizerChannelSettingCheckBox{
+    position: absolute;
+    left: 5px;
+    top: 170px;
+}
+.option .equalizerChannelSettingInput{
+    top: 170px;
+      position: absolute;
+      width: 150px;
+      left: 130px;
+      height: 20px;
+      color: white;
+      background: #393939;
+  }
+.option .volumeInput{
+    top: 50px;
+      position: absolute;
+      width: 150px;
+      left: 130px;
+      height: 20px;
+      color: white;
+      background: #393939;
+  }
+.option .volumeLabel{
+      left:25px;
+      top:50px;
+  }
+  .option .volumeCheckBox{
+    position: absolute;
+    left: 5px;
+    top: 50px;
+}
+.option .equalizerChannelIdInput{
+      top: 110px;
+        position: absolute;
+        width: 150px;
+        left: 130px;
+        height: 20px;
+        color: white;
+        background: #393939;
+    }
+    .option .equalizerChannelIdCheckBox{
+        position: absolute;
+        left: 5px;
+        top: 110px;
+    }
+.option .equalizerChannelIdLabel{
+      left:25px;
+      top:110px;
+  }
+  .option .equalizerChannelNameInput{
+        top: 140px;
+        position: absolute;
+        width: 150px;
+        left: 130px;
+        height: 20px;
+        color: white;
+        background: #393939;
+    }
+    .option .equalizerChannelNameCheckBox{
+        position: absolute;
+        left: 5px;
+        top: 140px;
+    }
+    .option .equalizerChannelNameLabel{
+      left:25px;
+      top:140px;
+      font-size:14px;
+  }
+  .option .save{
+      top: 260px;
+      left: 150px;
+      width: 70px;
+      height: 38px;
+      line-height: 38px;
+      text-align: center;
+  }
 
 .calc_container .minus {
     height: 24px;
