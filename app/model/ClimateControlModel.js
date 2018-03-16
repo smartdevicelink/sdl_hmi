@@ -222,7 +222,7 @@ SDL.ClimateControlModel = Em.Object.create({
     var data = this.getClimateControlData();
     data = SDL.SDLController.filterObjectProperty(data, properties);
     if (Object.keys(data).length > 0) {
-      FFW.RC.onInteriorVehicleDataNotification('CLIMATE', data, null);
+      FFW.RC.onInteriorVehicleDataNotification('CLIMATE', {climateControlData: data});
     }
   },
 
