@@ -241,7 +241,7 @@ SDL.RController = SDL.SDLController.extend(
     },
     sendHMISettingsNotification: function(data){
       if (Object.keys(data).length > 0) {
-        FFW.RC.onInteriorVehicleDataNotification('HMI_SETTINGS', null, null, data);
+        FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
       }
     },
     nextElement: function(data, currentItem){

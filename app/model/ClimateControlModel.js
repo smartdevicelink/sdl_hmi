@@ -314,7 +314,7 @@ SDL.ClimateControlModel = Em.Object.create({
         temperatureUnit: 'FAHRENHEIT'
       }
       if (Object.keys(data).length > 0) {
-        FFW.RC.onInteriorVehicleDataNotification('HMI_SETTINGS', null, null, data);
+        FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
       }
     },
 
@@ -329,7 +329,7 @@ SDL.ClimateControlModel = Em.Object.create({
         temperatureUnit: 'CELSIUS'
       }
       if (Object.keys(data).length > 0) {
-        FFW.RC.onInteriorVehicleDataNotification('HMI_SETTINGS', null, null, data);
+        FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
       }
     },
 
