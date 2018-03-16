@@ -448,24 +448,17 @@ FFW.RC = FFW.RPCObserver.create(
     /**
      * @param moduleType
      */
-    onInteriorVehicleDataNotification: function(moduleType, climateControlData, radioControlData) {
+    onInteriorVehicleDataNotification: function(moduleType, data) {
       var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'RC.OnInteriorVehicleData',
           'params': {
             'moduleData': {
-              'moduleType': moduleType
+              'moduleType': moduleType,
+              'moduleData': data
             }
           }
         };
-        if (climateControlData) {
-          JSONMessage.params.moduleData.climateControlData =
-            climateControlData;
-        }
-        if (radioControlData) {
-          JSONMessage.params.moduleData.radioControlData =
-            radioControlData;
-        }
         Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
         FFW.RC.client.send(JSONMessage);
     },

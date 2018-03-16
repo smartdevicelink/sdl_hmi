@@ -659,7 +659,7 @@ SDL.RadioModel = Em.Object.create({
     var data = this.getRadioControlData(false);
     data = SDL.SDLController.filterObjectProperty(data, properties);
     if (Object.keys(data).length > 0) {
-      FFW.RC.onInteriorVehicleDataNotification('RADIO', null, data);
+      FFW.RC.onInteriorVehicleDataNotification('RADIO', {radioControlData: data});
     }
   },
 
