@@ -1,4 +1,8 @@
-#settingsView .in_settings_separate_view {
+#settingsView .in_settings_separate_view,
+.in_light_exterior_view,
+.in_light_single_view,
+.in_light_location_view,
+.in_light_interior_view  {
     top: 48px;
     width: 800px;
     height: 382px;
@@ -6,7 +10,11 @@
     z-index: 5000;
 }
 
-#settingsView .in_settings_separate_view .backButton {
+#settingsView .in_settings_separate_view .backButton,
+.in_light_exterior_view .backButton,
+.in_light_single_view .backButton, 
+.in_light_location_view .backButton,
+.in_light_interior_view .backButton  {
     top: 35px;
     width: 48px;
     height: 48px;
@@ -15,19 +23,31 @@
     left: 25px;
 }
 
-#settingsView .in_settings_separate_view .list {
-    height: 251px;
+#settingsView .in_settings_separate_view .list,
+.in_light_exterior_view .list,
+.in_light_single_view .list,
+.in_light_location_view .list,
+.in_light_interior_view .list {
+    height: 201px;
     width: 700px;
     top: 106px;
     left: 50px;
 }
 
-#settingsView .in_settings_separate_view .list-item {
+#settingsView .in_settings_separate_view .list-item,
+.in_light_exterior_view .list-item,
+.in_light_single_view .list-item,
+.in_light_location_view .list-item,
+.in_light_interior_view .list-item {
     width: 639px;
     padding-left: 10px;
 }
 
-#settingsView .in_settings_separate_view .label {
+#settingsView .in_settings_separate_view .label,
+.in_light_exterior_view .label,
+.in_light_single_view .label,
+.in_light_location_view .label,
+.in_light_interior_view .label {
     top: 35px;
     left: 100px;
     width: 620px;
@@ -152,7 +172,8 @@
     background: #393939;
 }
 
-#settingsView .in_HMIsettings_view {
+#settingsView .in_HMIsettings_view,
+#settingsView .in_light_view {
     position: absolute;
     top: 48px;
     left: 153px;
@@ -163,12 +184,14 @@
     margin-top: 70px;
 }
 
-#settingsView .HMI_settings_list {
+#settingsView .HMI_settings_list,
+#settingsView .light_list {
     height: 251px;
     width: 598px;
     left: 10px;;
 }
-#HMI_settings_list .list-content .ffw-button {
+#HMI_settings_list .list-content .ffw-button,
+#light_list .list-content .ffw-button {
     width: 537px;
     padding-left: 10px;
 }

@@ -159,6 +159,9 @@ FFW.RC = FFW.RPCObserver.create(
               SDL.MediaController.getAudioControlCapabilities();
             var hmiSettingsControlCapabilities = 
               SDL.HmiSettingsModel.getHmiSettingsCapabilities();
+            var lightControlCapabilities =
+              SDL.LightModel.getLightCapabilities();
+
             var buttonCapabilities = [];
 
             buttonCapabilities = buttonCapabilities.concat(
@@ -174,6 +177,8 @@ FFW.RC = FFW.RPCObserver.create(
               radioControlCapabilities;
             remoteControlCapability.hmiSettingsControlCapabilities =
               hmiSettingsControlCapabilities;
+            remoteControlCapability.lightControlCapabilities =
+              lightControlCapabilities;
             remoteControlCapability.buttonCapabilities =
               buttonCapabilities;
               remoteControlCapability.audioControlCapabilities = 
@@ -231,7 +236,8 @@ FFW.RC = FFW.RPCObserver.create(
             var newRadioControlData = null;
             var newAudioControlData= null;    
             var newHMISettingsControlData = null;
-
+            var newLightControlData = null;
+            
             if (request.params.moduleData.climateControlData) {
               newClimateControlData =
                 SDL.ClimateController.model.setClimateData(
@@ -252,6 +258,10 @@ FFW.RC = FFW.RPCObserver.create(
             if(request.params.moduleData.hmiSettingsControlData){
               newHMISettingsControlData = SDL.HmiSettingsModel.setHmiSettingsData(
                 request.params.moduleData.hmiSettingsControlData); 
+            }
+            if(request.params.moduleData.lightControlData){
+              newLightControlData = SDL.LightModel.setLightControlData(
+                request.params.moduleData.lightControlData);
             }
             // send repsonse
             var JSONMessage = {
@@ -279,7 +289,11 @@ FFW.RC = FFW.RPCObserver.create(
               JSONMessage.result.moduleData.hmiSettingsControlData =
                 newHMISettingsControlData;
             }
-
+            if(newLightControlData){
+              JSONMessage.result.moduleData.lightControlData =
+                newLightControlData;
+            }
+            
             this.client.send(JSONMessage);
             break;
           }
@@ -308,6 +322,7 @@ FFW.RC = FFW.RPCObserver.create(
             var radioControlData = null;
             var audioControlData=null;
             var hmiSettingsControlData = null;
+            var lightControlData = null;
 
             var app = SDL.SDLController.getApplicationModel(
               request.params.appID
@@ -328,6 +343,10 @@ FFW.RC = FFW.RPCObserver.create(
               case 'AUDIO':{
                 audioControlData = SDL.MediaController.getAudioControlData(false);
                 break;
+              }
+              case 'LIGHT':{
+                lightControlData = SDL.LightModel.getLightControlData(false);
+                break
               }
             }
 
@@ -358,6 +377,10 @@ FFW.RC = FFW.RPCObserver.create(
             if(hmiSettingsControlData){
               JSONMessage.result.moduleData.hmiSettingsControlData = 
               hmiSettingsControlData;
+            }
+            if(lightControlData){
+              JSONMessage.result.moduleData.lightControlData = 
+                lightControlData;
             }
             if (request.params.subscribe !== undefined) {
               JSONMessage.result.isSubscribed =

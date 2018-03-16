@@ -164,12 +164,8 @@ var StateManager = Em.StateManager.extend(
         },
         policies: Em.State.create(
           {
-            statisticsInfo: Em.State.create(
-              {}
-            ),
-            getUrls: Em.State.create(
-              {}
-            ),
+            statisticsInfo: Em.State.create({}),
+            getUrls: Em.State.create({}),
             connectionSettings: Em.State.create(
               {
                 enter: function() {
@@ -193,12 +189,8 @@ var StateManager = Em.StateManager.extend(
                 }
               }
             ),
-            appPermissions: Em.State.create(
-              {}
-            ),
-            systemError: Em.State.create(
-              {}
-            ),
+            appPermissions: Em.State.create({}),
+            systemError: Em.State.create({}),
             deviceStateChange: Em.State.create(
               {
                 enter: function() {
@@ -216,7 +208,30 @@ var StateManager = Em.StateManager.extend(
             )
           }
         ),
-        HMISettings: Em.State.create({})
+        HMISettings: Em.State.create({}),
+
+        light: Em.State.create({
+          singleLight: Em.State.create({
+                enter: function() {
+                  this._super();
+                }
+          }),
+          exteriorLight: Em.State.create({
+            enter: function() {
+              this._super();
+            }
+          }),
+          interiorLight: Em.State.create({
+            enter: function() {
+              this._super();
+            }
+          }),
+          locationLight: Em.State.create({
+            enter: function() {
+              this._super();
+            }
+          })
+        })
       }
     ),
     /** Media state */

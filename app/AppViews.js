@@ -74,7 +74,8 @@ SDL.AppViews = Em.ContainerView.extend(
       SDL.DriverDistraction,
       SDL.ExitApp,
       SDL.PrimaryDevice,
-      SDL.SystemRequest
+      SDL.SystemRequest,
+      SDL.SendMessage
     ],
     /*
      * This method is called when the app is fully rendered and ready to be
