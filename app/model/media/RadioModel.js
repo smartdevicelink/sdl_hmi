@@ -77,6 +77,7 @@ SDL.RadioModel = Em.Object.create({
 
   band: 'FM',
 
+
   availableHDs: 3,
 
   hdChannelsStruct: [
@@ -1366,6 +1367,18 @@ SDL.RadioModel = Em.Object.create({
     this.updateCurrentFrequencyInfo();
   },
 
+  sendAudioNotification:function()
+  {
+    this.setSource();
+    var data = SDL.MediaController.getAudioControlData();
+    if(data){
+    FFW.RC.onInteriorVehicleDataNotification('AUDIO',{audioControlData: data});
+  }
+  },
+  setSource:function()
+  {
+    SDL.MediaController.radioControlStruct.source='RADIO_TUNER';
+  },
   sendButtonPress: function() {
     var currentData = SDL.deepCopy(this.getCurrentOptions());
     var changedData = SDL.deepCopy(this.lastOptionParams);

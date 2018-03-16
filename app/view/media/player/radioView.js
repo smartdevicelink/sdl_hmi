@@ -49,6 +49,9 @@ SDL.RadioView = Em.ContainerView
         'tuneButtons',
         'optionsMenu'
       ],
+
+      
+
       optionsMenu: Em.ContainerView.create(
         {
           elementId: 'radio_options_view_container',
