@@ -127,6 +127,7 @@ SDL.LeftMenuView = Em.ContainerView.extend(
     ],
     action:'turnOnLineIn',
     elementId:'media_lineInButton',
+    icon: 'images/media/line_in.png',
     classNames: 'media-ls-item',
     target:'SDL.MediaController',
     textBinding:Ember.Binding.oneWay('SDL.locale.label.view_media_lineIn')

@@ -235,7 +235,7 @@ var StateManager = Em.StateManager.extend(
                 enter: function() {
                   SDL.MediaController.set('activeState',
                     SDL.States.nextState);
-                  //SDL.RadioModel.sendAudioNotification();
+                    SDL.RadioModel.sendAudioNotification();
                   if (!SDL.RadioModel.radioControlStruct.radioEnable) {
                     SDL.RadioModel.radioEnableKeyPress();
                   }
@@ -248,10 +248,6 @@ var StateManager = Em.StateManager.extend(
                   SDL.MediaController.deactivateBluetooth();
                   SDL.MediaController.deactivateLineIn();
                   SDL.MediaController.deactivateIPod();
-                  //SDL.RadioModel.sendAudioNotification();
-                  // if (SDL.RadioModel.radioControlStruct.radioEnable) {
-                  //   SDL.RadioModel.radioEnableKeyPress();
-                  // }
                   this._super();
                 }
               }
@@ -270,7 +266,7 @@ var StateManager = Em.StateManager.extend(
                   SDL.MediaController.deactivateBluetooth();
                   SDL.MediaController.deactivateLineIn();
                   SDL.MediaController.deactivateIPod();
-                  SDL.RadioModel.sendAudioNotification();
+                  
                   this._super();
                 },
                 moreinfo: Em.State.create(
@@ -296,10 +292,7 @@ var StateManager = Em.StateManager.extend(
                 },
                 moreinfo: Em.State.create(
                   {
-                    enter: function() {
-                      this._super();
-                      // reset Messages
-                    }
+                   
                   }
                 )
               }
@@ -328,30 +321,7 @@ var StateManager = Em.StateManager.extend(
               )
             }
         ),
-            ipod: Em.State.create(
-            {
-              enter:function()
-              {
-                SDL.MediaController.set('activeState',
-                  SDL.States.nextState);
-                SDL.IPodModel.sendAudioNotification();
-                this._super();
-              },
-              exit:function()
-              {
-                this._super();
-                SDL.MediaController.deactivateRadio();
-                SDL.MediaController.deactivateCD();
-                SDL.MediaController.deactivateUSB();
-                SDL.MediaController.deactivateLineIn();
-                SDL.MediaController.deactivateBluetooth();
-              },
-              moreinfo:Em.State.create(
-              {}
-              )
-            }
-        ),
-          lineIn: Em.State.create(
+            lineIn: Em.State.create(
             {
               enter:function()
               {
@@ -373,15 +343,40 @@ var StateManager = Em.StateManager.extend(
               {}
               )
             }
-            )
-          }
+            ),
+         
+            ipod: Em.State.create(
+            {
+              enter:function()
+              {
+                SDL.MediaController.set('activeState',
+                  SDL.States.nextState);
+                SDL.IPodModel.sendAudioNotification();
+                this._super();
+              },
+              exit:function()
+              {
+                this._super();
+                SDL.MediaController.deactivateRadio();
+                SDL.MediaController.deactivateCD();
+                SDL.MediaController.deactivateUSB();
+                SDL.MediaController.deactivateLineIn();
+                SDL.MediaController.deactivateBluetooth();
+              },
+            }
+          ),
+            }
         ),
+          
         sdlmedia: Em.State.create(
           {
             enter: function() {
               SDL.MediaController.deactivateRadio();
               SDL.MediaController.deactivateUSB();
               SDL.MediaController.deactivateCD();
+              SDL.MediaController.radioControlStruct.source='MOBILE_APP';
+              var data = SDL.MediaController.getAudioControlData();
+              FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:data});
               if (SDL.SDLModel.data.mediaPlayerActive) {
                 SDL.SDLController.onEventChanged('player', false);
               }

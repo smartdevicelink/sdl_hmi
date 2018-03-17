@@ -155,6 +155,8 @@ FFW.RC = FFW.RPCObserver.create(
               SDL.ClimateController.model.getClimateControlCapabilities();
             var radioControlCapabilities =
               SDL.RadioModel.getRadioControlCapabilities();
+            var audioControlCapabilities = 
+              SDL.MediaController.getAudioControlCapabilities();
             var buttonCapabilities = [];
 
             buttonCapabilities = buttonCapabilities.concat(
@@ -170,6 +172,8 @@ FFW.RC = FFW.RPCObserver.create(
               radioControlCapabilities;
             remoteControlCapability.buttonCapabilities =
               buttonCapabilities;
+              remoteControlCapability.audioControlCapabilities = 
+                audioControlCapabilities;
 
             // send repsonse
             var JSONMessage = {
@@ -299,7 +303,7 @@ FFW.RC = FFW.RPCObserver.create(
             } else if (moduleType === 'RADIO') {
               radioControlData = SDL.RadioModel.getRadioControlData(false);
             } else if (moduleType ==='AUDIO'){
-              audioControlData = SDL.MediaController.getAudioControlData();
+              audioControlData = SDL.MediaController.getAudioControlData(false);
             }
 
             var JSONMessage = {
@@ -460,15 +464,12 @@ FFW.RC = FFW.RPCObserver.create(
     /**
      * @param moduleType
      */
-    onInteriorVehicleDataNotification: function(moduleType, data) {
+    onInteriorVehicleDataNotification: function(data) {
       var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'RC.OnInteriorVehicleData',
           'params': {
-            'moduleData': {
-              'moduleType': moduleType,
               'moduleData': data
-            }
           }
         };
         Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
