@@ -57,12 +57,18 @@ SDL.MediaController = Em.Object.create(
      {
         keepContext:true,
         volume:true,
-        equalizerSettings:{
-          channelSetting:true,
-          channelId:true,
-          channelName:true
-        },
+        equalizerSettings:true
      },
+     // radioControlAudioValue:
+     // {
+     //    keepContext:true,
+     //    volume:true,
+     //    equalizerSettings:{
+     //      channelSetting:true,
+     //      channelId:true,
+     //      channelName:true
+     //    },
+     // },
 
       usbControl:{
       keepContext: false
@@ -130,15 +136,6 @@ SDL.MediaController = Em.Object.create(
       }
       this.onPlayerEnter(SDL.IPodModel,'ipod');
     },
-    // turnOnAudioOptions:function(){
-
-      
-    //   // if(!SDL.States.media.player.audioOptions.active)
-    //   // {
-    //   //   SDL.States.goToStates('media.player.audioOptions');
-    //   // }
-    //   // this.onPlayerEnter(SDL.AudioModel,'audioOptions');
-    // },
     /**
      * Switching on Application
      */
@@ -278,6 +275,15 @@ SDL.MediaController = Em.Object.create(
           break;
         }
         case 'media.player.bluetooth':{
+          this.changeSourceFromBluetooth(is_background);
+          break;
+        }
+        case 'media.player.lieIn':{
+          this.changeSourceFromLineIn(is_background);
+          break;
+        }
+        case 'media.player.ipod':{
+          this.changeSourceFromIpod(is_background);
           break;
         }
         default: {
@@ -325,6 +331,30 @@ SDL.MediaController = Em.Object.create(
         SDL.States.goToStates(old_state);
       }
     },
+    changeSourceFromBluetooth: function(is_background){
+      var old_state = SDL.States.currentState.get('path');
+      this.deactivateBluetooth();
+      this.turnOnLineIn();
+      if (is_background) {
+        SDL.States.goToStates(old_state);
+      }
+    },
+    changeSourceFromLineIn: function(is_background){
+      var old_state = SDL.States.currentState.get('path');
+      this.deactivateLineIn();
+      this.turnOnIpod();
+      if (is_background) {
+        SDL.States.goToStates(old_state);
+      }
+    },
+    changeSourceFromIpod: function(is_background){
+      var old_state = SDL.States.currentState.get('path');
+      this.deactivateIpod();
+      this.turnOnIpod();
+      if (is_background) {
+        SDL.States.goToStates(old_state);
+      }
+    },
     /**
      * Switches to next after unknown source
      * @param is source switched from background or not
@@ -340,34 +370,54 @@ SDL.MediaController = Em.Object.create(
     getAudioControlData:function()
     { 
       if(this.radioControlAudioValue.keepContext || this.radioControlAudioValue.volume 
-        || this.radioControlAudioValue.equalizerSettings.channelId || this.radioControlAudioValue.equalizerSettings.channelName 
-        || this.radioControlAudioValue.equalizerSettings.channelSetting)
+        || this.radioControlAudioValue.equalizerSettings)
       {
       var result={};
-      var equalizer={};
+      var equalizerSettings={};
+      var validEqualizer={};
       result.source=this.radioControlStruct.source;
+      if(this.radioControlAudioValue.keepContext){
+        result.keepContext=this.radioControlStruct.keepContext;
+      }
       if(this.radioControlAudioValue.volume){
         result.volume=this.currentVolume;
       }
-      if(this.radioControlAudioValue.equalizerSettings.channelId){
-        equalizer.channelId=this.radioControlStruct.equalizerSettings.channelId;
-        result.equalizerSettings=equalizer;
+      if(this.radioControlAudioValue.equalizerSettings){
+        equalizerSettings.channelId=this.radioControlStruct.equalizerSettings.channelId;
+        equalizerSettings.channelName=this.radioControlStruct.equalizerSettings.channelName;
+        equalizerSettings.channelSetting=this.radioControlStruct.equalizerSettings.channelSetting;
       }
-      if(this.radioControlAudioValue.equalizerSettings.channelName){
-        equalizer.channelName=this.radioControlStruct.equalizerSettings.channelName;
-        result.equalizerSettings=equalizer;
-      }
-      if(this.radioControlAudioValue.equalizerSettings.channelSetting){
-        equalizer.channelSetting=this.radioControlStruct.equalizerSettings.channelSetting;
-        result.equalizerSettings=equalizer;
-      }
+      else if(equalizerSettings.channelId==null && equalizerSettings.channelName==null){equalizerSettings =null;}
+      if(equalizerSettings!==null){
+      var equalizer=[equalizerSettings];
+      result.equalizerSettings=equalizer;
+    }
+
       return result;
       }
-      return null;
+      var result={};
+      result.source=this.radioControlStruct.source;
+      return result;
     },
+
     setAudioControlData:function(data){
         if(data.source!=null){
           this.set('radioControlStruct.source',data.source);
+          switch(data.source){
+            case 'RADIO_TUNER':this.turnOnRadio();break;
+            case 'BLUETOOTH_STEREO_BTST':this.turnOnBluetooth();break;
+            case 'CD':this.turnOnCD();break;
+            case 'USB':this.turnOnUSB();break;
+            case 'LINE_IN':this.turnOnLineIn();break;
+            case 'IPOD':this.turnOnIpod();break;
+            case 'MOBILE_APP':this.turnOnSDL();break;
+          }
+        }
+        if(data.volume!=null){
+          this.set('currentVolume',data.volume);
+        }
+        if(data.keepContext!=null){
+          this.set('radioControlStruct.keepContext',data.keepContext);
         }
         if(data.equalizerSettings!=null)
         {
@@ -384,6 +434,18 @@ SDL.MediaController = Em.Object.create(
             this.set('radioControlStruct.equalizerSettings.channelName',data.equalizerSettings.channelName);
           }
         }
+    },
+    getAudioControlCapabilities:function(){
+      var result=[];
+      var capabilities = {
+        moduleName :'AudioControlCapabilities',
+        sourceAvailable: true,
+        volumeAvailable : true,
+        equalizerAvailable : true,
+        equalizerMaxChannelId : 100
+      };
+      result.push(capabilities);
+      return result;
     },
     /**
      * turn on scan event

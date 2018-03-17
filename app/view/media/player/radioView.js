@@ -106,8 +106,295 @@ SDL.RadioView = Em.ContainerView
             'stateCheckbox',
             'stateLabel',
             'stateSelect',
+            'sisDataLabel',
+            'stationShortNameCheckbox',
+            'stationShortNameLabel',
+            'stationShortNameInput',
+            'stationMessageCheckBox',
+            'stationMessageLabel',
+            'stationMessageInput',
+            'stationLongNameCheckBox',
+            'stationLongNameLabel',
+            'stationLongNameInput',
+            'gpsLocationLabel',
+            'gpsLocationCheckBox',
+            'longitudeLabel',
+            'longitudeInput',
+            'latitudeLabel',
+            'latitudeInput',
+            'altitudeCheckBox',
+            'altitudeLabel',
+            'altitudeInput',
+            'stationIdLabel',
+            'countryCodeCheckBox',
+            'countryCodeLabel',
+            'countryCodeInput',
+            'fccLabel',
+            'fccCheckBox',
+            'fccInput',
             'send'
           ],
+
+
+          fccCheckBox: Em.Checkbox.extend(
+            {
+              elementId: 'fccCheckBox',
+              classNames: 'fccCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId'
+            }
+          ),
+         fccLabel: SDL.Label.extend(
+            {
+              elementId: 'fccLabel',
+              classNames: 'fccLabel',
+              content: 'FCC facility ID'
+            }
+          ),
+        fccInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'fccInput',
+              classNames: 'fccInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationIDNumber.fccFacilityId',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+
+
+          countryCodeCheckBox: Em.Checkbox.extend(
+            {
+              elementId: 'countryCodeCheckBox',
+              classNames: 'countryCodeCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.countryCode'
+            }
+          ),
+         countryCodeLabel: SDL.Label.extend(
+            {
+              elementId: 'countryCodeLabel',
+              classNames: 'countryCodeLabel',
+              content: 'Country code'
+            }
+          ),
+        countryCodeInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'countryCodeInput',
+              classNames: 'countryCodeInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationIDNumber.countryCode',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.countryCode;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.countryCode'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+
+
+          stationIdLabel: SDL.Label.extend(
+            {
+              elementId: 'stationIdLabel',
+              classNames: 'stationIdLabel',
+              content: 'Station ID:'
+            }
+          ),
+
+          altitudeCheckBox: Em.Checkbox.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'altitudeCheckBox',
+              classNames: 'altitudeCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitudeMeters',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          altitudeLabel: SDL.Label.extend(
+            {
+              elementId: 'altitudeLabel',
+              classNames: 'altitudeLabel',
+              content: 'Altitude'
+            }
+          ),
+          altitudeInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'altitudeInput',
+              classNames: 'altitudeInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.altitudeMeters',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation ? 
+                !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation
+                :!SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitudeMeters;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation',
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitudeMeters'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+
+          
+          latitudeLabel: SDL.Label.extend(
+            {
+              elementId: 'latitudeLabel',
+              classNames: 'latitudeLabel',
+              content: 'Latitude'
+            }
+          ),
+          latitudeInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'latitudeInput',
+              classNames: 'latitudeInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.latitudeDegrees',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+
+
+          longitudeLabel: SDL.Label.extend(
+            {
+              elementId: 'longitudeLabel',
+              classNames: 'longitudeLabel',
+              content: 'Longitude'
+            }
+          ),
+          longitudeInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'longitudeInput',
+              classNames: 'longitudeInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.longitudeDegrees',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          gpsLocationCheckBox: Em.Checkbox.extend(
+            {
+              elementId: 'gpsLocationCheckBox',
+              classNames: 'gpsLocationCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation'
+            }
+          ),
+          stationLongNameCheckBox: Em.Checkbox.extend(
+            {
+              elementId: 'stationLongNameCheckBox',
+              classNames: 'stationLongNameCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLongName'
+            }
+          ),
+         stationLongNameLabel: SDL.Label.extend(
+            {
+              elementId: 'stationLongNameLabel',
+              classNames: 'stationLongNameLabel',
+              content: 'Station long name'
+            }
+          ),
+         stationLongNameInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'stationLongNameInput',
+              classNames: 'stationLongNameInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLongName',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLongName;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLongName'
+              ),
+              disabledBinding: 'isDisabled',
+              
+            }
+          ),
+          stationMessageCheckBox: Em.Checkbox.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'stationMessageCheckBox',
+              classNames: 'stationMessageCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationMessage'
+            }
+          ),
+         stationMessageLabel: SDL.Label.extend(
+            {
+              elementId: 'stationMessageLabel',
+              classNames: 'stationMessageLabel',
+              content: 'Station message'
+            }
+          ),
+         stationMessageInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'stationMessageInput',
+              classNames: 'stationMessageInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationMessage', 
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationMessage;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationMessage'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          sisDataLabel: SDL.Label.extend(
+            {
+              elementId: 'sisDataLabel',
+              classNames: 'sisDataLabel',
+              content: 'Sis Data list'
+            }
+          ),
+          gpsLocationLabel: SDL.Label.extend(
+            {
+              elementId: 'gpsLocationLabel',
+              classNames: 'gpsLocationLabel',
+              content: 'GPS Location:'
+            }
+          ),
+          stationShortNameCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'stationShortNameCheckbox',
+              classNames: 'stationShortNameCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationShortName'
+            }
+          ),
+          stationShortNameLabel: SDL.Label.extend(
+            {
+              elementId: 'stationShortNameLabel',
+              classNames: 'stationShortNameLabel',
+              content: 'Station short name'
+            }
+          ),
+          stationShortNameInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'stationShortNameInput',
+              classNames: 'stationShortNameInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationShortName',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationShortName;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationShortName'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
           bandCheckbox: Em.Checkbox.extend(
             {
               elementId: 'bandCheckbox',

@@ -50,27 +50,25 @@
           'equalizerSettingsLabel',
           'equalizerChannelIdInput',
           'equalizerChannelIdLabel',
-          'equalizerChannelIdCheckBox',
           'equalizerChannelNameInput',
           'equalizerChannelNameLabel',
-          'equalizerChannelNameCheckBox',
           'equalizerChannelSettingLabel',
-          'equalizerChannelSettingCheckBox',
           'equalizerChannelSettingInput',
+          'equalizerSettingsCheckBox',
           'save'
         ],
+        equalizerSettingsCheckBox:Em.Checkbox.extend(
+            {
+              elementId: 'equalizerSettingsCheckBox',
+              classNames: 'equalizerSettingsCheckBox',
+              checkedBinding: 'SDL.MediaController.radioControlAudioValue.equalizerSettings'
+            }
+          ),
         equalizerChannelSettingLabel: SDL.Label.extend(
             {
               elementId: 'equalizerChannelSettingLabel',
               classNames: 'equalizerChannelSettingLabel',
               content: 'Channel set:',
-            }
-          ),
-        equalizerChannelSettingCheckBox:Em.Checkbox.extend(
-            {
-              elementId: 'equalizerChannelSettingCheckBox',
-              classNames: 'equalizerChannelSettingCheckBox',
-              checkedBinding: 'SDL.MediaController.radioControlAudioValue.equalizerSettings.channelSetting'
             }
           ),
         equalizerChannelSettingInput:Ember.TextField.extend(
@@ -80,9 +78,9 @@
              classNames:'equalizerChannelSettingInput',
              valueBinding:'SDL.MediaController.radioControlStruct.equalizerSettings.channelSetting',
              isDisabled: function() {
-                return !SDL.MediaController.radioControlAudioValue.equalizerSettings.channelSetting;
+                return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
               }.property(
-                'SDL.MediaController.radioControlAudioValue.equalizerSettings.channelSetting'
+                'SDL.MediaController.radioControlAudioValue.equalizerSettings'
               ),
               disabledBinding: 'isDisabled'
            }
@@ -114,20 +112,13 @@
              classNames:'equalizerChannelNameInput',
              valueBinding:'SDL.MediaController.radioControlStruct.equalizerSettings.channelName',
              isDisabled: function() {
-                return !SDL.MediaController.radioControlAudioValue.equalizerSettings.channelName;
+                return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
               }.property(
-                'SDL.MediaController.radioControlAudioValue.equalizerSettings.channelName'
+                'SDL.MediaController.radioControlAudioValue.equalizerSettings'
               ),
               disabledBinding: 'isDisabled'
            }
            ),
-         equalizerChannelNameCheckBox:Em.Checkbox.extend(
-            {
-              elementId: 'equalizerChannelNameCheckBox',
-              classNames: 'equalizerChannelNameCheckBox',
-              checkedBinding: 'SDL.MediaController.radioControlAudioValue.equalizerSettings.channelName'
-            }
-          ),
          equalizerChannelIdInput: Ember.TextField.extend(
          {
             attributeBindings: ['disabled'],
@@ -135,19 +126,12 @@
              classNames:'equalizerChannelIdInput',
              valueBinding:'SDL.MediaController.radioControlStruct.equalizerSettings.channelId',
              isDisabled: function() {
-                return !SDL.MediaController.radioControlAudioValue.equalizerSettings.channelId;
+                return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
               }.property(
-                'SDL.MediaController.radioControlAudioValue.equalizerSettings.channelId'
+                'SDL.MediaController.radioControlAudioValue.equalizerSettings'
               ),
               disabledBinding: 'isDisabled'
            }
-          ),
-         equalizerChannelIdCheckBox:Em.Checkbox.extend(
-            {
-              elementId: 'equalizerChannelIdCheckBox',
-              classNames: 'equalizerChannelIdCheckBox',
-              checkedBinding: 'SDL.MediaController.radioControlAudioValue.equalizerSettings.channelId'
-            }
           ),
          keepContextSelect: Em.Select.extend(
          {
@@ -223,7 +207,7 @@
               attributeBindings: ['disabled'],
               elementId: 'media_optionButton',
               classNames: 'media_optionButton',
-              text: 'Options',
+              text: 'Audio',
               onDown: false,
               target: 'SDL.MediaController',
               action: 'toggleOptions',

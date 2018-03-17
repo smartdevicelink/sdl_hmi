@@ -23,22 +23,21 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-SDL.bluetoothView = Em.ContainerView.create(
+SDL.lineInView = Em.ContainerView.create(
   {
-    elementId: 'media_player_bluetooth_view',
+    elementId: 'media_player_lineIn_view',
     classNames: 'media_player_view_wrapper',
     classNameBindings: [
-      'SDL.States.media.player.bluetooth.active:active_state:inactive_state'
+      'SDL.States.media.player.lineIn.active:active_state:inactive_state'
     ],
     childViews: [
-    	
+    	'info',
       'controlls',
-      'info',
       'rightmenu'
     ],
     info: Em.View.extend(
       {
-        elementId: 'media_player_bluetooth_view_info',
+        elementId: 'media_player_lineIn_view_info',
         template: Em.Handlebars.compile(
           '<div class="track-info">' +
           '<div class="total">{{SDL.MediaController.currentSelectedPlayer.currentTrack}}/{{SDL.MediaController.currentSelectedPlayer.totalTracks}}</div>' +
@@ -46,7 +45,7 @@ SDL.bluetoothView = Em.ContainerView.create(
           '<div class="title">{{SDL.MediaController.currentSelectedPlayer.data.selectedItem.album}}</div>' +
           '<div class="track-number" >{{SDL.MediaController.currentSelectedPlayer.data.selectedItem.name}}</div>' +
           '<div class="time">{{SDL.MediaController.currentSelectedPlayer.formatTimeToString}}</div>' +
-          '<div id="usb_logo"></div>' +
+          '<div id="lineIn_logo"></div>' +
           '</div>'
         )
       }
@@ -54,13 +53,13 @@ SDL.bluetoothView = Em.ContainerView.create(
     rightmenu: Em.ContainerView.create(
       {
         /** View ID */
-        elementId: 'media_bluetooth_rightmenu',
+        elementId: 'media_lineIn_rightmenu',
         /** Class Names */
         classNames: ['player-right-stock'],
         classNameBindings: [
-          'SDL.States.media.player.bluetooth.options.active:hidden',
-          'SDL.States.media.player.bluetooth.browse.active:hidden',
-          'SDL.States.media.player.bluetooth.moreinfo.active:hidden'
+          'SDL.States.media.player.lineIn.options.active:hidden',
+          'SDL.States.media.player.lineIn.browse.active:hidden',
+          'SDL.States.media.player.lineIn.moreinfo.active:hidden'
         ],
         /** View Components*/
         childViews: [
@@ -70,10 +69,10 @@ SDL.bluetoothView = Em.ContainerView.create(
         ],
         repeatButton: SDL.Button.extend(
           {
-            elementId: 'media_bluetooth_rightmenu_repeatButton',
+            elementId: 'media_lineIn_rightmenu_repeatButton',
             classNames: ['rs-item'],
             onRepeatPressed: function() {
-              switch (SDL.BluetoothModel.player.repeat) {
+              switch (SDL.LineInModel.player.repeat) {
                 case 'NONE':
                   return SDL.locale.label.view_media_repeat_no;
                 case 'ALL':
@@ -82,7 +81,7 @@ SDL.bluetoothView = Em.ContainerView.create(
                   return SDL.locale.label.view_media_repeat_one;
               }
             }.property(
-              'SDL.BluetoothModel.player.repeat'
+              'SDL.LineInModel.player.repeat'
             ),
             textBinding: 'onRepeatPressed',
             target: 'SDL.MediaController',
@@ -91,14 +90,14 @@ SDL.bluetoothView = Em.ContainerView.create(
         ),
         shuffleButton: SDL.Button.extend(
           {
-            elementId: 'media_bluetooth_rightmenu_shuffleButton',
+            elementId: 'media_lineIn_rightmenu_shuffleButton',
             classNames: ['rs-item'],
             onIconChange: function() {
               return SDL.SDLController.getLedIndicatorImagePath(
-                SDL.BluetoothModel.player.shuffle
+                SDL.LineInModel.player.shuffle
               );
             }.property(
-              'SDL.BluetoothModel.player.shuffle'
+              'SDL.LineInModel.player.shuffle'
             ),
             iconBinding: 'onIconChange',
             textBinding: Ember.Binding.oneWay(
@@ -113,7 +112,7 @@ SDL.bluetoothView = Em.ContainerView.create(
         moreInfoButton: SDL.Button.extend(
           {
             classNameBindings: ['SDL.helpMode:moreinfoButton_help'],
-            elementId: 'media_bluetooth_rightmenu_moreinfoButton',
+            elementId: 'media_lineIn_rightmenu_moreinfoButton',
             action: 'turnOnMoreInfo',
             target: 'SDL.MediaController',
             classNames: ['rs-item'],
@@ -129,7 +128,7 @@ SDL.bluetoothView = Em.ContainerView.create(
     ),
     controlls: Em.ContainerView.extend(
       {
-        elementId: 'media_player_bluetooth_view_controlls',
+        elementId: 'media_player_lineIn_view_controlls',
         /** View components*/
         childViews: [
           'PrevTrackButton',
@@ -139,8 +138,8 @@ SDL.bluetoothView = Em.ContainerView.create(
         classNames: 'player_controlls',
         PrevTrackButton: SDL.Button.extend(
           {
-            elementId: 'media_player_bluetooth_view_controlls_prev_track_button',
-            classNames: ['bc-item-big', 'prev-bluetooth'],
+            elementId: 'media_player_lineIn_view_controlls_prev_track_button',
+            classNames: ['bc-item-big', 'prev-lineIn'],
             target: 'SDL.MediaController',
             action: 'prevTrack',
             icon: 'images/media/ico_prew.png'
@@ -148,8 +147,8 @@ SDL.bluetoothView = Em.ContainerView.create(
         ),
         PlayButton: SDL.Button.extend(
           {
-            elementId: 'media_player_bluetooth_view_controlls_play_button',
-            classNames: ['bc-item-big', 'play-bluetooth'],
+            elementId: 'media_player_lineIn_view_controlls_play_button',
+            classNames: ['bc-item-big', 'play-lineIn'],
             target: 'SDL.MediaController',
             action: 'playTrack',
             /** Define button template */
@@ -161,8 +160,8 @@ SDL.bluetoothView = Em.ContainerView.create(
         ),
         NextTrackButton: SDL.Button.extend(
           {
-            elementId: 'media_player_bluetooth_view_controlls_next_track_button',
-            classNames: ['bc-item-big', 'next-bluetooth'],
+            elementId: 'media_player_line_view_controlls_next_track_button',
+            classNames: ['bc-item-big', 'next-lineIn'],
             target: 'SDL.MediaController',
             action: 'nextTrack',
             icon: 'images/media/ico_next.png'

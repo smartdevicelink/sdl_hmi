@@ -27,25 +27,86 @@
  SDL.IPodModel=Em.Object.create({
 active: false,
 selectedIndex:0,
+optionsEnabled:false,
+statusBar: 'Luk Marko',
 sendAudioNotification:function()
   {
     this.setSource();
     var data = SDL.MediaController.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification('AUDIO',{audioControlData: data});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: data});
   }
   },
   setSource:function()
   {
     SDL.MediaController.radioControlStruct.source='IPOD';
   },
-// init:function(){
-// 	this._super();
-// 	this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
-// 	this.set('player.name','IPOD');
-// },
-	
-    
+init:function(){
+	this._super();
+	this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
+	this.set('player.name','IPOD');
+},
+	PlayList: SDL.Playlist.create({
+        selectedIndex: 0,
+        items: {
+          0: SDL.PlaylistItem.create({
+              nameBinding: 'SDL.locale.label.view_media_track_1',
+              album: 'Color of the Fall',
+              artist: 'Luk Marko',
+              genre: 'Rock',
+              disk: 'Fall',
+              duration: 123
+            }
+          ),
+          1: SDL.PlaylistItem.create({
+              nameBinding: 'SDL.locale.label.view_media_track_2',
+              album: 'Color of the Fall',
+              artist: 'Luk Marko',
+              genre: 'Rock',
+              disk: 'Fall',
+              duration: 123
+            }
+          ),
+          2: SDL.PlaylistItem.create({
+              nameBinding: 'SDL.locale.label.view_media_track_3',
+              album: 'Color of the Fall',
+              artist: 'Luk Marko',
+              genre: 'Rock',
+              disk: 'Fall',
+              duration: 123
+            }
+          ),
+          3: SDL.PlaylistItem.create({
+              nameBinding: 'SDL.locale.label.view_media_track_4',
+              album: 'Color of the Fall',
+              artist: 'Luk Marko',
+              genre: 'Rock',
+              disk: 'Fall',
+              duration: 123
+            }
+          ),
+          4: SDL.PlaylistItem.create({
+              nameBinding: 'SDL.locale.label.view_media_track_5',
+              album: 'Color of the Fall',
+              artist: 'Luk Marko',
+              genre: 'Rock',
+              disk: 'Fall',
+              duration: 123
+            }
+          ),
+          5: SDL.PlaylistItem.create({
+              nameBinding: 'SDL.locale.label.view_media_track_6',
+              album: 'Color of the Fall',
+              artist: 'Luk Marko',
+              genre: 'Rock',
+              disk: 'Fall',
+              duration: 123
+             }
+          )
+        },
+        //homeWidgetIcon: 'images/media/usb-h-ico.png'
+      }
+    )
   }
  
 );

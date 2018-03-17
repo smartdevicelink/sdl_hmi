@@ -161,6 +161,7 @@
 }
 
 #radio_options_view_container.options {
+    overflow:auto;
     width: 458px;
     height: 300px;
     background-color: black;
@@ -188,7 +189,155 @@
     left: 10px;
     top: 27px;
 }
+#radio_options_view_container .sisDataLabel {
+    left: 10px;
+    top: 250px;
+}
+#radio_options_view_container .stationIdLabel {
+    left: 20px;
+    top: 410px;
+}
 
+
+#radio_options_view_container .fccCheckBox {
+    position: absolute;
+    left: 20px;
+    top: 450px;
+}
+#radio_options_view_container .fccLabel {
+    left: 35px;
+    top: 448px;
+}
+#radio_options_view_container .fccInput {
+    position: absolute;
+    top: 450px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .countryCodeCheckBox {
+    position: absolute;
+    left: 20px;
+    top: 430px;
+}
+#radio_options_view_container .countryCodeLabel {
+    left: 35px;
+    top: 428px;
+}
+#radio_options_view_container .countryCodeInput {
+    position: absolute;
+    top: 430px;
+    left: 220px;
+    width: 200px;
+}
+
+
+#radio_options_view_container .gpsLocationLabel {
+    left: 40px;
+    top: 330px;
+}
+
+
+
+#radio_options_view_container .gpsLocationCheckBox {
+    position: absolute;
+    left: 25px;
+    top: 330px;
+}
+#radio_options_view_container .stationShortNameCheckbox {
+    position: absolute;
+    left: 20px;
+    top: 270px;
+}
+#radio_options_view_container .stationShortNameLabel {
+    left: 35px;
+    top: 268px;
+}
+#radio_options_view_container .stationShortNameInput {
+    position: absolute;
+    top: 270px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .longitudeLabel {
+    left: 50px;
+    top: 350px;
+}
+
+
+#radio_options_view_container .longitudeInput {
+    position: absolute;
+    top: 350px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .latitudeLabel {
+    left: 50px;
+    top: 370px;
+}
+
+
+#radio_options_view_container .latitudeInput {
+    position: absolute;
+    top: 370px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .altitudeCheckBox {
+    position: absolute;
+    left: 35px;
+    top: 392px;
+}
+#radio_options_view_container .altitudeLabel {
+    left: 50px;
+    top: 390px;
+}
+
+
+#radio_options_view_container .altitudeInput {
+    position: absolute;
+    top: 390px;
+    left: 220px;
+    width: 200px;
+}
+
+
+#radio_options_view_container .stationLongNameCheckBox {
+    position: absolute;
+    left: 20px;
+    top: 290px;
+}
+#radio_options_view_container .stationLongNameLabel {
+    left: 35px;
+    top: 288px;
+}
+#radio_options_view_container .stationLongNameInput {
+    position: absolute;
+    top: 290px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .stationMessageCheckBox {
+    position: absolute;
+    left: 20px;
+    top: 310px;
+}
+
+#radio_options_view_container .stationMessageLabel {
+    left: 35px;
+    top: 308px;
+}
+
+#radio_options_view_container .stationMessageInput {
+    position: absolute;
+    top: 310px;
+    left: 220px;
+    width: 200px;
+}
 #radio_options_view_container .PSCheckbox {
     position: absolute;
     left: 30px;
@@ -420,7 +569,7 @@
 }
 
 #radio_options_view_container .sendButton {
-    top: 260px;
+    top: 500px;
     left: 200px;
     width: 70px;
     height: 38px;
@@ -701,7 +850,11 @@
     opacity: 0 !important;
 }
 
-.bc-item-big.prevcd, .bc-item-big.prevusb, .bc-item-big.prevsd, .bc-item-big.prevblue {
+.bc-item-big.prevcd, .bc-item-big.prevusb,
+.bc-item-big.prevbluetooth ,
+.bc-item-big.prevlineIn,
+.bc-item-big.previpod,
+.bc-item-big.prevsd, .bc-item-big.prevblue {
     width: 155px;
     height: 98px;
     border-right: 1px solid #393939;
@@ -709,7 +862,12 @@
     background: url(../images/media/cd-prev-btn.png) no-repeat;
 }
 
-.bc-item-big.prevcd.pressed, .bc-item-big.prevusb.pressed, .bc-item-big.prevsd.pressed, .bc-item-big.prevblue.pressed {
+.bc-item-big.prevcd.pressed, .bc-item-big.prevusb.pressed,
+.bc-item-big.prevbluetooth.pressed ,
+.bc-item-big.prevlineIn.pressed ,
+.bc-item-big.previpod.pressed ,
+.bc-item-big.prevsd.pressed,
+ .bc-item-big.prevblue.pressed {
     background: url(../images/media/cd-prev-btn_pressed.png) no-repeat;
 }
 
@@ -729,6 +887,9 @@
 }
 
 .bc-item-big.play-usb,
+.bc-item-big.play-bluetooth,
+.bc-item-big.play-lineIn,
+.bc-item-big.play-ipod,
 .bc-item-big.play-cd {
     width: 157px;
     height: 98px;
@@ -750,12 +911,21 @@
     visibility: visible;
 }
 
-.bc-item-big.playcd.pressed, .bc-item-big.playusb.pressed, .bc-item-big.playsd.pressed, .bc-item-big.playblue.pressed {
+.bc-item-big.playcd.pressed, 
+.bc-item-big.playusb.pressed, 
+.bc-item-big.playbluetooth.pressed,
+.bc-item-big.playlineIn.pressed,
+.bc-item-big.playipod.pressed,
+.bc-item-big.playsd.pressed, 
+.bc-item-big.playblue.pressed {
     background: url(../images/media/cd_play_btn_pressed.png) no-repeat;
 }
 
 .bc-item-big.nextcd,
 .bc-item-big.nextusb,
+.bc-item-big.nextbluetooth,
+.bc-item-big.nextlineIn,
+.bc-item-big.nextlineipod,
 .bc-item-big.nextsd,
 .bc-item-big.nextblue {
     width: 154px;
@@ -767,7 +937,13 @@
     left: 314px;
 }
 
-.bc-item-big.nextcd.pressed, .bc-item-big.nextusb.pressed, .bc-item-big.nextsd.pressed, .bc-item-big.nextblue.pressed {
+.bc-item-big.nextcd.pressed,
+ .bc-item-big.nextusb.pressed, 
+ .bc-item-big.nextbluetooth.pressed,
+ .bc-item-big.nextlineIn.pressed,
+ .bc-item-big.nextipod.pressed,
+ .bc-item-big.nextsd.pressed, 
+ .bc-item-big.nextblue.pressed {
     background: url(../images/media/cd-next-btn_pressed.png) no-repeat;
 }
 
@@ -792,7 +968,36 @@
     height: 109px;
     background: url(../images/media/small-lazerhorse-image.png) no-repeat;
 }
-
+#blueetooth_logo {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+    border: 1px solid #393939;
+    border-radius: 2px;
+    width: 109px;
+    height: 109px;
+    background: url(../images/media/small-lazerhorse-image.png) no-repeat;
+}
+#lineIn_logo {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+    border: 1px solid #393939;
+    border-radius: 2px;
+    width: 109px;
+    height: 109px;
+    background: url(../images/media/small-lazerhorse-image.png) no-repeat;
+}
+#ipod_logo {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+    border: 1px solid #393939;
+    border-radius: 2px;
+    width: 109px;
+    height: 109px;
+    background: url(../images/media/small-fall-image.png) no-repeat;
+}
 #bt-bg {
     position: relative;
     float: left;
@@ -1023,8 +1228,8 @@
 .pref{
     width: 150px;
     height: 40px;
-    top:77px;
-    left:480px;
+    top:380px;
+    left:645px;
     border-radius: 3px;
     border: 1px solid #393939;
     z-index: 900;
@@ -1057,9 +1262,14 @@
     left: 5px;
     top: 20px;
 }
+.option .equalizerSettingsCheckBox{
+    position: absolute;
+    left: 5px;
+    top: 82px;
+}
 .option .equalizerSettingsLabel
 {
-    left:5px;
+    left:25px;
     top:80px;
 }
 .option .equalizerChannelIdLabel{
