@@ -60,28 +60,13 @@ boolStruct: [
     this.setSource();
     var data = SDL.MediaController.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification('AUDIO',{audioControlData: data});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: data});
   }
   },
   setSource:function()
   {
     SDL.MediaController.radioControlStruct.source='USB';
   },
-    // sendButton:function(){
-    //   var properties = {'source':'USB',
-    //   'equalizerSettings':{
-    //     'channelId':this.equalizerSettings.channelId,
-    //     'channelName':this.equalizerSettings.channelName
-    //   }, 
-    //   'keepContext':this.usbControl.keepContext,
-    //   'volume':SDL.MediaController.currentVolume
-    // };
-    //   FFW.RC.onInteriorVehicleDataNotification('AUDIO',properties);
-    // },
-
-
-
-
     PlayList: SDL.Playlist.create({
         selectedIndex: 0,
         items: {
