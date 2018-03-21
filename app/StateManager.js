@@ -231,7 +231,9 @@ var StateManager = Em.StateManager.extend(
               this._super();
             }
           })
-        })
+        }),
+
+        seat: Em.State.create({}),
       }
     ),
     /** Media state */

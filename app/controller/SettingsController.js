@@ -386,6 +386,12 @@ SDL.SettingsController = Em.Object.create(
           }
       }
       SDL.SendMessage.toggleActivity();
+    },
+    turnOnSeat: function () {
+      if(!SDL.States.settings.seat.active){
+        SDL.SeatModel.goToStates();
+        SDL.States.goToStates('settings.seat');
+        }
     }
   }
 );
