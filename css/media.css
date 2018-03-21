@@ -1257,11 +1257,6 @@
     color: white;
     background: #393939;
 }
-.option .keepContextCheckBox{
-    position: absolute;
-    left: 5px;
-    top: 20px;
-}
 .option .equalizerSettingsCheckBox{
     position: absolute;
     left: 5px;
@@ -1343,7 +1338,7 @@
     .option .equalizerChannelNameCheckBox{
         position: absolute;
         left: 5px;
-        top: 140px;
+        top: 142px;
     }
     .option .equalizerChannelNameLabel{
       left:25px;

@@ -53,22 +53,24 @@ SDL.MediaController = Em.Object.create(
         channelName: 'Default'
       },
      },
+     lastRadioControlStruct:{
+      source:'AUDIO',
+      keepContext:true,
+      equalizerSettings:{
+        channelSetting:50,
+        channelId: 50,
+        channelName: 'Default'
+      },
+     },
      radioControlAudioValue:
      {
         keepContext:true,
         volume:true,
-        equalizerSettings:true
+        equalizerSettings:true,
+        channelName:true
+
      },
-     // radioControlAudioValue:
-     // {
-     //    keepContext:true,
-     //    volume:true,
-     //    equalizerSettings:{
-     //      channelSetting:true,
-     //      channelId:true,
-     //      channelName:true
-     //    },
-     // },
+     //lastParams:{},
 
       usbControl:{
       keepContext: false
@@ -78,8 +80,51 @@ SDL.MediaController = Em.Object.create(
     false
     ],
     saveButtonPress:function(){
+      var equalizerSettings={};
+      if(this.radioControlStruct.equalizerSettings.channelSetting!=this.lastRadioControlStruct.equalizerSettings.channelSetting||
+        this.radioControlStruct.equalizerSettings.channelId!=this.lastRadioControlStruct.equalizerSettings.channelId)
+      {
+        equalizerSettings.channelId=parseInt(this.radioControlStruct.equalizerSettings.channelId);
+        equalizerSettings.channelSetting=parseInt(this.radioControlStruct.equalizerSettings.channelSetting);
+      }
+      if(this.radioControlStruct.equalizerSettings.channelName!=this.lastRadioControlStruct.equalizerSettings.channelName){
+        equalizerSettings.channelName=this.radioControlStruct.equalizerSettings.channelName;
+        equalizerSettings.channelId=parseInt(this.radioControlStruct.equalizerSettings.channelId);
+        equalizerSettings.channelSetting=parseInt(this.radioControlStruct.equalizerSettings.channelSetting);
+      }
       SDL.MediaController.toggleProperty('optionsEnabled');
+      if(equalizerSettings.channelId!=null||equalizerSettings.channelSetting!=null){
+        var arrayNotification=[equalizerSettings];
+        var result={'equalizerSettings': arrayNotification};
+      FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:result});
+      this.setLastData(equalizerSettings);
+    }
     },
+    setLastData:function(data){
+      if(data.channelId!=null){
+        this.set('this.lastRadioControlStruct.equalizerSettings.channelId',data.channelId);
+      }
+      if(data.channelSetting!=null){
+        this.set('this.lastRadioControlStruct.equalizerSettings.channelSetting',data.channelSetting);
+      }
+      if(data.channelName!=null){
+        this.set('this.lastRadioControlStruct.equalizerSettings.channelName',data.channelName);
+      }
+    },
+    getCurrentData:function(){
+      var result = {
+        'source':this.lastRadioControlStruct.source,
+        'equalizerSettings':{
+          'channelSetting':this.lastRadioControlStruct.equalizerSettings.channelSetting,
+          'channelId':this.lastRadioControlStruct.equalizerSettings.channelId,
+          'channelName':this.lastRadioControlStruct.equalizerSettings.channelName
+        },
+
+      };
+      return result;
+    },
+
+
     optionsEnabled:false,
     toggleOptions:function(){
       SDL.MediaController.toggleProperty('optionsEnabled');
@@ -169,6 +214,10 @@ SDL.MediaController = Em.Object.create(
     volumeUpPress: function() {
       if (this.currentVolume < 100) {
         this.set('currentVolume', this.currentVolume + 1);
+        if(this.radioControlAudioValue.volume)
+        {
+          FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:{'volume':this.currentVolume}});
+        }
       }
     },
     /**
@@ -177,6 +226,10 @@ SDL.MediaController = Em.Object.create(
     volumeDownPress: function() {
       if (this.currentVolume > 0) {
         this.set('currentVolume', this.currentVolume - 1);
+        if(this.radioControlAudioValue.volume)
+        {
+          FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:{'volume':this.currentVolume}});
+        }
       }
     },
     /**
@@ -374,7 +427,6 @@ SDL.MediaController = Em.Object.create(
       {
       var result={};
       var equalizerSettings={};
-      var validEqualizer={};
       result.source=this.radioControlStruct.source;
       if(this.radioControlAudioValue.keepContext){
         result.keepContext=this.radioControlStruct.keepContext;
