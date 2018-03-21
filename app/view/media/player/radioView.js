@@ -161,6 +161,7 @@ SDL.RadioView = Em.ContainerView
               }.property(
                 'SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId'
               ),
+              
               disabledBinding: 'isDisabled'
             }
           ),

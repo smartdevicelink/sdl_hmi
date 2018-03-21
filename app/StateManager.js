@@ -376,7 +376,7 @@ var StateManager = Em.StateManager.extend(
               SDL.MediaController.deactivateCD();
               SDL.MediaController.radioControlStruct.source='MOBILE_APP';
               var data = SDL.MediaController.getAudioControlData();
-              FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:data});
+              FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:{'source':data.source}});
               if (SDL.SDLModel.data.mediaPlayerActive) {
                 SDL.SDLController.onEventChanged('player', false);
               }
