@@ -50,7 +50,7 @@ SDL.MediaController = Em.Object.create(
       equalizerSettings:{
         channelSetting:50,
         channelId: 50,
-        channelName: ' '
+        channelName: 'Default'
       },
      },
      radioControlAudioValue:
@@ -382,7 +382,7 @@ SDL.MediaController = Em.Object.create(
         result.volume=this.currentVolume;
       }
       if(this.radioControlAudioValue.equalizerSettings){
-        equalizerSettings.channelId=this.radioControlStruct.equalizerSettings.channelId;
+        equalizerSettings.channelId=parseInt(this.radioControlStruct.equalizerSettings.channelId);
         equalizerSettings.channelName=this.radioControlStruct.equalizerSettings.channelName;
         equalizerSettings.channelSetting=this.radioControlStruct.equalizerSettings.channelSetting;
       }

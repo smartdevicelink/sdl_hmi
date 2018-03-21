@@ -600,7 +600,7 @@ SDL.RadioModel = Em.Object.create({
         result.sisData.stationShortName=this.radioControlStruct.sisData.stationShortName;
       }
       if(forceGetAll || this.radioControlCheckboxes.sisData.stationLongName){
-        result.sisData.stationShortName=this.radioControlStruct.sisData.stationLongName;
+        result.sisData.stationLongName=this.radioControlStruct.sisData.stationLongName;
       }
       if(forceGetAll || this.radioControlCheckboxes.sisData.stationMessage){
         result.sisData.stationMessage=this.radioControlStruct.sisData.stationMessage;
@@ -1501,8 +1501,13 @@ SDL.RadioModel = Em.Object.create({
         this.switchRadioBandFrequency(true);
       }
     }
+
+    if(properties.indexOf('stationLocation.longitudeDegrees')>=0){
+      properties.push('stationLocation.latitudeDegrees');
+    }else if(properties.indexOf('stationLocation.latitudeDegrees')>=0){
+      properties.push('stationLocation.longitudeDegrees');
+    }
     this.sendRadioChangeNotification(properties);
-    //this.sendRadioChangeNotification(currentData);
   },
 
   setFrequencyInteger: function(value) {
