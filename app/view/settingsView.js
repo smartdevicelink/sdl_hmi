@@ -56,7 +56,8 @@ SDL.SettingsView = Em.ContainerView.create(
       SDL.SingleLightView,
       SDL.LocationLightView,
       SDL.InteriorLightView,
-      SDL.ExteriorLightView
+      SDL.ExteriorLightView,
+      SDL.SeatView
     ],
     /** Left menu */
     leftMenu: Em.ContainerView.extend(
@@ -81,7 +82,8 @@ SDL.SettingsView = Em.ContainerView.create(
             childViews: [
               'policies',
               'HMISettings',
-              'light'
+              'light',
+              'seat'
             ],
             policies: SDL.Button.extend(
               {
@@ -119,6 +121,18 @@ SDL.SettingsView = Em.ContainerView.create(
               text: 'Light',
               icon: 'images/settings/ico_settings.png',
               action: 'turnOnLight',
+              target: 'SDL.SettingsController'
+            }),
+            seat: SDL.Button.extend({
+              elementId: 'seat_leftMenu',
+              goToState: 'seat',
+              classNames: 'menu-item lsp1_p',
+              classNameBindings: [
+                'SDL.States.settings.seat.active:info_active',
+              ],
+              text: 'Seat',
+              icon: 'images/settings/ico_settings.png',
+              action: 'turnOnSeat',
               target: 'SDL.SettingsController'
             })
           }

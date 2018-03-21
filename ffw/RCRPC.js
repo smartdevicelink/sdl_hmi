@@ -161,6 +161,8 @@ FFW.RC = FFW.RPCObserver.create(
               SDL.HmiSettingsModel.getHmiSettingsCapabilities();
             var lightControlCapabilities =
               SDL.LightModel.getLightCapabilities();
+            var seatControlCapabilities = 
+              SDL.SeatModel.getSeatCapabilities(); 
 
             var buttonCapabilities = [];
 
@@ -179,6 +181,8 @@ FFW.RC = FFW.RPCObserver.create(
               hmiSettingsControlCapabilities;
             remoteControlCapability.lightControlCapabilities =
               lightControlCapabilities;
+            remoteControlCapability.seatControlCapabilities =
+              seatControlCapabilities;
             remoteControlCapability.buttonCapabilities =
               buttonCapabilities;
               remoteControlCapability.audioControlCapabilities = 
@@ -237,6 +241,7 @@ FFW.RC = FFW.RPCObserver.create(
             var newAudioControlData= null;    
             var newHMISettingsControlData = null;
             var newLightControlData = null;
+            var newSeatControlData = null;
             
             if (request.params.moduleData.climateControlData) {
               newClimateControlData =
@@ -263,6 +268,10 @@ FFW.RC = FFW.RPCObserver.create(
               newLightControlData = SDL.LightModel.setLightControlData(
                 request.params.moduleData.lightControlData);
             }
+            if(request.params.moduleData.seatControlData){
+              newSeatControlData = SDL.SeatModel.setSeatControlData(
+                request.params.moduleData.seatControlData);
+            };
             // send repsonse
             var JSONMessage = {
               'jsonrpc': '2.0',
@@ -292,6 +301,10 @@ FFW.RC = FFW.RPCObserver.create(
             if(newLightControlData){
               JSONMessage.result.moduleData.lightControlData =
                 newLightControlData;
+            }
+            if(newSeatControlData){
+              JSONMessage.result.moduleData.seatControlData =
+                newSeatControlData;
             }
             
             this.client.send(JSONMessage);
@@ -323,6 +336,7 @@ FFW.RC = FFW.RPCObserver.create(
             var audioControlData=null;
             var hmiSettingsControlData = null;
             var lightControlData = null;
+            var seatControlData = null;
 
             var app = SDL.SDLController.getApplicationModel(
               request.params.appID
@@ -346,6 +360,10 @@ FFW.RC = FFW.RPCObserver.create(
               }
               case 'LIGHT':{
                 lightControlData = SDL.LightModel.getLightControlData(false);
+                break
+              }
+              case 'SEAT':{
+                seatControlData = SDL.SeatModel.getSeatControlData(false);
                 break
               }
             }
@@ -381,6 +399,10 @@ FFW.RC = FFW.RPCObserver.create(
             if(lightControlData){
               JSONMessage.result.moduleData.lightControlData = 
                 lightControlData;
+            }
+            if(seatControlData){
+              JSONMessage.result.moduleData.seatControlData = 
+              seatControlData;
             }
             if (request.params.subscribe !== undefined) {
               JSONMessage.result.isSubscribed =

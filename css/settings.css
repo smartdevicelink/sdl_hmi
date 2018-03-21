@@ -184,14 +184,257 @@
     margin-top: 70px;
 }
 
+#settingsView .in_seat_view {
+    overflow: auto;
+    position: absolute;
+    top: 88px;
+    left: 160px;
+    width: 630px;
+    height: 302px;
+    float: left;
+    z-index: 1001;
+    margin-top: 70px;
+    margin: 0px;
+    background-color: black;
+    border: 1px solid white;
+}
+
+#seat .in_seat_heating_view,
+#seat .in_seat_cooling_view {
+    z-index: 1001;
+    margin: 5px;
+    display: block;
+    position: relative
+}
+#seat .setButton{
+    z-index: 1002;
+    border: 2px solid white;
+    height: 22px;
+    text-align: center;
+    line-height: 24px;
+    display: block;
+    position: relative;
+    margin: 20px 20px 20px 20px;
+}
+
+#seat .in_seat_cushionFirmness_view,
+#seat .in_seat_massageModes_view {
+    z-index: 1001;
+    margin: 5px 5px 19px 5px;
+    display: block;
+    position: relative
+}
+
+
+#seat .in_seat_heating_view .in_seat_enable_view,
+#seat .in_seat_heating_view .in_seat_level_view,
+#seat .in_seat_cooling_view .in_seat_enable_view,
+#seat .in_seat_cooling_view .in_seat_level_view {
+    z-index: 1001;
+    margin: 0px 0px 0px 0px;
+    display: block;
+    position: relative
+}
+
+#seat .in_seat_heating_view .enableLabel,
+#seat .in_seat_cooling_view .enableLabel,
+#seat .in_seat_backTiltAngle_view .label,   {
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 10px
+}
+
+#seat .in_seat_cushionFirmnes_view,
+#seat .in_seat_massageMode_view {
+    display: block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 70px -2px 10px;
+    background-color: black;
+    border: 2px solid white;
+}
+
+#seat .in_seat_cushionFirmnes_view .in_seat_cushion_view,
+#seat .in_seat_cushionFirmnes_view .in_seat_firmnes_view,
+#seat .in_seat_massageModes_view .in_zone_view,
+#seat .in_seat_massageModes_view .in_mode_view{
+    z-index: 1001;
+    margin: 0px 0px 0px 5px;
+    display: block;
+    position: relative
+}
+
+#seat .in_seat_cushionFirmnes_view .dellButton,
+#seat .in_seat_massageModes_view .dellButton{
+    z-index: 1002;
+    top: 1px;
+    left: 499px;
+    background: black;
+}
+#seat .in_seat_cushionFirmness_view .addButton ,
+#seat .in_seat_massageModes_view .addButton{
+    z-index: 1002;
+    top: -11px;
+    left: 481px;
+    border: 2px solid white;
+    width: 50px;
+    height: 22px;
+    text-align: center;
+    line-height: 24px;
+}
+
+#seat .in_seat_cushionFirmnes_view .in_seat_cushion_view .cushionLabal,
+#seat .in_seat_cushionFirmnes_view .in_seat_firmnes_view .firmnesLabal,
+#seat .in_seat_massageMode_view .zone_label,
+#seat .in_seat_massageModes_view .in_mode_view .mode_label {
+    z-index: 1001;
+    margin: 2px 2px 2px 2px;
+    width: 60px;
+    display: inline-block;
+    position: relative
+}
+
+#seat .in_seat_cushionFirmnes_view .in_seat_cushion_view .cushionSelect,
+#seat .in_seat_cushionFirmnes_view .in_seat_firmnes_view .firmnesInput,
+#seat .in_seat_massageMode_view .zone_select,
+#seat .in_seat_massageModes_view .in_mode_view .mode_select {
+    z-index: 1001;
+    margin: 2px 2px 2px 159px;
+    width: 141px;
+    display: inline-block;
+    position: relative
+}
+
+#seat .in_seat_heating_view .levelLabel,
+#seat .in_seat_cooling_view .levelLabel{
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 20px
+}
+
+#seat .in_seat_heating_view .levelInput,
+#seat .in_seat_level_view .levelInput  {
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 183px;
+    width: 47px;
+}
+
+
+#seat .in_seat_heating_view .enableSelect,
+#seat .in_seat_cooling_view .enableSelect {
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 241px
+}
+
+#seat .in_seat_position_view,
+#seat .in_memory_view,
+#seat .in_seat_backTiltAngle_view  {
+    z-index: 1001;
+    margin: 5px;
+    display: block;
+    position: relative
+}
+
+#seat .in_seat_cushionFirmness_view .in_seat_cushionFirmnessLabel_view,
+#seat .in_seat_massageModes_view .massageModeLabel,
+#seat .in_memory_view .memoryLabel,
+#seat .in_massageEnable_view,
+#seat .in_id_view,
+#seat .in_memory_view .in_memoryId_view,
+#seat .in_memory_view .in_label_view,
+#seat .in_memory_view .in_action_view,
+#seat .in_seat_position_view .positionLabel,
+#seat .in_seat_position_view .in_seat_horisontal_view,
+#seat .in_seat_position_view .in_seat_vertical_view,
+#seat .in_seat_position_view .in_seat_seatFrontVertical_view,
+#seat .in_seat_position_view .in_seat_seatBackVertical_view,
+#seat .in_seat_position_view .in_seat_headSupportHorizontal_view,
+#seat .in_seat_position_view .in_seat_headSupportVertical_view {
+    display: block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 0px
+}
+
+#seat .in_seat_backTiltAngle_view .input{
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 241px;
+    width: 47px;
+}
+
+#seat .in_memory_view .in_memoryId_view .inputId,
+#seat .in_memory_view .in_label_view .inputLabel,
+#seat .in_seat_horisontal_view .input,
+#seat .in_seat_vertical_view .input,
+#seat .in_seat_seatFrontVertical_view .input,
+#seat .in_seat_seatBackVertical_view .input,
+#seat .in_seat_headSupportHorizontal_view .input,
+#seat .in_seat_headSupportVertical_view .input {
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 49px;
+    width: 47px;
+}
+
+#seat .in_memory_view .in_action_view .actionSelect{
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 49px;
+    width: 76px;
+}
+
+#seat .in_memory_view .in_memoryId_view .labelId,
+#seat .in_memory_view .in_label_view .labelLabel,
+#seat .in_memory_view .in_action_view .actionLabel,
+#seat .in_seat_horisontal_view .label,
+#seat .in_seat_vertical_view .label,
+#seat .in_seat_seatFrontVertical_view .label,
+#seat .in_seat_seatBackVertical_view .label,
+#seat .in_seat_headSupportHorizontal_view .label,
+#seat .in_seat_headSupportVertical_view .label {
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 22px;
+    width: 170px 
+}
+
 #settingsView .HMI_settings_list,
 #settingsView .light_list {
     height: 251px;
     width: 598px;
     left: 10px;;
 }
+
 #HMI_settings_list .list-content .ffw-button,
 #light_list .list-content .ffw-button {
     width: 537px;
     padding-left: 10px;
+}
+
+#seat .in_massageEnable_view .massageEnable_label,
+#seat .in_id_view .idlabel {
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 5px 0px 0px 5px;
+    width: 170px 
+}
+
+#seat .in_massageEnable_view .massageEnable_enableSelect,
+#seat .in_id_view .idSelect {
+    display: inline-block;
+    position: relative;
+    z-index: 1001;
+    margin: 0px 0px 0px 71px;
 }
