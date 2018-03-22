@@ -206,6 +206,7 @@
     display: block;
     position: relative
 }
+
 #seat .setButton{
     z-index: 1002;
     border: 2px solid white;
@@ -272,6 +273,7 @@
     left: 499px;
     background: black;
 }
+
 #seat .in_seat_cushionFirmness_view .addButton ,
 #seat .in_seat_massageModes_view .addButton{
     z-index: 1002;

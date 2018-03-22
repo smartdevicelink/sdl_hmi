@@ -27,34 +27,42 @@
  * @name SDL.HMISettingsView
  * @desc Info Apps visual representation
  * @category View
- * @filesource app/view/settings/AppsView.js
+ * @filesource app/view/settings/HMISettingsView.js
  * @version 1.0
  */
 
 SDL.HMISettingsView = Em.ContainerView.create({
+
     elementId: 'hmi_settings',
+
     classNames: 'in_HMIsettings_view',
+
     classNameBindings: [
         'SDL.States.settings.HMISettings.active:active_state:inactive_state'
     ],
+
     childViews: [
       'SettingsList'
     ],
+
     getDisplayModeStatus: function() {
       return 'Display mode - ' + SDL.HmiSettingsModel.displayMode;
     }.property(
       'SDL.HmiSettingsModel.displayMode'
     ),
+
     getDistanceUnit: function() {
       return 'Distance unit - ' + SDL.HmiSettingsModel.distanceUnit;
     }.property(
       'SDL.HmiSettingsModel.distanceUnit'
     ),
+    
     getTemperatureUnit: function() {
       return 'Temperature unit - ' + SDL.HmiSettingsModel.temperatureUnit;
     }.property(
       'SDL.HmiSettingsModel.temperatureUnit'
     ),
+
     SettingsList: SDL.List.extend({
         elementId: 'HMI_settings_list',
         classNames:'HMI_settings_list',

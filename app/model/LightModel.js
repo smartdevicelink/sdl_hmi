@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Ford Motor Company All rights reserved.
+ * Copyright (c) 2018, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -32,6 +32,10 @@
  */
 
 SDL.LightModel = Em.Object.create({
+   
+    /*
+    * Common Single Light
+    */    
     singleLightNameStruct: [
         'FRONT_LEFT_HIGH_BEAM',
         'FRONT_RIGHT_HIGH_BEAM',
@@ -55,6 +59,10 @@ SDL.LightModel = Em.Object.create({
         'REAR_RIGHT_TURN_LIGHT',
         'REAR_REGISTRATION_PLATE_LIGHT'
     ],
+
+    /*
+    * Exterior Lights by common function groups
+    */
     exteriorLightNameStruct: [
         'HIGH_BEAMS',
         'LOW_BEAMS',
@@ -68,6 +76,10 @@ SDL.LightModel = Em.Object.create({
         'RIGHT_TURN_LIGHTS',
         'HAZARD_LIGHTS',
     ],
+
+    /*
+    * Interior Lights by common function groups
+    */
     interiorLightNameStruct: [
         'AMBIENT_LIGHTS',
         'OVERHEAD_LIGHTS',
@@ -75,12 +87,19 @@ SDL.LightModel = Em.Object.create({
         'TRUNK_LIGHTS'
     ],
 
+    /*
+    * Lights by location
+    */
     locationLightNameStruct: [
         'EXTERIOR_FRONT_LIGHTS',
         'EXTERIOR_REAR_LIGHTS',
         'EXTERIOR_LEFT_LIGHTS',
         'EXTERIOR_RIGHT_LIGHTS'
     ],
+
+    /*
+    * turn on/off a single light or all lights in a group
+    */
     lightStatusStruct:[
         'ON',
         'OFF'
@@ -120,8 +139,6 @@ SDL.LightModel = Em.Object.create({
         initialization(this.interiorLightNameStruct, this.lightState);
         initialization(this.locationLightNameStruct, this.lightState);
     },
-
-
 
     getLightCapabilities: function() {
          function getCapabilities(struct, capabilities){
@@ -164,7 +181,8 @@ SDL.LightModel = Em.Object.create({
                         this.lightState[j].density = data.lightState[i].density;
                     }
                     if(null != data.lightState[i].sRGBColor){
-                        this.lightState[j].sRGBColor = data.lightState[i].sRGBColor;
+                        this.lightState[j].sRGBColor = 
+                            data.lightState[i].sRGBColor;
                     } 
                     if(data.lightState[i].id == SDL.LightModel.lightSettings.id){
                         data.lightState[i] = SDL.deepCopy(this.lightState[j]);
