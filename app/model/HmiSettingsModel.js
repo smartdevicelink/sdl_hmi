@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Ford Motor Company All rights reserved.
+ * Copyright (c) 2018, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -23,6 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @name SDL.HmiSettingsModel
  * @desc Navigation model
@@ -33,69 +34,88 @@
 
 SDL.HmiSettingsModel = Em.Object.create({
 
-    displayModeStruct: [
-        'DAY',
-        'NIGHT',
-        'AUTO'
-      ],
-      displayMode: 'DAY',
-      
-      distanceUnitStruct:[
-        'MILES',
-        'KILOMETERS'
-      ],
-      distanceUnit: 'MILES',
-    
-      temperatureUnitStruct: [
-        'FAHRENHEIT',
-        'CELSIUS'
-      ],
-      temperatureUnit: SDL.ClimateControlModel.climateControlData.temperatureUnit,
-    
-      getHmiSettingsCapabilities: function() {
-        var capabilities = {
-          moduleName: 'HMISettingsControlCapabilities',
-          distanceUnitAvailable: true,
-          temperatureUnitAvailable: true,
-          displayModeUnitAvailable: true
-        };
-    
-        return capabilities;
-      },
-    
-      setHmiSettingsData: function(data){
-        if(null != data.displayMode){
-          this.set('displayMode',data.displayMode);
-        }
-        if(null != data.temperatureUnit){
-          this.set('temperatureUnit',data.temperatureUnit);
-          if('CELSIUS' == data.temperatureUnit){
-            SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
-          }else{
-            SDL.ClimateControlModel.temperatureUnitFahrenheitEnable();
-          }
-        }
-        if(null != data.distanceUnit){
-          this.set('distanceUnit',data.distanceUnit);
-        }
+/**
+ * Display mode of the HMI display
+**/     
+  displayModeStruct: [
+    'DAY',
+    'NIGHT',
+    'AUTO'
+  ],
 
-        properties = [];
-        for (var key in data) {
-          properties.push(key);
-        }
+/**
+* Current display mode of the HMI display
+**/   
+  displayMode: 'DAY',
 
-        var result = this.getHmiSettingsControlData(true);
-        return SDL.SDLController.filterObjectProperty(result, properties);
-      },
-      
-      getHmiSettingsControlData: function(){
-        var result = {
-          temperatureUnit: this.temperatureUnit,
-          displayMode: this.displayMode,
-          distanceUnit: this.distanceUnit
-        };
-        
-        return result;
+/**
+  * Distance Unit used in the HMI (for maps/tracking distances)
+**/ 
+  distanceUnitStruct:[
+    'MILES',
+    'KILOMETERS'
+  ],
+
+/**
+* Current distance Unit used in the HMI (for maps/tracking distances)
+**/ 
+  distanceUnit: 'MILES',
+
+/*
+*Temperature Unit used in the HMI (for temperature measuring systems)
+*/ 
+  temperatureUnitStruct: [
+    'FAHRENHEIT',
+    'CELSIUS'
+  ],
+/*
+ * Current temperature Unit used in the HMI (for temperature measuring systems)
+ */ 
+  temperatureUnit: SDL.ClimateControlModel.climateControlData.temperatureUnit,
+
+  getHmiSettingsCapabilities: function() {
+    var capabilities = {
+      moduleName: 'HMISettingsControlCapabilities',
+      distanceUnitAvailable: true,
+      temperatureUnitAvailable: true,
+      displayModeUnitAvailable: true
+    };
+
+    return capabilities;
+  },
+
+  setHmiSettingsData: function(data){
+      if(null != data.displayMode){
+        this.set('displayMode',data.displayMode);
       }
-})
+      if(null != data.temperatureUnit){
+        this.set('temperatureUnit',data.temperatureUnit);
+        if('CELSIUS' == data.temperatureUnit){
+          SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
+        }else{
+          SDL.ClimateControlModel.temperatureUnitFahrenheitEnable();
+        }
+      }
+      if(null != data.distanceUnit){
+        this.set('distanceUnit',data.distanceUnit);
+    }
 
+    properties = [];
+    for (var key in data) {
+      properties.push(key);
+    }
+
+    var result = this.getHmiSettingsControlData(true);
+    return SDL.SDLController.filterObjectProperty(result, properties);
+  },
+  
+  getHmiSettingsControlData: function(){
+    var result = {
+      temperatureUnit: this.temperatureUnit,
+      displayMode: this.displayMode,
+      distanceUnit: this.distanceUnit
+    };
+    
+    return result;
+  }
+})

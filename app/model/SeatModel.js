@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Ford Motor Company All rights reserved.
+ * Copyright (c) 2018, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -33,12 +33,19 @@
  */
 
 SDL.SeatModel = Em.Object.create({
+        
+    /*
+    * turn on/off
+    */
     enableStruct:[
         'ON',
         'OFF'
     ],
+
     heatingEnableData: 'OFF',
+
     coolingEnabledData: 'OFF',
+
     massageEnabledData: 'OFF',
 
     mandatoryField:[
@@ -46,16 +53,27 @@ SDL.SeatModel = Em.Object.create({
         'memory.id',
         'memory.action'
     ],
-        
+    
+    /*
+    * List possible zones of a multi-contour massage seat
+    */
     massageZoneStruct:[
         'LUMBAR',
         'SEAT_CUSHION'
     ],
+
+    /*
+    * List possible modes of a massage zone
+    */ 
     massageModeStruct:[
         'OFF',
         'LOW',
         'HIGH'
     ],
+
+    /*
+    * Specify the mode of a massage zone
+    */ 
     massageCushionStruct:[
         'TOP_LUMBAR',
         'MIDDLE_LUMBAR',
@@ -63,28 +81,44 @@ SDL.SeatModel = Em.Object.create({
         'BACK_BOLSTERS',
         'SEAT_BOLSTERS'
     ],
+
+    /*
+    * List possible cushions of a multi-contour massage seat
+    */ 
     supportedSeatStruct:[
         'DRIVER',
         'FRONT_PASSENGER'
     ],
+
     seatMemoryActionTypeStruct:[
         'SAVE',
         'RESTORE',
         'NONE'
     ],
+
+    /*
+    * Specify the mode of a massage
+    */
     massageModeData:{
         massageZone: 'LUMBAR',
         massageMode: 'OFF'
     },
+
+    /*
+    * The intensity or firmness of a cushion
+    */ 
     massageCushionFirmness:{
         cushion: 'TOP_LUMBAR',
         firmness: 0
     },
+
+
     seatMemoryAction: {
         id: 1,
         label: 'Label value',
         action: 'SAVE'
     },
+
     seatControlData: Em.Object.create({
         id: null,
         heatingEnabled: false,
@@ -103,6 +137,7 @@ SDL.SeatModel = Em.Object.create({
         massageCushionFirmness: [],
         memory: null
     }),
+
     tempSeatControlData: Em.Object.create({
         id: null,
         heatingEnabled: false,
@@ -121,44 +156,6 @@ SDL.SeatModel = Em.Object.create({
         massageCushionFirmness: [],
         memory: null
     }),
-    update: function(){
-        this.set('heatingEnableData', this.tempSeatControlData.heatingEnabled ? 'ON': 'OFF');
-        this.set('coolingEnabledData', this.tempSeatControlData.coolingEnabled ? 'ON': 'OFF');
-        this.set('massageEnabledData', this.tempSeatControlData.massageEnabled ? 'ON': 'OFF');
-
-        this.set('massageCushionFirmness0',this.tempSeatControlData.massageCushionFirmness[0] != null);
-        this.set('massageCushionFirmness1',this.tempSeatControlData.massageCushionFirmness[1] != null);
-        this.set('massageCushionFirmness2',this.tempSeatControlData.massageCushionFirmness[2] != null);
-        this.set('massageCushionFirmness3',this.tempSeatControlData.massageCushionFirmness[3] != null);
-        this.set('massageCushionFirmness4',this.tempSeatControlData.massageCushionFirmness[4] != null);
-
-        this.set('massageMode0',this.tempSeatControlData.massageMode[0] != null);
-        this.set('massageMode1',this.tempSeatControlData.massageMode[1] != null);
-
-        var length = this.tempSeatControlData.massageCushionFirmness.length;
-        for(var i = 0; i < length; ++i){
-            this.tempSeatControlData.massageCushionFirmness[i].firmness = 
-                parseInt(this.tempSeatControlData.massageCushionFirmness[i].firmness);
-        }
-
-        this.tempSeatControlData.heatingLevel = parseInt(this.tempSeatControlData.heatingLevel);
-        this.tempSeatControlData.coolingLevel = parseInt(this.tempSeatControlData.coolingLevel);
-        this.tempSeatControlData.horizontalPosition = parseInt(this.tempSeatControlData.horizontalPosition);
-        this.tempSeatControlData.verticalPosition = parseInt(this.tempSeatControlData.verticalPosition);
-        this.tempSeatControlData.frontVerticalPosition = parseInt(this.tempSeatControlData.frontVerticalPosition);
-        this.tempSeatControlData.backVerticalPosition = parseInt(this.tempSeatControlData.backVerticalPosition);
-        this.tempSeatControlData.backTiltAngle = parseInt(this.tempSeatControlData.backTiltAngle);
-        this.tempSeatControlData.headSupportHorizontalPosition = parseInt(this.tempSeatControlData.headSupportHorizontalPosition);
-        this.tempSeatControlData.headSupportVerticalPosition = parseInt(this.tempSeatControlData.headSupportVerticalPosition);
-        this.tempSeatControlData.memory.id = parseInt(this.tempSeatControlData.memory.id);
-
-        SDL.SeatModel.set('tempSeatControlData',SDL.deepCopy(SDL.SeatModel.tempSeatControlData));
-    },
-    
-    goToStates: function(){
-        SDL.SeatModel.set('tempSeatControlData',SDL.deepCopy(SDL.SeatModel.seatControlData));
-        SDL.SeatModel.update();
-    },
 
     massageCushionFirmness0: true,
     massageCushionFirmness1: false,
@@ -169,20 +166,83 @@ SDL.SeatModel = Em.Object.create({
     massageMode0: true,
     massageMode1: false,
 
+    update: function(){
+        this.set('heatingEnableData', 
+            this.tempSeatControlData.heatingEnabled ? 'ON': 'OFF');
+        this.set('coolingEnabledData', 
+            this.tempSeatControlData.coolingEnabled ? 'ON': 'OFF');
+        this.set('massageEnabledData', 
+            this.tempSeatControlData.massageEnabled ? 'ON': 'OFF');
+
+        this.set('massageCushionFirmness0',
+            this.tempSeatControlData.massageCushionFirmness[0] != null);
+        this.set('massageCushionFirmness1',
+            this.tempSeatControlData.massageCushionFirmness[1] != null);
+        this.set('massageCushionFirmness2',
+            this.tempSeatControlData.massageCushionFirmness[2] != null);
+        this.set('massageCushionFirmness3',
+            this.tempSeatControlData.massageCushionFirmness[3] != null);
+        this.set('massageCushionFirmness4',
+            this.tempSeatControlData.massageCushionFirmness[4] != null);
+
+        this.set('massageMode0',
+            this.tempSeatControlData.massageMode[0] != null);
+        this.set('massageMode1',
+            this.tempSeatControlData.massageMode[1] != null);
+
+        var length = this.tempSeatControlData.massageCushionFirmness.length;
+        for(var i = 0; i < length; ++i){
+            this.tempSeatControlData.massageCushionFirmness[i].firmness = 
+                parseInt(this.tempSeatControlData.massageCushionFirmness[i].firmness);
+        }
+
+        this.tempSeatControlData.heatingLevel = 
+            parseInt(this.tempSeatControlData.heatingLevel);
+        this.tempSeatControlData.coolingLevel = 
+            parseInt(this.tempSeatControlData.coolingLevel);
+        this.tempSeatControlData.horizontalPosition = 
+            parseInt(this.tempSeatControlData.horizontalPosition);
+        this.tempSeatControlData.verticalPosition = 
+            parseInt(this.tempSeatControlData.verticalPosition);
+        this.tempSeatControlData.frontVerticalPosition = 
+            parseInt(this.tempSeatControlData.frontVerticalPosition);
+        this.tempSeatControlData.backVerticalPosition = 
+            parseInt(this.tempSeatControlData.backVerticalPosition);
+        this.tempSeatControlData.backTiltAngle = 
+            parseInt(this.tempSeatControlData.backTiltAngle);
+        this.tempSeatControlData.headSupportHorizontalPosition = 
+            parseInt(this.tempSeatControlData.headSupportHorizontalPosition);
+        this.tempSeatControlData.headSupportVerticalPosition = 
+            parseInt(this.tempSeatControlData.headSupportVerticalPosition);
+        this.tempSeatControlData.memory.id = 
+            parseInt(this.tempSeatControlData.memory.id);
+
+        SDL.SeatModel.set('tempSeatControlData',
+            SDL.deepCopy(SDL.SeatModel.tempSeatControlData));
+    },
+    
+    goToStates: function(){
+        SDL.SeatModel.set('tempSeatControlData',
+            SDL.deepCopy(SDL.SeatModel.seatControlData));
+        SDL.SeatModel.update();
+    },
+
     init: function(){
         this.seatControlData.id = this.supportedSeatStruct[0];
 
         var length = this.massageZoneStruct.length;
         for(var i = 0; i < length; ++i){
-            this.seatControlData.massageMode.push(SDL.deepCopy(this.massageModeData));
-            this.seatControlData.massageMode[i].massageZone = this.massageZoneStruct[i];
+            this.seatControlData.massageMode.push(
+                SDL.deepCopy(this.massageModeData));
+            this.seatControlData.massageMode[i].massageZone = 
+                this.massageZoneStruct[i];
         }
 
-        this.seatControlData.massageCushionFirmness.push(this.massageCushionFirmness);
+        this.seatControlData.massageCushionFirmness.push(
+                this.massageCushionFirmness);
         this.seatControlData.memory = this.seatMemoryAction;
         this.tempSeatControlData = SDL.deepCopy(this.seatControlData);
     },
-
 
     getSeatCapabilities: function() {
         var result = [{
@@ -205,6 +265,7 @@ SDL.SeatModel = Em.Object.create({
           }];
        return result;
    },
+
    setSeatControlData: function(data){
         for (var key in data) {
             this.seatControlData.set(key, SDL.deepCopy(data[key]));
@@ -213,34 +274,44 @@ SDL.SeatModel = Em.Object.create({
         var result = this.getSeatControlData(true);
         return  result;
    },
+
    getSeatControlData: function(){
         this.update();
         return this.seatControlData;
    },
 
    applySettings: function () {
-    SDL.SeatModel.tempSeatControlData.coolingEnabled = (SDL.SeatModel.coolingEnabledData == 'ON');
-    SDL.SeatModel.tempSeatControlData.heatingEnabled = (SDL.SeatModel.heatingEnableData == 'ON');
-    SDL.SeatModel.tempSeatControlData.massageEnabled = (SDL.SeatModel.massageEnabledData == 'ON');
+    SDL.SeatModel.tempSeatControlData.coolingEnabled = 
+        (SDL.SeatModel.coolingEnabledData == 'ON');
+    SDL.SeatModel.tempSeatControlData.heatingEnabled = 
+        (SDL.SeatModel.heatingEnableData == 'ON');
+    SDL.SeatModel.tempSeatControlData.massageEnabled = 
+        (SDL.SeatModel.massageEnabledData == 'ON');
     SDL.SeatModel.update();
 
-    var temp = Em.Object.create( this.dfs(SDL.deepCopy(this.tempSeatControlData), SDL.deepCopy(this.seatControlData)));
+    var temp = Em.Object.create(this.dfs(SDL.deepCopy(this.tempSeatControlData),
+         SDL.deepCopy(this.seatControlData)));
+
     var length = this.mandatoryField.length;
     for(var i  = 0; i < length; ++i){
         var value = this.mandatoryField[i];
         if(value.indexOf('.') >= 0){
            var parentValue = value.substring(0, value.indexOf('.'));
            if(temp.hasOwnProperty(parentValue)){
-                temp.set(value,Em.Object.create(SDL.SeatModel.tempSeatControlData).get(value));
+                temp.set(value,Em.Object.create(
+                    SDL.SeatModel.tempSeatControlData).get(value));
            }
         } else{
             temp[value] = this.tempSeatControlData[value];
         }
     }
    
-    FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT', seatControlData: temp});
-    SDL.SeatModel.set('seatControlData',Em.Object.create(SDL.deepCopy(SDL.SeatModel.tempSeatControlData)));
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT', 
+        seatControlData: temp});
+    SDL.SeatModel.set('seatControlData',
+        Em.Object.create(SDL.deepCopy(SDL.SeatModel.tempSeatControlData)));
    },
+
    isEmptyObject: function(object){
        var l = 0;
        for (var key in object){
@@ -250,9 +321,8 @@ SDL.SeatModel = Em.Object.create({
        }
        return l == 0;
    },
-   dfs:function(from, to){
- 
 
+   dfs:function(from, to){
         var result = SDL.deepCopy(from);
         for (var key in from) {
             if(from.hasOwnProperty(key)){
