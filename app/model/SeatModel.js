@@ -135,6 +135,12 @@ SDL.SeatModel = Em.Object.create({
         this.set('massageMode0',this.tempSeatControlData.massageMode[0] != null);
         this.set('massageMode1',this.tempSeatControlData.massageMode[1] != null);
 
+        var length = this.tempSeatControlData.massageCushionFirmness.length;
+        for(var i = 0; i < length; ++i){
+            this.tempSeatControlData.massageCushionFirmness[i].firmness = 
+                parseInt(this.tempSeatControlData.massageCushionFirmness[i].firmness);
+        }
+
         this.tempSeatControlData.heatingLevel = parseInt(this.tempSeatControlData.heatingLevel);
         this.tempSeatControlData.coolingLevel = parseInt(this.tempSeatControlData.coolingLevel);
         this.tempSeatControlData.horizontalPosition = parseInt(this.tempSeatControlData.horizontalPosition);
@@ -255,6 +261,11 @@ SDL.SeatModel = Em.Object.create({
                         var lengthFrom = from[key].length;
                         var lengthTo = to[key].length;
                         if((lengthFrom != lengthTo)){
+                            result[key] = from[key];
+                            continue;
+                        }
+                        var temp = this.dfs(from[key],to[key]);
+                        if(!this.isEmptyObject(temp)){
                             result[key] = from[key];
                             continue;
                         }
