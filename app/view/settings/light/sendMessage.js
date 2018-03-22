@@ -29,13 +29,24 @@ SDL.SendMessage = Em.ContainerView.create({
         SDL.LightModel.lightSettings.sRGBColor.green = parseInt(SDL.LightModel.lightSettings.sRGBColor.green);
         SDL.LightModel.lightSettings.sRGBColor.blue = parseInt(SDL.LightModel.lightSettings.sRGBColor.blue);
         var length = SDL.LightModel.lightState.length;
+
+        var data = SDL.deepCopy(SDL.LightModel.lightSettings);
+        var oldData;
         for(var i = 0; i < length; ++i){
           if(SDL.LightModel.lightState[i].id == SDL.LightModel.lightSettings.id){
+            oldData = SDL.deepCopy(SDL.LightModel.lightState[i]);
             SDL.LightModel.lightState[i] = SDL.deepCopy(SDL.LightModel.lightSettings);
             break;
           }
         }
-        var data = SDL.deepCopy(SDL.LightModel.lightSettings);
+        if(data.sRGBColor.red == oldData.sRGBColor.red && 
+           data.sRGBColor.green == oldData.sRGBColor.green && 
+           data.sRGBColor.blue == oldData.sRGBColor.blue){
+          delete data['sRGBColor'];
+        }
+        if(data.density == oldData.density){
+          delete data['density'];
+        }
         if (Object.keys(data).length > 0) {
           FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT', lightControlData: {lightState: [data]}});
         }

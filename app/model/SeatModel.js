@@ -85,7 +85,7 @@ SDL.SeatModel = Em.Object.create({
         label: 'Label value',
         action: 'SAVE'
     },
-    seatControlData: {
+    seatControlData: Em.Object.create({
         id: null,
         heatingEnabled: false,
         coolingEnabled: false,
@@ -102,8 +102,8 @@ SDL.SeatModel = Em.Object.create({
         massageMode: [],
         massageCushionFirmness: [],
         memory: null
-    },
-    tempSeatControlData: {
+    }),
+    tempSeatControlData: Em.Object.create({
         id: null,
         heatingEnabled: false,
         coolingEnabled: false,
@@ -120,7 +120,7 @@ SDL.SeatModel = Em.Object.create({
         massageMode: [],
         massageCushionFirmness: [],
         memory: null
-    },
+    }),
     update: function(){
         this.set('heatingEnableData', this.tempSeatControlData.heatingEnabled ? 'ON': 'OFF');
         this.set('coolingEnabledData', this.tempSeatControlData.coolingEnabled ? 'ON': 'OFF');
@@ -174,6 +174,7 @@ SDL.SeatModel = Em.Object.create({
 
         this.seatControlData.massageCushionFirmness.push(this.massageCushionFirmness);
         this.seatControlData.memory = this.seatMemoryAction;
+        this.tempSeatControlData = SDL.deepCopy(this.seatControlData);
     },
 
 
@@ -232,7 +233,7 @@ SDL.SeatModel = Em.Object.create({
     }
    
     FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT', seatControlData: temp});
-    SDL.SeatModel.set('seatControlData',SDL.deepCopy(SDL.SeatModel.tempSeatControlData));
+    SDL.SeatModel.set('seatControlData',Em.Object.create(SDL.deepCopy(SDL.SeatModel.tempSeatControlData)));
    },
    isEmptyObject: function(object){
        var l = 0;
