@@ -370,6 +370,37 @@ SDL.SettingsController = Em.Object.create(
           oldTimer: 0
         };
       }
+    },
+    turnOnPoliciesSettings: function(){
+      if(!SDL.States.settings.policies.active){
+        SDL.States.goToStates('settings.policies');
+      }
+    },
+    turnOnHMISettings: function(){
+      if(!SDL.States.settings.HMISettings.active){
+        SDL.States.goToStates('settings.HMISettings');
+      }
+    },
+    turnOnLight: function(){
+      if(!SDL.States.settings.light.active){
+        SDL.States.goToStates('settings.light');
+      }
+    },
+    turnOnLightSubMenu: function(event){
+      var length = SDL.LightModel.lightState.length;
+      for(var i = 0; i < length; ++i){
+          if(event.text == SDL.LightModel.lightState[i].id){
+            SDL.LightModel.set('lightSettings',SDL.deepCopy(SDL.LightModel.lightState[i]));
+            break;
+          }
+      }
+      SDL.SendMessage.toggleActivity();
+    },
+    turnOnSeat: function () {
+      if(!SDL.States.settings.seat.active){
+        SDL.SeatModel.goToStates();
+        SDL.States.goToStates('settings.seat');
+        }
     }
   }
 );

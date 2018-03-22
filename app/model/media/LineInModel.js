@@ -23,51 +23,30 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * @name SDL.USBModel
- * @desc USB Media data model
- * @category Model
- * @source app/model/media/USBModel.js
- * @version 1.0
- */
 
-SDL.USBModel = Em.Object.create({
-    active: false,
-    optionsEnabled:false,
-    statusBar: 'Luk Marko',
-    usbControl:{
-      keepContext: false
-    },
-boolStruct: [
-    true,
-    false
-  ],
-  equalizerSettings: {
-        channelId:10,
-        channelName:'Station'
-      },
-    /** USB Player*/
-    init: function() {
-      this._super();
-      this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
-      this.set('player.name', 'USB');
-    },
-    toggleOptions:function(){
-      SDL.USBModel.toggleProperty('optionsEnabled');
-    },
-    sendAudioNotification:function()
+ SDL.LineInModel=Em.Object.create({
+active: false,
+selectedIndex:0,
+optionsEnabled:false,
+statusBar: 'Luk Marko',
+sendAudioNotification:function()
   {
     this.setSource();
     var data = SDL.MediaController.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':data.source}});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:{'source':data.source}});
   }
   },
   setSource:function()
   {
-    SDL.MediaController.radioControlStruct.source='USB';
+    SDL.MediaController.radioControlStruct.source='LINE_IN';
   },
-    PlayList: SDL.Playlist.create({
+init:function(){
+	this._super();
+	this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
+	this.set('player.name','LINE_IN');
+},
+	PlayList: SDL.Playlist.create({
         selectedIndex: 0,
         items: {
           0: SDL.PlaylistItem.create({
@@ -122,11 +101,13 @@ boolStruct: [
               genre: 'Rock',
               disk: 'Fall',
               duration: 123
-            }
+             }
           )
         },
-        homeWidgetIcon: 'images/media/usb-h-ico.png'
+        //homeWidgetIcon: 'images/media/usb-h-ico.png'
       }
     )
+    
   }
+ 
 );

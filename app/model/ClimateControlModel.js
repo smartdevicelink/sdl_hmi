@@ -1,3 +1,37 @@
+/*
+ * Copyright (c) 2018, Ford Motor Company All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: ·
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer. · Redistributions in binary
+ * form must reproduce the above copyright notice, this list of conditions and
+ * the following disclaimer in the documentation and/or other materials provided
+ * with the distribution. · Neither the name of the Ford Motor Company nor the
+ * names of its contributors may be used to endorse or promote products derived
+ * from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ * @name SDL.ClimateControlModel
+ * @desc Navigation model
+ * @category Model
+ * @filesource app/model/ClimateControlModel.js
+ * @version 1.0
+ */
+
 SDL.ClimateControlModel = Em.Object.create({
 
   init: function() {},
@@ -26,7 +60,11 @@ SDL.ClimateControlModel = Em.Object.create({
     fanSpeed: 0,
     ventilationMode: 'UPPER',
     ventilationModeLowEnable: false,
-    ventilationModeUpEnable: true
+    ventilationModeUpEnable: false,
+    heatedWindshieldEnable: false,
+    heatedRearWindowEnable: false,
+    heatedSteeringWheelEnable: false,
+    heatedMirrorsEnable: false
   },
 
   getClimateControlCapabilities: function() {
@@ -45,7 +83,11 @@ SDL.ClimateControlModel = Em.Object.create({
       defrostZoneAvailable: true,
       defrostZone: this.defrostZoneStruct,
       ventilationModeAvailable: true,
-      ventilationMode: this.ventilationModeStruct
+      ventilationMode: this.ventilationModeStruct,
+      heatedWindshieldAvailable: true,
+      heatedRearWindowAvailable: true,
+      heatedSteeringWheelAvailable: true,
+      heatedMirrorsAvailable: true
     };
 
     result.push(capabilities);
@@ -148,7 +190,11 @@ SDL.ClimateControlModel = Em.Object.create({
       defrostZone: this.climateControlData.defrostZone,
       dualModeEnable: this.climateControlData.dualModeEnable,
       acMaxEnable: this.climateControlData.acMaxEnable,
-      ventilationMode: this.climateControlData.ventilationMode
+      ventilationMode: this.climateControlData.ventilationMode,
+      heatedWindshieldEnable: this.climateControlData.heatedWindshieldEnable,
+      heatedRearWindowEnable: this.climateControlData.heatedRearWindowEnable,
+      heatedSteeringWheelEnable: this.climateControlData.heatedSteeringWheelEnable,
+      heatedMirrorsEnable: this.climateControlData.heatedMirrorsEnable
     };
 
     return result;
@@ -197,6 +243,22 @@ SDL.ClimateControlModel = Em.Object.create({
       this.setVentilationMode(data.ventilationMode);
     }
 
+    if (data.heatedWindshieldEnable != null) {
+      this.setHeatedWindshieldEnable(data.heatedWindshieldEnable);
+    }
+
+    if (data.heatedRearWindowEnable != null) {
+      this.setHeatedRearWindowEnable(data.heatedRearWindowEnable);
+    }
+
+    if (data.heatedSteeringWheelEnable != null) {
+      this.setHeatedSteeringWheelEnable(data.heatedSteeringWheelEnable);
+    }
+
+    if (data.heatedMirrorsEnable != null) {
+      this.setHeatedMirrorsEnable(data.heatedMirrorsEnable);
+    }
+
     var after_set = SDL.deepCopy(this.getClimateControlData());
 
     var properties =
@@ -222,7 +284,7 @@ SDL.ClimateControlModel = Em.Object.create({
     var data = this.getClimateControlData();
     data = SDL.SDLController.filterObjectProperty(data, properties);
     if (Object.keys(data).length > 0) {
-      FFW.RC.onInteriorVehicleDataNotification('CLIMATE', data, null);
+      FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE',climateControlData: data});
     }
   },
 
@@ -281,6 +343,13 @@ SDL.ClimateControlModel = Em.Object.create({
         ['currentTemperature.unit', 'currentTemperature.value',
          'desiredTemperature.unit', 'desiredTemperature.value']
       );
+      SDL.HmiSettingsModel.set('temperatureUnit','FAHRENHEIT');
+      var data = {
+        temperatureUnit: 'FAHRENHEIT'
+      }
+      if (Object.keys(data).length > 0) {
+        FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
+      }
     },
 
   temperatureUnitCelsiusEnable: function() {
@@ -289,6 +358,13 @@ SDL.ClimateControlModel = Em.Object.create({
         ['currentTemperature.unit', 'currentTemperature.value',
          'desiredTemperature.unit', 'desiredTemperature.value']
       );
+      SDL.HmiSettingsModel.set('temperatureUnit','CELSIUS');
+      var data = {
+        temperatureUnit: 'CELSIUS'
+      }
+      if (Object.keys(data).length > 0) {
+        FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
+      }
     },
 
   refreshDefrostZoneValue: function() {
@@ -385,6 +461,26 @@ SDL.ClimateControlModel = Em.Object.create({
     this.sendClimateChangeNotification(['autoModeEnable']);
   },
 
+  toggleHeatedWindshieldEnable: function(){
+    this.toggleProperty('climateControlData.heatedWindshieldEnable');
+    this.sendClimateChangeNotification(['heatedWindshieldEnable']);
+  },
+
+  toggleHeatedRearWindowEnable: function(){
+    this.toggleProperty('climateControlData.heatedRearWindowEnable');
+    this.sendClimateChangeNotification(['heatedRearWindowEnable']);
+  },
+
+  toggleHeatedSteeringWheelEnable: function(){
+    this.toggleProperty('climateControlData.heatedSteeringWheelEnable');
+    this.sendClimateChangeNotification(['heatedSteeringWheelEnable']);
+  },
+
+  toggleHeatedMirrorsEnable: function(){
+    this.toggleProperty('climateControlData.heatedMirrorsEnable');
+    this.sendClimateChangeNotification(['heatedMirrorsEnable']);
+  },
+
   onAcEnableChanged: function(sendNotification) {
     var properties = ['acEnable'];
     if (!this.climateControlData.acEnable &&
@@ -455,6 +551,22 @@ SDL.ClimateControlModel = Em.Object.create({
 
   setVentilationMode: function(ventMode) {
     this.set('climateControlData.ventilationMode', ventMode);
+  },
+
+  setHeatedWindshieldEnable: function(state) {
+    this.set('climateControlData.heatedWindshieldEnable', state);
+  },
+
+  setHeatedRearWindowEnable: function(state) {
+    this.set('climateControlData.heatedRearWindowEnable', state);
+  },
+
+  setHeatedSteeringWheelEnable: function(state) {
+    this.set('climateControlData.heatedSteeringWheelEnable', state);
+  },
+
+  setHeatedMirrorsEnable: function(state) {
+    this.set('climateControlData.heatedMirrorsEnable', state);
   }
 }
 );
