@@ -37,16 +37,19 @@
     padding-left: 48px;
     line-height: 48px;
 }
+
 #media_ipodButton{
     font-size: 18px;
     padding-left: 48px;
     line-height: 48px;
 }
+
 #media_audioOption{
     font-size: 13px;
     padding-left: 48px;
     line-height: 48px;
 }
+
 #media_sdlButton {
     font-size: 18px;
     line-height: 48px;
@@ -154,6 +157,7 @@
 .media-ls-item.empty {
     background: #333333;
 }
+
 #preferences .pref{
     top: 77px;
     left: 546px;
@@ -169,6 +173,7 @@
     z-index: 1000;
     padding: 10px;
 }
+
 #radio_options_view_container .bandCheckbox {
     position: absolute;
     left: 10px;
@@ -189,10 +194,12 @@
     left: 10px;
     top: 27px;
 }
+
 #radio_options_view_container .sisDataLabel {
     left: 10px;
     top: 250px;
 }
+
 #radio_options_view_container .stationIdLabel {
     left: 20px;
     top: 410px;
@@ -204,10 +211,12 @@
     left: 20px;
     top: 450px;
 }
+
 #radio_options_view_container .fccLabel {
     left: 35px;
     top: 448px;
 }
+
 #radio_options_view_container .fccInput {
     position: absolute;
     top: 450px;
@@ -220,10 +229,12 @@
     left: 20px;
     top: 430px;
 }
+
 #radio_options_view_container .countryCodeLabel {
     left: 35px;
     top: 428px;
 }
+
 #radio_options_view_container .countryCodeInput {
     position: absolute;
     top: 430px;
@@ -244,15 +255,18 @@
     left: 25px;
     top: 330px;
 }
+
 #radio_options_view_container .stationShortNameCheckbox {
     position: absolute;
     left: 20px;
     top: 270px;
 }
+
 #radio_options_view_container .stationShortNameLabel {
     left: 35px;
     top: 268px;
 }
+
 #radio_options_view_container .stationShortNameInput {
     position: absolute;
     top: 270px;
@@ -291,6 +305,7 @@
     left: 35px;
     top: 392px;
 }
+
 #radio_options_view_container .altitudeLabel {
     left: 50px;
     top: 390px;
@@ -310,10 +325,12 @@
     left: 20px;
     top: 290px;
 }
+
 #radio_options_view_container .stationLongNameLabel {
     left: 35px;
     top: 288px;
 }
+
 #radio_options_view_container .stationLongNameInput {
     position: absolute;
     top: 290px;
@@ -338,6 +355,7 @@
     left: 220px;
     width: 200px;
 }
+
 #radio_options_view_container .PSCheckbox {
     position: absolute;
     left: 30px;
@@ -968,6 +986,7 @@
     height: 109px;
     background: url(../images/media/small-lazerhorse-image.png) no-repeat;
 }
+
 #blueetooth_logo {
     position: absolute;
     top: 90px;
@@ -978,6 +997,7 @@
     height: 109px;
     background: url(../images/media/small-lazerhorse-image.png) no-repeat;
 }
+
 #lineIn_logo {
     position: absolute;
     top: 90px;
@@ -988,6 +1008,7 @@
     height: 109px;
     background: url(../images/media/small-lazerhorse-image.png) no-repeat;
 }
+
 #ipod_logo {
     position: absolute;
     top: 90px;
@@ -998,6 +1019,7 @@
     height: 109px;
     background: url(../images/media/small-fall-image.png) no-repeat;
 }
+
 #bt-bg {
     position: relative;
     float: left;
@@ -1396,6 +1418,7 @@
     left: 161px;
     z-index: 501;
 }
+
 #sdl_view_container_menu {
     top: 125px;
     left: 650px;

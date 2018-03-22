@@ -57,7 +57,8 @@ SDL.RController = SDL.SDLController.extend(
         }
       }
     },
-    onButtonPressEvent: function(params) {
+
+   onButtonPressEvent: function(params) {
       var result_struct = {
         resultCode: SDL.SDLModel.data.resultCode.SUCCESS,
         resultInfo: ""
@@ -180,13 +181,15 @@ SDL.RController = SDL.SDLController.extend(
 
       return result_struct;
     },
-    /**
+
+   /**
      * Go to RSDL options menu on click menu header
      */
     onRSDLOptionsClick: function() {
       SDL.States.goToStates('settings.policies.rsdlOptionsList');
     },
-    /**
+
+   /**
      * Toggle RSDL functionality flag option
      */
     toggleRSDLFunctionality: function() {
@@ -199,7 +202,8 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.reverseAccessMode
       );
     },
-    /**
+
+   /**
      * Toggle RSDL access mode option
      */
     toggleRCAccessMode: function() {
@@ -210,7 +214,8 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.reverseAccessMode
       );
     },
-    toggleDisplayMode: function() {
+
+   toggleDisplayMode: function() {
       var next = this.nextElement(SDL.HmiSettingsModel.displayModeStruct, SDL.HmiSettingsModel.displayMode);
       SDL.HmiSettingsModel.set('displayMode',next);
       var data = {
@@ -218,7 +223,8 @@ SDL.RController = SDL.SDLController.extend(
       }
       this.sendHMISettingsNotification(data);
     },
-    toggleDistanceUnit: function() {
+
+   toggleDistanceUnit: function() {
       var next = this.nextElement(SDL.HmiSettingsModel.distanceUnitStruct, SDL.HmiSettingsModel.distanceUnit);
       SDL.HmiSettingsModel.set('distanceUnit',next);
       var data = {
@@ -226,7 +232,8 @@ SDL.RController = SDL.SDLController.extend(
       }
       this.sendHMISettingsNotification(data);
     },
-    toggleTemperatureUnit: function() {
+
+   toggleTemperatureUnit: function() {
       var next = this.nextElement(SDL.HmiSettingsModel.temperatureUnitStruct, SDL.HmiSettingsModel.temperatureUnit);
       SDL.HmiSettingsModel.set('temperatureUnit',next);
       SDL.ClimateControlModel.set('climateControlData.temperatureUnit', next);
@@ -239,12 +246,14 @@ SDL.RController = SDL.SDLController.extend(
         SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
       }
     },
-    sendHMISettingsNotification: function(data){
+
+   sendHMISettingsNotification: function(data){
       if (Object.keys(data).length > 0) {
         FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
       }
     },
-    nextElement: function(data, currentItem){
+
+   nextElement: function(data, currentItem){
       var arr_length = data.length;
       for (var i = 0; i < arr_length; i++) {
         if (data[i] == currentItem) {
@@ -256,7 +265,8 @@ SDL.RController = SDL.SDLController.extend(
         }
       }
     },
-    /**
+
+   /**
      * Change responses to error for GetInteriorVehicleDataCapabilities
      * @param element
      * @constructor
@@ -264,7 +274,8 @@ SDL.RController = SDL.SDLController.extend(
     setRCCapabilitiesErrorResponse: function(element) {
       SDL.SDLModel.toggleProperty('errorResponse');
     },
-    /**
+
+   /**
      * Register application method
      * @param {Object} params
      * @param {Object} applicationType
@@ -324,7 +335,8 @@ SDL.RController = SDL.SDLController.extend(
             'menuName': 'Exit \'DRIVER_DISTRACTION_VIOLATION\'',
             'position': 0
           },
-          cmdID: -1
+
+         cmdID: -1
         }
       };
       SDL.SDLController.getApplicationModel(params.appID).addCommand(
@@ -338,7 +350,8 @@ SDL.RController = SDL.SDLController.extend(
             'menuName': 'Exit \'USER_EXIT\'',
             'position': 0
           },
-          cmdID: -2
+
+         cmdID: -2
         }
       };
       SDL.SDLController.getApplicationModel(params.appID).addCommand(
@@ -352,17 +365,20 @@ SDL.RController = SDL.SDLController.extend(
             'menuName': 'Exit \'UNAUTHORIZED_TRANSPORT_REGISTRATION\'',
             'position': 0
           },
-          cmdID: -3
+
+         cmdID: -3
         }
       };
       SDL.SDLController.getApplicationModel(params.appID).addCommand(
         exitCommand
       );
     },
-    toggleDriverDeviceWindow: function(element) {
+
+   toggleDriverDeviceWindow: function(element) {
       SDL.PrimaryDevice.toggleProperty('active');
     },
-    driverDeviceWindowClose: function(device, rank) {
+
+   driverDeviceWindowClose: function(device, rank) {
       this.toggleDriverDeviceWindow();
       if (!device) {
         return;
@@ -386,7 +402,8 @@ SDL.RController = SDL.SDLController.extend(
         FFW.RC.OnDeviceRankChanged(device, SDL.SDLModel.deviceRank[rank]);
       }
     },
-    /**
+
+   /**
      * Handeler for OnKeyboardInputcommand button press
      *
      * @param element
@@ -440,7 +457,8 @@ SDL.RController = SDL.SDLController.extend(
         SDL.OptionsView.deactivate();
       }
     },
-    /**
+
+   /**
      * PopUp appears on screen when SDL need response from user
      * to allow or disallow app get access to manage radio or climate module
      * @param request
@@ -477,7 +495,8 @@ SDL.RController = SDL.SDLController.extend(
         }, 9500
       ); //Magic number is timeout for RC consent popUp
     },
-    /**
+
+   /**
      *
      */
     onDeactivatePassengerApp: function(button) {
@@ -490,7 +509,8 @@ SDL.RController = SDL.SDLController.extend(
         }
       );
     },
-    /**
+
+   /**
      * Returns indicator image path depending on state
      * @param state
      */
@@ -501,7 +521,8 @@ SDL.RController = SDL.SDLController.extend(
         return 'images/media/passiv_horiz_led.png';
       }
     },
-    /**
+
+   /**
      * Filter objects properties according to filter param
      * @param data contains input object to filter
      * @param properties contains properties to keep
@@ -527,7 +548,8 @@ SDL.RController = SDL.SDLController.extend(
       }
       return result;
     },
-    /**
+
+   /**
      * Get diff between lhs and rhs object properties recursively
      * @param lhs contains reference to first object of comparison
      * @param rhs contains reference to second object of comparison

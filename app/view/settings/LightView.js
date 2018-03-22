@@ -27,19 +27,24 @@
  * @name SDL.LightView
  * @desc Info Apps visual representation
  * @category View
- * @filesource app/view/settings/AppsView.js
+ * @filesource app/view/settings/LightView.js
  * @version 1.0
  */
 
 SDL.LightView = Em.ContainerView.create({
+
     elementId: 'light',
+
     classNames: 'in_light_view',
+
     classNameBindings: [
         'SDL.States.settings.light.active:active_state:inactive_state'
     ],
+
     childViews: [
       'SettingsList'
     ],
+
     initList: function(list, arr){
         var length = list.length;
         for(var i = 0; i < length; i++){
@@ -55,6 +60,7 @@ SDL.LightView = Em.ContainerView.create({
             arr.push(temp);
         }
     },
+    
     SettingsList: SDL.List.extend({
         elementId: 'light_list',
         classNames:'light_list',

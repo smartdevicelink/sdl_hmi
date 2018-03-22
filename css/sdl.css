@@ -1470,6 +1470,7 @@
     left: 655px;
     background: 0; 
 }
+
 #sendMessageView .setButton {
     width: 255px;
     height: 40px;
@@ -1496,49 +1497,59 @@
     top: 30px;
     left: 30px;
 }
+
 #sendMessageView .lightDensityLabel {
     top: 50px;
     left: 30px;
 }
+
 #sendMessageView .lightColorLabel {
     top: 70px;
     left: 30px;
 }
+
 #sendMessageView .rLabel {
     top: 90px;
     left: 40px;
 }
+
 #sendMessageView .gLabel {
     top: 110px;
     left: 40px;
 }
+
 #sendMessageView .bLabel {
     top: 130px;
     left: 40px;
 }
+
 #sendMessageView .lightStatusSelect {
     position: absolute;
     top: 30px;
     left: 160px;
 }
+
 #sendMessageView .densityInput {
     position: absolute;
     top: 50px;
     left: 160px;
     width: 47px;
 }
+
 #sendMessageView .rInput {
     position: absolute;
     top: 90px;
     left: 160px;
     width: 47px;
 }
+
 #sendMessageView .gInput {
     position: absolute;
     top: 110px;
     left: 160px;
     width: 47px;
 }
+
 #sendMessageView .bInput {
     position: absolute;
     top: 130px;
