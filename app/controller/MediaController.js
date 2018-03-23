@@ -461,8 +461,8 @@ SDL.MediaController = Em.Object.create(
             case 'CD':this.turnOnCD();break;
             case 'USB':this.turnOnUSB();break;
             case 'LINE_IN':this.turnOnLineIn();break;
-            case 'IPOD':this.turnOnIpod();break;
-            case 'MOBILE_APP':this.turnOnSDL();break;
+            case 'IPOD':this.turnOnIPod();break;
+            case 'MOBILE_APP':SDL.SDLMediaController.activateCurrentApp();break;
           }
         }
         if(data.volume!=null){
@@ -471,7 +471,7 @@ SDL.MediaController = Em.Object.create(
         if(data.keepContext!=null){
           this.set('radioControlStruct.keepContext',data.keepContext);
         }
-        if(data.equalizerSettings!=null)
+        if(data.equalizerSettings.channelSetting!=null || data.equalizerSettings.channelId!=null || data.equalizerSettings.channelName!=null)
         {
           if(data.equalizerSettings.channelSetting!=null)
           {
@@ -486,6 +486,13 @@ SDL.MediaController = Em.Object.create(
             this.set('radioControlStruct.equalizerSettings.channelName',data.equalizerSettings.channelName);
           }
         }
+        properties = [];
+        for (var key in data) {
+          properties.push(key);
+        }
+    
+        var result = this.getAudioControlData(true);
+        return SDL.SDLController.filterObjectProperty(result, properties);
     },
     getAudioControlCapabilities:function(){
       var result=[];

@@ -312,7 +312,10 @@ FFW.RC = FFW.RPCObserver.create(
                 }
               }
             };
-
+            if (newAudioControlData) {
+              JSONMessage.result.moduleData.audioControlData =
+              newAudioControlData;
+            }
             if (newClimateControlData) {
               JSONMessage.result.moduleData.climateControlData =
                 newClimateControlData;
