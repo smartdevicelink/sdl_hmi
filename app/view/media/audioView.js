@@ -24,7 +24,159 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
- SDL.audioView= Em.ContainerView.extend(
+EqualizerSettingsView = Em.ContainerView.create({ 
+  elementId:'EqualizerSettingsView',
+  classNames:'EqualizerSettingsView',
+
+  childViews:[
+      'equalizerSettingsLabel',
+      'equalizerSettingsArray',
+      'equalizerSettingsAddButton'
+  ],
+
+  equalizerSettingsLabel: SDL.Label.create({
+    elementId: 'equalizerSettingsLabel',
+    classNames: 'equalizerSettingsLabel',
+    content: 'Equalizer settings'
+  }),
+
+  equalizerSettingsArray:  Em.ContainerView.create({ 
+    elementId: 'equalizerSettingsArray',
+    classNames: 'equalizerSettingsArray',
+    childViews: [
+      'deleteButton',
+      'leftButton',
+      'rightbutton',
+      'stateLabel',
+      'channelIdLabel',
+      'channelNameLabel',
+      'channelSettingLabel',
+      'channelIdInput',
+      'channelNameInput',
+      'channelSettingInput'
+    ],
+
+    stateLabel: SDL.Label.extend({
+      elementId: 'stateLabel',
+      classNames: 'stateLabel',
+      content: ''
+    }),
+
+    channelIdLabel: SDL.Label.extend({
+      elementId: 'channelIdLabel',
+      classNames: 'channelIdLabel',
+      content: 'Channel id:'
+    }),
+
+    channelNameLabel: SDL.Label.extend({
+       elementId: 'channelNameLabel',
+       classNames: 'channelNameLabel',
+       content: 'Channel name:'
+    }),
+
+    channelSettingLabel: SDL.Label.extend({
+      elementId: 'channelSettingLabel',
+      classNames: 'channelSettingLabel',
+      content: 'Channel set:'
+    }),
+
+    deleteButton: SDL.Button.extend({
+      classNames: [
+          'deleteButton'
+      ],
+      action: function(){
+         var length = SDL.MediaController.lastRadioControlStruct.equalizerSettings.length;
+         
+         if(length == 1){
+           return;
+         }
+
+         for(var i = SDL.MediaController.tempEqualizerSettIndex; i < length - 1; ++i){
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[i] = 
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[i+1];
+         }
+         SDL.MediaController.lastRadioControlStruct.equalizerSettings.pop();
+         if(SDL.MediaController.tempEqualizerSettIndex != length-1){
+          SDL.MediaController.set('tempEqualizerSettings', SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex]);
+         } else{
+          SDL.MediaController.set('tempEqualizerSettings', SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex - 1]);
+         }
+    
+      },
+      icon: 'images/settings/close_icon_min.png',
+      onDown: false
+    }),
+
+    channelIdInput:Ember.TextField.extend({
+      elementId:'channelIdInput',
+      classNames:'channelIdInput',
+      valueBinding: 'SDL.MediaController.tempEqualizerSettings.channelId'
+    }),
+
+    channelNameInput:Ember.TextField.extend({
+      elementId:'channelNameInput',
+      classNames:'channelNameInput',
+      valueBinding: 'SDL.MediaController.tempEqualizerSettings.channelName'
+    }),
+
+    channelSettingInput:Ember.TextField.extend({
+      elementId:'channelSettingInput',
+      classNames:'channelSettingInput',
+      valueBinding: 'SDL.MediaController.tempEqualizerSettings.channelSetting'
+    }),
+
+    leftButton:  SDL.Button.extend({
+      classNames: [
+        'leftButton'
+      ],
+      action: function(){
+        if(SDL.MediaController.tempEqualizerSettIndex == 0){
+          return;
+        }  
+        SDL.MediaController.set('tempEqualizerSettings', 
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[--SDL.MediaController.tempEqualizerSettIndex]);
+      },
+      icon: 'images/media/left_button.png',
+      onDown: false,
+    }),
+
+    rightbutton: SDL.Button.extend({
+      classNames: [
+        'rightbutton'
+      ],
+      action: function(){
+        var length = 
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings.length;
+        if(SDL.MediaController.tempEqualizerSettIndex == length - 1){
+          return;
+        }  
+        SDL.MediaController.set('tempEqualizerSettings', 
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[++SDL.MediaController.tempEqualizerSettIndex]);
+      },
+      icon: 'images/media/left_button.png',
+      onDown: false,
+    })
+  }),
+
+  equalizerSettingsAddButton: SDL.Button.extend({
+    classNames: [
+      'equalizerSettingsAddButton'
+    ],
+    action: function(){
+      SDL.MediaController.lastRadioControlStruct.equalizerSettings.push({
+        channelSetting: 0,
+        channelId: 0,
+        channelName: 'Default'
+      });
+      SDL.MediaController.tempEqualizerSettIndex = SDL.MediaController.lastRadioControlStruct.equalizerSettings.length - 1;
+      SDL.MediaController.set('tempEqualizerSettings', SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex]);
+    },
+    text: 'Add',
+    onDown: false 
+  })
+});
+
+SDL.audioView= Em.ContainerView.extend(
 	{
 	elementId: 'media_options_menu',
     // classNameBindings: [
@@ -46,37 +198,15 @@
           'volumeInput',
           'volumeLabel',
           'volumeCheckBox',
-          'equalizerSettingsLabel',
-          'equalizerChannelIdInput',
-          'equalizerChannelIdLabel',
-          'equalizerChannelNameInput',
-          'equalizerChannelNameLabel',
-          'equalizerChannelNameCheckBox',
-          'equalizerChannelSettingLabel',
-          'equalizerChannelSettingInput',
-          'equalizerSettingsCheckBox',
-          'save'
+          'save',
+          'equalizerSettings'
         ],
-        equalizerSettingsCheckBox:Em.Checkbox.extend(
-            {
-              elementId: 'equalizerSettingsCheckBox',
-              classNames: 'equalizerSettingsCheckBox',
-              checkedBinding: 'SDL.MediaController.radioControlAudioValue.equalizerSettings'
-            }
-          ),
-        equalizerChannelSettingLabel: SDL.Label.extend(
-            {
-              elementId: 'equalizerChannelSettingLabel',
-              classNames: 'equalizerChannelSettingLabel',
-              content: 'Channel set:',
-            }
-          ),
         equalizerChannelSettingInput:Ember.TextField.extend(
          {
               attributeBindings: ['disabled'],
              elementId:'equalizerChannelSettingInput',
              classNames:'equalizerChannelSettingInput',
-             valueBinding:'SDL.MediaController.radioControlStruct.equalizerSettings.channelSetting',
+             valueBinding:'SDL.MediaController.lastRadioControlStruct.equalizerSettings.channelSetting',
              isDisabled: function() {
                 return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
               }.property(
@@ -85,26 +215,7 @@
               disabledBinding: 'isDisabled'
            }
            ),
-        equalizerChannelIdLabel: SDL.Label.extend(
-            {
-              elementId: 'equalizerChannelIdLabel',
-              classNames: 'equalizerChannelIdLabel',
-              content: 'Channel id:',
-            }
-          ),
-        equalizerSettingsLabel:SDL.Label.extend({
-          elementId:'equalizerSettingsLabel',
-          classNames:'equalizerSettingsLabel',
-          content:'Equalizer settings:'
-        }
-        ),
-         equalizerChannelNameLabel: SDL.Label.extend(
-             {
-              elementId: 'equalizerChannelNameLabel',
-              classNames: 'equalizerChannelNameLabel',
-              content: 'Channel name:',
-             }
-           ),
+      
          equalizerChannelNameCheckBox: Em.Checkbox.extend(
             {
               attributeBindings: ['disabled'],
@@ -124,7 +235,7 @@
               attributeBindings: ['disabled'],
              elementId:'equalizerChannelNameInput',
              classNames:'equalizerChannelNameInput',
-             valueBinding:'SDL.MediaController.radioControlStruct.equalizerSettings.channelName',
+             valueBinding:'SDL.MediaController.lastRadioControlStruct.equalizerSettings.channelName',
              isDisabled: function() {
                 return !SDL.MediaController.radioControlAudioValue.equalizerSettings ?
                 !SDL.MediaController.radioControlAudioValue.equalizerSettings
@@ -141,7 +252,7 @@
             attributeBindings: ['disabled'],
              elementId:'equalizerChannelIdInput',
              classNames:'equalizerChannelIdInput',
-             valueBinding:'SDL.MediaController.radioControlStruct.equalizerSettings.channelId',
+             valueBinding:'SDL.MediaController.lastRadioControlStruct.equalizerSettings.channelId',
              isDisabled: function() {
                 return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
               }.property(
@@ -155,7 +266,7 @@
           attributeBindings: ['disabled'],
            elementId:'keepContextSelect',
            classNames:'keepContextSelect',
-           valueBinding: 'SDL.MediaController.radioControlStruct.keepContext',
+           valueBinding: 'SDL.MediaController.lastRadioControlStruct.keepContext',
            contentBinding: 'SDL.USBModel.boolStruct',
            isDisabled: function() {
                 return !SDL.MediaController.radioControlAudioValue.keepContext;
@@ -203,7 +314,8 @@
                target: 'SDL.MediaController',
                action: 'saveButtonPress'
              }
-           )
+           ),
+        equalizerSettings: EqualizerSettingsView
         }
       ),
       preferencesButton: Em.ContainerView.extend(
@@ -234,5 +346,7 @@
   ),
 }
 );
+
+
 
 

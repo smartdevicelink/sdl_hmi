@@ -1447,3 +1447,102 @@
 #tuneButtons .ffw-button.disabled > span {
     color: #999;
 }
+
+#EqualizerSettingsView{
+    width: 300px;
+    height: 174px;
+    top: 80px;
+}
+
+#EqualizerSettingsView .equalizerSettingsLabel {
+    display: block;
+    position: static;
+}
+
+#EqualizerSettingsView .equalizerSettingsArray { 
+    display: block;
+    position: static;
+    height: 147px;
+    border: 1px solid white;
+    margin: 5px 0px 0px 0px;
+}
+
+#EqualizerSettingsView .equalizerSettingsAddButton {
+    z-index: 1002;
+    top: -3px;
+    left: 248px;
+    border: 1px solid white;
+    width: 50px;
+    height: 22px;
+    text-align: center;
+    line-height: 24px;
+}
+
+#equalizerSettingsArray .deleteButton{
+    z-index: 1001;
+    margin: 2px 0px 0px 2px;
+    background: black;
+}
+
+#equalizerSettingsArray .leftButton{
+    z-index: 1001;
+    margin: 5px 0px 0px 2px;
+    background: black;
+    left: 250px;
+}
+
+#equalizerSettingsArray .rightbutton{
+    z-index: 1001;
+    margin: 2px 0px 0px 2px;
+    background: black;
+    transform: rotate(180deg);
+    left: 274px;
+}
+
+#equalizerSettingsArray .stateLabel{
+    width: 109px;
+    top: 25px;
+    left: 117px;
+} 
+
+#equalizerSettingsArray .channelIdLabel{
+    width: 100px;
+    top: 82px;
+    left: 10px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelNameLabel{
+    width: 109px;
+    top: 102px;
+    left: 10px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelSettingLabel{
+    width: 100px;
+    top: 122px;
+    left: 10px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelIdInput{
+    width: 100px;
+    top: 82px;
+    left: 137px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelNameInput{
+    width: 100px;
+    top: 102px;
+    left: 137px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelSettingInput{
+    width: 100px;
+    top: 122px;
+    left: 137px;
+    position: absolute;
+}
