@@ -1236,15 +1236,15 @@
     border: 1px solid #393939;
 }
 
-.option{
-    top:50px;
+.option {
+    top: 77px;
     width: 300px;
     height: 300px;
     background-color: black;
     border: 1px solid white;
     z-index: 1000;
     padding: 10px;
-    
+    left: 238px;
 }
 
 .pref{
@@ -1367,14 +1367,14 @@
       top:140px;
       font-size:14px;
   }
-  .option .save{
-      top: 260px;
-      left: 150px;
-      width: 70px;
-      height: 38px;
-      line-height: 38px;
-      text-align: center;
-  }
+  .option .save {
+    top: 260px;
+    left: 128px;
+    width: 70px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
+}
 
 .calc_container .minus {
     height: 24px;
@@ -1499,10 +1499,13 @@
     left: 274px;
 }
 
-#equalizerSettingsArray .stateLabel{
-    width: 109px;
+#equalizerSettingsArray .stateInput{
+    width: 27px;
     top: 25px;
-    left: 117px;
+    left: 180px;
+    position:absolute;
+    background: black;
+    font-size: 125%;
 } 
 
 #equalizerSettingsArray .channelIdLabel{

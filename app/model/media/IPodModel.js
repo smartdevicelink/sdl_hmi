@@ -39,7 +39,7 @@ sendAudioNotification:function()
   },
   setSource:function()
   {
-    SDL.MediaController.radioControlStruct.source='IPOD';
+    SDL.MediaController.lastRadioControlStruct.source='IPOD';
   },
 init:function(){
 	this._super();

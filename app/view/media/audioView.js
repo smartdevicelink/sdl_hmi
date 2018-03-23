@@ -47,7 +47,7 @@ EqualizerSettingsView = Em.ContainerView.create({
       'deleteButton',
       'leftButton',
       'rightbutton',
-      'stateLabel',
+      'stateInput',
       'channelIdLabel',
       'channelNameLabel',
       'channelSettingLabel',
@@ -56,10 +56,11 @@ EqualizerSettingsView = Em.ContainerView.create({
       'channelSettingInput'
     ],
 
-    stateLabel: SDL.Label.extend({
-      elementId: 'stateLabel',
-      classNames: 'stateLabel',
-      content: ''
+    stateInput: Ember.TextField.extend({
+      elementId: 'stateInput',
+      classNames: 'stateInput',
+      valueBinding: 'SDL.MediaController.tempEqualizerSettIndex',
+      disabled:true
     }),
 
     channelIdLabel: SDL.Label.extend({
@@ -130,11 +131,14 @@ EqualizerSettingsView = Em.ContainerView.create({
         'leftButton'
       ],
       action: function(){
-        if(SDL.MediaController.tempEqualizerSettIndex == 0){
+        if(SDL.MediaController.tempEqualizerSettIndex-1 == 0){
           return;
         }  
+        SDL.MediaController.set('tempEqualizerSettIndex',SDL.MediaController.tempEqualizerSettIndex-1);
         SDL.MediaController.set('tempEqualizerSettings', 
-          SDL.MediaController.lastRadioControlStruct.equalizerSettings[--SDL.MediaController.tempEqualizerSettIndex]);
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings
+          [SDL.MediaController.tempEqualizerSettIndex-1]);
+
       },
       icon: 'images/media/left_button.png',
       onDown: false,
@@ -147,11 +151,12 @@ EqualizerSettingsView = Em.ContainerView.create({
       action: function(){
         var length = 
           SDL.MediaController.lastRadioControlStruct.equalizerSettings.length;
-        if(SDL.MediaController.tempEqualizerSettIndex == length - 1){
+        if(SDL.MediaController.tempEqualizerSettIndex == length ){
           return;
         }  
+        SDL.MediaController.set('tempEqualizerSettIndex',SDL.MediaController.tempEqualizerSettIndex+1);
         SDL.MediaController.set('tempEqualizerSettings', 
-          SDL.MediaController.lastRadioControlStruct.equalizerSettings[++SDL.MediaController.tempEqualizerSettIndex]);
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex-1]);
       },
       icon: 'images/media/left_button.png',
       onDown: false,
@@ -168,8 +173,9 @@ EqualizerSettingsView = Em.ContainerView.create({
         channelId: 0,
         channelName: 'Default'
       });
-      SDL.MediaController.tempEqualizerSettIndex = SDL.MediaController.lastRadioControlStruct.equalizerSettings.length - 1;
-      SDL.MediaController.set('tempEqualizerSettings', SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex]);
+      //SDL.MediaController.tempEqualizerSettIndex = SDL.MediaController.lastRadioControlStruct.equalizerSettings.length;
+      SDL.MediaController.set('tempEqualizerSettIndex',SDL.MediaController.lastRadioControlStruct.equalizerSettings.length);
+     SDL.MediaController.set('tempEqualizerSettings', SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex]);
     },
     text: 'Add',
     onDown: false 

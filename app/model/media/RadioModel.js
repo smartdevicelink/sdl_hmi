@@ -1469,7 +1469,7 @@ SDL.RadioModel = Em.Object.create({
   },
   setSource:function()
   {
-    SDL.MediaController.radioControlStruct.source='RADIO_TUNER';
+    SDL.MediaController.lastRadioControlStruct.source='RADIO_TUNER';
   },
   sendButtonPress: function() {
     var currentData = SDL.deepCopy(this.getCurrentOptions());
