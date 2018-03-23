@@ -100,13 +100,12 @@ SDL.HmiSettingsModel = Em.Object.create({
         this.set('distanceUnit',data.distanceUnit);
     }
 
-    properties = [];
-    for (var key in data) {
-      properties.push(key);
-    }
-
-    var result = this.getHmiSettingsControlData(true);
-    return SDL.SDLController.filterObjectProperty(result, properties);
+    var result = {
+      temperatureUnit: this.temperatureUnit,
+      displayMode: this.displayMode,
+      distanceUnit: this.distanceUnit
+    };
+    return result;
   },
   
   getHmiSettingsControlData: function(){
@@ -115,7 +114,11 @@ SDL.HmiSettingsModel = Em.Object.create({
       displayMode: this.displayMode,
       distanceUnit: this.distanceUnit
     };
-    
+    if(result.displayMode == 'AUTO'){
+      var time = new Date().toLocaleTimeString();
+      time = parseInt(time.substring(0, time.indexOf(':')));
+      result.displayMode = (time > 7 && time < 20? 'DAY': 'NIGHT');
+    }
     return result;
   }
 })

@@ -219,7 +219,7 @@ SDL.RController = SDL.SDLController.extend(
       var next = this.nextElement(SDL.HmiSettingsModel.displayModeStruct, SDL.HmiSettingsModel.displayMode);
       SDL.HmiSettingsModel.set('displayMode',next);
       var data = {
-        displayMode: next
+        displayMode: SDL.HmiSettingsModel.getHmiSettingsControlData().displayMode
       }
       this.sendHMISettingsNotification(data);
     },
