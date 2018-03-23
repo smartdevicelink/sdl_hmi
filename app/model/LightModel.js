@@ -185,15 +185,13 @@ SDL.LightModel = Em.Object.create({
                             data.lightState[i].sRGBColor;
                     } 
                     if(data.lightState[i].id == SDL.LightModel.lightSettings.id){
-                        data.lightState[i] = SDL.deepCopy(this.lightState[j]);
-                        SDL.LightModel.set('lightSettings',data.lightState[i])
+                        SDL.LightModel.set('lightSettings',this.lightState[j])
                     }
                 }
             }
         }
         this.set('lightState',tempState);
         
-        var result = this.getLightControlData(true);
         return {'lightState' : data.lightState};
     },
     

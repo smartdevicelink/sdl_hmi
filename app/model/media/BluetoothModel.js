@@ -44,7 +44,7 @@ init: function() {
   },
   setSource:function()
   {
-    SDL.MediaController.radioControlStruct.source='BLUETOOTH_STEREO_BTST';
+    SDL.MediaController.lastRadioControlStruct.source='BLUETOOTH_STEREO_BTST';
   },
 	
     PlayList: SDL.Playlist.create({
