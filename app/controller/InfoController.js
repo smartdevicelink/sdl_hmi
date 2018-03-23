@@ -61,7 +61,8 @@ SDL.InfoController = Em.Object.create(
        */
       if (SDL.SDLController.model.appType) {
         for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
-          if (SDL.SDLController.model.appType[i] == 'NAVIGATION') {
+          if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
+              SDL.SDLController.model.appType[i] == 'PROJECTION') {
             SDL.BaseNavigationView.update();
             SDL.States.goToStates('navigationApp.baseNavigation');
             return;

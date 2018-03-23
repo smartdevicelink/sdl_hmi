@@ -392,17 +392,13 @@ SDL.SDLModel = Em.Object.extend({
 
     var appID = null;
 
-    if (SDL.SDLController.model &&
-      this.appTypeComparison(SDL.SDLController.model, 'NAVIGATION')) {
-
+    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
       appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited &&
-      this.appTypeComparison(
-        SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited),
-        'NAVIGATION'
-      )) {
-
-      appID = SDL.SDLModel.data.stateLimited;
+    } else if (SDL.SDLModel.data.stateLimited) {
+      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+      if (this.isStreamingSupported(model)) {
+        appID = SDL.SDLModel.data.stateLimited;
+      }
     }
 
     SDL.SDLModel.playVideo(appID);
@@ -430,11 +426,28 @@ SDL.SDLModel = Em.Object.extend({
   },
 
   /**
+   * Function to verify if model supports audio/video streaming
+   *
+   * @param type
+   * @returns {boolean}
+   */
+  isStreamingSupported: function(model) {
+    return this.appTypeComparison(model, 'NAVIGATION') ||
+           this.appTypeComparison(model, 'PROJECTION');
+  },
+
+  /**
    * Method to stop playing video streaming
    *
    * @param {Number}
    */
   stopStream: function(appID) {
+
+    if (SDL.SDLModel.data.naviVideo) {
+      SDL.SDLModel.data.naviVideo.pause();
+      SDL.SDLModel.data.naviVideo.src = '';
+      SDL.SDLModel.data.naviVideo = null;
+    }
 
     var createVideoView = Ember.View.create({
           templateName: 'video',
@@ -462,17 +475,13 @@ SDL.SDLModel = Em.Object.extend({
 
     var appID = null;
 
-    if (SDL.SDLController.model &&
-      this.appTypeComparison(SDL.SDLController.model, 'NAVIGATION')) {
-
+    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
       appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited &&
-      this.appTypeComparison(
-        SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited),
-        'NAVIGATION'
-      )) {
-
-      appID = SDL.SDLModel.data.stateLimited;
+    } else if (SDL.SDLModel.data.stateLimited) {
+      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+      if (this.isStreamingSupported(model)) {
+        appID = SDL.SDLModel.data.stateLimited;
+      }
     }
 
     SDL.StreamAudio.play(
@@ -489,15 +498,13 @@ SDL.SDLModel = Em.Object.extend({
 
     var appID = null;
 
-    if (SDL.SDLController.model &&
-      SDL.SDLController.model.appType == 'NAVIGATION') {
-
+    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
       appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited &&
-      SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited
-      ).appType == 'NAVIGATION') {
-
-      appID = SDL.SDLModel.data.stateLimited;
+    } else if (SDL.SDLModel.data.stateLimited) {
+      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+      if (this.isStreamingSupported(model)) {
+        appID = SDL.SDLModel.data.stateLimited;
+      }
     }
 
     SDL.StreamAudio.stop();
@@ -514,7 +521,17 @@ SDL.SDLModel = Em.Object.extend({
         SDL.SDLModel.data.naviVideo.src = SDL.SDLController.getApplicationModel(
           appID
         ).navigationStream;
-        SDL.SDLModel.data.naviVideo.play();
+
+        var playPromise = SDL.SDLModel.data.naviVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.then(_ => {
+            console.log('Video playback started OK');
+          })
+          .catch(error => {
+            console.log('Video playback start failed: ' + error);
+            SDL.SDLModel.data.naviVideo = null;
+          });
+        }
       }
     },
 
@@ -1252,13 +1269,12 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      if (SDL.SDLModel.data.stateLimited &&
-        reason === 'AUDIO' &&
-        SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).
-            appType.indexOf('NAVIGATION') < 0) {
-
-        SDL.SDLModel.data.stateLimited = null;
-        SDL.SDLModel.data.set('limitedExist', false);
+      if (SDL.SDLModel.data.stateLimited && reason === 'AUDIO') {
+        var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+        if (!this.isStreamingSupported(model)) {
+          SDL.SDLModel.data.stateLimited = null;
+          SDL.SDLModel.data.set('limitedExist', false);
+        }
       }
 
       SDL.TurnByTurnView.deactivate();

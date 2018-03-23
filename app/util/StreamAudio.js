@@ -36,14 +36,26 @@ SDL.StreamAudio = {
   audio: new Audio(),
 
   play: function(path) {
-
+    console.log('Start playing audio: ' + path);
     this.audio.src = path;
-    this.audio.play();
+    var playPromise = this.audio.play();
+
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+        console.log('Audio playback started OK');
+      })
+      .catch(error => {
+        console.log('Audio playback failed: ' + error);
+        this.audio.src = '';
+      });
+    }
   },
 
   stop: function() {
-
-    this.audio.src = '';
-    this.audio.pause();
+    if (this.audio.src != '') {
+      console.log('Stop playing audio: ' + this.audio.src);
+      this.audio.src = '';
+      this.audio.pause();
+    }
   }
 };
