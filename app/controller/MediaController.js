@@ -47,21 +47,30 @@ SDL.MediaController = Em.Object.create(
      radioControlStruct:{
       source:'AUDIO',
       keepContext:true,
-      equalizerSettings:{
+      equalizerSettings:[{
         channelSetting:50,
         channelId: 50,
         channelName: 'Default'
-      },
+      }],
      },
+     
      lastRadioControlStruct:{
       source:'AUDIO',
       keepContext:true,
-      equalizerSettings:{
+      equalizerSettings:[{
+        channelSetting:50,
+        channelId: 50,
+        channelName: 'Default'
+      }],
+     },
+
+     tempEqualizerSettIndex: 0,
+     tempEqualizerSettings: {
         channelSetting:50,
         channelId: 50,
         channelName: 'Default'
       },
-     },
+
      radioControlAudioValue:
      {
         keepContext:true,
@@ -471,19 +480,22 @@ SDL.MediaController = Em.Object.create(
         if(data.keepContext!=null){
           this.set('radioControlStruct.keepContext',data.keepContext);
         }
-        if(data.equalizerSettings.channelSetting!=null || data.equalizerSettings.channelId!=null || data.equalizerSettings.channelName!=null)
-        {
-          if(data.equalizerSettings.channelSetting!=null)
+        var length = data.equalizerSettings.length;
+        for(var i = 0; i < 1; ++i){
+          if(data.equalizerSettings[i].channelSetting!=null || data.equalizerSettings[i].channelId!=null || data.equalizerSettings[i].channelName!=null)
           {
-              this.set('radioControlStruct.equalizerSettings.channelSetting',data.equalizerSettings.channelSetting);
-          }
-          if(data.equalizerSettings.channelId!=null)
-          {
-            this.set('radioControlStruct.equalizerSettings.channelId',data.equalizerSettings.channelId);
-          }
-          if(data.equalizerSettings.channelName!=null)
-          {
-            this.set('radioControlStruct.equalizerSettings.channelName',data.equalizerSettings.channelName);
+            if(data.equalizerSettings[i].channelSetting!=null)
+            {
+                this.radioControlStruct.equalizerSettings.channelSetting = data.equalizerSettings[i].channelSetting;
+            }
+            if(data.equalizerSettings[i].channelId!=null)
+            {
+              this.radioControlStruct.equalizerSettings.channelId = data.equalizerSettings[i].channelId;
+            }
+            if(data.equalizerSettings[i].channelName!=null)
+            {
+              this.radioControlStruct.equalizerSettings.channelName = data.equalizerSettings[i].channelName;
+            }
           }
         }
         properties = [];
