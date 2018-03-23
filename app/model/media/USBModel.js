@@ -65,7 +65,7 @@ boolStruct: [
   },
   setSource:function()
   {
-    SDL.MediaController.radioControlStruct.source='USB';
+    SDL.MediaController.lastRadioControlStruct.source='USB';
   },
     PlayList: SDL.Playlist.create({
         selectedIndex: 0,

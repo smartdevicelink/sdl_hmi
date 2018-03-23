@@ -39,7 +39,7 @@ sendAudioNotification:function()
   },
   setSource:function()
   {
-    SDL.MediaController.radioControlStruct.source='LINE_IN';
+    SDL.MediaController.lastRadioControlStruct.source='LINE_IN';
   },
 init:function(){
 	this._super();

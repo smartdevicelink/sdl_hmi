@@ -153,7 +153,7 @@ sendAudioNotification:function()
   },
   setSource:function()
   {
-    SDL.MediaController.radioControlStruct.source='CD';
+    SDL.MediaController.lastRadioControlStruct.source='CD';
   },
 }
 );
