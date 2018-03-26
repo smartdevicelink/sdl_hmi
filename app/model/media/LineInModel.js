@@ -28,7 +28,7 @@
 active: false,
 selectedIndex:0,
 optionsEnabled:false,
-statusBar: 'Luk Marko',
+statusBar: 'Line-in',
 sendAudioNotification:function()
   {
     this.setSource();
