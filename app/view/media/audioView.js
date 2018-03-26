@@ -88,19 +88,31 @@ EqualizerSettingsView = Em.ContainerView.create({
       action: function(){
          var length = SDL.MediaController.lastRadioControlStruct.equalizerSettings.length;
          
-         if(length == 1){
+         if(SDL.MediaController.tempEqualizerSettIndex<=3){
            return;
          }
-
-         for(var i = SDL.MediaController.tempEqualizerSettIndex; i < length - 1; ++i){
+          if(SDL.MediaController.tempEqualizerSettIndex!=1)
+          {
+         for(var i = SDL.MediaController.tempEqualizerSettIndex; i < length; ++i){
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[i-1] = 
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[i];
+         }
+       }
+       else{
+        for(var i = 0; i < length ; ++i){
           SDL.MediaController.lastRadioControlStruct.equalizerSettings[i] = 
           SDL.MediaController.lastRadioControlStruct.equalizerSettings[i+1];
          }
+       }
          SDL.MediaController.lastRadioControlStruct.equalizerSettings.pop();
-         if(SDL.MediaController.tempEqualizerSettIndex != length-1){
-          SDL.MediaController.set('tempEqualizerSettings', SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex]);
+         if(SDL.MediaController.tempEqualizerSettIndex != 1){
+          SDL.MediaController.set('tempEqualizerSettIndex',SDL.MediaController.tempEqualizerSettIndex-1);
+          SDL.MediaController.set('tempEqualizerSettings', 
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex-1]);
+          
          } else{
-          SDL.MediaController.set('tempEqualizerSettings', SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex - 1]);
+          SDL.MediaController.set('tempEqualizerSettings', 
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex-1]);
          }
     
       },
@@ -134,6 +146,9 @@ EqualizerSettingsView = Em.ContainerView.create({
         if(SDL.MediaController.tempEqualizerSettIndex-1 == 0){
           return;
         }  
+        
+          SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex-1]=
+          SDL.MediaController.tempEqualizerSettings;
         SDL.MediaController.set('tempEqualizerSettIndex',SDL.MediaController.tempEqualizerSettIndex-1);
         SDL.MediaController.set('tempEqualizerSettings', 
           SDL.MediaController.lastRadioControlStruct.equalizerSettings
@@ -170,12 +185,11 @@ EqualizerSettingsView = Em.ContainerView.create({
     action: function(){
       SDL.MediaController.lastRadioControlStruct.equalizerSettings.push({
         channelSetting: 0,
-        channelId: 0,
+        channelId: 1,
         channelName: 'Default'
       });
-      //SDL.MediaController.tempEqualizerSettIndex = SDL.MediaController.lastRadioControlStruct.equalizerSettings.length;
       SDL.MediaController.set('tempEqualizerSettIndex',SDL.MediaController.lastRadioControlStruct.equalizerSettings.length);
-     SDL.MediaController.set('tempEqualizerSettings', SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex]);
+     SDL.MediaController.set('tempEqualizerSettings', SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex-1]);
     },
     text: 'Add',
     onDown: false 
@@ -199,8 +213,8 @@ SDL.audioView= Em.ContainerView.extend(
           classNameBindings: ['SDL.MediaController.optionsEnabled:active_state:inactive_state'],
         
         childViews:[
-          'keepContextSelect',
-          'keepContextLabel',
+          // 'keepContextSelect',
+          // 'keepContextLabel',
           'volumeInput',
           'volumeLabel',
           'volumeCheckBox',
@@ -212,6 +226,7 @@ SDL.audioView= Em.ContainerView.extend(
               attributeBindings: ['disabled'],
              elementId:'equalizerChannelSettingInput',
              classNames:'equalizerChannelSettingInput',
+             type:'Number',
              valueBinding:'SDL.MediaController.lastRadioControlStruct.equalizerSettings.channelSetting',
              isDisabled: function() {
                 return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
@@ -241,6 +256,7 @@ SDL.audioView= Em.ContainerView.extend(
               attributeBindings: ['disabled'],
              elementId:'equalizerChannelNameInput',
              classNames:'equalizerChannelNameInput',
+
              valueBinding:'SDL.MediaController.lastRadioControlStruct.equalizerSettings.channelName',
              isDisabled: function() {
                 return !SDL.MediaController.radioControlAudioValue.equalizerSettings ?
@@ -258,6 +274,7 @@ SDL.audioView= Em.ContainerView.extend(
             attributeBindings: ['disabled'],
              elementId:'equalizerChannelIdInput',
              classNames:'equalizerChannelIdInput',
+             type:'Number',
              valueBinding:'SDL.MediaController.lastRadioControlStruct.equalizerSettings.channelId',
              isDisabled: function() {
                 return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
@@ -266,28 +283,6 @@ SDL.audioView= Em.ContainerView.extend(
               ),
               disabledBinding: 'isDisabled'
            }
-          ),
-         keepContextSelect: Em.Select.extend(
-         {
-          attributeBindings: ['disabled'],
-           elementId:'keepContextSelect',
-           classNames:'keepContextSelect',
-           valueBinding: 'SDL.MediaController.lastRadioControlStruct.keepContext',
-           contentBinding: 'SDL.USBModel.boolStruct',
-           isDisabled: function() {
-                return !SDL.MediaController.radioControlAudioValue.keepContext;
-              }.property(
-                'SDL.MediaController.radioControlAudioValue.keepContext'
-              ),
-              disabledBinding: 'isDisabled'
-         }
-         ),
-         keepContextLabel: SDL.Label.extend(
-             {
-               elementId: 'keepContextLabel',
-              classNames: 'keepContextLabel',
-              content: 'Keep context:'
-            }
           ),
         volumeInput: Ember.TextField.extend(
          {
