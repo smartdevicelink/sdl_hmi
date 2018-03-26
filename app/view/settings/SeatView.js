@@ -633,7 +633,7 @@ SDL.SeatView = Em.ContainerView.create({
             label:SDL.Label.extend({
                 elementId: 'label',
                 classNames: 'label',
-                content: 'Horisontal'
+                content: 'Horizontal'
             }),
 
             input:Ember.TextField.extend({

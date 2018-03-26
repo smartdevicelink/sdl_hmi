@@ -116,7 +116,7 @@ SDL.SeatModel = Em.Object.create({
     seatMemoryAction: {
         id: 1,
         label: 'Label value',
-        action: 'SAVE'
+        action: 'NONE'
     },
 
     seatControlData: Em.Object.create({
@@ -229,7 +229,7 @@ SDL.SeatModel = Em.Object.create({
 
     init: function(){
         this.seatControlData.id = this.supportedSeatStruct[0];
-
+        //tempMessageCussion=SDL.deepCopy(this.massageCushionFirmness);
         var length = this.massageZoneStruct.length;
         for(var i = 0; i < length; ++i){
             this.seatControlData.massageMode.push(
@@ -237,9 +237,17 @@ SDL.SeatModel = Em.Object.create({
             this.seatControlData.massageMode[i].massageZone = 
                 this.massageZoneStruct[i];
         }
+        for(var i=0;i<this.massageCushionStruct.length;i++)
+        {
+            tempMessageCussion={};
+            tempMessageCussion.firmness=SDL.deepCopy(i+1);
+            tempMessageCussion.cushion=SDL.deepCopy(this.massageCushionStruct[i]);
+            this.seatControlData.massageCushionFirmness.push(
+                tempMessageCussion);
+                tempMessageCussion=null;
+        }
 
-        this.seatControlData.massageCushionFirmness.push(
-                this.massageCushionFirmness);
+        
         this.seatControlData.memory = this.seatMemoryAction;
         this.tempSeatControlData = SDL.deepCopy(this.seatControlData);
     },
@@ -267,11 +275,13 @@ SDL.SeatModel = Em.Object.create({
    },
 
    setSeatControlData: function(data){
+       result = Em.Object.create({});
         for (var key in data) {
             this.seatControlData.set(key, SDL.deepCopy(data[key]));
+            result.set(key,SDL.deepCopy(data[key]));
         }
         this.goToStates();
-        var result = this.getSeatControlData(true);
+        //var result = this.getSeatControlData(true);
         return  result;
    },
 
