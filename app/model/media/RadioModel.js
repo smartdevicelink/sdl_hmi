@@ -626,10 +626,12 @@ SDL.RadioModel = Em.Object.create({
         delete result['sisData'];
       }
       if(Object.keys(result.sisData.stationIDNumber).length==0){
-        delete result['sisData.stationIDNumber'];
+        var temp=result.sisData;
+        delete temp['stationIDNumber'];
       }
       if(Object.keys(result.sisData.stationLocation).length==0){
-        delete result['sisData.stationLocation'];
+        var temp=result.sisData;
+        delete temp['stationLocation'];
       }
     }
 

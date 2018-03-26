@@ -28,7 +28,7 @@
 active: false,
 selectedIndex: 0,
 optionsEnabled:false,
-    statusBar: 'Luk Marko',
+statusBar: 'Bluetooth track 1',
 init: function() {
       this._super();
       this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
