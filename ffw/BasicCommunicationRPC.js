@@ -525,7 +525,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               second: date.getSeconds(),
               minute: date.getMinutes(),
               hour: date.getHours(),
-              day: date.getDay(),
+              day: date.getDate(),
               month: date.getMonth()+1,
               year: date.getFullYear(),
               tz_hour: Math.floor(date.getTimezoneOffset()/-60),
@@ -534,16 +534,16 @@ FFW.BasicCommunication = FFW.RPCObserver
 
             var JSONMessage = {
                 'jsonrpc': '2.0',
-                'id': id,
+                'id': request.id,
                 'result': {
-                  'code': resultCode, // type (enum) from SDL protocol
-                  'method': method,
+                  'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
+                  'method': request.method,
                   'systemTime':systemTime
                  }
              };
 
           this.client.send(JSONMessage);
-            
+
           }
         }
       },
