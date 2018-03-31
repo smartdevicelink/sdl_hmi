@@ -124,7 +124,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceSubscribeRequestID = this.client
           .subscribeToNotification(this.onResumeAudioSourceNotification);
-            setTimeout(function() {FFW.BasicCommunication.onSystemTimeReady();},
+            setTimeout(function() {FFW.BasicCommunication.OnSystemTimeReady();},
           500);
         },
       /**
@@ -936,11 +936,11 @@ FFW.BasicCommunication = FFW.RPCObserver
       /**
        * notification that HMI is ready to provide system time
        */
-      onSystemTimeReady: function() {
-        Em.Logger.log('FFW.BasicCommunication.onSystemTimeReady');
+      OnSystemTimeReady: function() {
+        Em.Logger.log('FFW.BasicCommunication.OnSystemTimeReady');
         var JSONMessage = {
           'jsonrpc': '2.0',
-          'method': 'BasicCommunication.onSystemTimeReady'
+          'method': 'BasicCommunication.OnSystemTimeReady'
         };
         this.client.send(JSONMessage);
       },
