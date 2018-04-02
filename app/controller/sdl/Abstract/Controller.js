@@ -408,7 +408,7 @@ SDL.SDLController = Em.Object.extend(
         }
       }
       FFW.BasicCommunication.onReady();
-    }.observes('SDL.SDLModel.data.registeredComponents.@each.state'),
+      }.observes('SDL.SDLModel.data.registeredComponents.@each.state'),
     /**
      * Show VrHelpItems popup with necessary params
      * if VRPopUp is active - show data from Global Properties

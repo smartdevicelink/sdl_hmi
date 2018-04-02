@@ -124,7 +124,9 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceSubscribeRequestID = this.client
           .subscribeToNotification(this.onResumeAudioSourceNotification);
-      },
+            setTimeout(function() {FFW.BasicCommunication.OnSystemTimeReady();},
+          500);
+        },
       /**
        * Client is unregistered - no more requests
        */
@@ -516,6 +518,33 @@ FFW.BasicCommunication = FFW.RPCObserver
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
           }
+          if (request.method == 'BasicCommunication.GetSystemTime') {
+            var date = new Date();
+            var systemTime={
+              millisecond: date.getMilliseconds(),
+              second: date.getSeconds(),
+              minute: date.getMinutes(),
+              hour: date.getHours(),
+              day: date.getDate(),
+              month: date.getMonth()+1,
+              year: date.getFullYear(),
+              tz_hour: Math.floor(date.getTimezoneOffset()/-60),
+              tz_minute: Math.abs(date.getTimezoneOffset()%60)
+            };
+
+            var JSONMessage = {
+                'jsonrpc': '2.0',
+                'id': request.id,
+                'result': {
+                  'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
+                  'method': request.method,
+                  'systemTime':systemTime
+                 }
+             };
+
+          this.client.send(JSONMessage);
+
+          }
         }
       },
       /********************* Requests BEGIN *********************/
@@ -901,6 +930,17 @@ FFW.BasicCommunication = FFW.RPCObserver
         var JSONMessage = {
           'jsonrpc': '2.0',
           'method': 'BasicCommunication.OnReady'
+        };
+        this.client.send(JSONMessage);
+      },
+      /**
+       * notification that HMI is ready to provide system time
+       */
+      OnSystemTimeReady: function() {
+        Em.Logger.log('FFW.BasicCommunication.OnSystemTimeReady');
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'method': 'BasicCommunication.OnSystemTimeReady'
         };
         this.client.send(JSONMessage);
       },
