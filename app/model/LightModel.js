@@ -175,14 +175,14 @@ SDL.LightModel = Em.Object.create({
             for(var j = 0; j < lightStateLength; ++j){
                 if(data.lightState[i].id == this.lightState[j].id){
                     if(null != data.lightState[i].status){
-                        this.lightState[j].status = data.lightState[i].status;
+                        this.set('lightState.'+j+'.status', data.lightState[i].status);
                     }
                     if(null != data.lightState[i].density){
-                        this.lightState[j].density = data.lightState[i].density;
+                        this.set('lightState'+j+'density', data.lightState[i].density);
                     }
                     if(null != data.lightState[i].sRGBColor){
-                        this.lightState[j].sRGBColor = 
-                            data.lightState[i].sRGBColor;
+                        this.set('lightState'+j+'sRGBColor', 
+                            data.lightState[i].sRGBColor);
                     } 
                     if(data.lightState[i].id == SDL.LightModel.lightSettings.id){
                         SDL.LightModel.set('lightSettings',this.lightState[j])
