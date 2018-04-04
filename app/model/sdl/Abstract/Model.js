@@ -1259,6 +1259,7 @@ SDL.SDLModel = Em.Object.extend({
 
         SDL.SDLModel.data.stateLimited = null;
         SDL.SDLModel.data.set('limitedExist', false);
+        FFW.BasicCommunication.OnAppDeactivated(appID);
       }
 
       SDL.TurnByTurnView.deactivate();

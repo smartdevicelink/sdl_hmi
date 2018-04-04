@@ -210,7 +210,6 @@ SDL.SDLController = Em.Object.extend(
      * @param status
      */
     onEventChanged: function(reason, status) {
-      if(!SDL.MediaController.keepContext){
       var eventName = SDL.SDLModel.data.onEventChangedEnum[reason];
       if (!eventName) {
         return;
@@ -219,7 +218,6 @@ SDL.SDLController = Em.Object.extend(
         SDL.SDLModel.data.mediaPlayerActive = status;
       }
       FFW.BasicCommunication.OnEventChanged(eventName, status);
-    }
     },
     /**
      * Method clears all applications data and unregister models
