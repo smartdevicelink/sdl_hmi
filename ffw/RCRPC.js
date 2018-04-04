@@ -285,8 +285,9 @@ FFW.RC = FFW.RPCObserver.create(
               }
             }
             if(request.params.moduleData.audioControlData){
-              newAudioControlData = 
-              SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
+              newAudioControlData = (request.params.moduleData.audioControlData.keepContext!=null)?
+              SDL.MediaController.setAudioControlDataWithKeepContext(request.params.moduleData.audioControlData)
+              :SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
             }
             if(request.params.moduleData.hmiSettingsControlData){
               newHMISettingsControlData = SDL.HmiSettingsModel.setHmiSettingsData(
