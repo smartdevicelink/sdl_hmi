@@ -37,11 +37,14 @@ SDL.SeatModel = Em.Object.create({
     /*
     * turn on/off
     */
+   
+   driverMemory:new Object(),
+   passengerMemory:new Object(),
     enableStruct:[
         'ON',
         'OFF'
     ],
-
+    ID:'',
     heatingEnableData: 'OFF',
 
     coolingEnabledData: 'OFF',
@@ -169,9 +172,9 @@ SDL.SeatModel = Em.Object.create({
     update: function(){
         this.set('heatingEnableData', 
             this.tempSeatControlData.heatingEnabled ? 'ON': 'OFF');
-        this.set('coolingEnabledData', 
+        this.set('coolingEnabledData',
             this.tempSeatControlData.coolingEnabled ? 'ON': 'OFF');
-        this.set('massageEnabledData', 
+        this.set('massageEnabledData',
             this.tempSeatControlData.massageEnabled ? 'ON': 'OFF');
 
         this.set('massageCushionFirmness0',
@@ -195,7 +198,7 @@ SDL.SeatModel = Em.Object.create({
             this.tempSeatControlData.massageCushionFirmness[i].firmness = 
                 parseInt(this.tempSeatControlData.massageCushionFirmness[i].firmness);
         }
-
+        this.set('ID',this.tempSeatControlData.id);
         this.tempSeatControlData.heatingLevel = 
             parseInt(this.tempSeatControlData.heatingLevel);
         this.tempSeatControlData.coolingLevel = 
@@ -223,33 +226,47 @@ SDL.SeatModel = Em.Object.create({
     
     goToStates: function(){
         SDL.SeatModel.set('tempSeatControlData',
-            SDL.deepCopy(SDL.SeatModel.seatControlData));
+            SDL.deepCopy(SDL.SeatModel.temp[1]));
         SDL.SeatModel.update();
     },
-
+    temp:[],
     init: function(){
-        this.seatControlData.id = this.supportedSeatStruct[0];
+        
+        this.temp.push(SDL.deepCopy(this.seatControlData));
+        this.temp.push(SDL.deepCopy(this.seatControlData));
+        this.temp[0].id=this.supportedSeatStruct[0];
+        this.temp[1].id=this.supportedSeatStruct[1];
+        //this.seatControlData.id = this.supportedSeatStruct[0];
         //tempMessageCussion=SDL.deepCopy(this.massageCushionFirmness);
         var length = this.massageZoneStruct.length;
         for(var i = 0; i < length; ++i){
-            this.seatControlData.massageMode.push(
-                SDL.deepCopy(this.massageModeData));
-            this.seatControlData.massageMode[i].massageZone = 
-                this.massageZoneStruct[i];
+            this.temp[0].massageMode.push(SDL.deepCopy(this.massageModeData));
+            this.temp[0].massageMode[i].massageZone = 
+               this.massageZoneStruct[i];
+               this.temp[1].massageMode.push(SDL.deepCopy(this.massageModeData));
+            this.temp[1].massageMode[i].massageZone = 
+               this.massageZoneStruct[i];
+            // this.seatControlData.massageMode.push(
+            //     SDL.deepCopy(this.massageModeData));
+            // this.seatControlData.massageMode[i].massageZone = 
+            //     this.massageZoneStruct[i];
         }
         for(var i=0;i<this.massageCushionStruct.length;i++)
         {
             tempMessageCussion={};
             tempMessageCussion.firmness=SDL.deepCopy(i+1);
             tempMessageCussion.cushion=SDL.deepCopy(this.massageCushionStruct[i]);
-            this.seatControlData.massageCushionFirmness.push(
+            this.temp[0].massageCushionFirmness.push(
                 tempMessageCussion);
+                this.temp[1].massageCushionFirmness.push(
+                    tempMessageCussion);
                 tempMessageCussion=null;
         }
 
         
-        this.seatControlData.memory = this.seatMemoryAction;
-        this.tempSeatControlData = SDL.deepCopy(this.seatControlData);
+        this.temp[0].memory = this.seatMemoryAction;
+        this.temp[1].memory = this.seatMemoryAction;
+        this.tempSeatControlData = SDL.deepCopy(this.temp[1]);
     },
 
     getSeatCapabilities: function() {
@@ -276,18 +293,77 @@ SDL.SeatModel = Em.Object.create({
 
    setSeatControlData: function(data){
        result = Em.Object.create({});
+       if(data.id=='DRIVER'){
         for (var key in data) {
-            this.seatControlData.set(key, SDL.deepCopy(data[key]));
+                this.set('temp.0.' + key, data[key]);
+                result.set(key,SDL.deepCopy(data[key]));
+            }
+            if(data.memory)
+            {
+                switch(data.memory.action){
+                    case 'SAVE':
+                    this.driverMemory[data.memory.id]=SDL.deepCopy(this.temp[0]);
+                    if(this.tempSeatControlData.id=='DRIVER'){
+                        this.set('tempSeatControlData',this.temp[0]);
+                        return this.temp[0];
+                    }
+                    break;
+                    case 'RESTORE':
+                    if(this.driverMemory[data.memory.id]){
+                    this.temp[0]=SDL.deepCopy(this.driverMemory[data.memory.id]);
+                    if(this.tempSeatControlData.id=='DRIVER'){
+                        this.set('tempSeatControlData',this.temp[0]);
+                        this.update();
+                        return this.temp[0];
+                    }
+                    }
+                    break;
+                    case 'NONE': break;
+                }
+            }
+       }
+       if(data.id=='FRONT_PASSENGER'){
+        for (var key in data) {
+            this.set('temp.1.' + key, data[key]);
             result.set(key,SDL.deepCopy(data[key]));
         }
-        this.goToStates();
-        //var result = this.getSeatControlData(true);
-        return  result;
+        if(data.memory)
+        {
+            switch(data.memory.action){
+                case 'SAVE':
+                this.passengerMemory[data.memory.id]=SDL.deepCopy(this.temp[1]);
+                if(this.tempSeatControlData.id=='FRONT_PASSENGER'){
+                    this.set('tempSeatControlData',this.temp[1]);
+                    return this.temp[1];
+                }
+                break;
+                case 'RESTORE':
+                if(this.passengerMemory[data.memory.id]){
+                this.temp[1]=SDL.deepCopy(this.passengerMemory[data.memory.id]);
+                if(this.tempSeatControlData.id=='FRONT_PASSENGER'){
+                    this.set('tempSeatControlData',this.temp[1]);
+                    this.update();
+                    return this.temp[1];
+                }
+                }
+                break;
+                case 'NONE': break;
+            }
+        }
+       }
+        // for (var key in data) {
+        //     this.seatControlData.set(key, SDL.deepCopy(data[key]));
+        //     result.set(key,SDL.deepCopy(data[key]));
+        // }
+        // this.goToStates();
+        // //var result = this.getSeatControlData(true);
+        this.update();
+         return  result;
    },
 
    getSeatControlData: function(){
         this.update();
-        return this.seatControlData;
+        return this.tempSeatControlData;
    },
 
    applySettings: function () {
