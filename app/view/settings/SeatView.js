@@ -80,7 +80,12 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'heating_enableSelect',
                 classNames: 'enableSelect',
                 contentBinding: 'SDL.SeatModel.enableStruct',
-                valueBinding: 'SDL.SeatModel.heatingEnableData'
+                valueBinding: 'SDL.SeatModel.heatingEnableData',
+                change:function(){
+                    SDL.SeatModel.set('tempSeatControlData.heatingEnabled',
+                (SDL.SeatModel.heatingEnableData=='OFF')? true:false);
+                SDL.SeatModel.update();
+                }
             })
         }),
 
@@ -136,7 +141,12 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'cooling_enableSelect',
                 classNames: 'enableSelect',
                 contentBinding: 'SDL.SeatModel.enableStruct',
-                valueBinding: 'SDL.SeatModel.coolingEnabledData'
+                valueBinding: 'SDL.SeatModel.coolingEnabledData',
+                change:function(){
+                    SDL.SeatModel.set('tempSeatControlData.coolingEnabled',
+                (SDL.SeatModel.coolingEnabledData=='OFF')? true:false);
+                SDL.SeatModel.update();
+                }
             })
         }),
 
@@ -864,7 +874,43 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'actionSelect',
                 classNames: 'actionSelect',
                 contentBinding: 'SDL.SeatModel.seatMemoryActionTypeStruct',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.action'
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.action',
+                change:function(){
+                    switch(this.selection){
+                        case 'SAVE':
+                        if(SDL.SeatModel.tempSeatControlData.memory.id>0 &
+                            SDL.SeatModel.tempSeatControlData.memory.id<=10){
+                        if(SDL.SeatModel.ID=='DRIVER'){
+                            SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]=
+                            SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
+                            return;
+                        }
+                        if(SDL.SeatModel.ID=='FRONT_PASSENGER'){
+                            SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]=
+                            SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
+                            return;
+                        }
+                        }
+                        break;
+                        case 'RESTORE':
+                        if(SDL.SeatModel.ID=='DRIVER'){
+                            if(SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]){
+                                SDL.SeatModel.set('tempSeatControlData',
+                                SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]);
+                                SDL.SeatModel.update();
+                            }
+                        }
+                        if(SDL.SeatModel.ID=='FRONT_PASSENGER'){
+                            if(SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]){
+                                SDL.SeatModel.set('tempSeatControlData',
+                                SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]);
+                                SDL.SeatModel.update();
+                            }
+                        }
+                        break;
+                        case 'NONE':break;
+                    }
+                }
             })
         }),
     }),
@@ -898,31 +944,36 @@ SDL.SeatView = Em.ContainerView.create({
             elementId: 'massageEnable_enableSelect',
             classNames: 'massageEnable_enableSelect',
             contentBinding: 'SDL.SeatModel.enableStruct',
-            valueBinding: 'SDL.SeatModel.massageEnabledData'
+            valueBinding: 'SDL.SeatModel.massageEnabledData',
+            change:function(){
+                SDL.SeatModel.set('tempSeatControlData.massageEnabled',
+            (SDL.SeatModel.massageEnabledData=='OFF')? true:false);
+            SDL.SeatModel.update();
+            }
         })
     }),
-    massageEnable: Em.ContainerView.extend({
-        elementId: 'massageEnable',
-        classNames: 'in_massageEnable_view',
+    // massageEnable: Em.ContainerView.extend({
+    //     elementId: 'massageEnable',
+    //     classNames: 'in_massageEnable_view',
 
-        childViews: [
-            'label',
-            'select'
-        ],
+    //     childViews: [
+    //         'label',
+    //         'select'
+    //     ],
 
-        label: SDL.Label.extend({
-            elementId: 'massageEnable_label',
-            classNames: 'massageEnable_label',
-            content: 'Massage'
-        }),
+    //     label: SDL.Label.extend({
+    //         elementId: 'massageEnable_label',
+    //         classNames: 'massageEnable_label',
+    //         content: 'Massage'
+    //     }),
 
-        select: Em.Select.create({
-            elementId: 'massageEnable_enableSelect',
-            classNames: 'massageEnable_enableSelect',
-            contentBinding: 'SDL.SeatModel.enableStruct',
-            valueBinding: 'SDL.SeatModel.massageEnabledData'
-        })
-    }),
+    //     select: Em.Select.create({
+    //         elementId: 'massageEnable_enableSelect',
+    //         classNames: 'massageEnable_enableSelect',
+    //         contentBinding: 'SDL.SeatModel.enableStruct',
+    //         valueBinding: 'SDL.SeatModel.massageEnabledData'
+    //     })
+    // }),
     id: Em.ContainerView.extend({
         elementId: 'id',
         classNames: 'in_id_view',
@@ -931,7 +982,6 @@ SDL.SeatView = Em.ContainerView.create({
             'label',
             'select'
         ],
-
         label: SDL.Label.extend({
             elementId: 'idlabel',
             classNames: 'idlabel',
@@ -942,7 +992,25 @@ SDL.SeatView = Em.ContainerView.create({
             elementId: 'idSelect',
             classNames: 'idSelect',
             contentBinding: 'SDL.SeatModel.supportedSeatStruct',
-            valueBinding: 'SDL.SeatModel.tempSeatControlData.id'
+            valueBinding: 'SDL.SeatModel.ID',
+            change: function(){
+                if(SDL.SeatModel.ID!='DRIVER'){
+                    SDL.SeatModel.set('temp.1',
+                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData));
+                    SDL.SeatModel.set('tempSeatControlData',
+                    SDL.deepCopy(SDL.SeatModel.temp[0]));
+                    SDL.SeatModel.update();
+                    return;
+                }
+                if(SDL.SeatModel.ID!='FRONT_PASSENGER'){
+                    SDL.SeatModel.set('temp.0',
+                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData));
+                    SDL.SeatModel.tempSeatControlData=
+                    SDL.deepCopy(SDL.SeatModel.temp[1]);
+                    SDL.SeatModel.update();
+                    return;
+                }
+            }
         })
     }),
 
