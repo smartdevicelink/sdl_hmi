@@ -123,6 +123,12 @@ SDL.RModel = SDL.SDLModel.extend({
       return; // if application already registered and correctly initialized and BC.UpdateAppList came from SDL than nothing shoul happend
     }
 
+    if (params.appID != null && params.icon != null) {
+      console.log('Resuming application icon for ' + params.appID);
+      this.setAppIconByAppId(params.appID, params.icon);
+    }
+
+
     if (params.isMediaApplication === true) {
       //Magic number 0 - Default media model
       applicationType = 0;
@@ -142,7 +148,8 @@ SDL.RModel = SDL.SDLModel.extend({
       }
     }
 
-    SDL.SDLController.registerApplication(params, applicationType);
+    
+    this.registerApplication(params, applicationType);
 
     if (SDL.SDLModel.data.unRegisteredApps.indexOf(params.appID) >= 0) {
       setTimeout(function() {
@@ -175,6 +182,23 @@ SDL.RModel = SDL.SDLModel.extend({
     }
   },
 
+  setAppIconByAppId: function(appID, path) {
+    var img = new Image();
+    img.onload = function() {        
+       var model = SDL.SDLController.getApplicationModel(appID);
+       if (model != null) {
+         console.log('Icon for ' + appID + ' was set to ' + path);
+         model.set('appIcon', img.src + '?' + new Date().getTime());
+        }
+    };
+    img.onerror = function(event) {
+        console.log('Error: Icon for ' + appID + ' was not set properly');    
+        return false;
+    };
+
+    img.src = path;
+   },
+
   /**
    * Method to delete activation button from VR commands and delete device
    * parameters from model
@@ -187,6 +211,84 @@ SDL.RModel = SDL.SDLModel.extend({
 
       this._super(params);
     }
+  },
+
+
+  registerApplication: function(params, applicationType) {
+    if (applicationType === undefined || applicationType === null) {
+      SDL.SDLModel.data.get('registeredApps').pushObject(
+        this.applicationModels[0].create(
+          { //Magic number 0 - Default media model for not initialized applications
+            appID: params.appID,
+            appName: params.appName,
+            deviceName: params.deviceInfo.name,
+            appType: params.appType,
+            isMedia: 0,
+            disabledToActivate: params.greyOut ? true : false
+          }
+        )
+      );
+    } else {
+      SDL.SDLModel.data.get('registeredApps').pushObject(
+        this.applicationModels[applicationType].create(
+          {
+            appID: params.appID,
+            appName: params.appName,
+            deviceName: params.deviceInfo.name,
+            appType: params.appType,
+            isMedia: applicationType == 0 ? true : false,
+            initialized: true,
+            disabledToActivate: params.greyOut ? true : false
+          }
+        )
+      );
+    }
+    var exitCommand = {
+      'id': -10,
+      'params': {
+        'menuParams': {
+          'parentID': 0,
+          'menuName': 'Exit \'DRIVER_DISTRACTION_VIOLATION\'',
+          'position': 0
+        },
+        cmdID: -1
+      }
+    };
+    SDL.SDLController.getApplicationModel(params.appID).addCommand(
+      exitCommand
+    );
+    exitCommand = {
+      'id': -10,
+      'params': {
+        'menuParams': {
+          'parentID': 0,
+          'menuName': 'Exit \'USER_EXIT\'',
+          'position': 0
+        },
+        cmdID: -2
+      }
+    };
+    SDL.SDLController.getApplicationModel(params.appID).addCommand(
+      exitCommand
+    );
+    exitCommand = {
+      'id': -10,
+      'params': {
+        'menuParams': {
+          'parentID': 0,
+          'menuName': 'Exit \'UNAUTHORIZED_TRANSPORT_REGISTRATION\'',
+          'position': 0
+        },
+        cmdID: -3
+      }
+    }
+    SDL.SDLController.getApplicationModel(params.appID).addCommand(
+      exitCommand
+    );
+  },
+  applicationModels: {
+    0: SDL.SDLMediaModel,
+    1: SDL.SDLNonMediaModel
   }
 }
 );
