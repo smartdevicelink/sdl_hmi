@@ -243,7 +243,10 @@ FFW.BasicCommunication = FFW.RPCObserver
           } else {
             this.OnSystemRequest('PROPRIETARY');
           }
-          SDL.SettingsController.policyUpdateRetry();
+
+          if (FLAGS.ExternalPolicies === true) {
+            SDL.SettingsController.policyUpdateRetry();
+          }
         }
       },
       /**
@@ -289,6 +292,11 @@ FFW.BasicCommunication = FFW.RPCObserver
             case 'UP_TO_DATE':
             {
               messageCode = 'StatusUpToDate';
+              //Update is complete, stop retry sequence
+              if (FLAGS.ExternalPolicies === true) {
+                SDL.SettingsController.policyUpdateRetry('ABORT');
+              }
+              SDL.SettingsController.policyUpdateFile = null;
               break;
             }
             case 'UPDATING':
@@ -397,13 +405,11 @@ FFW.BasicCommunication = FFW.RPCObserver
             SDL.InfoAppsView.showAppList();
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
-            SDL.SettingsController.policyUpdateRetry('ABORT');
             if(FLAGS.ExternalPolicies === true) {
               FFW.ExternalPolicies.unpack(request.params.fileName);
             } else {
               this.OnReceivedPolicyUpdate(request.params.fileName);
             }
-            SDL.SettingsController.policyUpdateFile = null;
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,
