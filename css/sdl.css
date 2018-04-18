@@ -65,6 +65,39 @@
     float: left;
 }
 
+.day-mode .ico-overlay{
+    background:url(../images/template/imagetype-pattern-day.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    width: 50px;
+    height: 49px;
+    z-index: 1001;
+}
+
+.night-mode .ico-overlay{
+    background:url(../images/template/imagetype-pattern-night.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    width: 50px;
+    height: 49px;
+    z-index: 1001;
+}
+
+.high-lighted-mode .ico-overlay{
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    width: 50px;
+    height: 49px;
+    z-index: 1001;
+}
+
 .softButton .right_text {
     padding-left: 5px !important;
 }
@@ -221,6 +254,36 @@
     width: 49px;
     float: left;
     position: relative;
+}
+
+#sdl_options .day-mode .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-day.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+    height: 49px;
+    width: 49px;
+}
+
+#sdl_options .night-mode .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-night.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+    height: 49px;
+    width: 49px;
+}
+
+#sdl_options .high-lighted-mode .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+    height: 49px;
+    width: 49px;
 }
 
 #info_nonMedia_options_submenu {
@@ -447,7 +510,7 @@
 #tbtTurnListView .list span,
 #perform_interaction_view .list span,
 #vr_help_list_view .list span {
-    margin-left: 15px;
+    margin-left: 55px;
 }
 
 #tbtTurnListView .list-content,
@@ -488,6 +551,44 @@
     background-repeat: repeat;
 }
 
+#perform_interaction_view .naviChoises .ffw-button .ico{
+    width: 110px;
+    height: 110px;
+}
+
+#perform_interaction_view .naviChoises .ffw-button.day-mode .ico-overlay {
+    width: 110px;
+    height: 110px;
+    background:url(../images/template/imagetype-pattern-day.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    z-index: 1001;
+}
+
+#perform_interaction_view .naviChoises .ffw-button.night-mode .ico-overlay {
+    width: 110px;
+    height: 110px;
+    background:url(../images/template/imagetype-pattern-night.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    z-index: 1001;
+}
+
+#perform_interaction_view .naviChoises .ffw-button.high-lighted-mode .ico-overlay {
+    width: 110px;
+    height: 110px;
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    z-index: 1001;
+}
+
 #sdl_view_container .cd_logo {
     position: absolute;
     top: 90px;
@@ -506,6 +607,27 @@
     -webkit-border-radius: 2px;
     width: 109px;
     height: 109px;
+}
+
+#sdl_view_container .is-template.day-mode {
+    background:url(../images/template/imagetype-pattern-day.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+}
+
+#sdl_view_container .is-template.night-mode {
+    background:url(../images/template/imagetype-pattern-night.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+}
+
+#sdl_view_container .is-template.high-lighted-mode {
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
 }
 
 #sdl_view_container .timeV2 {
@@ -1275,6 +1397,69 @@
     height: 100px;
     background-size: contain;
     background-repeat: no-repeat;
+}
+
+#TurnByTurnView .turnIcon,
+#TurnByTurnView .nextTurnIcon {
+    border: 1px solid #222;
+    left: 540px;
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#TurnByTurnView .turnIcon .ico, 
+#TurnByTurnView .nextTurnIcon .ico 
+{
+    width: 100px;
+    height: 100px;
+    background-repeat: round;
+}
+
+#TurnByTurnView .turnIcon.high-lighted-mode.is-template .ico-overlay,
+#TurnByTurnView .nextTurnIcon.high-lighted-mode.is-template .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    width: 100px;
+    height: 100px;
+    z-index: 1001;
+}
+
+#TurnByTurnView .turnIcon.day-mode.is-template .ico-overlay,
+#TurnByTurnView .nextTurnIcon.day-mode.is-template .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-day.png);
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.6;
+    width: 100px;
+    height: 100px;
+    z-index: 1001;
+}
+
+#TurnByTurnView .turnIcon.night-mode.is-template .ico-overlay,
+#TurnByTurnView .nextTurnIcon.night-mode.is-template .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-night.png);
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.6;
+    width: 100px;
+    height: 100px;
+    z-index: 1001;
 }
 
 #TurnByTurnView .distanceToManeuver {

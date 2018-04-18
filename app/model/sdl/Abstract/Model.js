@@ -552,7 +552,7 @@ SDL.SDLModel = Em.Object.extend({
         set('constantTBTParams', params);
     SDL.SDLController.getApplicationModel(params.appID).
         set('tbtActivate', true);
-
+  
     if (SDL.SDLController.model) {
       SDL.SDLController.activateTBT();
     }
@@ -881,10 +881,10 @@ SDL.SDLModel = Em.Object.extend({
 
       var img = new Image();
       img.onload = function() {
-
+        var model=SDL.SDLController.getApplicationModel(message.appID);
         // code to set the src on success
-        SDL.SDLController.getApplicationModel(message.appID).
-            set('appIcon', message.syncFileName.value);
+        model.set('appIcon', message.syncFileName.value);
+        model.set('isTemplateIcon', message.syncFileName.isTemplate === true);
         FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, id, method);
       };
       img.onerror = function(event) {

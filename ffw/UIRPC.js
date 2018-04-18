@@ -136,6 +136,38 @@ FFW.UI = FFW.RPCObserver.create(
     /**
      * handle RPC requests here
      */
+    isPng:function(params){
+      var returnValue=true;
+      if(params.softButtons){
+        var countButtons=params.softButtons.length;
+        for(var i=0;i<countButtons;i++){
+          if(params.softButtons[i].image){
+          var image=params.softButtons[i].image.value;
+          str='.png';
+          var isPng=image.includes(str,length-5);
+          if(!isPng){
+            delete params.softButtons[i].image;
+            returnValue=false;
+          }
+        }
+      }
+      }
+      if(params.choiceSet){
+        var countChoice=params.choiceSet.length;
+        for(var i=0;i<countChoice;i++){
+          if(params.choiceSet[i].image){
+            var image=params.choiceSet[i].image.value;
+          str='.png';
+          var isPng=image.includes(str,length-5);
+          if(!isPng){
+            delete params.choiceSet[i].image;
+            returnValue=false;
+          }
+          }
+        }
+      }
+      return returnValue;
+    },
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.UI.onRPCRequest');
       if (this.validationCheck(request)) {
@@ -143,221 +175,773 @@ FFW.UI = FFW.RPCObserver.create(
           case 'UI.Alert':
           {
 
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if (request.params.alertStrings.length > 0
-            //    || "softButtons" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
-            if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
-              SDL.SDLController.onSystemContextChange(request.params.appID);
+              // Verify if there is an unsupported data in request
+              //if (this.errorResponsePull[request.id] != null) {
+              //
+              ////Check if there is any available data to  process the request
+              //if (request.params.alertStrings.length > 0
+              //    || "softButtons" in request.params) {
+              //
+              //    this.errorResponsePull[request.id].code =
+              // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
+              // available data sent error response and stop process current
+              // request this.sendError(this.errorResponsePull[request.id].code,
+              // request.id, request.method, "Unsupported " +
+              // this.errorResponsePull[request.id].type + " type. Request was
+              // not processed."); this.errorResponsePull[request.id] = null;
+              // return; } }
+              var isPng = this.isPng(request.params);
+              SDL.SDLController.set('isWarning', isPng ? !isPng : isPng);
+              if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
+                SDL.SDLController.onSystemContextChange(request.params.appID);
+              }
+              break;
             }
-            break;
-          }
           case 'UI.Show':
           {
 
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
+              // Verify if there is an unsupported data in request
+                if (this.errorResponsePull[request.id] != null) {
 
-              //Check if there is any available data to  process the request
-              if (request.params.showStrings.length > 0 ||
-                'graphic' in request.params ||
-                'secondaryGraphic' in request.params ||
-                'softButtons' in request.params ||
-                'customPresets' in request.params) {
-                this.errorResponsePull[request.id].code =
-                  SDL.SDLModel.data.resultCode['WARNINGS'];
-                //} else {
-                //    //If no available data sent error response and stop
-                // process current request
-                // this.sendError(this.errorResponsePull[request.id].code,
-                // request.id, request.method, "Unsupported " +
-                // this.errorResponsePull[request.id].type + " type. Request
-                // was not processed."); this.errorResponsePull[request.id] =
-                // null;  return;
+                //Check if there is any available data to  process the request
+                if (request.params.showStrings.length > 0 ||
+                  'graphic' in request.params ||
+                  'secondaryGraphic' in request.params ||
+                  'softButtons' in request.params ||
+                  'customPresets' in request.params) {
+                  this.errorResponsePull[request.id].code =
+                    SDL.SDLModel.data.resultCode['WARNINGS'];
+                  //} else {
+                  //    //If no available data sent error response and stop
+                  // process current request
+                  // this.sendError(this.errorResponsePull[request.id].code,
+                  // request.id, request.method, "Unsupported " +
+                  // this.errorResponsePull[request.id].type + " type. Request
+                  // was not processed."); this.errorResponsePull[request.id] =
+                  // null;  return;
+                }
               }
-            }
-            SDL.TurnByTurnView.deactivate();
-            SDL.SDLController.getApplicationModel(request.params.appID)
-              .onSDLUIShow(request.params);
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
-            break;
-          }
-          case 'UI.SetGlobalProperties':
-          {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("menuTitle" in request.params
-            //    || "keyboardProperties" in request.params
-            //    || "vrHelp" in request.params
-            //    || "menuIcon" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
-            SDL.SDLModel.setProperties(request.params);
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
-            break;
-          }
-          case 'UI.AddCommand':
-          {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("cmdIcon" in request.params
-            //    || "menuParams" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
-            SDL.SDLController.getApplicationModel(request.params.appID)
-              .addCommand(request);
-            break;
-          }
-          case 'UI.DeleteCommand':
-          {
-            SDL.SDLController.getApplicationModel(request.params.appID)
-              .deleteCommand(request.params.cmdID, request.id);
-            break;
-          }
-          case 'UI.AddSubMenu':
-          {
-            SDL.SDLController.getApplicationModel(request.params.appID)
-              .addSubMenu(request);
-            break;
-          }
-          case 'UI.DeleteSubMenu':
-          {
-            var resultCode = SDL.SDLController.getApplicationModel(
-              request.params.appID
-            ).deleteSubMenu(request.params.menuID);
-            this.sendUIResult(resultCode, request.id, request.method);
-            break;
-          }
-          case 'UI.PerformInteraction':
-          {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("choiceSet" in request.params
-            //    && request.params
-            //    && request.params.interactionLayout != "KEYBOARD") {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
-            if (SDL.SDLModel.uiPerformInteraction(request)) {
-              SDL.SDLController.onSystemContextChange();
-            }
-            break;
-          }
-          case 'UI.SetMediaClockTimer':
-          {
-            var resultCode = SDL.SDLController.getApplicationModel(
-              request.params.appID
-            ).sdlSetMediaClockTimer(request.params);
-            if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-              if(request.params.enableSeek) {
-                this.OnSeekMediaClockTimer(request.params.startTime, request.params.appID);
-              }
-              this.sendUIResult(resultCode, request.id, request.method);
-            } else {
-              this.sendError(
-                resultCode,
-                request.id,
-                request.method,
-                'Request is ignored, because the intended result is already in effect.'
+              SDL.TurnByTurnView.deactivate();
+              SDL.SDLController.getApplicationModel(request.params.appID)
+                .onSDLUIShow(request.params);
+                if (request.params.graphic != null) {
+                  var image = request.params.graphic.value;
+                      var length=image.length;
+                      str='.png';
+                      var isPng=image.includes(str,length-5);
+                      if(!isPng){
+                        this.sendUIResult(
+                          SDL.SDLModel.data.resultCode.WARNINGS, request.id, request.method);
+                          break;
+                      }
+                    }
+              this.sendUIResult(
+                SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
               );
+              break;
             }
-            break;
-          }
+          case 'UI.SetGlobalProperties':
+            {
+
+              // Verify if there is an unsupported data in request
+              //if (this.errorResponsePull[request.id] != null) {
+              //
+              ////Check if there is any available data to  process the request
+              //if ("menuTitle" in request.params
+              //    || "keyboardProperties" in request.params
+              //    || "vrHelp" in request.params
+              //    || "menuIcon" in request.params) {
+              //
+              //    this.errorResponsePull[request.id].code =
+              // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
+              // available data sent error response and stop process current
+              // request this.sendError(this.errorResponsePull[request.id].code,
+              // request.id, request.method, "Unsupported " +
+              // this.errorResponsePull[request.id].type + " type. Request was
+              // not processed."); this.errorResponsePull[request.id] = null;
+              // return; } }
+              SDL.SDLModel.setProperties(request.params);
+              this.sendUIResult(
+                SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+              );
+              break;
+            }
+          case 'UI.AddCommand':
+            {
+
+              // Verify if there is an unsupported data in request
+              //if (this.errorResponsePull[request.id] != null) {
+              //
+              ////Check if there is any available data to  process the request
+              //if ("cmdIcon" in request.params
+              //    || "menuParams" in request.params) {
+              //
+              //    this.errorResponsePull[request.id].code =
+              // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
+              // available data sent error response and stop process current
+              // request this.sendError(this.errorResponsePull[request.id].code,
+              // request.id, request.method, "Unsupported " +
+              // this.errorResponsePull[request.id].type + " type. Request was
+              // not processed."); this.errorResponsePull[request.id] = null;
+              // return; } }
+              SDL.SDLController.getApplicationModel(request.params.appID)
+                .addCommand(request);
+              break;
+            }
+          case 'UI.DeleteCommand':
+            {
+              SDL.SDLController.getApplicationModel(request.params.appID)
+                .deleteCommand(request.params.cmdID, request.id);
+              break;
+            }
+          case 'UI.AddSubMenu':
+            {
+              SDL.SDLController.getApplicationModel(request.params.appID)
+                .addSubMenu(request);
+              break;
+            }
+          case 'UI.DeleteSubMenu':
+            {
+              var resultCode = SDL.SDLController.getApplicationModel(
+                request.params.appID
+              ).deleteSubMenu(request.params.menuID);
+              this.sendUIResult(resultCode, request.id, request.method);
+              break;
+            }
+          case 'UI.PerformInteraction':
+            {
+
+              // Verify if there is an unsupported data in request
+              //if (this.errorResponsePull[request.id] != null) {
+              //
+              ////Check if there is any available data to  process the request
+              //if ("choiceSet" in request.params
+              //    && request.params
+              //    && request.params.interactionLayout != "KEYBOARD") {
+              //
+              //    this.errorResponsePull[request.id].code =
+              // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
+              // available data sent error response and stop process current
+              // request this.sendError(this.errorResponsePull[request.id].code,
+              // request.id, request.method, "Unsupported " +
+              // this.errorResponsePull[request.id].type + " type. Request was
+              // not processed."); this.errorResponsePull[request.id] = null;
+              // return; } }
+              SDL.InteractionChoicesView.set('warning',false);
+              SDL.InteractionChoicesView.set('warning',!this.isPng(request.params));
+              if (SDL.SDLModel.uiPerformInteraction(request)) {
+                SDL.SDLController.onSystemContextChange();
+              }
+              break;
+            }
+          case 'UI.SetMediaClockTimer':
+            {
+              var resultCode = SDL.SDLController.getApplicationModel(
+                request.params.appID
+              ).sdlSetMediaClockTimer(request.params);
+              if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+                if(params.enableSeek) {
+                  this.OnSeekMediaClockTimer(params.startTime, params.appID);
+                }
+                this.sendUIResult(resultCode, request.id, request.method);
+              } else {
+                this.sendError(
+                  resultCode,
+                  request.id,
+                  request.method,
+                  'Request is ignored, because the intended result is already in effect.'
+                );
+              }
+              break;
+            }
           case 'UI.Slider':
-          {
-            if (SDL.SDLModel.uiSlider(request)) {
-              SDL.SDLController.onSystemContextChange();
+            {
+              if (SDL.SDLModel.uiSlider(request)) {
+                SDL.SDLController.onSystemContextChange();
+              }
+              break;
             }
-            break;
-          }
           case 'UI.ScrollableMessage':
-          {
-            if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
-              SDL.SDLController.onSystemContextChange();
+            {
+              SDL.ScrollableMessage.set('warning',!this.isPng(request.params));
+              if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
+                SDL.SDLController.onSystemContextChange();
+              }
+              break;
             }
-            break;
-          }
           case 'UI.ChangeRegistration':
-          {
-            if (request.params.appName) {
-              SDL.SDLController.getApplicationModel(request.params.appID).set(
-                'appName',
+            {
+              if (request.params.appName) {
+                SDL.SDLController.getApplicationModel(request.params.appID).set(
+                  'appName',
+                  request.params.appName
+                );
+              }
+              SDL.InfoAppsView.showAppList();
+              SDL.SDLModel.changeRegistrationUI(
+                request.params.language,
+                request.params.appID,
                 request.params.appName
               );
+              this.sendUIResult(
+                SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+              );
+              break;
             }
-            SDL.InfoAppsView.showAppList();
-            SDL.SDLModel.changeRegistrationUI(
-              request.params.language,
-              request.params.appID,
-              request.params.appName
-            );
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
-            break;
-          }
           case 'UI.SetDisplayLayout':
-          {
-            var sendResponseFlag = false;
-            switch (request.params.displayLayout) {
-              case 'MEDIA':
-              case 'NON-MEDIA':
-              case 'DEFAULT':
-              case 'ONSCREEN_PRESETS':
-              case 'NAV_FULLSCREEN_MAP':
-              case 'NAV_KEYBOARD':
-              case 'NAV_LIST':
-              case 'REMOTE_CONTROL':
-              {
-                sendResponseFlag = true;
-                break;
+            {
+              var sendResponseFlag = false;
+              switch (request.params.displayLayout) {
+                case 'MEDIA':
+                case 'NON-MEDIA':
+                case 'DEFAULT':
+                case 'ONSCREEN_PRESETS':
+                case 'NAV_FULLSCREEN_MAP':
+                case 'NAV_KEYBOARD':
+                case 'NAV_LIST':
+                case 'REMOTE_CONTROL':
+                  {
+                    sendResponseFlag = true;
+                    break;
+                  }
               }
+              if (sendResponseFlag) {
+                Em.Logger.log('FFW.' + request.method + 'Response');
+                // send repsonse
+                var JSONMessage = {
+                  'jsonrpc': '2.0',
+                  'id': request.id,
+                  'result': {
+                    'displayCapabilities': {
+                      'displayType': 'GEN2_8_DMA',
+                      'textFields': [
+                        {
+                          'name': 'mainField1',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'mainField2',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'mainField3',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'mainField4',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'statusBar',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'mediaClock',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'mediaTrack',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'alertText1',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'alertText2',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'alertText3',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'scrollableMessageBody',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'initialInteractionText',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'navigationText1',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'navigationText2',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'ETA',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'totalDistance',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'navigationText',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'audioPassThruDisplayText1',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'audioPassThruDisplayText2',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'sliderHeader',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'sliderFooter',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'notificationText',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'menuName',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'secondaryText',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'tertiaryText',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'timeToDestination',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'turnText',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'menuTitle',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'locationName',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'locationDescription',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'addressLines',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        },
+                        {
+                          'name': 'phoneNumber',
+                          'characterSet': 'TYPE2SET',
+                          'width': 500,
+                          'rows': 1
+                        }
+                      ],
+                      'imageFields': [
+                        {
+                          'name': 'softButtonImage',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'choiceImage',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'choiceSecondaryImage',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'vrHelpItem',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'turnIcon',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'menuIcon',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'cmdIcon',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'graphic',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'showConstantTBTIcon',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'showConstantTBTNextTurnIcon',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        },
+                        {
+                          'name': 'showConstantTBTNextTurnIcon',
+                          'imageTypeSupported': [
+                            'GRAPHIC_BMP',
+                            'GRAPHIC_JPEG',
+                            'GRAPHIC_PNG'
+                          ],
+                          'imageResolution': {
+                            'resolutionWidth': 64,
+                            'resolutionHeight': 64
+                          }
+                        }
+                      ],
+                      'mediaClockFormats': [
+                        'CLOCK1', 'CLOCK2', 'CLOCK3', 'CLOCKTEXT1', 'CLOCKTEXT2',
+                        'CLOCKTEXT3', 'CLOCKTEXT4'
+                      ],
+                      'graphicSupported': true,
+                      'imageCapabilities': ['DYNAMIC', 'STATIC'],
+                      'templatesAvailable': [request.params.displayLayout],
+                      'screenParams': {
+                        'resolution': {
+                          'resolutionWidth': 800,
+                          'resolutionHeight': 480
+                        },
+                        'touchEventAvailable': {
+                          'pressAvailable': true,
+                          'multiTouchAvailable': true,
+                          'doublePressAvailable': false
+                        }
+                      },
+                      'numCustomPresetsAvailable': 10
+                    },
+                    'buttonCapabilities': [
+                      {
+                        'name': 'PRESET_0',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'PRESET_1',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'PRESET_2',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'PRESET_3',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'PRESET_4',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'PRESET_5',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'PRESET_6',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'PRESET_7',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'PRESET_8',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'PRESET_9',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'OK',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'SEEKLEFT',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'SEEKRIGHT',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'TUNEUP',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }, {
+                        'name': 'TUNEDOWN',
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true
+                      }
+                    ],
+                    'softButtonCapabilities': [
+                      {
+                        'shortPressAvailable': true,
+                        'longPressAvailable': true,
+                        'upDownAvailable': true,
+                        'imageSupported': true
+                      }
+                    ],
+                    'presetBankCapabilities': {
+                      'onScreenPresetsAvailable': true
+                    },
+                    'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                    'method': 'UI.SetDisplayLayout'
+                  }
+                };
+                this.client.send(JSONMessage);
+              } else {
+                this.sendError(
+                  SDL.SDLModel.data.resultCode['UNSUPPORTED_REQUEST'], request.id,
+                  request.method, 'Unsupported display layout!'
+                );
+              }
+              break;
             }
-            if (sendResponseFlag) {
+          case 'UI.SetAppIcon':
+            {
+
+              // Verify if there is an unsupported data in request
+              //if (this.errorResponsePull[request.id] != null) {
+              //
+              ////Check if there is any available data to  process the request
+              //if (!("syncFileName" in request.params)) {
+              //this.sendError(this.errorResponsePull[request.id].code,
+              // request.id, request.method, "Unsupported " +
+              // this.errorResponsePull[request.id].type + " type. Request was
+              // not processed."); this.errorResponsePull[request.id] = null;
+              // return; } }
+              SDL.SDLModel.onSDLSetAppIcon(
+                request.params, request.id, request.method
+              );
+              break;
+            }
+          case 'UI.PerformAudioPassThru':
+            {
+              if (this.performAudioPassThruRequestID > 0) {
+                this.sendError(
+                  SDL.SDLModel.data.resultCode.REJECTED,
+                  request.id,
+                  request.method,
+                  'PerformAudioPassThru request aborted!'
+                );
+              } else {
+                this.performAudioPassThruRequestID = request.id;
+                SDL.SDLModel.UIPerformAudioPassThru(request.params);
+                SDL.SDLController.onSystemContextChange();
+              }
+              break;
+            }
+          case 'UI.EndAudioPassThru':
+            {
+              this.endAudioPassThruRequestID = request.id;
+              SDL.SDLModel.UIEndAudioPassThru();
+              break;
+            }
+          case 'UI.GetSupportedLanguages':
+            {
+              Em.Logger.log('FFW.' + request.method + 'Response');
+              var JSONMessage = {
+                'id': request.id,
+                'jsonrpc': '2.0',
+                'result': {
+                  'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
+                  // (enum)
+                  // from
+                  // SDL
+                  'method': 'UI.GetSupportedLanguages',
+                  'languages': SDL.SDLModel.data.sdlLanguagesList
+                }
+              };
+              this.client.send(JSONMessage);
+              break;
+            }
+          case 'UI.GetLanguage':
+            {
+              Em.Logger.log('FFW.' + request.method + 'Response');
+              var JSONMessage = {
+                'jsonrpc': '2.0',
+                'id': request.id,
+                'result': {
+                  'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
+                  // (enum)
+                  // from
+                  // SDL
+                  'method': 'UI.GetLanguage',
+                  'language': SDL.SDLModel.data.hmiUILanguage
+                }
+              };
+              this.client.send(JSONMessage);
+              break;
+            }
+          case 'UI.GetCapabilities':
+            {
               Em.Logger.log('FFW.' + request.method + 'Response');
               // send repsonse
               var JSONMessage = {
@@ -700,7 +1284,7 @@ FFW.UI = FFW.RPCObserver.create(
                     ],
                     'graphicSupported': true,
                     'imageCapabilities': ['DYNAMIC', 'STATIC'],
-                    'templatesAvailable': [request.params.displayLayout],
+                    'templatesAvailable': ['TEMPLATE'],
                     'screenParams': {
                       'resolution': {
                         'resolutionWidth': 800,
@@ -714,84 +1298,12 @@ FFW.UI = FFW.RPCObserver.create(
                     },
                     'numCustomPresetsAvailable': 10
                   },
-                  'buttonCapabilities': [
-                    {
-                      'name': 'PRESET_0',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PRESET_1',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PRESET_2',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PRESET_3',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PRESET_4',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PRESET_5',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PRESET_6',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PRESET_7',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PRESET_8',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'PRESET_9',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'OK',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'SEEKLEFT',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'SEEKRIGHT',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'TUNEUP',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }, {
-                      'name': 'TUNEDOWN',
-                      'shortPressAvailable': true,
-                      'longPressAvailable': true,
-                      'upDownAvailable': true
-                    }
-                  ],
+                  'audioPassThruCapabilities': {
+                    'samplingRate': '44KHZ',
+                    'bitsPerSample': '8_BIT',
+                    'audioType': 'PCM'
+                  },
+                  'hmiZoneCapabilities': 'FRONT',
                   'softButtonCapabilities': [
                     {
                       'shortPressAvailable': true,
@@ -800,545 +1312,81 @@ FFW.UI = FFW.RPCObserver.create(
                       'imageSupported': true
                     }
                   ],
-                  'presetBankCapabilities': {
-                    'onScreenPresetsAvailable': true
+                  'hmiCapabilities': {
+                    'navigation': true,
+                    'phoneCall': true
                   },
                   'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                  'method': 'UI.SetDisplayLayout'
+                  'method': 'UI.GetCapabilities'
+                }
+              };
+              JSONMessage.result.hmiCapabilities.steeringWheelLocation
+                = FLAGS.steeringWheelLocation;
+              this.client.send(JSONMessage);
+              break;
+            }
+          case 'UI.IsReady':
+            {
+              Em.Logger.log('FFW.' + request.method + 'Response');
+              // send repsonse
+              var JSONMessage = {
+                'jsonrpc': '2.0',
+                'id': request.id,
+                'result': {
+                  'available': this.get('isReady'),
+                  'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                  'method': 'UI.IsReady'
                 }
               };
               this.client.send(JSONMessage);
-            } else {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['UNSUPPORTED_REQUEST'], request.id,
-                request.method, 'Unsupported display layout!'
-              );
+              break;
             }
-            break;
-          }
-          case 'UI.SetAppIcon':
-          {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if (!("syncFileName" in request.params)) {
-            //this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
-            SDL.SDLModel.onSDLSetAppIcon(
-              request.params, request.id, request.method
-            );
-            break;
-          }
-          case 'UI.PerformAudioPassThru':
-          {
-            if (this.performAudioPassThruRequestID > 0) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED,
-                request.id,
-                request.method,
-                'PerformAudioPassThru request aborted!'
-              );
-            } else {
-              this.performAudioPassThruRequestID = request.id;
-              SDL.SDLModel.UIPerformAudioPassThru(request.params);
-              SDL.SDLController.onSystemContextChange();
-            }
-            break;
-          }
-          case 'UI.EndAudioPassThru':
-          {
-            this.endAudioPassThruRequestID = request.id;
-            SDL.SDLModel.UIEndAudioPassThru();
-            break;
-          }
-          case 'UI.GetSupportedLanguages':
-          {
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            var JSONMessage = {
-              'id': request.id,
-              'jsonrpc': '2.0',
-              'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
-                // (enum)
-                // from
-                // SDL
-                'method': 'UI.GetSupportedLanguages',
-                'languages': SDL.SDLModel.data.sdlLanguagesList
-              }
-            };
-            this.client.send(JSONMessage);
-            break;
-          }
-          case 'UI.GetLanguage':
-          {
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            var JSONMessage = {
-              'jsonrpc': '2.0',
-              'id': request.id,
-              'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type
-                // (enum)
-                // from
-                // SDL
-                'method': 'UI.GetLanguage',
-                'language': SDL.SDLModel.data.hmiUILanguage
-              }
-            };
-            this.client.send(JSONMessage);
-            break;
-          }
-          case 'UI.GetCapabilities':
-          {
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            // send repsonse
-            var JSONMessage = {
-              'jsonrpc': '2.0',
-              'id': request.id,
-              'result': {
-                'displayCapabilities': {
-                  'displayType': 'GEN2_8_DMA',
-                  'textFields': [
-                    {
-                      'name': 'mainField1',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'mainField2',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'mainField3',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'mainField4',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'statusBar',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'mediaClock',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'mediaTrack',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'alertText1',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'alertText2',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'alertText3',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'scrollableMessageBody',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'initialInteractionText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'navigationText1',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'navigationText2',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'ETA',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'totalDistance',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'navigationText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'audioPassThruDisplayText1',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'audioPassThruDisplayText2',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'sliderHeader',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'sliderFooter',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'notificationText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'menuName',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'secondaryText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'tertiaryText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'timeToDestination',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'turnText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'menuTitle',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'locationName',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'locationDescription',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'addressLines',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'phoneNumber',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    }
-                  ],
-                  'imageFields': [
-                    {
-                      'name': 'softButtonImage',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'choiceImage',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'choiceSecondaryImage',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'vrHelpItem',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'turnIcon',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'menuIcon',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'cmdIcon',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'graphic',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'showConstantTBTIcon',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'showConstantTBTNextTurnIcon',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    },
-                    {
-                      'name': 'showConstantTBTNextTurnIcon',
-                      'imageTypeSupported': [
-                        'GRAPHIC_BMP',
-                        'GRAPHIC_JPEG',
-                        'GRAPHIC_PNG'
-                      ],
-                      'imageResolution': {
-                        'resolutionWidth': 64,
-                        'resolutionHeight': 64
-                      }
-                    }
-                  ],
-                  'mediaClockFormats': [
-                    'CLOCK1', 'CLOCK2', 'CLOCK3', 'CLOCKTEXT1', 'CLOCKTEXT2',
-                    'CLOCKTEXT3', 'CLOCKTEXT4'
-                  ],
-                  'graphicSupported': true,
-                  'imageCapabilities': ['DYNAMIC', 'STATIC'],
-                  'templatesAvailable': ['TEMPLATE'],
-                  'screenParams': {
-                    'resolution': {
-                      'resolutionWidth': 800,
-                      'resolutionHeight': 480
-                    },
-                    'touchEventAvailable': {
-                      'pressAvailable': true,
-                      'multiTouchAvailable': true,
-                      'doublePressAvailable': false
-                    }
-                  },
-                  'numCustomPresetsAvailable': 10
-                },
-                'audioPassThruCapabilities': {
-                  'samplingRate': '44KHZ',
-                  'bitsPerSample': '8_BIT',
-                  'audioType': 'PCM'
-                },
-                'hmiZoneCapabilities': 'FRONT',
-                'softButtonCapabilities': [
-                  {
-                    'shortPressAvailable': true,
-                    'longPressAvailable': true,
-                    'upDownAvailable': true,
-                    'imageSupported': true
-                  }
-                ],
-                'hmiCapabilities': {
-                  'navigation': true,
-                  'phoneCall': true
-                },
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                'method': 'UI.GetCapabilities'
-              }
-            };
-            JSONMessage.result.hmiCapabilities.steeringWheelLocation
-              = FLAGS.steeringWheelLocation;
-            this.client.send(JSONMessage);
-            break;
-          }
-          case 'UI.IsReady':
-          {
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            // send repsonse
-            var JSONMessage = {
-              'jsonrpc': '2.0',
-              'id': request.id,
-              'result': {
-                'available': this.get('isReady'),
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                'method': 'UI.IsReady'
-              }
-            };
-            this.client.send(JSONMessage);
-            break;
-          }
           case 'UI.ClosePopUp':
-          {
-            SDL.SDLController.closePopUp(request.params.methodName);
-            Em.Logger.log('FFW.' + request.method + 'Response');
-            // send repsonse
-            var JSONMessage = {
-              'jsonrpc': '2.0',
-              'id': request.id,
-              'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                'method': 'UI.ClosePopUp'
-              }
-            };
-            this.client.send(JSONMessage);
-            break;
-          }
+            {
+              SDL.SDLController.closePopUp(request.params.methodName);
+              Em.Logger.log('FFW.' + request.method + 'Response');
+              // send repsonse
+              var JSONMessage = {
+                'jsonrpc': '2.0',
+                'id': request.id,
+                'result': {
+                  'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                  'method': 'UI.ClosePopUp'
+                }
+              };
+              this.client.send(JSONMessage);
+              break;
+            }
           case 'UI.ShowVrHelp':
-          {
+            {
 
-            //SDL.SDLModel.ShowVrHelp(request.params);
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
-            break;
-          }
-          case 'UI.SetAudioStreamingIndicator':
-          {
-            if (SDL.SDLController.SetAudioStreamingIndicator(request.params)) {
+              //SDL.SDLModel.ShowVrHelp(request.params);
               this.sendUIResult(
                 SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
               );
-            } else {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method,
-                'No application in FULL mode'
-              );
+              break;
             }
-            break;
-          }
+          case 'UI.SetAudioStreamingIndicator':
+            {
+              if (SDL.SDLController.SetAudioStreamingIndicator(request.params)) {
+                this.sendUIResult(
+                  SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+                );
+              } else {
+                this.sendError(
+                  SDL.SDLModel.data.resultCode.SUCCESS,
+                  request.id,
+                  request.method,
+                  'No application in FULL mode'
+                );
+              }
+              break;
+            }
           default:
-          {
-            // statements_def
-            break;
-          }
+            {
+              // statements_def
+              break;
+            }
         }
       }
     },
@@ -1405,6 +1453,18 @@ FFW.UI = FFW.RPCObserver.create(
         };
         this.client.send(JSONMessage);
       }
+      if (resultCode === SDL.SDLModel.data.resultCode.WARNINGS) {
+        // send repsonse
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': id,
+          'result': {
+            'code': resultCode, // type (enum) from SDL protocol
+            'method': method
+          }
+        };
+        this.client.send(JSONMessage);
+      }
     },
     /**
      * send response from onRPCRequest
@@ -1418,22 +1478,27 @@ FFW.UI = FFW.RPCObserver.create(
       Em.Logger.log('FFW.UI.AlertResponse');
       switch (resultCode) {
         case SDL.SDLModel.data.resultCode.SUCCESS:
-        {
-          this.sendUIResult(resultCode, id, 'UI.Alert');
-          break;
-        }
+          {
+            this.sendUIResult(resultCode, id, 'UI.Alert');
+            break;
+          }
+          case SDL.SDLModel.data.resultCode.WARNINGS:
+          {
+            this.sendUIResult(resultCode, id, 'UI.Alert');
+            break;
+          }
         case SDL.SDLModel.data.resultCode['ABORTED']:
-        {
-          this.sendError(resultCode, id, 'UI.Alert', 'Alert request aborted.');
-          break;
-        }
+          {
+            this.sendError(resultCode, id, 'UI.Alert', 'Alert request aborted.');
+            break;
+          }
         case SDL.SDLModel.data.resultCode.REJECTED:
-        {
-          this.sendError(
-            resultCode, id, 'UI.Alert', 'Another Alert is active.'
-          );
-          break;
-        }
+          {
+            this.sendError(
+              resultCode, id, 'UI.Alert', 'Another Alert is active.'
+            );
+            break;
+          }
       }
     },
     /**
@@ -1579,7 +1644,7 @@ FFW.UI = FFW.RPCObserver.create(
           'error': {
             'code': this.errorResponsePull[requestID].code,
             'message': 'Unsupported ' + this.errorResponsePull[requestID].type +
-            ' type. Available data in request was processed.',
+              ' type. Available data in request was processed.',
             'data': {
               'method': 'UI.PerformInteraction'
             }
@@ -1611,7 +1676,24 @@ FFW.UI = FFW.RPCObserver.create(
         if (manualTextEntry != null) {
           JSONMessage.result.manualTextEntry = manualTextEntry;
         }
-      } else {
+      } else if (resultCode === SDL.SDLModel.data.resultCode.WARNINGS) {
+        // send repsonse
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': requestID,
+          'result': {
+            'code': resultCode,
+            'method': 'UI.PerformInteraction'
+          }
+        };
+        if (commandID) {
+          JSONMessage.result.choiceID = commandID;
+        }
+        if (manualTextEntry != null) {
+          JSONMessage.result.manualTextEntry = manualTextEntry;
+        }
+      }
+      else {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',

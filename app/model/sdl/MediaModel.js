@@ -66,7 +66,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
             '<no definition>',
             '<no definition>'
           ],
-          alignment: 'text-align:center'
+          alignment:['text-align:center','top:100px'],
         }
         )
       );
@@ -103,7 +103,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
    * @param {Boolean}
    */
   isPlaying: false,
-
+  isTemplate:false,
+  mode:'',
+  
   /**
    * Flag for model active state currently used for status bar
    *
@@ -137,6 +139,17 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
    *
    * @param {Number}
    */
+  setMode:function(mode){
+    if(this.isTemplate){
+      switch(mode){
+        case SDL.SDLModel.data.imageModeList[0]:this.set('mode','day-mode');break;
+        case SDL.SDLModel.data.imageModeList[1]:this.set('mode','night-mode');break;
+        case SDL.SDLModel.data.imageModeList[2]:this.set('mode','high-lighted-mode');break;
+        default:this.set('mode','');
+      }
+    }
+    else this.set('mode','');
+  },
   onDeleteApplication: function(appID) {
 
     SDL.SDLMediaController.onDeleteApplication(appID);
@@ -341,14 +354,21 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
       this.appInfo.set('alignment', 'text-align:center');
     }
-
+    
     if (params.graphic != null) {
+      var image = params.graphic.value;
+          var length=image.length;
+          str='.png';
+          var isPng=image.includes(str,length-5);
+          if(isPng){
       if (params.graphic.value != '') {
         this.appInfo.set('trackIcon', params.graphic.value);
       } else {
         this.appInfo.set('trackIcon', 'images/sdl/audio_icon.jpg');
       }
+      this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
     }
+  }
 
     if ('softButtons' in params) {
       this.updateSoftButtons(params.softButtons);

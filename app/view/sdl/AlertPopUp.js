@@ -122,7 +122,11 @@ SDL.AlertPopUp = Em.ContainerView.create(
         SDL.SDLController.alertResponse(
           SDL.SDLModel.data.resultCode['ABORTED'], this.alertRequestId
         );
-      } else {
+      }else if(reason=='WARNINGS'){
+        SDL.SDLController.alertResponse(
+          SDL.SDLModel.data.resultCode.WARNINGS, this.alertRequestId
+        );
+      }else {
         SDL.SDLController.alertResponse(
           SDL.SDLModel.data.resultCode.SUCCESS, this.alertRequestId
         );
@@ -175,14 +179,19 @@ SDL.AlertPopUp = Em.ContainerView.create(
                 SDL.PresetEventsCustom, {
                   systemAction: params[i].systemAction,
                   groupName: 'AlertPopUp',
-                  classNameBindings: ['isHighlighted:isHighlighted'],
+                  classNameBindings: ['isHighlighted:isHighlighted',
+                  'getCurrentDisplayModeClass'],
+              getCurrentDisplayModeClass: function() {
+                return SDL.ControlButtons.getCurrentDisplayModeClass(
+                  SDL.ControlButtons.imageMode.selection);
+              }.property('SDL.ControlButtons.imageMode.selection'),
                   isHighlighted: params[i].isHighlighted ? true : false,
                   softButtonID: params[i].softButtonID,
                   icon: params[i].image ? params[i].image.value : '',
                   text: params[i].text,
                   classNames: 'list-item softButton ' + softButtonsClass,
                   elementId: 'softButton' + i,
-                  templateName: params[i].image ? 'rightText' : 'text',
+                  templateName: params[i].image ? params[i].image.isTemplate ? 'rightTextOverLay' : 'rightText' : 'text',
                   appID: appID
                 }
               )
