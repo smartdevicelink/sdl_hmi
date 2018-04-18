@@ -64,6 +64,9 @@ SDL.TurnByTurnView = SDL.SDLAbstractView.create(
     distanceToManeuverScaletext: null,
     timeToDestinationtext: null,
     maneuverComplete: null,
+    isTemplateTurnIcon:false,
+    isTemplateNextTurnIcon:false,
+    mode:'day-mode',
     activate: function(appID) {
       var naviParams = SDL.SDLController.getApplicationModel(
         appID
@@ -110,9 +113,20 @@ SDL.TurnByTurnView = SDL.SDLAbstractView.create(
         if (naviParams.turnIcon) {
           this.set('turnIcon', naviParams.turnIcon.value);
         }
+        if (naviParams.turnIcon) {
+          this.set('turnIcon', naviParams.turnIcon.value);
+          if (naviParams.turnIcon.isTemplate!=null) {
+            this.turnIconImage.setMode(SDL.ControlButtons.imageMode.selection);
+          }
+          this.set('isTemplateTurnIcon', naviParams.turnIcon.isTemplate === true);
+        } 
         if (naviParams.nextTurnIcon) {
           this.set('nextTurnIcon', naviParams.nextTurnIcon.value);
-        }
+          if (naviParams.nextTurnIcon.isTemplate!=null) {
+            this.nextTurnIconImage.setMode(SDL.ControlButtons.imageMode.selection);
+          }
+          this.set('isTemplateNextTurnIcon', naviParams.nextTurnIcon.isTemplate === true);
+        }   
         this.set('distanceToManeuvertext', naviParams.distanceToManeuver);
         this.set(
           'distanceToManeuverScaletext', naviParams.distanceToManeuverScale
@@ -170,36 +184,38 @@ SDL.TurnByTurnView = SDL.SDLAbstractView.create(
         templateName: 'arrow'
       }
     ),
-    turnIconImage: Em.View.create(
+    turnIconImage: SDL.Button.create(
       {
         classNames: 'turnIcon btn',
-        attributeBindings: [
-          'style'
+        classNameBindings: [
+          'this.parentView.isTemplateTurnIcon:is-template'
         ],
-        style: function() {
-          if (this._parentView.turnIcon) {
-            return 'background-image: URL(' + this._parentView.turnIcon +
-              ');';
+        templateName: 'rightTextOverLay',
+        iconBinding: 'getIcon',
+        getIcon: function() {
+          if (this._parentView != null && this._parentView.turnIcon) {
+            return this._parentView.turnIcon;
           } else {
             return '';
-          }
-        }.property('this.parentView.turnIcon')
+          } 
+        }.property('this.parentView.turnIcon')       
       }
     ),
-    nextTurnIconImage: Em.View.create(
+    nextTurnIconImage: SDL.Button.create(
       {
         classNames: 'nextTurnIcon btn',
-        attributeBindings: [
-          'style'
+        classNameBindings: [
+          'this.parentView.isTemplateNextTurnIcon:is-template'
         ],
-        style: function() {
-          if (this._parentView.nextTurnIcon) {
-            return 'background-image: URL(' + this._parentView.nextTurnIcon +
-              ');';
+        templateName: 'rightTextOverLay',
+        iconBinding: 'getIcon',
+        getIcon: function() {
+          if (null!=this._parentView && this._parentView.nextTurnIcon) {
+            return this._parentView.nextTurnIcon;
           } else {
             return '';
-          }
-        }.property('this.parentView.nextTurnIcon')
+          } 
+        }.property('this.parentView.nextTurnIcon')       
       }
     ),
     navigationText2: SDL.Label.extend(

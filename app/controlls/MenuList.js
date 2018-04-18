@@ -49,14 +49,19 @@ SDL.MenuList = Em.ContainerView.extend({
                pushObject(SDL.Button.create(SDL.PresetEventsCustom, {
                    text: buttons[i].text,
                    icon: buttons[i].image ? buttons[i].image.value : '',
-                   templateName: buttons[i].image ? 'rightText' : 'text',
                    groupName: 'AlertPopUp',
-                   classNameBindings: ['isHighlighted:isHighlighted'],
+                   classNameBindings: ['isHighlighted:isHighlighted',
+                   'getCurrentDisplayModeClass'],
+                   getCurrentDisplayModeClass: function() {
+                    return SDL.ControlButtons.getCurrentDisplayModeClass(
+                      SDL.ControlButtons.imageMode.selection);
+                  }.property('SDL.ControlButtons.imageMode.selection'),
                    isHighlighted: buttons[i].isHighlighted ? true : false,
                    softButtonID: buttons[i].softButtonID,
                    systemAction: buttons[i].systemAction,
                    groupName: this.groupName,
                    classNames: 'softButton',
+                   templateName: buttons[i].image ? buttons[i].image.isTemplate ? 'rightTextOverLay' : 'rightText' : 'text',
                    appID: appID
                  }
                  )

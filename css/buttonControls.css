@@ -495,7 +495,22 @@
     margin-top: 10px;
 }
 
+#app_controlButtons .imageModeSelect{
+    position: absolute;
+    width: 150px;
+    height: 30px;
+    top: 252px;
+    left: 1215px;
+    color: white;
+    background: #393939;
 }
+
+#app_controlButtons .imageModeLabel {
+    top: 234px;
+    left: 1215px;
+    width: 150px;
+}
+
 #app_controlButtons .languageSelect {
     position: absolute;
     width: 150px;

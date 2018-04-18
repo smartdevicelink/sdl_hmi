@@ -68,6 +68,9 @@ SDL.InfoAppsView = Em.ContainerView.create({
     for (i = 0; i < apps.length; i++) {
       if (apps[i].appType.indexOf('REMOTE_CONTROL') === -1) {
         appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+        iconTemplateName = SDL.SDLModel.data.registeredApps[appIndex].isTemplateIcon ===true ?
+        'rightTextOverLay':
+        'rightText';
 
         this.get('listOfApplications.list.childViews').
                pushObject(SDL.Button.create({
@@ -79,7 +82,8 @@ SDL.InfoAppsView = Em.ContainerView.create({
                    classNames: 'list-item button',
                    iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
                    '.appIcon',
-                   disabled: apps[i].disabledToActivate
+                   disabled: apps[i].disabledToActivate,
+                   templateName: iconTemplateName
                  }
                  )
                );
@@ -94,7 +98,9 @@ SDL.InfoAppsView = Em.ContainerView.create({
         apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
 
         appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
-
+        iconTemplateName = SDL.SDLModel.data.registeredApps[appIndex].isTemplateIcon ===true ?
+        'rightTextOverLay':
+        'rightText';
         this.get('listOfApplications.list.childViews').
                pushObject(SDL.Button.create({
                    action: driverDevice ? 'onActivateSDLApp' :
@@ -106,7 +112,8 @@ SDL.InfoAppsView = Em.ContainerView.create({
                    classNames: 'list-item button',
                    iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
                    '.appIcon',
-                   disabled: false
+                   disabled: false,
+                   templateName: iconTemplateName
                  })
                );
       }
