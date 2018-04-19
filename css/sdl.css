@@ -775,6 +775,7 @@
 #VehicleInfo .speedInput,
 #VehicleInfo .fuelLevelInput,
 #systemRequestView .urlsInput,
+#systemRequestView .requestSubTypeInput,
 #systemRequestView .policyAppIdInput,
 #systemRequestView .fileNameInput,
 #policies_settings_get_urls .listInput {
@@ -799,6 +800,7 @@
 }
 
 #systemRequestView .urlsInput,
+#systemRequestView .requestSubTypeInput,
 #systemRequestView .policyAppIdInput,
 #systemRequestView .fileNameInput {
     height: 30px;
@@ -813,6 +815,11 @@
     left: 60px;
 }
 
+#systemRequestView .systemRequestLabel {
+    top: 224px;
+    left: 13px;
+}
+
 #systemRequestView .policyAppIdLabel {
     top: 223px;
     left: 30px;
@@ -825,6 +832,11 @@
 
 #systemRequestView .urlsInput {
     top: 180px;
+}
+
+#systemRequestView .requestSubTypeInput {
+    top: 217px;
+
 }
 
 #systemRequestView .policyAppIdInput {
