@@ -321,6 +321,14 @@ FFW.UI = FFW.RPCObserver.create(
             }
             break;
           }
+          case 'UI.SendHapticData':
+          {
+            this.sendError(
+              SDL.SDLModel.data.resultCode.UNSUPPORTED_REQUEST, request.id,
+              request.method, 'Haptic data is not supported'
+            );
+            break;
+          }
           case 'UI.ChangeRegistration':
           {
             if (request.params.appName) {
