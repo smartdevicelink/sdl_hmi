@@ -106,7 +106,7 @@ SDL.SystemRequest = Em.ContainerView.create(
       {
         elementId: 'systemRequestLabel',
         classNames: 'systemRequestLabel',
-        content: 'System Request'
+        content: 'requestSubType'
       }
     ),
     /**
