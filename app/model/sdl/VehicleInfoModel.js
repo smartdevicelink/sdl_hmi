@@ -447,14 +447,18 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       var data = {};
       text = 'Params ', result = true;
       for (var key in message.params) {
+        oldKey = key;
+        if (key === 'clusterModeStatus') {
+          key = 'clusterModes';
+        }
         if (key != 'appID') {
           if (this.vehicleData[key]) {
-            data[key] = this.vehicleData[key];
+            data[oldKey] = this.vehicleData[key];
           } else {
             if (!result) {
-              text += ', ' + key;
+              text += ', ' + oldKey;
             } else {
-              text += key;
+              text += oldKey;
               result = false;
             }
           }
