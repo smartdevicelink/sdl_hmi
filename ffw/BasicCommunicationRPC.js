@@ -1143,7 +1143,7 @@ FFW.BasicCommunication = FFW.RPCObserver
         if (appID) {
           JSONMessage.params.appID = appID;
         }
-         if(subType.length > 0){
+         if(subType && subType.length > 0){
           if (type == 'OEM_SPECIFIC'|| 
             type == 'HTTP'|| 
             type == 'PROPRIETARY') {
