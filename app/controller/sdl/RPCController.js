@@ -1229,6 +1229,12 @@ SDL.RPCController = Em.Object.create(
             return this.resultStruct;
           }
         },
+        SendHapticData: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
         /**
          * Validate method for request Show
          *
