@@ -44,7 +44,9 @@ SDL.SystemRequest = Em.ContainerView.create(
       'systemRequestViewTitle',
       'systemRequestViewSelect',
       'urlsLabel',
+      'systemRequestLabel',
       'urlsInput',
+      'requestSubTypeInput',
       'appIDSelect',
       'appIDSelectTitle',
       'sendButton',
@@ -98,6 +100,16 @@ SDL.SystemRequest = Em.ContainerView.create(
       }
     ),
     /**
+     * Label for System Request Input
+     */
+    systemRequestLabel: SDL.Label.extend(
+      {
+        elementId: 'systemRequestLabel',
+        classNames: 'systemRequestLabel',
+        content: 'System Request'
+      }
+    ),
+    /**
      * Input for urls value changes
      */
     urlsInput: Ember.TextField.extend(
@@ -107,6 +119,14 @@ SDL.SystemRequest = Em.ContainerView.create(
         value: document.location.pathname.replace(
           'index.html', 'IVSU/PROPRIETARY_REQUEST'
         )
+      }
+    ),
+
+    requestSubTypeInput: Ember.TextField.extend(
+      {
+        elementId: 'requestSubTypeInput',
+        classNames: 'requestSubTypeInput',
+        value: 'OEM specific request'
       }
     ),
     /**
@@ -173,7 +193,8 @@ SDL.SystemRequest = Em.ContainerView.create(
             element._parentView.systemRequestViewSelect.selection.name,
             element._parentView.fileNameInput.value,
             element._parentView.urlsInput.value,
-            element._parentView.appIDSelect.selection
+            element._parentView.appIDSelect.selection,
+            element._parentView.requestSubTypeInput.value
           );
         },
         onDown: false
