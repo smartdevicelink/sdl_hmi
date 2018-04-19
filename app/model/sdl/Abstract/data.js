@@ -625,6 +625,11 @@ SDL.SDLModelData = Em.Object.create(
       'HU-HU',
       'FI-FI',
       'SK-SK'
+    ],
+    imageModeList:[
+      'Day mode',
+      'Night mode',
+      'Highlighted mode'
     ]
   }
 );

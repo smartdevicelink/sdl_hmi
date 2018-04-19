@@ -41,6 +41,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
       'input',
       'listWrapper'
     ],
+    warning:false,
     didInsertElement: function() {
       SDL.SDLModel.data.interactionListWrapper = new iScroll(
         'listWrapper', {
@@ -287,6 +288,14 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
             );
             break;
           }
+          case 'WARNINGS':
+          {
+            SDL.SDLController.interactionChoiseCloseResponse(
+              this.appID, SDL.SDLModel.data.resultCode.WARNINGS, choiceID,
+              this.input.value
+            );
+            break;
+          }
           default:
           {
             // default action
@@ -355,6 +364,11 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
      * @param data:
      *            Array
      */
+    imageMode:'',
+    updateIcons:function(){
+      for(var i=0;i<this.get('listWrapper.naviChoises.childViews').length;i++){
+    this.get('listWrapper.naviChoises.childViews')[0].setMode(SDL.ControlButtons.imageMode.selection);}
+     },
     preformChoicesNavigation: function(data, timeout) {
       this.set('timeout', timeout);
       if (data) {
@@ -367,9 +381,15 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
                 text: data[i].menuName,
                 choiceID: data[i].choiceID,
                 action: 'onChoiceInteraction',
+
+                classNameBindings: ['isHighlighted:isHighlighted',
+                   'getCurrentDisplayModeClass'],
+                   getCurrentDisplayModeClass: function() {
+                    return SDL.ControlButtons.getCurrentDisplayModeClass();
+                  }.property('SDL.InteractionChoicesView.imageMode'),
                 onDown: false,
                 target: 'SDL.SDLController',
-                templateName: data[i].image ? 'rightIcon' : 'text',
+                templateName: data[i].image ? data[i].image.isTemplate ? 'rightTextOverLay' : 'rightText' : 'text',
                 icon: data[i].image ? data[i].image.value : null
               }
             )

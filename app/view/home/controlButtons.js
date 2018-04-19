@@ -53,8 +53,63 @@ SDL.ControlButtons = Em.ContainerView.create({
     'appUILang',
     'appTTSVRLang',
     'phoneCall',
-    'keyboard'
+    'keyboard',
+    'imageMode',
+    'imageModeLabel'
   ],
+  imageModeLabel: SDL.Label.extend({
+    elementId: 'imageModeLabel',
+    classNames: 'imageModeLabel',
+    content: 'Display mode:'
+  }
+),
+
+getCurrentDisplayModeClass: function() {
+  switch(SDL.ControlButtons.imageMode.selection){
+    case SDL.SDLModel.data.imageModeList[0]: return 'day-mode';
+    case SDL.SDLModel.data.imageModeList[1]: return 'night-mode';
+    case SDL.SDLModel.data.imageModeList[2]: return 'high-lighted-mode';
+    default: return '';
+  }
+},
+/**
+ * HMI element Select with list of supported image mode
+ */
+  imageMode:Em.Select.extend({
+    elementId: 'imageMode',
+    classNames: 'imageModeSelect',
+    contentBinding: 'SDL.SDLModel.data.imageModeList',
+    selection: 'Highlighted mode',
+    change:function(){
+      SDL.InfoAppsView.findNewApps.setMode(this.selection);
+      SDL.InfoAppsView.Asist911.setMode(this.selection);
+      SDL.InfoAppsView.vehicleHealthReport.setMode(this.selection);
+      SDL.InfoAppsView.getDeviceList.setMode(this.selection);
+      SDL.InfoView.leftMenu.items.servicesButton.setMode(this.selection);
+      SDL.InfoView.leftMenu.items.appsButton.setMode(this.selection);
+      SDL.InfoView.leftMenu.items.calendarButton.setMode(this.selection);
+      SDL.InfoView.leftMenu.items.goToCD.setMode(this.selection);
+      SDL.InfoView.leftMenu.items.travelLinkButton.setMode(this.selection);
+      SDL.InfoView.leftMenu.items.sdlButton.setMode(this.selection);
+      SDL.TurnByTurnView.nextTurnIconImage.setMode(this.selection);
+      SDL.TurnByTurnView.turnIconImage.setMode(this.selection);
+      SDL.InteractionChoicesView.set('imageMode',this.selection);
+      SDL.InteractionChoicesView.updateIcons();
+      if (SDL.SDLController.model) {
+        SDL.SDLController.model.setMode(this.selection);
+        length=SDL.OptionsView.commands.items.length;
+        var commands = SDL.SDLController.model.get('currentCommandsList');
+        for(var i=0;i<length;i++){
+          SDL.OptionsView.commands.items[i].type.prototype.setMode(this.selection);
+          if(commands[i].isTemplate){
+          SDL.OptionsView.commands.items[i].type.prototype.setMode(this.selection);
+          }
+        }
+        SDL.OptionsView.commands.refreshItems();
+      }
+    }
+  }
+),
 
   keyboard: SDL.Button.extend({
         classNames: ['keyboard', 'button'],

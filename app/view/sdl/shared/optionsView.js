@@ -85,7 +85,11 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
             for (i = 0; i < len; i++) {
               if (commands[i].menuID >= 0) {
                 template = 'arrow';
-              } else {
+              }else if(commands[i].isTemplate){
+                template = commands[i].isTemplate ? 
+                'rightTextOverLay' : 
+                'rightText';
+              }else {
                 template = commands[i].icon ? 'rightText' : 'text';
               }
               this.items.push(

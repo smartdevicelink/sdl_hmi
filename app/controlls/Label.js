@@ -33,10 +33,24 @@
 
 SDL.Label = Em.View.extend({
     classNameBindings: [
-      'disabled'
+      'disabled','dayMode','nightMode',
+      'highLightedMode'
     ],
     classNames: 'label',
-
+    dayMode:false,
+    nightMode:false,
+    highLightedMode:false,
+    setMode:function(mode){
+      this.set('dayMode',false);
+      this.set('nightMode',false);
+      this.set('highLightedMode',false);
+      switch(mode){
+        case SDL.SDLModel.data.imageModeList[0]:this.set('dayMode',true);break;
+        case SDL.SDLModel.data.imageModeList[1]:this.set('nightMode',true);break;
+        case SDL.SDLModel.data.imageModeList[2]:this.set('highLightedMode',true);break;
+        default:this.set('dayMode',true);
+      }
+    },
     // component default template
     defaultTemplate: Em.Handlebars.compile('<span>{{view.content}}</span>'),
 
@@ -44,7 +58,12 @@ SDL.Label = Em.View.extend({
       icon: Em.Handlebars.compile(
         '<img class="ico" {{bindAttr src="view.icon"}} />' +
         '<span>{{view.content}}</span>'
-      )
+      ),
+      iconOverLay: Em.Handlebars.compile(
+        '<img class="ico-overlay" />' +
+        '<img class="ico" {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.content}}</span>'
+      ),
     }
 
     /** Define button template */
