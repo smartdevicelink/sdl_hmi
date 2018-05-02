@@ -1157,13 +1157,14 @@ FFW.BasicCommunication = FFW.RPCObserver
        * @constructor
        */
       OnDeactivateHMI: function(value) {
-        Em.Logger.log('FFW.BasicCommunication.OnDeactivateHMI');
+        Em.Logger.log('FFW.BasicCommunication.OnEventChanged');
         // send request
         var JSONMessage = {
           'jsonrpc': '2.0',
-          'method': 'BasicCommunication.OnDeactivateHMI',
+          'method': 'BasicCommunication.OnEventChanged',
           'params': {
-            'isDeactivated': value
+            'eventName' : "DEACTIVATE_HMI",
+            'isActive': value
           }
         };
         this.client.send(JSONMessage);
