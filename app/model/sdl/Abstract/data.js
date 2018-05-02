@@ -298,6 +298,23 @@ SDL.SDLModelData = Em.Object.create(
       }
     ],
     /**
+     * List of MQ signals
+     */
+    mqSignals: [
+      {
+        name: 'WAKE_UP',
+        id: 0
+      },
+      {
+        name: 'IGNITION_OFF',
+        id: 1
+      },
+      {
+        name: 'LOW_VOLTAGE',
+        id: 2
+      }
+    ],
+    /**
      * List of states for OnSystemRequest notification
      */
     systemRequestState: [
