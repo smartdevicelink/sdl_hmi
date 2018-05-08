@@ -602,8 +602,6 @@
 }
 
 #exitAppView .exitAppViewTitle,
-#systemRequestView .systemRequestViewTitle,
-#systemRequestView .appIDSelectTitle,
 #tbtClientStateView .tbtClientState,
 #VehicleInfo .vehicleDataLabel,
 #VehicleInfo .fuelLevelLabel,
@@ -611,7 +609,7 @@
 #PrimaryDevice .chooseLabel {
     top: 70px;
     width: 600px;
-    left: 40px;
+    left: 35px;
     height: 20px;
     padding: 10px;
     background: #535353;
@@ -646,12 +644,13 @@
 }
 
 #systemRequestView .systemRequestViewTitle {
-    width: 280px;
+    top: 83px;
+    left: 63px;
 }
 
 #systemRequestView .appIDSelectTitle {
-    width: 280px;
-    left: 360px;
+    top: 83px;
+    left: 455px;
 }
 
 #exitAppView .exitAppViewSelect,
@@ -664,7 +663,7 @@
 #PrimaryDevice .deviceSelect,
 #policies_settings_appPermissions .privacyModeSelect,
 #policies_settings_appPermissions .appIDSelect{
-    top: 125px;
+    top: 70px;
     position: absolute;
     width: 150px;
     left: 275px;
@@ -713,12 +712,12 @@
 }
 
 #systemRequestView .systemRequestViewSelect {
-    left: 170px;
+    left: 130px;
 }
 
 #systemRequestView .appIDSelect {
-    top: 125px;
-    left: 490px;
+    top: 70px;
+    left: 515px;
 }
 
 #exitAppView .exitAppViewSelect option,
@@ -777,6 +776,9 @@
 #systemRequestView .urlsInput,
 #systemRequestView .requestSubTypeInput,
 #systemRequestView .policyAppIdInput,
+#systemRequestView .jsonOffsetInput,
+#systemRequestView .jsonLengthInput,
+#systemRequestView .jsonTimeoutInput,
 #systemRequestView .fileNameInput,
 #policies_settings_get_urls .listInput {
     width: 265px;
@@ -799,6 +801,24 @@
     left: 260px;
 }
 
+#systemRequestView .jsonOffsetLabel {
+    top: 130px;
+    left: 62px;
+}
+
+#systemRequestView .jsonLengthLabel {
+    top: 130px;
+    left: 270px;
+}
+
+#systemRequestView .jsonTimeoutLabel {
+    top: 130px;
+    left: 505px;
+}
+
+#systemRequestView .jsonOffsetInput,
+#systemRequestView .jsonLengthInput,
+#systemRequestView .jsonTimeoutInput,
 #systemRequestView .urlsInput,
 #systemRequestView .requestSubTypeInput,
 #systemRequestView .policyAppIdInput,
@@ -810,14 +830,50 @@
     font-size: 16px;
 }
 
+#systemRequestView .inactiveTextField
+{
+   color: #4e5353;
+   pointer-events:none;
+}
+
+#systemRequestView .jsonOffsetInput
+ {
+    top: 120px;
+    left: 130px;
+    height: 30px;
+    width: 65px;
+    line-height: 30px;
+    font-size: 16px;
+}
+
+#systemRequestView .jsonLengthInput
+ {
+    top: 120px;
+    left: 330px;
+    height: 30px;
+    width: 65px;
+    line-height: 30px;
+    font-size: 16px;
+}
+
+#systemRequestView .jsonTimeoutInput
+ {
+    top: 120px;
+    left: 575px;
+    height: 30px;
+    width: 65px;
+    line-height: 30px;
+    font-size: 16px;
+}
+
 #systemRequestView .urlsLabel {
-    top: 188px;
-    left: 60px;
+    top: 185px;
+    left: 62px;
 }
 
 #systemRequestView .systemRequestLabel {
     top: 224px;
-    left: 13px;
+    left: 56px;
 }
 
 #systemRequestView .policyAppIdLabel {
@@ -828,6 +884,42 @@
 #systemRequestView .fileNameLabel {
     top: 261px;
     left: 44px;
+}
+
+#systemRequestView .jsonOffsetCheckBox {
+    position: absolute;
+    top: 133px;
+    left: 42px;
+}
+
+#systemRequestView .jsonLengthCheckBox {
+    position: absolute;
+    top: 133px;
+    left: 248px;
+}
+
+#systemRequestView .jsonTimeoutCheckBox {
+    position: absolute;
+    top: 133px;
+    left:485px;
+}
+
+#systemRequestView .urlsCheckBox {
+    position: absolute;
+    top: 185px;
+    left: 42px;
+}
+
+#systemRequestView .subTypeCheckBox {
+    position: absolute;
+    top: 226px;
+    left: 38px;
+}
+
+#systemRequestView .appIDSelectTitleCheckBox {
+    position: absolute;
+    top: 85px;
+    left: 430px;
 }
 
 #systemRequestView .urlsInput {

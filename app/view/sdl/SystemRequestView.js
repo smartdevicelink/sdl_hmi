@@ -43,6 +43,18 @@ SDL.SystemRequest = Em.ContainerView.create(
       'systemRequestViewLabel',
       'systemRequestViewTitle',
       'systemRequestViewSelect',
+      'jsonOffsetLabel',
+      'jsonOffsetInput',
+      'jsonLengthLabel',
+      'jsonLengthInput',
+      'jsonTimeoutLabel',
+      'jsonTimeoutInput',
+      'jsonOffsetCheckBox',
+      'jsonLengthCheckBox',
+      'jsonTimeoutCheckBox',
+      'urlsCheckBox',
+      'appIDSelectTitleCheckBox',
+      'subTypeCheckBox',
       'urlsLabel',
       'systemRequestLabel',
       'urlsInput',
@@ -67,6 +79,13 @@ SDL.SystemRequest = Em.ContainerView.create(
      * Property indicates the activity state of SystemRequest View
      */
     active: false,
+    offsetEnabled: true,
+    lengthEnabled: true,
+    timeoutEnabled: true,
+    urlsInputEnabled: true,
+    appIDSelectEnabled: true,
+    requestSubTypeInputEnabled: true,
+
     /**
      * Title of systemRequest group of parameters
      */
@@ -74,7 +93,7 @@ SDL.SystemRequest = Em.ContainerView.create(
       {
         elementId: 'systemRequestViewTitle',
         classNames: 'systemRequestViewTitle',
-        content: 'System Request reason'
+        content: 'Reason'
       }
     ),
     /**
@@ -86,9 +105,205 @@ SDL.SystemRequest = Em.ContainerView.create(
         classNames: 'systemRequestViewSelect',
         contentBinding: 'SDL.SDLModel.data.systemRequestState',
         optionValuePath: 'content.id',
-        optionLabelPath: 'content.name'
+        optionLabelPath: 'content.name',
+        classNameBindings: [
+                            'SDL.SystemRequest.systemRequestViewSelectEnabled::inactiveTextField'
+                           ],
       }
     ),
+    /**
+     * Label for "JSON" parameter "offset" Input
+     */
+    jsonOffsetLabel: SDL.Label.extend(
+      {
+        elementId: 'jsonOffsetLabel',
+        classNames: 'jsonOffsetLabel',
+        content: 'Offset'
+      }
+    ),
+    /**
+     * Input for offset value changes
+     */
+    jsonOffsetInput: Ember.TextField.extend(
+      {
+        elementId: 'jsonOffsetInput',
+        classNames: 'jsonOffsetInput',
+        classNameBindings: [
+                            'SDL.SystemRequest.offsetEnabled::inactiveTextField'
+                           ],
+                           value:'1000',
+      }
+    ),
+
+    /**
+     * Label for "JSON" parameter "length" Input
+     */
+    jsonLengthLabel: SDL.Label.extend(
+      {
+        elementId: 'jsonLengthLabel',
+        classNames: 'jsonLengthLabel',
+        content: 'Length'
+      }
+    ),
+    /**
+     * Input for Length value changes
+     */
+    jsonLengthInput: Ember.TextField.extend(
+      {
+        elementId: 'jsonLengthInput',
+        classNames: 'jsonLengthInput',
+        classNameBindings: [
+                            'SDL.SystemRequest.lengthEnabled::inactiveTextField'
+                           ],
+                           value:'1500',
+      }
+    ),
+
+    /**
+     * Label for "JSON" parameter "timeout" Input
+     */
+    jsonTimeoutLabel: SDL.Label.extend(
+      {
+        elementId: 'jsonTimeoutLabel',
+        classNames: 'jsonTimeoutLabel',
+        content: 'Timeout'
+      }
+    ),
+    /**
+     * Input for Length value changes
+     */
+    jsonTimeoutInput: Ember.TextField.extend(
+      {
+        elementId: 'jsonTimeoutInput',
+        classNames: 'jsonTimeoutInput',
+        classNameBindings: [
+                            'SDL.SystemRequest.timeoutEnabled::inactiveTextField'
+                           ],
+                           value:'2000',
+      }
+    ),
+     
+     /**
+     * CheckBox for Offset parameter in OnSystemRequest
+     */
+    jsonOffsetCheckBox: Em.Checkbox.extend({
+
+          elementId: 'jsonOffsetCheckBox',
+
+          classNames: 'jsonOffsetCheckBox',
+
+          checked: function(){
+            return SDL.SystemRequest.offsetEnabled;
+          }.property('SDL.SystemRequest.offsetEnabled'),
+
+          click: function (evt) {
+               var isCheked = SDL.SystemRequest.get('offsetEnabled');
+               SDL.SystemRequest.set('offsetEnabled',!isCheked);
+           }
+         }
+      ),
+
+    /**
+     * CheckBox for Length parameter in OnSystemRequest
+     */
+    jsonLengthCheckBox: Em.Checkbox.extend({
+
+          elementId: 'jsonLengthCheckBox',
+
+          classNames: 'jsonLengthCheckBox',
+
+          checked: function(){
+            return SDL.SystemRequest.lengthEnabled;
+          }.property('SDL.SystemRequest.offsetEnabled'),
+
+          click: function (evt) {
+               var isCheked = SDL.SystemRequest.get('lengthEnabled');
+               SDL.SystemRequest.set('lengthEnabled',!isCheked);
+           }
+
+        }
+      ),
+
+    /**
+     * CheckBox for Timeout parameter in OnSystemRequest
+     */
+    jsonTimeoutCheckBox: Em.Checkbox.extend({
+
+          elementId: 'jsonTimeoutCheckBox',
+
+          classNames: 'jsonTimeoutCheckBox',
+
+          checked: function(){
+            return SDL.SystemRequest.timeoutEnabled;
+          }.property('SDL.SystemRequest.timeoutEnabled'),
+
+          click: function (evt) {
+               var isCheked = SDL.SystemRequest.get('timeoutEnabled');
+               SDL.SystemRequest.set('timeoutEnabled',!isCheked);
+           }
+        }
+      ),
+
+    /**
+     * CheckBox for URL parameter in OnSystemRequest
+     */
+    urlsCheckBox: Em.Checkbox.extend({
+
+          elementId: 'urlsCheckBox',
+
+          classNames: 'urlsCheckBox',
+
+          checked: function(){
+            return SDL.SystemRequest.urlsInputEnabled;
+          }.property('SDL.SystemRequest.urlsInputEnabled'),
+
+          click: function (evt) {
+               var isCheked = SDL.SystemRequest.get('urlsInputEnabled');
+               SDL.SystemRequest.set('urlsInputEnabled',!isCheked);
+           }
+        }
+      ),
+
+    /**
+     * CheckBox for SubType parameter in OnSystemRequest
+     */
+    subTypeCheckBox: Em.Checkbox.extend({
+
+          elementId: 'subTypeCheckBox',
+
+          classNames: 'subTypeCheckBox',
+
+          checked: function(){
+            return SDL.SystemRequest.requestSubTypeInputEnabled;
+          }.property('SDL.SystemRequest.requestSubTypeInputEnabled'),
+
+          click: function (evt) {
+               var isCheked = SDL.SystemRequest.get('requestSubTypeInputEnabled');
+               SDL.SystemRequest.set('requestSubTypeInputEnabled',!isCheked);
+           }
+        }
+      ),
+
+    /**
+     * CheckBox for appID parameter in OnSystemRequest
+     */
+    appIDSelectTitleCheckBox: Em.Checkbox.extend({
+
+          elementId: 'appIDSelectTitleCheckBox',
+
+          classNames: 'appIDSelectTitleCheckBox',
+
+          checked: function(){
+            return SDL.SystemRequest.appIDSelectEnabled;
+          }.property('SDL.SystemRequest.appIDSelectEnabled'),
+
+          click: function (evt) {
+               var isCheked = SDL.SystemRequest.get('appIDSelectEnabled');
+               SDL.SystemRequest.set('appIDSelectEnabled',!isCheked);
+           }
+        }
+      ),
+    
     /**
      * Label for URLs Input
      */
@@ -106,7 +321,7 @@ SDL.SystemRequest = Em.ContainerView.create(
       {
         elementId: 'systemRequestLabel',
         classNames: 'systemRequestLabel',
-        content: 'requestSubType'
+        content: 'subType'
       }
     ),
     /**
@@ -116,17 +331,26 @@ SDL.SystemRequest = Em.ContainerView.create(
       {
         elementId: 'urlsInput',
         classNames: 'urlsInput',
-        value: document.location.pathname.replace(
-          'index.html', 'IVSU/PROPRIETARY_REQUEST'
-        )
+        classNameBindings: [
+                            'SDL.SystemRequest.urlsInputEnabled::inactiveTextField'
+                           ],
+                           value: document.location.pathname.replace(
+                                  'index.html', 'IVSU/PROPRIETARY_REQUEST'
+                                 )
       }
     ),
 
+    /**
+     * Input for request subType value changes
+     */
     requestSubTypeInput: Ember.TextField.extend(
       {
         elementId: 'requestSubTypeInput',
         classNames: 'requestSubTypeInput',
-        value: 'OEM specific request'
+        classNameBindings: [
+                            'SDL.SystemRequest.requestSubTypeInputEnabled::inactiveTextField'
+                           ],
+                          value: 'OEM specific request',
       }
     ),
     /**
@@ -156,7 +380,10 @@ SDL.SystemRequest = Em.ContainerView.create(
           list.addObject('');
           return list;
         }.property('SDL.SDLModel.data.registeredApps.@each'),
-        valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState'
+        valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState',
+        classNameBindings: [
+                            'SDL.SystemRequest.appIDSelectEnabled::inactiveTextField'
+                           ],
       }
     ),
     /**
@@ -189,12 +416,34 @@ SDL.SystemRequest = Em.ContainerView.create(
         classNames: 'button sendButton',
         text: 'Send OnSystemRequest',
         action: function(element) {
+          var offset = SDL.SystemRequest.offsetEnabled ?
+                     parseInt(element._parentView.jsonOffsetInput.value):
+                       null;
+          var length = SDL.SystemRequest.lengthEnabled ?
+                     parseInt(element._parentView.jsonLengthInput.value):
+                       null;
+          var timeout = SDL.SystemRequest.timeoutEnabled ?
+                     parseInt(element._parentView.jsonTimeoutInput.value):
+                       null;
+          var appID = SDL.SystemRequest.appIDSelectEnabled ?
+                     element._parentView.appIDSelect.selection:
+                       null;
+          var urls = SDL.SystemRequest.urlsInputEnabled ?
+                     element._parentView.urlsInput.value:
+                       null;  
+          var subType = SDL.SystemRequest.requestSubTypeInputEnabled ?
+                     element._parentView.requestSubTypeInput.value:
+                       null;                        
+
           FFW.BasicCommunication.OnSystemRequest(
             element._parentView.systemRequestViewSelect.selection.name,
             element._parentView.fileNameInput.value,
-            element._parentView.urlsInput.value,
-            element._parentView.appIDSelect.selection,
-            element._parentView.requestSubTypeInput.value
+            urls,
+            appID,
+            subType,
+            offset,
+            length,
+            timeout
           );
         },
         onDown: false
