@@ -1071,11 +1071,33 @@ SDL.SDLController = Em.Object.extend(
      *
      * @param {Object}
      */
-    onActivateSDLApp: function(element) {
-      if (SDL.SDLModel.data.VRActive) {
-        SDL.SDLModel.data.toggleProperty('VRActive');
+    onActivateSDLApp: function(element) {  
+      reverseFunctionalityEnabled = SDL.SDLModel.get('reverseFunctionalityEnabled');    
+      function ActivateSDLApp(enable_rc){
+        if(enable_rc && !reverseFunctionalityEnabled){
+          SDL.SDLController.toggleRSDLFunctionality();
+        }
+
+        if (SDL.SDLModel.data.VRActive) {
+          SDL.SDLModel.data.toggleProperty('VRActive');
+        }
+        FFW.BasicCommunication.ActivateApp(element.appID);
+      } 
+      
+      if (reverseFunctionalityEnabled){
+        ActivateSDLApp(true);
+        return;
       }
-      FFW.BasicCommunication.ActivateApp(element.appID);
+
+      popUp = SDL.PopUp.create();
+      popUp.buttonOk.text = "Yes";
+      popUp.buttonCancel.text = "No";
+
+      popUp.appendTo('body').popupActivate(
+        'Enable remote control feature for all mobile apps?' +
+        'Please press Yes to enable remote control or No to cancel.',
+        ActivateSDLApp
+      );
     },
     /**
      * Method sent custom softButtons pressed and event status to RPC
