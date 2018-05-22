@@ -666,6 +666,18 @@ FFW.UI = FFW.RPCObserver.create(
                         }
                       },
                       {
+                        'name': 'secondaryGraphic',
+                        'imageTypeSupported': [
+                          'GRAPHIC_BMP',
+                          'GRAPHIC_JPEG',
+                          'GRAPHIC_PNG'
+                        ],
+                        'imageResolution': {
+                          'resolutionWidth': 64,
+                          'resolutionHeight': 64
+                        }
+                      },
+                      {
                         'name': 'showConstantTBTIcon',
                         'imageTypeSupported': [
                           'GRAPHIC_BMP',
@@ -1191,6 +1203,18 @@ FFW.UI = FFW.RPCObserver.create(
                     },
                     {
                       'name': 'graphic',
+                      'imageTypeSupported': [
+                        'GRAPHIC_BMP',
+                        'GRAPHIC_JPEG',
+                        'GRAPHIC_PNG'
+                      ],
+                      'imageResolution': {
+                        'resolutionWidth': 64,
+                        'resolutionHeight': 64
+                      }
+                    },
+                    {
+                      'name': 'secondaryGraphic',
                       'imageTypeSupported': [
                         'GRAPHIC_BMP',
                         'GRAPHIC_JPEG',
