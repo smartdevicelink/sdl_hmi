@@ -170,22 +170,34 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'tirePressure': {
         'pressureTelltale': 'OFF',
         'leftFront': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'rightFront': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'leftRear': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'rightRear': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'innerLeftRear': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'innerRightRear': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         }
       },
       'odometer': 23,
