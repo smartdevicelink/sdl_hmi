@@ -403,7 +403,7 @@ SDL.ABSAppModel = Em.Object.extend(
           parent: 0,
           position: request.params.menuParams.position ?
             request.params.menuParams.position : 0,
-          icon: request.params.menuIcon ? request.params.menuIcon.value : null
+          icon: request.params.subMenuIcon ? request.params.subMenuIcon.value : null
         };
         if (SDL.SDLController.getApplicationModel(request.params.appID) &&
           SDL.OptionsView.active) {
