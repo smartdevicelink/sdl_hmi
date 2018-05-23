@@ -269,7 +269,32 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'engineTorque': 2.5E0,
       'accPedalPosition': 10.5E0,
       'steeringWheelAngle': 1.2E0,
-      'fuelRange': 10.5E0,
+      'fuelRange': [
+        {
+          'type': 'DIESEL',
+          'range': 45.5E0
+        },
+        {
+          'type': 'GASOLINE',
+          'range': 55.5E0
+        },
+        {
+          'type': 'CNG',
+          'range': 65.5E0
+        },
+        {
+          'type': 'LPG',
+          'range': 60.5E0
+        },
+        {
+          'type': 'HYDROGEN',
+          'range': 30.5E0
+        },
+        {
+          'type': 'BATTERY',
+          'range': 20.5E0
+        }
+      ],
       'abs_State': 'ACTIVE',
       'turnSignal': 'ACTIVE',
       'tirePressureValue': {
@@ -313,6 +338,20 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
      */
     getVehicleType: function(id) {
       FFW.VehicleInfo.GetVehicleTypeResponse(this.vehicleType, id);
+    },
+    /**
+     * Method to get currently available vehicle data parameters
+     */
+    getAvailableVehicleData: function() {
+      var availableVIData = [];
+
+      for (var key in this.vehicleData) {
+        if (key != 'externalTemperature') {
+          availableVIData.push(key);
+        }
+      }
+
+      return availableVIData;
     },
     /**
      * SDL VehicleInfo.GetDTCs handler fill data for response about vehicle
@@ -377,25 +416,21 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
      */
     SubscribeVehicleData: function(message) {
       var subscribeVIData = {};
+      var availableData = this.getAvailableVehicleData();
+
       for (var key in message.params) {
         if (key === 'clusterModeStatus') {
           key = 'clusterModes';
         }
-        if (SDL.SDLModel.subscribedData[key] === true) {
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'DATA_ALREADY_SUBSCRIBED'
-          };
-        } else if (key === 'externalTemperature') {
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
-          };
-        } else {
-          SDL.SDLModel.subscribedData[key] = true;
+        if (availableData.indexOf(key) >= 0) {
           subscribeVIData[key] = {
             dataType: this.eVehicleDataType[key],
             resultCode: 'SUCCESS'
+          };
+        } else {
+          subscribeVIData[key] = {
+            dataType: this.eVehicleDataType[key],
+            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
           };
         }
       }
@@ -410,32 +445,28 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
      * @type {Object} message
      */
     UnsubscribeVehicleData: function(message) {
-      var subscribeVIData = {};
+      var unsubscribeVIData = {};
+      var availableData = this.getAvailableVehicleData();
+
       for (var key in message.params) {
         if (key === 'clusterModeStatus') {
           key = 'clusterModes';
         }
-        if (SDL.SDLModel.subscribedData[key] === false) {
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'DATA_NOT_SUBSCRIBED'
-          };
-        } else if (key === 'externalTemperature') {
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
-          };
-        } else {
-          SDL.SDLModel.subscribedData[key] = false;
-          subscribeVIData[key] = {
+        if (availableData.indexOf(key) >= 0) {
+          unsubscribeVIData[key] = {
             dataType: this.eVehicleDataType[key],
             resultCode: 'SUCCESS'
+          };
+        } else {
+          unsubscribeVIData[key] = {
+            dataType: this.eVehicleDataType[key],
+            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
           };
         }
       }
       FFW.VehicleInfo.sendVISubscribeVehicleDataResult(
         SDL.SDLModel.data.resultCode.SUCCESS, message.id, message.method,
-        subscribeVIData
+        unsubscribeVIData
       );
     },
     /**
@@ -465,33 +496,12 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         }
       }
       text += ' are not available';
-      if (result) {
-        FFW.VehicleInfo.sendGetVehicleDataResut(
-          SDL.SDLModel.data.resultCode.SUCCESS, message.id, message.method, data
-        );
-      } else {
-        FFW.VehicleInfo.sendGetVehicleDataError(
-          SDL.SDLModel.data.resultCode['DATA_NOT_AVAILABLE'], message.id,
-          message.method, text, data
-        );
-      }
+      return {
+        result : result,
+        data : data,
+        info : text
+      };
     },
-    /**
-     * Function send prndl vehicle conditions on FFW.VehicleInfo.OnVehicleData
-     * for notification when data changes
-     */
-    onVehicleDataChanged: function() {
-      var appID = null;
-      for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
-        appID = SDL.SDLModel.data.registeredApps[i].appID;
-        if (SDL.SDLModel.subscribedData['prndl']) {
-          var jsonData = {};
-          jsonData['prndl'] = this.vehicleData['prndl'];
-          FFW.VehicleInfo.OnVehicleData(jsonData);
-          return;
-        }
-      }
-    }.observes('this.vehicleData.prndl'),
     /**
      * Function send gps vehicle conditions on FFW.VehicleInfo.OnVehicleData
      * for notification when data changes
@@ -505,12 +515,10 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       this.set('vehicleData.gps.latitudeDegrees', lat);
       this.set('vehicleData.gps.longitudeDegrees', lng);
       for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
-        if (SDL.SDLModel.subscribedData['gps']) {
-          var jsonData = {};
-          jsonData['gps'] = this.vehicleData['gps'];
-          FFW.VehicleInfo.OnVehicleData(jsonData);
-          return;
-        }
+        var jsonData = {};
+        jsonData['gps'] = this.vehicleData['gps'];
+        FFW.VehicleInfo.OnVehicleData(jsonData);
+        return;
       }
     },
     /**
