@@ -1128,7 +1128,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       /**
        * Initiated by HMI.
        */
-      OnSystemRequest: function(type, fileName, url, appID) {
+      OnSystemRequest: function(type, fileName, url, appID, subType, offset, length, timeout) {
         Em.Logger.log('FFW.BasicCommunication.OnSystemRequest');
         // send request
         var JSONMessage = {
@@ -1137,9 +1137,6 @@ FFW.BasicCommunication = FFW.RPCObserver
           'params': {
             'requestType': type,
             'fileType': 'JSON',
-            'offset': 1000,
-            'length': 10000,
-            'timeout': 500,
             'fileName': fileName
           }
         };
@@ -1148,6 +1145,23 @@ FFW.BasicCommunication = FFW.RPCObserver
         }
         if (appID) {
           JSONMessage.params.appID = appID;
+        }
+         if(subType && subType.length > 0){
+          if (type == 'OEM_SPECIFIC'|| 
+            type == 'HTTP'|| 
+            type == 'PROPRIETARY') {
+          JSONMessage.params.requestSubType = subType;
+          }
+        }
+        
+        if (offset) {
+          JSONMessage.params.offset = offset;
+        }
+        if (length) {
+          JSONMessage.params.length = length;
+        }
+        if (timeout) {
+          JSONMessage.params.timeout = timeout;
         }
         this.client.send(JSONMessage);
       },

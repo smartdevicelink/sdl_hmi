@@ -380,8 +380,13 @@ SDL.SDLModelData = Em.Object.create(
       {
         name: 'FOTA',
         id: 19
+      },
+      {
+        name: 'OEM_SPECIFIC',
+        id: 20
       }
     ],
+
     /**
      * Data for AudioPassThruPopUp that contains params for visualisation
      *
