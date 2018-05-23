@@ -101,7 +101,11 @@ SDL.StatusMediaView = Em.ContainerView.extend({
 
     if (SDL.MediaController.activeState.indexOf('media.sdlmedia') >= 0) {
       SDL.SDLMediaController.activateCurrentApp();
-    } else {
+    }
+   else if (SDL.MediaController.activeState.indexOf('navigationApp.baseNavigation') >= 0) {
+      SDL.SDLMediaController.activateCurrentApp();
+    } 
+    else {
       SDL.States.goToStates(SDL.MediaController.activeState);
     }
   }

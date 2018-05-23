@@ -325,6 +325,9 @@ var StateManager = Em.StateManager.extend(
         enter: function() {
           if (SDL.SDLModel.data.mediaPlayerActive) {
             SDL.SDLController.onEventChanged('player', false);
+            SDL.MediaController.deactivateCD();
+            SDL.MediaController.deactivateUSB();
+            SDL.MediaController.deactivateRadio();
           }
           SDL.MediaController.set('activeState',
             SDL.States.nextState);
