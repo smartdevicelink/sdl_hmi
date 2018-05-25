@@ -1089,6 +1089,7 @@ SDL.SDLController = Em.Object.extend(
         return;
       }
 
+      if(SDL.SDLController.getApplicationModel(element.appID).appType.indexOf('REMOTE_CONTROL')!=-1){
       popUp = SDL.PopUp.create();
       popUp.buttonOk.text = "Yes";
       popUp.buttonCancel.text = "No";
@@ -1097,7 +1098,11 @@ SDL.SDLController = Em.Object.extend(
         'Enable remote control feature for all mobile apps?' +
         'Please press Yes to enable remote control or No to cancel.',
         ActivateSDLApp
-      );
+        );
+      }else
+      {
+      ActivateSDLApp(false);
+      }
     },
     /**
      * Method sent custom softButtons pressed and event status to RPC
