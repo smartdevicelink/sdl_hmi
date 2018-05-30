@@ -240,28 +240,8 @@ FFW.RC = FFW.RPCObserver.create(
               );
               return;
             }
-
-            if (request.params.moduleData.radioControlData) {
-              if (request.params.moduleData.radioControlData.radioEnable == null
-                  && SDL.RadioModel.radioControlStruct.radioEnable == false) {
-                this.sendError(
-                  SDL.SDLModel.data.resultCode.IGNORED,
-                  request.id, request.method,
-                  'Radio module must be activated.'
-                );
-                return;
-              }
-              var result = SDL.RadioModel.checkRadioFrequencyBoundaries(
-                request.params.moduleData.radioControlData
-              );
-              if (!result.success) {
-                this.sendError(
-                  SDL.SDLModel.data.resultCode.INVALID_DATA,
-                  request.id, request.method,
-                  result.info
-                );
-                return;
-              }
+            if (!this.radioConsentCheck(request)) {
+              return;
             }
 
             var newClimateControlData = null;
@@ -301,7 +281,7 @@ FFW.RC = FFW.RPCObserver.create(
               newSeatControlData = SDL.SeatModel.setSeatControlData(
                 request.params.moduleData.seatControlData);
             };
-            // send repsonse
+            // send response
             var JSONMessage = {
               'jsonrpc': '2.0',
               'id': request.id,
@@ -607,6 +587,43 @@ FFW.RC = FFW.RPCObserver.create(
         return false;
       }
 
+      return true;
+    },
+    radioConsentCheck:function(request){
+      if (request.params.moduleData.radioControlData) {
+        if (request.params.moduleData.radioControlData.radioEnable == null
+            && SDL.RadioModel.radioControlStruct.radioEnable == false) {
+          this.sendError(
+            SDL.SDLModel.data.resultCode.IGNORED,
+            request.id, request.method,
+            'Radio module must be activated.'
+          );
+          return false;
+        }
+        if(request.params.moduleData.radioControlData.hdRadioEnable){
+          SDL.RadioModel.setHDRadioEnable(request.params.moduleData.radioControlData.hdRadioEnable);
+        }
+        if(!SDL.RadioModel.radioControlStruct.hdRadioEnable 
+          && request.params.moduleData.radioControlData.hdChannel
+           || request.params.moduleData.radioControlData.availableHDs){
+            this.sendError(
+              SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
+              request.id, request.method,"HD radio is not turned on"
+            );
+          return false;
+        }
+        var result = SDL.RadioModel.checkRadioFrequencyBoundaries(
+          request.params.moduleData.radioControlData
+        );
+        if (!result.success) {
+          this.sendError(
+            SDL.SDLModel.data.resultCode.INVALID_DATA,
+            request.id, request.method,
+            result.info
+          );
+          return false;
+        }
+      }
       return true;
     }
   }
