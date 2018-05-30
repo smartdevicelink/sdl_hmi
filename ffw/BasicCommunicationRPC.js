@@ -542,7 +542,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                  }
              };
 
-          this.client.send(JSONMessage);
+          // this.client.send(JSONMessage);
 
           }
         }
