@@ -108,6 +108,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'fuelLevel': 'VEHICLEDATA_FUELLEVEL',
       'fuelLevel_State': 'VEHICLEDATA_FUELLEVEL_STATE',
       'instantFuelConsumption': 'VEHICLEDATA_FUELCONSUMPTION',
+      'fuelRange': 'VEHICLEDATA_FUELRANGE',
       'externalTemperature': 'VEHICLEDATA_EXTERNTEMP',
       'vin': 'VEHICLEDATA_VIN',
       'prndl': 'VEHICLEDATA_PRNDL',
@@ -127,7 +128,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'engineTorque': 'VEHICLEDATA_ENGINETORQUE',
       'accPedalPosition': 'VEHICLEDATA_ACCPEDAL',
       'steeringWheelAngle': 'VEHICLEDATA_STEERINGWHEEL',
-      'fuelRange': 'VEHICLEDATA_FUELRANGE',
+      'engineOilLife': 'VEHICLEDATA_ENGINEOILLIFE',
       'abs_State': 'VEHICLEDATA_ABS_STATE',
       'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'tirePressureValue': 'VEHICLEDATA_TIREPRESSURE_VALUE',
@@ -188,6 +189,12 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           'status': 'UNKNOWN'
         }
       },
+      'fuelRange': [
+        {
+          'type':'GASOLINE',
+          'range': 400
+        }
+      ],
       'odometer': 23,
       'beltStatus': {
         'driverBeltDeployed': 'NOT_SUPPORTED',
@@ -269,7 +276,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'engineTorque': 2.5E0,
       'accPedalPosition': 10.5E0,
       'steeringWheelAngle': 1.2E0,
-      'fuelRange': 10.5E0,
+      'engineOilLife': 20.4E0,
       'abs_State': 'ACTIVE',
       'turnSignal': 'ACTIVE',
       'tirePressureValue': {
