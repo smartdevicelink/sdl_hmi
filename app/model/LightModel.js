@@ -75,6 +75,13 @@ SDL.LightModel = Em.Object.create({
         'LEFT_TURN_LIGHTS',
         'RIGHT_TURN_LIGHTS',
         'HAZARD_LIGHTS',
+        'REAR_CARGO_LIGHTS',
+        'REAR_TRUCK_BED_LIGHTS',
+        'REAR_TRAILER_LIGHTS',
+        'LEFT_SPOT_LIGHTS',
+        'RIGHT_SPOT_LIGHTS',
+        'LEFT_PUDDLE_LIGHTS',
+        'RIGHT_PUDDLE_LIGHTS'
     ],
 
     /*
@@ -94,7 +101,8 @@ SDL.LightModel = Em.Object.create({
         'EXTERIOR_FRONT_LIGHTS',
         'EXTERIOR_REAR_LIGHTS',
         'EXTERIOR_LEFT_LIGHTS',
-        'EXTERIOR_RIGHT_LIGHTS'
+        'EXTERIOR_RIGHT_LIGHTS',
+        'EXTERIOR_ALL_LIGHTS'
     ],
 
     /*
@@ -102,7 +110,11 @@ SDL.LightModel = Em.Object.create({
     */
     lightStatusStruct:[
         'ON',
-        'OFF'
+        'OFF',
+        'RAMP_UP',
+        'RAMP_DOWN',
+        'UNKNOWN',
+        'INVALID'
     ],
 
     lightSettings: {
@@ -148,6 +160,7 @@ SDL.LightModel = Em.Object.create({
                 result.push({
                     name: struct[i],
                     densityAvailable: true,
+                    statusAvailable: true,
                     sRGBColorSpaceAvailable: true,
                 });
             }
