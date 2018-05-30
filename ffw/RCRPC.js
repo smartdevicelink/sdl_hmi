@@ -299,7 +299,7 @@ FFW.RC = FFW.RPCObserver.create(
                                                             seatControlData: newSeatControlData});
                 }   
             };
-            // send repsonse
+            // send response
             var JSONMessage = {
               'jsonrpc': '2.0',
               'id': request.id,
@@ -564,6 +564,33 @@ FFW.RC = FFW.RPCObserver.create(
         };
         Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
         FFW.RC.client.send(JSONMessage);
+    },
+    /**
+     * Verification for consented apps
+     * HMI should reject secon unconsented app
+     * @param request
+     */
+    consentedAppCheck: function(request) {
+      var appID = request.params.appID;
+      var moduleType = null;
+      if (request.params.moduleDescription) {
+        moduleType = request.params.moduleDescription.moduleType;
+      } else if (request.params.moduleData) {
+        moduleType = request.params.moduleData.moduleType;
+      } else {
+        moduleType = request.params.moduleType;
+      }
+
+      var deviceName = SDL.SDLController.getApplicationModel(appID)
+        .deviceName;
+
+      if ((SDL.SDLModel.driverDeviceInfo &&
+        deviceName != SDL.SDLModel.driverDeviceInfo.name) ||
+        !SDL.SDLModel.reverseFunctionalityEnabled) {
+        return false;
+      }
+
+      return true;
     },
   }
 );
