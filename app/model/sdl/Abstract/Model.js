@@ -69,7 +69,7 @@ SDL.SDLModel = Em.Object.extend({
 
   applicationStatusBar: '',
 
-   updateStatusBar: function() {
+  updateStatusBar: function() {
 
     if (this.data.limitedExist &&
       SDL.SDLController.getApplicationModel(this.data.stateLimited)) {
@@ -656,7 +656,7 @@ SDL.SDLModel = Em.Object.extend({
     var message = {};
 
     var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
-      app = SDL.SDLController.getApplicationModel(params.appID);
+    app = SDL.SDLController.getApplicationModel(params.appID);
 
     if (app != null && params.icon != null) {
     	console.log('Resuming application icon for ' + params.appID);
@@ -664,9 +664,8 @@ SDL.SDLModel = Em.Object.extend({
     }
 
     if (app != undefined && app.initialized == false) {
-
       if (app.isMedia != params.isMediaApplication) { // If current not initialized model does not matches the registered application type
-        this.convertModel(params);                   // then model should be changed
+        this.convertModel(params);                    // then model should be changed
       } else {
         app.disabledToActivate = params.greyOut;
       }
@@ -719,19 +718,30 @@ SDL.SDLModel = Em.Object.extend({
     }
   },
 
-  setAppIconByAppId: function(appId, path) {
+  /**
+   * Method to set specified application icon to the new one
+   *
+   * @param {Number}
+   *            appID
+   * @param {String}
+   *            path
+   */
+  setAppIconByAppId: function(appID, path) {
     var img = new Image();
     img.onload = function() {
-        console.log('Icon for ' + appId + ' was set to ' + path);
-        SDL.SDLController.getApplicationModel(appID).set('appIcon', path);
+       var model = SDL.SDLController.getApplicationModel(appID);
+       if (model != null) {
+         console.log('Icon for ' + appID + ' was set to ' + path);
+         model.set('appIcon', img.src + '?' + new Date().getTime());
+        }
     };
     img.onerror = function(event) {
-        console.log('Error: Icon for ' + appId + ' was not set properly');    
+        console.log('Error: Icon for ' + appID + ' was not set properly');
         return false;
     };
 
     img.src = path;
-   },
+  },
 
   /**
    * Method to convert existed model to registered type
