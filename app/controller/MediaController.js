@@ -63,7 +63,7 @@ SDL.MediaController = Em.Object.create(
     tempSource: 'MOBILE_APP',
     currentVolume: 50,
     radioControlStruct: {
-      source: 'AUDIO',
+      source: 'MOBILE_APP',
       equalizerSettings: [{
         channelSetting: 50,
         channelId: 1,
@@ -81,7 +81,7 @@ SDL.MediaController = Em.Object.create(
     },
 
     lastRadioControlStruct: {
-      source: 'AUDIO',
+      source: 'RADIO_TUNER',
       equalizerSettings: [{
         channelSetting: 50,
         channelId: 1,
@@ -577,9 +577,10 @@ SDL.MediaController = Em.Object.create(
           parseInt(this.lastRadioControlStruct.equalizerSettings[i].channelId);
         this.lastRadioControlStruct.equalizerSettings[i].channelSetting =
           parseInt(this.lastRadioControlStruct.equalizerSettings[i].channelSetting);
-
       }
-      return this.lastRadioControlStruct;
+      result = SDL.deepCopy(this.lastRadioControlStruct);
+      result.volume = this.currentVolume;
+      return result;
     },
     getResultWithKeepContext: function () {
       equalizerSettings: [];

@@ -222,8 +222,10 @@ SDL.SeatModel = Em.Object.create({
     },
 
     goToStates: function() {
-        SDL.SeatModel.set('tempSeatControlData',
+        SDL.SeatModel.set('seatControlData',
             SDL.deepCopy(SDL.SeatModel.temp[1]));
+        SDL.SeatModel.set('tempSeatControlData',
+            SDL.deepCopy(SDL.SeatModel.seatControlData));
         SDL.SeatModel.update();
     },
 
@@ -247,11 +249,8 @@ SDL.SeatModel = Em.Object.create({
             tempMessageCussion={};
             tempMessageCussion.firmness=SDL.deepCopy(i+1);
             tempMessageCussion.cushion=SDL.deepCopy(this.massageCushionStruct[i]);
-            this.temp[0].massageCushionFirmness.push(
-                tempMessageCussion);
-                this.temp[1].massageCushionFirmness.push(
-                    tempMessageCussion);
-                tempMessageCussion=null;
+            this.temp[0].massageCushionFirmness.push(tempMessageCussion);
+            this.temp[1].massageCushionFirmness.push(tempMessageCussion);
         }
 
         this.temp[0].memory = this.seatMemoryAction;
