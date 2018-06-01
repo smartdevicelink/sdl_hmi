@@ -178,10 +178,10 @@ SDL.LightModel = Em.Object.create({
                         this.set('lightState.'+j+'.status', data.lightState[i].status);
                     }
                     if(null != data.lightState[i].density){
-                        this.set('lightState'+j+'density', data.lightState[i].density);
+                        this.set('lightState.'+j+'.density', data.lightState[i].density);
                     }
                     if(null != data.lightState[i].sRGBColor){
-                        this.set('lightState'+j+'sRGBColor', 
+                        this.set('lightState.'+j+'.sRGBColor', 
                             data.lightState[i].sRGBColor);
                     } 
                     if(data.lightState[i].id == SDL.LightModel.lightSettings.id){
