@@ -237,14 +237,15 @@ SDL.RController = SDL.SDLController.extend(
       var next = this.nextElement(SDL.HmiSettingsModel.temperatureUnitStruct, SDL.HmiSettingsModel.temperatureUnit);
       SDL.HmiSettingsModel.set('temperatureUnit',next);
       SDL.ClimateControlModel.set('climateControlData.temperatureUnit', next);
+      if(next == 'FAHRENHEIT') {
+        SDL.ClimateControlModel.temperatureUnitFahrenheitEnable();
+      } else {
+        SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
+      }
       var data = {
         temperatureUnit: next
       }
-      if(next == 'FAHRENHEIT'){
-        SDL.ClimateControlModel.temperatureUnitFahrenheitEnable();
-      }else{
-        SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
-      }
+      this.sendHMISettingsNotification(data);
     },
 
    sendHMISettingsNotification: function(data){

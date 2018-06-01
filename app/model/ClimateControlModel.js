@@ -344,13 +344,7 @@ SDL.ClimateControlModel = Em.Object.create({
          'desiredTemperature.unit', 'desiredTemperature.value']
       );
       SDL.HmiSettingsModel.set('temperatureUnit','FAHRENHEIT');
-      var data = {
-        temperatureUnit: 'FAHRENHEIT'
-      }
-      if (Object.keys(data).length > 0) {
-        FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
-      }
-    },
+  },
 
   temperatureUnitCelsiusEnable: function() {
       this.set('climateControlData.temperatureUnit', 'CELSIUS');
@@ -359,13 +353,7 @@ SDL.ClimateControlModel = Em.Object.create({
          'desiredTemperature.unit', 'desiredTemperature.value']
       );
       SDL.HmiSettingsModel.set('temperatureUnit','CELSIUS');
-      var data = {
-        temperatureUnit: 'CELSIUS'
-      }
-      if (Object.keys(data).length > 0) {
-        FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
-      }
-    },
+  },
 
   refreshDefrostZoneValue: function() {
     if (this.climateControlData.defrostZoneFrontEnable &&

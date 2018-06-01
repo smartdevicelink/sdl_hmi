@@ -85,29 +85,35 @@ SDL.HmiSettingsModel = Em.Object.create({
   },
 
   setHmiSettingsData: function(data){
-      if(null != data.displayMode){
+      var result = {};
+      if(data.displayMode && this.displayMode != data.displayMode) {
         this.set('displayMode',data.displayMode);
+        result.displayMode = data.displayMode;
       }
-      if(null != data.temperatureUnit){
+      if(data.temperatureUnit && this.temperatureUnit != data.temperatureUnit) {
         this.set('temperatureUnit',data.temperatureUnit);
         if('CELSIUS' == data.temperatureUnit){
           SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
         }else{
           SDL.ClimateControlModel.temperatureUnitFahrenheitEnable();
         }
+        result.temperatureUnit = data.temperatureUnit;
       }
-      if(null != data.distanceUnit){
+      if(data.distanceUnit && this.distanceUnit != data.distanceUnit) {
         this.set('distanceUnit',data.distanceUnit);
-    }
+        result.distanceUnit = data.distanceUnit;
+      }
 
-    var result = {
-      temperatureUnit: this.temperatureUnit,
-      displayMode: this.displayMode,
-      distanceUnit: this.distanceUnit
-    };
+      if (Object.keys(result).length > 0) {
+        FFW.RC.onInteriorVehicleDataNotification({
+          moduleType:'HMI_SETTINGS',
+          hmiSettingsControlData: result
+       });
+      }
+
     return result;
   },
-  
+
   getHmiSettingsControlData: function(){
     var result = {
       temperatureUnit: this.temperatureUnit,
