@@ -881,13 +881,23 @@ SDL.SeatView = Em.ContainerView.create({
                         if(SDL.SeatModel.tempSeatControlData.memory.id>0 &
                             SDL.SeatModel.tempSeatControlData.memory.id<=10){
                         if(SDL.SeatModel.ID=='DRIVER'){
+                            SDL.SeatModel.set('seatControlData',
+                                SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]
+                            );
+                            SDL.SeatModel.applySettings();
+
                             SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]=
-                            SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
+                                SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
                             return;
                         }
                         if(SDL.SeatModel.ID=='FRONT_PASSENGER'){
+                            SDL.SeatModel.set('seatControlData',
+                                SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]
+                            );
+                            SDL.SeatModel.applySettings();
+
                             SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]=
-                            SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
+                                SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
                             return;
                         }
                         }
@@ -895,16 +905,26 @@ SDL.SeatView = Em.ContainerView.create({
                         case 'RESTORE':
                         if(SDL.SeatModel.ID=='DRIVER'){
                             if(SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]){
+                                SDL.SeatModel.set('seatControlData',
+                                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData)
+                                );
                                 SDL.SeatModel.set('tempSeatControlData',
-                                SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]);
+                                    SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]
+                                );
                                 SDL.SeatModel.update();
+                                SDL.SeatModel.applySettings();
                             }
                         }
                         if(SDL.SeatModel.ID=='FRONT_PASSENGER'){
                             if(SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]){
+                                SDL.SeatModel.set('seatControlData',
+                                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData)
+                                );
                                 SDL.SeatModel.set('tempSeatControlData',
-                                SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]);
+                                    SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]
+                                );
                                 SDL.SeatModel.update();
+                                SDL.SeatModel.applySettings();
                             }
                         }
                         break;

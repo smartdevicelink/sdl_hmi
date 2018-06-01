@@ -255,6 +255,14 @@ SDL.SeatModel = Em.Object.create({
 
         this.temp[0].memory = this.seatMemoryAction;
         this.temp[1].memory = this.seatMemoryAction;
+
+        for (var i = 1; i <= 10; i++) {
+            this.driverMemory[i] = SDL.deepCopy(this.temp[0]);
+            this.driverMemory[i].memory.id = i;
+            this.passengerMemory[i] = SDL.deepCopy(this.temp[1]);
+            this.passengerMemory[i].memory.id = i;
+        }
+
         this.tempSeatControlData = SDL.deepCopy(this.temp[1]);
     },
 
@@ -309,6 +317,10 @@ SDL.SeatModel = Em.Object.create({
                         break;
 
                     case 'NONE':
+                        if(this.tempSeatControlData.id=='DRIVER') {
+                            this.set('tempSeatControlData',this.temp[0]);
+                            return this.temp[0];
+                        }
                         break;
                 }
             }
@@ -340,6 +352,10 @@ SDL.SeatModel = Em.Object.create({
                         }
                         break;
                     case 'NONE':
+                        if (this.tempSeatControlData.id=='FRONT_PASSENGER') {
+                            this.set('tempSeatControlData',this.temp[1]);
+                            return this.temp[1];
+                        }
                         break;
                 }
             }
