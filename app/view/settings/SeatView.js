@@ -971,29 +971,7 @@ SDL.SeatView = Em.ContainerView.create({
             SDL.SeatModel.update();
             }
         })
-    }),
-    // massageEnable: Em.ContainerView.extend({
-    //     elementId: 'massageEnable',
-    //     classNames: 'in_massageEnable_view',
-
-    //     childViews: [
-    //         'label',
-    //         'select'
-    //     ],
-
-    //     label: SDL.Label.extend({
-    //         elementId: 'massageEnable_label',
-    //         classNames: 'massageEnable_label',
-    //         content: 'Massage'
-    //     }),
-
-    //     select: Em.Select.create({
-    //         elementId: 'massageEnable_enableSelect',
-    //         classNames: 'massageEnable_enableSelect',
-    //         contentBinding: 'SDL.SeatModel.enableStruct',
-    //         valueBinding: 'SDL.SeatModel.massageEnabledData'
-    //     })
-    // }),
+    }),    
     id: Em.ContainerView.extend({
         elementId: 'id',
         classNames: 'in_id_view',
