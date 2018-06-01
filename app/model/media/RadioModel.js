@@ -1473,34 +1473,75 @@ SDL.RadioModel = Em.Object.create({
   {
     SDL.MediaController.lastRadioControlStruct.source='RADIO_TUNER';
   },
+
+  exitPopUp:function (param){
+    if(false == param){
+      SDL.RadioModel.toggleProperty('optionsEnabled');
+    }
+  },
+
+  validateStrings: function(){
+    var stationShortLength = this.lastOptionParams.sisData.stationShortName.length;
+    var stationLongLength = this.lastOptionParams.sisData.stationLongName.length;
+    var stationMessageLength = this.lastOptionParams.sisData.stationMessage.length;
+
+    if(stationShortLength<4 || stationShortLength>7){
+    popUp = SDL.PopUp.create();
+    popUp.appendTo('body').popupActivate(
+     'Sis Data is not set.' +
+       '"Station short name" must have minlength = 4 and maxlength = 7 characters.',
+       this.exitPopUp);
+       return false;
+    }
+
+    if(stationLongLength>56){
+      popUp = SDL.PopUp.create();
+      popUp.appendTo('body').popupActivate(
+       'Sis Data is not set.' +
+        '"Station long name" must have maxlength = 56 characters.',
+        this.exitPopUp);
+        return false;
+    }
+    if(stationMessageLength>56){
+      popUp = SDL.PopUp.create();
+      popUp.appendTo('body').popupActivate(
+       'Sis Data is not set.' +
+        '"Station message" must have maxlength = 56 characters.',
+        this.exitPopUp);
+        return false;
+    }
+    return true;
+  },
+
   sendButtonPress: function() {
-    var currentData = SDL.deepCopy(this.getCurrentOptions());
-    var changedData = SDL.deepCopy(this.lastOptionParams);
-    this.setRadioData(changedData);
+    if(!this.validateStrings()){return;}
+    var currentData = SDL.deepCopy(SDL.RadioModel.getCurrentOptions());
+    var changedData = SDL.deepCopy(SDL.RadioModel.lastOptionParams);
+    SDL.RadioModel.setRadioData(changedData);
 
     SDL.RadioModel.toggleProperty('optionsEnabled');
 
     var properties = SDL.SDLController.getChangedProperties(changedData, currentData);
 
     if (properties.indexOf('band') >= 0) {
-      if (this.tuneRadio) {
-        this.directTune();
+      if (SDL.RadioModel.tuneRadio) {
+        SDL.RadioModel.directTune();
       }
-      if (this.scanState) {
-        this.scanKeyPress();
+      if (SDL.RadioModel.scanState) {
+        SDL.RadioModel.scanKeyPress();
       }
-      if (this.radioControlStruct.band == 'FM') {
+      if (SDL.RadioModel.radioControlStruct.band == 'FM') {
         properties.push('frequencyInteger');
         properties.push('frequencyFraction');
-        this.switchRadioBandFrequency(true);
+        SDL.RadioModel.switchRadioBandFrequency(true);
       }
-      if (this.radioControlStruct.band == 'AM') {
+      if (SDL.RadioModel.radioControlStruct.band == 'AM') {
         properties.push('frequencyInteger');
-        this.switchRadioBandFrequency(true);
+        SDL.RadioModel.switchRadioBandFrequency(true);
       }
-      if (this.radioControlStruct.band == 'XM') {
+      if (SDL.RadioModel.radioControlStruct.band == 'XM') {
         properties.push('frequencyInteger');
-        this.switchRadioBandFrequency(true);
+        SDL.RadioModel.switchRadioBandFrequency(true);
       }
     }
 
@@ -1509,7 +1550,7 @@ SDL.RadioModel = Em.Object.create({
     }else if(properties.indexOf('stationLocation.latitudeDegrees')>=0){
       properties.push('stationLocation.longitudeDegrees');
     }
-    this.sendRadioChangeNotification(properties);
+    SDL.RadioModel.sendRadioChangeNotification(properties);
   },
 
   setFrequencyInteger: function(value) {
