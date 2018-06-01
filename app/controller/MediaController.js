@@ -41,7 +41,7 @@ SDL.MediaController = Em.Object.create(
       this.tempEqualizerSettings.channelName = this.lastRadioControlStruct.equalizerSettings[this.tempEqualizerSettIndex - 1].channelName;
       this.tempEqualizerSettings.channelId = parseInt(this.lastRadioControlStruct.equalizerSettings[this.tempEqualizerSettIndex - 1].channelId);
       this.tempEqualizerSettings.channelSetting = parseInt(this.lastRadioControlStruct.equalizerSettings[this.tempEqualizerSettIndex - 1].channelSetting);
-      for (var i = 4; i <= 100; i++) {
+      for (var i = 4; i <= 10; i++) {
         temp = {};
         temp.channelId = parseInt(i);
         temp.channelSetting = parseInt(i);
@@ -832,10 +832,11 @@ SDL.MediaController = Em.Object.create(
       var result = [];
       var capabilities = {
         moduleName: 'AudioControlCapabilities',
+        keepContextAvailable: true,
         sourceAvailable: true,
         volumeAvailable: true,
         equalizerAvailable: true,
-        equalizerMaxChannelId: 100
+        equalizerMaxChannelId: 10
       };
       result.push(capabilities);
       return result;
