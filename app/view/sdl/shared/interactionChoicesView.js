@@ -41,7 +41,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
       'input',
       'listWrapper'
     ],
-    warning:false,
     didInsertElement: function() {
       SDL.SDLModel.data.interactionListWrapper = new iScroll(
         'listWrapper', {

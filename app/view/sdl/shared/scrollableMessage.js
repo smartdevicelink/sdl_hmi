@@ -49,7 +49,6 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
     appID: null,
     timer: null,
     timeout: null,
-    warning:false,
     childViews: [
       'backButton', 'captionText', 'softButtons', 'listOfCommands'
     ],
@@ -64,16 +63,10 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
       this.set('active', false);
       this.softButtons.set('page', 0);
       this.timeout = null;
-      if(!this.warning){
       SDL.SDLController.scrollableMessageResponse(
         ABORTED ? SDL.SDLModel.data.resultCode['ABORTED'] :
           SDL.SDLModel.data.resultCode.SUCCESS, this.messageRequestId
       );
-    }else{ 
-      SDL.SDLController.scrollableMessageResponse(
-        ABORTED ? SDL.SDLModel.data.resultCode['ABORTED'] :
-          SDL.SDLModel.data.resultCode.WARNINGS, this.messageRequestId
-      );}
       SDL.SDLController.onSystemContextChange();
     },
     activate: function(appName, params, messageRequestId) {

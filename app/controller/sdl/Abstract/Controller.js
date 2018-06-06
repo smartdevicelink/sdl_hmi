@@ -50,7 +50,6 @@ SDL.SDLController = Em.Object.extend(
      * Active application model binding type {SDLAppModel}
      */
     model: null,
-    isWarning:false,
     /**
      * Function to add application to application list
      */
@@ -178,11 +177,7 @@ SDL.SDLController = Em.Object.extend(
      *            SDL.Button
      */
     onChoiceInteraction: function(element) {
-      if(!SDL.InteractionChoicesView.get('warning')){
       SDL.InteractionChoicesView.deactivate('SUCCESS', element.choiceID);
-      }else{
-        SDL.InteractionChoicesView.deactivate('WARNINGS', element.choiceID);
-      }
     },
     /**
      * Call Keyboard view activation method
@@ -516,12 +511,7 @@ SDL.SDLController = Em.Object.extend(
       switch (element.groupName) {
         case 'AlertPopUp':
         {
-          if(!this.isWarning){
           SDL.AlertPopUp.deactivate();
-          }else{
-            SDL.AlertPopUp.deactivate(this.isWarning);
-            this.set('isWarning',false);
-          }
           break;
         }
         case 'ScrollableMessage':
@@ -756,7 +746,6 @@ SDL.SDLController = Em.Object.extend(
           'ScrollableMessage aborted!'
         );
       }
-      SDL.ScrollableMessage.set('warning',false);
     },
     /**
      * Method to do necessary actions when user navigate throught the menu

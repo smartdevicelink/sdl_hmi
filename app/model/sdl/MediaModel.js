@@ -354,21 +354,21 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
       this.appInfo.set('alignment', 'text-align:center');
     }
-    
+
     if (params.graphic != null) {
       var image = params.graphic.value;
-          var length=image.length;
-          str='.png';
-          var isPng=image.includes(str,length-5);
-          if(isPng){
-      if (params.graphic.value != '') {
-        this.appInfo.set('trackIcon', params.graphic.value);
-      } else {
-        this.appInfo.set('trackIcon', 'images/sdl/audio_icon.jpg');
-      }
-      this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
+          var length = image.length;
+          str = '.png';
+          var isPng = image.includes(str,length - 5);
+          if (isPng) {
+            if (params.graphic.value != '') {
+              this.appInfo.set('trackIcon', params.graphic.value);
+            } else {
+              this.appInfo.set('trackIcon', 'images/sdl/audio_icon.jpg');
+            }
+            this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
+          }
     }
-  }
 
     if ('softButtons' in params) {
       this.updateSoftButtons(params.softButtons);
