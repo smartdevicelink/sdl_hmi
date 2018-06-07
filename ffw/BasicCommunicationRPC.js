@@ -1149,12 +1149,12 @@ FFW.BasicCommunication = FFW.RPCObserver
         if (appID) {
           JSONMessage.params.appID = appID;
         }
-        if (subType && subType.length > 0) {
-          if (type == 'OEM_SPECIFIC'||
-              type == 'HTTP'||
-              type == 'PROPRIETARY') {
-            JSONMessage.params.requestSubType = subType;
-          }
+
+        var requestSubTypeNotApplicable =
+              (JSONMessage.params.fileType == 'BINARY' && type == "HTTP") ||
+              (JSONMessage.params.fileType == 'JSON' && type == "PROPRIETARY");
+        if (subType && subType.length > 0 && !requestSubTypeNotApplicable) {
+          JSONMessage.params.requestSubType = subType;
         }
 
         this.client.send(JSONMessage);
