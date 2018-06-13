@@ -146,7 +146,7 @@ SDL.SDLModelData = Em.Object.create(
      *
      * @type {Object}
      */
-    naviVideo: {},
+    naviVideo: null,
     /**
      * Array of strings came in SDL.GetURLS response
      *
