@@ -338,12 +338,15 @@ SDL.ControlButtons = Em.ContainerView.create({
             var str = '';
             if (SDL.SDLController.model &&
               SDL.SDLController.model.globalProperties.helpPrompt) {
-              var i = 0;
 
-              for (i = 0; i <
-              SDL.SDLController.model.globalProperties.helpPrompt.length; i++) {
-                str += SDL.SDLController.model.globalProperties.helpPrompt[i].text +
-                  ' ';
+              var items = SDL.SDLController.model.globalProperties.helpPrompt;
+              for (var i = 0; i < items.length; ++i) {
+                var item = items[i];
+                if ('FILE' == item.type) {
+                  str += '[Audio File] ';
+                } else {
+                  str += item.text + ' ';
+                }
               }
             }
             return str;
@@ -366,12 +369,15 @@ SDL.ControlButtons = Em.ContainerView.create({
             var str = '';
             if (SDL.SDLController.model &&
               SDL.SDLController.model.globalProperties.timeoutPrompt) {
-              var i = 0;
-              for (i = 0; i <
-              SDL.SDLController.model.globalProperties.timeoutPrompt.length; i++) {
-                str                  +=
-                    SDL.SDLController.model.globalProperties.timeoutPrompt[i].text +
-                  ' ';
+
+              var items = SDL.SDLController.model.globalProperties.timeoutPrompt;
+              for (var i = 0; i < items.length; ++i) {
+                var item = items[i];
+                if ('FILE' == item.type) {
+                  str += '[Audio File] ';
+                } else {
+                  str += item.text + ' ';
+                }
               }
             }
 

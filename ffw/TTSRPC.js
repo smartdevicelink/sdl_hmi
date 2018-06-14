@@ -213,7 +213,8 @@ FFW.TTS = FFW.RPCObserver.create(
             'result': {
               'speechCapabilities': [
                 'TEXT',
-                'PRE_RECORDED'
+                'PRE_RECORDED',
+                'FILE'
               ],
               'prerecordedSpeechCapabilities': [
                 'HELP_JINGLE',

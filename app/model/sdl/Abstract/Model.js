@@ -1109,12 +1109,17 @@ SDL.SDLModel = Em.Object.extend({
    */
   onPrompt: function(ttsChunks, appID) {
 
-    var message = '';
+    var message = '', files = '';
     if (ttsChunks) {
       for (var i = 0; i < ttsChunks.length; i++) {
-        message += ttsChunks[i].text + '\n';
+        if ('TEXT' == ttsChunks[i].type) {
+          message += ttsChunks[i].text + '\n';
+        }
+        if ('FILE' == ttsChunks[i].type) {
+          files += ttsChunks[i].text + '\n';
+        }
       }
-      SDL.TTSPopUp.ActivateTTS(message, appID);
+      SDL.TTSPopUp.ActivateTTS(message, files, appID);
     }
   },
 
