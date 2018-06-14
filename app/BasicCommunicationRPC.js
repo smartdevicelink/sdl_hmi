@@ -124,7 +124,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceSubscribeRequestID = this.client
           .subscribeToNotification(this.onResumeAudioSourceNotification);
-         },
+      },
       /**
        * Client is unregistered - no more requests
        */

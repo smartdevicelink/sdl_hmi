@@ -124,9 +124,11 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceSubscribeRequestID = this.client
           .subscribeToNotification(this.onResumeAudioSourceNotification);
-            setTimeout(function() {FFW.BasicCommunication.OnSystemTimeReady();},
-          500);
-        },
+        setTimeout(function() {
+            FFW.BasicCommunication.OnSystemTimeReady();
+          }, 500
+        );
+      },
       /**
        * Client is unregistered - no more requests
        */
@@ -520,7 +522,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.GetSystemTime') {
             var date = new Date();
-            var systemTime={
+            var systemTime = {
               millisecond: date.getMilliseconds(),
               second: date.getSeconds(),
               minute: date.getMinutes(),
@@ -533,17 +535,16 @@ FFW.BasicCommunication = FFW.RPCObserver
             };
 
             var JSONMessage = {
-                'jsonrpc': '2.0',
-                'id': request.id,
-                'result': {
-                  'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
-                  'method': request.method,
-                  'systemTime':systemTime
-                 }
-             };
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
+                'method': request.method,
+                'systemTime':systemTime
+              }
+            };
 
-          this.client.send(JSONMessage);
-
+            this.client.send(JSONMessage);
           }
         }
       },
