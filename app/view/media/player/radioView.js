@@ -54,9 +54,15 @@ SDL.RadioView = Em.ContainerView
         if (SDL.RadioModel.radioControlStruct.band != 'XM' & (SDL.RadioModel.radioControlStruct.availableHDs > 0)) {
           SDL.RadioModel.setHDRadioEnable(SDL.RadioModel.radioControlStruct.hdRadioEnable ?
           false : true);
-          SDL.RadioModel.sendRadioChangeNotification(['hdRadioEnable']);
           SDL.RadioModel.set('radioControlCheckboxes.availableHDs',SDL.RadioModel.radioControlStruct.hdRadioEnable);
           SDL.RadioModel.set('radioControlCheckboxes.hdChannel',SDL.RadioModel.radioControlStruct.hdRadioEnable);
+          if(SDL.RadioModel.radioControlStruct.hdRadioEnable){
+            SDL.RadioModel.sendRadioChangeNotification(['hdRadioEnable','availableHDs','hdChannel']);
+          }
+          else{
+            SDL.RadioModel.sendRadioChangeNotification(['hdRadioEnable']);
+          }
+          
         }
       },
 
