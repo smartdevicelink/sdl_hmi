@@ -125,9 +125,8 @@ FFW.BasicCommunication = FFW.RPCObserver
         this.onResumeAudioSourceSubscribeRequestID = this.client
           .subscribeToNotification(this.onResumeAudioSourceNotification);
         setTimeout(function() {
-            FFW.BasicCommunication.OnSystemTimeReady();
-          }, 500
-        );
+          FFW.BasicCommunication.OnSystemTimeReady();
+        }, 500);
       },
       /**
        * Client is unregistered - no more requests
