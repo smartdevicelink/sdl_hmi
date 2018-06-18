@@ -511,7 +511,7 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
-          }
+          }          
         }
       },
       /********************* Requests BEGIN *********************/
@@ -899,7 +899,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           'method': 'BasicCommunication.OnReady'
         };
         this.client.send(JSONMessage);
-      },
+      },      
       /**
        * Sent notification to SDL when HMI closes
        */
