@@ -113,6 +113,7 @@ SDL.remoteControlCapability =
     radioControlCapabilities: [{
         availableHDsAvailable: true,
         hdChannelAvailable: true,
+        hdRadioEnableAvailable: true,
         moduleName: 'radio',
         radioBandAvailable: true,
         radioEnableAvailable: true,
@@ -120,6 +121,7 @@ SDL.remoteControlCapability =
         rdsDataAvailable: true,
         signalChangeThresholdAvailable: true,
         signalStrengthAvailable: true,
+        siriusxmRadioAvailable: true,
         sisDataAvailable: true,
         stateAvailable: true
     }],
