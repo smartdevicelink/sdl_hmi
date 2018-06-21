@@ -288,6 +288,11 @@ FFW.RC = FFW.RPCObserver.create(
             if(request.params.moduleData.lightControlData){
               newLightControlData = SDL.LightModel.setLightControlData(
                 request.params.moduleData.lightControlData);
+
+                if (Object.keys(newLightControlData).length > 0) {
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT', 
+                                                            lightControlData: request.params.moduleData.lightControlData});
+                }
             }
             if(request.params.moduleData.seatControlData){
               newSeatControlData = SDL.SeatModel.setSeatControlData(
