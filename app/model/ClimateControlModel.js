@@ -213,6 +213,11 @@ SDL.ClimateControlModel = Em.Object.create({
 
     if (data.desiredTemperature != null) {
       this.setDesiredTemp(data.desiredTemperature);
+      if(data.desiredTemperature.unit == 'FAHRENHEIT') {
+        SDL.ClimateControlModel.temperatureUnitFahrenheitEnable(false);
+      } else {
+        SDL.ClimateControlModel.temperatureUnitCelsiusEnable(false);
+      }
     }
 
     if (data.acMaxEnable != null) {
@@ -337,21 +342,25 @@ SDL.ClimateControlModel = Em.Object.create({
       );
     },
 
-  temperatureUnitFahrenheitEnable: function() {
+  temperatureUnitFahrenheitEnable: function(sendNotification = true) {
       this.set('climateControlData.temperatureUnit', 'FAHRENHEIT');
-      this.sendClimateChangeNotification(
-        ['currentTemperature.unit', 'currentTemperature.value',
-         'desiredTemperature.unit', 'desiredTemperature.value']
-      );
+      if(sendNotification){
+        this.sendClimateChangeNotification(
+          ['currentTemperature.unit', 'currentTemperature.value',
+          'desiredTemperature.unit', 'desiredTemperature.value']
+        );
+      }
       SDL.HmiSettingsModel.set('temperatureUnit','FAHRENHEIT');
   },
 
-  temperatureUnitCelsiusEnable: function() {
+  temperatureUnitCelsiusEnable: function(sendNotification = true) {
       this.set('climateControlData.temperatureUnit', 'CELSIUS');
-      this.sendClimateChangeNotification(
-        ['currentTemperature.unit', 'currentTemperature.value',
-         'desiredTemperature.unit', 'desiredTemperature.value']
-      );
+      if(sendNotification){
+        this.sendClimateChangeNotification(
+          ['currentTemperature.unit', 'currentTemperature.value',
+          'desiredTemperature.unit', 'desiredTemperature.value']
+        );
+      }
       SDL.HmiSettingsModel.set('temperatureUnit','CELSIUS');
   },
 

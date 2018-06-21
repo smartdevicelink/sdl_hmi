@@ -104,13 +104,6 @@ SDL.HmiSettingsModel = Em.Object.create({
         result.distanceUnit = data.distanceUnit;
       }
 
-      if (Object.keys(result).length > 0) {
-        FFW.RC.onInteriorVehicleDataNotification({
-          moduleType:'HMI_SETTINGS',
-          hmiSettingsControlData: result
-       });
-      }
-
     return result;
   },
 

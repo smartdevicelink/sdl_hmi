@@ -275,6 +275,10 @@ FFW.RC = FFW.RPCObserver.create(
               newClimateControlData =
                 SDL.ClimateController.model.setClimateData(
                   request.params.moduleData.climateControlData);
+              if (Object.keys(request.params.moduleData.climateControlData).length > 0) {
+                FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE', 
+                                                          climateControlData: newClimateControlData});
+              }     
             }
             if (request.params.moduleData.radioControlData) {
               newRadioControlData =
@@ -288,10 +292,18 @@ FFW.RC = FFW.RPCObserver.create(
               newAudioControlData = (request.params.moduleData.audioControlData.keepContext!=null)?
               SDL.MediaController.setAudioControlDataWithKeepContext(request.params.moduleData.audioControlData)
               :SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
+              if (Object.keys(request.params.moduleData.audioControlData).length > 0) {
+                FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', 
+                                                          audioControlData: newAudioControlData});
+              }
             }
             if(request.params.moduleData.hmiSettingsControlData){
               newHMISettingsControlData = SDL.HmiSettingsModel.setHmiSettingsData(
-                request.params.moduleData.hmiSettingsControlData); 
+                request.params.moduleData.hmiSettingsControlData);
+                if (Object.keys(request.params.moduleData.hmiSettingsControlData).length > 0) {
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', 
+                                                            hmiSettingsControlData: newHMISettingsControlData});
+                }  
             }
             if(request.params.moduleData.lightControlData){
               newLightControlData = SDL.LightModel.setLightControlData(
@@ -300,6 +312,10 @@ FFW.RC = FFW.RPCObserver.create(
             if(request.params.moduleData.seatControlData){
               newSeatControlData = SDL.SeatModel.setSeatControlData(
                 request.params.moduleData.seatControlData);
+                if (Object.keys(request.params.moduleData.seatControlData).length > 0) {
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT', 
+                                                            seatControlData: newSeatControlData});
+                }   
             };
             // send repsonse
             var JSONMessage = {
