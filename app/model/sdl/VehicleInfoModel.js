@@ -110,6 +110,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'instantFuelConsumption': 'VEHICLEDATA_FUELCONSUMPTION',
       'fuelRange': 'VEHICLEDATA_FUELRANGE',
       'externalTemperature': 'VEHICLEDATA_EXTERNTEMP',
+      'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'vin': 'VEHICLEDATA_VIN',
       'prndl': 'VEHICLEDATA_PRNDL',
       'tirePressure': 'VEHICLEDATA_TIREPRESSURE',
@@ -167,6 +168,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'instantFuelConsumption': 2.2E0,
       'externalTemperature': null,
       'vin': '52-452-52-752',
+      'turnSignal': 'OFF',
       'prndl': 'PARK',
       'tirePressure': {
         'pressureTelltale': 'OFF',
