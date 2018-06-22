@@ -292,7 +292,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'steeringWheelAngle': 1.2E0,
       'engineOilLife': 20.4E0,
       'abs_State': 'ACTIVE',
-      'turnSignal': 'ACTIVE',
       'tirePressureValue': {
         'leftFront': 2.2E0,
         'rightFront': 2.2E0,
