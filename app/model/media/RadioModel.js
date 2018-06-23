@@ -857,6 +857,8 @@ SDL.RadioModel = Em.Object.create({
         this.set('radioControlCheckboxes.hdChannel',data.hdRadioEnable);
         if(data.hdRadioEnable){
           properties.push('sisData.*');
+          properties.push('stationIDNumber.*');
+          properties.push('stationLocation.*');     
           properties.push('availableHDs');
           properties.push('hdChannel');
         }
@@ -1347,6 +1349,7 @@ SDL.RadioModel = Em.Object.create({
                                         'signalChangeThreshold',
                                         'state',
                                         'hdChannel',
+                                        'rdsData.*',
                                         this.radioControlStruct.hdRadioEnable ? 'sisData.*': '',
                                         this.radioControlStruct.hdRadioEnable ? 'stationIDNumber.*': '',
                                         this.radioControlStruct.hdRadioEnable ? 'stationLocation.*': ''

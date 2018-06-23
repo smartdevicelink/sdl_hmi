@@ -57,7 +57,7 @@ SDL.RadioView = Em.ContainerView
           SDL.RadioModel.set('radioControlCheckboxes.availableHDs',SDL.RadioModel.radioControlStruct.hdRadioEnable);
           SDL.RadioModel.set('radioControlCheckboxes.hdChannel',SDL.RadioModel.radioControlStruct.hdRadioEnable);
           if(SDL.RadioModel.radioControlStruct.hdRadioEnable){
-            SDL.RadioModel.sendRadioChangeNotification(['hdRadioEnable','availableHDs','hdChannel', 'sisData.*']);
+            SDL.RadioModel.sendRadioChangeNotification(['hdRadioEnable','availableHDs','hdChannel', 'sisData.*', 'stationIDNumber.*', 'stationLocation.*']);
           }
           else{
             SDL.RadioModel.sendRadioChangeNotification(['hdRadioEnable']);
