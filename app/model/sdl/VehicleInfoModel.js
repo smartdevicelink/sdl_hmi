@@ -116,7 +116,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'tirePressure': 'VEHICLEDATA_TIREPRESSURE',
       'odometer': 'VEHICLEDATA_ODOMETER',
       'beltStatus': 'VEHICLEDATA_BELTSTATUS',
-      'electronicParkBrakeStatus': 'VEHICLEDATA_ELECTRONICPARKBREAKSTATUS',
+      'electronicParkBrakeStatus': 'VEHICLEDATA_ELECTRONICPARKBRAKESTATUS',
       'bodyInformation': 'VEHICLEDATA_BODYINFO',
       'deviceStatus': 'VEHICLEDATA_DEVICESTATUS',
       'eCallInfo': 'VEHICLEDATA_ECALLINFO',
