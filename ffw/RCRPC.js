@@ -233,14 +233,6 @@ FFW.RC = FFW.RPCObserver.create(
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
 
-            if (!this.consentedAppCheck(request)) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED,
-                request.id, request.method
-              );
-              return;
-            }
-
             if (request.params.moduleData.radioControlData) {
               if (request.params.moduleData.radioControlData.radioEnable == null
                   && SDL.RadioModel.radioControlStruct.radioEnable == false) {
@@ -379,22 +371,6 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.GetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
-
-            if (request.params.appID == undefined) {
-             this.sendError(
-               SDL.SDLModel.data.resultCode.INVALID_DATA, request.id,
-               request.method, 'appID parameter missing!'
-             );
-             return;
-            }
-
-            if (!this.consentedAppCheck(request)) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED,
-                request.id, request.method
-              );
-              return;
-            }
 
             var moduleType = request.params.moduleType;
             var climateControlData = null;
@@ -616,32 +592,5 @@ FFW.RC = FFW.RPCObserver.create(
         Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
         FFW.RC.client.send(JSONMessage);
     },
-    /**
-     * Verification for consented apps
-     * HMI should reject secon unconsented app
-     * @param request
-     */
-    consentedAppCheck: function(request) {
-      var appID = request.params.appID;
-      var moduleType = null;
-      if (request.params.moduleDescription) {
-        moduleType = request.params.moduleDescription.moduleType;
-      } else if (request.params.moduleData) {
-        moduleType = request.params.moduleData.moduleType;
-      } else {
-        moduleType = request.params.moduleType;
-      }
-
-      var deviceName = SDL.SDLController.getApplicationModel(appID)
-        .deviceName;
-
-      if ((SDL.SDLModel.driverDeviceInfo &&
-        deviceName != SDL.SDLModel.driverDeviceInfo.name) ||
-        !SDL.SDLModel.reverseFunctionalityEnabled) {
-        return false;
-      }
-
-      return true;
-    }
   }
 );
