@@ -116,6 +116,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'tirePressure': 'VEHICLEDATA_TIREPRESSURE',
       'odometer': 'VEHICLEDATA_ODOMETER',
       'beltStatus': 'VEHICLEDATA_BELTSTATUS',
+      'electronicParkBrakeStatus': 'VEHICLEDATA_ELECTRONICPARKBRAKESTATUS',
       'bodyInformation': 'VEHICLEDATA_BODYINFO',
       'deviceStatus': 'VEHICLEDATA_DEVICESTATUS',
       'eCallInfo': 'VEHICLEDATA_ECALLINFO',
@@ -170,6 +171,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'vin': '52-452-52-752',
       'turnSignal': 'OFF',
       'prndl': 'PARK',
+      'electronicParkBrakeStatus': 'OPEN',
       'tirePressure': {
         'pressureTelltale': 'OFF',
         'leftFront': {
