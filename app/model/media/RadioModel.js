@@ -638,6 +638,30 @@ SDL.RadioModel = Em.Object.create({
     return result;
   },
 
+  checkoutRadioSource: function(data){
+    if(data.source == 'AM' || 
+        data.source == 'FM' || 
+          data.source == 'XM'){
+      
+      if (data.source != this.radioControlStruct.band) {
+        SDL.RadioModel.setRadioBand(data.source);
+
+        if (data.source == 'FM') {
+          this.switchRadioBandFrequency(data.frequencyInteger == null);
+        }
+        if (data.source == 'AM') {
+          this.switchRadioBandFrequency(data.frequencyInteger == null);
+        }
+        if (data.source == 'XM') {
+          this.switchRadioBandFrequency(data.frequencyInteger == null);
+        }
+      } else {
+        this.updateCurrentFrequencyInfo();
+      }
+    }
+    return;
+  },
+
   setRadioData: function(data) {
     var properties = [];
 
@@ -1466,12 +1490,12 @@ SDL.RadioModel = Em.Object.create({
     this.setSource();
     var data = SDL.MediaController.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':data.source}});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':this.lastOptionParams.band}});
   }
   },
   setSource:function()
   {
-    SDL.MediaController.lastRadioControlStruct.source='RADIO_TUNER';
+    SDL.MediaController.lastRadioControlStruct.source=this.lastOptionParams.band;
   },
 
   exitPopUp:function (param){
