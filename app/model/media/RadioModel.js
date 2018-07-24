@@ -645,16 +645,7 @@ SDL.RadioModel = Em.Object.create({
       
       if (data.source != this.radioControlStruct.band) {
         SDL.RadioModel.setRadioBand(data.source);
-
-        if (data.source == 'FM') {
           this.switchRadioBandFrequency(data.frequencyInteger == null);
-        }
-        if (data.source == 'AM') {
-          this.switchRadioBandFrequency(data.frequencyInteger == null);
-        }
-        if (data.source == 'XM') {
-          this.switchRadioBandFrequency(data.frequencyInteger == null);
-        }
       } else {
         this.updateCurrentFrequencyInfo();
       }
@@ -1495,7 +1486,7 @@ SDL.RadioModel = Em.Object.create({
   },
   setSource:function()
   {
-    SDL.MediaController.lastRadioControlStruct.source=this.lastOptionParams.band;
+    SDL.MediaController.lastRadioControlStruct.source = this.lastOptionParams.band;
   },
 
   exitPopUp:function (param){
