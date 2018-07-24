@@ -189,12 +189,38 @@ SDL.EditVehicleDataController = Em.Object.create({
    * Applies new parameter value for currently selected key
    */
   applyParamChanges: function() {
+
+    if(this.currentParameterName == 'hdop' || 
+        this.currentParameterName == 'pdop' ||
+          this.currentParameterName == 'vdop'){
+
+      if(!this.validateInput(this.paramValue)){
+        return;
+      }
+    }
+    
     this.setParameterValueForMap(
       this.currentParameterName, this.paramValue
     );
     this.set('currentParameterName', '');
     this.toggleProperty('isParamEditing');
   },
+
+  /**
+   * Input validation
+   */
+  validateInput: function(input){
+
+    if(isNaN(input) || input < 0 || input > 1000){
+      popUp = SDL.PopUp.create();
+      popUp.appendTo('body').popupActivate(
+        'Invalid parameter value!\n' +
+        'Value must be a float type in range from 0 to 1000\n');
+      return false;
+    }
+    return true;
+  },
+
 
   /**
    * Exit from current parameter editor
