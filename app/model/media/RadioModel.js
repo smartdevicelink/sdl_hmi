@@ -77,6 +77,7 @@ SDL.RadioModel = Em.Object.create({
 
   band: 'FM',
 
+
   availableHDs: 3,
 
   hdChannelsStruct: [
@@ -175,6 +176,20 @@ SDL.RadioModel = Em.Object.create({
       TA: true,
       REG: 'Murica'
     },
+    sisData:{
+      stationShortName:'Name1',
+      stationIDNumber:{
+        countryCode:101,
+        fccFacilityId:100
+      },
+      stationLongName:'Name2',
+      stationLocation:{
+        longitudeDegrees:0.1,
+        latitudeDegrees:0.1,
+        altitudeMeters:0.1
+      },
+      stationMessage:'station message'
+    },
     availableHDs: 3,
     hdChannel: 1,
     signalStrength: 50,
@@ -194,6 +209,19 @@ SDL.RadioModel = Em.Object.create({
       TP: true,
       TA: true,
       REG: true
+    },
+    sisData:{
+      stationShortName:true,
+      stationIDNumber:{
+        countryCode:true,
+        fccFacilityId:true
+      },
+      stationLongName:true,
+      stationLocation:{
+        gpsLocation:true,
+        altitudeMeters:true
+      },
+      stationMessage:true
     },
     availableHDs: true,
     hdChannel: true,
@@ -453,7 +481,8 @@ SDL.RadioModel = Em.Object.create({
       availableHDsAvailable: true,
       stateAvailable: true,
       signalStrengthAvailable: true,
-      signalChangeThresholdAvailable: true
+      signalChangeThresholdAvailable: true,
+      sisDataAvailable: true
     };
 
     result.push(capabilities);
@@ -513,7 +542,11 @@ SDL.RadioModel = Em.Object.create({
         frequencyInteger: this.radioControlStruct.frequencyInteger,
         frequencyFraction: this.radioControlStruct.frequencyFraction,
         radioEnable: this.radioControlStruct.radioEnable,
-        rdsData: {}
+        rdsData: {},
+        sisData:{
+          stationIDNumber:{},
+          stationLocation:{}
+        },
       };
 
       if (forceGetAll || this.radioControlCheckboxes.band) {
@@ -563,13 +596,61 @@ SDL.RadioModel = Em.Object.create({
       if (forceGetAll || this.radioControlCheckboxes.state) {
         result.state = this.radioControlStruct.state;
       }
+      if(forceGetAll || this.radioControlCheckboxes.sisData.stationShortName){
+        result.sisData.stationShortName=this.radioControlStruct.sisData.stationShortName;
+      }
+      if(forceGetAll || this.radioControlCheckboxes.sisData.stationLongName){
+        result.sisData.stationLongName=this.radioControlStruct.sisData.stationLongName;
+      }
+      if(forceGetAll || this.radioControlCheckboxes.sisData.stationMessage){
+        result.sisData.stationMessage=this.radioControlStruct.sisData.stationMessage;
+      }
+      if(forceGetAll || this.radioControlCheckboxes.sisData.stationIDNumber.countryCode){
+        result.sisData.stationIDNumber.countryCode=parseInt(this.radioControlStruct.sisData.stationIDNumber.countryCode);
+      }
+      if(forceGetAll || this.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId){
+        result.sisData.stationIDNumber.fccFacilityId=parseInt(this.radioControlStruct.sisData.stationIDNumber.fccFacilityId);
+      }
+      if(forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.gpsLocation){
+        result.sisData.stationLocation.longitudeDegrees=parseFloat(this.radioControlStruct.sisData.stationLocation.longitudeDegrees);
+        result.sisData.stationLocation.latitudeDegrees=parseFloat(this.radioControlStruct.sisData.stationLocation.latitudeDegrees);
+        if(forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.altitudeMeters){
+          result.sisData.stationLocation.altitudeMeters=parseFloat(this.radioControlStruct.sisData.stationLocation.altitudeMeters);
+        }
+      }
 
       if (Object.keys(result.rdsData).length == 0) {
         delete result['rdsData'];
       }
+      if(Object.keys(result.sisData).length==0){
+        delete result['sisData'];
+      }
+      if(Object.keys(result.sisData.stationIDNumber).length==0){
+        var temp=result.sisData;
+        delete temp['stationIDNumber'];
+      }
+      if(Object.keys(result.sisData.stationLocation).length==0){
+        var temp=result.sisData;
+        delete temp['stationLocation'];
+      }
     }
 
     return result;
+  },
+
+  checkoutRadioSource: function(data){
+    if(data.source == 'AM' || 
+        data.source == 'FM' || 
+          data.source == 'XM'){
+      
+      if (data.source != this.radioControlStruct.band) {
+        SDL.RadioModel.setRadioBand(data.source);
+          this.switchRadioBandFrequency(data.frequencyInteger == null);
+      } else {
+        this.updateCurrentFrequencyInfo();
+      }
+    }
+    return;
   },
 
   setRadioData: function(data) {
@@ -619,7 +700,9 @@ SDL.RadioModel = Em.Object.create({
       if (data.rdsData != null) {
         this.setRadioRdsData(data.rdsData);
       }
-
+      if(data.sisData!=null){
+        this.setRadioSisData(data.sisData);
+      }
       if (data.signalStrength != null) {
         this.setSignalStrength(data.signalStrength);
       }
@@ -659,7 +742,10 @@ SDL.RadioModel = Em.Object.create({
     var data = this.getRadioControlData(false);
     data = SDL.SDLController.filterObjectProperty(data, properties);
     if (Object.keys(data).length > 0) {
-      FFW.RC.onInteriorVehicleDataNotification('RADIO', null, data);
+      FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', radioControlData: data});
+    }
+    if(data.band != null){
+      this.sendAudioNotification();
     }
   },
 
@@ -675,6 +761,20 @@ SDL.RadioModel = Em.Object.create({
         'TP': this.radioControlStruct.rdsData.TP,
         'TA': this.radioControlStruct.rdsData.TA,
         'REG': this.radioControlStruct.rdsData.REG
+      },
+      'sisData':{
+        'stationShortName':this.radioControlStruct.sisData.stationShortName,
+        'stationMessage':this.radioControlStruct.sisData.stationMessage,
+        'stationLongName':this.radioControlStruct.sisData.stationLongName,
+        'stationLocation':{
+          'longitudeDegrees':this.radioControlStruct.sisData.stationLocation.longitudeDegrees,
+          'latitudeDegrees':this.radioControlStruct.sisData.stationLocation.latitudeDegrees,
+          'altitudeMeters': this.radioControlStruct.sisData.stationLocation.altitudeMeters
+        },
+        'stationIDNumber':{
+          'countryCode':this.radioControlStruct.sisData.stationIDNumber.countryCode,
+          'fccFacilityId':this.radioControlStruct.sisData.stationIDNumber.fccFacilityId
+        },
       },
       'availableHDs': this.radioControlStruct.availableHDs,
       'hdChannel': this.radioControlStruct.hdChannel,
@@ -704,6 +804,17 @@ SDL.RadioModel = Em.Object.create({
     this.set('lastOptionParams.rdsData.TP', result.rdsData.TP);
     this.set('lastOptionParams.rdsData.TA', result.rdsData.TA);
     this.set('lastOptionParams.rdsData.REG', result.rdsData.REG);
+    this.set('lastOptionParams.sisData', {});
+    this.set('lastOptionParams.sisData.stationShortName', result.sisData.stationShortName);
+    this.set('lastOptionParams.sisData.stationMessage', result.sisData.stationMessage);
+    this.set('lastOptionParams.sisData.stationLongName', result.sisData.stationLongName);
+    this.set('lastOptionParams.sisData.stationLocation', {});
+    this.set('lastOptionParams.sisData.stationLocation.longitudeDegrees', result.sisData.stationLocation.longitudeDegrees);
+    this.set('lastOptionParams.sisData.stationLocation.latitudeDegrees', result.sisData.stationLocation.latitudeDegrees);
+    this.set('lastOptionParams.sisData.stationLocation.altitudeMeters', result.sisData.stationLocation.altitudeMeters);
+    this.set('lastOptionParams.sisData.stationIDNumber', {});
+    this.set('lastOptionParams.sisData.stationIDNumber.countryCode', result.sisData.stationIDNumber.countryCode);
+    this.set('lastOptionParams.sisData.stationIDNumber.fccFacilityId', result.sisData.stationIDNumber.fccFacilityId);
     this.set('lastOptionParams.availableHDs', result.availableHDs);
     this.set('lastOptionParams.hdChannel', result.hdChannel);
     this.set('lastOptionParams.signalStrength', result.signalStrength);
@@ -1012,7 +1123,9 @@ SDL.RadioModel = Em.Object.create({
                                         'band',
                                         'availableHDs',
                                         'hdChannel',
-                                        'rdsData.*']);
+                                        'rdsData.*'
+                                        ]);
+      
     } else if (data.band == 'AM') {
       this.sendRadioChangeNotification(['radioEnable',
                                         'frequencyInteger',
@@ -1366,37 +1479,97 @@ SDL.RadioModel = Em.Object.create({
     this.updateCurrentFrequencyInfo();
   },
 
+  sendAudioNotification:function()
+  {
+    this.setSource();
+    var data = SDL.MediaController.getAudioControlData();
+    if(data){
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':this.radioControlStruct.band }});
+  }
+  },
+  setSource:function()
+  {
+    SDL.MediaController.set('lastRadioControlStruct.source', this.radioControlStruct.band );
+  },
+
+  exitPopUp:function (param){
+    if(false == param){
+      SDL.RadioModel.toggleProperty('optionsEnabled');
+    }
+  },
+
+  validateStrings: function(){
+    var stationShortLength = this.lastOptionParams.sisData.stationShortName.length;
+    var stationLongLength = this.lastOptionParams.sisData.stationLongName.length;
+    var stationMessageLength = this.lastOptionParams.sisData.stationMessage.length;
+
+    if(stationShortLength<4 || stationShortLength>7){
+    popUp = SDL.PopUp.create();
+    popUp.appendTo('body').popupActivate(
+     'Sis Data is not set.' +
+       '"Station short name" must have minlength = 4 and maxlength = 7 characters.',
+       this.exitPopUp);
+       return false;
+    }
+
+    if(stationLongLength>56){
+      popUp = SDL.PopUp.create();
+      popUp.appendTo('body').popupActivate(
+       'Sis Data is not set.' +
+        '"Station long name" must have maxlength = 56 characters.',
+        this.exitPopUp);
+        return false;
+    }
+    if(stationMessageLength>56){
+      popUp = SDL.PopUp.create();
+      popUp.appendTo('body').popupActivate(
+       'Sis Data is not set.' +
+        '"Station message" must have maxlength = 56 characters.',
+        this.exitPopUp);
+        return false;
+    }
+    return true;
+  },
+
   sendButtonPress: function() {
-    var currentData = SDL.deepCopy(this.getCurrentOptions());
-    var changedData = SDL.deepCopy(this.lastOptionParams);
-    this.setRadioData(changedData);
+    if(!this.validateStrings()){return;}
+    var currentData = SDL.deepCopy(SDL.RadioModel.getCurrentOptions());
+    var changedData = SDL.deepCopy(SDL.RadioModel.lastOptionParams);
+    SDL.RadioModel.setRadioData(changedData);
 
     SDL.RadioModel.toggleProperty('optionsEnabled');
 
     var properties = SDL.SDLController.getChangedProperties(changedData, currentData);
 
     if (properties.indexOf('band') >= 0) {
-      if (this.tuneRadio) {
-        this.directTune();
+      if (SDL.RadioModel.tuneRadio) {
+        SDL.RadioModel.directTune();
       }
-      if (this.scanState) {
-        this.scanKeyPress();
+      if (SDL.RadioModel.scanState) {
+        SDL.RadioModel.scanKeyPress();
       }
-      if (this.radioControlStruct.band == 'FM') {
+      if (SDL.RadioModel.radioControlStruct.band == 'FM') {
         properties.push('frequencyInteger');
         properties.push('frequencyFraction');
-        this.switchRadioBandFrequency(true);
+        SDL.RadioModel.switchRadioBandFrequency(true);
       }
-      if (this.radioControlStruct.band == 'AM') {
+      if (SDL.RadioModel.radioControlStruct.band == 'AM') {
         properties.push('frequencyInteger');
-        this.switchRadioBandFrequency(true);
+        SDL.RadioModel.switchRadioBandFrequency(true);
       }
-      if (this.radioControlStruct.band == 'XM') {
+      if (SDL.RadioModel.radioControlStruct.band == 'XM') {
         properties.push('frequencyInteger');
-        this.switchRadioBandFrequency(true);
+        SDL.RadioModel.switchRadioBandFrequency(true);
       }
+      this.setSource();
     }
-    this.sendRadioChangeNotification(properties);
+
+    if(properties.indexOf('stationLocation.longitudeDegrees')>=0){
+      properties.push('stationLocation.latitudeDegrees');
+    }else if(properties.indexOf('stationLocation.latitudeDegrees')>=0){
+      properties.push('stationLocation.longitudeDegrees');
+    }
+    SDL.RadioModel.sendRadioChangeNotification(properties);
   },
 
   setFrequencyInteger: function(value) {
@@ -1439,7 +1612,32 @@ SDL.RadioModel = Em.Object.create({
       this.set('radioControlStruct.rdsData.REG', data.REG);
     }
   },
-
+  setRadioSisData:function(data){
+    if(data.stationShortName!=null){
+      this.set('radioControlStruct.sisData.stationShortName',data.stationShortName);
+    }
+    if(data.stationLongName!=null){
+      this.set('radioControlStruct.sisData.stationLongName',data.stationLongName);
+    }
+    if(data.stationMessage!=null){
+      this.set('radioControlStruct.sisData.stationMessage',data.stationMessage);
+    }
+    if(data.stationIDNumber.countryCode!=null){
+      this.set('radioControlStruct.sisData.stationIDNumber.countryCode',data.stationIDNumber.countryCode);
+    }
+    if(data.stationIDNumber.fccFacilityId!=null){
+      this.set('radioControlStruct.sisData.stationIDNumber.fccFacilityId',data.stationIDNumber.fccFacilityId);
+    }
+    if(data.stationLocation.longitudeDegrees!=null){
+      this.set('radioControlStruct.sisData.stationLocation.longitudeDegrees',data.stationLocation.longitudeDegrees);
+    }
+    if(data.stationLocation.latitudeDegrees!=null){
+      this.set('radioControlStruct.sisData.stationLocation.latitudeDegrees',data.stationLocation.latitudeDegrees);
+    }
+    if(data.stationLocation.altitudeMeters!=null){
+      this.set('radioControlStruct.sisData.stationLocation.altitudeMeters',data.stationLocation.altitudeMeters);
+    }
+  },
   setAvailableHDs: function(value) {
     if (this.hdChannelsStruct.indexOf(value) >= 0) {
       this.set('radioControlStruct.availableHDs', value);

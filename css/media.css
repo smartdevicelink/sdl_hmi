@@ -26,6 +26,30 @@
     line-height: 48px;
 }
 
+#media_bluetoothButton{
+    font-size: 15px;
+    padding-left: 48px;
+    line-height: 48px;
+}
+
+#media_lineInButton{
+    font-size: 18px;
+    padding-left: 48px;
+    line-height: 48px;
+}
+
+#media_ipodButton{
+    font-size: 18px;
+    padding-left: 48px;
+    line-height: 48px;
+}
+
+#media_audioOption{
+    font-size: 13px;
+    padding-left: 48px;
+    line-height: 48px;
+}
+
 #media_sdlButton {
     font-size: 18px;
     line-height: 48px;
@@ -134,7 +158,14 @@
     background: #333333;
 }
 
+#preferences .pref{
+    top: 77px;
+    left: 546px;
+    z-index: 502;
+}
+
 #radio_options_view_container.options {
+    overflow:auto;
     width: 458px;
     height: 300px;
     background-color: black;
@@ -162,6 +193,167 @@
 #radio_options_view_container .rdsDataLabel {
     left: 10px;
     top: 27px;
+}
+
+#radio_options_view_container .sisDataLabel {
+    left: 10px;
+    top: 250px;
+}
+
+#radio_options_view_container .stationIdLabel {
+    left: 20px;
+    top: 410px;
+}
+
+
+#radio_options_view_container .fccCheckBox {
+    position: absolute;
+    left: 20px;
+    top: 450px;
+}
+
+#radio_options_view_container .fccLabel {
+    left: 35px;
+    top: 448px;
+}
+
+#radio_options_view_container .fccInput {
+    position: absolute;
+    top: 450px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .countryCodeCheckBox {
+    position: absolute;
+    left: 20px;
+    top: 430px;
+}
+
+#radio_options_view_container .countryCodeLabel {
+    left: 35px;
+    top: 428px;
+}
+
+#radio_options_view_container .countryCodeInput {
+    position: absolute;
+    top: 430px;
+    left: 220px;
+    width: 200px;
+}
+
+
+#radio_options_view_container .gpsLocationLabel {
+    left: 40px;
+    top: 330px;
+}
+
+
+
+#radio_options_view_container .gpsLocationCheckBox {
+    position: absolute;
+    left: 25px;
+    top: 330px;
+}
+
+#radio_options_view_container .stationShortNameCheckbox {
+    position: absolute;
+    left: 20px;
+    top: 270px;
+}
+
+#radio_options_view_container .stationShortNameLabel {
+    left: 35px;
+    top: 268px;
+}
+
+#radio_options_view_container .stationShortNameInput {
+    position: absolute;
+    top: 270px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .longitudeLabel {
+    left: 50px;
+    top: 350px;
+}
+
+
+#radio_options_view_container .longitudeInput {
+    position: absolute;
+    top: 350px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .latitudeLabel {
+    left: 50px;
+    top: 370px;
+}
+
+
+#radio_options_view_container .latitudeInput {
+    position: absolute;
+    top: 370px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .altitudeCheckBox {
+    position: absolute;
+    left: 35px;
+    top: 392px;
+}
+
+#radio_options_view_container .altitudeLabel {
+    left: 50px;
+    top: 390px;
+}
+
+
+#radio_options_view_container .altitudeInput {
+    position: absolute;
+    top: 390px;
+    left: 220px;
+    width: 200px;
+}
+
+
+#radio_options_view_container .stationLongNameCheckBox {
+    position: absolute;
+    left: 20px;
+    top: 290px;
+}
+
+#radio_options_view_container .stationLongNameLabel {
+    left: 35px;
+    top: 288px;
+}
+
+#radio_options_view_container .stationLongNameInput {
+    position: absolute;
+    top: 290px;
+    left: 220px;
+    width: 200px;
+}
+
+#radio_options_view_container .stationMessageCheckBox {
+    position: absolute;
+    left: 20px;
+    top: 310px;
+}
+
+#radio_options_view_container .stationMessageLabel {
+    left: 35px;
+    top: 308px;
+}
+
+#radio_options_view_container .stationMessageInput {
+    position: absolute;
+    top: 310px;
+    left: 220px;
+    width: 200px;
 }
 
 #radio_options_view_container .PSCheckbox {
@@ -395,7 +587,7 @@
 }
 
 #radio_options_view_container .sendButton {
-    top: 260px;
+    top: 500px;
     left: 200px;
     width: 70px;
     height: 38px;
@@ -676,7 +868,11 @@
     opacity: 0 !important;
 }
 
-.bc-item-big.prevcd, .bc-item-big.prevusb, .bc-item-big.prevsd, .bc-item-big.prevblue {
+.bc-item-big.prevcd, .bc-item-big.prevusb,
+.bc-item-big.prevbluetooth ,
+.bc-item-big.prevlineIn,
+.bc-item-big.previpod,
+.bc-item-big.prevsd, .bc-item-big.prevblue {
     width: 155px;
     height: 98px;
     border-right: 1px solid #393939;
@@ -684,7 +880,12 @@
     background: url(../images/media/cd-prev-btn.png) no-repeat;
 }
 
-.bc-item-big.prevcd.pressed, .bc-item-big.prevusb.pressed, .bc-item-big.prevsd.pressed, .bc-item-big.prevblue.pressed {
+.bc-item-big.prevcd.pressed, .bc-item-big.prevusb.pressed,
+.bc-item-big.prevbluetooth.pressed ,
+.bc-item-big.prevlineIn.pressed ,
+.bc-item-big.previpod.pressed ,
+.bc-item-big.prevsd.pressed,
+ .bc-item-big.prevblue.pressed {
     background: url(../images/media/cd-prev-btn_pressed.png) no-repeat;
 }
 
@@ -704,6 +905,9 @@
 }
 
 .bc-item-big.play-usb,
+.bc-item-big.play-bluetooth,
+.bc-item-big.play-lineIn,
+.bc-item-big.play-ipod,
 .bc-item-big.play-cd {
     width: 157px;
     height: 98px;
@@ -725,12 +929,21 @@
     visibility: visible;
 }
 
-.bc-item-big.playcd.pressed, .bc-item-big.playusb.pressed, .bc-item-big.playsd.pressed, .bc-item-big.playblue.pressed {
+.bc-item-big.playcd.pressed, 
+.bc-item-big.playusb.pressed, 
+.bc-item-big.playbluetooth.pressed,
+.bc-item-big.playlineIn.pressed,
+.bc-item-big.playipod.pressed,
+.bc-item-big.playsd.pressed, 
+.bc-item-big.playblue.pressed {
     background: url(../images/media/cd_play_btn_pressed.png) no-repeat;
 }
 
 .bc-item-big.nextcd,
 .bc-item-big.nextusb,
+.bc-item-big.nextbluetooth,
+.bc-item-big.nextlineIn,
+.bc-item-big.nextlineipod,
 .bc-item-big.nextsd,
 .bc-item-big.nextblue {
     width: 154px;
@@ -742,7 +955,13 @@
     left: 314px;
 }
 
-.bc-item-big.nextcd.pressed, .bc-item-big.nextusb.pressed, .bc-item-big.nextsd.pressed, .bc-item-big.nextblue.pressed {
+.bc-item-big.nextcd.pressed,
+ .bc-item-big.nextusb.pressed, 
+ .bc-item-big.nextbluetooth.pressed,
+ .bc-item-big.nextlineIn.pressed,
+ .bc-item-big.nextipod.pressed,
+ .bc-item-big.nextsd.pressed, 
+ .bc-item-big.nextblue.pressed {
     background: url(../images/media/cd-next-btn_pressed.png) no-repeat;
 }
 
@@ -766,6 +985,39 @@
     width: 109px;
     height: 109px;
     background: url(../images/media/small-lazerhorse-image.png) no-repeat;
+}
+
+#blueetooth_logo {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+    border: 1px solid #393939;
+    border-radius: 2px;
+    width: 109px;
+    height: 109px;
+    background: url(../images/media/small-lazerhorse-image.png) no-repeat;
+}
+
+#lineIn_logo {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+    border: 1px solid #393939;
+    border-radius: 2px;
+    width: 109px;
+    height: 109px;
+    background: url(../images/media/small-lazerhorse-image.png) no-repeat;
+}
+
+#ipod_logo {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+    border: 1px solid #393939;
+    border-radius: 2px;
+    width: 109px;
+    height: 109px;
+    background: url(../images/media/small-fall-image.png) no-repeat;
 }
 
 #bt-bg {
@@ -969,6 +1221,18 @@
 .usbIco {
     background: url(../images/media/ico_usb.png) no-repeat !important
 }
+.ipodIco {
+    background: url(../images/media/ico_ipod.png) no-repeat !important
+}
+.bluetoothIco {
+    background: url(../images/media/ico_bluetooth.png) no-repeat !important
+}
+.lineInIco {
+    background: url(../images/media/line_in.png) no-repeat !important
+}
+/* .audioIco {
+    background: url(../images/media/ico_audio.png) no-repeat !important
+} */
 
 .appIco {
     background: url(../images/info/info_leftMenu_apps_ico.png) no-repeat !important
@@ -979,6 +1243,146 @@
     height: 40px;
     border-radius: 3px;
     border: 1px solid #393939;
+}
+
+.option {
+    top: 77px;
+    width: 300px;
+    height: 300px;
+    background-color: black;
+    border: 1px solid white;
+    z-index: 1000;
+    padding: 10px;
+    left: 238px;
+}
+
+.pref{
+    width: 150px;
+    height: 40px;
+    top:380px;
+    left:645px;
+    border-radius: 3px;
+    border: 1px solid #393939;
+    z-index: 900;
+}
+.pref .media_optionButton{
+    height: 24px;
+    width: 128px;
+    float: auto;
+    padding: 8px;
+    padding-left: 14px;
+    z-index: 900;
+    text-align: center;
+}
+/* .option .keepContextLabel{
+    left:25px;
+    top:20px;
+}
+.option .keepContextSelect{
+    
+    top: 20px;
+    position: absolute;
+    width: 150px;
+    left: 130px;
+    height: 20px;
+    color: white;
+    background: #393939;
+} */
+.option .equalizerSettingsCheckBox{
+    position: absolute;
+    left: 5px;
+    top: 82px;
+}
+.option .equalizerSettingsLabel
+{
+    left:25px;
+    top:80px;
+}
+.option .equalizerChannelIdLabel{
+    left:25px;
+    top:110px;
+}
+.option .equalizerChannelSettingLabel{
+    left:25px;
+    top:170px;
+    font-size: 5;
+}
+.option .equalizerChannelSettingCheckBox{
+    position: absolute;
+    left: 5px;
+    top: 170px;
+}
+.option .equalizerChannelSettingInput{
+    top: 170px;
+      position: absolute;
+      width: 150px;
+      left: 130px;
+      height: 20px;
+      color: white;
+      background: #393939;
+  }
+.option .volumeInput{
+    top: 30px;
+      position: absolute;
+      width: 150px;
+      left: 130px;
+      height: 20px;
+      color: white;
+      background: #393939;
+  }
+.option .volumeLabel{
+      left:25px;
+      top:30px;
+  }
+  .option .volumeCheckBox{
+    position: absolute;
+    left: 5px;
+    top: 30px;
+}
+.option .equalizerChannelIdInput{
+      top: 110px;
+        position: absolute;
+        width: 150px;
+        left: 130px;
+        height: 20px;
+        color: white;
+        background: #393939;
+    }
+    .option .equalizerChannelIdCheckBox{
+        position: absolute;
+        left: 5px;
+        top: 110px;
+    }
+.option .equalizerChannelIdLabel{
+      left:25px;
+      top:110px;
+  }
+  .option .equalizerChannelNameInput{
+        top: 140px;
+        position: absolute;
+        width: 150px;
+        left: 130px;
+        height: 20px;
+        color: white;
+        background: #393939;
+    }
+    .option .equalizerChannelNameCheckBox{
+        position: absolute;
+        left: 5px;
+        top: 142px;
+    }
+    .option .equalizerChannelNameLabel{
+      left:25px;
+      top:140px;
+      font-size:14px;
+  }
+  .option .save {
+    top: 260px;
+    left: 128px;
+    width: 70px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
 }
 
 .calc_container .minus {
@@ -1023,6 +1427,7 @@
     left: 161px;
     z-index: 501;
 }
+
 #sdl_view_container_menu {
     top: 125px;
     left: 650px;
@@ -1050,4 +1455,107 @@
 
 #tuneButtons .ffw-button.disabled > span {
     color: #999;
+}
+
+#EqualizerSettingsView{
+    width: 300px;
+    height: 174px;
+    top: 80px;
+}
+
+#EqualizerSettingsView .equalizerSettingsLabel {
+    display: block;
+    position: static;
+}
+
+#EqualizerSettingsView .equalizerSettingsArray { 
+    display: block;
+    position: static;
+    height: 147px;
+    border: 1px solid white;
+    margin: 5px 0px 0px 0px;
+}
+
+#EqualizerSettingsView .equalizerSettingsAddButton {
+    z-index: 1002;
+    top: -3px;
+    left: 248px;
+    border: 1px solid white;
+    width: 50px;
+    height: 22px;
+    text-align: center;
+    line-height: 24px;
+}
+
+#equalizerSettingsArray .deleteButton{
+    z-index: 1001;
+    margin: 2px 0px 0px 2px;
+    background: black;
+}
+
+#equalizerSettingsArray .leftButton{
+    z-index: 1001;
+    margin: 5px 0px 0px 2px;
+    background: black;
+    left: 250px;
+}
+
+#equalizerSettingsArray .rightbutton{
+    z-index: 1001;
+    margin: 2px 0px 0px 2px;
+    background: black;
+    transform: rotate(180deg);
+    left: 274px;
+}
+
+#equalizerSettingsArray .stateInput{
+    width: 40px;
+    top: 25px;
+    left: 180px;
+    position:absolute;
+    background: black;
+    color:white;
+    font-size: 125%;
+} 
+
+#equalizerSettingsArray .channelIdLabel{
+    width: 100px;
+    top: 82px;
+    left: 10px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelNameLabel{
+    width: 109px;
+    top: 102px;
+    left: 10px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelSettingLabel{
+    width: 100px;
+    top: 122px;
+    left: 10px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelIdInput{
+    width: 100px;
+    top: 82px;
+    left: 137px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelNameInput{
+    width: 100px;
+    top: 102px;
+    left: 137px;
+    position: absolute;
+}
+
+#equalizerSettingsArray .channelSettingInput{
+    width: 100px;
+    top: 122px;
+    left: 137px;
+    position: absolute;
 }

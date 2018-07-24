@@ -2,7 +2,7 @@
     position: absolute;
     width: 399px;
     height: 183px;
-    background: url("../images/home/home_phoneWidget.png") 0 0 no-repeat;
+
 }
 
 #home_widgetNavigation {
@@ -154,8 +154,25 @@
 #home_widgetMedia_tuneButtons {
     height: 40px;
     width: 120px;
-    top: 28px;
+    top: 40px;
     left: 248px;
+}
+
+#phoneStatusImage{
+    width: 399px;
+    height: 175px;
+    top : -20px;
+}
+
+
+#rcStatusLabel{
+    top: 75px;
+    left: 20px;
+    z-index: 10;
+    font-size: 15px;
+    height: 105px;
+    overflow: hidden;
+   
 }
 
 #home_widgetMedia_tuneButtons .ffw-button {
