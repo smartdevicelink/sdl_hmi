@@ -70,6 +70,7 @@ SDL.AppViews = Em.ContainerView.extend(
       SDL.AudioPassThruPopUp,
       SDL.VRPopUp,
       SDL.VehicleInfo,
+      SDL.EditVehicleDataView,
       SDL.TBTClientStateView,
       SDL.DriverDistraction,
       SDL.ExitApp,
