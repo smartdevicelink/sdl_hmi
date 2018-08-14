@@ -25,9 +25,9 @@ SDL.SendMessage = Em.ContainerView.create({
       },
       setSetting: function(){
         SDL.LightModel.lightSettings.density = parseFloat(SDL.LightModel.lightSettings.density);
-        SDL.LightModel.lightSettings.sRGBColor.red = parseInt(SDL.LightModel.lightSettings.sRGBColor.red);
-        SDL.LightModel.lightSettings.sRGBColor.green = parseInt(SDL.LightModel.lightSettings.sRGBColor.green);
-        SDL.LightModel.lightSettings.sRGBColor.blue = parseInt(SDL.LightModel.lightSettings.sRGBColor.blue);
+        SDL.LightModel.lightSettings.color.red = parseInt(SDL.LightModel.lightSettings.color.red);
+        SDL.LightModel.lightSettings.color.green = parseInt(SDL.LightModel.lightSettings.color.green);
+        SDL.LightModel.lightSettings.color.blue = parseInt(SDL.LightModel.lightSettings.color.blue);
         var length = SDL.LightModel.lightState.length;
 
         var data = SDL.deepCopy(SDL.LightModel.lightSettings);
@@ -39,10 +39,10 @@ SDL.SendMessage = Em.ContainerView.create({
             break;
           }
         }
-        if(data.sRGBColor.red == oldData.sRGBColor.red && 
-           data.sRGBColor.green == oldData.sRGBColor.green && 
-           data.sRGBColor.blue == oldData.sRGBColor.blue){
-          delete data['sRGBColor'];
+        if(data.color.red == oldData.color.red && 
+           data.color.green == oldData.color.green && 
+           data.color.blue == oldData.color.blue){
+          delete data['color'];
         }
         if(data.density == oldData.density){
           delete data['density'];
@@ -112,21 +112,21 @@ SDL.SendMessage = Em.ContainerView.create({
         {
           elementId: 'rInput',
           classNames: 'rInput',
-          valueBinding: 'SDL.LightModel.lightSettings.sRGBColor.red',
+          valueBinding: 'SDL.LightModel.lightSettings.color.red',
         }
       ),
       gInput: Ember.TextField.extend(
         {
           elementId: 'gInput',
           classNames: 'gInput',
-          valueBinding: 'SDL.LightModel.lightSettings.sRGBColor.green',
+          valueBinding: 'SDL.LightModel.lightSettings.color.green',
         }
       ),
       bInput: Ember.TextField.extend(
         {
           elementId: 'bInput',
           classNames: 'bInput',
-          valueBinding: 'SDL.LightModel.lightSettings.sRGBColor.blue',
+          valueBinding: 'SDL.LightModel.lightSettings.color.blue',
         }
       ),
       setButton: SDL.Button.extend({

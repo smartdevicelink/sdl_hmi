@@ -365,7 +365,7 @@ SDL.RadioView = Em.ContainerView
             {
               elementId: 'gpsDataLabel',
               classNames: 'gpsDataLabel',
-              content: 'GPS Location:'
+              content: 'Station Location:'
             }
           ),
           stationShortNameCheckbox: Em.Checkbox.extend(

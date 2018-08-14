@@ -1549,6 +1549,9 @@ SDL.RadioModel = Em.Object.create({
       properties.push('stationLocation.latitudeDegrees');
     }else if(properties.indexOf('stationLocation.latitudeDegrees')>=0){
       properties.push('stationLocation.longitudeDegrees');
+    }else if(properties.indexOf('stationLocation.altitude')>=0){
+      properties.push('stationLocation.latitudeDegrees');
+      properties.push('stationLocation.longitudeDegrees');
     }
     SDL.RadioModel.sendRadioChangeNotification(properties);
   },
