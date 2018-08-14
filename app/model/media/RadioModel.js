@@ -186,7 +186,7 @@ SDL.RadioModel = Em.Object.create({
       stationLocation:{
         longitudeDegrees:0.1,
         latitudeDegrees:0.1,
-        altitudeMeters:0.1
+        altitude:0.1
       },
       stationMessage:'station message'
     },
@@ -218,8 +218,8 @@ SDL.RadioModel = Em.Object.create({
       },
       stationLongName:true,
       stationLocation:{
-        gpsLocation:true,
-        altitudeMeters:true
+        gpsData:true,
+        altitude:true
       },
       stationMessage:true
     },
@@ -611,11 +611,11 @@ SDL.RadioModel = Em.Object.create({
       if(forceGetAll || this.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId){
         result.sisData.stationIDNumber.fccFacilityId=parseInt(this.radioControlStruct.sisData.stationIDNumber.fccFacilityId);
       }
-      if(forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.gpsLocation){
+      if(forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.gpsData){
         result.sisData.stationLocation.longitudeDegrees=parseFloat(this.radioControlStruct.sisData.stationLocation.longitudeDegrees);
         result.sisData.stationLocation.latitudeDegrees=parseFloat(this.radioControlStruct.sisData.stationLocation.latitudeDegrees);
-        if(forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.altitudeMeters){
-          result.sisData.stationLocation.altitudeMeters=parseFloat(this.radioControlStruct.sisData.stationLocation.altitudeMeters);
+        if(forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.altitude){
+          result.sisData.stationLocation.altitude=parseFloat(this.radioControlStruct.sisData.stationLocation.altitude);
         }
       }
 
@@ -751,7 +751,7 @@ SDL.RadioModel = Em.Object.create({
         'stationLocation':{
           'longitudeDegrees':this.radioControlStruct.sisData.stationLocation.longitudeDegrees,
           'latitudeDegrees':this.radioControlStruct.sisData.stationLocation.latitudeDegrees,
-          'altitudeMeters': this.radioControlStruct.sisData.stationLocation.altitudeMeters
+          'altitude': this.radioControlStruct.sisData.stationLocation.altitude
         },
         'stationIDNumber':{
           'countryCode':this.radioControlStruct.sisData.stationIDNumber.countryCode,
@@ -793,7 +793,7 @@ SDL.RadioModel = Em.Object.create({
     this.set('lastOptionParams.sisData.stationLocation', {});
     this.set('lastOptionParams.sisData.stationLocation.longitudeDegrees', result.sisData.stationLocation.longitudeDegrees);
     this.set('lastOptionParams.sisData.stationLocation.latitudeDegrees', result.sisData.stationLocation.latitudeDegrees);
-    this.set('lastOptionParams.sisData.stationLocation.altitudeMeters', result.sisData.stationLocation.altitudeMeters);
+    this.set('lastOptionParams.sisData.stationLocation.altitude', result.sisData.stationLocation.altitude);
     this.set('lastOptionParams.sisData.stationIDNumber', {});
     this.set('lastOptionParams.sisData.stationIDNumber.countryCode', result.sisData.stationIDNumber.countryCode);
     this.set('lastOptionParams.sisData.stationIDNumber.fccFacilityId', result.sisData.stationIDNumber.fccFacilityId);
@@ -1615,8 +1615,8 @@ SDL.RadioModel = Em.Object.create({
     if(data.stationLocation.latitudeDegrees!=null){
       this.set('radioControlStruct.sisData.stationLocation.latitudeDegrees',data.stationLocation.latitudeDegrees);
     }
-    if(data.stationLocation.altitudeMeters!=null){
-      this.set('radioControlStruct.sisData.stationLocation.altitudeMeters',data.stationLocation.altitudeMeters);
+    if(data.stationLocation.altitude!=null){
+      this.set('radioControlStruct.sisData.stationLocation.altitude',data.stationLocation.altitude);
     }
   },
   setAvailableHDs: function(value) {

@@ -243,14 +243,14 @@
 }
 
 
-#radio_options_view_container .gpsLocationLabel {
+#radio_options_view_container .gpsDataLabel {
     left: 40px;
     top: 330px;
 }
 
 
 
-#radio_options_view_container .gpsLocationCheckBox {
+#radio_options_view_container .gpsDataCheckBox {
     position: absolute;
     left: 25px;
     top: 330px;
