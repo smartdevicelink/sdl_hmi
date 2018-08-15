@@ -116,8 +116,8 @@ SDL.RadioView = Em.ContainerView
             'stationLongNameCheckBox',
             'stationLongNameLabel',
             'stationLongNameInput',
-            'gpsLocationLabel',
-            'gpsLocationCheckBox',
+            'gpsDataLabel',
+            'gpsDataCheckBox',
             'longitudeLabel',
             'longitudeInput',
             'latitudeLabel',
@@ -210,11 +210,11 @@ SDL.RadioView = Em.ContainerView
               attributeBindings: ['disabled'],
               elementId: 'altitudeCheckBox',
               classNames: 'altitudeCheckBox',
-              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitudeMeters',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitude',
               isDisabled: function() {
-                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation;
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData;
               }.property(
-                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation'
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData'
               ),
               disabledBinding: 'isDisabled'
             }
@@ -231,14 +231,14 @@ SDL.RadioView = Em.ContainerView
               attributeBindings: ['disabled'],
               elementId: 'altitudeInput',
               classNames: 'altitudeInput',
-              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.altitudeMeters',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.altitude',
               isDisabled: function() {
-                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation ? 
-                !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation
-                :!SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitudeMeters;
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData ? 
+                !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData
+                :!SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitude;
               }.property(
-                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation',
-                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitudeMeters'
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData',
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitude'
               ),
               disabledBinding: 'isDisabled'
             }
@@ -259,9 +259,9 @@ SDL.RadioView = Em.ContainerView
               classNames: 'latitudeInput',
               valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.latitudeDegrees',
               isDisabled: function() {
-                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation;
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData;
               }.property(
-                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation'
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData'
               ),
               disabledBinding: 'isDisabled'
             }
@@ -282,18 +282,18 @@ SDL.RadioView = Em.ContainerView
               classNames: 'longitudeInput',
               valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.longitudeDegrees',
               isDisabled: function() {
-                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation;
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData;
               }.property(
-                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation'
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData'
               ),
               disabledBinding: 'isDisabled'
             }
           ),
-          gpsLocationCheckBox: Em.Checkbox.extend(
+          gpsDataCheckBox: Em.Checkbox.extend(
             {
-              elementId: 'gpsLocationCheckBox',
-              classNames: 'gpsLocationCheckBox',
-              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsLocation'
+              elementId: 'gpsDataCheckBox',
+              classNames: 'gpsDataCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData'
             }
           ),
           stationLongNameCheckBox: Em.Checkbox.extend(
@@ -361,11 +361,11 @@ SDL.RadioView = Em.ContainerView
               content: 'Sis Data list'
             }
           ),
-          gpsLocationLabel: SDL.Label.extend(
+          gpsDataLabel: SDL.Label.extend(
             {
-              elementId: 'gpsLocationLabel',
-              classNames: 'gpsLocationLabel',
-              content: 'GPS Location:'
+              elementId: 'gpsDataLabel',
+              classNames: 'gpsDataLabel',
+              content: 'Station Location:'
             }
           ),
           stationShortNameCheckbox: Em.Checkbox.extend(

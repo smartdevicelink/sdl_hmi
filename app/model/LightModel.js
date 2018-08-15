@@ -109,7 +109,7 @@ SDL.LightModel = Em.Object.create({
         id: 'FRONT_LEFT_HIGH_BEAM',
         status: 'OFF',
         density: 0.1,
-        sRGBColor:{
+        color:{
             red: 0,
             green: 100,
             blue: 255
@@ -125,7 +125,7 @@ SDL.LightModel = Em.Object.create({
                     id: struct[i],
                     status: 'OFF',
                     density: 1,
-                    sRGBColor:{
+                    color:{
                         red: 255,
                         green: 255,
                         blue: 255
@@ -148,7 +148,7 @@ SDL.LightModel = Em.Object.create({
                 result.push({
                     name: struct[i],
                     densityAvailable: true,
-                    sRGBColorSpaceAvailable: true,
+                    RGBColorSpaceAvailable: true,
                 });
             }
             return capabilities;
@@ -180,9 +180,9 @@ SDL.LightModel = Em.Object.create({
                     if(null != data.lightState[i].density){
                         this.set('lightState.'+j+'.density', data.lightState[i].density);
                     }
-                    if(null != data.lightState[i].sRGBColor){
-                        this.set('lightState.'+j+'.sRGBColor', 
-                            data.lightState[i].sRGBColor);
+                    if(null != data.lightState[i].color){
+                        this.set('lightState.'+j+'.color', 
+                            data.lightState[i].color);
                     } 
                     if(data.lightState[i].id == SDL.LightModel.lightSettings.id){
                         SDL.LightModel.set('lightSettings',this.lightState[j])
