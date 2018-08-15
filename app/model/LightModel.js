@@ -148,7 +148,7 @@ SDL.LightModel = Em.Object.create({
                 result.push({
                     name: struct[i],
                     densityAvailable: true,
-                    RGBColorSpaceAvailable: true,
+                    rgbColorSpaceAvailable: true,
                 });
             }
             return capabilities;
