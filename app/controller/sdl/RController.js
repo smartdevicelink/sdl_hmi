@@ -474,6 +474,14 @@ SDL.RController = SDL.SDLController.extend(
         module = 'Climate';
       } else if (request.params.moduleType == 'RADIO') {
         module = 'Radio';
+      }else if (request.params.moduleType == 'SEAT') {
+        module = 'Seat';
+      }else if (request.params.moduleType == 'AUDIO') {
+        module = 'Audio';
+      }else if (request.params.moduleType == 'LIGHT') {
+        module = 'Light';
+      }else if (request.params.moduleType == 'HMI_SETTINGS') {
+        module = 'HMI settings';
       }
 
       var popUp = SDL.PopUp.create().appendTo('body').popupActivate(

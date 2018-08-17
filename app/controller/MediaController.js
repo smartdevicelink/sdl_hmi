@@ -229,8 +229,8 @@ SDL.MediaController = Em.Object.create(
       this.set('tempSource','');
     },
     turnOnCD: function () {
-      this.deactivateAll();
       if (!SDL.States.media.player.cd.active) {
+        this.deactivateAll();
         SDL.States.goToStates('media.player.cd');
       }
       this.onPlayerEnter(SDL.CDModel, 'cd');
@@ -240,8 +240,8 @@ SDL.MediaController = Em.Object.create(
      * Turn on USB
      */
     turnOnUSB: function () {
-      this.deactivateAll();
       if (!SDL.States.media.player.usb.active) {
+        this.deactivateAll();
         SDL.States.goToStates('media.player.usb');
       }
       this.onPlayerEnter(SDL.USBModel, 'usb');
@@ -251,8 +251,8 @@ SDL.MediaController = Em.Object.create(
      * Turn on Radio
      */
     turnOnRadio: function () {
-      this.deactivateAll();
       if (!SDL.States.media.player.radio.active) {
+        this.deactivateAll();
         SDL.States.goToStates('media.player.radio');
       }
       SDL.RadioModel.saveCurrentOptions();
@@ -260,8 +260,8 @@ SDL.MediaController = Em.Object.create(
       this.returnParameters();
     },
     turnOnBluetooth: function () {
-      this.deactivateAll();
       if (!SDL.States.media.player.bluetooth.active) {
+        this.deactivateAll();
         SDL.States.goToStates('media.player.bluetooth');
       }
       this.onPlayerEnter(SDL.BluetoothModel, 'bluetooth');
@@ -269,8 +269,8 @@ SDL.MediaController = Em.Object.create(
     },
 
     turnOnLineIn: function () {
-      this.deactivateAll();
       if (!SDL.States.media.player.lineIn.active) {
+        this.deactivateAll();
         SDL.States.goToStates('media.player.lineIn');
       }
       this.onPlayerEnter(SDL.LineInModel, 'lineIn');
@@ -278,8 +278,8 @@ SDL.MediaController = Em.Object.create(
     },
 
     turnOnIPod: function () {
-      this.deactivateAll();
       if (!SDL.States.media.player.ipod.active) {
+        this.deactivateAll();
         SDL.States.goToStates('media.player.ipod');
       }
       this.onPlayerEnter(SDL.IPodModel, 'ipod');
