@@ -592,7 +592,9 @@ SDL.MediaController = Em.Object.create(
     },
     switchSource: function (source) {
       switch (source) {
-        case 'RADIO_TUNER': this.turnOnRadio(); break;
+        case 'AM':
+        case 'XM':
+        case 'FM': this.turnOnRadio(); break;
         case 'BLUETOOTH_STEREO_BTST': this.turnOnBluetooth(); break;
         case 'CD': this.turnOnCD(); break;
         case 'USB': this.turnOnUSB(); break;
@@ -624,7 +626,9 @@ SDL.MediaController = Em.Object.create(
               SDL.SDLController.onEventChanged('player', true);
             }
             switch (data.source) {
-              case 'RADIO_TUNER': SDL.States.set('media.player.radio.active', true);
+              case 'AM':
+              case 'XM':
+              case 'FM': SDL.States.set('media.player.radio.active', true);
                 SDL.States.set('media.player.cd.active', false);
                 SDL.States.set('media.player.usb.active', false);
                 SDL.States.set('media.player.bluetooth.active', false);
@@ -692,7 +696,9 @@ SDL.MediaController = Em.Object.create(
                 SDL.SDLController.onEventChanged('player', true);
               }
               switch (data.source) {
-                case 'RADIO_TUNER':
+                case 'AM':
+                case 'XM':
+                case 'FM':
                   this.setFalseStateModel();
                   SDL.RadioModel.set('active', true);
                   this.set('activeState', 'media.player.radio');
@@ -735,6 +741,8 @@ SDL.MediaController = Em.Object.create(
         }
       } else { return this.setAudioControlData(data); }
 
+      SDL.RadioModel.checkoutRadioSource(data);
+
       if (data.volume != null) {
         this.set('currentVolume', data.volume);
         result.volume = data.volume;
@@ -772,6 +780,9 @@ SDL.MediaController = Em.Object.create(
     setAudioControlData: function (data) {
       result = {};
       if (data.source != null) {
+        
+        SDL.RadioModel.checkoutRadioSource(data);
+        
         this.set('lastRadioControlStruct.source', data.source);
         this.switchSource(data.source);
         result.source = data.source;

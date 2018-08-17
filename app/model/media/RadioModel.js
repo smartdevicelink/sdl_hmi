@@ -638,6 +638,21 @@ SDL.RadioModel = Em.Object.create({
     return result;
   },
 
+  checkoutRadioSource: function(data){
+    if(data.source == 'AM' || 
+        data.source == 'FM' || 
+          data.source == 'XM'){
+      
+      if (data.source != this.radioControlStruct.band) {
+        SDL.RadioModel.setRadioBand(data.source);
+          this.switchRadioBandFrequency(data.frequencyInteger == null);
+      } else {
+        this.updateCurrentFrequencyInfo();
+      }
+    }
+    return;
+  },
+
   setRadioData: function(data) {
     var properties = [];
 
@@ -728,6 +743,9 @@ SDL.RadioModel = Em.Object.create({
     data = SDL.SDLController.filterObjectProperty(data, properties);
     if (Object.keys(data).length > 0) {
       FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', radioControlData: data});
+    }
+    if(data.band != null){
+      this.sendAudioNotification();
     }
   },
 
@@ -1466,12 +1484,12 @@ SDL.RadioModel = Em.Object.create({
     this.setSource();
     var data = SDL.MediaController.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':data.source}});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':this.radioControlStruct.band }});
   }
   },
   setSource:function()
   {
-    SDL.MediaController.lastRadioControlStruct.source='RADIO_TUNER';
+    SDL.MediaController.set('lastRadioControlStruct.source', this.radioControlStruct.band );
   },
 
   exitPopUp:function (param){
@@ -1543,6 +1561,7 @@ SDL.RadioModel = Em.Object.create({
         properties.push('frequencyInteger');
         SDL.RadioModel.switchRadioBandFrequency(true);
       }
+      this.setSource();
     }
 
     if(properties.indexOf('stationLocation.longitudeDegrees')>=0){

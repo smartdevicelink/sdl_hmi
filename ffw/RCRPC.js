@@ -281,20 +281,38 @@ FFW.RC = FFW.RPCObserver.create(
               }     
             }
             if (request.params.moduleData.radioControlData) {
+             if(request.params.moduleData.radioControlData.band && 
+              request.params.moduleData.radioControlData.band == 'DAB'){
+                this.sendError(
+                  SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
+                  request.id, request.method,'DAB not supported'
+                );
+                return;
+              } else {
               newRadioControlData =
                 SDL.RadioModel.setRadioData(
                   request.params.moduleData.radioControlData);
-              if (SDL.RadioModel.radioControlStruct.radioEnable) {
-                SDL.RadioModel.saveCurrentOptions();
+                if (SDL.RadioModel.radioControlStruct.radioEnable) {
+                  SDL.RadioModel.saveCurrentOptions();
+                }
               }
             }
             if(request.params.moduleData.audioControlData){
+              if(request.params.moduleData.audioControlData.source && 
+                request.params.moduleData.audioControlData.source == 'DAB'){
+                  this.sendError(
+                    SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
+                    request.id, request.method,'DAB not supported'
+                  );
+                  return;
+                } else {
               newAudioControlData = (request.params.moduleData.audioControlData.keepContext!=null)?
               SDL.MediaController.setAudioControlDataWithKeepContext(request.params.moduleData.audioControlData)
               :SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
-              if (Object.keys(request.params.moduleData.audioControlData).length > 0) {
-                FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', 
+                if (Object.keys(request.params.moduleData.audioControlData).length > 0) {
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', 
                                                           audioControlData: newAudioControlData});
+                }
               }
             }
             if(request.params.moduleData.hmiSettingsControlData){
