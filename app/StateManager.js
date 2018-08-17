@@ -164,12 +164,8 @@ var StateManager = Em.StateManager.extend(
         },
         policies: Em.State.create(
           {
-            statisticsInfo: Em.State.create(
-              {}
-            ),
-            getUrls: Em.State.create(
-              {}
-            ),
+            statisticsInfo: Em.State.create({}),
+            getUrls: Em.State.create({}),
             connectionSettings: Em.State.create(
               {
                 enter: function() {
@@ -193,12 +189,8 @@ var StateManager = Em.StateManager.extend(
                 }
               }
             ),
-            appPermissions: Em.State.create(
-              {}
-            ),
-            systemError: Em.State.create(
-              {}
-            ),
+            appPermissions: Em.State.create({}),
+            systemError: Em.State.create({}),
             deviceStateChange: Em.State.create(
               {
                 enter: function() {
@@ -215,7 +207,33 @@ var StateManager = Em.StateManager.extend(
               }
             )
           }
-        )
+        ),
+        HMISettings: Em.State.create({}),
+
+        light: Em.State.create({
+          singleLight: Em.State.create({
+                enter: function() {
+                  this._super();
+                }
+          }),
+          exteriorLight: Em.State.create({
+            enter: function() {
+              this._super();
+            }
+          }),
+          interiorLight: Em.State.create({
+            enter: function() {
+              this._super();
+            }
+          }),
+          locationLight: Em.State.create({
+            enter: function() {
+              this._super();
+            }
+          })
+        }),
+
+        seat: Em.State.create({}),
       }
     ),
     /** Media state */
@@ -235,6 +253,7 @@ var StateManager = Em.StateManager.extend(
                 enter: function() {
                   SDL.MediaController.set('activeState',
                     SDL.States.nextState);
+                    SDL.RadioModel.sendAudioNotification();
                   if (!SDL.RadioModel.radioControlStruct.radioEnable) {
                     SDL.RadioModel.radioEnableKeyPress();
                   }
@@ -244,9 +263,9 @@ var StateManager = Em.StateManager.extend(
                   SDL.MediaController.deactivateCD();
                   SDL.MediaController.currentSelectedPlayer.pause();
                   SDL.MediaController.deactivateUSB();
-                  if (SDL.RadioModel.radioControlStruct.radioEnable) {
-                    SDL.RadioModel.radioEnableKeyPress();
-                  }
+                  SDL.MediaController.deactivateBluetooth();
+                  SDL.MediaController.deactivateLineIn();
+                  SDL.MediaController.deactivateIPod();
                   this._super();
                 }
               }
@@ -256,11 +275,16 @@ var StateManager = Em.StateManager.extend(
                 enter: function() {
                   SDL.MediaController.set('activeState',
                     SDL.States.nextState);
+                  SDL.CDModel.sendAudioNotification();
                   this._super();
                 },
                 exit: function() {
                   SDL.MediaController.deactivateRadio();
                   SDL.MediaController.deactivateUSB();
+                  SDL.MediaController.deactivateBluetooth();
+                  SDL.MediaController.deactivateLineIn();
+                  SDL.MediaController.deactivateIPod();
+                  
                   this._super();
                 },
                 moreinfo: Em.State.create(
@@ -273,31 +297,104 @@ var StateManager = Em.StateManager.extend(
                 enter: function() {
                   SDL.MediaController.set('activeState',
                     SDL.States.nextState);
+                  SDL.USBModel.sendAudioNotification();
                   this._super();
                 },
                 exit: function() {
                   this._super();
                   SDL.MediaController.deactivateRadio();
                   SDL.MediaController.deactivateCD();
+                  SDL.MediaController.deactivateBluetooth();
+                  SDL.MediaController.deactivateLineIn();
+                  SDL.MediaController.deactivateIPod();
                 },
                 moreinfo: Em.State.create(
                   {
-                    enter: function() {
-                      this._super();
-                      // reset Messages
-                    }
+                   
                   }
                 )
               }
-            )
-          }
+            ),
+
+            bluetooth: Em.State.create(
+            {
+              enter:function()
+              {
+                SDL.MediaController.set('activeState',
+                  SDL.States.nextState);
+                SDL.BluetoothModel.sendAudioNotification();
+                this._super();
+              },
+              exit:function()
+              {
+                this._super();
+                SDL.MediaController.deactivateRadio();
+                SDL.MediaController.deactivateCD();
+                SDL.MediaController.deactivateUSB();
+                SDL.MediaController.deactivateLineIn();
+                SDL.MediaController.deactivateIPod();
+              },
+              moreinfo:Em.State.create(
+              {}
+              )
+            }
         ),
+            lineIn: Em.State.create(
+            {
+              enter:function()
+              {
+                SDL.MediaController.set('activeState',
+                  SDL.States.nextState);
+                SDL.LineInModel.sendAudioNotification();
+                this._super();
+              },
+              exit:function()
+              {
+                this._super();
+                SDL.MediaController.deactivateRadio();
+                SDL.MediaController.deactivateCD();
+                SDL.MediaController.deactivateUSB();
+                SDL.MediaController.deactivateBluetooth();
+                SDL.MediaController.deactivateIPod();
+              },
+              moreinfo:Em.State.create(
+              {}
+              )
+            }
+            ),
+         
+            ipod: Em.State.create(
+            {
+              enter:function()
+              {
+                SDL.MediaController.set('activeState',
+                  SDL.States.nextState);
+                SDL.IPodModel.sendAudioNotification();
+                this._super();
+              },
+              exit:function()
+              {
+                this._super();
+                SDL.MediaController.deactivateRadio();
+                SDL.MediaController.deactivateCD();
+                SDL.MediaController.deactivateUSB();
+                SDL.MediaController.deactivateLineIn();
+                SDL.MediaController.deactivateBluetooth();
+              },
+            }
+          ),
+            }
+        ),
+          
         sdlmedia: Em.State.create(
           {
             enter: function() {
               SDL.MediaController.deactivateRadio();
               SDL.MediaController.deactivateUSB();
               SDL.MediaController.deactivateCD();
+              SDL.MediaController.lastRadioControlStruct.source='MOBILE_APP';
+              var data = SDL.MediaController.getAudioControlData();
+              FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:{'source':data.source}});
               if (SDL.SDLModel.data.mediaPlayerActive) {
                 SDL.SDLController.onEventChanged('player', false);
               }

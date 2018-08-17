@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Ford Motor Company All rights reserved.
+ * Copyright (c) 2018, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -23,50 +23,30 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * @name SDL.USBModel
- * @desc USB Media data model
- * @category Model
- * @source app/model/media/USBModel.js
- * @version 1.0
- */
 
-SDL.USBModel = Em.Object.create({
-    active: false,
-    optionsEnabled:false,
-    statusBar: 'Luk Marko',
-    usbControl:{
-      keepContext: false
-    },
-boolStruct: [
-    true,
-    false
-  ],
-  equalizerSettings: {
-        channelId:10,
-        channelName:'Station'
-      },
-    /** USB Player*/
-    init: function() {
+ SDL.BluetoothModel=Em.Object.create({
+active: false,
+selectedIndex: 0,
+optionsEnabled:false,
+statusBar: 'Bluetooth',
+init: function() {
       this._super();
       this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
-      this.set('player.name', 'USB');
+      this.set('player.name', 'BLUETOOTH');
     },
-    toggleOptions:function(){
-      SDL.USBModel.toggleProperty('optionsEnabled');
-    },
-    sendAudioNotification:function()
+ sendAudioNotification:function()
   {
     this.setSource();
     var data = SDL.MediaController.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':data.source}});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:{'source':data.source}});
   }
   },
   setSource:function()
   {
-    SDL.MediaController.lastRadioControlStruct.source='USB';
+    SDL.MediaController.lastRadioControlStruct.source='BLUETOOTH_STEREO_BTST';
   },
+	
     PlayList: SDL.Playlist.create({
         selectedIndex: 0,
         items: {
@@ -122,11 +102,13 @@ boolStruct: [
               genre: 'Rock',
               disk: 'Fall',
               duration: 123
-            }
+             }
           )
         },
-        homeWidgetIcon: 'images/media/usb-h-ico.png'
+       // homeWidgetIcon: 'images/media/usb-h-ico.png'
       }
     )
+
   }
+ 
 );

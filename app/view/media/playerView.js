@@ -40,7 +40,10 @@ SDL.playerView = Em.ContainerView.create(
     childViews: [
       SDL.RadioView,
       SDL.cdView,
-      SDL.usbView
+      SDL.usbView,
+      SDL.bluetoothView
+      ,SDL.lineInView
+      ,SDL.ipodView
     ]
   }
 );
