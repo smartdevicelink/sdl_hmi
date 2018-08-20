@@ -248,15 +248,16 @@ FFW.RC = FFW.RPCObserver.create(
                 );
                 return;
               } else {
-              newRadioControlData =
-                SDL.RadioModel.setRadioData(
-                  request.params.moduleData.radioControlData);
-              if (SDL.RadioModel.radioControlStruct.radioEnable) {
-                SDL.RadioModel.saveCurrentOptions();
-              }
-              if (Object.keys(newRadioControlData).length > 0) {
-                FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', 
-                                                          radioControlData: newRadioControlData});
+                newRadioControlData =
+                  SDL.RadioModel.setRadioData(
+                    request.params.moduleData.radioControlData);
+                if (SDL.RadioModel.radioControlStruct.radioEnable) {
+                  SDL.RadioModel.saveCurrentOptions();
+                }
+                if (Object.keys(newRadioControlData).length > 0) {
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', 
+                                                            radioControlData: newRadioControlData});
+                }
               }
             }
             if(request.params.moduleData.audioControlData){
@@ -322,7 +323,6 @@ FFW.RC = FFW.RPCObserver.create(
               JSONMessage.result.moduleData.climateControlData =
                 newClimateControlData;
             }
-
             if (newRadioControlData) {
               JSONMessage.result.moduleData.radioControlData =
                 newRadioControlData;
@@ -339,7 +339,7 @@ FFW.RC = FFW.RPCObserver.create(
               JSONMessage.result.moduleData.seatControlData =
                 newSeatControlData;
             }
-            
+
             this.client.send(JSONMessage);
             this.set('isSetVdInProgress', false);
             break;
