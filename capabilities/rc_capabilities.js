@@ -216,12 +216,12 @@ SDL.remoteControlCapability =
         }, {
             statusAvailable: true,
             densityAvailable: true,
-            name: 'REAR_LEFT_BREAK_LIGHT',
+            name: 'REAR_LEFT_BRAKE_LIGHT',
             rgbColorSpaceAvailable: true
         }, {
             statusAvailable: true,
             densityAvailable: true,
-            name: 'REAR_RIGHT_BREAK_LIGHT',
+            name: 'REAR_RIGHT_BRAKE_LIGHT',
             rgbColorSpaceAvailable: true
         }, {
             statusAvailable: true,
