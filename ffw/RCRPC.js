@@ -41,6 +41,10 @@ FFW.RC = FFW.RPCObserver.create(
      */
     isReady: true,
     /**
+     * If true then RC controller currently handles SetIVD request
+     */
+    isSetVdInProgress: false,
+    /**
      * Contains response codes for request that should be processed but there
      * were some kind of errors Error codes will be injected into response.
      */
@@ -232,14 +236,7 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.SetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
-
-            if (!this.consentedAppCheck(request)) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED,
-                request.id, request.method
-              );
-              return;
-            }
+            this.set('isSetVdInProgress', true);
 
             if (request.params.moduleData.radioControlData) {
               if (request.params.moduleData.radioControlData.radioEnable == null
@@ -374,27 +371,12 @@ FFW.RC = FFW.RPCObserver.create(
             }
             
             this.client.send(JSONMessage);
+            this.set('isSetVdInProgress', false);
             break;
           }
           case 'RC.GetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
-
-            if (request.params.appID == undefined) {
-             this.sendError(
-               SDL.SDLModel.data.resultCode.INVALID_DATA, request.id,
-               request.method, 'appID parameter missing!'
-             );
-             return;
-            }
-
-            if (!this.consentedAppCheck(request)) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED,
-                request.id, request.method
-              );
-              return;
-            }
 
             var moduleType = request.params.moduleType;
             var climateControlData = null;
@@ -616,32 +598,5 @@ FFW.RC = FFW.RPCObserver.create(
         Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
         FFW.RC.client.send(JSONMessage);
     },
-    /**
-     * Verification for consented apps
-     * HMI should reject secon unconsented app
-     * @param request
-     */
-    consentedAppCheck: function(request) {
-      var appID = request.params.appID;
-      var moduleType = null;
-      if (request.params.moduleDescription) {
-        moduleType = request.params.moduleDescription.moduleType;
-      } else if (request.params.moduleData) {
-        moduleType = request.params.moduleData.moduleType;
-      } else {
-        moduleType = request.params.moduleType;
-      }
-
-      var deviceName = SDL.SDLController.getApplicationModel(appID)
-        .deviceName;
-
-      if ((SDL.SDLModel.driverDeviceInfo &&
-        deviceName != SDL.SDLModel.driverDeviceInfo.name) ||
-        !SDL.SDLModel.reverseFunctionalityEnabled) {
-        return false;
-      }
-
-      return true;
-    }
   }
 );
