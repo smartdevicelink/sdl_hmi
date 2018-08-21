@@ -611,12 +611,21 @@
 #VehicleInfo .speedLabel,
 #PrimaryDevice .chooseLabel {
     top: 70px;
-    width: 600px;
+    width: 290px;
     left: 40px;
     height: 20px;
     padding: 10px;
     background: #535353;
 }
+
+#exitAppView .signalLabel{
+    top: 70px;
+    width: 290px;
+    left: 355px;
+    height: 20px;
+    padding: 10px;
+    background: #535353;
+ }
 
 #VehicleInfo .vehicleDataChange {
     top: 125px;
@@ -668,7 +677,17 @@
     top: 125px;
     position: absolute;
     width: 150px;
-    left: 275px;
+    left: 40px;
+    height: 40px;
+    color: white;
+    background: #393939;
+}
+
+#exitAppView .signalSelect{
+    top: 125px;
+    position: absolute;
+    width: 150px;
+    left: 355px;
     height: 40px;
     color: white;
     background: #393939;
@@ -761,6 +780,35 @@
     line-height: 22px;
     border-radius: 4px;
     border: 1px solid white;
+}
+
+#exitAppView .sendAppStateButton {
+    right: 268px;
+    top: 125px;
+    width: 127px;
+    left: 200px;
+    height: 18px;
+    padding: 10px;
+    line-height: 22px;
+    border-radius: 0px;
+    border: 1px solid white;
+}
+
+#exitAppView .sendSignalButton {
+    right: 268px;
+    top: 125px;
+    width: 127px;
+    left: 516px;
+    height: 18px;
+    padding: 10px;
+    line-height: 22px;
+    border-radius: 0px;
+    border: 1px solid white;
+}
+
+#exitAppView .onAwakeSDLButton.pressed,
+#exitAppView .sendAppStateButton.pressed {
+    border: 1px solid red;
 }
 
 #VehicleInfo .odometrTitle {

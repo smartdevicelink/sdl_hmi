@@ -8,6 +8,13 @@ A quick guide to installing, configuring, and running HMI.
 	1. run SmartDeviceLinkCore
 	2. run chromium-browser [root_of_cloned_sdl_hmi_repo/index.html]
 
+## Simulating signals for LOW_VOLTAGE feature
+In order to simulate UNIX signals used by the LOW_VOLTAGE feature, some additional setup is required
+
+	1. run `deploy_server.sh`
+	2. run the HMI normally
+	3. open the `Exit Application` menu, choose a signal from the menu and press `Send signal`
+
 ## A quick note about dependencies
 All dependencies are installed after the SDL Core is successfully installed.
 
@@ -17,3 +24,5 @@ SDL HMI utility is only for acquaintance with the SDL project.
 ## Look at configuration file app/FLAGS.js. You can found there:
  - SDL WebSocket connection string -
 WEBSOCKET_URL
+ - Python WebSocket url for handling signals -
+PYTHON_SERVER_URL

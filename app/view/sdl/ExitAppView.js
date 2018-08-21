@@ -46,7 +46,11 @@ SDL.ExitApp = Em.ContainerView.create(
       'onAwakeSDLLabel',
       'onAwakeSDLButton',
       'onDeactivateSelect',
-      'onDeactivateLabel'
+      'onDeactivateLabel',
+      'signalLabel',
+      'signalSelect',
+      'sendAppStateButton',
+      'sendSignalButton'
     ],
     /**
      * Title of VehicleInfo PopUp view
@@ -73,6 +77,28 @@ SDL.ExitApp = Em.ContainerView.create(
       }
     ),
     /**
+     * Title of signal PopUp view
+     */
+    signalLabel: SDL.Label.extend(
+      {
+        elementId: 'signalLabel',
+        classNames: 'signalLabel',
+        content: 'Signal'
+      }
+    ),
+    /**
+     * HMI element Select with parameters of signal states
+     */
+    signalSelect: Em.Select.extend(
+      {
+        elementId: 'signalSelect',
+        classNames: 'signalSelect',
+        contentBinding: 'SDL.SDLModel.data.Signals',
+        optionValuePath: 'content.id',
+        optionLabelPath: 'content.name'
+      }
+    ),
+    /**
      * HMI element Select with parameters of TBTClientStates
      */
     exitAppViewSelect: Em.Select.extend(
@@ -81,13 +107,7 @@ SDL.ExitApp = Em.ContainerView.create(
         classNames: 'exitAppViewSelect',
         contentBinding: 'SDL.SDLModel.data.exitAppState',
         optionValuePath: 'content.id',
-        optionLabelPath: 'content.name',
-        /**
-         * Selected data sent on model for further processing
-         */
-        click: function() {
-          SDL.SDLController.exitAppViewSelected(this.selection.name);
-        }
+        optionLabelPath: 'content.name'
       }
     ),
     onAwakeSDLLabel: SDL.Label.extend(
@@ -107,6 +127,38 @@ SDL.ExitApp = Em.ContainerView.create(
         onDown: false
       }
     ),
+    /**
+     * HMI element Button for send exit state
+     */
+    sendAppStateButton:SDL.Button.extend(
+      {
+        elementId:'sendAppStateButton',
+        classNames: 'button sendAppStateButton',
+        text: 'Send state',
+        action:function(){
+          SDL.SDLController.exitAppViewSelected(SDL.ExitApp.exitAppViewSelect.selection.name);
+        },
+        target: 'SDL.SDLController',
+        buttonAction: true,
+        onDown: false
+    }
+  ),
+    /**
+     * HMI element Button for send signal
+     */
+ sendSignalButton:SDL.Button.extend(
+  {
+    elementId:'sendSignalButton',
+    classNames: 'button sendSignalButton',
+    text: 'Send signal',
+    action:function(){
+      FFW.RPCSimpleClient.send(SDL.ExitApp.signalSelect.selection.name);
+    },
+    target: 'SDL.SDLController',
+    buttonAction: true,
+    onDown: false
+}
+),
     onDeactivateLabel: SDL.Label.extend(
       {
         elementId: 'onDeactivateLabel',
