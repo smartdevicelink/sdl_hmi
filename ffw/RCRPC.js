@@ -41,6 +41,10 @@ FFW.RC = FFW.RPCObserver.create(
      */
     isReady: true,
     /**
+     * If true then RC controller currently handles SetIVD request
+     */
+    isSetVdInProgress: false,
+    /**
      * Contains response codes for request that should be processed but there
      * were some kind of errors Error codes will be injected into response.
      */
@@ -232,6 +236,7 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.SetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
+            this.set('isSetVdInProgress', true);
 
             if (request.params.moduleData.radioControlData) {
               if (request.params.moduleData.radioControlData.radioEnable == null
@@ -366,6 +371,7 @@ FFW.RC = FFW.RPCObserver.create(
             }
             
             this.client.send(JSONMessage);
+            this.set('isSetVdInProgress', false);
             break;
           }
           case 'RC.GetInteriorVehicleData':
