@@ -181,44 +181,6 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.GetCapabilities':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
-            var remoteControlCapability = {};
-
-            var climateControlCapabilities =
-              SDL.ClimateController.model.getClimateControlCapabilities();
-            var radioControlCapabilities =
-              SDL.RadioModel.getRadioControlCapabilities();
-            var audioControlCapabilities = 
-              SDL.MediaController.getAudioControlCapabilities();
-            var hmiSettingsControlCapabilities = 
-              SDL.HmiSettingsModel.getHmiSettingsCapabilities();
-            var lightControlCapabilities =
-              SDL.LightModel.getLightCapabilities();
-            var seatControlCapabilities = 
-              SDL.SeatModel.getSeatCapabilities(); 
-
-            var buttonCapabilities = [];
-
-            buttonCapabilities = buttonCapabilities.concat(
-              SDL.ClimateController.model.getClimateButtonCapabilities()
-            );
-            buttonCapabilities = buttonCapabilities.concat(
-              SDL.RadioModel.getRadioButtonCapabilities()
-            );
-
-            remoteControlCapability.climateControlCapabilities =
-              climateControlCapabilities;
-            remoteControlCapability.radioControlCapabilities =
-              radioControlCapabilities;
-            remoteControlCapability.hmiSettingsControlCapabilities =
-              hmiSettingsControlCapabilities;
-            remoteControlCapability.lightControlCapabilities =
-              lightControlCapabilities;
-            remoteControlCapability.seatControlCapabilities =
-              seatControlCapabilities;
-            remoteControlCapability.buttonCapabilities =
-              buttonCapabilities;
-              remoteControlCapability.audioControlCapabilities = 
-                audioControlCapabilities;
 
             // send repsonse
             var JSONMessage = {
@@ -227,7 +189,7 @@ FFW.RC = FFW.RPCObserver.create(
               'result': {
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
-                'remoteControlCapability': remoteControlCapability
+                'remoteControlCapability': SDL.remoteControlCapability
               }
             };
             this.client.send(JSONMessage);
@@ -323,6 +285,11 @@ FFW.RC = FFW.RPCObserver.create(
             if(request.params.moduleData.lightControlData){
               newLightControlData = SDL.LightModel.setLightControlData(
                 request.params.moduleData.lightControlData);
+
+                if (Object.keys(newLightControlData).length > 0) {
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT', 
+                                                            lightControlData: request.params.moduleData.lightControlData});
+                }
             }
             if(request.params.moduleData.seatControlData){
               newSeatControlData = SDL.SeatModel.setSeatControlData(
