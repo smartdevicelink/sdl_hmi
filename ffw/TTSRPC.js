@@ -185,9 +185,13 @@ FFW.TTS = FFW.RPCObserver.create(
           // this.errorResponsePull[request.id].type + " type. Request was not
           // processed."); this.errorResponsePull[request.id] = null;  return;
           // } }
-          SDL.SDLModel.setProperties(request.params);
+          resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'ttsSetGlobalProperties');
+          
+          if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
+            SDL.SDLModel.setProperties(request.params);
+          }
           this.sendTTSResult(
-            SDL.SDLModel.data.resultCode.SUCCESS,
+            resultCode,
             request.id,
             request.method
           );
@@ -365,7 +369,8 @@ FFW.TTS = FFW.RPCObserver.create(
         return;
       }
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS || 
+        resultCode === SDL.SDLModel.data.resultCode.WARNINGS) {
 
         // send repsonse
         var JSONMessage = {
@@ -377,6 +382,9 @@ FFW.TTS = FFW.RPCObserver.create(
           }
         };
         this.client.send(JSONMessage);
+      } else {
+        this.sendError(
+          resultCode, id, method, '');
       }
     },
     /*

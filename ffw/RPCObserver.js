@@ -136,12 +136,15 @@ FFW.RPCObserver = Em.Object.extend(
             params.cmdIcon.value = params.cmdIcon.value.replace(/\\/g, '%5C');
           }
         }
+        
         if ('menuIcon' in params) {
-          if (params.menuIcon.imageType === 'STATIC') {
-            delete params.menuIcon;
-            return false;
-          } else {
-            params.menuIcon.value = params.menuIcon.value.replace(/\\/g, '%5C');
+          if (params.menuIcon){
+            if (params.menuIcon && params.menuIcon.imageType === 'STATIC') {
+              delete params.menuIcon;
+              return false;
+            } else{
+              params.menuIcon.value = params.menuIcon.value.replace(/\\/g, '%5C');
+            }
           }
         }
         if ('syncFileName' in params) {
