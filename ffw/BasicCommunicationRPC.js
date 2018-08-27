@@ -77,11 +77,11 @@ FFW.BasicCommunication = FFW.RPCObserver
       onAppUnregisteredNotification: 'BasicCommunication.OnAppUnregistered',
       onSDLCloseNotification: 'BasicCommunication.OnSDLClose',
       onResumeAudioSourceNotification: 'BasicCommunication.OnResumeAudioSource',
+
       /**
-       * init object
-       */
-      init: function() {
-      },
+      * init object
+      */
+      init: function() {},
       /**
        * connect to RPC bus
        */
@@ -345,12 +345,17 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
         }
         if (notification.method == this.onAppRegisteredNotification) {
+          FFW.RPCHelper.addApplication(notification.params.application.appID);
           SDL.SDLModel.onAppRegistered(
             notification.params.application, notification.params.vrSynonyms
           );
           this.OnFindApplications();
         }
         if (notification.method == this.onAppUnregisteredNotification) {
+          if(notification.params.appID === FFW.RPCHelper.get('currentAppID')){
+            SDL.States.goToStates('settings.rpccontrol');
+            SDL.RPCControlView.showAppList();
+          }
           // remove app from list
           SDL.SDLModel.onAppUnregistered(notification.params);
         }

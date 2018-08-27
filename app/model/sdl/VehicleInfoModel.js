@@ -399,30 +399,15 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
      */
     SubscribeVehicleData: function(message) {
       var subscribeVIData = {};
-      for (var key in message.params) {
-        if (key === 'clusterModeStatus') {
-          key = 'clusterModes';
+      resultCode = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeVehicleData');
+      for (var key in message.params){
+        subscribeVIData[key] = {
+          dataType: this.eVehicleDataType[key],
+          resultCode: FFW.RPCHelper.vehicleDataStruct[key],
         }
-        if (SDL.SDLModel.subscribedData[key] === true) {
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'DATA_ALREADY_SUBSCRIBED'
-          };
-        } else if (key === 'externalTemperature') {
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
-          };
-        } else {
-          SDL.SDLModel.subscribedData[key] = true;
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'SUCCESS'
-          };
-        }
-      }
+      };
       FFW.VehicleInfo.sendVISubscribeVehicleDataResult(
-        SDL.SDLModel.data.resultCode.SUCCESS, message.id, message.method,
+        resultCode, message.id, message.method,
         subscribeVIData
       );
     },
