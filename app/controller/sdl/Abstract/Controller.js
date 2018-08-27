@@ -58,6 +58,7 @@ SDL.SDLController = Em.Object.extend(
       SDL.InfoAppsView.showAppList();
       SDL.AppPermissionsListView.showAppList();
       SDL.RCModulesController.updateModuleSeatLocationContent();
+      SDL.RPCControlView.showAppList();
     }.observes('SDL.SDLModel.data.registeredApps.@each'),
     /**
      * Handeler for command button press

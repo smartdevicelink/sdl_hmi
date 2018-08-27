@@ -457,9 +457,11 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
      */
     SubscribeVehicleData: function(message) {
       var subscribeVIData = {};
-      for (var key in message.params) {
-        if (key === 'clusterModeStatus') {
-          key = 'clusterModes';
+      resultCode = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeVehicleData');
+      for (var key in message.params){
+        subscribeVIData[key] = {
+          dataType: this.eVehicleDataType[key],
+          resultCode: FFW.RPCHelper.vehicleDataStruct[key],
         }
 
         var vehicleDataType = this.eVehicleDataType.hasOwnProperty(key) ?

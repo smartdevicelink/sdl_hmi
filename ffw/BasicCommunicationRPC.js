@@ -502,16 +502,21 @@ FFW.BasicCommunication = FFW.RPCObserver
         if (notification.method == this.onAppRegisteredNotification) {
           let appModel = Object.assign(notification.params.application, {
             "priority": notification.params.priority ? notification.params.priority : 'NONE'
-          }); 
+          });
           SDL.SDLModel.onAppRegistered(
             appModel, notification.params.vrSynonyms
           );
+          FFW.RPCHelper.addApplication(notification.params.application.appID);
           this.OnFindApplications();
           const mainWindowID = 0;
           let capability = SDL.SDLController.getDefaultCapabilities(mainWindowID, notification.params.application.appID);
           FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
         }
         if (notification.method == this.onAppUnregisteredNotification) {
+          if(notification.params.appID === FFW.RPCHelper.get('currentAppID')){
+            SDL.States.goToStates('settings.rpccontrol');
+            SDL.RPCControlView.showAppList();
+          }
           // remove app from list
           SDL.SDLModel.onAppUnregistered(notification.params);
         }

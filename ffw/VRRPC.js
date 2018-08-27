@@ -127,15 +127,31 @@ FFW.VR = FFW.RPCObserver.create(
     /*
      * handle RPC requests here
      */
+    checkRequestType: function(type){
+      switch(type){
+        case 'Command':
+          return 'vrAddCommand';
+        case 'Choice':
+          return 'createInteractionChoiceSet';
+        default: return '';
+      }
+    },
+
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.VR.onRPCRequest');
       if (this.validationCheck(request)) {
         switch (request.method) {
           case 'VR.AddCommand':
           {
-            SDL.SDLModel.addCommandVR(request.params);
+            var key = this.checkRequestType(request.params.type);
+            result = FFW.RPCHelper.getCustomResultCode(request.params.appID, key);
+
+            if(FFW.RPCHelper.isSuccessResultCode(result)){
+              SDL.SDLModel.addCommandVR(request.params);
+            }
+
             this.sendVRResult(
-              SDL.SDLModel.data.resultCode.SUCCESS,
+              result,
               request.id,
               request.method
             );
@@ -373,7 +389,7 @@ FFW.VR = FFW.RPCObserver.create(
         return;
       }
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
 
         // send repsonse
         var JSONMessage = {
@@ -385,6 +401,10 @@ FFW.VR = FFW.RPCObserver.create(
           }
         };
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(
+          resultCode, id, method,
+          'Erroneous response is assigned by settings');
       }
     },
     /*

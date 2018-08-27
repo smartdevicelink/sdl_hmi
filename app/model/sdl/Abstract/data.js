@@ -33,6 +33,15 @@
 
 SDL.SDLModelData = Em.Object.create(
   {
+    
+    init: function(){
+      this.resultCodes = Object.keys(this.resultCode);
+    },
+
+    /**
+    *  Array of result codes
+    */
+    resultCodes: null,
     /**
     *  List of default app permissions entityes for AppPermissionsView
     */
@@ -468,6 +477,20 @@ SDL.SDLModelData = Em.Object.create(
       'NORMAL': 4,
       'NONE': 5
     },
+    /**
+     * Array of vehicle data result codes
+     */
+    vehicleDataResultCode: [
+      'SUCCESS',
+      'TRUNCATED_DATA',
+      'DISALLOWED',
+      'USER_DISALLOWED',
+      'INVALID_ID',
+      'VEHICLE_DATA_NOT_AVAILABLE',
+      'DATA_ALREADY_SUBSCRIBED',
+      'DATA_NOT_SUBSCRIBED',
+      'IGNORED'
+    ],
     /**
      * Info navigationApp data for ShowConstantTBT request
      *

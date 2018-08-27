@@ -512,49 +512,57 @@ SDL.ABSAppModel = Em.Object.extend(
       if (!this.get('commandsList.' + parentID)) {
         this.commandsList[parentID] = [];
       }
+
       var commands = this.get('commandsList.' + parentID);
       // Magic number is limit of 1000 commands added on one menu
-      if (commands.length <= 999) {
-        commands[commands.length] = {
-          commandID: request.params.cmdID,
-          name: request.params.menuParams.menuName,
-          parent: parentID,
-          position: request.params.menuParams.position ?
-          request.params.menuParams.position : 0,
-          isTemplate:request.params.cmdIcon ?
-          request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
-          : null,
-          icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
-        };
-        if (SDL.SDLController.getApplicationModel(request.params.appID) &&
-          SDL.OptionsView.active) {
-          SDL.SDLController.buttonsSort(parentID, this.appID);
-          SDL.OptionsView.commands.refreshItems();
-        }
-        if(request.params.cmdIcon){
-          var image = request.params.cmdIcon.value;
-          var search_offset = image.lastIndexOf('.');
-          str='.png';
-          var isPng=image.includes(str, search_offset);
-          if(!isPng){
-          FFW.UI.sendUIResult(
-            SDL.SDLModel.data.resultCode.WARNINGS, request.id,
-            request.method
-          );
-          return;
-        }
-      }
-        if (request.id >= 0) {
-          FFW.UI.sendUIResult(
-            SDL.SDLModel.data.resultCode.SUCCESS, request.id,
-            request.method
-          );
-        }
-      } else {
+      result = FFW.RPCHelper.getCustomResultCode(this.appID, 'uiAddCommand');
+
+      if (FFW.RPCHelper.isSuccessResultCode(result)) {
+    	    if (commands.length <= 999) {
+        		commands[commands.length] = {
+        		  commandID: request.params.cmdID,
+        		  name: request.params.menuParams.menuName,
+        		  parent: parentID,
+        		  position: request.params.menuParams.position ?
+        		  request.params.menuParams.position : 0,
+        		  isTemplate:request.params.cmdIcon ?
+        		  request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
+        		  : null,
+        		  icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
+        		};
+        		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
+                    SDL.OptionsView.active) {
+                        SDL.SDLController.buttonsSort(parentID, this.appID);
+                        SDL.OptionsView.commands.refreshItems();
+        		}
+
+    		    console.log(commands.length);
+    		    if(request.params.cmdIcon) {
+    	            var image = request.params.cmdIcon.value;
+    		        var length=image.length;
+            		str='.png';
+            		var isPng=image.includes(str,length-5);
+            		if (!isPng) {
+            		    FFW.UI.sendUIResult(
+            		        SDL.SDLModel.data.resultCode.WARNINGS, request.id,
+            		        request.method
+            		    );
+            		    return;
+    		        }
+    	        }
+        		if (request.id >= 0) {
+        		  FFW.UI.sendUIResult(result, request.id, request.method);
+        		}
+    	    } else {
+        		FFW.UI.sendError(
+        		  result, request.id, request.method,
+        		  'Adding more than 1000 item to the top menu or to submenu is not allowed.'
+        		);
+    	    }
+    	} else {
         FFW.UI.sendError(
-          SDL.SDLModel.data.resultCode.REJECTED, request.id,
-          request.method,
-          'Adding more than 1000 item to the top menu or to submenu is not allowed.'
+          result, request.id, request.method,
+          'Erroneous response is assigned by settings'
         );
       }
     },
@@ -594,37 +602,44 @@ SDL.ABSAppModel = Em.Object.extend(
      */
     addSubMenu: function(request) {
 
-      // parentID is equal to 'top' cause Top level menu ID
-      var parentID = request.params.menuParams.parentID ? request.params.menuParams.parentID : 'top';
-      var commands = this.get('commandsList.' + parentID);
-      // Magic number is limit of 1000 commands added on one menu
-      if (commands.length <= 999) {
-        this.commandsList[request.params.menuID] = [];
-        commands[commands.length] = {
-          menuID: request.params.menuID,
-          name: request.params.menuParams.menuName ?
-            request.params.menuParams.menuName : '',
-          parent: parentID,
-          position: request.params.menuParams.position ?
-            request.params.menuParams.position : 0,
-          icon: request.params.menuIcon ? request.params.menuIcon.value : null
-        };
-        if (SDL.SDLController.getApplicationModel(request.params.appID) &&
-          SDL.OptionsView.active) {
-          SDL.SDLController.buttonsSort(parentID, this.appID);
-          SDL.OptionsView.commands.refreshItems();
+        // parentID is equal to 'top' cause Top level menu ID
+        var parentID = 'top';
+        var commands = this.get('commandsList.' + parentID);
+
+        result = FFW.RPCHelper.getCustomResultCode(this.appID, 'AddSubmenu');
+        if(FFW.RPCHelper.isSuccessResultCode(result)) {
+    	    // Magic number is limit of 1000 commands added on one menu
+    	    if (commands.length <= 999) {
+        		this.commandsList[request.params.menuID] = [];
+        		commands[commands.length] = {
+        		  menuID: request.params.menuID,
+        		  name: request.params.menuParams.menuName ?
+        		    request.params.menuParams.menuName : '',
+        		  parent: 0,
+        		  position: request.params.menuParams.position ?
+        		    request.params.menuParams.position : 0,
+        		  icon: request.params.menuIcon ? request.params.menuIcon.value : null
+        		};
+        		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
+        		  SDL.OptionsView.active) {
+        		    SDL.SDLController.buttonsSort(parentID, this.appID);
+        		    SDL.OptionsView.commands.refreshItems();
+        		}
+        		FFW.UI.sendUIResult(result, request.id, request.method);
+    	    } else {
+        		FFW.UI.sendError(
+        		  SDL.SDLModel.data.resultCode.REJECTED, request.id,
+        		  request.method,
+        		  'Adding more than 1000 item to the top menu or to submenu is not allowed.'
+        		);
+    	    }
+    	} else {
+            FFW.UI.sendError(
+              result, request.id,
+              request.method,
+              'Erroneous response is assigned by settings'
+            );
         }
-        FFW.UI.sendUIResult(
-          SDL.SDLModel.data.resultCode.SUCCESS, request.id,
-          request.method
-        );
-      } else {
-        FFW.UI.sendError(
-          SDL.SDLModel.data.resultCode.REJECTED, request.id,
-          request.method,
-          'Adding more than 1000 item to the top menu or to submenu is not allowed.'
-        );
-      }
     },
     /**
      * Delete submenu and related commands from list
