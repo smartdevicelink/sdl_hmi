@@ -261,18 +261,20 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
      */
     sendVISubscribeVehicleDataResult: function(resultCode, id, method, data) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
 
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
-          'result': data
+          'result': data,
         };
         JSONMessage.result.code = resultCode;
         JSONMessage.result.method = method;
-        this.client.send(JSONMessage);
+      } else {
+        this.sendGetVehicleDataError(resultCode, id, method,'Erroneous response is assigned by settings', data);
       }
+      this.client.send(JSONMessage);
     },
     /**
      * Send error response from onRPCRequest
