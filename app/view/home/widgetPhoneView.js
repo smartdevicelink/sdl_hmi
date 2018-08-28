@@ -52,38 +52,39 @@ SDL.WidgetPhoneView = Em.ContainerView.extend({
   }),
 
   rcStatusLabel: SDL.Label.extend(
-			
           {
           	getLabelText: function(){
 
           		if (SDL.SDLModel.appRCStatus.length == 0){
-          			return [];	
-          		} 
+          			return [];
+              }
           		else {
           			var rcStatus = [];
-                    for (var key in SDL.SDLModel.appRCStatus){
+                for (var key in SDL.SDLModel.appRCStatus) {
           				var model = SDL.SDLController.getApplicationModel(+key);
-          				var strHeader = model.appName+': ';
-          				rcStatus.push(strHeader);
-          				if (SDL.SDLModel.appRCStatus[+key].allocated.length > 0){
-          					var allocated = SDL.SDLModel.appRCStatus[+key].allocated;
-          					var allocatedStr = 'Allocates:';
-          					for (var i = 0; i < allocated.length; ++i) {
-          						allocatedStr += (i>0)? ', ': ' ';
-          						allocatedStr += allocated[i].moduleType.toLowerCase() ;  							 					
-          					}
-          					rcStatus.push(allocatedStr);
-          				}
+                  if (model && model.appName) {
+            				var strHeader = model.appName+': ';
+            				rcStatus.push(strHeader);
+            				if (SDL.SDLModel.appRCStatus[+key].allocated.length > 0){
+            					var allocated = SDL.SDLModel.appRCStatus[+key].allocated;
+            					var allocatedStr = 'Allocates:';
+            					for (var i = 0; i < allocated.length; ++i) {
+            						allocatedStr += (i>0)? ', ': ' ';
+            						allocatedStr += allocated[i].moduleType.toLowerCase() ;
+            					}
+            					rcStatus.push(allocatedStr);
+            				}
 
-          				if (SDL.SDLModel.appRCStatus[+key].free.length > 0){
-          					var free = SDL.SDLModel.appRCStatus[+key].free;
-          					var freeStr = 'Can allocate:';
-          					for (var i = 0; i < free.length; ++i) {
-          						freeStr += (i>0)? ', ': ' ';
-          						freeStr += free[i].moduleType.toLowerCase() ;  							        						
-          					}
-          					rcStatus.push(freeStr);
-          				}
+            				if (SDL.SDLModel.appRCStatus[+key].free.length > 0){
+            					var free = SDL.SDLModel.appRCStatus[+key].free;
+            					var freeStr = 'Can allocate:';
+            					for (var i = 0; i < free.length; ++i) {
+            						freeStr += (i>0)? ', ': ' ';
+            						freeStr += free[i].moduleType.toLowerCase() ;
+            					}
+            					rcStatus.push(freeStr);
+            				}
+                  }
           			}
           			return rcStatus;
           		}
