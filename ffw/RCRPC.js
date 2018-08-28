@@ -248,11 +248,15 @@ FFW.RC = FFW.RPCObserver.create(
                 );
                 return;
               } else {
-              newRadioControlData =
-                SDL.RadioModel.setRadioData(
-                  request.params.moduleData.radioControlData);
+                newRadioControlData =
+                  SDL.RadioModel.setRadioData(
+                    request.params.moduleData.radioControlData);
                 if (SDL.RadioModel.radioControlStruct.radioEnable) {
                   SDL.RadioModel.saveCurrentOptions();
+                }
+                if (Object.keys(newRadioControlData).length > 0) {
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', 
+                                                            radioControlData: newRadioControlData});
                 }
               }
             }
@@ -299,7 +303,7 @@ FFW.RC = FFW.RPCObserver.create(
                                                             seatControlData: newSeatControlData});
                 }   
             };
-            // send repsonse
+            // send response
             var JSONMessage = {
               'jsonrpc': '2.0',
               'id': request.id,
@@ -319,7 +323,6 @@ FFW.RC = FFW.RPCObserver.create(
               JSONMessage.result.moduleData.climateControlData =
                 newClimateControlData;
             }
-
             if (newRadioControlData) {
               JSONMessage.result.moduleData.radioControlData =
                 newRadioControlData;
@@ -336,7 +339,7 @@ FFW.RC = FFW.RPCObserver.create(
               JSONMessage.result.moduleData.seatControlData =
                 newSeatControlData;
             }
-            
+
             this.client.send(JSONMessage);
             this.set('isSetVdInProgress', false);
             break;
@@ -564,6 +567,33 @@ FFW.RC = FFW.RPCObserver.create(
         };
         Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
         FFW.RC.client.send(JSONMessage);
+    },
+    /**
+     * Verification for consented apps
+     * HMI should reject secon unconsented app
+     * @param request
+     */
+    consentedAppCheck: function(request) {
+      var appID = request.params.appID;
+      var moduleType = null;
+      if (request.params.moduleDescription) {
+        moduleType = request.params.moduleDescription.moduleType;
+      } else if (request.params.moduleData) {
+        moduleType = request.params.moduleData.moduleType;
+      } else {
+        moduleType = request.params.moduleType;
+      }
+
+      var deviceName = SDL.SDLController.getApplicationModel(appID)
+        .deviceName;
+
+      if ((SDL.SDLModel.driverDeviceInfo &&
+        deviceName != SDL.SDLModel.driverDeviceInfo.name) ||
+        !SDL.SDLModel.reverseFunctionalityEnabled) {
+        return false;
+      }
+
+      return true;
     },
   }
 );

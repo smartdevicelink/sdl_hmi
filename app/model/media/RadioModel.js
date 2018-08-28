@@ -81,10 +81,33 @@ SDL.RadioModel = Em.Object.create({
   availableHDs: 3,
 
   hdChannelsStruct: [
-    0,
     1,
     2,
-    3
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+
+  hdChannelCurrent:[
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+
+  hdChannelAvailableCurrent:[
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
   ],
 
   stateStruct: [
@@ -126,29 +149,102 @@ SDL.RadioModel = Em.Object.create({
     ]
   },
 
-  xmStations: {2: "SiriusXM Hits", 3: "Venus", 4: "SiriusXM Spotlight",
-   5: "50s on 5", 6: "60s on 6", 7: "70s on 7", 8: "80s on 8", 9: "90s on 9",
-   10: "Pop2K", 11: "KIIS-Los Angeles", 12: "Z100/NY", 13: "Pitbull", 14: "The Coffee House",
-   15: "The Pulse", 16: "The Blend", 17: "PopRocks", 18: "The Beatles Channel",
-   19: "Elvis Radio", 20: "E Street Radio", 21: "Underground Garage", 22: "Pearl Jam Radio",
-   23: "Grateful Dead Channel", 24: "Radio Margaritaville", 25: "Classic Rewind",
-   26: "Classic Vinyl", 27: "Deep Tracks", 28: "The Spectrum", 29: "Jam_ON", 30: "The Loft",
-   31: "Tom Petty Radio", 32: "The Bridge", 33: "1st Wave", 34: "Lithium", 35: "SiriusXMU",
-   36: "Alt Nation", 37: "Octane", 38: "Ozzys Boneyard", 39: "Hair Nation", 40: "Liquid Metal",
-   41: "SiriusXM Turbo", 42: "The Joint", 43: "Backspin", 44: "Hip-Hop Nation", 45: "Shade 45",
-   46: "The Heat", 47: "SiriusXM FLY", 48: "Heart & Soul", 49: "Soul Town", 50: "The Groove",
-   51: "BPM", 52: "Electric Area", 53: "SiriusXM Chill", 54: "Studio 54 Radio",
-   55: "The Garth Channel", 56: "The Highway", 57: "No Shoes Radio", 58: "Prime Country",
-   59: "Willies Roadhouse", 60: "Outlaw Country", 61: "Y2Kountry", 62: "Bluegrass Junction",
-   63: "The Message", 64: "Kirk Praise", 65: "enLighten", 66: "Watercolors", 67: "Real Jazz",
-   68: "Spa", 69: "Escape", 70: "SiriusXM Love", 71: "Siriusly Sinatra", 72: "On Broadway",
-   73: "40s Junction", 74: "BB King", 75: "Met Opera Radio", 76: "Symphony Hall",
-   77: "KIDZ BOP Radio", 78: "Kids Place Live", 79: "Radio Disney", 80: "ESPN Radio",
-   81: "ESPN Xtra", 82: "Mad Dog Sports Radio", 83: "FOX Sports on SiriusXM",
-   84: "SiriusXM College Sports Nation", 85: "SiriusXM FC", 88: "SiriusXM NFL Radio",
-   90: "SiriusXM NASCAR Radio", 91: "SiriusXM NHL Network Radio™", 93: "SiriusXM Rush",
-   94: "SiriusXM Comedy Greats", 95: "Comedy Central Radio", 96: "The Foxxhole",
-   97: "Jeff & Larrys Comedy Roundup", 98: "Laugh USA", 99: "Raw Dog Comedy Hits", 100: "Howard 100"},
+  xmStations: 
+  {1: "SiriusXM Hits", 
+   2: "The Pulse", 
+   3: "The Highway",
+   4: "The Joint", 
+   5: "Y2Kountry", 
+   6: "Laugh USA", 
+   7: "SiriusXM Spotlight", 
+   8: "90s on 9",
+   9: "Pop2K", 
+   10: "KIIS-Los Angeles", 
+   11: "Z100/NY", 
+   12: "Pitbull", 
+   13: "The Coffee House",
+   14: "Venus", 
+   15: "The Blend", 
+   16: "Raw Dog Comedy Hits",
+   17: "PopRocks", 
+   18: "The Beatles Channel",
+   19: "Elvis Radio", 
+   20: "E Street Radio", 
+   21: "Underground Garage", 
+   22: "Pearl Jam Radio",
+   23: "Grateful Dead Channel", 
+   24: "Radio Margaritaville", 
+   25: "Classic Rewind",
+   26: "Classic Vinyl", 
+   27: "Deep Tracks", 
+   28: "The Spectrum", 
+   29: "Jam_ON", 
+   30: "The Loft",
+   31: "Tom Petty Radio", 
+   32: "The Bridge", 
+   33: "1st Wave", 
+   34: "Lithium", 
+   35: "SiriusXMU",
+   36: "Alt Nation", 
+   37: "Octane", 
+   38: "Ozzys Boneyard", 
+   39: "Hair Nation", 
+   40: "Liquid Metal",
+   41: "SiriusXM Turbo", 
+   42: "60s on 6", 
+   43: "Backspin", 
+   44: "Hip-Hop Nation", 
+   45: "Shade 45",
+   46: "The Heat", 
+   47: "SiriusXM FLY", 
+   48: "Heart & Soul", 
+   49: "Soul Town", 
+   50: "The Groove",
+   51: "BPM", 
+   52: "Electric Area", 
+   53: "SiriusXM Chill", 
+   54: "Studio 54 Radio",
+   55: "The Garth Channel", 
+   56: "50s on 5", 
+   57: "No Shoes Radio", 
+   58: "Prime Country",
+   59: "Willies Roadhouse", 
+   60: "Outlaw Country", 
+   61: "70s on 7", 
+   62: "Bluegrass Junction",
+   63: "The Message", 
+   64: "Kirk Praise", 
+   65: "enLighten", 
+   66: "Watercolors", 
+   67: "Real Jazz",
+   68: "Spa", 
+   69: "Escape", 
+   70: "SiriusXM Love", 
+   71: "Siriusly Sinatra", 
+   72: "On Broadway",
+   73: "40s Junction", 
+   74: "BB King", 
+   75: "Met Opera Radio", 
+   76: "Symphony Hall",
+   77: "KIDZ BOP Radio", 
+   78: "Kids Place Live", 
+   79: "Radio Disney", 
+   80: "ESPN Radio",
+   81: "ESPN Xtra", 
+   82: "Mad Dog Sports Radio", 
+   83: "FOX Sports on SiriusXM",
+   84: "SiriusXM College Sports Nation", 
+   85: "SiriusXM FC", 
+   88: "SiriusXM NFL Radio",
+   90: "SiriusXM NASCAR Radio", 
+   91: "SiriusXM NHL Network Radio™", 
+   93: "SiriusXM Rush",
+   94: "SiriusXM Comedy Greats", 
+   95: "Comedy Central Radio", 
+   96: "The Foxxhole",
+   97: "Jeff & Larrys Comedy Roundup", 
+   98: "80s on 8", 
+   99: "Howard 100"},
 
   directTuneItems: {
     'FM': [],
@@ -165,6 +261,7 @@ SDL.RadioModel = Em.Object.create({
   radioControlStruct: {
     frequencyInteger: 87,
     frequencyFraction: 9,
+    hdRadioEnable: true,
     band: 'FM',
     rdsData: {
       PS: 'name',
@@ -236,7 +333,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 89,
           'fraction': 5,
-          'availableHDs': 3,
+          'availableHDs': 7,
           'currentHD': 1
         },
         'songInfo': {
@@ -479,6 +576,8 @@ SDL.RadioModel = Em.Object.create({
       hdChannelAvailable: true,
       rdsDataAvailable: true,
       availableHDsAvailable: true,
+      hdRadioEnableAvailable: true,
+      siriusxmRadioAvailable: true,
       stateAvailable: true,
       signalStrengthAvailable: true,
       signalChangeThresholdAvailable: true,
@@ -542,6 +641,7 @@ SDL.RadioModel = Em.Object.create({
         frequencyInteger: this.radioControlStruct.frequencyInteger,
         frequencyFraction: this.radioControlStruct.frequencyFraction,
         radioEnable: this.radioControlStruct.radioEnable,
+        hdRadioEnable: this.radioControlStruct.hdRadioEnable,
         rdsData: {},
         sisData:{
           stationIDNumber:{},
@@ -549,89 +649,97 @@ SDL.RadioModel = Em.Object.create({
         },
       };
 
+      if(this.radioControlStruct.band != 'XM') {
+          if (forceGetAll || this.radioControlCheckboxes.rdsData.PS) {
+            result.rdsData.PS = this.radioControlStruct.rdsData.PS;
+          }
+          if (forceGetAll || this.radioControlCheckboxes.rdsData.RT) {
+            result.rdsData.RT = this.radioControlStruct.rdsData.RT;
+          }
+          if (forceGetAll || this.radioControlCheckboxes.rdsData.CT) {
+            result.rdsData.CT = this.radioControlStruct.rdsData.CT;
+          }
+          if (forceGetAll || this.radioControlCheckboxes.rdsData.PI) {
+            result.rdsData.PI = this.radioControlStruct.rdsData.PI;
+          }
+          if (forceGetAll || this.radioControlCheckboxes.rdsData.PTY) {
+            result.rdsData.PTY = parseInt(this.radioControlStruct.rdsData.PTY);
+          }
+          if (forceGetAll || this.radioControlCheckboxes.rdsData.TP) {
+            result.rdsData.TP = this.radioControlStruct.rdsData.TP;
+          }
+          if (forceGetAll || this.radioControlCheckboxes.rdsData.TA) {
+            result.rdsData.TA = this.radioControlStruct.rdsData.TA;
+          }
+          if (forceGetAll || this.radioControlCheckboxes.rdsData.REG) {
+            result.rdsData.REG = this.radioControlStruct.rdsData.REG;
+          }      
+
+          if (forceGetAll || this.radioControlCheckboxes.signalStrength) {
+            result.signalStrength = parseInt(this.radioControlStruct.signalStrength);
+          }
+          if (forceGetAll || this.radioControlCheckboxes.signalChangeThreshold) {
+            result.signalChangeThreshold = parseInt(this.radioControlStruct.signalChangeThreshold);
+          }
+          if (forceGetAll || this.radioControlCheckboxes.state) {
+            result.state = this.radioControlStruct.state;
+          }
+
+          if (this.radioControlStruct.hdRadioEnable) {
+            if (forceGetAll || this.radioControlCheckboxes.availableHDs) {
+              if (this.radioControlStruct.availableHDs > 0) {
+                result.availableHDs = this.radioControlStruct.availableHDs;
+              }
+            }
+            if (forceGetAll || this.radioControlCheckboxes.hdChannel) {
+              if (this.radioControlStruct.hdChannel > 0) {
+                result.hdChannel = this.radioControlStruct.hdChannel;
+              }
+            }
+            if (forceGetAll || this.radioControlCheckboxes.sisData.stationShortName) {
+              result.sisData.stationShortName=this.radioControlStruct.sisData.stationShortName;
+            }
+            if (forceGetAll || this.radioControlCheckboxes.sisData.stationLongName) {
+              result.sisData.stationLongName=this.radioControlStruct.sisData.stationLongName;
+            }
+            if (forceGetAll || this.radioControlCheckboxes.sisData.stationMessage) {
+              result.sisData.stationMessage=this.radioControlStruct.sisData.stationMessage;
+            }
+            if (forceGetAll || this.radioControlCheckboxes.sisData.stationIDNumber.countryCode) {
+              result.sisData.stationIDNumber.countryCode=parseInt(this.radioControlStruct.sisData.stationIDNumber.countryCode);
+            }
+            if (forceGetAll || this.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId) {
+              result.sisData.stationIDNumber.fccFacilityId=parseInt(this.radioControlStruct.sisData.stationIDNumber.fccFacilityId);
+            }
+            if (forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.gpsData) {
+              result.sisData.stationLocation.longitudeDegrees=parseFloat(this.radioControlStruct.sisData.stationLocation.longitudeDegrees);
+              result.sisData.stationLocation.latitudeDegrees=parseFloat(this.radioControlStruct.sisData.stationLocation.latitudeDegrees);
+              if (forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.altitude) {
+                result.sisData.stationLocation.altitude=parseFloat(this.radioControlStruct.sisData.stationLocation.altitude);
+              }
+            }
+          }
+
+          if (Object.keys(result.rdsData).length == 0) {
+            delete result['rdsData'];
+          }
+          if(Object.keys(result.sisData.stationIDNumber).length==0){
+            var temp=result.sisData;
+            delete temp['stationIDNumber'];
+          }
+          if(Object.keys(result.sisData.stationLocation).length==0){
+            var temp=result.sisData;
+            delete temp['stationLocation'];
+          }
+          if(Object.keys(result.sisData).length==0){
+            delete result['sisData'];
+          }
+        }
+      
+      result.hdRadioEnable = this.radioControlStruct.hdRadioEnable;
+
       if (forceGetAll || this.radioControlCheckboxes.band) {
         result.band = this.radioControlStruct.band;
-      }
-      if (forceGetAll || this.radioControlCheckboxes.rdsData.PS) {
-        result.rdsData.PS = this.radioControlStruct.rdsData.PS;
-      }
-      if (forceGetAll || this.radioControlCheckboxes.rdsData.RT) {
-        result.rdsData.RT = this.radioControlStruct.rdsData.RT;
-      }
-      if (forceGetAll || this.radioControlCheckboxes.rdsData.CT) {
-        result.rdsData.CT = this.radioControlStruct.rdsData.CT;
-      }
-      if (forceGetAll || this.radioControlCheckboxes.rdsData.PI) {
-        result.rdsData.PI = this.radioControlStruct.rdsData.PI;
-      }
-      if (forceGetAll || this.radioControlCheckboxes.rdsData.PTY) {
-        result.rdsData.PTY = parseInt(this.radioControlStruct.rdsData.PTY);
-      }
-      if (forceGetAll || this.radioControlCheckboxes.rdsData.TP) {
-        result.rdsData.TP = this.radioControlStruct.rdsData.TP;
-      }
-      if (forceGetAll || this.radioControlCheckboxes.rdsData.TA) {
-        result.rdsData.TA = this.radioControlStruct.rdsData.TA;
-      }
-      if (forceGetAll || this.radioControlCheckboxes.rdsData.REG) {
-        result.rdsData.REG = this.radioControlStruct.rdsData.REG;
-      }
-
-      if (forceGetAll || this.radioControlCheckboxes.availableHDs) {
-        if (this.radioControlStruct.availableHDs > 0) {
-          result.availableHDs = this.radioControlStruct.availableHDs;
-        }
-      }
-      if (forceGetAll || this.radioControlCheckboxes.hdChannel) {
-        if (this.radioControlStruct.hdChannel > 0) {
-          result.hdChannel = this.radioControlStruct.hdChannel;
-        }
-      }
-      if (forceGetAll || this.radioControlCheckboxes.signalStrength) {
-        result.signalStrength = parseInt(this.radioControlStruct.signalStrength);
-      }
-      if (forceGetAll || this.radioControlCheckboxes.signalChangeThreshold) {
-        result.signalChangeThreshold = parseInt(this.radioControlStruct.signalChangeThreshold);
-      }
-      if (forceGetAll || this.radioControlCheckboxes.state) {
-        result.state = this.radioControlStruct.state;
-      }
-      if(forceGetAll || this.radioControlCheckboxes.sisData.stationShortName){
-        result.sisData.stationShortName=this.radioControlStruct.sisData.stationShortName;
-      }
-      if(forceGetAll || this.radioControlCheckboxes.sisData.stationLongName){
-        result.sisData.stationLongName=this.radioControlStruct.sisData.stationLongName;
-      }
-      if(forceGetAll || this.radioControlCheckboxes.sisData.stationMessage){
-        result.sisData.stationMessage=this.radioControlStruct.sisData.stationMessage;
-      }
-      if(forceGetAll || this.radioControlCheckboxes.sisData.stationIDNumber.countryCode){
-        result.sisData.stationIDNumber.countryCode=parseInt(this.radioControlStruct.sisData.stationIDNumber.countryCode);
-      }
-      if(forceGetAll || this.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId){
-        result.sisData.stationIDNumber.fccFacilityId=parseInt(this.radioControlStruct.sisData.stationIDNumber.fccFacilityId);
-      }
-      if(forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.gpsData){
-        result.sisData.stationLocation.longitudeDegrees=parseFloat(this.radioControlStruct.sisData.stationLocation.longitudeDegrees);
-        result.sisData.stationLocation.latitudeDegrees=parseFloat(this.radioControlStruct.sisData.stationLocation.latitudeDegrees);
-        if(forceGetAll || this.radioControlCheckboxes.sisData.stationLocation.altitude){
-          result.sisData.stationLocation.altitude=parseFloat(this.radioControlStruct.sisData.stationLocation.altitude);
-        }
-      }
-
-      if (Object.keys(result.rdsData).length == 0) {
-        delete result['rdsData'];
-      }
-      if(Object.keys(result.sisData).length==0){
-        delete result['sisData'];
-      }
-      if(Object.keys(result.sisData.stationIDNumber).length==0){
-        var temp=result.sisData;
-        delete temp['stationIDNumber'];
-      }
-      if(Object.keys(result.sisData.stationLocation).length==0){
-        var temp=result.sisData;
-        delete temp['stationLocation'];
       }
     }
 
@@ -653,15 +761,75 @@ SDL.RadioModel = Em.Object.create({
     return;
   },
 
+  setCurrentHd:function(data){
+    for(var i =0; i<this.hdChannelCurrent.length;i++){
+      this.set('hdChannelCurrent.'+i,false);
+    }
+    this.set('hdChannelCurrent.'+ (data-1),true);
+  },
+
+  setCurrentAvailabilityHD:function(data){
+    for(var i =0; i<this.hdChannelAvailableCurrent.length;i++){
+      this.set('hdChannelAvailableCurrent.'+i, i < data);
+    }
+  },
+
   setRadioData: function(data) {
     var properties = [];
 
     if (data.radioEnable != null) {
       this.setRadioEnable(data.radioEnable);
       properties.push('radioEnable');
+      if(data.radioEnable){
+        properties.push('hdRadioEnable');
+        properties.push('frequencyInteger');
+        properties.push('band');
+        switch(this.radioControlStruct.band){
+          case 'AM':
+            properties.push('availableHDs');
+            properties.push('hdChannel');
+            properties.push('signalStrength');
+            properties.push('signalChangeThreshold');
+            properties.push('state');
+            if(this.radioControlStruct.hdRadioEnable){
+              properties.push('sisData.*');
+              properties.push('stationIDNumber.*');
+              properties.push('stationLocation.*');              
+            }
+            break;
+          case 'FM':
+            properties.push('availableHDs');
+            properties.push('hdChannel');
+            properties.push('frequencyFraction');
+            properties.push('rdsData.*');
+            properties.push('signalStrength');
+            properties.push('signalChangeThreshold');
+            properties.push('state');
+            if(this.radioControlStruct.hdRadioEnable){
+              properties.push('sisData.*');
+              properties.push('stationIDNumber.*');
+              properties.push('stationLocation.*');              
+            }
+            break;
+          default:
+            break;
+        }
+      }
     }
 
     if (this.radioControlStruct.radioEnable) {
+      if(data.hdRadioEnable != null){
+        this.setHDRadioEnable(data.hdRadioEnable);
+        this.set('radioControlCheckboxes.availableHDs',data.hdRadioEnable);
+        this.set('radioControlCheckboxes.hdChannel',data.hdRadioEnable);
+        if(data.hdRadioEnable){
+          properties.push('sisData.*');
+          properties.push('stationIDNumber.*');
+          properties.push('stationLocation.*');     
+          properties.push('availableHDs');
+          properties.push('hdChannel');
+        }
+      }
       if (data.frequencyInteger != null) {
         this.setFrequencyInteger(data.frequencyInteger);
       }
@@ -672,10 +840,12 @@ SDL.RadioModel = Em.Object.create({
 
       if (data.availableHDs != null) {
         this.setAvailableHDs(data.availableHDs);
+        this.setCurrentAvailabilityHD(data.availableHDs);
       }
 
       if (data.hdChannel != null) {
         this.setCurrentHdChannel(data.hdChannel);
+        this.setCurrentHd(data.hdChannel);
       }
 
       if (data.availableHDs != null || data.hdChannel != null) {
@@ -715,9 +885,10 @@ SDL.RadioModel = Em.Object.create({
         this.setRadioState(data.state);
       }
 
-      properties = [];
       for (var key in data) {
-        properties.push(key);
+        if(properties.indexOf(key) == -1){
+          properties.push(key);
+        }
       }
 
       if (properties.indexOf('band') >= 0) {
@@ -734,7 +905,7 @@ SDL.RadioModel = Em.Object.create({
       }
     }
 
-    var result = this.getRadioControlData(true);
+    var result = this.getRadioControlData(false);
     return SDL.SDLController.filterObjectProperty(result, properties);
   },
 
@@ -763,23 +934,24 @@ SDL.RadioModel = Em.Object.create({
         'REG': this.radioControlStruct.rdsData.REG
       },
       'sisData':{
-        'stationShortName':this.radioControlStruct.sisData.stationShortName,
-        'stationMessage':this.radioControlStruct.sisData.stationMessage,
-        'stationLongName':this.radioControlStruct.sisData.stationLongName,
+        'stationShortName': this.radioControlStruct.sisData.stationShortName,
+        'stationMessage': this.radioControlStruct.sisData.stationMessage,
+        'stationLongName': this.radioControlStruct.sisData.stationLongName,
         'stationLocation':{
-          'longitudeDegrees':this.radioControlStruct.sisData.stationLocation.longitudeDegrees,
-          'latitudeDegrees':this.radioControlStruct.sisData.stationLocation.latitudeDegrees,
+          'longitudeDegrees': this.radioControlStruct.sisData.stationLocation.longitudeDegrees,
+          'latitudeDegrees': this.radioControlStruct.sisData.stationLocation.latitudeDegrees,
           'altitude': this.radioControlStruct.sisData.stationLocation.altitude
         },
         'stationIDNumber':{
-          'countryCode':this.radioControlStruct.sisData.stationIDNumber.countryCode,
-          'fccFacilityId':this.radioControlStruct.sisData.stationIDNumber.fccFacilityId
+          'countryCode': this.radioControlStruct.sisData.stationIDNumber.countryCode,
+          'fccFacilityId': this.radioControlStruct.sisData.stationIDNumber.fccFacilityId
         },
       },
       'availableHDs': this.radioControlStruct.availableHDs,
       'hdChannel': this.radioControlStruct.hdChannel,
       'signalStrength': this.radioControlStruct.signalStrength,
       'signalChangeThreshold': this.radioControlStruct.signalChangeThreshold,
+      'hdRadioEnable': this.radioControlStruct.hdRadioEnable,
       'state': this.radioControlStruct.state
     };
     return result;
@@ -817,6 +989,7 @@ SDL.RadioModel = Em.Object.create({
     this.set('lastOptionParams.sisData.stationIDNumber.fccFacilityId', result.sisData.stationIDNumber.fccFacilityId);
     this.set('lastOptionParams.availableHDs', result.availableHDs);
     this.set('lastOptionParams.hdChannel', result.hdChannel);
+    this.set('lastOptionParams.hdRadioEnable', result.hdRadioEnable);
     this.set('lastOptionParams.signalStrength', result.signalStrength);
     this.set('lastOptionParams.signalChangeThreshold', result.signalChangeThreshold);
     this.set('lastOptionParams.state', result.state);
@@ -1109,7 +1282,7 @@ SDL.RadioModel = Em.Object.create({
       this.set('station', this.temp);
     }
 
-    if (this.optionsEnabled) {
+    if (this.optionsEnabled) { 
       this.toggleOptions();
     }
 
@@ -1118,27 +1291,42 @@ SDL.RadioModel = Em.Object.create({
     data = SDL.SDLController.filterObjectProperty(data, 'band');
     if (data.band == 'FM') {
       this.sendRadioChangeNotification(['radioEnable',
+                                        'hdRadioEnable',
                                         'frequencyInteger',
                                         'frequencyFraction',
                                         'band',
                                         'availableHDs',
                                         'hdChannel',
-                                        'rdsData.*'
+                                        'signalStrength',
+                                        'signalChangeThreshold',
+                                        'state',
+                                        'rdsData.*', 
+                                        this.radioControlStruct.hdRadioEnable ? 'sisData.*': '',
+                                        this.radioControlStruct.hdRadioEnable ? 'stationIDNumber.*': '',
+                                        this.radioControlStruct.hdRadioEnable ? 'stationLocation.*': ''
                                         ]);
       
     } else if (data.band == 'AM') {
       this.sendRadioChangeNotification(['radioEnable',
+                                        'hdRadioEnable',
                                         'frequencyInteger',
                                         'band',
                                         'availableHDs',
-                                        'hdChannel']);
-    } else {
-      this.sendRadioChangeNotification(['radioEnable',
-                                        'frequencyInteger',
-                                        'band',
                                         'signalStrength',
                                         'signalChangeThreshold',
-                                        'state']);
+                                        'state',
+                                        'hdChannel',
+                                        'rdsData.*',
+                                        this.radioControlStruct.hdRadioEnable ? 'sisData.*': '',
+                                        this.radioControlStruct.hdRadioEnable ? 'stationIDNumber.*': '',
+                                        this.radioControlStruct.hdRadioEnable ? 'stationLocation.*': ''
+                                        ]);
+    } else {
+      this.sendRadioChangeNotification(['radioEnable',
+                                        'hdRadioEnable',
+                                        'frequencyInteger',
+                                        'band'
+                                        ]);
     }
   },
 
@@ -1256,10 +1444,10 @@ SDL.RadioModel = Em.Object.create({
         data -= 1;
       }
 
-      if (data > 100) {
+      if (data > 99) {
         data = 1;
       } else if (data < 1) {
-        data = 100;
+        data = 99;
       }
 
       this.setFrequencyInteger(data);
@@ -1472,7 +1660,7 @@ SDL.RadioModel = Em.Object.create({
         this.setFrequencyInteger(540);
       }
       if (this.radioControlStruct.band === 'XM') {
-        this.setFrequencyInteger(2);
+        this.setFrequencyInteger(1);
       }
     }
     this.set('statusBar', this.radioControlStruct.band + ' Radio');
@@ -1665,6 +1853,10 @@ SDL.RadioModel = Em.Object.create({
   setRadioEnable: function(state) {
     this.set('radioControlStruct.radioEnable', state);
   },
+
+  setHDRadioEnable:function(state){
+    this.set('radioControlStruct.hdRadioEnable',state);
+  },  
 
   setRadioState: function(state) {
     this.set('radioControlStruct.state', state);
