@@ -1431,6 +1431,15 @@ SDL.RPCController = Em.Object.create(
             };
             return this.resultStruct;
           }
+          if ('menuIcon' in params &&
+            (params.menuIcon.imageType !== 'DYNAMIC' &&
+            params.menuIcon.imageType !== 'STATIC')) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Unsupported image type!'
+            };
+            return this.resultStruct;
+          }
           if (params.cmdID == null) {
             this.resultStruct = {
               'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
@@ -2078,6 +2087,12 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         SetInteriorVehicleData: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        OnRCStatus: function(params) {
           this.resultStruct = {
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };

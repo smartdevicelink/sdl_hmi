@@ -69,7 +69,11 @@ SDL.ClimateView = Em.ContainerView.create(
           'acMaxEnable',
           'autoModeEnable',
           'dualModeEnable',
-          'recirculateAirEnable'
+          'recirculateAirEnable',
+          'heatedWindshieldEnable',
+          'heatedRearWindowEnable',
+          'heatedSteeringWheelEnable',
+          'heatedMirrorsEnable'
         ],
         desiredTemp: Em.ContainerView.extend(
           {
@@ -466,7 +470,71 @@ SDL.ClimateView = Em.ContainerView.create(
             templateName: 'rightIcon',
             onDown: false
           }
-        )
+        ),
+        heatedWindshieldEnable: SDL.Button.extend({
+          elementId: 'heatedWindshieldEnable',
+          classNames: 'heatedWindshieldEnable switcher',
+          iconBinding: 'onIconChange',
+          disabledBinding: 'parentView.disabled',
+          onIconChange: function() {
+            return SDL.SDLController.getLedIndicatorImagePath(
+              SDL.ClimateController.model.climateControlData.heatedWindshieldEnable);
+          }.property(
+            'SDL.ClimateController.model.climateControlData.heatedWindshieldEnable'
+          ),
+          action: 'toggleHeatedWindshieldEnable',
+          target: 'SDL.ClimateController.model',
+          onDown: false,
+          text: 'HW'
+        }),
+        heatedRearWindowEnable: SDL.Button.extend({
+          elementId: 'heatedRearWindowEnable',
+          classNames: 'heatedRearWindowEnable switcher',
+          iconBinding: 'onIconChange',
+          disabledBinding: 'parentView.disabled',
+          onIconChange: function() {
+            return SDL.SDLController.getLedIndicatorImagePath(
+              SDL.ClimateController.model.climateControlData.heatedRearWindowEnable);
+          }.property(
+            'SDL.ClimateController.model.climateControlData.heatedRearWindowEnable'
+          ),
+          action: 'toggleHeatedRearWindowEnable',
+          target: 'SDL.ClimateController.model',
+          onDown: false,
+          text: 'HR'
+        }),
+        heatedSteeringWheelEnable: SDL.Button.extend({
+          elementId: 'heatedSteeringWheelEnable',
+          classNames: 'heatedSteeringWheelEnable switcher',
+          iconBinding: 'onIconChange',
+          disabledBinding: 'parentView.disabled',
+          onIconChange: function() {
+            return SDL.SDLController.getLedIndicatorImagePath(
+              SDL.ClimateController.model.climateControlData.heatedSteeringWheelEnable);
+          }.property(
+            'SDL.ClimateController.model.climateControlData.heatedSteeringWheelEnable'
+          ),
+          action: 'toggleHeatedSteeringWheelEnable',
+          target: 'SDL.ClimateController.model',
+          onDown: false,
+          text: 'HS'
+        }),
+        heatedMirrorsEnable: SDL.Button.extend({
+          elementId: 'heatedMirrorsEnable',
+          classNames: 'heatedMirrorsEnable switcher',
+          iconBinding: 'onIconChange',
+          disabledBinding: 'parentView.disabled',
+          onIconChange: function() {
+            return SDL.SDLController.getLedIndicatorImagePath(
+              SDL.ClimateController.model.climateControlData.heatedMirrorsEnable);
+          }.property(
+            'SDL.ClimateController.model.climateControlData.heatedMirrorsEnable'
+          ),
+          action: 'toggleHeatedMirrorsEnable',
+          target: 'SDL.ClimateController.model',
+          onDown: false,
+          text: 'HM'
+        })
       }
     )
   }

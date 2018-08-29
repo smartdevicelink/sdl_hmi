@@ -64,7 +64,12 @@ SDL.Label = Em.View.extend({
         '<img class="ico" {{bindAttr src="view.icon"}} />' +
         '<span>{{view.content}}</span>'
       ),
-    }
+      multiLine: Em.Handlebars.compile(
+       '{{#each view.lines}}' +
+       '<span>{{this}}</span><br>' +        
+       '{{/each}}'
+     )
+    }    
 
     /** Define button template */
     /*

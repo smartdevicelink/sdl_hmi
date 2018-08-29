@@ -110,11 +110,13 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'instantFuelConsumption': 'VEHICLEDATA_FUELCONSUMPTION',
       'fuelRange': 'VEHICLEDATA_FUELRANGE',
       'externalTemperature': 'VEHICLEDATA_EXTERNTEMP',
+      'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'vin': 'VEHICLEDATA_VIN',
       'prndl': 'VEHICLEDATA_PRNDL',
       'tirePressure': 'VEHICLEDATA_TIREPRESSURE',
       'odometer': 'VEHICLEDATA_ODOMETER',
       'beltStatus': 'VEHICLEDATA_BELTSTATUS',
+      'electronicParkBrakeStatus': 'VEHICLEDATA_ELECTRONICPARKBRAKESTATUS',
       'bodyInformation': 'VEHICLEDATA_BODYINFO',
       'deviceStatus': 'VEHICLEDATA_DEVICESTATUS',
       'eCallInfo': 'VEHICLEDATA_ECALLINFO',
@@ -167,7 +169,9 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'instantFuelConsumption': 2.2E0,
       'externalTemperature': null,
       'vin': '52-452-52-752',
+      'turnSignal': 'OFF',
       'prndl': 'PARK',
+      'electronicParkBrakeStatus': 'OPEN',
       'tirePressure': {
         'pressureTelltale': 'OFF',
         'leftFront': {
@@ -290,7 +294,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'steeringWheelAngle': 1.2E0,
       'engineOilLife': 20.4E0,
       'abs_State': 'ACTIVE',
-      'turnSignal': 'ACTIVE',
       'tirePressureValue': {
         'leftFront': 2.2E0,
         'rightFront': 2.2E0,

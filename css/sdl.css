@@ -682,7 +682,7 @@
 
 #exitAppView, #tbtClientStateView,
 #VehicleInfo, #systemRequestView,
-#PrimaryDevice {
+#PrimaryDevice, #sendMessageView {
     opacity: 0;
     left: 50px;
     width: 700px;
@@ -717,6 +717,7 @@
 #exitAppView.active,
 #systemRequestView.active,
 #tbtClientStateView.active,
+#sendMessageView.active,
 #VehicleInfo.active,
 #PrimaryDevice.active {
     opacity: 1;
@@ -732,12 +733,21 @@
 #VehicleInfo .speedLabel,
 #PrimaryDevice .chooseLabel {
     top: 70px;
-    width: 600px;
+    width: 290px;
     left: 40px;
     height: 20px;
     padding: 10px;
     background: #535353;
 }
+
+#exitAppView .signalLabel{
+    top: 70px;
+    width: 290px;
+    left: 355px;
+    height: 20px;
+    padding: 10px;
+    background: #535353;
+ }
 
 #VehicleInfo .vehicleDataChange {
     top: 125px;
@@ -789,7 +799,17 @@
     top: 125px;
     position: absolute;
     width: 150px;
-    left: 275px;
+    left: 40px;
+    height: 40px;
+    color: white;
+    background: #393939;
+}
+
+#exitAppView .signalSelect{
+    top: 125px;
+    position: absolute;
+    width: 150px;
+    left: 355px;
     height: 40px;
     color: white;
     background: #393939;
@@ -882,6 +902,35 @@
     line-height: 22px;
     border-radius: 4px;
     border: 1px solid white;
+}
+
+#exitAppView .sendAppStateButton {
+    right: 268px;
+    top: 125px;
+    width: 127px;
+    left: 200px;
+    height: 18px;
+    padding: 10px;
+    line-height: 22px;
+    border-radius: 0px;
+    border: 1px solid white;
+}
+
+#exitAppView .sendSignalButton {
+    right: 268px;
+    top: 125px;
+    width: 127px;
+    left: 516px;
+    height: 18px;
+    padding: 10px;
+    line-height: 22px;
+    border-radius: 0px;
+    border: 1px solid white;
+}
+
+#exitAppView .onAwakeSDLButton.pressed,
+#exitAppView .sendAppStateButton.pressed {
+    border: 1px solid red;
 }
 
 #VehicleInfo .odometrTitle {
@@ -1645,4 +1694,98 @@
 
 #media_app_options_view .list-content {
     width: 578px;
+}
+
+#sendMessageView .backButton {
+    width: 40px;
+    height: 45px;
+    top: 4px;
+    left: 655px;
+    background: 0; 
+}
+
+#sendMessageView .setButton {
+    width: 255px;
+    height: 40px;
+    left: 202px;
+    top: 282px;
+    border-radius: 31px;
+    background-color: #1D1D1D;
+    border: 1px solid #383737;
+    box-shadow: inset 5px 5px 10px #383737, inset -3px -3px 10px black;
+    font-size: 38px;
+    line-height: 42px;
+    text-align: center;
+    position: relative;
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+}  
+#sendMessageView .setButton .text{
+    top: 20px;
+    left: 20px;
+}
+
+#sendMessageView .lightStatusLabel {
+    top: 30px;
+    left: 30px;
+}
+
+#sendMessageView .lightDensityLabel {
+    top: 50px;
+    left: 30px;
+}
+
+#sendMessageView .lightColorLabel {
+    top: 70px;
+    left: 30px;
+}
+
+#sendMessageView .rLabel {
+    top: 90px;
+    left: 40px;
+}
+
+#sendMessageView .gLabel {
+    top: 110px;
+    left: 40px;
+}
+
+#sendMessageView .bLabel {
+    top: 130px;
+    left: 40px;
+}
+
+#sendMessageView .lightStatusSelect {
+    position: absolute;
+    top: 30px;
+    left: 160px;
+}
+
+#sendMessageView .densityInput {
+    position: absolute;
+    top: 50px;
+    left: 160px;
+    width: 47px;
+}
+
+#sendMessageView .rInput {
+    position: absolute;
+    top: 90px;
+    left: 160px;
+    width: 47px;
+}
+
+#sendMessageView .gInput {
+    position: absolute;
+    top: 110px;
+    left: 160px;
+    width: 47px;
+}
+
+#sendMessageView .bInput {
+    position: absolute;
+    top: 130px;
+    left: 160px;
+    width: 47px;
 }

@@ -81,6 +81,9 @@ SDL.StatusMediaView = Em.ContainerView.extend({
               '<span {{bindAttr class="SDL.CDModel.active:visible_display"}}>{{SDL.CDModel.statusBar}}</span>' +
               '<span {{bindAttr class="SDL.USBModel.active:visible_display"}}>{{SDL.USBModel.statusBar}}</span>' +
               '<span {{bindAttr class="SDL.RadioModel.active:visible_display"}}>{{SDL.RadioModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.IPodModel.active:visible_display"}}>{{SDL.IPodModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.BluetoothModel.active:visible_display"}}>{{SDL.BluetoothModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.LineInModel.active:visible_display"}}>{{SDL.LineInModel.statusBar}}</span>' +
               // SDL
               '<span {{bindAttr class="SDL.SDLModel.data.limitedExist:visible_display"}}>{{SDL.SDLModel.applicationStatusBar}}</span>' +
               '</div>' +
@@ -89,6 +92,9 @@ SDL.StatusMediaView = Em.ContainerView.extend({
               '{{bindAttr class="SDL.CDModel.active:cdIco"}}' +
               '{{bindAttr class="SDL.USBModel.active:usbIco"}}' +
               '{{bindAttr class="SDL.RadioModel.active:fmIco"}}' +
+              '{{bindAttr class="SDL.IPodModel.active:ipodIco"}}' +
+              '{{bindAttr class="SDL.BluetoothModel.active:bluetoothIco"}}' +
+              '{{bindAttr class="SDL.LineInModel.active:lineInIco"}}' +
               // SDL
               '{{bindAttr class="SDL.SDLModel.data.limitedExist:appIco"}}>' +
               '</div>' + '</div>'
