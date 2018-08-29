@@ -731,7 +731,14 @@ SDL.SDLController = Em.Object.extend(
           messageRequestId,
           'UI.ScrollableMessage'
         );
-      } else {
+      }else if(result == SDL.SDLModel.data.resultCode.WARNINGS) {
+        FFW.UI.sendUIResult(
+          result,
+          messageRequestId,
+          'UI.ScrollableMessage'
+        );
+      }
+      else {
         FFW.UI.sendError(
           result,
           messageRequestId,

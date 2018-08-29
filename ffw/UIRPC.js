@@ -1424,7 +1424,8 @@ FFW.UI = FFW.RPCObserver.create(
         return;
       }
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+      if (resultCode == SDL.SDLModel.data.resultCode.SUCCESS ||
+          resultCode == SDL.SDLModel.data.resultCode.WARNINGS) {
 
         // send repsonse
         var JSONMessage = {

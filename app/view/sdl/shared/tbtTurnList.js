@@ -92,8 +92,13 @@ SDL.TBTTurnList = SDL.SDLAbstractView.create(
                 turnListArray[i].turnIcon.value : '',
               content: turnListArray[i].navigationText ?
                 turnListArray[i].navigationText.fieldText : '',
-              classNames: 'list-item',
-              templateName: turnListArray[i].turnIcon ? 'icon' : ''
+              classNames:turnListArray[i].turnIcon ? turnListArray[i].turnIcon.isTemplate ? ['list-item','ico-overlay'] : 'list-item':'' ,
+              classNameBindings: 'getCurrentDisplayModeClass',
+              getCurrentDisplayModeClass: function() {
+                return SDL.ControlButtons.getCurrentDisplayModeClass(
+                  SDL.ControlButtons.imageMode.selection);
+              }.property('SDL.ControlButtons.imageMode.selection'),
+              templateName: turnListArray[i].turnIcon ? turnListArray[i].turnIcon.isTemplate ? 'iconOverLay' : 'icon' : ''
             }
           )
         );
@@ -109,15 +114,20 @@ SDL.TBTTurnList = SDL.SDLAbstractView.create(
               systemAction: turnListArray[i].systemAction,
               groupName: 'TBTList',
               classNameBindings: [
-                'isHighlighted:isHighlighted'
+                'isHighlighted:isHighlighted',
+                'getCurrentDisplayModeClass'
               ],
+              getCurrentDisplayModeClass: function() {
+                return SDL.ControlButtons.getCurrentDisplayModeClass(
+                  SDL.ControlButtons.imageMode.selection);
+              }.property('SDL.ControlButtons.imageMode.selection'),
               isHighlighted: turnListArray[i].isHighlighted ? true : false,
               softButtonID: turnListArray[i].softButtonID,
               icon: turnListArray[i].image ? turnListArray[i].image.value : '',
               text: turnListArray[i].text,
               classNames: 'list-item softButton',
               elementId: 'softButton' + i,
-              templateName: turnListArray[i].image ? 'rightIcon' : 'text',
+              templateName: turnListArray[i].image ? 'rightTextOverLay' : 'text',
               appID: appID
             }
           )

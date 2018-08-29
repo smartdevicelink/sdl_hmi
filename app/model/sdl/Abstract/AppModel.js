@@ -331,7 +331,10 @@ SDL.ABSAppModel = Em.Object.extend(
           name: request.params.menuParams.menuName,
           parent: parentID,
           position: request.params.menuParams.position ?
-            request.params.menuParams.position : 0,
+          request.params.menuParams.position : 0,
+          isTemplate:request.params.cmdIcon ?
+          request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
+          : null,
           icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
         };
         if (SDL.SDLController.getApplicationModel(request.params.appID) &&
@@ -340,6 +343,19 @@ SDL.ABSAppModel = Em.Object.extend(
           SDL.OptionsView.commands.refreshItems();
         }
         console.log(commands.length);
+        if(request.params.cmdIcon){
+          var image = request.params.cmdIcon.value;
+          var length=image.length;
+          str='.png';
+          var isPng=image.includes(str,length-5);
+          if(!isPng){
+          FFW.UI.sendUIResult(
+            SDL.SDLModel.data.resultCode.WARNINGS, request.id,
+            request.method
+          );
+          return;
+        }
+      }
         if (request.id >= 0) {
           FFW.UI.sendUIResult(
             SDL.SDLModel.data.resultCode.SUCCESS, request.id,
