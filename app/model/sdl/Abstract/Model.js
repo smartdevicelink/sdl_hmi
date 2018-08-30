@@ -656,12 +656,16 @@ SDL.SDLModel = Em.Object.extend({
     var message = {};
 
     var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
-      app = SDL.SDLController.getApplicationModel(params.appID);
+    app = SDL.SDLController.getApplicationModel(params.appID);
+
+    if (app != null && params.icon != null) {
+    	console.log('Resuming application icon for ' + params.appID);
+    	this.setAppIconByAppId(params.appID, params.icon);
+    }
 
     if (app != undefined && app.initialized == false) {
-
-      if (app.isMedia != params.isMediaApplication) { // If current not initialized model doe not matches the registered application type
-        this.convertModel(params);                   // then model should be changed
+      if (app.isMedia != params.isMediaApplication) { // If current not initialized model does not matches the registered application type
+        this.convertModel(params);                    // then model should be changed
       } else {
         app.disabledToActivate = params.greyOut;
       }
@@ -712,6 +716,31 @@ SDL.SDLModel = Em.Object.extend({
         };
       this.addCommandVR(message);
     }
+  },
+
+  /**
+   * Method to set specified application icon to the new one
+   *
+   * @param {Number}
+   *            appID
+   * @param {String}
+   *            path
+   */
+  setAppIconByAppId: function(appID, path) {
+    var img = new Image();
+    img.onload = function() {
+       var model = SDL.SDLController.getApplicationModel(appID);
+       if (model != null) {
+         console.log('Icon for ' + appID + ' was set to ' + path);
+         model.set('appIcon', img.src + '?' + new Date().getTime());
+        }
+    };
+    img.onerror = function(event) {
+        console.log('Error: Icon for ' + appID + ' was not set properly');
+        return false;
+    };
+
+    img.src = path;
   },
 
   /**
@@ -900,7 +929,7 @@ SDL.SDLModel = Em.Object.extend({
       img.onload = function() {
         var model=SDL.SDLController.getApplicationModel(message.appID);
         // code to set the src on success
-        model.set('appIcon', message.syncFileName.value);
+        model.set('appIcon', img.src + '?' + new Date().getTime());
         model.set('isTemplateIcon', message.syncFileName.isTemplate === true);
         FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, id, method);
       };

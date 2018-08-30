@@ -129,6 +129,11 @@ SDL.RModel = SDL.SDLModel.extend({
       return; // if application already registered and correctly initialized and BC.UpdateAppList came from SDL than nothing shoul happend
     }
 
+    if (params.appID != null && params.icon != null) {
+      console.log('Resuming application icon for ' + params.appID);
+      this.setAppIconByAppId(params.appID, params.icon);
+    }
+
     if (params.isMediaApplication === true) {
       //Magic number 0 - Default media model
       applicationType = 0;
