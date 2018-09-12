@@ -147,6 +147,7 @@ SDL.NavigationController = Em.Object.create(
           );
         }
       } else {
+        this.model.set('isSubscribedOnWayPoints', true);
         FFW.Navigation.sendError(
           result,
           request.id,
