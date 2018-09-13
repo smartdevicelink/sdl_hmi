@@ -71,6 +71,9 @@ FFW.RPCHelper = Em.Object.create(
      * by HMI settings
      */
     getCustomResultCode: function(appID, method) {
+      if(method == 'createInteractionChoiceSet'){
+        method = 'vrAddCommand';
+      }
       var code = null;
       if(appID !== null && this.appContainer[appID][method] !== undefined) {
         code = this.appContainer[appID][method];
