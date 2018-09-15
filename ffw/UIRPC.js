@@ -1428,9 +1428,7 @@ FFW.UI = FFW.RPCObserver.create(
         return;
       }
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS || 
-        resultCode === SDL.SDLModel.data.resultCode.WARNINGS) {
-
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -1442,8 +1440,7 @@ FFW.UI = FFW.RPCObserver.create(
         };
         this.client.send(JSONMessage);
       } else {
-        this.sendError(
-          resultCode, id, method, '');
+        this.sendError(resultCode, id, method, '');
       }
     },
     /**

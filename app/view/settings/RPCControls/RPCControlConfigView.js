@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Ford Motor Company All rights reserved.
+ * Copyright (c) 2018, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -26,20 +26,19 @@
 
 SDL.RPCControlConfigView = Em.ContainerView.create(
     {
-        elementId: 'rpc_settings_deviceConfig',
-        classNames: 'rpc_settings_separate_view',
-        classNameBindings: [
-            'SDL.States.settings.rpccontrol.rpcconfig.active:active_state:inactive_state'
-        ],
-        childViews: [
-            'backButton',
-            'rpcList',
-            'resultCodeTracker',
-            'saveButton',
-            'resetButton',
-            'appNameLabel'
+          elementId: 'rpc_settings_deviceConfig',
+          classNames: 'rpc_settings_separate_view',
+          classNameBindings: [
+              'SDL.States.settings.rpccontrol.rpcconfig.active:active_state:inactive_state'
           ],
-         
+          childViews: [
+              'backButton',
+              'rpcList',
+              'resultCodeTracker',
+              'saveButton',
+              'resetButton',
+              'appNameLabel'
+          ],         
           appNameLabel: SDL.Label.extend(
             {
               elementId: 'appNameLabel',
@@ -163,582 +162,579 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                   content: 'CreateInteractionChoiceSet'
                 }
               ),
-          subscribeVehicleDataSelections:  Em.ContainerView.extend(
-            {
-              elementId: 'subscribeVehicleDataSelections',
-              classNames: 'subscribeVehicleDataSelections',
-              childViews: [
-                'gpsSelect',
-                'speedSelect',
-                'rpmSelect',
-                'fuelLevelSelect',
-                'fuelLevel_StateSelect',
-                'instantFuelConsumptionSelect',
-                'fuelRangeSelect',
-                'externalTemperatureSelect',
-                'turnSignalSelect',
-                'prndlSelect',
-                'tirePressureSelect',
-                'odometerSelect',
-                'beltStatusSelect',
-                'bodyInformationSelect',
-                'deviceStatusSelect',
-                'driverBrakingSelect',
-                'wiperStatusSelect',
-                'headLampStatusSelect',
-                'engineTorqueSelect',
-                'accPedalPositionSelect',
-                'steeringWheelAngleSelect',
-                'engineOilLifeSelect',
-                'electronicParkBrakeStatusSelect',
-                'eCallInfoSelect',
-                'airbagStatusSelect',
-                'emergencyEventSelect',
-                'clusterModesSelect',
-                'myKeySelect'
-              ],
-              gpsSelect: Em.Select.extend(
+              subscribeVehicleDataSelections:  Em.ContainerView.extend(
                 {
-                  elementId: 'gpsSelect',
-                  classNames: 'gps',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.gps'
-                }
-              ),
-              speedSelect: Em.Select.extend(
-                {
-                  elementId: 'speedSelect',
-                  classNames: 'speed',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.speed'
-                }
-              ),
-              rpmSelect: Em.Select.extend(
-                {
-                  elementId: 'rpmSelect',
-                  classNames: 'rpm',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.rpm'
-                }
-              ),
-              fuelLevelSelect: Em.Select.extend(
-                {
-                  elementId: 'fuelLevelSelect',
-                  classNames: 'fuelLevel',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.fuelLevel'
-                }
-              ),
-              fuelLevel_StateSelect: Em.Select.extend(
-                {
-                  elementId: 'fuelLevel_StateSelect',
-                  classNames: 'fuelLevel_State',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.fuelLevel_State'
-                }
-              ),
-              instantFuelConsumptionSelect: Em.Select.extend(
-                {
-                  elementId: 'instantFuelConsumptionSelect',
-                  classNames: 'instantFuelConsumption',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.instantFuelConsumption'
-                }
-              ),
-              fuelRangeSelect: Em.Select.extend(
-                {
-                  elementId: 'fuelRangeSelect',
-                  classNames: 'fuelRange',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.fuelRange'
-                }
-              ),
-              externalTemperatureSelect: Em.Select.extend(
-                {
-                  elementId: 'externalTemperatureSelect',
-                  classNames: 'externalTemperature',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.externalTemperature'
-                }
-              ),
-              turnSignalSelect: Em.Select.extend(
-                {
-                  elementId: 'turnSignalSelect',
-                  classNames: 'turnSignal',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.turnSignal'
-                }
-              ),
-              prndlSelect: Em.Select.extend(
-                {
-                  elementId: 'prndlSelect',
-                  classNames: 'prndl',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.prndl'
-                }
-              ),
-              tirePressureSelect: Em.Select.extend(
-                {
-                  elementId: 'tirePressureSelect',
-                  classNames: 'tirePressure',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.tirePressure'
-                }
-              ),
-              odometerSelect: Em.Select.extend(
-                {
-                  elementId: 'odometerSelect',
-                  classNames: 'odometer',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.odometer'
-                }
-              ),
-              beltStatusSelect: Em.Select.extend(
-                {
-                  elementId: 'beltStatusSelect',
-                  classNames: 'beltStatus',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.beltStatus'
-                }
-              ),
-              bodyInformationSelect: Em.Select.extend(
-                {
-                  elementId: 'bodyInformationSelect',
-                  classNames: 'bodyInformation',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.bodyInformation'
-                }
-              ),
-              deviceStatusSelect: Em.Select.extend(
-                {
-                  elementId: 'deviceStatusSelect',
-                  classNames: 'deviceStatus',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.deviceStatus'
-                }
-              ),
-              driverBrakingSelect: Em.Select.extend(
-                {
-                  elementId: 'driverBrakingSelect',
-                  classNames: 'driverBraking',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.driverBraking'
-                }
-              ),
-              wiperStatusSelect: Em.Select.extend(
-                {
-                  elementId: 'wiperStatusSelect',
-                  classNames: 'wiperStatus',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.wiperStatus'
-                }
-              ),
-              headLampStatusSelect: Em.Select.extend(
-                {
-                  elementId: 'headLampStatusSelect',
-                  classNames: 'headLampStatus',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.headLampStatus'
-                }
-              ),
-              engineTorqueSelect: Em.Select.extend(
-                {
-                  elementId: 'engineTorqueSelect',
-                  classNames: 'engineTorque',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.engineTorque'
-                }
-              ),
-              accPedalPositionSelect: Em.Select.extend(
-                {
-                  elementId: 'accPedalPositionSelect',
-                  classNames: 'accPedalPosition',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.accPedalPosition'
-                }
-              ),
-              steeringWheelAngleSelect: Em.Select.extend(
-                {
-                  elementId: 'steeringWheelAngleSelect',
-                  classNames: 'steeringWheelAngle',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.steeringWheelAngle'
-                }
-              ),
-              engineOilLifeSelect: Em.Select.extend(
-                {
-                  elementId: 'engineOilLifeSelect',
-                  classNames: 'engineOilLife',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.engineOilLife'
-                }
-              ),
-              electronicParkBrakeStatusSelect: Em.Select.extend(
-                {
-                  elementId: 'electronicParkBrakeStatusSelect',
-                  classNames: 'electronicParkBrakeStatus',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.electronicParkBrakeStatus'
-                }
-              ),
-              eCallInfoSelect: Em.Select.extend(
-                {
-                  elementId: 'eCallInfoSelect',
-                  classNames: 'eCallInfo',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.eCallInfo'
-                }
-              ),
-              airbagStatusSelect: Em.Select.extend(
-                {
-                  elementId: 'airbagStatusSelect',
-                  classNames: 'airbagStatus',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.airbagStatus'
-                }
-              ),
-              emergencyEventSelect: Em.Select.extend(
-                {
-                  elementId: 'emergencyEventSelect',
-                  classNames: 'emergencyEvent',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.emergencyEvent'
-                }
-              ),
-              clusterModesSelect: Em.Select.extend(
-                {
-                  elementId: 'clusterModesSelect',
-                  classNames: 'clusterModes',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.clusterModes'
-                }
-              ),
-              myKeySelect: Em.Select.extend(
-                {
-                  elementId: 'myKeySelect',
-                  classNames: 'myKey',
-                  contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.myKey'
-                }
-              ),
-            }
-          ),
-          subscribeVehicleDataList: Em.ContainerView.extend(
-          {
-            elementId: 'subscribeVehicleDataList',
-            classNames: 'subscribeVehicleDataList',
+                  elementId: 'subscribeVehicleDataSelections',
+                  classNames: 'subscribeVehicleDataSelections',
                   childViews: [
-                    'gpsLabel',
-                    'speedLabel',
-                    'rpmLabel',
-                    'fuelLevelLabel',
-                    'fuelLevel_StateLabel',
-                    'instantFuelConsumptionLabel',
-                    'fuelRangeLabel',
-                    'externalTemperatureLabel',
-                    'turnSignalLabel',
-                    'prndlLabel',
-                    'tirePressureLabel',
-                    'odometerLabel',
-                    'beltStatusLabel',
-                    'bodyInformationLabel',
-                    'deviceStatusLabel',
-                    'driverBrakingLabel',
-                    'wiperStatusLabel',
-                    'headLampStatusLabel',
-                    'engineTorqueLabel',
-                    'accPedalPositionLabel',
-                    'steeringWheelAngleLabel',
-                    'engineOilLifeLabel',
-                    'electronicParkBrakeStatusLabel',
-                    'eCallInfoLabel',
-                    'airbagStatusLabel',
-                    'emergencyEventLabel',
-                    'clusterModesLabel',
-                    'myKeyLabel'
+                    'gpsSelect',
+                    'speedSelect',
+                    'rpmSelect',
+                    'fuelLevelSelect',
+                    'fuelLevel_StateSelect',
+                    'instantFuelConsumptionSelect',
+                    'fuelRangeSelect',
+                    'externalTemperatureSelect',
+                    'turnSignalSelect',
+                    'prndlSelect',
+                    'tirePressureSelect',
+                    'odometerSelect',
+                    'beltStatusSelect',
+                    'bodyInformationSelect',
+                    'deviceStatusSelect',
+                    'driverBrakingSelect',
+                    'wiperStatusSelect',
+                    'headLampStatusSelect',
+                    'engineTorqueSelect',
+                    'accPedalPositionSelect',
+                    'steeringWheelAngleSelect',
+                    'engineOilLifeSelect',
+                    'electronicParkBrakeStatusSelect',
+                    'eCallInfoSelect',
+                    'airbagStatusSelect',
+                    'emergencyEventSelect',
+                    'clusterModesSelect',
+                    'myKeySelect'
                   ],
-                  gpsLabel: SDL.Label.extend(
+                  gpsSelect: Em.Select.extend(
                     {
-                      elementId: 'gpsLabel',
+                      elementId: 'gpsSelect',
                       classNames: 'gps',
-                      content: 'GPS'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.gps'
                     }
                   ),
-                  speedLabel: SDL.Label.extend(
+                  speedSelect: Em.Select.extend(
                     {
-                      elementId: 'speedLabel',
+                      elementId: 'speedSelect',
                       classNames: 'speed',
-                      content: 'Speed'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.speed'
                     }
                   ),
-                  rpmLabel: SDL.Label.extend(
+                  rpmSelect: Em.Select.extend(
                     {
-                      elementId: 'rpmLabel',
+                      elementId: 'rpmSelect',
                       classNames: 'rpm',
-                      content: 'rpm'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.rpm'
                     }
                   ),
-                  fuelLevelLabel: SDL.Label.extend(
+                  fuelLevelSelect: Em.Select.extend(
                     {
-                      elementId: 'fuelLevelLabel',
+                      elementId: 'fuelLevelSelect',
                       classNames: 'fuelLevel',
-                      content: 'fuelLevel'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.fuelLevel'
                     }
                   ),
-                  fuelLevel_StateLabel: SDL.Label.extend(
+                  fuelLevel_StateSelect: Em.Select.extend(
                     {
-                      elementId: 'fuelLevel_StateLabel',
+                      elementId: 'fuelLevel_StateSelect',
                       classNames: 'fuelLevel_State',
-                      content: 'fuelLevel_State'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.fuelLevel_State'
                     }
                   ),
-                  instantFuelConsumptionLabel: SDL.Label.extend(
+                  instantFuelConsumptionSelect: Em.Select.extend(
                     {
-                      elementId: 'instantFuelConsumptionLabel',
+                      elementId: 'instantFuelConsumptionSelect',
                       classNames: 'instantFuelConsumption',
-                      content: 'instantFuelConsumption'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.instantFuelConsumption'
                     }
                   ),
-                  fuelRangeLabel: SDL.Label.extend(
+                  fuelRangeSelect: Em.Select.extend(
                     {
-                      elementId: 'fuelRangeLabel',
+                      elementId: 'fuelRangeSelect',
                       classNames: 'fuelRange',
-                      content: 'fuelRange'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.fuelRange'
                     }
                   ),
-                  externalTemperatureLabel: SDL.Label.extend(
+                  externalTemperatureSelect: Em.Select.extend(
                     {
-                      elementId: 'externalTemperatureLabel',
+                      elementId: 'externalTemperatureSelect',
                       classNames: 'externalTemperature',
-                      content: 'externalTemperature'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.externalTemperature'
                     }
                   ),
-                  turnSignalLabel: SDL.Label.extend(
+                  turnSignalSelect: Em.Select.extend(
                     {
-                      elementId: 'turnSignalLabel',
+                      elementId: 'turnSignalSelect',
                       classNames: 'turnSignal',
-                      content: 'turnSignal'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.turnSignal'
                     }
                   ),
-                  prndlLabel: SDL.Label.extend(
+                  prndlSelect: Em.Select.extend(
                     {
-                      elementId: 'prndlLabel',
+                      elementId: 'prndlSelect',
                       classNames: 'prndl',
-                      content: 'prndl'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.prndl'
                     }
                   ),
-                  tirePressureLabel: SDL.Label.extend(
+                  tirePressureSelect: Em.Select.extend(
                     {
-                      elementId: 'tirePressureLabel',
+                      elementId: 'tirePressureSelect',
                       classNames: 'tirePressure',
-                      content: 'tirePressure'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.tirePressure'
                     }
                   ),
-                  odometerLabel: SDL.Label.extend(
+                  odometerSelect: Em.Select.extend(
                     {
-                      elementId: 'odometerLabel',
+                      elementId: 'odometerSelect',
                       classNames: 'odometer',
-                      content: 'odometer'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.odometer'
                     }
                   ),
-                  beltStatusLabel: SDL.Label.extend(
+                  beltStatusSelect: Em.Select.extend(
                     {
-                      elementId: 'beltStatusLabel',
+                      elementId: 'beltStatusSelect',
                       classNames: 'beltStatus',
-                      content: 'beltStatus'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.beltStatus'
                     }
                   ),
-                  bodyInformationLabel: SDL.Label.extend(
+                  bodyInformationSelect: Em.Select.extend(
                     {
-                      elementId: 'bodyInformationLabel',
+                      elementId: 'bodyInformationSelect',
                       classNames: 'bodyInformation',
-                      content: 'bodyInformation'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.bodyInformation'
                     }
                   ),
-                  deviceStatusLabel: SDL.Label.extend(
+                  deviceStatusSelect: Em.Select.extend(
                     {
-                      elementId: 'deviceStatusLabel',
+                      elementId: 'deviceStatusSelect',
                       classNames: 'deviceStatus',
-                      content: 'deviceStatus'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.deviceStatus'
                     }
                   ),
-                  driverBrakingLabel: SDL.Label.extend(
+                  driverBrakingSelect: Em.Select.extend(
                     {
-                      elementId: 'driverBrakingLabel',
+                      elementId: 'driverBrakingSelect',
                       classNames: 'driverBraking',
-                      content: 'driverBraking'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.driverBraking'
                     }
                   ),
-                  wiperStatusLabel: SDL.Label.extend(
+                  wiperStatusSelect: Em.Select.extend(
                     {
-                      elementId: 'wiperStatusLabel',
+                      elementId: 'wiperStatusSelect',
                       classNames: 'wiperStatus',
-                      content: 'wiperStatus'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.wiperStatus'
                     }
                   ),
-                  headLampStatusLabel: SDL.Label.extend(
+                  headLampStatusSelect: Em.Select.extend(
                     {
-                      elementId: 'headLampStatusLabel',
+                      elementId: 'headLampStatusSelect',
                       classNames: 'headLampStatus',
-                      content: 'headLampStatus'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.headLampStatus'
                     }
                   ),
-                  engineTorqueLabel: SDL.Label.extend(
+                  engineTorqueSelect: Em.Select.extend(
                     {
-                      elementId: 'engineTorqueLabel',
+                      elementId: 'engineTorqueSelect',
                       classNames: 'engineTorque',
-                      content: 'engineTorque'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.engineTorque'
                     }
                   ),
-                  accPedalPositionLabel: SDL.Label.extend(
+                  accPedalPositionSelect: Em.Select.extend(
                     {
-                      elementId: 'accPedalPositionLabel',
+                      elementId: 'accPedalPositionSelect',
                       classNames: 'accPedalPosition',
-                      content: 'accPedalPosition'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.accPedalPosition'
                     }
                   ),
-                  steeringWheelAngleLabel: SDL.Label.extend(
+                  steeringWheelAngleSelect: Em.Select.extend(
                     {
-                      elementId: 'steeringWheelAngleLabel',
+                      elementId: 'steeringWheelAngleSelect',
                       classNames: 'steeringWheelAngle',
-                      content: 'steeringWheelAngle'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.steeringWheelAngle'
                     }
                   ),
-                  engineOilLifeLabel: SDL.Label.extend(
+                  engineOilLifeSelect: Em.Select.extend(
                     {
-                      elementId: 'engineOilLifeLabel',
+                      elementId: 'engineOilLifeSelect',
                       classNames: 'engineOilLife',
-                      content: 'engineOilLife'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.engineOilLife'
                     }
                   ),
-                  electronicParkBrakeStatusLabel: SDL.Label.extend(
+                  electronicParkBrakeStatusSelect: Em.Select.extend(
                     {
-                      elementId: 'electronicParkBrakeStatusLabel',
+                      elementId: 'electronicParkBrakeStatusSelect',
                       classNames: 'electronicParkBrakeStatus',
-                      content: 'electronicParkBrakeStatus'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.electronicParkBrakeStatus'
                     }
                   ),
-                  eCallInfoLabel: SDL.Label.extend(
+                  eCallInfoSelect: Em.Select.extend(
                     {
-                      elementId: 'eCallInfoLabel',
+                      elementId: 'eCallInfoSelect',
                       classNames: 'eCallInfo',
-                      content: 'eCallInfo'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.eCallInfo'
                     }
                   ),
-                  airbagStatusLabel: SDL.Label.extend(
+                  airbagStatusSelect: Em.Select.extend(
                     {
-                      elementId: 'airbagStatusLabel',
+                      elementId: 'airbagStatusSelect',
                       classNames: 'airbagStatus',
-                      content: 'airbagStatus'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.airbagStatus'
                     }
                   ),
-                  emergencyEventLabel: SDL.Label.extend(
+                  emergencyEventSelect: Em.Select.extend(
                     {
-                      elementId: 'emergencyEventLabel',
+                      elementId: 'emergencyEventSelect',
                       classNames: 'emergencyEvent',
-                      content: 'emergencyEvent'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.emergencyEvent'
                     }
                   ),
-                  clusterModesLabel: SDL.Label.extend(
+                  clusterModesSelect: Em.Select.extend(
                     {
-                      elementId: 'clusterModesLabel',
+                      elementId: 'clusterModesSelect',
                       classNames: 'clusterModes',
-                      content: 'clusterModes'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.clusterModes'
                     }
                   ),
-                  myKeyLabel: SDL.Label.extend(
+                  myKeySelect: Em.Select.extend(
                     {
-                      elementId: 'myKeyLabel',
+                      elementId: 'myKeySelect',
                       classNames: 'myKey',
-                      content: 'myKey'
+                      contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.myKey'
                     }
-                  )
+                  ),
                 }
               ),
-            }
-          ),
-          
-             
-           
-          resultCodeTracker: Em.ContainerView.extend(
-            {
-              elementId: 'resultCodeTracker',
-              classNames: 'resultCodeTracker',
-              childViews: [
-              'vrAddComandSelect',
-              'uiAddComandSelect',
-              'addSubMenuSelect',
-              'uisetGlobalPropertiesSelect',
-              'ttssetGlobalPropertiesSelect',
-              'createInteractionChoiceSetSelect',
-              'subscribeWayPointsSelect',
-              'vehicleDataGlobalSelect'
-              ],
-              vehicleDataGlobalSelect: Em.Select.extend(
+              subscribeVehicleDataList: Em.ContainerView.extend(
+              {
+                elementId: 'subscribeVehicleDataList',
+                classNames: 'subscribeVehicleDataList',
+                      childViews: [
+                        'gpsLabel',
+                        'speedLabel',
+                        'rpmLabel',
+                        'fuelLevelLabel',
+                        'fuelLevel_StateLabel',
+                        'instantFuelConsumptionLabel',
+                        'fuelRangeLabel',
+                        'externalTemperatureLabel',
+                        'turnSignalLabel',
+                        'prndlLabel',
+                        'tirePressureLabel',
+                        'odometerLabel',
+                        'beltStatusLabel',
+                        'bodyInformationLabel',
+                        'deviceStatusLabel',
+                        'driverBrakingLabel',
+                        'wiperStatusLabel',
+                        'headLampStatusLabel',
+                        'engineTorqueLabel',
+                        'accPedalPositionLabel',
+                        'steeringWheelAngleLabel',
+                        'engineOilLifeLabel',
+                        'electronicParkBrakeStatusLabel',
+                        'eCallInfoLabel',
+                        'airbagStatusLabel',
+                        'emergencyEventLabel',
+                        'clusterModesLabel',
+                        'myKeyLabel'
+                      ],
+                      gpsLabel: SDL.Label.extend(
+                        {
+                          elementId: 'gpsLabel',
+                          classNames: 'gps',
+                          content: 'GPS'
+                        }
+                      ),
+                      speedLabel: SDL.Label.extend(
+                        {
+                          elementId: 'speedLabel',
+                          classNames: 'speed',
+                          content: 'Speed'
+                        }
+                      ),
+                      rpmLabel: SDL.Label.extend(
+                        {
+                          elementId: 'rpmLabel',
+                          classNames: 'rpm',
+                          content: 'rpm'
+                        }
+                      ),
+                      fuelLevelLabel: SDL.Label.extend(
+                        {
+                          elementId: 'fuelLevelLabel',
+                          classNames: 'fuelLevel',
+                          content: 'fuelLevel'
+                        }
+                      ),
+                      fuelLevel_StateLabel: SDL.Label.extend(
+                        {
+                          elementId: 'fuelLevel_StateLabel',
+                          classNames: 'fuelLevel_State',
+                          content: 'fuelLevel_State'
+                        }
+                      ),
+                      instantFuelConsumptionLabel: SDL.Label.extend(
+                        {
+                          elementId: 'instantFuelConsumptionLabel',
+                          classNames: 'instantFuelConsumption',
+                          content: 'instantFuelConsumption'
+                        }
+                      ),
+                      fuelRangeLabel: SDL.Label.extend(
+                        {
+                          elementId: 'fuelRangeLabel',
+                          classNames: 'fuelRange',
+                          content: 'fuelRange'
+                        }
+                      ),
+                      externalTemperatureLabel: SDL.Label.extend(
+                        {
+                          elementId: 'externalTemperatureLabel',
+                          classNames: 'externalTemperature',
+                          content: 'externalTemperature'
+                        }
+                      ),
+                      turnSignalLabel: SDL.Label.extend(
+                        {
+                          elementId: 'turnSignalLabel',
+                          classNames: 'turnSignal',
+                          content: 'turnSignal'
+                        }
+                      ),
+                      prndlLabel: SDL.Label.extend(
+                        {
+                          elementId: 'prndlLabel',
+                          classNames: 'prndl',
+                          content: 'prndl'
+                        }
+                      ),
+                      tirePressureLabel: SDL.Label.extend(
+                        {
+                          elementId: 'tirePressureLabel',
+                          classNames: 'tirePressure',
+                          content: 'tirePressure'
+                        }
+                      ),
+                      odometerLabel: SDL.Label.extend(
+                        {
+                          elementId: 'odometerLabel',
+                          classNames: 'odometer',
+                          content: 'odometer'
+                        }
+                      ),
+                      beltStatusLabel: SDL.Label.extend(
+                        {
+                          elementId: 'beltStatusLabel',
+                          classNames: 'beltStatus',
+                          content: 'beltStatus'
+                        }
+                      ),
+                      bodyInformationLabel: SDL.Label.extend(
+                        {
+                          elementId: 'bodyInformationLabel',
+                          classNames: 'bodyInformation',
+                          content: 'bodyInformation'
+                        }
+                      ),
+                      deviceStatusLabel: SDL.Label.extend(
+                        {
+                          elementId: 'deviceStatusLabel',
+                          classNames: 'deviceStatus',
+                          content: 'deviceStatus'
+                        }
+                      ),
+                      driverBrakingLabel: SDL.Label.extend(
+                        {
+                          elementId: 'driverBrakingLabel',
+                          classNames: 'driverBraking',
+                          content: 'driverBraking'
+                        }
+                      ),
+                      wiperStatusLabel: SDL.Label.extend(
+                        {
+                          elementId: 'wiperStatusLabel',
+                          classNames: 'wiperStatus',
+                          content: 'wiperStatus'
+                        }
+                      ),
+                      headLampStatusLabel: SDL.Label.extend(
+                        {
+                          elementId: 'headLampStatusLabel',
+                          classNames: 'headLampStatus',
+                          content: 'headLampStatus'
+                        }
+                      ),
+                      engineTorqueLabel: SDL.Label.extend(
+                        {
+                          elementId: 'engineTorqueLabel',
+                          classNames: 'engineTorque',
+                          content: 'engineTorque'
+                        }
+                      ),
+                      accPedalPositionLabel: SDL.Label.extend(
+                        {
+                          elementId: 'accPedalPositionLabel',
+                          classNames: 'accPedalPosition',
+                          content: 'accPedalPosition'
+                        }
+                      ),
+                      steeringWheelAngleLabel: SDL.Label.extend(
+                        {
+                          elementId: 'steeringWheelAngleLabel',
+                          classNames: 'steeringWheelAngle',
+                          content: 'steeringWheelAngle'
+                        }
+                      ),
+                      engineOilLifeLabel: SDL.Label.extend(
+                        {
+                          elementId: 'engineOilLifeLabel',
+                          classNames: 'engineOilLife',
+                          content: 'engineOilLife'
+                        }
+                      ),
+                      electronicParkBrakeStatusLabel: SDL.Label.extend(
+                        {
+                          elementId: 'electronicParkBrakeStatusLabel',
+                          classNames: 'electronicParkBrakeStatus',
+                          content: 'electronicParkBrakeStatus'
+                        }
+                      ),
+                      eCallInfoLabel: SDL.Label.extend(
+                        {
+                          elementId: 'eCallInfoLabel',
+                          classNames: 'eCallInfo',
+                          content: 'eCallInfo'
+                        }
+                      ),
+                      airbagStatusLabel: SDL.Label.extend(
+                        {
+                          elementId: 'airbagStatusLabel',
+                          classNames: 'airbagStatus',
+                          content: 'airbagStatus'
+                        }
+                      ),
+                      emergencyEventLabel: SDL.Label.extend(
+                        {
+                          elementId: 'emergencyEventLabel',
+                          classNames: 'emergencyEvent',
+                          content: 'emergencyEvent'
+                        }
+                      ),
+                      clusterModesLabel: SDL.Label.extend(
+                        {
+                          elementId: 'clusterModesLabel',
+                          classNames: 'clusterModes',
+                          content: 'clusterModes'
+                        }
+                      ),
+                      myKeyLabel: SDL.Label.extend(
+                        {
+                          elementId: 'myKeyLabel',
+                          classNames: 'myKey',
+                          content: 'myKey'
+                        }
+                      )
+                    }
+                  ),
+                }
+              ),
+              resultCodeTracker: Em.ContainerView.extend(
                 {
-                  elementId: 'vehicleDataGlobalSelect',
-                  classNames: 'vehicleDataGlobalSelect',
-                  contentBinding: 'SDL.SDLModel.data.resultCodes',
-                  valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.subscribeVehicleData'
+                  elementId: 'resultCodeTracker',
+                  classNames: 'resultCodeTracker',
+                  childViews: [
+                  'vrAddComandSelect',
+                  'uiAddComandSelect',
+                  'addSubMenuSelect',
+                  'uisetGlobalPropertiesSelect',
+                  'ttssetGlobalPropertiesSelect',
+                  'createInteractionChoiceSetSelect',
+                  'subscribeWayPointsSelect',
+                  'vehicleDataGlobalSelect'
+                  ],
+                  vehicleDataGlobalSelect: Em.Select.extend(
+                    {
+                      elementId: 'vehicleDataGlobalSelect',
+                      classNames: 'vehicleDataGlobalSelect',
+                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.subscribeVehicleData'
+                    }
+                  ),
+                  vrAddComandSelect: Em.Select.extend(
+                    {
+                      elementId: 'vrAddComandSelect',
+                      classNames: 'vrAddComandSelect',
+                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      valueBinding: 'FFW.RPCHelper.rpcStruct.vrAddCommand'
+                    }
+                  ),
+                  uiAddComandSelect: Em.Select.extend(
+                    {
+                      elementId: 'uiAddComandSelect',
+                      classNames: 'uiAddComandSelect',
+                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      valueBinding: 'FFW.RPCHelper.rpcStruct.uiAddCommand'
+                    }
+                  ),
+                  addSubMenuSelect: Em.Select.extend(
+                    {
+                      elementId: 'addSubMenuSelect',
+                      classNames: 'addSubMenuSelect',
+                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      valueBinding: 'FFW.RPCHelper.rpcStruct.AddSubmenu'
+                    }
+                  ),
+                  uisetGlobalPropertiesSelect: Em.Select.extend(
+                    {
+                      elementId: 'uisetGlobalPropertiesSelect',
+                      classNames: 'uisetGlobalPropertiesSelect',
+                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      valueBinding: 'FFW.RPCHelper.rpcStruct.uiSetGlobalProperties'
+                    }
+                  ),
+                  ttssetGlobalPropertiesSelect: Em.Select.extend(
+                    {
+                      elementId: 'ttssetGlobalPropertiesSelect',
+                      classNames: 'ttssetGlobalPropertiesSelect',
+                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      valueBinding: 'FFW.RPCHelper.rpcStruct.ttsSetGlobalProperties'
+                    }
+                  ),
+                  createInteractionChoiceSetSelect: Em.Select.extend(
+                    {
+                      elementId: 'createInteractionChoiceSetSelect',
+                      classNames: 'createInteractionChoiceSetSelect',
+                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      valueBinding: 'FFW.RPCHelper.rpcStruct.createInteractionChoiceSet'
+                    }
+                  ),
+                  subscribeWayPointsSelect: Em.Select.extend(
+                    {
+                      elementId: 'subscribeWayPointsSelect',
+                      classNames: 'subscribeWayPointsSelect',
+                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      valueBinding: 'FFW.RPCHelper.currentSubscribeWayPoints'
+                    }
+                  ),
                 }
-              ),
-              vrAddComandSelect: Em.Select.extend(
-                {
-                  elementId: 'vrAddComandSelect',
-                  classNames: 'vrAddComandSelect',
-                  contentBinding: 'SDL.SDLModel.data.resultCodes',
-                  valueBinding: 'FFW.RPCHelper.rpcStruct.vrAddCommand'
-                }
-              ),
-              uiAddComandSelect: Em.Select.extend(
-                {
-                  elementId: 'uiAddComandSelect',
-                  classNames: 'uiAddComandSelect',
-                  contentBinding: 'SDL.SDLModel.data.resultCodes',
-                  valueBinding: 'FFW.RPCHelper.rpcStruct.uiAddCommand'
-                }
-              ),
-              addSubMenuSelect: Em.Select.extend(
-                {
-                  elementId: 'addSubMenuSelect',
-                  classNames: 'addSubMenuSelect',
-                  contentBinding: 'SDL.SDLModel.data.resultCodes',
-                  valueBinding: 'FFW.RPCHelper.rpcStruct.AddSubmenu'
-                }
-              ),
-              uisetGlobalPropertiesSelect: Em.Select.extend(
-                {
-                  elementId: 'uisetGlobalPropertiesSelect',
-                  classNames: 'uisetGlobalPropertiesSelect',
-                  contentBinding: 'SDL.SDLModel.data.resultCodes',
-                  valueBinding: 'FFW.RPCHelper.rpcStruct.uiSetGlobalProperties'
-                }
-              ),
-              ttssetGlobalPropertiesSelect: Em.Select.extend(
-                {
-                  elementId: 'ttssetGlobalPropertiesSelect',
-                  classNames: 'ttssetGlobalPropertiesSelect',
-                  contentBinding: 'SDL.SDLModel.data.resultCodes',
-                  valueBinding: 'FFW.RPCHelper.rpcStruct.ttsSetGlobalProperties'
-                }
-              ),
-              createInteractionChoiceSetSelect: Em.Select.extend(
-                {
-                  elementId: 'createInteractionChoiceSetSelect',
-                  classNames: 'createInteractionChoiceSetSelect',
-                  contentBinding: 'SDL.SDLModel.data.resultCodes',
-                  valueBinding: 'FFW.RPCHelper.rpcStruct.createInteractionChoiceSet'
-                }
-              ),
-              subscribeWayPointsSelect: Em.Select.extend(
-                {
-                  elementId: 'subscribeWayPointsSelect',
-                  classNames: 'subscribeWayPointsSelect',
-                  contentBinding: 'SDL.SDLModel.data.resultCodes',
-                  valueBinding: 'FFW.RPCHelper.currentSubscribeWayPoints'
-                }
-              ),
-            }
-          )
+              )
     }
 );

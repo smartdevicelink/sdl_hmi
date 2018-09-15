@@ -81,8 +81,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       /**
       * init object
       */
-     init: function() {
-     },
+      init: function() {},
       /**
        * connect to RPC bus
        */

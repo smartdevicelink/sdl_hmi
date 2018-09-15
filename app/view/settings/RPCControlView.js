@@ -32,42 +32,37 @@ SDL.RPCControlView = Em.ContainerView.create(
         ],
         childViews: [
             'AppsList'
-          ],
-          showAppList: function() {
-            this.get('AppsList.list').removeAllChildren();
-            this.AppsList.list.refresh();
-            var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
-            if(0 == apps.length && SDL.States.currentState.name == 'rpccontrol'){
-              SDL.States.goToStates('settings.policies');
-            }
-            for (i = 0; i < apps.length; i++) {
-                appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
-                this.get('AppsList.list.childViews').
-               pushObject(SDL.Button.create(
-                  {
-                    action: 'onState',
-                    target: 'SDL.SettingsController',
-                    goToState:'rpccontrol.rpcconfig',
-                    text: apps[i].appName,
-                    appName: apps[i].appName,
-                    appID: apps[i].appID,
-                    classNames: 'list-item button',
-                    iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
-                    '.appIcon',
-                    disabled: apps[i].disabledToActivate
-                  }
-                 )
-               );
-             }
-           },
+        ],
+        showAppList: function() {
+          this.get('AppsList.list').removeAllChildren();
+          this.AppsList.list.refresh();
+          var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
+          if (0 == apps.length && SDL.States.currentState.name == 'rpccontrol') {
+            SDL.States.goToStates('settings.policies');
+          }
+          for (i = 0; i < apps.length; i++) {
+            appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+            this.get('AppsList.list.childViews').pushObject(SDL.Button.create(
+              {
+                action: 'onState',
+                target: 'SDL.SettingsController',
+                goToState:'rpccontrol.rpcconfig',
+                text: apps[i].appName,
+                appName: apps[i].appName,
+                appID: apps[i].appID,
+                classNames: 'list-item button',
+                iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
+                  '.appIcon',
+                disabled: apps[i].disabledToActivate
+              }));
+          }
+        },
         
-          AppsList: SDL.List.extend(
-            {
-            elementId: 'rpc_settings_list',
-           classNames: 'rpc_settings_list',
-            itemsOnPage: 5,
-            items: new Array()
-            }
-          )
+        AppsList: SDL.List.extend({
+          elementId: 'rpc_settings_list',
+          classNames: 'rpc_settings_list',
+          itemsOnPage: 5,
+          items: new Array()
+        })
     }
 );
