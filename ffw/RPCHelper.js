@@ -80,7 +80,7 @@ FFW.RPCHelper = Em.Object.create(
       } else if(this.vehicleDataStruct[method] !== undefined) {
         code = this.vehicleDataStruct[method];
       } else if(this[method] !== undefined){
-        code = this.SubscribeWayPoints;
+        code = this.currentSubscribeWayPoints;
       }
       return SDL.SDLModel.data.resultCode[code];
     },
@@ -93,9 +93,18 @@ FFW.RPCHelper = Em.Object.create(
          this.set('rpcStruct.' + key,this.appContainer[appID][key]);
       };
       for(key in this.vehicleDataStruct) {
-         this.set('currentVehicleDataStruct.' + key, this.vehicleDataStruct[key]);
+        value = this.appContainer[appID][key];
+        if(value == null){
+          value = 'SUCCESS'
+        }
+         this.set('currentVehicleDataStruct.' + key, value);
       };
-      this.set('currentSubscribeWayPoints', this.SubscribeWayPoints);
+
+      subscribeWayPoints = this.appContainer[appID].currentSubscribeWayPoints;
+      if(null == subscribeWayPoints) {
+        subscribeWayPoints = 'SUCCESS';
+      }
+      this.set('currentSubscribeWayPoints', subscribeWayPoints);
       this.setCurrentAppID(appID);
     },
 
@@ -113,9 +122,9 @@ FFW.RPCHelper = Em.Object.create(
          this.set('appContainer.'+ app.appID + '.'+key, this.rpcStruct[key]);
        };
        for(key in this.vehicleDataStruct) {
-         this.set('vehicleDataStruct.' + key, this.currentVehicleDataStruct[key]);
+         this.set('appContainer.'+ app.appID + '.' + key, this.currentVehicleDataStruct[key]);
       };
-      this.set('SubscribeWayPoints', this.currentSubscribeWayPoints);
+      this.set('appContainer.'+ app.appID + '.currentSubscribeWayPoints', this.currentSubscribeWayPoints);
       var event = {goToState: 'rpccontrol'};
       SDL.SettingsController.onState(event);
       this.setCurrentAppID(null);
