@@ -43,6 +43,7 @@ FFW.RPCHelper = Em.Object.create(
         this.set('vehicleDataStruct.'+key, 'SUCCESS');
       };
       this.set('SubscribeWayPoints', 'SUCCESS');
+      this.set('SubscribeVehicleData', 'SUCCESS');
     },
 
     /*
@@ -71,18 +72,27 @@ FFW.RPCHelper = Em.Object.create(
      * by HMI settings
      */
     getCustomResultCode: function(appID, method) {
-      if(method == 'createInteractionChoiceSet'){
-        method = 'vrAddCommand';
+      switch (method) {
+        case 'createInteractionChoiceSet': {
+          method = 'vrAddCommand';
+          break;  
+        }
+        case 'SubscribeWayPoints': {
+          return SDL.SDLModel.data.resultCode[this.SubscribeWayPoints];
+        }
+        case 'SubscribeVehicleData': {
+          return SDL.SDLModel.data.resultCode[this.SubscribeVehicleData]; 
+        }
       }
+
       var code = null;
       if(appID !== null && this.appContainer[appID][method] !== undefined) {
         code = this.appContainer[appID][method];
       } else if(this.vehicleDataStruct[method] !== undefined) {
         code = this.vehicleDataStruct[method];
-      } else if(this[method] !== undefined){
-        code = this.currentSubscribeWayPoints;
       }
-      return SDL.SDLModel.data.resultCode[code];
+
+      return null != code ? SDL.SDLModel.data.resultCode[code] : 'SUCCESS';
     },
 
     /*
@@ -93,18 +103,11 @@ FFW.RPCHelper = Em.Object.create(
          this.set('rpcStruct.' + key,this.appContainer[appID][key]);
       };
       for(key in this.vehicleDataStruct) {
-        value = this.appContainer[appID][key];
-        if(value == null){
-          value = 'SUCCESS'
-        }
-         this.set('currentVehicleDataStruct.' + key, value);
+        value = this.vehicleDataStruct[key];
+        this.set('currentVehicleDataStruct.' + key, value);
       };
-
-      subscribeWayPoints = this.appContainer[appID].currentSubscribeWayPoints;
-      if(null == subscribeWayPoints) {
-        subscribeWayPoints = 'SUCCESS';
-      }
-      this.set('currentSubscribeWayPoints', subscribeWayPoints);
+      this.set('currentSubscribeWayPoints', this.SubscribeWayPoints);
+      this.set('currentSubscribeVehicleData', this.SubscribeVehicleData);
       this.setCurrentAppID(appID);
     },
 
@@ -113,18 +116,19 @@ FFW.RPCHelper = Em.Object.create(
      * on the RPCControl view and returns to app list
      */
     saveButton: function(){
-       var appName = SDL.RPCControlConfigView.appNameLabel.content;
-       app = SDL.SDLModel.data.registeredApps.filterProperty(
-         'appName',
+      var appName = SDL.RPCControlConfigView.appNameLabel.content;
+      app = SDL.SDLModel.data.registeredApps.filterProperty(
+        'appName',
          appName
-       )[0];
-       for(key in this.appContainer[app.appID]){
-         this.set('appContainer.'+ app.appID + '.'+key, this.rpcStruct[key]);
-       };
-       for(key in this.vehicleDataStruct) {
-         this.set('appContainer.'+ app.appID + '.' + key, this.currentVehicleDataStruct[key]);
+      )[0];
+      for(key in this.appContainer[app.appID]){
+        this.set('appContainer.'+ app.appID + '.'+key, this.rpcStruct[key]);
       };
-      this.set('appContainer.'+ app.appID + '.currentSubscribeWayPoints', this.currentSubscribeWayPoints);
+      for(key in this.vehicleDataStruct) {
+        this.set('vehicleDataStruct.'+ key, this.currentVehicleDataStruct[key]);
+      };
+      this.set('SubscribeWayPoints', this.currentSubscribeWayPoints);
+      this.set('SubscribeVehicleData', this.currentSubscribeVehicleData);
       var event = {goToState: 'rpccontrol'};
       SDL.SettingsController.onState(event);
       this.setCurrentAppID(null);
@@ -136,6 +140,7 @@ FFW.RPCHelper = Em.Object.create(
      */
     resetButton: function() {
        this.set('currentSubscribeWayPoints', 'SUCCESS');
+       this.set('currentSubscribeVehicleData', 'SUCCESS');
        for(key in this.rpcStruct){
          this.set('rpcStruct.'+key, this.defaultRpcStruct[key]);
        };
@@ -153,20 +158,19 @@ FFW.RPCHelper = Em.Object.create(
 
     defaultRpcStruct: {},
     currentAppID: null,
-    vehicleDataStruct: {},
     currentVehicleDataStruct: {},
-    SubscribeWayPoints: '',
     currentSubscribeWayPoints: '',
+    currentSubscribeVehicleData: '',
+    SubscribeWayPoints: '',
+    SubscribeVehicleData: '',
     rpcStruct: {
         vrAddCommand:'',
         uiAddCommand: '',
         AddSubmenu:'',
         uiSetGlobalProperties: '',
-        ttsSetGlobalProperties: '',
-        createInteractionChoiceSet: '',
+        ttsSetGlobalProperties: ''        
     },
     vehicleDataStruct: {
-        subscribeVehicleData: '',
         speed:'',
         rpm: '',
         fuelLevel: '',

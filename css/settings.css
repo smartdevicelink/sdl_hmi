@@ -93,14 +93,9 @@
        left: -140px;
 }
 
- .createInteractionChoiceSet{
-        top: 210px;
-        font-size: 85%;
-}
-
  .vehicleDataGlobal{
-    top: 235px;
-    font-size: 85%;
+    top: 212px;
+    left: -150px;
 }
 
  .subscribeVehicleData{
@@ -458,13 +453,8 @@
     position: absolute;
 }
 
- .createInteractionChoiceSetSelect{
-    top: 210px;
-    position: absolute;
-}
-
  .vehicleDataGlobalSelect{
-    top: 235px;
+    top: 210px;
     position: absolute;
 }
 

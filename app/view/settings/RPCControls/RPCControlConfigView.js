@@ -93,8 +93,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                 'uisetGlobalPropertieslabel',
                 'ttssetGlobalPropertieslabel',
                 'subscribeVehicleDatalabel',
-                'subscribeWayPointslabel',
-                'createInteractionChoiceSetLabel',
+                'subscribeWayPointslabel',                
                 'subscribeVehicleDataList',
                 'vehicleDataGlobal',
                 'subscribeVehicleDataSelections'
@@ -154,14 +153,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                   classNames: 'subscribeWayPoints',
                   content: 'SubscribeWayPoints'
                 }
-              ),
-              createInteractionChoiceSetLabel: SDL.Label.extend(
-                {
-                  elementId: 'createInteractionChoiceSet',
-                  classNames: 'createInteractionChoiceSet',
-                  content: 'CreateInteractionChoiceSet'
-                }
-              ),
+              ),              
               subscribeVehicleDataSelections:  Em.ContainerView.extend(
                 {
                   elementId: 'subscribeVehicleDataSelections',
@@ -666,7 +658,6 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                   'addSubMenuSelect',
                   'uisetGlobalPropertiesSelect',
                   'ttssetGlobalPropertiesSelect',
-                  'createInteractionChoiceSetSelect',
                   'subscribeWayPointsSelect',
                   'vehicleDataGlobalSelect'
                   ],
@@ -675,7 +666,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                       elementId: 'vehicleDataGlobalSelect',
                       classNames: 'vehicleDataGlobalSelect',
                       contentBinding: 'SDL.SDLModel.data.resultCodes',
-                      valueBinding: 'FFW.RPCHelper.currentVehicleDataStruct.subscribeVehicleData'
+                      valueBinding: 'FFW.RPCHelper.currentSubscribeVehicleData'
                     }
                   ),
                   vrAddComandSelect: Em.Select.extend(
@@ -717,15 +708,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                       contentBinding: 'SDL.SDLModel.data.resultCodes',
                       valueBinding: 'FFW.RPCHelper.rpcStruct.ttsSetGlobalProperties'
                     }
-                  ),
-                  createInteractionChoiceSetSelect: Em.Select.extend(
-                    {
-                      elementId: 'createInteractionChoiceSetSelect',
-                      classNames: 'createInteractionChoiceSetSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
-                      valueBinding: 'FFW.RPCHelper.rpcStruct.createInteractionChoiceSet'
-                    }
-                  ),
+                  ),                  
                   subscribeWayPointsSelect: Em.Select.extend(
                     {
                       elementId: 'subscribeWayPointsSelect',
