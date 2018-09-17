@@ -164,6 +164,8 @@ var StateManager = Em.StateManager.extend(
         },
         rpccontrol: Em.State.create({
             rpcconfig: Em.State.create({}),
+            rpcwaypointconfig: Em.State.create({}),
+            rpcvehicledataconfig: Em.State.create({})
           }
        ),
         policies: Em.State.create(

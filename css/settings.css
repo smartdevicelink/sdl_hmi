@@ -40,11 +40,57 @@
     left: 10px;
 }
 
- .saveButton{
+ .saveButton,
+ .newButton {
     left: 55px;
     border: 1px solid #333;
     border-radius: 2px;
     top: 20px;
+    width: 60px;
+    height: 27px;
+    text-align: center;
+}
+
+.removeButton{
+    border: 1px solid #333;
+    border-radius: 2px;
+    width: 71px;
+    height: 27px;
+    text-align: center;
+    top: 20px;
+    left: 125px;
+}
+
+.previousButton{
+    border: 1px solid #333;
+    border-radius: 2px;
+    width: 71px;
+    height: 27px;
+    text-align: center;
+    top: 20px;
+    left: 280px;
+}
+
+.nextButton{
+    border: 1px solid #333;
+    border-radius: 2px;
+    width: 60px;
+    height: 27px;
+    text-align: center;
+    left: 360px;
+    top: 20px;
+}
+
+.counterLabel{
+    top: 55px;
+    width: 60px;
+    height: 27px;
+    text-align: center;
+}
+
+.rpc_settings_separate_view .counterLabel{
+    top: 25px;
+    left: 415px;
     width: 60px;
     height: 27px;
     text-align: center;
@@ -103,318 +149,43 @@
     left: -140px;
 }
 
- .subscribeVehicleDataList .speed{
-    top:285px;
-}
-
- .subscribeVehicleDataList .rpm{
-    top:310px;
-}
-
- .subscribeVehicleDataList .fuelLevel{
-    top:335px;
-}
-
- .subscribeVehicleDataList .fuelLevel_State{
-    top:360px;
-}
-
- .subscribeVehicleDataList .instantFuelConsumption{
-    top:385px;
-    font-size: 90%;
-}
-
- .subscribeVehicleDataList .externalTemperature{
-    top:410px;
-}
-
- .subscribeVehicleDataList .turnSignal{
-    top:435px;
-}
-
- .subscribeVehicleDataList .prndl{
-    top:460px;
-}
-
- .subscribeVehicleDataList .tirePressure{
-    top:485px;
-}
-
- .subscribeVehicleDataList .odometer{
-    top:510px;
-}
-
- .subscribeVehicleDataList .beltStatus{
-    top:535px;
-}
-
- .subscribeVehicleDataList .bodyInformation{
-    top:560px;
-}
-
- .subscribeVehicleDataList .deviceStatus{
-    top:585px;
-}
-
- .subscribeVehicleDataList .driverBraking{
-    top:610px;
-}
-
- .subscribeVehicleDataList .wiperStatus{
-    top:635px;
-}
-
- .subscribeVehicleDataList .headLampStatus{
-    top:660px;
-}
-
- .subscribeVehicleDataList .engineTorque{
-    top:685px;
-}
-
- .subscribeVehicleDataList .accPedalPosition{
-    top:710px;
-}
-
- .subscribeVehicleDataList .steeringWheelAngle{
-    top:735px;
-}
-
- .subscribeVehicleDataList .engineOilLife{
-    top:760px;
-}
-
- .subscribeVehicleDataList .electronicParkBrakeStatus{
-    top:785px;
-    font-size: 90%;
-}
-
- .subscribeVehicleDataList .eCallInfo{
-    top:810px;
-}
-
- .subscribeVehicleDataList .airbagStatus{
-    top:835px;
-}
-
- .subscribeVehicleDataList .emergencyEvent{
-    top:860px;
-}
-
- .subscribeVehicleDataList .clusterModes{
-    top:885px;
-}
-
- .subscribeVehicleDataList .myKey{
-    top:910px;
-}
-
- .subscribeVehicleDataList .fuelRange{
-    top:935px;
-}
-
- .subscribeVehicleDataList .gps{
-    top:960px;
-}
-
- .subscribeVehicleDataSelections .speed{
+.subscribevehicleData{
+    top: 50px;
     direction: initial;
-    left: 30px;
     position: absolute;
-    top:285px;
+    height: 30px;
+    width: 479px;
+}
+.subscribevehicleData .label{
+    position: absolute;
+    left: 10px; 
+    top: 5px;
+}
+.subscribevehicleData .select{
+    position: absolute;
+    left: 185px;
+    top: 5px;
 }
 
- .subscribeVehicleDataSelections .rpm{
-    direction: initial;
-    left: 30px;
-    position: absolute;
-    top:310px;
+.subscribevehicleDataParams{
+    position: relative;
+    height: 850px;
+    width: 479px;
+    top: 80px;
 }
-
- .subscribeVehicleDataSelections .fuelLevel{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:335px;
+.subscribevehicleDataParams .params{
+    top: 5px;
+    position: relative;
+    height: 30px;
+    width: 450px;
+    left: 26px;
 }
-
- .subscribeVehicleDataSelections .fuelLevel_State{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:360px;
+.subscribevehicleDataParams .params .label{
+    left: 10px;
 }
-
- .subscribeVehicleDataSelections .instantFuelConsumption{
-     direction: initial;
-    left: 30px;
+.subscribevehicleDataParams .params .select{
+    left: 205px;
     position: absolute;
-    top:385px;
-}
-
- .subscribeVehicleDataSelections .externalTemperature{
-
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:410px;
-}
-
- .subscribeVehicleDataSelections .turnSignal{
-
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:435px;
-}
-
- .subscribeVehicleDataSelections .prndl{
-
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:460px;
-}
-
- .subscribeVehicleDataSelections .tirePressure{
-
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:485px;
-}
-
- .subscribeVehicleDataSelections .odometer{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:510px;
-}
-
- .subscribeVehicleDataSelections .beltStatus{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:535px;
-}
-
- .subscribeVehicleDataSelections .bodyInformation{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:560px;
-}
-
- .subscribeVehicleDataSelections .deviceStatus{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:585px;
-}
-
- .subscribeVehicleDataSelections .driverBraking{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:610px;
-}
-
- .subscribeVehicleDataSelections .wiperStatus{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:635px;
-}
-
- .subscribeVehicleDataSelections .headLampStatus{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:660px;
-}
-
- .subscribeVehicleDataSelections .engineTorque{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:685px;
-}
-
- .subscribeVehicleDataSelections .accPedalPosition{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:710px;
-}
-
- .subscribeVehicleDataSelections .steeringWheelAngle{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:735px;
-}
-
- .subscribeVehicleDataSelections .engineOilLife{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:760px;
-}
-
- .subscribeVehicleDataSelections .electronicParkBrakeStatus{
-     direction: initial;
-    left: 30px;
-    position: absolute;
-    top:785px;
-}
-
- .subscribeVehicleDataSelections .eCallInfo{
-    direction: initial;
-    left: 30px;
-    position: absolute;
-    top:810px;
-}
-
- .subscribeVehicleDataSelections .airbagStatus{
-    direction: initial;
-    left: 30px;
-    position: absolute;
-    top:835px;
-}
-
- .subscribeVehicleDataSelections .emergencyEvent{
-    direction: initial;
-    left: 30px;
-    position: absolute;
-    top:860px;
-}
-
- .subscribeVehicleDataSelections .clusterModes{
-    direction: initial;
-    left: 30px;
-    position: absolute;
-    top:885px;
-}
-
- .subscribeVehicleDataSelections .myKey{
-    direction: initial;
-    left: 30px;
-    position: absolute;
-    top:910px;
-}
-
- .subscribeVehicleDataSelections .fuelRange{
-    direction: initial;
-    left: 30px;
-    position: absolute;
-    top:935px;
-}
-
- .subscribeVehicleDataSelections .gps{
-    direction: initial;
-    left: 30px;
-    position: absolute;
-    top:960px;
 }
 
 #settingsView .rpc_settings_separate_view
@@ -449,7 +220,10 @@
 }
 
  .subscribeWayPointsSelect{
-    top: 185px;
+    top: 55px;
+    left: 55px;
+    width: 407px;
+    height: 18px;
     position: absolute;
 }
 
