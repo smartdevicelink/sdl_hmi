@@ -48,6 +48,8 @@ SDL.SettingsView = Em.ContainerView.create(
       SDL.AppPermissionsView,
       SDL.DeviceConfigView,
       SDL.RPCControlConfigView,
+      SDL.RPCWayPointControlConfigView,
+      SDL.RPCVehicleDataControlConfigView,
       SDL.StatisticsInfoView,
       SDL.SystemErrorView,
       SDL.ConnectionSettingsView,

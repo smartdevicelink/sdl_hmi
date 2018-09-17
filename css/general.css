@@ -2001,7 +2001,7 @@ to {
     display: none;
 }
 
-/* Lable plus Button*/
+/* label plus Button*/
 .lablePlusButton .button {
     float: right;
     right: 0px;
@@ -2010,7 +2010,7 @@ to {
     border-left: 1px solid #393939;
 }
 
-.lablePlusButton .lable span, .lablePlusButton .button span {
+.lablePlusButton .label span, .lablePlusButton .button span {
     margin-left: 13px;
 }
 
@@ -2041,7 +2041,7 @@ to {
     -webkit-border-radius: 4px;
 }
 
-/* header lable*/
+/* header label*/
 #select_system_heading_lable {
     position: relative;
     font-size: 30px;
@@ -2101,7 +2101,7 @@ to {
     margin-top: 2px;
 }
 
-/* select climate style lable*/
+/* select climate style label*/
 #select_system_label {
     font-size: 20px;
     width: 135px;
@@ -2152,7 +2152,7 @@ to {
     float: left;
 }
 
-/* navigationApp select lable*/
+/* navigationApp select label*/
 #sdnav_label {
     position: relative;
     float: left;
@@ -2175,7 +2175,7 @@ to {
     margin: 50px auto;
 }
 
-/* Info Lable*/
+/* Info label*/
 #select_system_info {
     position: relative;
     text-align: center;
