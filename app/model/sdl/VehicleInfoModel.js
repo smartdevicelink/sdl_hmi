@@ -399,15 +399,15 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
      */
     SubscribeVehicleData: function(message) {
       var subscribeVIData = {};
-      resultCode = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeVehicleData');
+      VehicleDataResultCode = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeVehicleData');
       for (var key in message.params){
         subscribeVIData[key] = {
           dataType: this.eVehicleDataType[key],
-          resultCode: FFW.RPCHelper.vehicleDataStruct[key],
+          resultCode: VehicleDataResultCode.vehicleDataStruct[key],
         }
       };
       FFW.VehicleInfo.sendVISubscribeVehicleDataResult(
-        resultCode, message.id, message.method,
+        VehicleDataResultCode.SubscribeVehicleData, message.id, message.method,
         subscribeVIData
       );
     },
