@@ -71,13 +71,13 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
         elementId: 'subscribevehicleData',
         classNames: 'subscribevehicleData',
         childViews: [
-          'lable',
+          'label',
           'select'
         ],
-        lable: SDL.Label.extend(
+        label: SDL.Label.extend(
           {
-            elementId: 'lable',
-            classNames: 'lable',
+            elementId: 'label',
+            classNames: 'label',
             content: 'SubscribeVehicleData'
           }),
           select: Em.Select.extend(
@@ -107,14 +107,14 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
             elementId: viewsName,
             classNames: 'params',
             childViews: [
-              'lable',
+              'label',
               'select'
             ],
 
-            lable: SDL.Label.extend(
+            label: SDL.Label.extend(
               {
-                elementId: 'lable',
-                classNames: 'lable',
+                elementId: 'label',
+                classNames: 'label',
                 content: viewsName
               }),
             select:  Em.Select.extend(

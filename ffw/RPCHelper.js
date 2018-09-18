@@ -144,6 +144,9 @@ FFW.RPCHelper = Em.Object.create(
       this.set('currentAppID', appID);
     },
 
+    /*
+     * Add new response for SubscribeWayPoint RPC in queue
+     */
     newWayPointResponse: function(){
       length = this.wayPointResultCodes.length;
       this.wayPointResultCodes[length - 1] = this.SubscribeWayPoints;
@@ -153,6 +156,9 @@ FFW.RPCHelper = Em.Object.create(
       this.set('SubscribeWayPointsRequestNumber', this.SubscribeWayPointsRequestNumber + 1);
     },
 
+    /*
+     * Claims vehicle data structure filled with SUCCESS result codes
+     */
     getSuccessVehicleDataStruct:function(){
       SuccessVehicleDataStruct = {}
       for(var paramName in this.vehicleDataStruct){
@@ -161,6 +167,9 @@ FFW.RPCHelper = Em.Object.create(
       return SuccessVehicleDataStruct;
     },
 
+    /*
+     * Add new response for SubscribeVehicleData RPC in queue 
+     */
     newVehicleDataResponse: function(){
       length = this.VehicleDataResultCodes.length;
       this.VehicleDataResultCodes[length - 1].SubscribeVehicleData = this.SubscribeVehicleData;
@@ -177,18 +186,27 @@ FFW.RPCHelper = Em.Object.create(
       this.set('VehicleDataRequestNumber', this.VehicleDataRequestNumber + 1);
     },
     
+    /*
+     * Format string with waypoints set to display on label
+     */
     getWayPointResponseStatus: function() {
       return this.SubscribeWayPointsRequestNumber + '/' + this.wayPointResultCodes.length;
     }.property(
       'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
     ),
 
+    /*
+     * Format string with vehicle data set to display on label
+     */
     getVehicleDataStatus: function() {
       return this.VehicleDataRequestNumber + '/' + this.VehicleDataResultCodes.length;
     }.property(
       'FFW.RPCHelper.VehicleDataRequestNumber'
     ),
 
+    /*
+     * Claims next result code for SubscribeWayPoints RPC
+     */
     getNextWayPointResultCode: function(){
       length = this.wayPointResultCodes.length;
       this.wayPointResultCodes[length - 1] = this.SubscribeWayPoints;
@@ -203,6 +221,9 @@ FFW.RPCHelper = Em.Object.create(
       return SDL.SDLModel.data.resultCode[code]
     },
 
+    /*
+     * Claims next result code for SubscribeVehicleData RPC
+     */
     getNextVehicleDataResultCode: function(){
       length = this.VehicleDataResultCodes.length;
       this.VehicleDataResultCodes[length - 1].SubscribeVehicleData = this.SubscribeVehicleData;
