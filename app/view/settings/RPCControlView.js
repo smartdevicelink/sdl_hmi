@@ -40,6 +40,24 @@ SDL.RPCControlView = Em.ContainerView.create(
           if (0 == apps.length && SDL.States.currentState.name == 'rpccontrol') {
             SDL.States.goToStates('settings.policies');
           }
+
+          this.get('AppsList.list.childViews').pushObject(SDL.Button.create(
+            {
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              goToState:'rpccontrol.rpcwaypointconfig',
+              text: 'Subscribe Way Points',
+              classNames: 'list-item button'
+            }));
+          this.get('AppsList.list.childViews').pushObject(SDL.Button.create(
+            {
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              goToState:'rpccontrol.rpcvehicledataconfig',
+              text: 'Vehicle Data',
+              classNames: 'list-item button'
+            }));
+            
           for (i = 0; i < apps.length; i++) {
             appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
             this.get('AppsList.list.childViews').pushObject(SDL.Button.create(
