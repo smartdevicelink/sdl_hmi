@@ -34,6 +34,9 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
     childViews: [
       'backButton',
       'newButton',
+      'removeButton',
+      'previousButton',
+      'nextButton',
       'counterLabel',
       'subscribeWayPointsSelect'
     ],
@@ -60,6 +63,59 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
           text: 'New',
           onDown: false
         }
+    ),
+    removeButton: SDL.Button.extend(
+      {
+        classNames: [
+          'removeButton'
+        ],
+        isDisabled: function() {
+          return FFW.RPCHelper.wayPointResultCodes.length == 1;
+        }.property(
+          'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
+          
+        ),
+        disabledBinding: 'isDisabled',
+        action: 'removeWayPointResponse',
+        target: 'FFW.RPCHelper',
+        text: 'Remove',
+        onDown: false
+      }
+    ),
+    previousButton: SDL.Button.extend(
+        {
+          classNames: [
+            'previousButton'
+          ],
+          isDisabled: function() {
+            return FFW.RPCHelper.SubscribeWayPointsRequestNumber == 1;
+          }.property(
+            'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
+          ),
+          disabledBinding: 'isDisabled',
+          action: 'previousWayPointResultCode',
+          target: 'FFW.RPCHelper',
+          text: 'Previous',
+          onDown: false
+        }
+      ),
+    nextButton: SDL.Button.extend(
+      {
+        classNames: [
+          'nextButton'
+        ],
+        isDisabled: function() {
+          return FFW.RPCHelper.SubscribeWayPointsRequestNumber == 
+                                      FFW.RPCHelper.wayPointResultCodes.length;
+        }.property(
+          'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
+        ),
+        disabledBinding: 'isDisabled',
+        action: 'nextWayPointResultCode',
+        target: 'FFW.RPCHelper',
+        text: 'Next',
+        onDown: false
+      }
     ),
     counterLabel: SDL.Label.extend(
         {

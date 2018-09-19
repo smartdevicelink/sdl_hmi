@@ -51,6 +51,36 @@
     text-align: center;
 }
 
+.removeButton{
+    border: 1px solid #333;
+    border-radius: 2px;
+    width: 71px;
+    height: 27px;
+    text-align: center;
+    top: 20px;
+    left: 125px;
+}
+
+.previousButton{
+    border: 1px solid #333;
+    border-radius: 2px;
+    width: 71px;
+    height: 27px;
+    text-align: center;
+    top: 20px;
+    left: 280px;
+}
+
+.nextButton{
+    border: 1px solid #333;
+    border-radius: 2px;
+    width: 60px;
+    height: 27px;
+    text-align: center;
+    left: 360px;
+    top: 20px;
+}
+
 .counterLabel{
     top: 55px;
     width: 60px;

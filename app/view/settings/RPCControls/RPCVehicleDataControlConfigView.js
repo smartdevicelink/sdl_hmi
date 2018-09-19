@@ -34,6 +34,9 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
     childViews: [
       'backButton',
       'newButton',
+      'removeButton',
+      'previousButton',
+      'nextButton',
       'counterLabel',
       'subscribevehicleData',
       'subscribevehicleDataParams'
@@ -60,6 +63,56 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
         text: 'New',
         onDown: false
       }),
+    removeButton: SDL.Button.extend(
+      {
+        classNames: [
+          'removeButton'
+        ],
+        isDisabled: function() {
+          return FFW.RPCHelper.VehicleDataResultCodes.length == 1;
+        }.property(
+          'FFW.RPCHelper.VehicleDataRequestNumber'
+          
+        ),
+        disabledBinding: 'isDisabled',
+        action: 'removeVehicleDataResponse',
+        target: 'FFW.RPCHelper',
+        text: 'Remove',
+        onDown: false
+      }),
+    previousButton: SDL.Button.extend(
+        {
+          classNames: [
+            'previousButton'
+          ],
+          isDisabled: function() {
+            return FFW.RPCHelper.VehicleDataRequestNumber == 1;
+          }.property(
+            'FFW.RPCHelper.VehicleDataRequestNumber'
+          ),
+          disabledBinding: 'isDisabled',
+          action: 'previousVehicleDataResultCode',
+          target: 'FFW.RPCHelper',
+          text: 'Previous',
+          onDown: false
+        }),
+    nextButton: SDL.Button.extend(
+      {
+        classNames: [
+          'nextButton'
+        ],
+        isDisabled: function() {
+          return FFW.RPCHelper.VehicleDataRequestNumber == 
+                                      FFW.RPCHelper.VehicleDataResultCodes.length;
+        }.property(
+          'FFW.RPCHelper.VehicleDataRequestNumber'
+        ),
+        disabledBinding: 'isDisabled',
+        action: 'nextVehicleDataResultCode',
+        target: 'FFW.RPCHelper',
+        text: 'Next',
+        onDown: false
+      }),  
     counterLabel: SDL.Label.extend(
         {
           elementId: 'counterLabel',
