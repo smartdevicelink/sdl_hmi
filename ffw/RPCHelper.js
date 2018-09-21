@@ -87,6 +87,9 @@ FFW.RPCHelper = Em.Object.create(
         case 'SubscribeVehicleData': {
           return this.getNextVehicleDataResultCode();
         }
+        case 'getNextInteriorVehicleData': {
+          return this.getNextInteriorVehicleData();
+        }
       }
 
       var code = null;
@@ -144,6 +147,11 @@ FFW.RPCHelper = Em.Object.create(
       this.set('currentAppID', appID);
     },
 
+    updateInteriorVehicleDataResultCodes:function(){
+      index = this.interiorVehicleDataNumber - 1;
+      this.interiorVehicleDataCodes[index] = this.interiorVehicleData;
+    },
+
     /*
      * updateWayPointResultCodes function. Update SubscribeWayPoints array
      */
@@ -159,6 +167,11 @@ FFW.RPCHelper = Em.Object.create(
       index = this.VehicleDataRequestNumber - 1;
       this.VehicleDataResultCodes[index].SubscribeVehicleData = this.SubscribeVehicleData;
       this.VehicleDataResultCodes[index].vehicleDataStruct = this.vehicleDataStruct;
+    },
+
+    updateInteriorVehicleData: function(){
+      index = this.interiorVehicleDataNumber - 1;
+      this.set('interiorVehicleData', this.interiorVehicleDataCodes[index]);
     },
 
     /*
@@ -178,6 +191,12 @@ FFW.RPCHelper = Em.Object.create(
       this.set('vehicleDataStruct', this.VehicleDataResultCodes[index].vehicleDataStruct);
     },
 
+    previousInteriorVehicleData: function(){
+      this.updateInteriorVehicleDataResultCodes();
+      this.set('interiorVehicleDataNumber', this.interiorVehicleDataNumber - 1);
+      this.updateInteriorVehicleData();
+    },
+
     /*
      * previousWayPointResultCode function. Go to previous WayPoint ResultCode
      */
@@ -194,6 +213,12 @@ FFW.RPCHelper = Em.Object.create(
       this.updateVehicleDataResultCodes();
       this.set('VehicleDataRequestNumber', this.VehicleDataRequestNumber - 1);
       this.updateSubscribeVehicleData();
+    },
+
+    nextInteriorVehicleData: function(){
+      this.updateInteriorVehicleDataResultCodes();
+      this.set('interiorVehicleDataNumber', this.interiorVehicleDataNumber + 1);
+      this.updateInteriorVehicleData();
     },
 
     /*
@@ -217,12 +242,39 @@ FFW.RPCHelper = Em.Object.create(
     /*
      * Add new response for SubscribeWayPoint RPC in queue
      */
+    newInteriorVehicleDataResponse: function(){
+      this.updateInteriorVehicleDataResultCodes();
+
+      this.interiorVehicleDataCodes.push('SUCCESS');
+      this.set('interiorVehicleData', 'SUCCESS');
+      this.set('interiorVehicleDataNumber', this.interiorVehicleDataNumber + 1);
+    },
+
+    /*
+     * Add new response for SubscribeWayPoint RPC in queue
+     */
     newWayPointResponse: function(){
       this.updateWayPointResultCodes();
 
       this.wayPointResultCodes.push('SUCCESS');
       this.set('SubscribeWayPoints', 'SUCCESS');
       this.set('SubscribeWayPointsRequestNumber', this.SubscribeWayPointsRequestNumber + 1);
+    },
+
+    removeInteriorVehicleData: function(){
+      this.updateInteriorVehicleDataResultCodes();
+
+      index = this.interiorVehicleDataNumber - 1;
+      length = this.interiorVehicleDataCodes.length;
+      
+      this.interiorVehicleDataCodes.splice(index, 1);
+
+      currentNumber = this.interiorVehicleDataNumber;
+      this.set('interiorVehicleDataNumber',0);
+      this.set('interiorVehicleDataNumber', Math.min(currentNumber, 
+                                      this.interiorVehicleDataCodes.length));
+
+      this.updateInteriorVehicleData();  
     },
 
     /*
@@ -293,6 +345,12 @@ FFW.RPCHelper = Em.Object.create(
       this.set('VehicleDataRequestNumber', this.VehicleDataRequestNumber + 1);
     },
     
+    getInteriorVehicleDataResponseStatus: function() {
+      return this.interiorVehicleDataNumber + '/' + this.interiorVehicleDataCodes.length;
+    }.property(
+      'FFW.RPCHelper.interiorVehicleDataNumber'
+    ),
+
     /*
      * Format string with waypoints set to display on label
      */
@@ -310,6 +368,27 @@ FFW.RPCHelper = Em.Object.create(
     }.property(
       'FFW.RPCHelper.VehicleDataRequestNumber'
     ),
+
+    getNextInteriorVehicleData: function(){
+      this.updateInteriorVehicleDataResultCodes();
+
+      length = this.interiorVehicleDataCodes.length;
+
+      code = this.interiorVehicleDataCodes[0];
+      if(length > 1){
+        this.interiorVehicleDataCodes.shift(); //remove the first element of the array
+        
+        currentNumber = this.interiorVehicleDataNumber;
+        this.set('interiorVehicleDataNumber',0);
+        this.set('interiorVehicleDataNumber', 
+                              Math.min(currentNumber, 
+                                        this.interiorVehicleDataCodes.length));
+        this.updateInteriorVehicleData();
+      } else if(length == 1){
+        this.set('interiorVehicleData', 'SUCCESS');
+      }
+      return SDL.SDLModel.data.resultCode[code]
+    },
 
     /*
      * Claims next result code for SubscribeWayPoints RPC
@@ -368,6 +447,10 @@ FFW.RPCHelper = Em.Object.create(
       
       return code;
     },
+    
+    interiorVehicleDataCodes: ['SUCCESS'],
+    interiorVehicleData:'',
+    interiorVehicleDataNumber: 1,
     
     wayPointResultCodes: ['SUCCESS'],
     SubscribeWayPoints: '',

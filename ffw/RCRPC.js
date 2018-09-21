@@ -347,7 +347,7 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.GetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
-
+            
             var moduleType = request.params.moduleType;
             var climateControlData = null;
             var radioControlData = null;
@@ -356,41 +356,40 @@ FFW.RC = FFW.RPCObserver.create(
             var lightControlData = null;
             var seatControlData = null;
 
-            var app = SDL.SDLController.getApplicationModel(
-              request.params.appID
-            );
-            switch(moduleType){
-              case 'CLIMATE':{
-                climateControlData = SDL.ClimateController.model.getClimateControlData();
-                break
-              }
-              case 'RADIO':{
-                radioControlData = SDL.RadioModel.getRadioControlData(false);
-                break
-              }
-              case 'HMI_SETTINGS':{
-                hmiSettingsControlData = SDL.HmiSettingsModel.getHmiSettingsControlData(false);
-                break
-              }
-              case 'AUDIO':{
-                audioControlData = SDL.MediaController.getAudioControlData(false);
-                break;
-              }
-              case 'LIGHT':{
-                lightControlData = SDL.LightModel.getLightControlData(false);
-                break
-              }
-              case 'SEAT':{
-                seatControlData = SDL.SeatModel.getSeatControlData(false);
-                break
+            result = FFW.RPCHelper.getNextInteriorVehicleData();
+            if(FFW.RPCHelper.isSuccessResultCode(result)) {
+              switch(moduleType){
+                case 'CLIMATE':{
+                  climateControlData = SDL.ClimateController.model.getClimateControlData();
+                  break
+                }
+                case 'RADIO':{
+                  radioControlData = SDL.RadioModel.getRadioControlData(false);
+                  break
+                }
+                case 'HMI_SETTINGS':{
+                  hmiSettingsControlData = SDL.HmiSettingsModel.getHmiSettingsControlData(false);
+                  break
+                }
+                case 'AUDIO':{
+                  audioControlData = SDL.MediaController.getAudioControlData(false);
+                  break;
+                }
+                case 'LIGHT':{
+                  lightControlData = SDL.LightModel.getLightControlData(false);
+                  break
+                }
+                case 'SEAT':{
+                  seatControlData = SDL.SeatModel.getSeatControlData(false);
+                  break
+                }
               }
             }
-
             var JSONMessage = {
               'jsonrpc': '2.0',
               'id': request.id,
               'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                'code': result,
                 'method': request.method,
                 'moduleData': {
                   'moduleType': moduleType

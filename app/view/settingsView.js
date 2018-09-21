@@ -50,6 +50,7 @@ SDL.SettingsView = Em.ContainerView.create(
       SDL.RPCControlConfigView,
       SDL.RPCWayPointControlConfigView,
       SDL.RPCVehicleDataControlConfigView,
+      SDL.RPCInteriorVehicleDataControlConfigView,
       SDL.StatisticsInfoView,
       SDL.GetUrlsView,
       SDL.SystemErrorView,
@@ -107,7 +108,7 @@ SDL.SettingsView = Em.ContainerView.create(
             rpcControl: SDL.Button.extend(
               {
                 isDisabled: function() {
-                  return !SDL.SDLModel.data.registeredApps.length;
+                  return false;//!SDL.SDLModel.data.registeredApps.length;
                 }.property(
                   'SDL.SDLModel.data.registeredApps.length'
                 ),
