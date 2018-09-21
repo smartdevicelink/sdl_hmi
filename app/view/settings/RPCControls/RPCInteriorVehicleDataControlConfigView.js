@@ -57,7 +57,7 @@ SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
         classNames: [
         'newButton'
         ],
-        action: 'newInteriorVehicleDataResponse',
+        action: 'newGetInteriorVehicleData',
         target: 'FFW.RPCHelper',
         text: 'New',
         onDown: false
@@ -68,13 +68,13 @@ SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
         'removeButton'
         ],
         isDisabled: function() {
-        return FFW.RPCHelper.GetInteriorVehicleDataResultCodes.length == 1;
+            return FFW.RPCHelper.GetInteriorVehicleDataResultCodes.length == 1;
         }.property(
-        'FFW.RPCHelper.interiorVehicleDataNumber'
+        'FFW.RPCHelper.GetInteriorVehicleDataIndex'
         
         ),
         disabledBinding: 'isDisabled',
-        action: 'removeInteriorVehicleData',
+        action: 'removeGetInteriorVehicleData',
         target: 'FFW.RPCHelper',
         text: 'Remove',
         onDown: false
@@ -85,12 +85,12 @@ SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
             'previousButton'
         ],
         isDisabled: function() {
-            return FFW.RPCHelper.interiorVehicleDataNumber == 1;
+            return FFW.RPCHelper.GetInteriorVehicleDataIndex == 0;
         }.property(
-            'FFW.RPCHelper.interiorVehicleDataNumber'
+            'FFW.RPCHelper.GetInteriorVehicleDataIndex'
         ),
         disabledBinding: 'isDisabled',
-        action: 'previousInteriorVehicleData',
+        action: 'previousGetInteriorVehicleData',
         target: 'FFW.RPCHelper',
         text: 'Previous',
         onDown: false
@@ -101,13 +101,13 @@ SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
         'nextButton'
         ],
         isDisabled: function() {
-        return FFW.RPCHelper.interiorVehicleDataNumber == 
-                                    FFW.RPCHelper.GetInteriorVehicleDataResultCodes.length;
+        return FFW.RPCHelper.GetInteriorVehicleDataIndex == 
+                                    FFW.RPCHelper.GetInteriorVehicleDataResultCodes.length - 1;
         }.property(
-        'FFW.RPCHelper.interiorVehicleDataNumber'
+        'FFW.RPCHelper.GetInteriorVehicleDataIndex'
         ),
         disabledBinding: 'isDisabled',
-        action: 'nextInteriorVehicleData',
+        action: 'nextGetInteriorVehicleData',
         target: 'FFW.RPCHelper',
         text: 'Next',
         onDown: false
@@ -116,7 +116,7 @@ SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
         {
         elementId: 'counterLabel',
         classNames: 'counterLabel',
-        contentBinding: 'FFW.RPCHelper.getInteriorVehicleDataResponseStatus'
+        contentBinding: 'FFW.RPCHelper.GetInteriorVehicleDataResponseStatus'
     }),  
     interiorVehicleDataSelect: Em.Select.extend(
         {
