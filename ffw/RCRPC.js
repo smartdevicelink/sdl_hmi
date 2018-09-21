@@ -347,7 +347,7 @@ FFW.RC = FFW.RPCObserver.create(
           case 'RC.GetInteriorVehicleData':
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
-            
+
             var moduleType = request.params.moduleType;
             var climateControlData = null;
             var radioControlData = null;

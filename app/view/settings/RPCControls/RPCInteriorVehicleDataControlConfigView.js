@@ -68,7 +68,7 @@ SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
         'removeButton'
         ],
         isDisabled: function() {
-        return FFW.RPCHelper.interiorVehicleDataCodes.length == 1;
+        return FFW.RPCHelper.GetInteriorVehicleDataResultCodes.length == 1;
         }.property(
         'FFW.RPCHelper.interiorVehicleDataNumber'
         
@@ -102,7 +102,7 @@ SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
         ],
         isDisabled: function() {
         return FFW.RPCHelper.interiorVehicleDataNumber == 
-                                    FFW.RPCHelper.interiorVehicleDataCodes.length;
+                                    FFW.RPCHelper.GetInteriorVehicleDataResultCodes.length;
         }.property(
         'FFW.RPCHelper.interiorVehicleDataNumber'
         ),
@@ -123,6 +123,6 @@ SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
           elementId: 'interiorVehicleDataSelect',
           classNames: 'interiorVehicleDataSelect',
           contentBinding: 'SDL.SDLModel.data.resultCodes',
-          valueBinding: 'FFW.RPCHelper.interiorVehicleData'
+          valueBinding: 'FFW.RPCHelper.GetInteriorVehicleData'
     }),   
 });

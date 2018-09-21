@@ -108,7 +108,7 @@ SDL.SettingsView = Em.ContainerView.create(
             rpcControl: SDL.Button.extend(
               {
                 isDisabled: function() {
-                  return false;//!SDL.SDLModel.data.registeredApps.length;
+                  return !SDL.SDLModel.data.registeredApps.length;
                 }.property(
                   'SDL.SDLModel.data.registeredApps.length'
                 ),

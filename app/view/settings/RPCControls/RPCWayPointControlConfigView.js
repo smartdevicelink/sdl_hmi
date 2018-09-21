@@ -70,7 +70,7 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
           'removeButton'
         ],
         isDisabled: function() {
-          return FFW.RPCHelper.wayPointResultCodes.length == 1;
+          return FFW.RPCHelper.SubscribeWayPointsResultCodes.length == 1;
         }.property(
           'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
           
@@ -106,7 +106,7 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
         ],
         isDisabled: function() {
           return FFW.RPCHelper.SubscribeWayPointsRequestNumber == 
-                                      FFW.RPCHelper.wayPointResultCodes.length;
+                                      FFW.RPCHelper.SubscribeWayPointsResultCodes.length;
         }.property(
           'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
         ),
