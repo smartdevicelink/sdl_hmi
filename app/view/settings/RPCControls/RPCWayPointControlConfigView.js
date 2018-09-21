@@ -58,7 +58,7 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
           classNames: [
             'newButton'
           ],
-          action: 'newWayPointResponse',
+          action: 'newSubscribeWayPoints',
           target: 'FFW.RPCHelper',
           text: 'New',
           onDown: false
@@ -72,11 +72,10 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
         isDisabled: function() {
           return FFW.RPCHelper.SubscribeWayPointsResultCodes.length == 1;
         }.property(
-          'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
-          
+          'FFW.RPCHelper.SubscribeWayPointsIndex'
         ),
         disabledBinding: 'isDisabled',
-        action: 'removeWayPointResponse',
+        action: 'removeSubscribeWayPoints',
         target: 'FFW.RPCHelper',
         text: 'Remove',
         onDown: false
@@ -88,12 +87,12 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
             'previousButton'
           ],
           isDisabled: function() {
-            return FFW.RPCHelper.SubscribeWayPointsRequestNumber == 1;
+            return FFW.RPCHelper.SubscribeWayPointsIndex == 0;
           }.property(
-            'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
+            'FFW.RPCHelper.SubscribeWayPointsIndex'
           ),
           disabledBinding: 'isDisabled',
-          action: 'previousWayPointResultCode',
+          action: 'previousSubscribeWayPoints',
           target: 'FFW.RPCHelper',
           text: 'Previous',
           onDown: false
@@ -105,13 +104,13 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
           'nextButton'
         ],
         isDisabled: function() {
-          return FFW.RPCHelper.SubscribeWayPointsRequestNumber == 
-                                      FFW.RPCHelper.SubscribeWayPointsResultCodes.length;
+          return FFW.RPCHelper.SubscribeWayPointsIndex == 
+                                      FFW.RPCHelper.SubscribeWayPointsResultCodes.length - 1;
         }.property(
-          'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
+          'FFW.RPCHelper.SubscribeWayPointsIndex'
         ),
         disabledBinding: 'isDisabled',
-        action: 'nextWayPointResultCode',
+        action: 'nextSubscribeWayPoints',
         target: 'FFW.RPCHelper',
         text: 'Next',
         onDown: false
@@ -121,7 +120,7 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
         {
           elementId: 'counterLabel',
           classNames: 'counterLabel',
-          contentBinding: 'FFW.RPCHelper.getWayPointResponseStatus'
+          contentBinding: 'FFW.RPCHelper.SubscribeWayPointsResponseStatus'
         }
     ),
     subscribeWayPointsSelect: Em.Select.extend(
