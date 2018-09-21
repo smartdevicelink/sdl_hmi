@@ -69,7 +69,7 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
           'removeButton'
         ],
         isDisabled: function() {
-          return FFW.RPCHelper.VehicleDataResultCodes.length == 1;
+          return FFW.RPCHelper.SubscribeVehicleDataResultCodes.length == 1;
         }.property(
           'FFW.RPCHelper.VehicleDataRequestNumber'
           
@@ -103,7 +103,7 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
         ],
         isDisabled: function() {
           return FFW.RPCHelper.VehicleDataRequestNumber == 
-                                      FFW.RPCHelper.VehicleDataResultCodes.length;
+                                      FFW.RPCHelper.SubscribeVehicleDataResultCodes.length;
         }.property(
           'FFW.RPCHelper.VehicleDataRequestNumber'
         ),
@@ -154,8 +154,8 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
         }
         this.isFirstInitialization = false;
 
-        for(var viewsName in FFW.RPCHelper.vehicleDataStruct){
-          selectValueBinding = 'FFW.RPCHelper.vehicleDataStruct.' + viewsName;
+        for(var viewsName in FFW.RPCHelper.SubscribeVehicleDataParams){
+          selectValueBinding = 'FFW.RPCHelper.SubscribeVehicleDataParams.' + viewsName;
           this.get('subscribevehicleDataParams.childViews').pushObject(Em.ContainerView.create({
             elementId: viewsName,
             classNames: 'params',

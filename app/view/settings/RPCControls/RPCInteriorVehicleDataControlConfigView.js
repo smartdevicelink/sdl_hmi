@@ -24,112 +24,105 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
-    elementId: 'rpc_way_points_Config',
+SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
+    {
+    elementId: 'rpc_interior_vehicle_data_Config',
     classNames: 'rpc_settings_separate_view',
     classNameBindings: [
-        'SDL.States.settings.rpccontrol.rpcwaypointconfig.active:active_state:inactive_state'
+        'SDL.States.settings.rpccontrol.rpcinteriorvehicledataconfig.active:active_state:inactive_state'
     ],
-    
     childViews: [
-      'backButton',
-      'newButton',
-      'removeButton',
-      'previousButton',
-      'nextButton',
-      'counterLabel',
-      'subscribeWayPointsSelect'
-    ],
+    'backButton',
+    'newButton',
+    'removeButton',
+    'previousButton',
+    'nextButton',
+    'counterLabel',
+    'interiorVehicleDataSelect'
+    ],         
     backButton: SDL.Button.extend(
-        {
-          classNames: [
-            'backControl'
-          ],
-          action: 'onState',
-          target: 'SDL.SettingsController',
-          goToState: 'rpccontrol',
-          icon: 'images/media/ico_back.png',
-          style: 'top: 100px',
-          onDown: false
-        }
-      ),
-    newButton: SDL.Button.extend(
-        {
-          classNames: [
-            'newButton'
-          ],
-          action: 'newWayPointResponse',
-          target: 'FFW.RPCHelper',
-          text: 'New',
-          onDown: false
-        }
-    ),
-    removeButton: SDL.Button.extend(
-      {
+    {
         classNames: [
-          'removeButton'
+        'backControl'
+        ],
+        action: 'onState',
+        target: 'SDL.SettingsController',
+        goToState: 'rpccontrol',
+        icon: 'images/media/ico_back.png',
+        style: 'top: 100px',
+        onDown: false
+    }),
+    newButton: SDL.Button.extend(
+    {
+        classNames: [
+        'newButton'
+        ],
+        action: 'newInteriorVehicleDataResponse',
+        target: 'FFW.RPCHelper',
+        text: 'New',
+        onDown: false
+    }),
+    removeButton: SDL.Button.extend(
+    {
+        classNames: [
+        'removeButton'
         ],
         isDisabled: function() {
-          return FFW.RPCHelper.SubscribeWayPointsResultCodes.length == 1;
+        return FFW.RPCHelper.GetInteriorVehicleDataResultCodes.length == 1;
         }.property(
-          'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
-          
+        'FFW.RPCHelper.interiorVehicleDataNumber'
+        
         ),
         disabledBinding: 'isDisabled',
-        action: 'removeWayPointResponse',
+        action: 'removeInteriorVehicleData',
         target: 'FFW.RPCHelper',
         text: 'Remove',
         onDown: false
-      }
-    ),
+    }),
     previousButton: SDL.Button.extend(
         {
-          classNames: [
-            'previousButton'
-          ],
-          isDisabled: function() {
-            return FFW.RPCHelper.SubscribeWayPointsRequestNumber == 1;
-          }.property(
-            'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
-          ),
-          disabledBinding: 'isDisabled',
-          action: 'previousWayPointResultCode',
-          target: 'FFW.RPCHelper',
-          text: 'Previous',
-          onDown: false
-        }
-      ),
-    nextButton: SDL.Button.extend(
-      {
         classNames: [
-          'nextButton'
+            'previousButton'
         ],
         isDisabled: function() {
-          return FFW.RPCHelper.SubscribeWayPointsRequestNumber == 
-                                      FFW.RPCHelper.SubscribeWayPointsResultCodes.length;
+            return FFW.RPCHelper.interiorVehicleDataNumber == 1;
         }.property(
-          'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
+            'FFW.RPCHelper.interiorVehicleDataNumber'
         ),
         disabledBinding: 'isDisabled',
-        action: 'nextWayPointResultCode',
+        action: 'previousInteriorVehicleData',
+        target: 'FFW.RPCHelper',
+        text: 'Previous',
+        onDown: false
+    }),
+    nextButton: SDL.Button.extend(
+    {
+        classNames: [
+        'nextButton'
+        ],
+        isDisabled: function() {
+        return FFW.RPCHelper.interiorVehicleDataNumber == 
+                                    FFW.RPCHelper.GetInteriorVehicleDataResultCodes.length;
+        }.property(
+        'FFW.RPCHelper.interiorVehicleDataNumber'
+        ),
+        disabledBinding: 'isDisabled',
+        action: 'nextInteriorVehicleData',
         target: 'FFW.RPCHelper',
         text: 'Next',
         onDown: false
-      }
-    ),
+    }),  
     counterLabel: SDL.Label.extend(
         {
-          elementId: 'counterLabel',
-          classNames: 'counterLabel',
-          contentBinding: 'FFW.RPCHelper.getWayPointResponseStatus'
-        }
-    ),
-    subscribeWayPointsSelect: Em.Select.extend(
+        elementId: 'counterLabel',
+        classNames: 'counterLabel',
+        contentBinding: 'FFW.RPCHelper.getInteriorVehicleDataResponseStatus'
+    }),  
+    interiorVehicleDataSelect: Em.Select.extend(
         {
-          elementId: 'subscribeWayPointsSelect',
-          classNames: 'subscribeWayPointsSelect',
+          elementId: 'interiorVehicleDataSelect',
+          classNames: 'interiorVehicleDataSelect',
           contentBinding: 'SDL.SDLModel.data.resultCodes',
-          valueBinding: 'FFW.RPCHelper.SubscribeWayPoints'
-        }
-    ),  
+          valueBinding: 'FFW.RPCHelper.GetInteriorVehicleData'
+    }),   
 });

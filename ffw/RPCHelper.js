@@ -39,14 +39,14 @@ FFW.RPCHelper = Em.Object.create(
       for(key in this.rpcStruct){
         this.set('defaultRpcStruct.'+key, 'SUCCESS');
       };
-      for(key in this.vehicleDataStruct){
-        this.set('vehicleDataStruct.'+key, 'SUCCESS');
+      for(key in this.SubscribeVehicleDataParams){
+        this.set('SubscribeVehicleDataParams.'+key, 'SUCCESS');
       };
       this.set('SubscribeWayPoints', 'SUCCESS');
       this.set('SubscribeVehicleData', 'SUCCESS');
-      this.VehicleDataResultCodes.push({
+      this.SubscribeVehicleDataResultCodes.push({
         SubscribeVehicleData: 'SUCCESS',
-        vehicleDataStruct: this.getSuccessVehicleDataStruct()
+        SubscribeVehicleDataParams: this.getSuccessVehicleDataStruct()
       });
     },
 
@@ -87,13 +87,16 @@ FFW.RPCHelper = Em.Object.create(
         case 'SubscribeVehicleData': {
           return this.getNextVehicleDataResultCode();
         }
+        case 'getNextInteriorVehicleData': {
+          return this.getNextInteriorVehicleData();
+        }
       }
 
       var code = null;
       if(appID !== null && this.appContainer[appID][method] !== undefined) {
         code = this.appContainer[appID][method];
-      } else if(this.vehicleDataStruct[method] !== undefined) {
-        code = this.vehicleDataStruct[method];
+      } else if(this.SubscribeVehicleDataParams[method] !== undefined) {
+        code = this.SubscribeVehicleDataParams[method];
       }
 
       return null != code ? SDL.SDLModel.data.resultCode[code] : 'SUCCESS';
@@ -144,12 +147,17 @@ FFW.RPCHelper = Em.Object.create(
       this.set('currentAppID', appID);
     },
 
+    updateInteriorVehicleDataResultCodes:function(){
+      index = this.interiorVehicleDataNumber - 1;
+      this.GetInteriorVehicleDataResultCodes[index] = this.GetInteriorVehicleData;
+    },
+
     /*
      * updateWayPointResultCodes function. Update SubscribeWayPoints array
      */
     updateWayPointResultCodes: function(){
       index = this.SubscribeWayPointsRequestNumber - 1;
-      this.wayPointResultCodes[index] = this.SubscribeWayPoints;
+      this.SubscribeWayPointsResultCodes[index] = this.SubscribeWayPoints;
     },
     
     /*
@@ -157,8 +165,13 @@ FFW.RPCHelper = Em.Object.create(
      */
     updateVehicleDataResultCodes: function(){
       index = this.VehicleDataRequestNumber - 1;
-      this.VehicleDataResultCodes[index].SubscribeVehicleData = this.SubscribeVehicleData;
-      this.VehicleDataResultCodes[index].vehicleDataStruct = this.vehicleDataStruct;
+      this.SubscribeVehicleDataResultCodes[index].SubscribeVehicleData = this.SubscribeVehicleData;
+      this.SubscribeVehicleDataResultCodes[index].SubscribeVehicleDataParams = this.SubscribeVehicleDataParams;
+    },
+
+    updateInteriorVehicleData: function(){
+      index = this.interiorVehicleDataNumber - 1;
+      this.set('GetInteriorVehicleData', this.GetInteriorVehicleDataResultCodes[index]);
     },
 
     /*
@@ -166,7 +179,7 @@ FFW.RPCHelper = Em.Object.create(
      */
     updateSubscribeWayPoints: function(){
       index = this.SubscribeWayPointsRequestNumber - 1;
-      this.set('SubscribeWayPoints', this.wayPointResultCodes[index]);
+      this.set('SubscribeWayPoints', this.SubscribeWayPointsResultCodes[index]);
     },
 
     /*
@@ -174,8 +187,14 @@ FFW.RPCHelper = Em.Object.create(
      */
     updateSubscribeVehicleData: function(){
       index = this.VehicleDataRequestNumber - 1;
-      this.set('SubscribeVehicleData', this.VehicleDataResultCodes[index].SubscribeVehicleData);
-      this.set('vehicleDataStruct', this.VehicleDataResultCodes[index].vehicleDataStruct);
+      this.set('SubscribeVehicleData', this.SubscribeVehicleDataResultCodes[index].SubscribeVehicleData);
+      this.set('SubscribeVehicleDataParams', this.SubscribeVehicleDataResultCodes[index].SubscribeVehicleDataParams);
+    },
+
+    previousInteriorVehicleData: function(){
+      this.updateInteriorVehicleDataResultCodes();
+      this.set('interiorVehicleDataNumber', this.interiorVehicleDataNumber - 1);
+      this.updateInteriorVehicleData();
     },
 
     /*
@@ -194,6 +213,12 @@ FFW.RPCHelper = Em.Object.create(
       this.updateVehicleDataResultCodes();
       this.set('VehicleDataRequestNumber', this.VehicleDataRequestNumber - 1);
       this.updateSubscribeVehicleData();
+    },
+
+    nextInteriorVehicleData: function(){
+      this.updateInteriorVehicleDataResultCodes();
+      this.set('interiorVehicleDataNumber', this.interiorVehicleDataNumber + 1);
+      this.updateInteriorVehicleData();
     },
 
     /*
@@ -217,12 +242,39 @@ FFW.RPCHelper = Em.Object.create(
     /*
      * Add new response for SubscribeWayPoint RPC in queue
      */
+    newInteriorVehicleDataResponse: function(){
+      this.updateInteriorVehicleDataResultCodes();
+
+      this.GetInteriorVehicleDataResultCodes.push('SUCCESS');
+      this.set('GetInteriorVehicleData', 'SUCCESS');
+      this.set('interiorVehicleDataNumber', this.interiorVehicleDataNumber + 1);
+    },
+
+    /*
+     * Add new response for SubscribeWayPoint RPC in queue
+     */
     newWayPointResponse: function(){
       this.updateWayPointResultCodes();
 
-      this.wayPointResultCodes.push('SUCCESS');
+      this.SubscribeWayPointsResultCodes.push('SUCCESS');
       this.set('SubscribeWayPoints', 'SUCCESS');
       this.set('SubscribeWayPointsRequestNumber', this.SubscribeWayPointsRequestNumber + 1);
+    },
+
+    removeInteriorVehicleData: function(){
+      this.updateInteriorVehicleDataResultCodes();
+
+      index = this.interiorVehicleDataNumber - 1;
+      length = this.GetInteriorVehicleDataResultCodes.length;
+      
+      this.GetInteriorVehicleDataResultCodes.splice(index, 1);
+
+      currentNumber = this.interiorVehicleDataNumber;
+      this.set('interiorVehicleDataNumber',0);
+      this.set('interiorVehicleDataNumber', Math.min(currentNumber, 
+                                      this.GetInteriorVehicleDataResultCodes.length));
+
+      this.updateInteriorVehicleData();  
     },
 
     /*
@@ -233,14 +285,14 @@ FFW.RPCHelper = Em.Object.create(
       this.updateWayPointResultCodes();
 
       index = this.SubscribeWayPointsRequestNumber - 1;
-      length = this.wayPointResultCodes.length;
+      length = this.SubscribeWayPointsResultCodes.length;
       
-      this.wayPointResultCodes.splice(index, 1);
+      this.SubscribeWayPointsResultCodes.splice(index, 1);
 
       currentNumber = this.SubscribeWayPointsRequestNumber;
       this.set('SubscribeWayPointsRequestNumber',0);
       this.set('SubscribeWayPointsRequestNumber', Math.min(currentNumber, 
-                                      this.wayPointResultCodes.length));
+                                      this.SubscribeWayPointsResultCodes.length));
 
       this.updateSubscribeWayPoints();  
     },
@@ -253,14 +305,14 @@ FFW.RPCHelper = Em.Object.create(
       this.updateVehicleDataResultCodes();
 
       index = this.VehicleDataRequestNumber - 1;
-      length = this.VehicleDataResultCodes.length;
+      length = this.SubscribeVehicleDataResultCodes.length;
 
-      this.VehicleDataResultCodes.splice(index, 1);
+      this.SubscribeVehicleDataResultCodes.splice(index, 1);
 
       currentNumber = this.VehicleDataRequestNumber;
       this.set('VehicleDataRequestNumber',0);
       this.set('VehicleDataRequestNumber', Math.min(currentNumber, 
-                                      this.VehicleDataResultCodes.length));
+                                      this.SubscribeVehicleDataResultCodes.length));
 
       this.updateSubscribeVehicleData();
     },
@@ -270,7 +322,7 @@ FFW.RPCHelper = Em.Object.create(
      */
     getSuccessVehicleDataStruct:function(){
       SuccessVehicleDataStruct = {}
-      for(var paramName in this.vehicleDataStruct){
+      for(var paramName in this.SubscribeVehicleDataParams){
         SuccessVehicleDataStruct[paramName] = 'SUCCESS';
       }
       return SuccessVehicleDataStruct;
@@ -284,20 +336,26 @@ FFW.RPCHelper = Em.Object.create(
 
       successVehicleDataStruct = this.getSuccessVehicleDataStruct();
 
-      this.VehicleDataResultCodes.push({
+      this.SubscribeVehicleDataResultCodes.push({
         SubscribeVehicleData: 'SUCCESS',
-        vehicleDataStruct: successVehicleDataStruct
+        SubscribeVehicleDataParams: successVehicleDataStruct
       });
       this.set('SubscribeVehicleData', 'SUCCESS');
-      this.set('vehicleDataStruct', successVehicleDataStruct);
+      this.set('SubscribeVehicleDataParams', successVehicleDataStruct);
       this.set('VehicleDataRequestNumber', this.VehicleDataRequestNumber + 1);
     },
     
+    getInteriorVehicleDataResponseStatus: function() {
+      return this.interiorVehicleDataNumber + '/' + this.GetInteriorVehicleDataResultCodes.length;
+    }.property(
+      'FFW.RPCHelper.interiorVehicleDataNumber'
+    ),
+
     /*
      * Format string with waypoints set to display on label
      */
     getWayPointResponseStatus: function() {
-      return this.SubscribeWayPointsRequestNumber + '/' + this.wayPointResultCodes.length;
+      return this.SubscribeWayPointsRequestNumber + '/' + this.SubscribeWayPointsResultCodes.length;
     }.property(
       'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
     ),
@@ -306,10 +364,31 @@ FFW.RPCHelper = Em.Object.create(
      * Format string with vehicle data set to display on label
      */
     getVehicleDataStatus: function() {
-      return this.VehicleDataRequestNumber + '/' + this.VehicleDataResultCodes.length;
+      return this.VehicleDataRequestNumber + '/' + this.SubscribeVehicleDataResultCodes.length;
     }.property(
       'FFW.RPCHelper.VehicleDataRequestNumber'
     ),
+
+    getNextInteriorVehicleData: function(){
+      this.updateInteriorVehicleDataResultCodes();
+
+      length = this.GetInteriorVehicleDataResultCodes.length;
+
+      code = this.GetInteriorVehicleDataResultCodes[0];
+      if(length > 1){
+        this.GetInteriorVehicleDataResultCodes.shift(); //remove the first element of the array
+        
+        currentNumber = this.interiorVehicleDataNumber;
+        this.set('interiorVehicleDataNumber',0);
+        this.set('interiorVehicleDataNumber', 
+                              Math.min(currentNumber, 
+                                        this.GetInteriorVehicleDataResultCodes.length));
+        this.updateInteriorVehicleData();
+      } else if(length == 1){
+        this.set('GetInteriorVehicleData', 'SUCCESS');
+      }
+      return SDL.SDLModel.data.resultCode[code]
+    },
 
     /*
      * Claims next result code for SubscribeWayPoints RPC
@@ -317,17 +396,17 @@ FFW.RPCHelper = Em.Object.create(
     getNextWayPointResultCode: function(){
       this.updateWayPointResultCodes();
 
-      length = this.wayPointResultCodes.length;
+      length = this.SubscribeWayPointsResultCodes.length;
 
-      code = this.wayPointResultCodes[0];
+      code = this.SubscribeWayPointsResultCodes[0];
       if(length > 1){
-        this.wayPointResultCodes.shift(); //remove the first element of the array
+        this.SubscribeWayPointsResultCodes.shift(); //remove the first element of the array
         
         currentNumber = this.SubscribeWayPointsRequestNumber;
         this.set('SubscribeWayPointsRequestNumber',0);
         this.set('SubscribeWayPointsRequestNumber', 
                               Math.min(currentNumber, 
-                                        this.wayPointResultCodes.length));
+                                        this.SubscribeWayPointsResultCodes.length));
         this.updateSubscribeWayPoints();
       } else if(length == 1){
         this.set('SubscribeWayPoints', 'SUCCESS');
@@ -341,37 +420,79 @@ FFW.RPCHelper = Em.Object.create(
     getNextVehicleDataResultCode: function(){
       this.updateVehicleDataResultCodes();
 
-      nextVehicleDataResultCode = this.VehicleDataResultCodes[0].SubscribeVehicleData;
+      nextVehicleDataResultCode = this.SubscribeVehicleDataResultCodes[0].SubscribeVehicleData;
       code = {
         SubscribeVehicleData: SDL.SDLModel.data.resultCode[nextVehicleDataResultCode],
-        vehicleDataStruct:{}
+        SubscribeVehicleDataParams:{}
       };
 
-      for(var paramName in this.vehicleDataStruct){
-        nextParamResultCode = this.VehicleDataResultCodes[0].vehicleDataStruct[paramName]
-        code.vehicleDataStruct[paramName] = nextParamResultCode;
+      for(var paramName in this.SubscribeVehicleDataParams){
+        nextParamResultCode = this.SubscribeVehicleDataResultCodes[0].SubscribeVehicleDataParams[paramName]
+        code.SubscribeVehicleDataParams[paramName] = nextParamResultCode;
       }
     
-      length = this.VehicleDataResultCodes.length;	
+      length = this.SubscribeVehicleDataResultCodes.length;	
       if(length > 1){
-        this.VehicleDataResultCodes.shift(); //remove the first element of the array
+        this.SubscribeVehicleDataResultCodes.shift(); //remove the first element of the array
         currentNumber = this.VehicleDataRequestNumber;
         this.set('VehicleDataRequestNumber',0);
         this.set('VehicleDataRequestNumber', Math.min(currentNumber, 
-                                        this.VehicleDataResultCodes.length));
+                                        this.SubscribeVehicleDataResultCodes.length));
 
         this.updateSubscribeVehicleData();
       } else if(length == 1){
         this.set('SubscribeVehicleData', 'SUCCESS');
-        this.set('vehicleDataStruct', this.getSuccessVehicleDataStruct());
+        this.set('SubscribeVehicleDataParams', this.getSuccessVehicleDataStruct());
       }
       
       return code;
     },
     
-    wayPointResultCodes: ['SUCCESS'],
+    GetInteriorVehicleDataResultCodes: ['SUCCESS'],
+    SubscribeWayPointsResultCodes: ['SUCCESS'],
+    SubscribeVehicleDataResultCodes: [],
+
+    GetInteriorVehicleData:'',
     SubscribeWayPoints: '',
+    SubscribeVehicleData: '',
+    SubscribeVehicleDataParams: {
+      speed:'',
+      rpm: '',
+      fuelLevel: '',
+      fuelLevel_State: '',
+      instantFuelConsumption: '',
+      externalTemperature: '',
+      turnSignal: '',
+      prndl: '',
+      tirePressure: '',
+      odometer: '',
+      beltStatus: '',
+      bodyInformation: '',
+      deviceStatus: '',
+      driverBraking: '',
+      wiperStatus: '',
+      headLampStatus: '',
+      engineTorque: '',
+      accPedalPosition: '',
+      steeringWheelAngle: '',
+      engineOilLife: '',
+      electronicParkBrakeStatus: '',
+      eCallInfo: '',
+      airbagStatus: '',
+      emergencyEvent: '',
+      clusterModes: '',
+      myKey: '',
+      fuelRange: '',
+      gps: ''
+    },
+
+    GetInteriorVehicleDataIndex: 0,
+    SubscribeWayPointsIndex: 0,
+    SubscribeVehicleDataIndex: 0,
+
+    interiorVehicleDataNumber: 1,
     SubscribeWayPointsRequestNumber: 1,
+    VehicleDataRequestNumber: 1,
 
     defaultRpcStruct: {},
     currentAppID: null,
@@ -383,39 +504,5 @@ FFW.RPCHelper = Em.Object.create(
         uiSetGlobalProperties: '',
         ttsSetGlobalProperties: ''        
     },
-
-    VehicleDataResultCodes: [],
-    VehicleDataRequestNumber: 1,
-    SubscribeVehicleData: '',
-    vehicleDataStruct: {
-        speed:'',
-        rpm: '',
-        fuelLevel: '',
-        fuelLevel_State: '',
-        instantFuelConsumption: '',
-        externalTemperature: '',
-        turnSignal: '',
-        prndl: '',
-        tirePressure: '',
-        odometer: '',
-        beltStatus: '',
-        bodyInformation: '',
-        deviceStatus: '',
-        driverBraking: '',
-        wiperStatus: '',
-        headLampStatus: '',
-        engineTorque: '',
-        accPedalPosition: '',
-        steeringWheelAngle: '',
-        engineOilLife: '',
-        electronicParkBrakeStatus: '',
-        eCallInfo: '',
-        airbagStatus: '',
-        emergencyEvent: '',
-        clusterModes: '',
-        myKey: '',
-        fuelRange: '',
-        gps: ''
-    }
   }
 );

@@ -403,7 +403,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       for (var key in message.params){
         subscribeVIData[key] = {
           dataType: this.eVehicleDataType[key],
-          resultCode: VehicleDataResultCode.vehicleDataStruct[key],
+          resultCode: VehicleDataResultCode.SubscribeVehicleDataParams[key],
         }
       };
       FFW.VehicleInfo.sendVISubscribeVehicleDataResult(
