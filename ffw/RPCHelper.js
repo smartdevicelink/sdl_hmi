@@ -23,11 +23,19 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+/*
+ *  Array of global RPCs
+ */ 
 FFWGlobalRPCs = [
   'GetInteriorVehicleData',
   'SubscribeWayPoints',
   'SubscribeVehicleData'
 ];
+
+/*
+ *  Array of SubscribeVehicleData parameters
+ */ 
 FFWSubscribeVehicleDataParams = [
   'speed',
   'rpm',
@@ -71,6 +79,7 @@ FFW.RPCHelper = Em.Object.create(
      * init function. Setup helpers initial values
      */ 
     init: function() {
+      this.generateGlobalRpc();
       for(key in this.rpcStruct){
         this.set('defaultRpcStruct.'+key, 'SUCCESS');
       };
@@ -167,17 +176,26 @@ FFW.RPCHelper = Em.Object.create(
     setCurrentAppID: function(appID){
       this.set('currentAppID', appID);
     },
-    
+
+    /*
+     * updateGlobalResultCodes function. Update global RPCs queue
+     */
     updateGlobalResultCodes: function(rpc) {
       index = this.get(rpc + 'Index');
       this[rpc + 'ResultCodes'][index] = this[rpc];
     },
 
+    /*
+     * updateGlobalRPC function. Update current RPC result
+     */
     updateGlobalRPC: function(rpc) {
       index = this.get(rpc + 'Index');
       this.set(rpc, this[rpc + 'ResultCodes'][index]);
     },
 
+    /*
+     * shiftGlobalRPCIndex function. Shifts the pointer to the current RPC in the queue.
+     */
     shiftGlobalRPCIndex: function(rpc, diff){
       this.updateGlobalResultCodes(rpc);
       index = this.get(rpc + 'Index');
@@ -185,6 +203,9 @@ FFW.RPCHelper = Em.Object.create(
       this.updateGlobalRPC(rpc);
     },
 
+    /*
+     * removeGlobalRPCResponse function. Removes the current RPC from the queue.
+     */
     removeGlobalRPCResponse: function(rpc) {
       this.updateGlobalResultCodes(rpc);
 
@@ -194,16 +215,22 @@ FFW.RPCHelper = Em.Object.create(
       this.updateGlobalRPC(rpc);
     },
 
+    /*
+     * newGlobalRPCResponse function. Add new response for RPC in queue.
+     */
     newGlobalRPCResponse: function(rpc) {
       this.updateGlobalResultCodes(rpc);
 
-      this[rpc + 'ResultCodes'].push(this.getSucceccRpc(rpc));
+      this[rpc + 'ResultCodes'].push(this.getSuccessRpc(rpc));
       this.shiftGlobalRPCIndex(rpc, 1);
 
       this.updateGlobalRPC(rpc);
     },
 
-    getSucceccRpc: function(rps){
+    /*
+     * getSuccessRpc function. return successfully RPC.
+     */
+    getSuccessRpc: function(rps){
       switch(rps){
         case 'SubscribeVehicleData': {
           succsesParams = {};
@@ -220,6 +247,9 @@ FFW.RPCHelper = Em.Object.create(
       }
     },
 
+    /*
+     * updateGlobalRPCIndex function. update current global RPC index.
+     */
     updateGlobalRPCIndex: function(rpc){
       index = this[rpc + 'Index'];
       this.set(rpc + 'Index', -1);
@@ -227,6 +257,9 @@ FFW.RPCHelper = Em.Object.create(
       this.set(rpc + 'Index', Math.min(index, length - 1));
     },
 
+    /*
+     * getGlobalRPCResponse function.returns the response from the queue.
+     */
     getGlobalRPCResponse: function(rpc) {
       this.updateGlobalResultCodes(rpc);
       
@@ -234,16 +267,19 @@ FFW.RPCHelper = Em.Object.create(
       code = this[rpc + 'ResultCodes'][0];
 
       if(length > 1){
-        this[rpc + 'ResultCodes'].shift(); //remove the first element of the array
+        this[rpc + 'ResultCodes'].shift();
 
         this.updateGlobalRPCIndex(rpc)
         this.updateGlobalRPC(rpc);
       } else {
-        this.set(rpc, this.getSucceccRpc(rpc));
+        this.set(rpc, this.getSuccessRpc(rpc));
       }
       return code;
     },
 
+    /*
+     * Format string with interior vehicle data set to display on label
+     */
     GetInteriorVehicleDataResponseStatus: function(){
       return (this['GetInteriorVehicleDataIndex'] + 1) + '/' + 
                     this['GetInteriorVehicleDataResultCodes'].length
@@ -251,6 +287,9 @@ FFW.RPCHelper = Em.Object.create(
       'FFW.RPCHelper.GetInteriorVehicleDataIndex'
     ),
 
+    /*
+     * Format string with waypoints set to display on label
+     */
     SubscribeWayPointsResponseStatus: function(){
       return (this['SubscribeWayPointsIndex'] + 1) + '/' + 
                     this['SubscribeWayPointsResultCodes'].length
@@ -258,6 +297,9 @@ FFW.RPCHelper = Em.Object.create(
       'FFW.RPCHelper.SubscribeWayPointsIndex'
     ),
 
+    /*
+     * Format string with vehicle data set to display on label
+     */    
     SubscribeVehicleDataResponseStatus: function(){
       return (this['SubscribeVehicleDataIndex'] + 1) + '/' + 
                     this['SubscribeVehicleDataResultCodes'].length
@@ -265,31 +307,35 @@ FFW.RPCHelper = Em.Object.create(
       'FFW.RPCHelper.SubscribeVehicleDataIndex'
     ),
 
+    /*
+     * generate interface for global RPCs
+     */
     generateGlobalRpc: function() {
+      var self = this;
       FFWGlobalRPCs.forEach(function(rpc){
-        FFW.RPCHelper[rpc] = FFW.RPCHelper.getSucceccRpc(rpc);
+        self[rpc] = self.getSuccessRpc(rpc);
 
         resultCodes = rpc + 'ResultCodes';
-        FFW.RPCHelper.set(resultCodes, new Array());
-        FFW.RPCHelper.get(resultCodes).push(FFW.RPCHelper.get(rpc));
+        self.set(resultCodes, new Array());
+        self.get(resultCodes).push(self.get(rpc));
 
         index = rpc + 'Index';
-        FFW.RPCHelper.set(index, 0);
+        self.set(index, 0);
 
-        FFW.RPCHelper.set('new' + rpc, function(){
-          FFW.RPCHelper.newGlobalRPCResponse(rpc);
+        self.set('new' + rpc, function(){
+          self.newGlobalRPCResponse(rpc);
         });
 
-        FFW.RPCHelper.set('previous' + rpc, function(){
-          FFW.RPCHelper.shiftGlobalRPCIndex(rpc, -1);
+        self.set('previous' + rpc, function(){
+          self.shiftGlobalRPCIndex(rpc, -1);
         });
 
-        FFW.RPCHelper.set('next' + rpc, function(){
-          FFW.RPCHelper.shiftGlobalRPCIndex(rpc, 1);
+        self.set('next' + rpc, function(){
+          self.shiftGlobalRPCIndex(rpc, 1);
         });
 
-        FFW.RPCHelper.set('remove' + rpc, function(){
-          FFW.RPCHelper.removeGlobalRPCResponse(rpc);
+        self.set('remove' + rpc, function(){
+          self.removeGlobalRPCResponse(rpc);
         });
       });
     },
@@ -306,4 +352,3 @@ FFW.RPCHelper = Em.Object.create(
     },
   }
 );
-FFW.RPCHelper.generateGlobalRpc();

@@ -219,8 +219,8 @@
     position: absolute;
 }
 
- .subscribeWayPointsSelect,
- .interiorVehicleDataSelect{
+ .SubscribeWayPointsSelect,
+ .GetInteriorVehicleDataSelect{
     top: 55px;
     left: 55px;
     width: 407px;
