@@ -32,7 +32,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
               'SDL.States.settings.rpccontrol.rpcconfig.active:active_state:inactive_state'
           ],
           childViews: [
-              'backButton',
+              SDL.RPCViewHelper.getBackButton(),
               'rpcList',
               'resultCodeTracker',
               'saveButton',
@@ -66,19 +66,6 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
               target: 'FFW.RPCHelper',
               goToState: 'rpccontrol',
               text:'Save',
-              onDown: false
-            }
-          ),
-          backButton: SDL.Button.extend(
-            {
-              classNames: [
-                'backControl'
-              ],
-              action: 'onState',
-              target: 'SDL.SettingsController',
-              goToState: 'rpccontrol',
-              icon: 'images/media/ico_back.png',
-              style: 'top: 100px',
               onDown: false
             }
           ),
