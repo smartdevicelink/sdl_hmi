@@ -23,11 +23,19 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+/*
+ *  Array of global RPCs
+ */ 
 FFWGlobalRPCs = [
   'GetInteriorVehicleData',
   'SubscribeWayPoints',
   'SubscribeVehicleData'
 ];
+
+/*
+ *  Array of SubscribeVehicleData parameters
+ */ 
 FFWSubscribeVehicleDataParams = [
   'speed',
   'rpm',
@@ -167,17 +175,26 @@ FFW.RPCHelper = Em.Object.create(
     setCurrentAppID: function(appID){
       this.set('currentAppID', appID);
     },
-    
+
+    /*
+     * updateGlobalResultCodes function. Update global RPCs queue
+     */
     updateGlobalResultCodes: function(rpc) {
       index = this.get(rpc + 'Index');
       this[rpc + 'ResultCodes'][index] = this[rpc];
     },
 
+    /*
+     * updateGlobalRPC function. Update current RPC result
+     */
     updateGlobalRPC: function(rpc) {
       index = this.get(rpc + 'Index');
       this.set(rpc, this[rpc + 'ResultCodes'][index]);
     },
 
+    /*
+     * shiftGlobalRPCIndex function. Shifts the pointer to the current RPC in the queue.
+     */
     shiftGlobalRPCIndex: function(rpc, diff){
       this.updateGlobalResultCodes(rpc);
       index = this.get(rpc + 'Index');
@@ -185,6 +202,9 @@ FFW.RPCHelper = Em.Object.create(
       this.updateGlobalRPC(rpc);
     },
 
+    /*
+     * removeGlobalRPCResponse function. Removes the current RPC from the queue.
+     */
     removeGlobalRPCResponse: function(rpc) {
       this.updateGlobalResultCodes(rpc);
 
@@ -194,6 +214,9 @@ FFW.RPCHelper = Em.Object.create(
       this.updateGlobalRPC(rpc);
     },
 
+    /*
+     * newGlobalRPCResponse function. Add new response for RPC in queue.
+     */
     newGlobalRPCResponse: function(rpc) {
       this.updateGlobalResultCodes(rpc);
 
@@ -203,6 +226,9 @@ FFW.RPCHelper = Em.Object.create(
       this.updateGlobalRPC(rpc);
     },
 
+    /*
+     * getSucceccRpc function. return successfully RPC.
+     */
     getSucceccRpc: function(rps){
       switch(rps){
         case 'SubscribeVehicleData': {
@@ -220,6 +246,9 @@ FFW.RPCHelper = Em.Object.create(
       }
     },
 
+    /*
+     * updateGlobalRPCIndex function. update current global RPC index.
+     */
     updateGlobalRPCIndex: function(rpc){
       index = this[rpc + 'Index'];
       this.set(rpc + 'Index', -1);
@@ -234,7 +263,7 @@ FFW.RPCHelper = Em.Object.create(
       code = this[rpc + 'ResultCodes'][0];
 
       if(length > 1){
-        this[rpc + 'ResultCodes'].shift(); //remove the first element of the array
+        this[rpc + 'ResultCodes'].shift();
 
         this.updateGlobalRPCIndex(rpc)
         this.updateGlobalRPC(rpc);
@@ -244,6 +273,9 @@ FFW.RPCHelper = Em.Object.create(
       return code;
     },
 
+    /*
+     * Format string with interior vehicle data set to display on label
+     */
     GetInteriorVehicleDataResponseStatus: function(){
       return (this['GetInteriorVehicleDataIndex'] + 1) + '/' + 
                     this['GetInteriorVehicleDataResultCodes'].length
@@ -251,6 +283,9 @@ FFW.RPCHelper = Em.Object.create(
       'FFW.RPCHelper.GetInteriorVehicleDataIndex'
     ),
 
+    /*
+     * Format string with waypoints set to display on label
+     */
     SubscribeWayPointsResponseStatus: function(){
       return (this['SubscribeWayPointsIndex'] + 1) + '/' + 
                     this['SubscribeWayPointsResultCodes'].length
@@ -258,6 +293,9 @@ FFW.RPCHelper = Em.Object.create(
       'FFW.RPCHelper.SubscribeWayPointsIndex'
     ),
 
+    /*
+     * Format string with vehicle data set to display on label
+     */    
     SubscribeVehicleDataResponseStatus: function(){
       return (this['SubscribeVehicleDataIndex'] + 1) + '/' + 
                     this['SubscribeVehicleDataResultCodes'].length
@@ -265,6 +303,9 @@ FFW.RPCHelper = Em.Object.create(
       'FFW.RPCHelper.SubscribeVehicleDataIndex'
     ),
 
+    /*
+     * generate interface for global RPCs
+     */
     generateGlobalRpc: function() {
       FFWGlobalRPCs.forEach(function(rpc){
         FFW.RPCHelper[rpc] = FFW.RPCHelper.getSucceccRpc(rpc);
