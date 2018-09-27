@@ -79,6 +79,7 @@ FFW.RPCHelper = Em.Object.create(
      * init function. Setup helpers initial values
      */ 
     init: function() {
+      this.generateGlobalRpc();
       for(key in this.rpcStruct){
         this.set('defaultRpcStruct.'+key, 'SUCCESS');
       };
@@ -220,16 +221,16 @@ FFW.RPCHelper = Em.Object.create(
     newGlobalRPCResponse: function(rpc) {
       this.updateGlobalResultCodes(rpc);
 
-      this[rpc + 'ResultCodes'].push(this.getSucceccRpc(rpc));
+      this[rpc + 'ResultCodes'].push(this.getSuccessRpc(rpc));
       this.shiftGlobalRPCIndex(rpc, 1);
 
       this.updateGlobalRPC(rpc);
     },
 
     /*
-     * getSucceccRpc function. return successfully RPC.
+     * getSuccessRpc function. return successfully RPC.
      */
-    getSucceccRpc: function(rps){
+    getSuccessRpc: function(rps){
       switch(rps){
         case 'SubscribeVehicleData': {
           succsesParams = {};
@@ -256,6 +257,9 @@ FFW.RPCHelper = Em.Object.create(
       this.set(rpc + 'Index', Math.min(index, length - 1));
     },
 
+    /*
+     * getGlobalRPCResponse function.returns the response from the queue.
+     */
     getGlobalRPCResponse: function(rpc) {
       this.updateGlobalResultCodes(rpc);
       
@@ -268,7 +272,7 @@ FFW.RPCHelper = Em.Object.create(
         this.updateGlobalRPCIndex(rpc)
         this.updateGlobalRPC(rpc);
       } else {
-        this.set(rpc, this.getSucceccRpc(rpc));
+        this.set(rpc, this.getSuccessRpc(rpc));
       }
       return code;
     },
@@ -307,30 +311,31 @@ FFW.RPCHelper = Em.Object.create(
      * generate interface for global RPCs
      */
     generateGlobalRpc: function() {
+      var self = this;
       FFWGlobalRPCs.forEach(function(rpc){
-        FFW.RPCHelper[rpc] = FFW.RPCHelper.getSucceccRpc(rpc);
+        self[rpc] = self.getSuccessRpc(rpc);
 
         resultCodes = rpc + 'ResultCodes';
-        FFW.RPCHelper.set(resultCodes, new Array());
-        FFW.RPCHelper.get(resultCodes).push(FFW.RPCHelper.get(rpc));
+        self.set(resultCodes, new Array());
+        self.get(resultCodes).push(self.get(rpc));
 
         index = rpc + 'Index';
-        FFW.RPCHelper.set(index, 0);
+        self.set(index, 0);
 
-        FFW.RPCHelper.set('new' + rpc, function(){
-          FFW.RPCHelper.newGlobalRPCResponse(rpc);
+        self.set('new' + rpc, function(){
+          self.newGlobalRPCResponse(rpc);
         });
 
-        FFW.RPCHelper.set('previous' + rpc, function(){
-          FFW.RPCHelper.shiftGlobalRPCIndex(rpc, -1);
+        self.set('previous' + rpc, function(){
+          self.shiftGlobalRPCIndex(rpc, -1);
         });
 
-        FFW.RPCHelper.set('next' + rpc, function(){
-          FFW.RPCHelper.shiftGlobalRPCIndex(rpc, 1);
+        self.set('next' + rpc, function(){
+          self.shiftGlobalRPCIndex(rpc, 1);
         });
 
-        FFW.RPCHelper.set('remove' + rpc, function(){
-          FFW.RPCHelper.removeGlobalRPCResponse(rpc);
+        self.set('remove' + rpc, function(){
+          self.removeGlobalRPCResponse(rpc);
         });
       });
     },
@@ -347,4 +352,3 @@ FFW.RPCHelper = Em.Object.create(
     },
   }
 );
-FFW.RPCHelper.generateGlobalRpc();

@@ -25,6 +25,9 @@
  */
 
 SDL.RPCViewHelper = {
+    /*
+     * getBackButton function. returns the backspace button.
+     */
     getBackButton: function(){
         return SDL.Button.extend({
             classNames: [
@@ -39,6 +42,9 @@ SDL.RPCViewHelper = {
         });
     },
 
+    /*
+     * getQueueControls function. returns the queue control buttons.
+     */
     getQueueControls: function(rpc){
         return Em.ContainerView.create({
             childViews: [
@@ -116,6 +122,9 @@ SDL.RPCViewHelper = {
         });
     },
 
+    /*
+     * getSingleSelect function. returns the select button.
+     */
     getSingleSelect: function(rpc){
         return  Em.Select.extend({
               elementId: rpc + 'Select',
