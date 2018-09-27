@@ -37,7 +37,8 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
               'resultCodeTracker',
               'saveButton',
               'resetButton',
-              'appNameLabel'
+              'appNameLabel',
+              'SubscribeButton'
           ],         
           appNameLabel: SDL.Label.extend(
             {
@@ -169,6 +170,47 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                     }
                   )
                 }
-              )
+              ),
+          SubscribeButton: Em.ContainerView.create({
+            elementId: 'SubscribeButton',
+            classNames: 'SubscribeButton',
+            childViews: [
+              'header'
+            ],
+            header:  SDL.Label.extend({
+              elementId: 'header',
+              classNames: 'header',
+              content: 'header'
+            }),
+            isFirstInit: true,
+            initSubscribeButtonViev: function(){
+                if(!this.isFirstInit){
+                    return;
+                }
+                this.isFirstInit = false;
+                
+                for(param in FFW.RPCHelper.SubscribeButton){
+                  this.get('childViews').pushObject(Em.ContainerView.create({
+                      elementId: 'SubscribeButton' + param,
+                      classNames: 'SubscribeButtonParam',
+                      childViews: [
+                        'label',
+                        'select'
+                      ],
+                      label: SDL.Label.extend({
+                          elementId: param + 'Label',
+                          classNames: 'label',
+                          content: param
+                        }),
+                      select: Em.Select.extend({
+                          elementId: param + 'Select',
+                          classNames: 'select',
+                          contentBinding: 'SDL.SDLModel.data.resultCodes',
+                          valueBinding: 'FFW.RPCHelper.SubscribeButton.' + param
+                        })  
+                    }));
+                }
+            }
+          })     
     }
 );

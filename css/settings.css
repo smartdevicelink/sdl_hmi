@@ -88,6 +88,30 @@
     text-align: center;
 }
 
+.rpc_settings_separate_view .SubscribeButton{
+    top: 190px;
+    position:  absolute;
+}
+
+.rpc_settings_separate_view .SubscribeButton .header {
+    position: relative;
+}
+.rpc_settings_separate_view .SubscribeButton .SubscribeButtonParam {
+    position: relative;
+    top: 20px;
+    left: 58px;
+    height: 25px;
+}
+
+.rpc_settings_separate_view .SubscribeButton .label {
+    position: absolute;
+}
+
+.rpc_settings_separate_view .SubscribeButton .select {
+    position: relative;
+    left: 160px;
+}
+
 .rpc_settings_separate_view .counterLabel{
     top: 25px;
     left: 415px;

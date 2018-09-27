@@ -54,9 +54,10 @@ SDL.SettingsController = Em.Object.create(
         SDL.RPCVehicleDataControlConfigView.initSubscribevehicleDataParams();
       } 
       SDL.States.goToStates('settings.' + event.goToState);
-           
+      
       if('rpccontrol.rpcconfig' === event.goToState){
         SDL.RPCControlConfigView.set('appNameLabel.content',event.appName);
+        SDL.RPCControlConfigView.SubscribeButton.initSubscribeButtonViev();
         FFW.RPCHelper.updateRpc(event.appID);
       }
     },

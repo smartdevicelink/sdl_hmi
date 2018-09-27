@@ -115,12 +115,13 @@ FFW.Buttons = FFW.RPCObserver.create(
     onRPCNotification: function(notification) {
       Em.Logger.log('FFW.Buttons.onRPCNotification');
       this._super();
+      if(notification.method != this.onButtonSubscriptionNotification){
+        return ;
+      }
 
-      if (notification.method == this.onButtonSubscriptionNotification) {
-        var model = SDL.SDLController.getApplicationModel(notification.params.appID);
-        if (model) {
-          model.set(notification.params.name, notification.params.isSubscribed);
-        }
+      var model = SDL.SDLController.getApplicationModel(notification.params.appID);
+      if (model) {
+        model.set(notification.params.name, notification.params.isSubscribed);
       }
     },
     /*
@@ -129,136 +130,137 @@ FFW.Buttons = FFW.RPCObserver.create(
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.Buttons.onRPCRequest');
       this._super();
-      if (request.method == 'Buttons.ButtonPress') {
-        Em.Logger.log('FFW.' + request.method + ' Reqeust');
+      switch(request.method){
+        case 'Buttons.ButtonPress': {
+          Em.Logger.log('FFW.' + request.method + ' Reqeust');
 
-        if (!FFW.RC.consentedAppCheck(request)) {
-          this.sendError(
-            SDL.SDLModel.data.resultCode.REJECTED,
-            request.id, request.method
-          );
-          return;
+          if (!FFW.RC.consentedAppCheck(request)) {
+            this.sendError(
+              SDL.SDLModel.data.resultCode.REJECTED,
+              request.id, request.method
+            );
+            return;
+          }
+  
+          var result_struct =
+            SDL.SDLController.onButtonPressEvent(request.params);
+          var result_code = result_struct.resultCode;
+          var result_info = (result_struct.resultInfo === "" ?
+                             null : result_struct.resultInfo);
+  
+          if (result_code == SDL.SDLModel.data.resultCode.SUCCESS) {
+            this.sendButtonsResult(
+              result_code, request.id, request.method
+            );
+          } else {
+            this.sendError(
+              result_code, request.id, request.method, result_info
+            );
+          }
+          break;
         }
-
-        var result_struct =
-          SDL.SDLController.onButtonPressEvent(request.params);
-        var result_code = result_struct.resultCode;
-        var result_info = (result_struct.resultInfo === "" ?
-                           null : result_struct.resultInfo);
-
-        if (result_code == SDL.SDLModel.data.resultCode.SUCCESS) {
-          this.sendButtonsResult(
-            result_code, request.id, request.method
-          );
-        } else {
-          this.sendError(
-            result_code, request.id, request.method, result_info
-          );
+        case 'Buttons.GetCapabilities' : {
+          capabiliti = function(name){
+              return {
+                  'name': name,
+                  'shortPressAvailable': true,
+                  'longPressAvailable': true,
+                  'upDownAvailable': true
+              };
+          };
+          // send repsonse
+          var JSONMessage = {
+            'jsonrpc': '2.0',
+            'id': request.id,
+            'result': {
+              'capabilities': [
+                capabiliti("PRESET_0"),
+                capabiliti("PRESET_1"),
+                capabiliti("PRESET_2"),
+                capabiliti("PRESET_3"),
+                capabiliti("PRESET_4"),
+                capabiliti("PRESET_5"),
+                capabiliti("PRESET_6"),
+                capabiliti("PRESET_7"),
+                capabiliti("PRESET_8"),
+                capabiliti("PRESET_9"),
+                capabiliti("OK"),
+                capabiliti("PLAY_PAUSE"),
+                capabiliti("SEEKLEFT"),
+                capabiliti("SEEKRIGHT"),
+                capabiliti("TUNEUP"),
+                capabiliti("TUNEDOWN"),
+                capabiliti("CUSTOM_BUTTON")
+              ],
+              'presetBankCapabilities': {
+                'onScreenPresetsAvailable': true
+              },
+              'code': 0,
+              'method': 'Buttons.GetCapabilities'
+            }
+          };
+          this.client.send(JSONMessage);
+          break;
+        }
+        case 'Buttons.SubscribeButton' : {
+          params = request.params;
+          appID = params.appID
+          resultCode = this.subscribeButton(appID, params.buttonName);
+          console.log("Button " + params.buttonName + " " + resultCode + " resultCode");
+          this.sendButtonsResult(resultCode, request.id, request.method);
+          break;
+        }
+        case 'Buttons.UnsubscribeButton' : {
+          appID = params.appID
+          if (this.isButtonSubscribed(appID, params.buttonName)) {
+            console.log("Button " + params.buttonName + " SUCCESS Unsubscribe");
+            this.unsubscribeButton(appID, params.buttonName);
+            this.sendButtonsResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
+            );
+          } else {
+            console.log("Button " + params.buttonName + " REJECTED Unsubscribe");
+            this.sendError(
+              SDL.SDLModel.data.resultCode.REJECTED,
+              request.id,
+              request.method,
+              'SDL Should not send this request more than once'
+            );
+          }
+          break;
         }
       }
-      if (request.method == 'Buttons.GetCapabilities') {
+    },
 
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': request.id,
-          'result': {
-            'capabilities': [
-              {
-                'name': 'PRESET_0',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_1',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_2',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_3',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_4',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_5',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_6',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_7',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_8',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_9',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'OK',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PLAY_PAUSE',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'SEEKLEFT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'SEEKRIGHT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'TUNEUP',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'TUNEDOWN',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'CUSTOM_BUTTON',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }
-            ],
-            'presetBankCapabilities': {
-              'onScreenPresetsAvailable': true
-            },
-            'code': 0,
-            'method': 'Buttons.GetCapabilities'
-          }
-        };
-        this.client.send(JSONMessage);
+    subscribedButtons:{},
+
+    isButtonSubscribed: function(appID, buttonName){
+      if(null == this.subscribedButtons[appID]){
+        return false;
+      }
+      if(null ==  this.subscribedButtons[appID][buttonName]){
+        return false;
+      }
+      return  this.subscribedButtons[appID][buttonName];
+    },
+
+    subscribeButton: function(appID, buttonName){
+      code = FFW.RPCHelper.getCustomResultCode(appID, 'SubscribeButton', buttonName);
+      if(!FFW.RPCHelper.isSuccessResultCode(code)){
+        return code;
+      }
+      if(null == this.subscribedButtons[appID]){
+        this.subscribedButtons[appID] = {};
+      }
+      this.subscribedButtons[appID][buttonName] = true;
+      return code;
+    },
+
+    unsubscribeButton: function(appID, buttonName){
+      if(this.isButtonSubscribed(appID, buttonName)){
+        this.subscribedButtons[appID][buttonName] = false;
       }
     },
     /**
@@ -273,8 +275,6 @@ FFW.Buttons = FFW.RPCObserver.create(
      */
     sendButtonsResult: function(resultCode, id, method) {
       Em.Logger.log('FFW.' + method + ' Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -285,7 +285,6 @@ FFW.Buttons = FFW.RPCObserver.create(
           }
         };
         this.client.send(JSONMessage);
-      }
     },
     /**
      * Send error response from onRPCRequest
