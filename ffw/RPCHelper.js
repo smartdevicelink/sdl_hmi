@@ -81,7 +81,10 @@ FFW.RPCHelper = Em.Object.create(
     init: function() {
       this.generateGlobalRpc();
       for(key in this.rpcStruct){
-        this.set('defaultRpcStruct.'+key, 'SUCCESS');
+        this.set('defaultRpcStruct.' + key, 'SUCCESS');
+      };
+      for(key in this.SubscribeButton){
+        this.set('defaultSubscribeButton.' + key, 'SUCCESS');
       };
     },
 
@@ -92,6 +95,7 @@ FFW.RPCHelper = Em.Object.create(
     addApplication: function(appID) {
       if(this.appContainer[appID] === undefined ){
         this.appContainer[appID] = SDL.deepCopy(this.defaultRpcStruct);
+        this.appContainer[appID]['SubscribeButton'] = SDL.deepCopy(this.defaultSubscribeButton);
       }
     },
 
@@ -110,7 +114,8 @@ FFW.RPCHelper = Em.Object.create(
      * application for a specified method. It could be overriden 
      * by HMI settings
      */
-    getCustomResultCode: function(appID, method) {
+    getCustomResultCode: function(appID, method, param) {
+      var code = null;
       switch (method) {
         case 'createInteractionChoiceSet': {
           method = 'vrAddCommand';
@@ -121,15 +126,19 @@ FFW.RPCHelper = Em.Object.create(
         case 'GetInteriorVehicleData': 
           return this.getGlobalRPCResponse(method);
       }
-
-      var code = null;
-      if(appID !== null && this.appContainer[appID][method] !== undefined) {
-        code = this.appContainer[appID][method];
-      } else if(this.SubscribeVehicleDataParams[method] !== undefined) {
-        code = this.SubscribeVehicleDataParams[method];
+      
+      if(appID !== null && this.appContainer[appID] == undefined){
+        return null != code ? SDL.SDLModel.data.resultCode[code] : SDL.SDLModel.data.resultCode.SUCCESS;
       }
 
-      return null != code ? SDL.SDLModel.data.resultCode[code] : 'SUCCESS';
+      if(appID !== null && this.appContainer[appID][method] !== undefined) {
+        if(null == param){
+          code = this.appContainer[appID][method];
+        } else {
+          code = this.appContainer[appID][method][param];
+        }
+      }
+      return null != code ? SDL.SDLModel.data.resultCode[code] :  SDL.SDLModel.data.resultCode.SUCCESS;
     },
 
     /*
@@ -138,6 +147,9 @@ FFW.RPCHelper = Em.Object.create(
     updateRpc: function(appID) {
       for(key in this.appContainer[appID]){
          this.set('rpcStruct.' + key,this.appContainer[appID][key]);
+      };
+      for(key in this.SubscribeButton){
+        this.set('SubscribeButton.' + key, this.appContainer[appID]['SubscribeButton'][key]);
       };
       this.setCurrentAppID(appID);
     },
@@ -155,6 +167,9 @@ FFW.RPCHelper = Em.Object.create(
       for(key in this.appContainer[app.appID]){
         this.set('appContainer.'+ app.appID + '.'+key, this.rpcStruct[key]);
       };
+      for(key in this.SubscribeButton){
+        this.set('appContainer.' + app.appID + '.SubscribeButton.' + key, this.SubscribeButton[key]);
+      };
       var event = {goToState: 'rpccontrol'};
       SDL.SettingsController.onState(event);
       this.setCurrentAppID(null);
@@ -168,6 +183,9 @@ FFW.RPCHelper = Em.Object.create(
        for(key in this.rpcStruct){
          this.set('rpcStruct.'+key, this.defaultRpcStruct[key]);
        };
+       for(key in this.SubscribeButton){
+        this.set('SubscribeButton.'+key, this.defaultSubscribeButton[key]);
+      };
     },
 
     /*
@@ -341,6 +359,7 @@ FFW.RPCHelper = Em.Object.create(
     },
 
     defaultRpcStruct: {},
+    defaultSubscribeButton: {},
     currentAppID: null,
     
     rpcStruct: {
@@ -348,7 +367,27 @@ FFW.RPCHelper = Em.Object.create(
         uiAddCommand: '',
         AddSubmenu:'',
         uiSetGlobalProperties: '',
-        ttsSetGlobalProperties: ''        
+        ttsSetGlobalProperties: ''
     },
+
+    SubscribeButton: {
+      PRESET_0: '',
+      PRESET_1: '',
+      PRESET_2: '',
+      PRESET_3: '',
+      PRESET_4: '',
+      PRESET_5: '',
+      PRESET_6: '',
+      PRESET_7: '',
+      PRESET_8: '',
+      PRESET_9: '',
+      OK: '',
+      PLAY_PAUSE: '',
+      SEEKLEFT: '',
+      SEEKRIGHT: '',
+      TUNEUP: '',
+      TUNEDOWN: '',
+      CUSTOM_BUTTON: ''
+    }
   }
 );
