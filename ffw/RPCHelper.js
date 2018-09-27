@@ -24,6 +24,49 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ *  Array of global RPCs
+ */ 
+FFWGlobalRPCs = [
+  'GetInteriorVehicleData',
+  'SubscribeWayPoints',
+  'SubscribeVehicleData'
+];
+
+/*
+ *  Array of SubscribeVehicleData parameters
+ */ 
+FFWSubscribeVehicleDataParams = [
+  'speed',
+  'rpm',
+  'fuelLevel',
+  'fuelLevel_State',
+  'instantFuelConsumption',
+  'externalTemperature',
+  'turnSignal',
+  'prndl',
+  'tirePressure',
+  'odometer',
+  'beltStatus',
+  'bodyInformation',
+  'deviceStatus',
+  'driverBraking',
+  'wiperStatus',
+  'headLampStatus',
+  'engineTorque',
+  'accPedalPosition',
+  'steeringWheelAngle',
+  'engineOilLife',
+  'electronicParkBrakeStatus',
+  'eCallInfo',
+  'airbagStatus',
+  'emergencyEvent',
+  'clusterModes',
+  'myKey',
+  'fuelRange',
+  'gps'
+];
+
 FFW.RPCHelper = Em.Object.create(
     {
       
@@ -36,18 +79,10 @@ FFW.RPCHelper = Em.Object.create(
      * init function. Setup helpers initial values
      */ 
     init: function() {
+      this.generateGlobalRpc();
       for(key in this.rpcStruct){
         this.set('defaultRpcStruct.'+key, 'SUCCESS');
       };
-      for(key in this.vehicleDataStruct){
-        this.set('vehicleDataStruct.'+key, 'SUCCESS');
-      };
-      this.set('SubscribeWayPoints', 'SUCCESS');
-      this.set('SubscribeVehicleData', 'SUCCESS');
-      this.VehicleDataResultCodes.push({
-        SubscribeVehicleData: 'SUCCESS',
-        vehicleDataStruct: this.getSuccessVehicleDataStruct()
-      });
     },
 
     /*
@@ -81,19 +116,17 @@ FFW.RPCHelper = Em.Object.create(
           method = 'vrAddCommand';
           break;  
         }
-        case 'SubscribeWayPoints': {
-          return this.getNextWayPointResultCode();
-        }
-        case 'SubscribeVehicleData': {
-          return this.getNextVehicleDataResultCode();
-        }
+        case 'SubscribeWayPoints':
+        case 'SubscribeVehicleData': 
+        case 'GetInteriorVehicleData': 
+          return this.getGlobalRPCResponse(method);
       }
 
       var code = null;
       if(appID !== null && this.appContainer[appID][method] !== undefined) {
         code = this.appContainer[appID][method];
-      } else if(this.vehicleDataStruct[method] !== undefined) {
-        code = this.vehicleDataStruct[method];
+      } else if(this.SubscribeVehicleDataParams[method] !== undefined) {
+        code = this.SubscribeVehicleDataParams[method];
       }
 
       return null != code ? SDL.SDLModel.data.resultCode[code] : 'SUCCESS';
@@ -145,233 +178,167 @@ FFW.RPCHelper = Em.Object.create(
     },
 
     /*
-     * updateWayPointResultCodes function. Update SubscribeWayPoints array
+     * updateGlobalResultCodes function. Update global RPCs queue
      */
-    updateWayPointResultCodes: function(){
-      index = this.SubscribeWayPointsRequestNumber - 1;
-      this.wayPointResultCodes[index] = this.SubscribeWayPoints;
-    },
-    
-    /*
-     * updateVehicleDataResultCodes function. Update SubscribeVehicleData array
-     */
-    updateVehicleDataResultCodes: function(){
-      index = this.VehicleDataRequestNumber - 1;
-      this.VehicleDataResultCodes[index].SubscribeVehicleData = this.SubscribeVehicleData;
-      this.VehicleDataResultCodes[index].vehicleDataStruct = this.vehicleDataStruct;
+    updateGlobalResultCodes: function(rpc) {
+      index = this.get(rpc + 'Index');
+      this[rpc + 'ResultCodes'][index] = this[rpc];
     },
 
     /*
-     * updateSubscribeWayPoints function. Update SubscribeWayPoints parameter
+     * updateGlobalRPC function. Update current RPC result
      */
-    updateSubscribeWayPoints: function(){
-      index = this.SubscribeWayPointsRequestNumber - 1;
-      this.set('SubscribeWayPoints', this.wayPointResultCodes[index]);
+    updateGlobalRPC: function(rpc) {
+      index = this.get(rpc + 'Index');
+      this.set(rpc, this[rpc + 'ResultCodes'][index]);
     },
 
     /*
-     * updateSubscribeVehicleData function. Update SubscribeVehicleData parameter
+     * shiftGlobalRPCIndex function. Shifts the pointer to the current RPC in the queue.
      */
-    updateSubscribeVehicleData: function(){
-      index = this.VehicleDataRequestNumber - 1;
-      this.set('SubscribeVehicleData', this.VehicleDataResultCodes[index].SubscribeVehicleData);
-      this.set('vehicleDataStruct', this.VehicleDataResultCodes[index].vehicleDataStruct);
+    shiftGlobalRPCIndex: function(rpc, diff){
+      this.updateGlobalResultCodes(rpc);
+      index = this.get(rpc + 'Index');
+      this.set(rpc + 'Index', index + diff);
+      this.updateGlobalRPC(rpc);
     },
 
     /*
-     * previousWayPointResultCode function. Go to previous WayPoint ResultCode
+     * removeGlobalRPCResponse function. Removes the current RPC from the queue.
      */
-    previousWayPointResultCode: function(){
-      this.updateWayPointResultCodes();
-      this.set('SubscribeWayPointsRequestNumber', this.SubscribeWayPointsRequestNumber - 1);
-      this.updateSubscribeWayPoints();
+    removeGlobalRPCResponse: function(rpc) {
+      this.updateGlobalResultCodes(rpc);
+
+      index = this[rpc + 'Index'];
+      this[rpc + 'ResultCodes'].splice(index, 1);
+      this.updateGlobalRPCIndex(rpc);
+      this.updateGlobalRPC(rpc);
     },
 
     /*
-     * previousVehicleDataResultCode function. Go to previous VehicleData ResultCode
+     * newGlobalRPCResponse function. Add new response for RPC in queue.
      */
-    previousVehicleDataResultCode: function(){
-      this.updateVehicleDataResultCodes();
-      this.set('VehicleDataRequestNumber', this.VehicleDataRequestNumber - 1);
-      this.updateSubscribeVehicleData();
+    newGlobalRPCResponse: function(rpc) {
+      this.updateGlobalResultCodes(rpc);
+
+      this[rpc + 'ResultCodes'].push(this.getSuccessRpc(rpc));
+      this.shiftGlobalRPCIndex(rpc, 1);
+
+      this.updateGlobalRPC(rpc);
     },
 
     /*
-     * nextWayPointResultCode function. Go to next WayPoint ResultCode
+     * getSuccessRpc function. return successfully RPC.
      */
-    nextWayPointResultCode: function(){
-      this.updateWayPointResultCodes();
-      this.set('SubscribeWayPointsRequestNumber', this.SubscribeWayPointsRequestNumber + 1);
-      this.updateSubscribeWayPoints();
-    },
-
-    /*
-     * nextVehicleDataResultCode function. Go to next WayPoint VehicleData
-     */
-    nextVehicleDataResultCode: function(){
-      this.updateVehicleDataResultCodes();
-      this.set('VehicleDataRequestNumber', this.VehicleDataRequestNumber + 1);
-      this.updateSubscribeVehicleData();
-    },
-
-    /*
-     * Add new response for SubscribeWayPoint RPC in queue
-     */
-    newWayPointResponse: function(){
-      this.updateWayPointResultCodes();
-
-      this.wayPointResultCodes.push('SUCCESS');
-      this.set('SubscribeWayPoints', 'SUCCESS');
-      this.set('SubscribeWayPointsRequestNumber', this.SubscribeWayPointsRequestNumber + 1);
-    },
-
-    /*
-     * removeWayPointResponse function. remove current WayPoint ResultCode
-     * from array
-     */
-    removeWayPointResponse: function(){
-      this.updateWayPointResultCodes();
-
-      index = this.SubscribeWayPointsRequestNumber - 1;
-      length = this.wayPointResultCodes.length;
-      
-      this.wayPointResultCodes.splice(index, 1);
-
-      currentNumber = this.SubscribeWayPointsRequestNumber;
-      this.set('SubscribeWayPointsRequestNumber',0);
-      this.set('SubscribeWayPointsRequestNumber', Math.min(currentNumber, 
-                                      this.wayPointResultCodes.length));
-
-      this.updateSubscribeWayPoints();  
-    },
-
-    /*
-     * removeVehicleDataResponse function. remove current VehicleData ResultCode
-     * from array
-     */
-    removeVehicleDataResponse: function(){
-      this.updateVehicleDataResultCodes();
-
-      index = this.VehicleDataRequestNumber - 1;
-      length = this.VehicleDataResultCodes.length;
-
-      this.VehicleDataResultCodes.splice(index, 1);
-
-      currentNumber = this.VehicleDataRequestNumber;
-      this.set('VehicleDataRequestNumber',0);
-      this.set('VehicleDataRequestNumber', Math.min(currentNumber, 
-                                      this.VehicleDataResultCodes.length));
-
-      this.updateSubscribeVehicleData();
-    },
-
-    /*
-     * Claims vehicle data structure filled with SUCCESS result codes
-     */
-    getSuccessVehicleDataStruct:function(){
-      SuccessVehicleDataStruct = {}
-      for(var paramName in this.vehicleDataStruct){
-        SuccessVehicleDataStruct[paramName] = 'SUCCESS';
+    getSuccessRpc: function(rps){
+      switch(rps){
+        case 'SubscribeVehicleData': {
+          succsesParams = {};
+          for(key of FFWSubscribeVehicleDataParams){
+            succsesParams[key] = 'SUCCESS';
+          };
+         return {
+          SubscribeVehicleData: 'SUCCESS',
+          SubscribeVehicleDataParams: succsesParams
+         } 
+        }
+        default:
+          return 'SUCCESS';
       }
-      return SuccessVehicleDataStruct;
     },
 
     /*
-     * Add new response for SubscribeVehicleData RPC in queue 
+     * updateGlobalRPCIndex function. update current global RPC index.
      */
-    newVehicleDataResponse: function(){
-      this.updateVehicleDataResultCodes();
-
-      successVehicleDataStruct = this.getSuccessVehicleDataStruct();
-
-      this.VehicleDataResultCodes.push({
-        SubscribeVehicleData: 'SUCCESS',
-        vehicleDataStruct: successVehicleDataStruct
-      });
-      this.set('SubscribeVehicleData', 'SUCCESS');
-      this.set('vehicleDataStruct', successVehicleDataStruct);
-      this.set('VehicleDataRequestNumber', this.VehicleDataRequestNumber + 1);
+    updateGlobalRPCIndex: function(rpc){
+      index = this[rpc + 'Index'];
+      this.set(rpc + 'Index', -1);
+      length = this[rpc + 'ResultCodes'].length;
+      this.set(rpc + 'Index', Math.min(index, length - 1));
     },
-    
+
+    /*
+     * getGlobalRPCResponse function.returns the response from the queue.
+     */
+    getGlobalRPCResponse: function(rpc) {
+      this.updateGlobalResultCodes(rpc);
+      
+      length = this[rpc + 'ResultCodes'].length;
+      code = this[rpc + 'ResultCodes'][0];
+
+      if(length > 1){
+        this[rpc + 'ResultCodes'].shift();
+
+        this.updateGlobalRPCIndex(rpc)
+        this.updateGlobalRPC(rpc);
+      } else {
+        this.set(rpc, this.getSuccessRpc(rpc));
+      }
+      return code;
+    },
+
+    /*
+     * Format string with interior vehicle data set to display on label
+     */
+    GetInteriorVehicleDataResponseStatus: function(){
+      return (this['GetInteriorVehicleDataIndex'] + 1) + '/' + 
+                    this['GetInteriorVehicleDataResultCodes'].length
+    }.property(
+      'FFW.RPCHelper.GetInteriorVehicleDataIndex'
+    ),
+
     /*
      * Format string with waypoints set to display on label
      */
-    getWayPointResponseStatus: function() {
-      return this.SubscribeWayPointsRequestNumber + '/' + this.wayPointResultCodes.length;
+    SubscribeWayPointsResponseStatus: function(){
+      return (this['SubscribeWayPointsIndex'] + 1) + '/' + 
+                    this['SubscribeWayPointsResultCodes'].length
     }.property(
-      'FFW.RPCHelper.SubscribeWayPointsRequestNumber'
+      'FFW.RPCHelper.SubscribeWayPointsIndex'
     ),
 
     /*
      * Format string with vehicle data set to display on label
-     */
-    getVehicleDataStatus: function() {
-      return this.VehicleDataRequestNumber + '/' + this.VehicleDataResultCodes.length;
+     */    
+    SubscribeVehicleDataResponseStatus: function(){
+      return (this['SubscribeVehicleDataIndex'] + 1) + '/' + 
+                    this['SubscribeVehicleDataResultCodes'].length
     }.property(
-      'FFW.RPCHelper.VehicleDataRequestNumber'
+      'FFW.RPCHelper.SubscribeVehicleDataIndex'
     ),
 
     /*
-     * Claims next result code for SubscribeWayPoints RPC
+     * generate interface for global RPCs
      */
-    getNextWayPointResultCode: function(){
-      this.updateWayPointResultCodes();
+    generateGlobalRpc: function() {
+      var self = this;
+      FFWGlobalRPCs.forEach(function(rpc){
+        self[rpc] = self.getSuccessRpc(rpc);
 
-      length = this.wayPointResultCodes.length;
+        resultCodes = rpc + 'ResultCodes';
+        self.set(resultCodes, new Array());
+        self.get(resultCodes).push(self.get(rpc));
 
-      code = this.wayPointResultCodes[0];
-      if(length > 1){
-        this.wayPointResultCodes.shift(); //remove the first element of the array
-        
-        currentNumber = this.SubscribeWayPointsRequestNumber;
-        this.set('SubscribeWayPointsRequestNumber',0);
-        this.set('SubscribeWayPointsRequestNumber', 
-                              Math.min(currentNumber, 
-                                        this.wayPointResultCodes.length));
-        this.updateSubscribeWayPoints();
-      } else if(length == 1){
-        this.set('SubscribeWayPoints', 'SUCCESS');
-      }
-      return SDL.SDLModel.data.resultCode[code]
+        index = rpc + 'Index';
+        self.set(index, 0);
+
+        self.set('new' + rpc, function(){
+          self.newGlobalRPCResponse(rpc);
+        });
+
+        self.set('previous' + rpc, function(){
+          self.shiftGlobalRPCIndex(rpc, -1);
+        });
+
+        self.set('next' + rpc, function(){
+          self.shiftGlobalRPCIndex(rpc, 1);
+        });
+
+        self.set('remove' + rpc, function(){
+          self.removeGlobalRPCResponse(rpc);
+        });
+      });
     },
-
-    /*
-     * Claims next result code for SubscribeVehicleData RPC
-     */
-    getNextVehicleDataResultCode: function(){
-      this.updateVehicleDataResultCodes();
-
-      nextVehicleDataResultCode = this.VehicleDataResultCodes[0].SubscribeVehicleData;
-      code = {
-        SubscribeVehicleData: SDL.SDLModel.data.resultCode[nextVehicleDataResultCode],
-        vehicleDataStruct:{}
-      };
-
-      for(var paramName in this.vehicleDataStruct){
-        nextParamResultCode = this.VehicleDataResultCodes[0].vehicleDataStruct[paramName]
-        code.vehicleDataStruct[paramName] = nextParamResultCode;
-      }
-    
-      length = this.VehicleDataResultCodes.length;	
-      if(length > 1){
-        this.VehicleDataResultCodes.shift(); //remove the first element of the array
-        currentNumber = this.VehicleDataRequestNumber;
-        this.set('VehicleDataRequestNumber',0);
-        this.set('VehicleDataRequestNumber', Math.min(currentNumber, 
-                                        this.VehicleDataResultCodes.length));
-
-        this.updateSubscribeVehicleData();
-      } else if(length == 1){
-        this.set('SubscribeVehicleData', 'SUCCESS');
-        this.set('vehicleDataStruct', this.getSuccessVehicleDataStruct());
-      }
-      
-      return code;
-    },
-    
-    wayPointResultCodes: ['SUCCESS'],
-    SubscribeWayPoints: '',
-    SubscribeWayPointsRequestNumber: 1,
 
     defaultRpcStruct: {},
     currentAppID: null,
@@ -383,39 +350,5 @@ FFW.RPCHelper = Em.Object.create(
         uiSetGlobalProperties: '',
         ttsSetGlobalProperties: ''        
     },
-
-    VehicleDataResultCodes: [],
-    VehicleDataRequestNumber: 1,
-    SubscribeVehicleData: '',
-    vehicleDataStruct: {
-        speed:'',
-        rpm: '',
-        fuelLevel: '',
-        fuelLevel_State: '',
-        instantFuelConsumption: '',
-        externalTemperature: '',
-        turnSignal: '',
-        prndl: '',
-        tirePressure: '',
-        odometer: '',
-        beltStatus: '',
-        bodyInformation: '',
-        deviceStatus: '',
-        driverBraking: '',
-        wiperStatus: '',
-        headLampStatus: '',
-        engineTorque: '',
-        accPedalPosition: '',
-        steeringWheelAngle: '',
-        engineOilLife: '',
-        electronicParkBrakeStatus: '',
-        eCallInfo: '',
-        airbagStatus: '',
-        emergencyEvent: '',
-        clusterModes: '',
-        myKey: '',
-        fuelRange: '',
-        gps: ''
-    }
   }
 );

@@ -32,93 +32,11 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
     ],
     
     childViews: [
-      'backButton',
-      'newButton',
-      'removeButton',
-      'previousButton',
-      'nextButton',
-      'counterLabel',
+      SDL.RPCViewHelper.getBackButton(),
+      SDL.RPCViewHelper.getQueueControls('SubscribeVehicleData'),
       'subscribevehicleData',
       'subscribevehicleDataParams'
     ],
-    backButton: SDL.Button.extend(
-      {
-        classNames: [
-          'backControl'
-        ],
-        action: 'onState',
-        target: 'SDL.SettingsController',
-        goToState: 'rpccontrol',
-        icon: 'images/media/ico_back.png',
-        style: 'top: 100px',
-        onDown: false
-      }),
-    newButton: SDL.Button.extend(
-      {
-        classNames: [
-          'newButton'
-        ],
-        action: 'newVehicleDataResponse',
-        target: 'FFW.RPCHelper',
-        text: 'New',
-        onDown: false
-      }),
-    removeButton: SDL.Button.extend(
-      {
-        classNames: [
-          'removeButton'
-        ],
-        isDisabled: function() {
-          return FFW.RPCHelper.VehicleDataResultCodes.length == 1;
-        }.property(
-          'FFW.RPCHelper.VehicleDataRequestNumber'
-          
-        ),
-        disabledBinding: 'isDisabled',
-        action: 'removeVehicleDataResponse',
-        target: 'FFW.RPCHelper',
-        text: 'Remove',
-        onDown: false
-      }),
-    previousButton: SDL.Button.extend(
-        {
-          classNames: [
-            'previousButton'
-          ],
-          isDisabled: function() {
-            return FFW.RPCHelper.VehicleDataRequestNumber == 1;
-          }.property(
-            'FFW.RPCHelper.VehicleDataRequestNumber'
-          ),
-          disabledBinding: 'isDisabled',
-          action: 'previousVehicleDataResultCode',
-          target: 'FFW.RPCHelper',
-          text: 'Previous',
-          onDown: false
-        }),
-    nextButton: SDL.Button.extend(
-      {
-        classNames: [
-          'nextButton'
-        ],
-        isDisabled: function() {
-          return FFW.RPCHelper.VehicleDataRequestNumber == 
-                                      FFW.RPCHelper.VehicleDataResultCodes.length;
-        }.property(
-          'FFW.RPCHelper.VehicleDataRequestNumber'
-        ),
-        disabledBinding: 'isDisabled',
-        action: 'nextVehicleDataResultCode',
-        target: 'FFW.RPCHelper',
-        text: 'Next',
-        onDown: false
-      }),  
-    counterLabel: SDL.Label.extend(
-        {
-          elementId: 'counterLabel',
-          classNames: 'counterLabel',
-          contentBinding: 'FFW.RPCHelper.getVehicleDataStatus'
-        }),  
     subscribevehicleData: Em.ContainerView.create(
       {
         elementId: 'subscribevehicleData',
@@ -138,7 +56,7 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
             elementId: 'SubscribevehicleDataSelect',
             classNames: 'select',
             contentBinding: 'SDL.SDLModel.data.resultCodes',
-            valueBinding: 'FFW.RPCHelper.SubscribeVehicleData'
+            valueBinding: 'FFW.RPCHelper.SubscribeVehicleData.SubscribeVehicleData'
           }),   
       }),
     subscribevehicleDataParams: Em.ContainerView.create(
@@ -154,8 +72,8 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
         }
         this.isFirstInitialization = false;
 
-        for(var viewsName in FFW.RPCHelper.vehicleDataStruct){
-          selectValueBinding = 'FFW.RPCHelper.vehicleDataStruct.' + viewsName;
+        for(viewsName of FFWSubscribeVehicleDataParams){
+          selectValueBinding = 'FFW.RPCHelper.SubscribeVehicleData.SubscribeVehicleDataParams.' + viewsName;
           this.get('subscribevehicleDataParams.childViews').pushObject(Em.ContainerView.create({
             elementId: viewsName,
             classNames: 'params',

@@ -24,16 +24,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
-    elementId: 'rpc_way_points_Config',
+SDL.RPCInteriorVehicleDataControlConfigView = Em.ContainerView.create(
+    {
+    elementId: 'rpc_interior_vehicle_data_Config',
     classNames: 'rpc_settings_separate_view',
     classNameBindings: [
-        'SDL.States.settings.rpccontrol.rpcwaypointconfig.active:active_state:inactive_state'
+        'SDL.States.settings.rpccontrol.rpcinteriorvehicledataconfig.active:active_state:inactive_state'
     ],
-    
     childViews: [
-      SDL.RPCViewHelper.getBackButton(),
-      SDL.RPCViewHelper.getQueueControls('SubscribeWayPoints'),
-      SDL.RPCViewHelper.getSingleSelect('SubscribeWayPoints')
-    ]
+        SDL.RPCViewHelper.getBackButton(),
+        SDL.RPCViewHelper.getQueueControls('GetInteriorVehicleData'),
+        SDL.RPCViewHelper.getSingleSelect('GetInteriorVehicleData')
+    ] 
 });
