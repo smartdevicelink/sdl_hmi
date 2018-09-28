@@ -160,7 +160,7 @@ FFW.Buttons = FFW.RPCObserver.create(
           break;
         }
         case 'Buttons.GetCapabilities' : {
-          capabiliti = function(name){
+          capability = function(name){
               return {
                   'name': name,
                   'shortPressAvailable': true,
@@ -168,30 +168,12 @@ FFW.Buttons = FFW.RPCObserver.create(
                   'upDownAvailable': true
               };
           };
-          // send repsonse
+          // send response
           var JSONMessage = {
             'jsonrpc': '2.0',
             'id': request.id,
             'result': {
-              'capabilities': [
-                capabiliti("PRESET_0"),
-                capabiliti("PRESET_1"),
-                capabiliti("PRESET_2"),
-                capabiliti("PRESET_3"),
-                capabiliti("PRESET_4"),
-                capabiliti("PRESET_5"),
-                capabiliti("PRESET_6"),
-                capabiliti("PRESET_7"),
-                capabiliti("PRESET_8"),
-                capabiliti("PRESET_9"),
-                capabiliti("OK"),
-                capabiliti("PLAY_PAUSE"),
-                capabiliti("SEEKLEFT"),
-                capabiliti("SEEKRIGHT"),
-                capabiliti("TUNEUP"),
-                capabiliti("TUNEDOWN"),
-                capabiliti("CUSTOM_BUTTON")
-              ],
+              'capabilities': [],
               'presetBankCapabilities': {
                 'onScreenPresetsAvailable': true
               },
@@ -199,6 +181,9 @@ FFW.Buttons = FFW.RPCObserver.create(
               'method': 'Buttons.GetCapabilities'
             }
           };
+          for(var key in FFW.RPCHelper.SubscribeButton){
+            JSONMessage['result']['capabilities'].push(capability(key));
+          }
           this.client.send(JSONMessage);
           break;
         }
@@ -240,7 +225,7 @@ FFW.Buttons = FFW.RPCObserver.create(
       if(null == this.subscribedButtons[appID]){
         return false;
       }
-      if(null ==  this.subscribedButtons[appID][buttonName]){
+      if(null == this.subscribedButtons[appID][buttonName]){
         return false;
       }
       return  this.subscribedButtons[appID][buttonName];
@@ -275,7 +260,7 @@ FFW.Buttons = FFW.RPCObserver.create(
      */
     sendButtonsResult: function(resultCode, id, method) {
       Em.Logger.log('FFW.' + method + ' Response');
-        // send repsonse
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
@@ -300,7 +285,7 @@ FFW.Buttons = FFW.RPCObserver.create(
       Em.Logger.log('FFW.' + method + ' Response');
       if (resultCode) {
 
-        // send repsonse
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,

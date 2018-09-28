@@ -24,193 +24,161 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-SDL.RPCControlConfigView = Em.ContainerView.create(
-    {
-          elementId: 'rpc_settings_deviceConfig',
-          classNames: 'rpc_settings_separate_view',
-          classNameBindings: [
-              'SDL.States.settings.rpccontrol.rpcconfig.active:active_state:inactive_state'
-          ],
+SDL.RPCControlConfigView = Em.ContainerView.create({
+  elementId: 'rpc_settings_deviceConfig',
+  classNames: 'rpc_settings_separate_view',
+  classNameBindings: [
+      'SDL.States.settings.rpccontrol.rpcconfig.active:active_state:inactive_state'
+  ],
+  childViews: [
+      SDL.RPCViewHelper.getBackButton(),
+      'rpcList',
+      'resultCodeTracker',
+      'saveButton',
+      'resetButton',
+      'appNameLabel',
+      'SubscribeButton'
+  ],         
+  appNameLabel: SDL.Label.extend({
+    elementId: 'appNameLabel',
+    classNames: 'appNameLabel'
+  }),
+  resetButton: SDL.Button.extend({
+    classNames: [
+      'resetButton'
+    ],
+    action: 'resetButton',
+    target: 'FFW.RPCHelper',
+    goToState: 'rpccontrol',
+    text:'Reset to default',
+    onDown: false
+  }),
+  saveButton: SDL.Button.extend({
+    classNames: [
+      'saveButton'
+    ],
+    action: 'saveButton',
+    target: 'FFW.RPCHelper',
+    goToState: 'rpccontrol',
+    text:'Save',
+    onDown: false
+  }),
+  rpcList: Em.ContainerView.extend({
+    elementId: 'rpcList',
+    classNames: 'rpcList',
+    childViews: [
+      'vrAddComandlabel',
+      'uiAddComandlabel',
+      'addSubMenulabel',
+      'uisetGlobalPropertieslabel',
+      'ttssetGlobalPropertieslabel'
+    ],
+    vrAddComandlabel: SDL.Label.extend({
+      elementId: 'addComandlabel',
+      classNames: 'vrAddComandlabel',
+      content: 'VR.AddCommand'
+    }),
+    uiAddComandlabel: SDL.Label.extend({
+      elementId: 'addComandlabel',
+      classNames: 'uiAddComandlabel',
+      content: 'UI.AddCommand'
+    }),
+    addSubMenulabel: SDL.Label.extend({
+      elementId: 'addSubMenulabel',
+      classNames: 'addSubMenulabel',
+      content: 'AddSubMenu'
+    }),
+    uisetGlobalPropertieslabel: SDL.Label.extend({
+      elementId: 'uisetGlobalProperties',
+      classNames: 'uisetGlobalProperties',
+      content: 'UI.SetGlobalProperties'
+    }),
+    ttssetGlobalPropertieslabel: SDL.Label.extend({
+      elementId: 'ttssetGlobalPropertieslabel',
+      classNames: 'ttssetGlobalPropertieslabel',
+      content: 'TTS.SetGlobalProperties'
+    }),           
+  }),
+  resultCodeTracker: Em.ContainerView.extend({
+    elementId: 'resultCodeTracker',
+    classNames: 'resultCodeTracker',
+    childViews: [
+      'vrAddComandSelect',
+      'uiAddComandSelect',
+      'addSubMenuSelect',
+      'uisetGlobalPropertiesSelect',
+      'ttssetGlobalPropertiesSelect'
+    ],
+    vrAddComandSelect: Em.Select.extend({
+      elementId: 'vrAddComandSelect',
+      classNames: 'vrAddComandSelect',
+      contentBinding: 'SDL.SDLModel.data.resultCodes',
+      valueBinding: 'FFW.RPCHelper.rpcStruct.vrAddCommand'
+    }),
+    uiAddComandSelect: Em.Select.extend({
+      elementId: 'uiAddComandSelect',
+      classNames: 'uiAddComandSelect',
+      contentBinding: 'SDL.SDLModel.data.resultCodes',
+      valueBinding: 'FFW.RPCHelper.rpcStruct.uiAddCommand'
+    }),
+    addSubMenuSelect: Em.Select.extend({
+      elementId: 'addSubMenuSelect',
+      classNames: 'addSubMenuSelect',
+      contentBinding: 'SDL.SDLModel.data.resultCodes',
+      valueBinding: 'FFW.RPCHelper.rpcStruct.AddSubmenu'
+    }),
+    uisetGlobalPropertiesSelect: Em.Select.extend({
+      elementId: 'uisetGlobalPropertiesSelect',
+      classNames: 'uisetGlobalPropertiesSelect',
+      contentBinding: 'SDL.SDLModel.data.resultCodes',
+      valueBinding: 'FFW.RPCHelper.rpcStruct.uiSetGlobalProperties'
+    }),
+    ttssetGlobalPropertiesSelect: Em.Select.extend({
+      elementId: 'ttssetGlobalPropertiesSelect',
+      classNames: 'ttssetGlobalPropertiesSelect',
+      contentBinding: 'SDL.SDLModel.data.resultCodes',
+      valueBinding: 'FFW.RPCHelper.rpcStruct.ttsSetGlobalProperties'
+    })
+  }),
+  SubscribeButton: Em.ContainerView.create({
+    elementId: 'SubscribeButton',
+    classNames: 'SubscribeButton',
+    childViews: [
+      'header'
+    ],
+    header:  SDL.Label.extend({
+      elementId: 'header',
+      classNames: 'header',
+      content: 'header'
+    }),
+    isFirstInit: true,
+    initSubscribeButtonView: function(){
+      if(!this.isFirstInit){
+        return;
+      }
+      this.isFirstInit = false;
+      
+      for(param in FFW.RPCHelper.SubscribeButton){
+        this.get('childViews').pushObject(Em.ContainerView.create({
+          elementId: 'SubscribeButton' + param,
+          classNames: 'SubscribeButtonParam',
           childViews: [
-              SDL.RPCViewHelper.getBackButton(),
-              'rpcList',
-              'resultCodeTracker',
-              'saveButton',
-              'resetButton',
-              'appNameLabel',
-              'SubscribeButton'
-          ],         
-          appNameLabel: SDL.Label.extend(
-            {
-              elementId: 'appNameLabel',
-              classNames: 'appNameLabel'
-            }
-          ),
-          resetButton: SDL.Button.extend(
-            {
-              classNames: [
-                'resetButton'
-              ],
-              action: 'resetButton',
-              target: 'FFW.RPCHelper',
-              goToState: 'rpccontrol',
-              text:'Reset to default',
-              onDown: false
-            }
-          ),
-          saveButton: SDL.Button.extend(
-            {
-              classNames: [
-                'saveButton'
-              ],
-              action: 'saveButton',
-              target: 'FFW.RPCHelper',
-              goToState: 'rpccontrol',
-              text:'Save',
-              onDown: false
-            }
-          ),
-          rpcList: Em.ContainerView.extend(
-            {
-              elementId: 'rpcList',
-              classNames: 'rpcList',
-              childViews: [
-                'vrAddComandlabel',
-                'uiAddComandlabel',
-                'addSubMenulabel',
-                'uisetGlobalPropertieslabel',
-                'ttssetGlobalPropertieslabel'
-              ],
-              vrAddComandlabel: SDL.Label.extend(
-                {
-                  elementId: 'addComandlabel',
-                  classNames: 'vrAddComandlabel',
-                  content: 'VR.AddCommand'
-                }
-              ),
-              uiAddComandlabel: SDL.Label.extend(
-                {
-                  elementId: 'addComandlabel',
-                  classNames: 'uiAddComandlabel',
-                  content: 'UI.AddCommand'
-                }
-              ),
-              addSubMenulabel: SDL.Label.extend(
-                {
-                  elementId: 'addSubMenulabel',
-                  classNames: 'addSubMenulabel',
-                  content: 'AddSubMenu'
-                }
-              ),
-              uisetGlobalPropertieslabel: SDL.Label.extend(
-                {
-                  elementId: 'uisetGlobalProperties',
-                  classNames: 'uisetGlobalProperties',
-                  content: 'UI.SetGlobalProperties'
-                }
-              ),
-              ttssetGlobalPropertieslabel: SDL.Label.extend(
-                {
-                  elementId: 'ttssetGlobalPropertieslabel',
-                  classNames: 'ttssetGlobalPropertieslabel',
-                  content: 'TTS.SetGlobalProperties'
-                }
-              ),           
-                }
-              ),
-              resultCodeTracker: Em.ContainerView.extend(
-                {
-                  elementId: 'resultCodeTracker',
-                  classNames: 'resultCodeTracker',
-                  childViews: [
-                  'vrAddComandSelect',
-                  'uiAddComandSelect',
-                  'addSubMenuSelect',
-                  'uisetGlobalPropertiesSelect',
-                  'ttssetGlobalPropertiesSelect'
-                  ],
-                  vrAddComandSelect: Em.Select.extend(
-                    {
-                      elementId: 'vrAddComandSelect',
-                      classNames: 'vrAddComandSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
-                      valueBinding: 'FFW.RPCHelper.rpcStruct.vrAddCommand'
-                    }
-                  ),
-                  uiAddComandSelect: Em.Select.extend(
-                    {
-                      elementId: 'uiAddComandSelect',
-                      classNames: 'uiAddComandSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
-                      valueBinding: 'FFW.RPCHelper.rpcStruct.uiAddCommand'
-                    }
-                  ),
-                  addSubMenuSelect: Em.Select.extend(
-                    {
-                      elementId: 'addSubMenuSelect',
-                      classNames: 'addSubMenuSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
-                      valueBinding: 'FFW.RPCHelper.rpcStruct.AddSubmenu'
-                    }
-                  ),
-                  uisetGlobalPropertiesSelect: Em.Select.extend(
-                    {
-                      elementId: 'uisetGlobalPropertiesSelect',
-                      classNames: 'uisetGlobalPropertiesSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
-                      valueBinding: 'FFW.RPCHelper.rpcStruct.uiSetGlobalProperties'
-                    }
-                  ),
-                  ttssetGlobalPropertiesSelect: Em.Select.extend(
-                    {
-                      elementId: 'ttssetGlobalPropertiesSelect',
-                      classNames: 'ttssetGlobalPropertiesSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
-                      valueBinding: 'FFW.RPCHelper.rpcStruct.ttsSetGlobalProperties'
-                    }
-                  )
-                }
-              ),
-          SubscribeButton: Em.ContainerView.create({
-            elementId: 'SubscribeButton',
-            classNames: 'SubscribeButton',
-            childViews: [
-              'header'
-            ],
-            header:  SDL.Label.extend({
-              elementId: 'header',
-              classNames: 'header',
-              content: 'header'
-            }),
-            isFirstInit: true,
-            initSubscribeButtonViev: function(){
-                if(!this.isFirstInit){
-                    return;
-                }
-                this.isFirstInit = false;
-                
-                for(param in FFW.RPCHelper.SubscribeButton){
-                  this.get('childViews').pushObject(Em.ContainerView.create({
-                      elementId: 'SubscribeButton' + param,
-                      classNames: 'SubscribeButtonParam',
-                      childViews: [
-                        'label',
-                        'select'
-                      ],
-                      label: SDL.Label.extend({
-                          elementId: param + 'Label',
-                          classNames: 'label',
-                          content: param
-                        }),
-                      select: Em.Select.extend({
-                          elementId: param + 'Select',
-                          classNames: 'select',
-                          contentBinding: 'SDL.SDLModel.data.resultCodes',
-                          valueBinding: 'FFW.RPCHelper.SubscribeButton.' + param
-                        })  
-                    }));
-                }
-            }
-          })     
+            'label',
+            'select'
+          ],
+          label: SDL.Label.extend({
+            elementId: param + 'Label',
+            classNames: 'label',
+            content: param
+          }),
+          select: Em.Select.extend({
+            elementId: param + 'Select',
+            classNames: 'select',
+            contentBinding: 'SDL.SDLModel.data.resultCodes',
+            valueBinding: 'FFW.RPCHelper.SubscribeButton.' + param
+          })  
+        }));
+      }
     }
-);
+  })     
+});
