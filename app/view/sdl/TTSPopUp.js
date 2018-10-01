@@ -110,7 +110,7 @@ SDL.TTSPopUp = Em.ContainerView.create(
       this.set('appID', appID);
       this.set('content', msg);
 
-      if (files != '') {
+      if (files != undefined && files != '') {
         var files_to_play = files.split('\n');
         for (var i = 0; i < files_to_play.length; ++i) {
           this.player.addFile(files_to_play[i]);
