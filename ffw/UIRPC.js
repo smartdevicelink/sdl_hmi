@@ -138,6 +138,7 @@ FFW.UI = FFW.RPCObserver.create(
      */
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.UI.onRPCRequest');
+      SDL.ResetTimeoutPopUp.requestIDs[request.method] =  request.id;
       if (this.validationCheck(request)) {
         switch (request.method) {
           case 'UI.Alert':
@@ -159,7 +160,10 @@ FFW.UI = FFW.RPCObserver.create(
             // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
-              SDL.SDLController.onSystemContextChange(request.params.appID);
+              if(null == request.params.softButtons){
+                SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+              }
+              SDL.SDLController.onSystemContextChange(request.params.appID, request.id);
             }
             break;
           }
@@ -283,7 +287,8 @@ FFW.UI = FFW.RPCObserver.create(
             // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
             if (SDL.SDLModel.uiPerformInteraction(request)) {
-              SDL.SDLController.onSystemContextChange();
+              SDL.SDLController.onSystemContextChange(null, request.id);
+              SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
             }
             break;
           }
@@ -310,14 +315,25 @@ FFW.UI = FFW.RPCObserver.create(
           case 'UI.Slider':
           {
             if (SDL.SDLModel.uiSlider(request)) {
-              SDL.SDLController.onSystemContextChange();
+              SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+              SDL.ResetTimeoutPopUp.expandCallbacks(function(){
+                SDL.SliderView.deactivate(false);
+              });
+              SDL.ResetTimeoutPopUp.setContext(request.method);
+              SDL.ResetTimeoutPopUp.ActivatePopUp();
+              SDL.ResetTimeoutPopUp.timerSeconds = 10;
+              SDL.SDLController.onSystemContextChange(null, request.id);
             }
             break;
           }
           case 'UI.ScrollableMessage':
           {
             if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
-              SDL.SDLController.onSystemContextChange();
+              SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+              SDL.ResetTimeoutPopUp.setContext(request.method);
+              SDL.ResetTimeoutPopUp.timerSeconds = request.params.timeout/1000;
+              SDL.ResetTimeoutPopUp.ActivatePopUp(SDL.ScrollableMessage.setTimer);
+              SDL.SDLController.onSystemContextChange(null, request.id);
             }
             break;
           }
@@ -866,7 +882,7 @@ FFW.UI = FFW.RPCObserver.create(
             } else {
               this.performAudioPassThruRequestID = request.id;
               SDL.SDLModel.UIPerformAudioPassThru(request.params);
-              SDL.SDLController.onSystemContextChange();
+              SDL.SDLController.onSystemContextChange(null, request.id);
             }
             break;
           }
@@ -1512,24 +1528,6 @@ FFW.UI = FFW.RPCObserver.create(
           JSONMessage.error.data.sliderPosition = sliderPosition;
         }
       }
-      this.client.send(JSONMessage);
-    },
-    /**
-     * Notification method to send touch event data to SDLCore
-     *
-     * @param {Number} appID
-     * @param {String} methodName
-     */
-    onResetTimeout: function(appID, methodName) {
-      Em.Logger.log('FFW.UI.OnResetTimeout');
-      var JSONMessage = {
-        'jsonrpc': '2.0',
-        'method': 'UI.OnResetTimeout',
-        'params': {
-          'methodName': methodName,
-          'appID': appID
-        }
-      };
       this.client.send(JSONMessage);
     },
     /**

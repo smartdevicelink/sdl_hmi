@@ -126,6 +126,7 @@ FFW.TTS = FFW.RPCObserver.create(
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.TTS.onRPCRequest');
       this._super();
+      SDL.ResetTimeoutPopUp.requestIDs[request.method] =  request.id;
       switch (request.method) {
         case 'TTS.Speak':
         {
@@ -151,16 +152,21 @@ FFW.TTS = FFW.RPCObserver.create(
               return;
             }
           }
-          if (SDL.TTSPopUp.active) {
+          if (SDL.ResetTimeoutPopUp.active) {
             FFW.TTS.sendError(
               SDL.SDLModel.data.resultCode.REJECTED, request.id, 'TTS.Speak',
               'TTS in progress. Rejected.'
             );
           } else {
             this.requestId = request.id;
-            SDL.SDLModel.onPrompt(
-              request.params.ttsChunks, request.params.appID
-            );
+            SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+            SDL.ResetTimeoutPopUp.expandCallbacks(function(){
+              SDL.SDLController.TTSResponseHandler();
+            });
+
+            SDL.ResetTimeoutPopUp.ActivatePopUp(SDL.AlertPopUp.setTimer);
+            
+            SDL.SDLModel.onPrompt(request.params.ttsChunks);
             if (request.params.playTone) {
               SDL.SDLModel.onPlayTone();
             }
@@ -402,22 +408,6 @@ FFW.TTS = FFW.RPCObserver.create(
       var JSONMessage = {
         'jsonrpc': '2.0',
         'method': 'TTS.Started'
-      };
-      this.client.send(JSONMessage);
-    },
-    /**
-     * Sent OnResetTimeout notification to SDLCore to inform when
-     * HMI pronounces text longer than 10 seconds
-     */
-    OnResetTimeout: function(appID, methodName) {
-      Em.Logger.log('FFW.TTS.OnResetTimeout');
-      var JSONMessage = {
-        'jsonrpc': '2.0',
-        'method': 'TTS.OnResetTimeout',
-        'params': {
-          'appID': appID,
-          'methodName': methodName
-        }
       };
       this.client.send(JSONMessage);
     },

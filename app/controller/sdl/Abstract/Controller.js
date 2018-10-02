@@ -46,6 +46,7 @@ SDL.SDLController = Em.Object.extend(
         return size;
       };
     },
+    messageRequestId: null,
     /**
      * Active application model binding type {SDLAppModel}
      */
@@ -184,7 +185,7 @@ SDL.SDLController = Em.Object.extend(
      * params {Object}
      */
     uiShowKeyboard: function(element) {
-      SDL.SDLModel.uiShowKeyboard(element);
+      SDL.SDLModel.uiShowKeyboard(element, this.messageRequestId);
     },
     /**
      * Open commands list
@@ -521,13 +522,7 @@ SDL.SDLController = Em.Object.extend(
         }
       }
     },
-    /**
-     * SDL notification call function
-     * to notify that SDL Core should reset timeout for some method
-     */
-    onResetTimeout: function(appID, methodName) {
-      FFW.UI.onResetTimeout(appID, methodName);
-    },
+
     /**
      * Action to show Voice Recognition PopUp
      */
@@ -579,7 +574,6 @@ SDL.SDLController = Em.Object.extend(
               SDL.AlertPopUp.deactivate();
             }, SDL.AlertPopUp.timeout
           );
-          this.onResetTimeout(element.appID, 'UI.Alert');
           break;
         }
         case 'ScrollableMessage':
@@ -590,7 +584,6 @@ SDL.SDLController = Em.Object.extend(
               SDL.ScrollableMessage.deactivate();
             }, SDL.ScrollableMessage.timeout
           );
-          this.onResetTimeout(element.appID, 'UI.ScrollableMessage');
           break;
         }
       }
@@ -1233,7 +1226,8 @@ SDL.SDLController = Em.Object.extend(
     /**
      * Send system context
      */
-    onSystemContextChange: function(appID) {
+    onSystemContextChange: function(appID, messageRequestId) {
+      this.messageRequestId = messageRequestId;
       var sysContextValue = this.get('sysContext');
       if ((
         appID &&

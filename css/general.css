@@ -166,6 +166,56 @@ div {
     /*margin: 25px auto;*/
 }
 
+#ResetTimeoutPopUp {
+    left: 1500px;
+    width: 302px;
+    height: 147px;
+    top: 10px;
+
+}
+
+#ResetTimeoutPopUp .contextView {
+    width: 300px;
+    height: 100px;
+
+    border: 1px solid white;
+    border-radius: 20px;
+    background-color: black;
+    
+}
+#ResetTimeoutPopUp .contextView .textArea {
+    width: 280px;
+    height: 80px;
+    color: white;
+    margin: 10px;
+    background-color: black;
+}
+
+#ResetTimeoutPopUp .resetTimeoutButton,
+#ResetTimeoutPopUp .respondButton {
+    width: 115px;
+    height: 31px;
+    top: 114px;
+    text-align: center;
+    border: 1px solid white;
+    border-radius: 7px;
+    background-color: black;
+    line-height: 30px;
+}
+
+#ResetTimeoutPopUp .respondButton {
+    left: 185px;
+}
+
+#ResetTimeoutPopUp .timerLabel {
+    width: 65px;
+    height: 31px;
+    top: 114px;
+    left: 118px;
+    text-align: center;
+    line-height: 30px;
+}
+
 /* TTS popUp*/
 #TTSPopUp.TTSPopUp {
     opacity: 0;

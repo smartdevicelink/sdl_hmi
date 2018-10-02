@@ -49,12 +49,14 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
      *
      * @param {Object}
      */
-    activate: function(element) {
+    activate: function(element, messageRequestId) {
+      this.requestID = messageRequestId;
       if (element) {
         this.set('active', true);
         this.set('target', element);
       }
     },
+    requestID: null,
     backButton: SDL.Button.extend(
       {
         classNames: [
@@ -85,8 +87,8 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
     inputChanges: function(element) {
       if (SDL.SDLController.model &&
         SDL.SDLController.model.activeRequests.uiPerformInteraction) {
-        SDL.SDLController.onResetTimeout(
-          SDL.SDLController.model.appID, 'UI.PerformInteraction'
+        FFW.BasicCommunication.OnResetTimeout(
+          this.requestID, 'UI.PerformInteraction'
         );
       }
       if (this.searchBar.input.value == null) {
@@ -125,8 +127,8 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
       if (this.searchBar.input.value == '') {
         FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
       }
-      SDL.SDLController.onResetTimeout(
-        SDL.SDLController.model.appID, 'UI.PerformInteraction'
+      FFW.BasicCommunication.OnResetTimeout(
+        this.requestID, 'UI.PerformInteraction'
       );
     },
     /**
