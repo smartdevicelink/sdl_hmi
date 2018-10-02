@@ -41,6 +41,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
       'input',
       'listWrapper'
     ],
+    requestID: null,
     didInsertElement: function() {
       SDL.SDLModel.data.interactionListWrapper = new iScroll(
         'listWrapper', {
@@ -71,7 +72,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         attributeBindings: ['disabled'],
         disabled: false,
         click: function() {
-          SDL.SDLModel.uiShowKeyboard(this);
+          SDL.SDLModel.uiShowKeyboard(this, this.requestID);
         },
         search: function() {
           FFW.UI.OnKeyboardInput(
@@ -92,8 +93,8 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         click: function() {
           if (this._parentView.active) {
             SDL.InteractionChoicesView.timerUpdate();
-            SDL.SDLController.onResetTimeout(
-              SDL.SDLController.model.appID, 'UI.PerformInteraction'
+            FFW.BasicCommunication.OnResetTimeout(
+              this.requestID, 'UI.PerformInteraction'
             );
           }
         },
@@ -130,8 +131,8 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         click: function() {
           if (this._parentView.active) {
             SDL.InteractionChoicesView.timerUpdate();
-            SDL.SDLController.onResetTimeout(
-              SDL.SDLController.model.appID, 'UI.PerformInteraction'
+            FFW.BasicCommunication.OnResetTimeout(
+              this.requestID, 'UI.PerformInteraction'
             );
           }
         }
@@ -171,6 +172,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         this.set('caption', message.params.initialText.fieldText);
       }
       this.appID = message.params.appID;
+      this.requestID = message.id;
       if (message.params.interactionLayout) {
         switch (message.params.interactionLayout) {
           case 'ICON_ONLY' :
@@ -220,7 +222,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           case 'KEYBOARD' :
           {
             this.preformChoices(null, message.params.timeout);
-            SDL.SDLModel.uiShowKeyboard(this.input);
+            SDL.SDLModel.uiShowKeyboard(this.input, this.requestID);
             this.set('list', false);
             this.set('search', false);
             this.set('icon', false);

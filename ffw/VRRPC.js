@@ -129,6 +129,7 @@ FFW.VR = FFW.RPCObserver.create(
      */
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.VR.onRPCRequest');
+      SDL.ResetTimeoutPopUp.requestIDs[request.method] =  request.id;
       if (this.validationCheck(request)) {
         switch (request.method) {
           case 'VR.AddCommand':
@@ -235,6 +236,8 @@ FFW.VR = FFW.RPCObserver.create(
             // this.errorResponsePull[request.id].type + " type. Request was
             // not processed."); this.errorResponsePull[request.id] = null; 
             // return; } }
+
+            SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
             SDL.SDLModel.vrPerformInteraction(request);
             break;
           }

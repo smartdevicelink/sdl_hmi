@@ -68,6 +68,7 @@ SDL.AppViews = Em.ContainerView.extend(
       SDL.TopControls,
       SDL.BottomControls,
       SDL.TTSPopUp,
+      SDL.ResetTimeoutPopUp,
       SDL.AlertPopUp,
       SDL.ServiceUpdatePopUp,
       SDL.AlertManeuverPopUp,

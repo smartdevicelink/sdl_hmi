@@ -170,7 +170,6 @@ div.glider-slide {
     /*margin: 25px auto;*/
 }
 
-
 button.next-app {
     top: 0%;
     width: 25px;
@@ -179,7 +178,7 @@ button.next-app {
     background: url(../images/common/button.png) repeat;
     border-radius: 3px;
     border: 1px solid #393939;
-} 
+}
 
 button.next-home .ico{
     position: relative;
@@ -289,8 +288,8 @@ button.next-home {
     transform: rotate(90deg);
 }
 
-.WidgetGlider.expand {    
-    opacity: 1;    
+.WidgetGlider.expand {
+    opacity: 1;
 }
 
 #add-window .text1 {
@@ -319,7 +318,6 @@ button.next-home {
     text-align: center;
 }
 
-
 #add-window .addButton {
     top: 32%;
     left: 43%;
@@ -329,6 +327,54 @@ button.next-home {
 .addButton .ico {
     width:50px;
     filter: invert(80%);
+}
+
+#ResetTimeoutPopUp {
+    left: 1500px;
+    width: 302px;
+    height: 147px;
+    top: 10px;
+
+}
+
+#ResetTimeoutPopUp .contextView {
+    width: 300px;
+    height: 100px;
+    border: 1px solid white;
+    border-radius: 20px;
+    background-color: black;
+}
+#ResetTimeoutPopUp .contextView .textArea {
+    width: 280px;
+    height: 80px;
+    color: white;
+    margin: 10px;
+    background-color: black;
+}
+
+#ResetTimeoutPopUp .resetTimeoutButton,
+#ResetTimeoutPopUp .respondButton {
+    width: 115px;
+    height: 31px;
+    top: 114px;
+    text-align: center;
+    border: 1px solid white;
+    border-radius: 7px;
+    background-color: black;
+    line-height: 30px;
+}
+
+#ResetTimeoutPopUp .respondButton {
+    left: 185px;
+}
+
+#ResetTimeoutPopUp .timerLabel {
+    width: 65px;
+    height: 31px;
+    top: 114px;
+    left: 118px;
+    text-align: center;
+    line-height: 30px;
 }
 
 /* TTS popUp*/

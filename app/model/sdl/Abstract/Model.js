@@ -1203,15 +1203,17 @@ SDL.SDLModel = Em.Object.extend({
     }
 
     var appID = message.params.appID;
-
+    SDL.ResetTimeoutPopUp.timerSeconds = 10;
     setTimeout(function() {
         if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
           SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
+          SDL.ResetTimeoutPopUp.ActivatePopUp();
         } else if (!message.params.grammarID &&
           SDL.SDLController.getApplicationModel(message.params.appID
           ).activeRequests.uiPerformInteraction) {
           // If UI PerformInteraction session is still active and PerformInteraction mode is MANUAL only
           SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
+          SDL.ResetTimeoutPopUp.ActivatePopUp();
         }
 
       }, message.params.timeout - 2000
@@ -1276,8 +1278,8 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Object}
    *            message Object with parameters come from SDLCore
    */
-  uiShowKeyboard: function(element) {
-      SDL.Keyboard.activate(element);
+  uiShowKeyboard: function(element, messageRequestId) {
+      SDL.Keyboard.activate(element, messageRequestId);
     },
 
   /**
@@ -1317,9 +1319,8 @@ SDL.SDLModel = Em.Object.extend({
    * Prompt activation
    *
    * @param {Object} ttsChunks
-   * @param {Number} appID
    */
-  onPrompt: function(ttsChunks, appID) {
+  onPrompt: function(ttsChunks) {
 
     var message = '', files = '';
     if (ttsChunks) {
@@ -1331,7 +1332,8 @@ SDL.SDLModel = Em.Object.extend({
           files += ttsChunks[i].text + '\n';
         }
       }
-      SDL.TTSPopUp.ActivateTTS(message, files, appID);
+      SDL.ResetTimeoutPopUp.play(files);
+      SDL.ResetTimeoutPopUp.setContext(message);
     }
   },
 

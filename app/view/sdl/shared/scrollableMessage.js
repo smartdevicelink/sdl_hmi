@@ -87,13 +87,24 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         this.set('cancelID', params.cancelID);
         clearTimeout(this.timer);
         this.timeout = params.timeout;
-        this.timer = setTimeout(
-          function() {
-            self.deactivate();
-          }, params.timeout
-        );
+        this.setTimer(this.timeout);
       }
     },
+
+    /*
+     * function setTimer. Sets the active time of the view
+     */
+    setTimer: function(time){
+      var self = SDL.ScrollableMessage;
+      self.set('timeout', time);
+      clearTimeout(self.timer);
+      self.timer = setTimeout(
+        function() {
+          self.deactivate();
+        }, self.timeout
+      );
+    },
+
     softButtons: SDL.MenuList.extend(
       {
         itemsOnPage: 4,
@@ -125,8 +136,8 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         click: function() {
           var self = this._parentView;
           clearTimeout(this._parentView.timer);
-          SDL.SDLController.onResetTimeout(
-            SDL.SDLController.model.appID, 'UI.ScrollableMessage'
+          FFW.BasicCommunication.OnResetTimeout(
+            this.messageRequestId, 'UI.ScrollableMessage'
           );
           this._parentView.timer = setTimeout(
             function() {
