@@ -160,20 +160,12 @@ FFW.Buttons = FFW.RPCObserver.create(
           break;
         }
         case 'Buttons.GetCapabilities' : {
-          capability = function(name){
-              return {
-                  'name': name,
-                  'shortPressAvailable': true,
-                  'longPressAvailable': true,
-                  'upDownAvailable': true
-              };
-          };
-          // send response
+                    // send response
           var JSONMessage = {
             'jsonrpc': '2.0',
             'id': request.id,
             'result': {
-              'capabilities': [],
+              'capabilities': SDL.ButtonCapability,
               'presetBankCapabilities': {
                 'onScreenPresetsAvailable': true
               },
@@ -181,9 +173,6 @@ FFW.Buttons = FFW.RPCObserver.create(
               'method': 'Buttons.GetCapabilities'
             }
           };
-          for(var key in FFW.RPCHelper.SubscribeButton){
-            JSONMessage['result']['capabilities'].push(capability(key));
-          }
           this.client.send(JSONMessage);
           break;
         }
