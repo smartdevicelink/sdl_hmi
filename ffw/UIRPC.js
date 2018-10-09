@@ -296,6 +296,9 @@ FFW.UI = FFW.RPCObserver.create(
               if(request.params.enableSeek) {
                 this.OnSeekMediaClockTimer(request.params.startTime, request.params.appID);
               }
+              if(request.params.audioStreamingIndicator) {
+                SDL.SDLController.SetAudioStreamingIndicator(request.params)
+              }
               this.sendUIResult(resultCode, request.id, request.method);
             } else {
               this.sendError(
