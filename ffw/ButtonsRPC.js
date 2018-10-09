@@ -198,13 +198,24 @@ FFW.Buttons = FFW.RPCObserver.create(
         case 'Buttons.UnsubscribeButton' : {
           appID = params.appID
           if (this.isButtonSubscribed(appID, params.buttonName)) {
-            console.log("Button " + params.buttonName + " SUCCESS Unsubscribe");
-            this.unsubscribeButton(appID, params.buttonName);
-            this.sendButtonsResult(
-              SDL.SDLModel.data.resultCode.SUCCESS,
-              request.id,
-              request.method
-            );
+            code = FFW.RPCHelper.getCustomResultCode(appID, 'SubscribeButton', params.buttonName);
+            console.log("Button " + params.buttonName + " " + code + " Unsubscribe");
+            if(FFW.RPCHelper.isSuccessResultCode(code)){
+              this.sendButtonsResult(
+                code,
+                request.id,
+                request.method
+              );
+              this.unsubscribeButton(appID, params.buttonName);
+            } else{
+              this.sendError(
+                code,
+                request.id,
+                request.method,
+                ''
+              );
+            }
+
           } else {
             console.log("Button " + params.buttonName + " REJECTED Unsubscribe");
             this.sendError(
