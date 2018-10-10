@@ -374,6 +374,7 @@ FFW.UI = FFW.RPCObserver.create(
                 'result': {
                   'displayCapabilities': {
                     'displayType': 'GEN2_8_DMA',
+                    'displayName': 'SDL_HMI',
                     'textFields': [
                       {
                         'name': 'mainField1',
@@ -922,6 +923,7 @@ FFW.UI = FFW.RPCObserver.create(
               'result': {
                 'displayCapabilities': {
                   'displayType': 'GEN2_8_DMA',
+                  'displayName': 'SDL_HMI',
                   'textFields': [
                     {
                       'name': 'mainField1',
