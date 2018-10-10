@@ -234,7 +234,7 @@ FFW.RC = FFW.RPCObserver.create(
               newClimateControlData =
                 SDL.ClimateController.model.setClimateData(
                   request.params.moduleData.climateControlData);
-              if (Object.keys(request.params.moduleData.climateControlData).length > 0) {
+              if (Object.keys(newClimateControlData).length > 0) {
                 FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE', 
                                                           climateControlData: newClimateControlData});
               }     
@@ -272,7 +272,7 @@ FFW.RC = FFW.RPCObserver.create(
               newAudioControlData = (request.params.moduleData.audioControlData.keepContext!=null)?
               SDL.MediaController.setAudioControlDataWithKeepContext(request.params.moduleData.audioControlData)
               :SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
-                if (Object.keys(request.params.moduleData.audioControlData).length > 0) {
+                if (Object.keys(newAudioControlData).length > 0) {
                   FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', 
                                                           audioControlData: newAudioControlData});
                 }
@@ -281,7 +281,7 @@ FFW.RC = FFW.RPCObserver.create(
             if(request.params.moduleData.hmiSettingsControlData){
               newHMISettingsControlData = SDL.HmiSettingsModel.setHmiSettingsData(
                 request.params.moduleData.hmiSettingsControlData);
-                if (Object.keys(request.params.moduleData.hmiSettingsControlData).length > 0) {
+                if (Object.keys(newHMISettingsControlData).length > 0) {
                   FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', 
                                                             hmiSettingsControlData: newHMISettingsControlData});
                 }  
@@ -298,7 +298,7 @@ FFW.RC = FFW.RPCObserver.create(
             if(request.params.moduleData.seatControlData){
               newSeatControlData = SDL.SeatModel.setSeatControlData(
                 request.params.moduleData.seatControlData);
-                if (Object.keys(request.params.moduleData.seatControlData).length > 0) {
+                if (Object.keys(newSeatControlData).length > 0) {
                   FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT', 
                                                             seatControlData: newSeatControlData});
                 }   
