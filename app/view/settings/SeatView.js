@@ -49,9 +49,14 @@ SDL.SeatView = Em.ContainerView.create({
         'backTiltAngle',
         'memory',
         'massageMode',
-        'cushionFirmness'
+        'cushionFirmness',
+        'label'
     ],
-
+    label: SDL.Label.extend({
+        elementId: 'SeatViewLabel',	
+        classNames: 'inactive_state',	
+        contentBinding: 'SDL.SeatModel.onIdChange'	
+    }),
     heating: Em.ContainerView.create({
         elementId: 'heating',
         classNames: 'in_seat_heating_view', 
@@ -80,12 +85,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'heating_enableSelect',
                 classNames: 'enableSelect',
                 contentBinding: 'SDL.SeatModel.enableStruct',
-                valueBinding: 'SDL.SeatModel.heatingEnableData',
-                change:function(){
-                    SDL.SeatModel.set('tempSeatControlData.heatingEnabled',
-                (SDL.SeatModel.heatingEnableData=='OFF')? true:false);
-                SDL.SeatModel.update();
-                }
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.heatingEnabled',
             })
         }),
 
@@ -141,12 +141,8 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'cooling_enableSelect',
                 classNames: 'enableSelect',
                 contentBinding: 'SDL.SeatModel.enableStruct',
-                valueBinding: 'SDL.SeatModel.coolingEnabledData',
-                change:function(){
-                    SDL.SeatModel.set('tempSeatControlData.coolingEnabled',
-                (SDL.SeatModel.coolingEnabledData=='OFF')? true:false);
-                SDL.SeatModel.update();
-                }
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.coolingEnabled',
+    
             })
         }),
 
@@ -198,7 +194,7 @@ SDL.SeatView = Em.ContainerView.create({
                     SDL.SeatModel.tempSeatControlData.massageCushionFirmness[i+1];
             }
             SDL.SeatModel.tempSeatControlData.massageCushionFirmness.pop();
-            SDL.SeatModel.update();        
+            SDL.SeatModel.onMassageCushionFirmnessChange();    
         },
 
         addButton: SDL.Button.extend({
@@ -212,7 +208,7 @@ SDL.SeatView = Em.ContainerView.create({
                     return;
                 }
                 SDL.SeatModel.tempSeatControlData.massageCushionFirmness.push(SDL.SeatModel.massageCushionFirmness);
-                SDL.SeatModel.update();
+                SDL.SeatModel.onMassageCushionFirmnessChange();
               },
               text: 'Add',
               onDown: false,
@@ -875,62 +871,6 @@ SDL.SeatView = Em.ContainerView.create({
                 classNames: 'actionSelect',
                 contentBinding: 'SDL.SeatModel.seatMemoryActionTypeStruct',
                 valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.action',
-                change:function(){
-                    switch(this.selection){
-                        case 'SAVE':
-                        if(SDL.SeatModel.tempSeatControlData.memory.id>0 &
-                            SDL.SeatModel.tempSeatControlData.memory.id<=10){
-                        if(SDL.SeatModel.ID=='DRIVER'){
-                            SDL.SeatModel.set('seatControlData',
-                                SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]
-                            );
-                            SDL.SeatModel.applySettings();
-
-                            SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]=
-                                SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
-                            return;
-                        }
-                        if(SDL.SeatModel.ID=='FRONT_PASSENGER'){
-                            SDL.SeatModel.set('seatControlData',
-                                SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]
-                            );
-                            SDL.SeatModel.applySettings();
-
-                            SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]=
-                                SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
-                            return;
-                        }
-                        }
-                        break;
-                        case 'RESTORE':
-                        if(SDL.SeatModel.ID=='DRIVER'){
-                            if(SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]){
-                                SDL.SeatModel.set('seatControlData',
-                                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData)
-                                );
-                                SDL.SeatModel.set('tempSeatControlData',
-                                    SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]
-                                );
-                                SDL.SeatModel.update();
-                                SDL.SeatModel.applySettings();
-                            }
-                        }
-                        if(SDL.SeatModel.ID=='FRONT_PASSENGER'){
-                            if(SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]){
-                                SDL.SeatModel.set('seatControlData',
-                                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData)
-                                );
-                                SDL.SeatModel.set('tempSeatControlData',
-                                    SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]
-                                );
-                                SDL.SeatModel.update();
-                                SDL.SeatModel.applySettings();
-                            }
-                        }
-                        break;
-                        case 'NONE':break;
-                    }
-                }
             })
         }),
     }),
@@ -964,12 +904,7 @@ SDL.SeatView = Em.ContainerView.create({
             elementId: 'massageEnable_enableSelect',
             classNames: 'massageEnable_enableSelect',
             contentBinding: 'SDL.SeatModel.enableStruct',
-            valueBinding: 'SDL.SeatModel.massageEnabledData',
-            change:function(){
-                SDL.SeatModel.set('tempSeatControlData.massageEnabled',
-            (SDL.SeatModel.massageEnabledData=='OFF')? true:false);
-            SDL.SeatModel.update();
-            }
+            valueBinding: 'SDL.SeatModel.tempSeatControlData.massageEnabled',
         })
     }),    
     id: Em.ContainerView.extend({
@@ -991,24 +926,6 @@ SDL.SeatView = Em.ContainerView.create({
             classNames: 'idSelect',
             contentBinding: 'SDL.SeatModel.supportedSeatStruct',
             valueBinding: 'SDL.SeatModel.ID',
-            change: function(){
-                if(SDL.SeatModel.ID!='DRIVER'){
-                    SDL.SeatModel.set('temp.1',
-                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData));
-                    SDL.SeatModel.set('tempSeatControlData',
-                    SDL.deepCopy(SDL.SeatModel.temp[0]));
-                    SDL.SeatModel.update();
-                    return;
-                }
-                if(SDL.SeatModel.ID!='FRONT_PASSENGER'){
-                    SDL.SeatModel.set('temp.0',
-                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData));
-                    SDL.SeatModel.tempSeatControlData=
-                    SDL.deepCopy(SDL.SeatModel.temp[1]);
-                    SDL.SeatModel.update();
-                    return;
-                }
-            }
         })
     }),
 
@@ -1033,7 +950,7 @@ SDL.SeatView = Em.ContainerView.create({
                     SDL.SeatModel.tempSeatControlData.massageMode[i+1];
             }
             SDL.SeatModel.tempSeatControlData.massageMode.pop();
-            SDL.SeatModel.update();        
+            SDL.SeatModel.onMassageModeChange();   
         },
 
         addButton: SDL.Button.extend({
@@ -1045,11 +962,11 @@ SDL.SeatView = Em.ContainerView.create({
             ],
 
             action: function(){
-                if(SDL.SeatModel.tempSeatControlData.massageMode.length > 2){
+                if(SDL.SeatModel.tempSeatControlData.massageMode.length > 1){
                     return;
                 }
                 SDL.SeatModel.tempSeatControlData.massageMode.push(SDL.SeatModel.massageModeData);
-                SDL.SeatModel.update();
+                SDL.SeatModel.onMassageModeChange();
             },
 
             text: 'Add',
