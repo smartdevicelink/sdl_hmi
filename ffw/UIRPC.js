@@ -182,8 +182,8 @@ FFW.UI = FFW.RPCObserver.create(
             // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
-              if(null == request.params.softButtons){
-                SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+              if(!request.params.softButtons){
+                SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
               }
               SDL.SDLController.onSystemContextChange(request.params.appID, request.id);
             }
@@ -352,7 +352,7 @@ FFW.UI = FFW.RPCObserver.create(
                 })
               })
 
-              SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+              SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
             }
             break;
           }
@@ -416,13 +416,13 @@ FFW.UI = FFW.RPCObserver.create(
           case 'UI.Slider':
           {
             if (SDL.SDLModel.uiSlider(request)) {
-              SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+              SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
               SDL.ResetTimeoutPopUp.expandCallbacks(function(){
                 SDL.SliderView.deactivate(false);
               });
               SDL.ResetTimeoutPopUp.setContext(request.method);
               SDL.ResetTimeoutPopUp.ActivatePopUp();
-              SDL.ResetTimeoutPopUp.timerSeconds = 10;
+              SDL.ResetTimeoutPopUp.timeoutSeconds = 10;
               SDL.SDLController.onSystemContextChange(null, request.id);
               SDL.SDLModel.data.registeredApps.forEach(app => {
                 app.activeWindows.forEach(widget => {
@@ -435,9 +435,9 @@ FFW.UI = FFW.RPCObserver.create(
           case 'UI.ScrollableMessage':
           {
             if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
-              SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+              SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
               SDL.ResetTimeoutPopUp.setContext(request.method);
-              SDL.ResetTimeoutPopUp.timerSeconds = request.params.timeout/1000;
+              SDL.ResetTimeoutPopUp.timeoutSeconds = request.params.timeout/1000;
               SDL.ResetTimeoutPopUp.ActivatePopUp(SDL.ScrollableMessage.setTimer);
               SDL.SDLController.onSystemContextChange(null, request.id);
               SDL.SDLModel.data.registeredApps.forEach(app => {

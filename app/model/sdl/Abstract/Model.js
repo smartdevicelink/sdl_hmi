@@ -1203,7 +1203,8 @@ SDL.SDLModel = Em.Object.extend({
     }
 
     var appID = message.params.appID;
-    SDL.ResetTimeoutPopUp.timerSeconds = 10;
+    var defaultTimeout = 10;
+    SDL.ResetTimeoutPopUp.timeoutSeconds = defaultTimeout;
     setTimeout(function() {
         if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
           SDL.SDLModel.onPrompt(message.params.timeoutPrompt);

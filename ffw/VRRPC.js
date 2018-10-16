@@ -237,7 +237,7 @@ FFW.VR = FFW.RPCObserver.create(
             // not processed."); this.errorResponsePull[request.id] = null; 
             // return; } }
 
-            SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+            SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
             SDL.SDLModel.vrPerformInteraction(request);
             break;
           }

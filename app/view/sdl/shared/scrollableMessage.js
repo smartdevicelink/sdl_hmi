@@ -92,7 +92,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
     },
 
     /*
-     * function setTimer. Sets the active time of the view
+     * function setTimer. Sets the active timer of the view
      */
     setTimer: function(time){
       var self = SDL.ScrollableMessage;
