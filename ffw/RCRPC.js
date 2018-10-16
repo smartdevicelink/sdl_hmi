@@ -234,7 +234,7 @@ FFW.RC = FFW.RPCObserver.create(
               newClimateControlData =
                 SDL.ClimateController.model.setClimateData(
                   request.params.moduleData.climateControlData);
-              if (Object.keys(newClimateControlData).length > 0) {
+              if (!SDL.SDLController.isEmptyObject(newClimateControlData)) {
                 FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE', 
                                                           climateControlData: newClimateControlData});
               }     
@@ -254,7 +254,7 @@ FFW.RC = FFW.RPCObserver.create(
                 if (SDL.RadioModel.radioControlStruct.radioEnable) {
                   SDL.RadioModel.saveCurrentOptions();
                 }
-                if (Object.keys(newRadioControlData).length > 0) {
+                if (!SDL.SDLController.isEmptyObject(newRadioControlData)) {
                   FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', 
                                                             radioControlData: newRadioControlData});
                 }
@@ -272,7 +272,7 @@ FFW.RC = FFW.RPCObserver.create(
               newAudioControlData = (request.params.moduleData.audioControlData.keepContext!=null)?
               SDL.MediaController.setAudioControlDataWithKeepContext(request.params.moduleData.audioControlData)
               :SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
-                if (Object.keys(newAudioControlData).length > 0) {
+                if (!SDL.SDLController.isEmptyObject(newAudioControlData)) {
                   FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', 
                                                           audioControlData: newAudioControlData});
                 }
@@ -281,7 +281,7 @@ FFW.RC = FFW.RPCObserver.create(
             if(request.params.moduleData.hmiSettingsControlData){
               newHMISettingsControlData = SDL.HmiSettingsModel.setHmiSettingsData(
                 request.params.moduleData.hmiSettingsControlData);
-                if (Object.keys(newHMISettingsControlData).length > 0) {
+                if (!SDL.SDLController.isEmptyObject(newHMISettingsControlData)) {
                   FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', 
                                                             hmiSettingsControlData: newHMISettingsControlData});
                 }  
@@ -290,18 +290,14 @@ FFW.RC = FFW.RPCObserver.create(
               newLightControlData = SDL.LightModel.setLightControlData(
                 request.params.moduleData.lightControlData);
 
-                if (Object.keys(newLightControlData).length > 0) {
+                if (!SDL.SDLController.isEmptyObject(newLightControlData)) {
                   FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT', 
                                                             lightControlData: request.params.moduleData.lightControlData});
                 }
             }
             if(request.params.moduleData.seatControlData){
               newSeatControlData = SDL.SeatModel.setSeatControlData(
-                request.params.moduleData.seatControlData);
-                if (Object.keys(newSeatControlData).length > 0) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT', 
-                                                            seatControlData: newSeatControlData});
-                }   
+                request.params.moduleData.seatControlData, true);
             };
             // send response
             var JSONMessage = {

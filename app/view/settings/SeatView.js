@@ -871,6 +871,9 @@ SDL.SeatView = Em.ContainerView.create({
                 classNames: 'actionSelect',
                 contentBinding: 'SDL.SeatModel.seatMemoryActionTypeStruct',
                 valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.action',
+                change: function() {
+                    SDL.SeatModel.onActionChosen(this.selection);
+                }
             })
         }),
     }),
