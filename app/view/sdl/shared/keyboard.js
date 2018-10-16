@@ -56,7 +56,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         this.set('target', element);
       }
     },
-    requestID: null,
+    requestID: 0,
     backButton: SDL.Button.extend(
       {
         classNames: [

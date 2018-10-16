@@ -159,7 +159,7 @@ FFW.TTS = FFW.RPCObserver.create(
             );
           } else {
             this.requestId = request.id;
-            SDL.ResetTimeoutPopUp.expandКResetTimeoutRPCs([request.method]);
+            SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
             SDL.ResetTimeoutPopUp.expandCallbacks(function(){
               SDL.SDLController.TTSResponseHandler();
             });

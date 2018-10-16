@@ -53,6 +53,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
      *
      * @type {Number}
      */
+    defaultTimeout: 30000,
     alertRequestId: null,
     content1: '',
     content2: '',
@@ -226,17 +227,12 @@ SDL.AlertPopUp = Em.ContainerView.create(
         }
       }
       this.set('active', true);
-      this.setTimer(message.duration ? message.duration : 30000); //default
-                                                                  // timeout
-                                                                  // defined
-                                                                  // for
-                                                                  // Alert
-                                                                  // popUp
+      this.setTimer(message.duration ? message.duration : this.defaultTimeout);
       
     },
 
     /*
-     * function setTimer. Sets the active time of the view
+     * function setTimer. Sets the active timer of the view
      */
     setTimer: function(time){
       var self = SDL.AlertPopUp;

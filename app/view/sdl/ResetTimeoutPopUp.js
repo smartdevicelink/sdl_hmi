@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Ford Motor Company All rights reserved.
+ * Copyright (c) 2018, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -61,13 +61,13 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         classNames: 'respondButton',
         elementId: 'respondButton',
         text: 'Send Respond',
-        action: 'sendRespond',
+        action: 'sendResponse',
         target: 'parentView',
     }),
     timerLabel: SDL.Label.extend({
         elementId: 'timerLabel',
         classNames: 'timerLabel',
-        contentBinding: 'parentView.timerSeconds'
+        contentBinding: 'parentView.timeoutSeconds'
     }),
 
     player: SDL.AudioPlayer.create(),
@@ -89,11 +89,12 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
       * setContext function. sets the text displayed in the pop-up
       */
     setContext: function(msg){
-        if('string' != typeof msg) { return; }
-        this.contextView.set('content',msg)
+        if('string' == typeof msg) {
+            this.contextView.set('content',msg)
+        }
     },
 
-    timerSeconds: 5,
+    timeoutSeconds: 5,
     timer: null,
     defaultTimeout: 5,
     callbacks: [],
@@ -102,10 +103,10 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
     resetTimeoutRPCs: [],
     
     /*
-     * expandКResetTimeoutRPCs function. Extends the set  of RPC with which the 
-     * timeout will surrender
+     * extendResetTimeoutRPCs function. Appends to current resetTimeoutRPCs 
+     * list a new elements
      */ 
-    expandКResetTimeoutRPCs: function(resetTimeoutRPCs){
+    extendResetTimeoutRPCs: function(resetTimeoutRPCs){
         if(null == resetTimeoutRPCs){
             resetTimeoutRPCs = [];
         }
@@ -117,8 +118,9 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * respondButton button is pressed
      */     
     expandCallbacks: function(callback){
-        if('function' != typeof callback) { return; }
-        this.callbacks.push(callback);
+        if('function' == typeof callback) { 
+            this.callbacks.push(callback);
+        }
     },
 
     /*
@@ -131,7 +133,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         var self = this;
         this.timer = setInterval(
             function() {
-                self.set('timerSeconds', self.timerSeconds - 1);
+                self.set('timeoutSeconds', self.timeoutSeconds - 1);
             }, 1000
         ); 
     },
@@ -144,7 +146,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         this.set('isVisible', false);
         this.set('active', false);
         this.set('timer', null);
-        this.set('timerSeconds', this.defaultTimeout);
+        this.set('timeoutSeconds', this.defaultTimeout);
         this.set('requestIDs', {});
         this.set('callbacks', []);
         this.set('resetTimeoutRPCs', []);
@@ -157,21 +159,21 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * resetTimeout function. sends to SDL OnResetTimeout
      */     
     resetTimeout: function() {
-        this.set('timerSeconds', this.timerSeconds + this.defaultTimeout);
+        this.set('timeoutSeconds', this.timeoutSeconds + this.defaultTimeout);
         if('function' == typeof this.resetTimeoutCallback){
-            this.resetTimeoutCallback(this.timerSeconds * 1000);
+            this.resetTimeoutCallback(this.timeoutSeconds * 1000);
         }
         self = this;
         this.resetTimeoutRPCs.forEach(function (method) {
             requestID = self.requestIDs[method];
-            FFW.BasicCommunication.OnResetTimeout(requestID, method, self.timerSeconds);
+            FFW.BasicCommunication.OnResetTimeout(requestID, method, self.timeoutSeconds);
         });
     },
 
     /*
-     * sendRespond function. call callbacks 
+     * sendResponse function. run active callback functions 
      */     
-    sendRespond: function() {
+    sendResponse: function() {
         if(0 == this.callbacks.length){
             return;
         }
@@ -182,11 +184,11 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
     },
 
     /*
-     * timerHandler function. deactivates popup after time expires
+     * timerHandler function. deactivate popup after timeout is expired
      */     
     timerHandler: function() {
-        if (0 === this.timerSeconds) {
+        if (0 === this.timeoutSeconds) {
           this.DeactivatePopUp();
         }
-    }.observes('this.timerSeconds'),
+    }.observes('this.timeoutSeconds'),
 });

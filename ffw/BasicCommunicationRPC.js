@@ -689,17 +689,15 @@ FFW.BasicCommunication = FFW.RPCObserver
       OnResetTimeout: function(requestID, methodName, resetPeriod) {
         console.log('BasicCommunication.OnResetTimeout');
         isValidRequestID = function(ID) {
-          if(null == ID){ return false; }
-          return /*minRequestID*/ 0 <= ID && 
-                                       ID <= /*maxRequestID*/ 65535;
+          return ID &&  /*minRequestID*/ 0 <= ID && 
+                                              ID <= /*maxRequestID*/ 65535;
         };
         isValidMethodName = function(name) {
           return null != name;
         };
         isValidResetPeriod = function(period) {
-          if(null == period){ return false; }
-          return /*minResetPeriod*/ 0 <= period && 
-                                         period <= /*maxResetPeriod*/ 1000000; 
+          return period && /*minResetPeriod*/ 0 <= period && 
+                                          period <= /*maxResetPeriod*/ 1000000; 
         };
 
         if(!isValidRequestID(requestID) || !isValidMethodName(methodName)){
