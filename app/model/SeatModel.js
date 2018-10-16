@@ -181,6 +181,11 @@ SDL.SeatModel = Em.Object.create({
         });
         this.tempSeatControlData.memory.id = 
                                 parseInt(this.tempSeatControlData.memory.id);
+        var length = this.tempSeatControlData.massageCushionFirmness.length;
+        for(var i = 0; i < length; ++i) {
+            this.tempSeatControlData.massageCushionFirmness[i].firmness =
+                parseInt(this.tempSeatControlData.massageCushionFirmness[i].firmness);
+        }
 
         for(var key in self.tempSeatControlData){
             if(self.tempSeatControlData.hasOwnProperty(key)){
@@ -246,11 +251,6 @@ SDL.SeatModel = Em.Object.create({
         this.set('massageCushionFirmness4',
             this.tempSeatControlData.massageCushionFirmness[4] != null);
 
-        var length = this.tempSeatControlData.massageCushionFirmness.length;
-        for(var i = 0; i < length; ++i) {
-            this.tempSeatControlData.massageCushionFirmness[i].firmness =
-                parseInt(this.tempSeatControlData.massageCushionFirmness[i].firmness);
-        }
         this.set('tempSeatControlData',
             SDL.deepCopy(this.tempSeatControlData));
     },
