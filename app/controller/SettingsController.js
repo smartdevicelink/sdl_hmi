@@ -263,6 +263,9 @@ SDL.SettingsController = Em.Object.create(
       );
     },
     simpleParseUserFriendlyMessageData: function(messages, func) {
+      if(!messages) {
+        return;
+      }
       var tts = '',
         text = '';
       messages.forEach(
