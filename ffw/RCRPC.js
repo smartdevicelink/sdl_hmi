@@ -225,22 +225,22 @@ FFW.RC = FFW.RPCObserver.create(
 
             var newClimateControlData = null;
             var newRadioControlData = null;
-            var newAudioControlData= null;    
+            var newAudioControlData= null;
             var newHMISettingsControlData = null;
             var newLightControlData = null;
             var newSeatControlData = null;
-            
+
             if (request.params.moduleData.climateControlData) {
               newClimateControlData =
                 SDL.ClimateController.model.setClimateData(
                   request.params.moduleData.climateControlData);
               if (!SDL.SDLController.isEmptyObject(newClimateControlData)) {
-                FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE', 
+                FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE',
                                                           climateControlData: newClimateControlData});
-              }     
+              }
             }
             if (request.params.moduleData.radioControlData) {
-             if(request.params.moduleData.radioControlData.band && 
+             if(request.params.moduleData.radioControlData.band &&
               request.params.moduleData.radioControlData.band == 'DAB'){
                 this.sendError(
                   SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
@@ -255,13 +255,13 @@ FFW.RC = FFW.RPCObserver.create(
                   SDL.RadioModel.saveCurrentOptions();
                 }
                 if (!SDL.SDLController.isEmptyObject(newRadioControlData)) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', 
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO',
                                                             radioControlData: newRadioControlData});
                 }
               }
             }
             if(request.params.moduleData.audioControlData){
-              if(request.params.moduleData.audioControlData.source && 
+              if(request.params.moduleData.audioControlData.source &&
                 request.params.moduleData.audioControlData.source == 'DAB'){
                   this.sendError(
                     SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
@@ -273,7 +273,7 @@ FFW.RC = FFW.RPCObserver.create(
               SDL.MediaController.setAudioControlDataWithKeepContext(request.params.moduleData.audioControlData)
               :SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
                 if (!SDL.SDLController.isEmptyObject(newAudioControlData)) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', 
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',
                                                           audioControlData: newAudioControlData});
                 }
               }
@@ -282,16 +282,16 @@ FFW.RC = FFW.RPCObserver.create(
               newHMISettingsControlData = SDL.HmiSettingsModel.setHmiSettingsData(
                 request.params.moduleData.hmiSettingsControlData);
                 if (!SDL.SDLController.isEmptyObject(newHMISettingsControlData)) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', 
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS',
                                                             hmiSettingsControlData: newHMISettingsControlData});
-                }  
+                }
             }
             if(request.params.moduleData.lightControlData){
               newLightControlData = SDL.LightModel.setLightControlData(
                 request.params.moduleData.lightControlData);
 
                 if (!SDL.SDLController.isEmptyObject(newLightControlData)) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT', 
+                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT',
                                                             lightControlData: request.params.moduleData.lightControlData});
                 }
             }
@@ -407,15 +407,15 @@ FFW.RC = FFW.RPCObserver.create(
                 = audioControlData;
             }
             if(hmiSettingsControlData){
-              JSONMessage.result.moduleData.hmiSettingsControlData = 
+              JSONMessage.result.moduleData.hmiSettingsControlData =
               hmiSettingsControlData;
             }
             if(lightControlData){
-              JSONMessage.result.moduleData.lightControlData = 
+              JSONMessage.result.moduleData.lightControlData =
                 lightControlData;
             }
             if(seatControlData){
-              JSONMessage.result.moduleData.seatControlData = 
+              JSONMessage.result.moduleData.seatControlData =
               seatControlData;
             }
             if (request.params.subscribe !== undefined) {

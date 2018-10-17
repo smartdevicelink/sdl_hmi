@@ -53,13 +53,13 @@ SDL.SeatView = Em.ContainerView.create({
         'label'
     ],
     label: SDL.Label.extend({
-        elementId: 'SeatViewLabel',	
-        classNames: 'inactive_state',	
-        contentBinding: 'SDL.SeatModel.onIdChange'	
+        elementId: 'SeatViewLabel',
+        classNames: 'inactive_state',
+        contentBinding: 'SDL.SeatModel.onIdChange'
     }),
     heating: Em.ContainerView.create({
         elementId: 'heating',
-        classNames: 'in_seat_heating_view', 
+        classNames: 'in_seat_heating_view',
 
         childViews: [
             'enable',
@@ -108,7 +108,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'levelInput',
                 classNames: 'levelInput',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.heatingLevel',      
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.heatingLevel',
             })
         })
     }),
@@ -142,7 +142,6 @@ SDL.SeatView = Em.ContainerView.create({
                 classNames: 'enableSelect',
                 contentBinding: 'SDL.SeatModel.enableStruct',
                 valueBinding: 'SDL.SeatModel.tempSeatControlData.coolingEnabled',
-    
             })
         }),
 
@@ -165,9 +164,9 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'coolingLevelInput',
                 classNames: 'levelInput',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.coolingLevel'     
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.coolingLevel'
             })
-        })  
+        })
     }),
 
     cushionFirmness:Em.ContainerView.create({
@@ -190,11 +189,11 @@ SDL.SeatView = Em.ContainerView.create({
                 return;
             }
             for(var i = item; i < length - 1; ++i){
-                SDL.SeatModel.tempSeatControlData.massageCushionFirmness[i] = 
+                SDL.SeatModel.tempSeatControlData.massageCushionFirmness[i] =
                     SDL.SeatModel.tempSeatControlData.massageCushionFirmness[i+1];
             }
             SDL.SeatModel.tempSeatControlData.massageCushionFirmness.pop();
-            SDL.SeatModel.onMassageCushionFirmnessChange();    
+            SDL.SeatModel.onMassageCushionFirmnessChange();
         },
 
         addButton: SDL.Button.extend({
@@ -227,7 +226,7 @@ SDL.SeatView = Em.ContainerView.create({
             classNameBindings: [
                 'SDL.SeatModel.massageCushionFirmness0:active_state:inactive_state'
             ],
-       
+
             childViews: [
                 'cushion',
                 'firmnes',
@@ -240,7 +239,7 @@ SDL.SeatView = Em.ContainerView.create({
                 ],
 
                 action: function(){
-                    SDL.SeatView.cushionFirmness.rm(0);  
+                    SDL.SeatView.cushionFirmness.rm(0);
                 },
 
                 icon: 'images/settings/close_icon_min.png',
@@ -290,7 +289,7 @@ SDL.SeatView = Em.ContainerView.create({
                     elementId: 'firmnesInput',
                     classNames: 'firmnesInput',
                     tupe: 'integer',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.0.firmness' 
+                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.0.firmness'
                 })
             })
         }),
@@ -298,11 +297,11 @@ SDL.SeatView = Em.ContainerView.create({
         massageCushionFirmness1: Em.ContainerView.create({
             elementId: 'massageCushionFirmness1',
             classNames: 'in_seat_cushionFirmnes_view',
-            
+
             classNameBindings: [
                 'SDL.SeatModel.massageCushionFirmness1:active_state:inactive_state'
             ],
-            
+
             childViews: [
                 'cushion',
                 'firmnes',
@@ -318,7 +317,7 @@ SDL.SeatView = Em.ContainerView.create({
                 ],
 
                 action: function(){
-                    SDL.SeatView.cushionFirmness.rm(1); 
+                    SDL.SeatView.cushionFirmness.rm(1);
                 },
 
                 icon: 'images/settings/close_icon_min.png',
@@ -376,12 +375,11 @@ SDL.SeatView = Em.ContainerView.create({
         massageCushionFirmness2: Em.ContainerView.create({
             elementId: 'massageCushionFirmness2',
             classNames: 'in_seat_cushionFirmnes_view',
-            
+
             classNameBindings: [
                 'SDL.SeatModel.massageCushionFirmness2:active_state:inactive_state'
             ],
-       
-            
+
             childViews: [
                 'cushion',
                 'firmnes',
@@ -397,7 +395,7 @@ SDL.SeatView = Em.ContainerView.create({
                 ],
 
                 action: function(){
-                    SDL.SeatView.cushionFirmness.rm(2); 
+                    SDL.SeatView.cushionFirmness.rm(2);
                 },
 
                 icon: 'images/settings/close_icon_min.png',
@@ -430,7 +428,7 @@ SDL.SeatView = Em.ContainerView.create({
             firmnes:Em.ContainerView.create({
                 elementId: 'firmnes',
                 classNames: 'in_seat_firmnes_view',
-                
+
                 childViews: [
                     'firmnesLabal',
                     'firmnesInput'
@@ -453,11 +451,11 @@ SDL.SeatView = Em.ContainerView.create({
         massageCushionFirmness3: Em.ContainerView.create({
             elementId: 'massageCushionFirmness3',
             classNames: 'in_seat_cushionFirmnes_view',
-            
+
             classNameBindings: [
                 'SDL.SeatModel.massageCushionFirmness3:active_state:inactive_state'
             ],
-       
+
             childViews: [
                 'cushion',
                 'firmnes',
@@ -473,7 +471,7 @@ SDL.SeatView = Em.ContainerView.create({
                 ],
 
                 action: function(){
-                    SDL.SeatView.cushionFirmness.rm(3); 
+                    SDL.SeatView.cushionFirmness.rm(3);
                 },
 
                 icon: 'images/settings/close_icon_min.png',
@@ -489,7 +487,7 @@ SDL.SeatView = Em.ContainerView.create({
                     'cushionLabal',
                     'cushionSelect3'
                 ],
-                
+
                 cushionLabal: SDL.Label.extend({
                     elementId: 'cushionLabal',
                     classNames: 'cushionLabal',
@@ -523,7 +521,7 @@ SDL.SeatView = Em.ContainerView.create({
                     elementId: 'massageCushionFirmness3_firmnesInput',
                     classNames: 'firmnesInput',
                     tupe: 'integer',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.3.firmness' 
+                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.3.firmness'
                 })
             })
         }),
@@ -531,7 +529,7 @@ SDL.SeatView = Em.ContainerView.create({
         massageCushionFirmness4: Em.ContainerView.create({
             elementId: 'massageCushionFirmness4',
             classNames: 'in_seat_cushionFirmnes_view',
-            
+
             classNameBindings: [
                 'SDL.SeatModel.massageCushionFirmness4:active_state:inactive_state'
             ],
@@ -551,7 +549,7 @@ SDL.SeatView = Em.ContainerView.create({
                 ],
 
                 action: function(){
-                    SDL.SeatView.cushionFirmness.rm(4); 
+                    SDL.SeatView.cushionFirmness.rm(4);
                 },
 
                 icon: 'images/settings/close_icon_min.png',
@@ -600,11 +598,10 @@ SDL.SeatView = Em.ContainerView.create({
                     elementId: 'massageCushionFirmness4_firmnesInput',
                     classNames: 'firmnesInput',
                     tupe: 'integer',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.4.firmness' 
+                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.4.firmness'
                 })
             })
         })
-        
     }),
 
     position: Em.ContainerView.create({
@@ -646,7 +643,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'horisontalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.horizontalPosition'      
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.horizontalPosition'
             })
         }),
 
@@ -669,7 +666,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'verticalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.verticalPosition'      
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.verticalPosition'
             })
         }),
 
@@ -692,7 +689,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'seatFrontVerticalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.frontVerticalPosition',      
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.frontVerticalPosition',
             })
         }),
 
@@ -715,14 +712,14 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'seatBackVerticalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.backVerticalPosition'      
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.backVerticalPosition'
             })
         }),
 
         headSupportHorizontal: Em.ContainerView.create({
             elementId: 'headSupportHorizontal',
             classNames: 'in_seat_headSupportHorizontal_view',
-            
+
             childViews: [
                 'label',
                 'input'
@@ -738,7 +735,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'headSupportHorizontalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.headSupportHorizontalPosition'            
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.headSupportHorizontalPosition'
             })
         }),
 
@@ -761,7 +758,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'headSupportVerticalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.headSupportVerticalPosition'      
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.headSupportVerticalPosition'
             })
         })
     }),
@@ -785,7 +782,7 @@ SDL.SeatView = Em.ContainerView.create({
             elementId: 'backTiltAngleInput',
             classNames: 'input',
             tupe: 'integer',
-            valueBinding: 'SDL.SeatModel.tempSeatControlData.backTiltAngle'               
+            valueBinding: 'SDL.SeatModel.tempSeatControlData.backTiltAngle'
         })
     }),
 
@@ -825,7 +822,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'inputId',
                 classNames: 'inputId',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.id'               
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.id'
             })
         }),
         label: Em.ContainerView.create({
@@ -847,14 +844,14 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'inputLabel',
                 classNames: 'inputLabel',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.label'               
+                valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.label'
             })
         }),
 
         action: Em.ContainerView.create({
             elementId: 'action',
             classNames: 'in_action_view',
-            
+
             childViews: [
                 'actionLabel',
                 'actionSelect'
@@ -891,7 +888,7 @@ SDL.SeatView = Em.ContainerView.create({
     massageEnable: Em.ContainerView.extend({
         elementId: 'massageEnable',
         classNames: 'in_massageEnable_view',
-        
+
         childViews: [
             'label',
             'select'
@@ -909,7 +906,7 @@ SDL.SeatView = Em.ContainerView.create({
             contentBinding: 'SDL.SeatModel.enableStruct',
             valueBinding: 'SDL.SeatModel.tempSeatControlData.massageEnabled',
         })
-    }),    
+    }),
     id: Em.ContainerView.extend({
         elementId: 'id',
         classNames: 'in_id_view',
@@ -949,11 +946,11 @@ SDL.SeatView = Em.ContainerView.create({
                 return;
             }
             for(var i = item; i < length - 1; ++i){
-                SDL.SeatModel.tempSeatControlData.massageMode[i] = 
+                SDL.SeatModel.tempSeatControlData.massageMode[i] =
                     SDL.SeatModel.tempSeatControlData.massageMode[i+1];
             }
             SDL.SeatModel.tempSeatControlData.massageMode.pop();
-            SDL.SeatModel.onMassageModeChange();   
+            SDL.SeatModel.onMassageModeChange();
         },
 
         addButton: SDL.Button.extend({
@@ -1005,7 +1002,7 @@ SDL.SeatView = Em.ContainerView.create({
                 ],
 
                 action: function(){
-                    SDL.SeatView.massageMode.rm(0); 
+                    SDL.SeatView.massageMode.rm(0);
                 },
 
                 icon: 'images/settings/close_icon_min.png',
@@ -1016,7 +1013,7 @@ SDL.SeatView = Em.ContainerView.create({
             zone:  Em.ContainerView.create({
                 elementId: 'zone',
                 classNames: 'in_zone_view',
-                
+
                 childViews: [
                     'label',
                     'select'
@@ -1083,7 +1080,7 @@ SDL.SeatView = Em.ContainerView.create({
                 ],
 
                 action: function(){
-                    SDL.SeatView.massageMode.rm(1); 
+                    SDL.SeatView.massageMode.rm(1);
                 },
 
                 icon: 'images/settings/close_icon_min.png',
@@ -1128,7 +1125,7 @@ SDL.SeatView = Em.ContainerView.create({
                     classNames: 'mode_label',
                     content: 'Mode'
                 }),
-                
+
                 select: Em.Select.create({
                     elementId: 'massageMode1_mode_select',
                     classNames: 'mode_select',

@@ -86,7 +86,7 @@ SDL.SeatModel = Em.Object.create({
     },
 
     /*
-    *  assign function. assigns the second object to the first and returns the 
+    *  assign function. assigns the second object to the first and returns the
     *  difference between them
     */
     assign: function(first, second){
@@ -103,7 +103,7 @@ SDL.SeatModel = Em.Object.create({
                             first[key] = SDL.deepCopy(second[key]);
                             continue;
                         }
-                        
+
                         var temp = this.assign(first[key],second[key]);
                         if (!SDL.SDLController.isEmptyObject(temp)) {
                             result[key] = SDL.deepCopy(second[key]);
@@ -160,9 +160,9 @@ SDL.SeatModel = Em.Object.create({
 
         return result;
      },
-     
+
     /*
-    *  applySettings function. Apply current seatmodel settings 
+    *  applySettings function. Apply current seatmodel settings
     */
     applySettings: function () {
         self = this;
@@ -179,25 +179,25 @@ SDL.SeatModel = Em.Object.create({
             'backTiltAngle',
             'headSupportHorizontalPosition',
             'headSupportVerticalPosition'],
-        self = this;    
+        self = this;
         integerData.forEach(function(data){
-            self.tempSeatControlData[data] = 
+            self.tempSeatControlData[data] =
                                 parseInt(self.tempSeatControlData[data]);
         });
-        this.tempSeatControlData.memory.id = 
+        this.tempSeatControlData.memory.id =
                                 parseInt(this.tempSeatControlData.memory.id);
         var length = this.tempSeatControlData.massageCushionFirmness.length;
         for(var i = 0; i < length; ++i) {
             this.tempSeatControlData.massageCushionFirmness[i].firmness =
                 parseInt(this.tempSeatControlData.massageCushionFirmness[i].firmness);
-        }	
+        }
 
         this.tempSeatControlData.heatingEnabled = 
                             (this.tempSeatControlData.heatingEnabled == 'ON')
         this.tempSeatControlData.coolingEnabled = 
-                            (this.tempSeatControlData.coolingEnabled == 'ON')  
+                            (this.tempSeatControlData.coolingEnabled == 'ON')
         this.tempSeatControlData.massageEnabled = 
-                            (this.tempSeatControlData.massageEnabled == 'ON')                                              
+                            (this.tempSeatControlData.massageEnabled == 'ON')
 
         for(var key in self.tempSeatControlData){
             if(self.tempSeatControlData.hasOwnProperty(key)){
@@ -215,28 +215,28 @@ SDL.SeatModel = Em.Object.create({
     },
 
     /*
-    *  update function. update current seatmodel settings 
+    *  update function. update current seatmodel settings
     */
     update: function(updateSeatControlData) {
         if (updateSeatControlData) {
             this.set('tempSeatControlData', SDL.deepCopy(updateSeatControlData));
         } else {
-            this.set('tempSeatControlData', SDL.deepCopy(this.seatControlData[this.ID]));    
+            this.set('tempSeatControlData', SDL.deepCopy(this.seatControlData[this.ID]));
         }
-        
-        this.tempSeatControlData.heatingEnabled = 
+
+        this.tempSeatControlData.heatingEnabled =
                         this.tempSeatControlData.heatingEnabled ? 'ON': 'OFF';
-        this.tempSeatControlData.coolingEnabled = 
+        this.tempSeatControlData.coolingEnabled =
                         this.tempSeatControlData.coolingEnabled ? 'ON': 'OFF';
-        this.tempSeatControlData.massageEnabled = 
-                        this.tempSeatControlData.massageEnabled ? 'ON': 'OFF';            
+        this.tempSeatControlData.massageEnabled =
+                        this.tempSeatControlData.massageEnabled ? 'ON': 'OFF';
 
         this.onMassageModeChange();
         this.onMassageCushionFirmnessChange();
     },
 
     /*
-    *  onIdChange function. update current seat model settings when changing ID 
+    *  onIdChange function. update current seat model settings when changing ID
     */
     onIdChange: function(){
         this.update();
@@ -244,8 +244,8 @@ SDL.SeatModel = Em.Object.create({
     }.property('SDL.SeatModel.ID'),
 
     /*
-    *  onIdChange function. update current seat model settings when changing 
-    *  MassageMode 
+    *  onIdChange function. update current seat model settings when changing
+    *  MassageMode
     */
     onMassageModeChange: function(){
         this.set('massageMode0',
@@ -258,8 +258,8 @@ SDL.SeatModel = Em.Object.create({
 
 
     /*
-    *  onIdChange function. update current seat model settings when changing 
-    *  MassageCushionFirmness 
+    *  onIdChange function. update current seat model settings when changing
+    *  MassageCushionFirmness
     */
     onMassageCushionFirmnessChange:function(){
         this.set('massageCushionFirmness0',
@@ -290,7 +290,7 @@ SDL.SeatModel = Em.Object.create({
                     SDL.deepCopy(this.tempSeatControlData);
 
                 break;
-            
+
             case 'RESTORE':
                 if (this.memoryCache[this.ID][this.tempSeatControlData.memory.id]) {
                     this.set('tempSeatControlData',
@@ -301,18 +301,18 @@ SDL.SeatModel = Em.Object.create({
                     defaultParams.memory.id = this.tempSeatControlData.memory.id;
                     this.update(defaultParams);
                 }
-                    
+
                 this.applySettings();
                 break;
-            
+
             case 'NONE':
                 break;
         }
     },
-    
+
     massageMode0: true,
     massageMode1: false,
-    
+
     massageCushionFirmness0: true,
     massageCushionFirmness1: false,
     massageCushionFirmness2: false,
@@ -328,7 +328,7 @@ SDL.SeatModel = Em.Object.create({
     ],
 
     enableStruct: [
-        'ON', 
+        'ON',
         'OFF'
     ],
 
@@ -398,7 +398,7 @@ SDL.SeatModel = Em.Object.create({
 
     seatControlData: Em.Object.create({}),
     tempSeatControlData: Em.Object.create({}),
-   
+
     goToStates: function() {
         SDL.SeatModel.update();
     },
@@ -423,5 +423,5 @@ SDL.SeatModel = Em.Object.create({
             headSupportHorizontalPositionAvailable: true
           }];
        return result;
-    }    
+    }
 });
