@@ -135,7 +135,7 @@ SDL.SeatModel = Em.Object.create({
         var id = data.id;
         delete data.id;
 
-        result = this.assign(this.seatControlData[id], data);
+        var result = this.assign(this.seatControlData[id], data);
 
         if (!SDL.SDLController.isEmptyObject(result)) {
             result.id = id;
@@ -149,10 +149,20 @@ SDL.SeatModel = Em.Object.create({
                 result.memory.id = this.seatControlData[id].memory.id;
                 result.memory.action = this.seatControlData[id].memory.action;
             }
+        } else {
+            result = null;
         }
 
-        if (IsSetRpc && data.memory) {
-            this.onActionChosen(data.memory.action);
+        if (IsSetRpc) {
+            var isActionRequired = data.memory && data.memory.action != 'NONE';
+            if (isActionRequired) {
+                this.set('seatControlData.' + id + '.memory.action', 'NONE');
+                this.update();
+                this.onActionChosen(data.memory.action);
+            } else if (!SDL.SDLController.isEmptyObject(result)) {
+                FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT',
+                    seatControlData: result});
+            }
         }
 
         this.set('ID',id);
@@ -257,7 +267,7 @@ SDL.SeatModel = Em.Object.create({
     },
 
 
-    /*
+   /*
     *  onIdChange function. update current seat model settings when changing
     *  MassageCushionFirmness
     */
@@ -277,6 +287,9 @@ SDL.SeatModel = Em.Object.create({
             SDL.deepCopy(this.tempSeatControlData));
     },
 
+   /*
+    * onActionChosen function. Performs actions according to selected state.
+    */
     onActionChosen: function(newState) {
         if (this.tempSeatControlData.memory.id <= 0 ||
             this.tempSeatControlData.memory.id > 10) {
