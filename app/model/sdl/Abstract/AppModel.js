@@ -74,9 +74,9 @@ SDL.ABSAppModel = Em.Object.extend(
       return this.mediaPlayerIndicator ===
         SDL.SDLModel.data.mediaPlayerIndicatorEnum.PLAY_PAUSE;
     }.property('this.mediaPlayerIndicator'),
-    bufferingIndicator: function() {
+    stopIndicator: function() {
       return this.mediaPlayerIndicator ===
-      SDL.SDLModel.data.mediaPlayerIndicatorEnum.BUFFERING ? 'BUFFERING' : null;
+      SDL.SDLModel.data.mediaPlayerIndicatorEnum.STOP ? 'STOP' : null;
     }.property('this.mediaPlayerIndicator'),
     /**
      * Application's container for current processed requests on HMI

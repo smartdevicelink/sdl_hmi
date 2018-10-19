@@ -133,6 +133,24 @@ SDL.remoteControlCapability =
         keepContextAvailable: true,
         equalizerMaxChannelId: 10
     }],
+    seatControlCapabilities: [{
+      moduleName: "Seat",
+      heatingEnabledAvailable: true,
+      coolingEnabledAvailable: true,
+      heatingLevelAvailable: true,
+      coolingLevelAvailable: true,
+      horizontalPositionAvailable: true,
+      verticalPositionAvailable: true,
+      frontVerticalPositionAvailable: true,
+      backVerticalPositionAvailable: true,
+      backTiltAngleAvailable: true,
+      headSupportHorizontalPositionAvailable: true,
+      headSupportVerticalPositionAvailable: true,
+      massageEnabledAvailable: true,
+      massageModeAvailable: true,
+      massageCushionFirmnessAvailable: true,
+      memoryAvailable: true
+   }],
     lightControlCapabilities: {
         moduleName: 'light',
         supportedLights: [{

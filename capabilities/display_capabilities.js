@@ -2,6 +2,7 @@ SDL.templateCapabilities = {
     "MEDIA": {
         "displayCapabilities": {
             "displayType": "GEN2_8_DMA",
+            "displayName": "SDL_HMI",
             "textFields": [{
                     "name": "mainField1",
                     "characterSet": "TYPE2SET",
@@ -442,6 +443,7 @@ SDL.templateCapabilities = {
     "ONSCREEN_PRESETS": {
         "displayCapabilities": {
             "displayType": "GEN2_8_DMA",
+            "displayName": "SDL_HMI",
             "textFields": [{
                     "name": "mainField1",
                     "characterSet": "TYPE2SET",
@@ -877,6 +879,7 @@ SDL.templateCapabilities = {
     "NON-MEDIA": {
         "displayCapabilities": {
             "displayType": "GEN2_8_DMA",
+            "displayName": "SDL_HMI",
             "textFields": [{
                     "name": "mainField1",
                     "characterSet": "TYPE2SET",
@@ -1324,6 +1327,7 @@ SDL.templateCapabilities = {
     "NAV_FULLSCREEN_MAP": {
         "displayCapabilities": {
             "displayType": "GEN2_8_DMA",
+            "displayName": "SDL_HMI",
             "textFields": [{
                     "name": "mainField1",
                     "characterSet": "TYPE2SET",
