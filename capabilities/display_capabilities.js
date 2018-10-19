@@ -404,6 +404,11 @@ SDL.templateCapabilities = {
             "longPressAvailable": true,
             "upDownAvailable": true
         }, {
+            "name": "PLAY_PAUSE",
+            "shortPressAvailable": true,
+            "longPressAvailable": true,
+            "upDownAvailable": true
+        }, {
             "name": "SEEKLEFT",
             "shortPressAvailable": true,
             "longPressAvailable": true,
@@ -1267,6 +1272,16 @@ SDL.templateCapabilities = {
             "upDownAvailable": true
         }, {
             "name": "PRESET_7",
+            "shortPressAvailable": true,
+            "longPressAvailable": true,
+            "upDownAvailable": true
+        }, {
+            "name": "PRESET_8",
+            "shortPressAvailable": true,
+            "longPressAvailable": true,
+            "upDownAvailable": true
+        }, {
+            "name": "PRESET_9",
             "shortPressAvailable": true,
             "longPressAvailable": true,
             "upDownAvailable": true
