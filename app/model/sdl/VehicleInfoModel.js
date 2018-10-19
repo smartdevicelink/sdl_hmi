@@ -108,12 +108,15 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'fuelLevel': 'VEHICLEDATA_FUELLEVEL',
       'fuelLevel_State': 'VEHICLEDATA_FUELLEVEL_STATE',
       'instantFuelConsumption': 'VEHICLEDATA_FUELCONSUMPTION',
+      'fuelRange': 'VEHICLEDATA_FUELRANGE',
       'externalTemperature': 'VEHICLEDATA_EXTERNTEMP',
+      'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'vin': 'VEHICLEDATA_VIN',
       'prndl': 'VEHICLEDATA_PRNDL',
       'tirePressure': 'VEHICLEDATA_TIREPRESSURE',
       'odometer': 'VEHICLEDATA_ODOMETER',
       'beltStatus': 'VEHICLEDATA_BELTSTATUS',
+      'electronicParkBrakeStatus': 'VEHICLEDATA_ELECTRONICPARKBRAKESTATUS',
       'bodyInformation': 'VEHICLEDATA_BODYINFO',
       'deviceStatus': 'VEHICLEDATA_DEVICESTATUS',
       'eCallInfo': 'VEHICLEDATA_ECALLINFO',
@@ -127,7 +130,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'engineTorque': 'VEHICLEDATA_ENGINETORQUE',
       'accPedalPosition': 'VEHICLEDATA_ACCPEDAL',
       'steeringWheelAngle': 'VEHICLEDATA_STEERINGWHEEL',
-      'fuelRange': 'VEHICLEDATA_FUELRANGE',
+      'engineOilLife': 'VEHICLEDATA_ENGINEOILLIFE',
       'abs_State': 'VEHICLEDATA_ABS_STATE',
       'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'tirePressureValue': 'VEHICLEDATA_TIREPRESSURE_VALUE',
@@ -166,28 +169,48 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'instantFuelConsumption': 2.2E0,
       'externalTemperature': null,
       'vin': '52-452-52-752',
+      'turnSignal': 'OFF',
       'prndl': 'PARK',
+      'electronicParkBrakeStatus': 'OPEN',
       'tirePressure': {
         'pressureTelltale': 'OFF',
         'leftFront': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'rightFront': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'leftRear': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'rightRear': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'innerLeftRear': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         },
         'innerRightRear': {
-          'status': 'UNKNOWN'
+          'status': 'UNKNOWN',
+          'tpms' : 'UNKNOWN',
+          'pressure' : 0
         }
       },
+      'fuelRange': [
+        {
+          'type':'GASOLINE',
+          'range': 400
+        }
+      ],
       'odometer': 23,
       'beltStatus': {
         'driverBeltDeployed': 'NOT_SUPPORTED',
@@ -269,9 +292,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'engineTorque': 2.5E0,
       'accPedalPosition': 10.5E0,
       'steeringWheelAngle': 1.2E0,
-      'fuelRange': 10.5E0,
+      'engineOilLife': 20.4E0,
       'abs_State': 'ACTIVE',
-      'turnSignal': 'ACTIVE',
       'tirePressureValue': {
         'leftFront': 2.2E0,
         'rightFront': 2.2E0,
@@ -447,14 +469,18 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       var data = {};
       text = 'Params ', result = true;
       for (var key in message.params) {
+        oldKey = key;
+        if (key === 'clusterModeStatus') {
+          key = 'clusterModes';
+        }
         if (key != 'appID') {
           if (this.vehicleData[key]) {
-            data[key] = this.vehicleData[key];
+            data[oldKey] = this.vehicleData[key];
           } else {
             if (!result) {
-              text += ', ' + key;
+              text += ', ' + oldKey;
             } else {
-              text += key;
+              text += oldKey;
               result = false;
             }
           }

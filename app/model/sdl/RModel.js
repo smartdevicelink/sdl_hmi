@@ -90,6 +90,12 @@ SDL.RModel = SDL.SDLModel.extend({
    */
   reverseAccessMode: 'AUTO_ALLOW',
 
+
+  appRCStatus: 
+  {
+   
+  },
+
   /**
    * Method to add activation button to VR commands and set device
    * parameters to model
@@ -121,6 +127,11 @@ SDL.RModel = SDL.SDLModel.extend({
         'Application with appID ' + params.appID + ' already registered!'
       );
       return; // if application already registered and correctly initialized and BC.UpdateAppList came from SDL than nothing shoul happend
+    }
+
+    if (params.appID != null && params.icon != null) {
+      console.log('Resuming application icon for ' + params.appID);
+      this.setAppIconByAppId(params.appID, params.icon);
     }
 
     if (params.isMediaApplication === true) {
@@ -186,7 +197,11 @@ SDL.RModel = SDL.SDLModel.extend({
     if (SDL.SDLController.getApplicationModel(params.appID)) {
 
       this._super(params);
+      var map = SDL.deepCopy(this.appRCStatus);
+      delete map[params.appID];
+      this.set('appRCStatus', map);
     }
   }
-}
+
+  }
 );

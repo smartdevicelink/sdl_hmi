@@ -33,16 +33,40 @@
 
 SDL.USBModel = Em.Object.create({
     active: false,
-
+    optionsEnabled:false,
     statusBar: 'Luk Marko',
-
+    usbControl:{
+      keepContext: false
+    },
+boolStruct: [
+    true,
+    false
+  ],
+  equalizerSettings: {
+        channelId:10,
+        channelName:'Station'
+      },
     /** USB Player*/
     init: function() {
       this._super();
       this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
       this.set('player.name', 'USB');
     },
-
+    toggleOptions:function(){
+      SDL.USBModel.toggleProperty('optionsEnabled');
+    },
+    sendAudioNotification:function()
+  {
+    this.setSource();
+    var data = SDL.MediaController.getAudioControlData();
+    if(data){
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':data.source}});
+  }
+  },
+  setSource:function()
+  {
+    SDL.MediaController.lastRadioControlStruct.source='USB';
+  },
     PlayList: SDL.Playlist.create({
         selectedIndex: 0,
         items: {

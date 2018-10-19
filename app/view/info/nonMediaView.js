@@ -95,7 +95,7 @@ SDL.InfoNonMedia = Em.ContainerView.create(
             ],
 
             template: Ember.Handlebars.compile(
-              '<img width="150px" {{bindAttr src="SDL.SDLController.model.appInfo.mainImage"}}>'
+              '<img width="150px" onerror="this.style.display=\'none\'" {{bindAttr src="SDL.SDLController.model.appInfo.mainImage"}}>'
             )
           }
         ),
@@ -113,7 +113,7 @@ SDL.InfoNonMedia = Em.ContainerView.create(
 
             field1: SDL.Label.extend(
               {
-                contentBinding: 'controller.model.appInfo.field1',
+                contentBinding: 'SDL.SDLController.model.appInfo.field1',
                 attributeBindings: ['style'],
                 style: function() {
                   if (SDL.SDLController.model) {
@@ -127,7 +127,7 @@ SDL.InfoNonMedia = Em.ContainerView.create(
 
             field2: SDL.Label.extend(
               {
-                contentBinding: 'controller.model.appInfo.field2',
+                contentBinding: 'SDL.SDLController.model.appInfo.field2',
                 attributeBindings: ['style'],
                 style: function() {
                   if (SDL.SDLController.model) {
@@ -141,13 +141,13 @@ SDL.InfoNonMedia = Em.ContainerView.create(
 
             field3: SDL.Label.extend(
               {
-                contentBinding: 'controller.model.appInfo.field3'
+                contentBinding: 'SDL.SDLController.model.appInfo.field3'
               }
             ),
 
             field4: SDL.Label.extend(
               {
-                contentBinding: 'controller.model.appInfo.field4'
+                contentBinding: 'SDL.SDLController.model.appInfo.field4'
               }
             )
 

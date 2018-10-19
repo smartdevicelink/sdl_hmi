@@ -49,6 +49,23 @@ SDL.RadioView = Em.ContainerView
         'tuneButtons',
         'optionsMenu'
       ],
+
+      setHD:function(){
+        if (SDL.RadioModel.radioControlStruct.band != 'XM' & (SDL.RadioModel.radioControlStruct.availableHDs > 0)) {
+          SDL.RadioModel.setHDRadioEnable(SDL.RadioModel.radioControlStruct.hdRadioEnable ?
+          false : true);
+          SDL.RadioModel.set('radioControlCheckboxes.availableHDs',SDL.RadioModel.radioControlStruct.hdRadioEnable);
+          SDL.RadioModel.set('radioControlCheckboxes.hdChannel',SDL.RadioModel.radioControlStruct.hdRadioEnable);
+          if(SDL.RadioModel.radioControlStruct.hdRadioEnable){
+            SDL.RadioModel.sendRadioChangeNotification(['hdRadioEnable','availableHDs','hdChannel', 'sisData.*', 'stationIDNumber.*', 'stationLocation.*']);
+          }
+          else{
+            SDL.RadioModel.sendRadioChangeNotification(['hdRadioEnable']);
+          }
+          
+        }
+      },
+
       optionsMenu: Em.ContainerView.create(
         {
           elementId: 'radio_options_view_container',
@@ -103,8 +120,296 @@ SDL.RadioView = Em.ContainerView
             'stateCheckbox',
             'stateLabel',
             'stateSelect',
+            'sisDataLabel',
+            'stationShortNameCheckbox',
+            'stationShortNameLabel',
+            'stationShortNameInput',
+            'stationMessageCheckBox',
+            'stationMessageLabel',
+            'stationMessageInput',
+            'stationLongNameCheckBox',
+            'stationLongNameLabel',
+            'stationLongNameInput',
+            'gpsDataLabel',
+            'gpsDataCheckBox',
+            'longitudeLabel',
+            'longitudeInput',
+            'latitudeLabel',
+            'latitudeInput',
+            'altitudeCheckBox',
+            'altitudeLabel',
+            'altitudeInput',
+            'stationIdLabel',
+            'countryCodeCheckBox',
+            'countryCodeLabel',
+            'countryCodeInput',
+            'fccLabel',
+            'fccCheckBox',
+            'fccInput',
             'send'
           ],
+
+
+          fccCheckBox: Em.Checkbox.extend(
+            {
+              elementId: 'fccCheckBox',
+              classNames: 'fccCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId'
+            }
+          ),
+         fccLabel: SDL.Label.extend(
+            {
+              elementId: 'fccLabel',
+              classNames: 'fccLabel',
+              content: 'FCC facility ID'
+            }
+          ),
+        fccInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'fccInput',
+              classNames: 'fccInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationIDNumber.fccFacilityId',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.fccFacilityId'
+              ),
+              
+              disabledBinding: 'isDisabled'
+            }
+          ),
+
+
+          countryCodeCheckBox: Em.Checkbox.extend(
+            {
+              elementId: 'countryCodeCheckBox',
+              classNames: 'countryCodeCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.countryCode'
+            }
+          ),
+         countryCodeLabel: SDL.Label.extend(
+            {
+              elementId: 'countryCodeLabel',
+              classNames: 'countryCodeLabel',
+              content: 'Country code'
+            }
+          ),
+        countryCodeInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'countryCodeInput',
+              classNames: 'countryCodeInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationIDNumber.countryCode',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.countryCode;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationIDNumber.countryCode'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+
+
+          stationIdLabel: SDL.Label.extend(
+            {
+              elementId: 'stationIdLabel',
+              classNames: 'stationIdLabel',
+              content: 'Station ID:'
+            }
+          ),
+
+          altitudeCheckBox: Em.Checkbox.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'altitudeCheckBox',
+              classNames: 'altitudeCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitude',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          altitudeLabel: SDL.Label.extend(
+            {
+              elementId: 'altitudeLabel',
+              classNames: 'altitudeLabel',
+              content: 'Altitude'
+            }
+          ),
+          altitudeInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'altitudeInput',
+              classNames: 'altitudeInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.altitude',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData ? 
+                !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData
+                :!SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitude;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData',
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.altitude'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+
+          
+          latitudeLabel: SDL.Label.extend(
+            {
+              elementId: 'latitudeLabel',
+              classNames: 'latitudeLabel',
+              content: 'Latitude'
+            }
+          ),
+          latitudeInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'latitudeInput',
+              classNames: 'latitudeInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.latitudeDegrees',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+
+
+          longitudeLabel: SDL.Label.extend(
+            {
+              elementId: 'longitudeLabel',
+              classNames: 'longitudeLabel',
+              content: 'Longitude'
+            }
+          ),
+          longitudeInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'longitudeInput',
+              classNames: 'longitudeInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLocation.longitudeDegrees',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          gpsDataCheckBox: Em.Checkbox.extend(
+            {
+              elementId: 'gpsDataCheckBox',
+              classNames: 'gpsDataCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLocation.gpsData'
+            }
+          ),
+          stationLongNameCheckBox: Em.Checkbox.extend(
+            {
+              elementId: 'stationLongNameCheckBox',
+              classNames: 'stationLongNameCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationLongName'
+            }
+          ),
+         stationLongNameLabel: SDL.Label.extend(
+            {
+              elementId: 'stationLongNameLabel',
+              classNames: 'stationLongNameLabel',
+              content: 'Station long name'
+            }
+          ),
+         stationLongNameInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'stationLongNameInput',
+              classNames: 'stationLongNameInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationLongName',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationLongName;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationLongName'
+              ),
+              disabledBinding: 'isDisabled',
+              
+            }
+          ),
+          stationMessageCheckBox: Em.Checkbox.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'stationMessageCheckBox',
+              classNames: 'stationMessageCheckBox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationMessage'
+            }
+          ),
+         stationMessageLabel: SDL.Label.extend(
+            {
+              elementId: 'stationMessageLabel',
+              classNames: 'stationMessageLabel',
+              content: 'Station message'
+            }
+          ),
+         stationMessageInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'stationMessageInput',
+              classNames: 'stationMessageInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationMessage', 
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationMessage;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationMessage'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
+          sisDataLabel: SDL.Label.extend(
+            {
+              elementId: 'sisDataLabel',
+              classNames: 'sisDataLabel',
+              content: 'Sis Data list'
+            }
+          ),
+          gpsDataLabel: SDL.Label.extend(
+            {
+              elementId: 'gpsDataLabel',
+              classNames: 'gpsDataLabel',
+              content: 'Station Location:'
+            }
+          ),
+          stationShortNameCheckbox: Em.Checkbox.extend(
+            {
+              elementId: 'stationShortNameCheckbox',
+              classNames: 'stationShortNameCheckbox',
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.sisData.stationShortName'
+            }
+          ),
+          stationShortNameLabel: SDL.Label.extend(
+            {
+              elementId: 'stationShortNameLabel',
+              classNames: 'stationShortNameLabel',
+              content: 'Station short name'
+            }
+          ),
+          stationShortNameInput: Ember.TextField.extend(
+            {
+              attributeBindings: ['disabled'],
+              elementId: 'stationShortNameInput',
+              classNames: 'stationShortNameInput',
+              valueBinding: 'SDL.RadioModel.lastOptionParams.sisData.stationShortName',
+              isDisabled: function() {
+                return !SDL.RadioModel.radioControlCheckboxes.sisData.stationShortName;
+              }.property(
+                'SDL.RadioModel.radioControlCheckboxes.sisData.stationShortName'
+              ),
+              disabledBinding: 'isDisabled'
+            }
+          ),
           bandCheckbox: Em.Checkbox.extend(
             {
               elementId: 'bandCheckbox',
@@ -393,9 +698,17 @@ SDL.RadioView = Em.ContainerView
           ),
           availableHDsCheckbox: Em.Checkbox.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'availableHDsCheckbox',
               classNames: 'availableHDsCheckbox',
-              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.availableHDs'
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.availableHDs',
+              isDisabled: function() {
+                return !SDL.RadioModel.lastOptionParams.hdRadioEnable;
+              }.property(
+                'SDL.RadioModel.lastOptionParams.hdRadioEnable'
+              ),
+              disabledBinding: 'isDisabled',
+              
             }
           ),
           availableHDsLabel: SDL.Label.extend(
@@ -422,9 +735,16 @@ SDL.RadioView = Em.ContainerView
           ),
           hdChannelCheckbox: Em.Checkbox.extend(
             {
+              attributeBindings: ['disabled'],
               elementId: 'hdChannelCheckbox',
               classNames: 'hdChannelCheckbox',
-              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.hdChannel'
+              checkedBinding: 'SDL.RadioModel.radioControlCheckboxes.hdChannel',
+              isDisabled: function() {
+                return !SDL.RadioModel.lastOptionParams.hdRadioEnable;
+              }.property(
+                'SDL.RadioModel.lastOptionParams.hdRadioEnable'
+              ),
+              disabledBinding: 'isDisabled',
             }
           ),
           hdChannelLabel: SDL.Label.extend(
@@ -443,11 +763,8 @@ SDL.RadioView = Em.ContainerView
                 var result = SDL.RadioModel.hdChannelsStruct.slice();
                 var index = result.indexOf(
                   SDL.RadioModel.lastOptionParams.availableHDs);
-                result.splice(index + 1, index + result.length - 1);
-                var maxHdValue = result[result.length - 1];
-                if (maxHdValue > 0) {
-                  result.splice(0, 1);
-                }
+                result.splice(index+1, result.length);
+                var maxHdValue = result[result.length];
                 if (!this.content || result) {
                   this.set('content', result);
                 }
@@ -578,39 +895,28 @@ SDL.RadioView = Em.ContainerView
             if (SDL.RadioModel.radioControlStruct.band == 'XM') {
               return false;
             }
+            else if(!SDL.RadioModel.radioControlStruct.hdRadioEnable){
+              return false;
+            }
+            SDL.RadioModel.setHDRadioEnable(SDL.RadioModel.radioControlStruct.availableHDs > 0);
             return (SDL.RadioModel.radioControlStruct.availableHDs > 0);
           }.property('SDL.RadioModel.radioControlStruct.band',
-                     'SDL.RadioModel.radioControlStruct.availableHDs'),
-          HDChannel1: function() {
-            return (SDL.RadioModel.radioControlStruct.hdChannel == 1);
-          }.property('SDL.RadioModel.radioControlStruct.hdChannel'),
-          HDChannel1Availability: function() {
-            return (SDL.RadioModel.radioControlStruct.availableHDs >= 1);
-          }.property('SDL.RadioModel.radioControlStruct.availableHDs'),
-          HDChannel2: function() {
-            return (SDL.RadioModel.radioControlStruct.hdChannel == 2);
-          }.property('SDL.RadioModel.radioControlStruct.hdChannel'),
-          HDChannel2Availability: function() {
-            return (SDL.RadioModel.radioControlStruct.availableHDs >= 2);
-          }.property('SDL.RadioModel.radioControlStruct.availableHDs'),
-          HDChannel3: function() {
-            return (SDL.RadioModel.radioControlStruct.hdChannel == 3);
-          }.property('SDL.RadioModel.radioControlStruct.hdChannel'),
-          HDChannel3Availability: function() {
-            return (SDL.RadioModel.radioControlStruct.availableHDs >= 3);
-          }.property('SDL.RadioModel.radioControlStruct.availableHDs'),
+                     'SDL.RadioModel.radioControlStruct.availableHDs',
+                     'SDL.RadioModel.radioControlStruct.hdRadioEnable'),
           STAName: function() {
             return 'STA-' + SDL.RadioModel.station.toString().replace('.', '');
           }.property('SDL.RadioModel.station'),
           StationName: function() {
             var station = SDL.RadioModel.station;
-            if (SDL.RadioModel.radioControlStruct.availableHDs > 0) {
+            if (SDL.RadioModel.radioControlStruct.availableHDs > 0 &
+              SDL.RadioModel.radioControlStruct.hdRadioEnable) {
               station += '-' + SDL.RadioModel.radioControlStruct.hdChannel;
             }
             return station;
           }.property('SDL.RadioModel.station',
                      'SDL.RadioModel.radioControlStruct.hdChannel',
-                     'SDL.RadioModel.radioControlStruct.availableHDs'),
+                     'SDL.RadioModel.radioControlStruct.availableHDs',
+                     'SDL.RadioModel.radioControlStruct.hdRadioEnable'),
           songInfo: function() {
             var data = SDL.RadioModel.radioDetails;
             if (data) {
@@ -635,28 +941,62 @@ SDL.RadioView = Em.ContainerView
             .compile(
               '{{#with view}}' +
               '<div class="track-info">' +
-              '<div class = "HDRadio" style="display: inline-flex; align-items: center;">' +
+              '<div class = "HDRadio" onclick = "SDL.RadioView.setHD()" style="display: inline-flex; cursor: pointer; align-items: center;">' +              
               '{{#if HDRadio}}' +
               '<img src="images/media/hd_logo.png" style="width:27px;height:27px;">' +
-              '{{#if HDChannel1Availability}}' +
-              '{{#if HDChannel1}}' +
+              '{{else}}' +
+              '<img src="images/media/hd_logo_gray.png" style="width:27px;height:27px;">' +
+              '{{/if}}' +
+              '</div>' +
+              '{{#if HDRadio}}' +
+              '<div class="hd-radio-info" style="top:4px;left: 30px;">' +
+              '{{#if SDL.RadioModel.hdChannelAvailableCurrent.[0]}}' +
+              '{{#if SDL.RadioModel.hdChannelCurrent.[0]}}' +
               '<span style="padding: 5px;color: orange;"> 1 </span>' +
               '{{else}}' +
               '<span style="padding: 5px;"> 1 </span>' +
               '{{/if}}' +
               '{{/if}}' +
-              '{{#if HDChannel2Availability}}' +
-              '{{#if HDChannel2}}' +
+              '{{#if SDL.RadioModel.hdChannelAvailableCurrent.[1]}}' +
+              '{{#if SDL.RadioModel.hdChannelCurrent.[1]}}' +
               '<span style="padding: 5px;color: orange;"> 2 </span>' +
               '{{else}}' +
               '<span style="padding: 5px;"> 2 </span>' +
               '{{/if}}' +
               '{{/if}}' +
-              '{{#if HDChannel3Availability}}' +
-              '{{#if HDChannel3}}' +
+              '{{#if SDL.RadioModel.hdChannelAvailableCurrent.[2]}}' +
+              '{{#if SDL.RadioModel.hdChannelCurrent.[2]}}' +
               '<span style="padding: 5px;color: orange;"> 3 </span>' +
               '{{else}}' +
               '<span style="padding: 5px;"> 3 </span>' +
+              '{{/if}}' +
+              '{{/if}}' +
+              '{{#if SDL.RadioModel.hdChannelAvailableCurrent.[3]}}' +
+              '{{#if SDL.RadioModel.hdChannelCurrent.[3]}}' +
+              '<span style="padding: 5px;color: orange;"> 4 </span>' +
+              '{{else}}' +
+              '<span style="padding: 5px;"> 4 </span>' +
+              '{{/if}}' +
+              '{{/if}}' +
+              '{{#if SDL.RadioModel.hdChannelAvailableCurrent.[4]}}' +
+              '{{#if SDL.RadioModel.hdChannelCurrent.[4]}}' +
+              '<span style="padding: 5px;color: orange;"> 5 </span>' +
+              '{{else}}' +
+              '<span style="padding: 5px;"> 5 </span>' +
+              '{{/if}}' +
+              '{{/if}}' +
+              '{{#if SDL.RadioModel.hdChannelAvailableCurrent.[5]}}' +
+              '{{#if SDL.RadioModel.hdChannelCurrent.[5]}}' +
+              '<span style="padding: 5px;color: orange;"> 6 </span>' +
+              '{{else}}' +
+              '<span style="padding: 5px;"> 6 </span>' +
+              '{{/if}}' +
+              '{{/if}}' +
+              '{{#if SDL.RadioModel.hdChannelAvailableCurrent.[6]}}' +
+              '{{#if SDL.RadioModel.hdChannelCurrent.[6]}}' +
+              '<span style="padding: 5px;color: orange;"> 7 </span>' +
+              '{{else}}' +
+              '<span style="padding: 5px;"> 7 </span>' +
               '{{/if}}' +
               '{{/if}}' +
               '{{/if}}' +

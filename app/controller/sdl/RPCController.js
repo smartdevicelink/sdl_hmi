@@ -419,6 +419,12 @@ SDL.RPCController = Em.Object.create(
           };
           return this.resultStruct;
         },
+        GetSystemTime: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
         /**
          * Validate method for request MixingAudioSupported
          *
@@ -1110,6 +1116,39 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         /**
+         * Validate method for request SetGlobalProperties
+         *
+         * @param {Object}
+         *            params
+         */
+        SetGlobalProperties: function(params) {
+          if (params == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'params\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if (params.appID == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'appID\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if (typeof params.appID != 'number') {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Wrong type of parameter \'appID\'!'
+            };
+            return this.resultStruct;
+          }
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        /**
          * Validate method for request IsReady
          *
          * @param {Object}
@@ -1228,6 +1267,12 @@ SDL.RPCController = Em.Object.create(
             };
             return this.resultStruct;
           }
+        },
+        SendHapticData: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
         },
         /**
          * Validate method for request Show
@@ -1383,6 +1428,15 @@ SDL.RPCController = Em.Object.create(
             this.resultStruct = {
               'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
               'resultMessage': 'Parameter \'params\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if ('menuIcon' in params &&
+            (params.menuIcon.imageType !== 'DYNAMIC' &&
+            params.menuIcon.imageType !== 'STATIC')) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Unsupported image type!'
             };
             return this.resultStruct;
           }
@@ -2033,6 +2087,12 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         SetInteriorVehicleData: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        OnRCStatus: function(params) {
           this.resultStruct = {
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };

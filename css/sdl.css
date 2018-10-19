@@ -65,6 +65,39 @@
     float: left;
 }
 
+.day-mode .ico-overlay{
+    background:url(../images/template/imagetype-pattern-day.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    width: 50px;
+    height: 49px;
+    z-index: 1001;
+}
+
+.night-mode .ico-overlay{
+    background:url(../images/template/imagetype-pattern-night.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    width: 50px;
+    height: 49px;
+    z-index: 1001;
+}
+
+.high-lighted-mode .ico-overlay{
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    width: 50px;
+    height: 49px;
+    z-index: 1001;
+}
+
 .softButton .right_text {
     padding-left: 5px !important;
 }
@@ -221,6 +254,36 @@
     width: 49px;
     float: left;
     position: relative;
+}
+
+#sdl_options .day-mode .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-day.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+    height: 49px;
+    width: 49px;
+}
+
+#sdl_options .night-mode .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-night.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+    height: 49px;
+    width: 49px;
+}
+
+#sdl_options .high-lighted-mode .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+    height: 49px;
+    width: 49px;
 }
 
 #info_nonMedia_options_submenu {
@@ -447,7 +510,7 @@
 #tbtTurnListView .list span,
 #perform_interaction_view .list span,
 #vr_help_list_view .list span {
-    margin-left: 15px;
+    margin-left: 55px;
 }
 
 #tbtTurnListView .list-content,
@@ -488,6 +551,44 @@
     background-repeat: repeat;
 }
 
+#perform_interaction_view .naviChoises .ffw-button .ico{
+    width: 110px;
+    height: 110px;
+}
+
+#perform_interaction_view .naviChoises .ffw-button.day-mode .ico-overlay {
+    width: 110px;
+    height: 110px;
+    background:url(../images/template/imagetype-pattern-day.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    z-index: 1001;
+}
+
+#perform_interaction_view .naviChoises .ffw-button.night-mode .ico-overlay {
+    width: 110px;
+    height: 110px;
+    background:url(../images/template/imagetype-pattern-night.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    z-index: 1001;
+}
+
+#perform_interaction_view .naviChoises .ffw-button.high-lighted-mode .ico-overlay {
+    width: 110px;
+    height: 110px;
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    z-index: 1001;
+}
+
 #sdl_view_container .cd_logo {
     position: absolute;
     top: 90px;
@@ -506,6 +607,27 @@
     -webkit-border-radius: 2px;
     width: 109px;
     height: 109px;
+}
+
+#sdl_view_container .is-template.day-mode {
+    background:url(../images/template/imagetype-pattern-day.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+}
+
+#sdl_view_container .is-template.night-mode {
+    background:url(../images/template/imagetype-pattern-night.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
+}
+
+#sdl_view_container .is-template.high-lighted-mode {
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    opacity: 0.6;
+    z-index: 1001;
+    position: absolute;
 }
 
 #sdl_view_container .timeV2 {
@@ -560,7 +682,7 @@
 
 #exitAppView, #tbtClientStateView,
 #VehicleInfo, #systemRequestView,
-#PrimaryDevice {
+#PrimaryDevice, #sendMessageView {
     opacity: 0;
     left: 50px;
     width: 700px;
@@ -595,6 +717,7 @@
 #exitAppView.active,
 #systemRequestView.active,
 #tbtClientStateView.active,
+#sendMessageView.active,
 #VehicleInfo.active,
 #PrimaryDevice.active {
     opacity: 1;
@@ -610,12 +733,21 @@
 #VehicleInfo .speedLabel,
 #PrimaryDevice .chooseLabel {
     top: 70px;
-    width: 600px;
+    width: 290px;
     left: 40px;
     height: 20px;
     padding: 10px;
     background: #535353;
 }
+
+#exitAppView .signalLabel{
+    top: 70px;
+    width: 290px;
+    left: 355px;
+    height: 20px;
+    padding: 10px;
+    background: #535353;
+ }
 
 #VehicleInfo .vehicleDataChange {
     top: 125px;
@@ -667,7 +799,17 @@
     top: 125px;
     position: absolute;
     width: 150px;
-    left: 275px;
+    left: 40px;
+    height: 40px;
+    color: white;
+    background: #393939;
+}
+
+#exitAppView .signalSelect{
+    top: 125px;
+    position: absolute;
+    width: 150px;
+    left: 355px;
     height: 40px;
     color: white;
     background: #393939;
@@ -762,6 +904,35 @@
     border: 1px solid white;
 }
 
+#exitAppView .sendAppStateButton {
+    right: 268px;
+    top: 125px;
+    width: 127px;
+    left: 200px;
+    height: 18px;
+    padding: 10px;
+    line-height: 22px;
+    border-radius: 0px;
+    border: 1px solid white;
+}
+
+#exitAppView .sendSignalButton {
+    right: 268px;
+    top: 125px;
+    width: 127px;
+    left: 516px;
+    height: 18px;
+    padding: 10px;
+    line-height: 22px;
+    border-radius: 0px;
+    border: 1px solid white;
+}
+
+#exitAppView .onAwakeSDLButton.pressed,
+#exitAppView .sendAppStateButton.pressed {
+    border: 1px solid red;
+}
+
 #VehicleInfo .odometrTitle {
     top: 180px;
     width: 290px;
@@ -775,6 +946,7 @@
 #VehicleInfo .speedInput,
 #VehicleInfo .fuelLevelInput,
 #systemRequestView .urlsInput,
+#systemRequestView .requestSubTypeInput,
 #systemRequestView .policyAppIdInput,
 #systemRequestView .fileNameInput,
 #policies_settings_get_urls .listInput {
@@ -799,6 +971,7 @@
 }
 
 #systemRequestView .urlsInput,
+#systemRequestView .requestSubTypeInput,
 #systemRequestView .policyAppIdInput,
 #systemRequestView .fileNameInput {
     height: 30px;
@@ -813,6 +986,11 @@
     left: 60px;
 }
 
+#systemRequestView .systemRequestLabel {
+    top: 224px;
+    left: 13px;
+}
+
 #systemRequestView .policyAppIdLabel {
     top: 223px;
     left: 30px;
@@ -825,6 +1003,10 @@
 
 #systemRequestView .urlsInput {
     top: 180px;
+}
+
+#systemRequestView .requestSubTypeInput {
+    top: 217px;
 }
 
 #systemRequestView .policyAppIdInput {
@@ -1277,6 +1459,69 @@
     background-repeat: no-repeat;
 }
 
+#TurnByTurnView .turnIcon,
+#TurnByTurnView .nextTurnIcon {
+    border: 1px solid #222;
+    left: 540px;
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+#TurnByTurnView .turnIcon .ico, 
+#TurnByTurnView .nextTurnIcon .ico 
+{
+    width: 100px;
+    height: 100px;
+    background-repeat: round;
+}
+
+#TurnByTurnView .turnIcon.high-lighted-mode.is-template .ico-overlay,
+#TurnByTurnView .nextTurnIcon.high-lighted-mode.is-template .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.4;
+    width: 100px;
+    height: 100px;
+    z-index: 1001;
+}
+
+#TurnByTurnView .turnIcon.day-mode.is-template .ico-overlay,
+#TurnByTurnView .nextTurnIcon.day-mode.is-template .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-day.png);
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.6;
+    width: 100px;
+    height: 100px;
+    z-index: 1001;
+}
+
+#TurnByTurnView .turnIcon.night-mode.is-template .ico-overlay,
+#TurnByTurnView .nextTurnIcon.night-mode.is-template .ico-overlay
+{
+    background:url(../images/template/imagetype-pattern-night.png);
+    top: 0px;
+    left: 0px;
+    position: absolute;
+    background-position: -6px -11px;
+    background-repeat: round;
+    opacity: 0.6;
+    width: 100px;
+    height: 100px;
+    z-index: 1001;
+}
+
 #TurnByTurnView .distanceToManeuver {
     top: 80px;
     left: 419px;
@@ -1449,4 +1694,98 @@
 
 #media_app_options_view .list-content {
     width: 578px;
+}
+
+#sendMessageView .backButton {
+    width: 40px;
+    height: 45px;
+    top: 4px;
+    left: 655px;
+    background: 0; 
+}
+
+#sendMessageView .setButton {
+    width: 255px;
+    height: 40px;
+    left: 202px;
+    top: 282px;
+    border-radius: 31px;
+    background-color: #1D1D1D;
+    border: 1px solid #383737;
+    box-shadow: inset 5px 5px 10px #383737, inset -3px -3px 10px black;
+    font-size: 38px;
+    line-height: 42px;
+    text-align: center;
+    position: relative;
+    float: left;
+    margin-left: 10px;
+    margin-top: 10px;
+}  
+#sendMessageView .setButton .text{
+    top: 20px;
+    left: 20px;
+}
+
+#sendMessageView .lightStatusLabel {
+    top: 30px;
+    left: 30px;
+}
+
+#sendMessageView .lightDensityLabel {
+    top: 50px;
+    left: 30px;
+}
+
+#sendMessageView .lightColorLabel {
+    top: 70px;
+    left: 30px;
+}
+
+#sendMessageView .rLabel {
+    top: 90px;
+    left: 40px;
+}
+
+#sendMessageView .gLabel {
+    top: 110px;
+    left: 40px;
+}
+
+#sendMessageView .bLabel {
+    top: 130px;
+    left: 40px;
+}
+
+#sendMessageView .lightStatusSelect {
+    position: absolute;
+    top: 30px;
+    left: 160px;
+}
+
+#sendMessageView .densityInput {
+    position: absolute;
+    top: 50px;
+    left: 160px;
+    width: 47px;
+}
+
+#sendMessageView .rInput {
+    position: absolute;
+    top: 90px;
+    left: 160px;
+    width: 47px;
+}
+
+#sendMessageView .gInput {
+    position: absolute;
+    top: 110px;
+    left: 160px;
+    width: 47px;
+}
+
+#sendMessageView .bInput {
+    position: absolute;
+    top: 130px;
+    left: 160px;
+    width: 47px;
 }

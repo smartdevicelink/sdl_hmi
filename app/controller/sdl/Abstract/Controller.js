@@ -731,7 +731,14 @@ SDL.SDLController = Em.Object.extend(
           messageRequestId,
           'UI.ScrollableMessage'
         );
-      } else {
+      }else if(result == SDL.SDLModel.data.resultCode.WARNINGS) {
+        FFW.UI.sendUIResult(
+          result,
+          messageRequestId,
+          'UI.ScrollableMessage'
+        );
+      }
+      else {
         FFW.UI.sendError(
           result,
           messageRequestId,
@@ -1071,11 +1078,38 @@ SDL.SDLController = Em.Object.extend(
      *
      * @param {Object}
      */
-    onActivateSDLApp: function(element) {
-      if (SDL.SDLModel.data.VRActive) {
-        SDL.SDLModel.data.toggleProperty('VRActive');
+    onActivateSDLApp: function(element) {  
+      reverseFunctionalityEnabled = SDL.SDLModel.get('reverseFunctionalityEnabled');    
+      function ActivateSDLApp(enable_rc){
+        if(enable_rc && !reverseFunctionalityEnabled){
+          SDL.SDLController.toggleRSDLFunctionality();
+        }
+
+        if (SDL.SDLModel.data.VRActive) {
+          SDL.SDLModel.data.toggleProperty('VRActive');
+        }
+        FFW.BasicCommunication.ActivateApp(element.appID);
+      } 
+      
+      if (reverseFunctionalityEnabled){
+        ActivateSDLApp(true);
+        return;
       }
-      FFW.BasicCommunication.ActivateApp(element.appID);
+
+      if(SDL.SDLController.getApplicationModel(element.appID).appType.indexOf('REMOTE_CONTROL')!=-1){
+      popUp = SDL.PopUp.create();
+      popUp.buttonOk.text = "Yes";
+      popUp.buttonCancel.text = "No";
+
+      popUp.appendTo('body').popupActivate(
+        'Enable remote control feature for all mobile apps?' +
+        'Please press Yes to enable remote control or No to cancel.',
+        ActivateSDLApp
+        );
+      }else
+      {
+      ActivateSDLApp(false);
+      }
     },
     /**
      * Method sent custom softButtons pressed and event status to RPC

@@ -124,6 +124,9 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceSubscribeRequestID = this.client
           .subscribeToNotification(this.onResumeAudioSourceNotification);
+        setTimeout(function() {
+          FFW.BasicCommunication.OnSystemTimeReady();
+        }, 500);
       },
       /**
        * Client is unregistered - no more requests
@@ -243,7 +246,10 @@ FFW.BasicCommunication = FFW.RPCObserver
           } else {
             this.OnSystemRequest('PROPRIETARY');
           }
-          SDL.SettingsController.policyUpdateRetry();
+
+          if (FLAGS.ExternalPolicies === true) {
+            SDL.SettingsController.policyUpdateRetry();
+          }
         }
       },
       /**
@@ -289,6 +295,11 @@ FFW.BasicCommunication = FFW.RPCObserver
             case 'UP_TO_DATE':
             {
               messageCode = 'StatusUpToDate';
+              //Update is complete, stop retry sequence
+              if (FLAGS.ExternalPolicies === true) {
+                SDL.SettingsController.policyUpdateRetry('ABORT');
+              }
+              SDL.SettingsController.policyUpdateFile = null;
               break;
             }
             case 'UPDATING':
@@ -397,13 +408,11 @@ FFW.BasicCommunication = FFW.RPCObserver
             SDL.InfoAppsView.showAppList();
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
-            SDL.SettingsController.policyUpdateRetry('ABORT');
             if(FLAGS.ExternalPolicies === true) {
               FFW.ExternalPolicies.unpack(request.params.fileName);
             } else {
               this.OnReceivedPolicyUpdate(request.params.fileName);
             }
-            SDL.SettingsController.policyUpdateFile = null;
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,
@@ -515,6 +524,32 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
+          }
+          if (request.method == 'BasicCommunication.GetSystemTime') {
+            var date = new Date();
+            var systemTime = {
+              millisecond: date.getMilliseconds(),
+              second: date.getSeconds(),
+              minute: date.getMinutes(),
+              hour: date.getHours(),
+              day: date.getDate(),
+              month: date.getMonth()+1,
+              year: date.getFullYear(),
+              tz_hour: Math.floor(date.getTimezoneOffset()/-60),
+              tz_minute: Math.abs(date.getTimezoneOffset()%60)
+            };
+
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
+                'method': request.method,
+                'systemTime':systemTime
+              }
+            };
+
+            this.client.send(JSONMessage);
           }
         }
       },
@@ -905,6 +940,17 @@ FFW.BasicCommunication = FFW.RPCObserver
         this.client.send(JSONMessage);
       },
       /**
+       * notification that HMI is ready to provide system time
+       */
+      OnSystemTimeReady: function() {
+        Em.Logger.log('FFW.BasicCommunication.OnSystemTimeReady');
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'method': 'BasicCommunication.OnSystemTimeReady'
+        };
+        this.client.send(JSONMessage);
+      },
+      /**
        * Sent notification to SDL when HMI closes
        */
       OnIgnitionCycleOver: function() {
@@ -1122,7 +1168,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       /**
        * Initiated by HMI.
        */
-      OnSystemRequest: function(type, fileName, url, appID) {
+      OnSystemRequest: function(type, fileName, url, appID, subType) {
         Em.Logger.log('FFW.BasicCommunication.OnSystemRequest');
         // send request
         var JSONMessage = {
@@ -1143,6 +1189,14 @@ FFW.BasicCommunication = FFW.RPCObserver
         if (appID) {
           JSONMessage.params.appID = appID;
         }
+
+        var requestSubTypeNotApplicable =
+              (JSONMessage.params.fileType == 'BINARY' && type == "HTTP") ||
+              (JSONMessage.params.fileType == 'JSON' && type == "PROPRIETARY");
+        if (subType && subType.length > 0 && !requestSubTypeNotApplicable) {
+          JSONMessage.params.requestSubType = subType;
+        }
+
         this.client.send(JSONMessage);
       },
       /**

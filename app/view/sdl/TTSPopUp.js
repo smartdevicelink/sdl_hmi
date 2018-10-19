@@ -52,6 +52,7 @@ SDL.TTSPopUp = Em.ContainerView.create(
     timer: null,
     appID: null,
     timerSeconds: 5,
+    player: SDL.AudioPlayer.create(),
     popUp: Ember.TextArea.extend(
       {
         elementId: 'popUp',
@@ -101,13 +102,22 @@ SDL.TTSPopUp = Em.ContainerView.create(
       this.set('timerSeconds', 10);
       FFW.TTS.OnResetTimeout(this.appID, 'TTS.Speak');
     },
-    ActivateTTS: function(msg, appID) {
+    ActivateTTS: function(msg, files, appID) {
       if (this.timer || this.active) {
         this.DeactivateTTS();
       }
       var self = this;
       this.set('appID', appID);
       this.set('content', msg);
+
+      if (files != undefined && files != '') {
+        var files_to_play = files.split('\n');
+        for (var i = 0; i < files_to_play.length; ++i) {
+          this.player.addFile(files_to_play[i]);
+        }
+        this.player.playFiles();
+      }
+
       this.set('active', true);
       clearInterval(this.timer);
       this.timer = setInterval(
@@ -115,6 +125,7 @@ SDL.TTSPopUp = Em.ContainerView.create(
           self.set('timerSeconds', self.timerSeconds - 1);
         }, 1000
       ); // timeout for TTS popUp timer interval in milliseconds
+
       FFW.TTS.Started();
     },
     timerHandler: function() {
@@ -125,6 +136,8 @@ SDL.TTSPopUp = Em.ContainerView.create(
     DeactivateTTS: function() {
       clearInterval(this.timer);
       this.timer = null;
+      this.player.stopPlaying();
+      this.player.clearFiles();
       this.set('active', false);
       this.appID = null;
       this.set('timerSeconds', 5);

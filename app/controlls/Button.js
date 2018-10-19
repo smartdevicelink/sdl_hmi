@@ -38,7 +38,8 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
     ],
 
     classNameBindings: [
-      'pressed', 'disabled', 'hidden'
+      'pressed', 'disabled', 'hidden',
+      'dayMode','nightMode','highLightedMode'
     ],
 
     /** Pressed state binding */
@@ -47,6 +48,9 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
     /** Disable actions on button */
     disabled: false,
 
+    dayMode:false,
+    nightMode:false,
+    highLightedMode:false,
     /** Button icon class */
     icon: null,
 
@@ -75,6 +79,17 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
     helpMode: false,
     /**  */
     targetElement: null,
+    setMode:function(mode){
+      this.set('dayMode',false);
+      this.set('nightMode',false);
+      this.set('highLightedMode',false);
+      switch(mode){
+        case SDL.SDLModel.data.imageModeList[0]:this.set('dayMode',true);break;
+        case SDL.SDLModel.data.imageModeList[1]:this.set('nightMode',true);break;
+        case SDL.SDLModel.data.imageModeList[2]:this.set('highLightedMode',true);break;
+        default:this.set('dayMode',true);
+      }
+    },
 
     actionDown: function(event) {
 
@@ -162,6 +177,11 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
       ),
 
       rightText: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span class="right_text">{{view.text}}</span>'
+      ),
+      rightTextOverLay: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
         '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
         '<span class="right_text">{{view.text}}</span>'
       ),

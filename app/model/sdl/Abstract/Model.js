@@ -392,17 +392,13 @@ SDL.SDLModel = Em.Object.extend({
 
     var appID = null;
 
-    if (SDL.SDLController.model &&
-      this.appTypeComparison(SDL.SDLController.model, 'NAVIGATION')) {
-
+    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
       appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited &&
-      this.appTypeComparison(
-        SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited),
-        'NAVIGATION'
-      )) {
-
-      appID = SDL.SDLModel.data.stateLimited;
+    } else if (SDL.SDLModel.data.stateLimited) {
+      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+      if (this.isStreamingSupported(model)) {
+        appID = SDL.SDLModel.data.stateLimited;
+      }
     }
 
     SDL.SDLModel.playVideo(appID);
@@ -430,11 +426,28 @@ SDL.SDLModel = Em.Object.extend({
   },
 
   /**
+   * Function to verify if model supports audio/video streaming
+   *
+   * @param type
+   * @returns {boolean}
+   */
+  isStreamingSupported: function(model) {
+    return this.appTypeComparison(model, 'NAVIGATION') ||
+           this.appTypeComparison(model, 'PROJECTION');
+  },
+
+  /**
    * Method to stop playing video streaming
    *
    * @param {Number}
    */
   stopStream: function(appID) {
+
+    if (SDL.SDLModel.data.naviVideo) {
+      SDL.SDLModel.data.naviVideo.pause();
+      SDL.SDLModel.data.naviVideo.src = '';
+      SDL.SDLModel.data.naviVideo = null;
+    }
 
     var createVideoView = Ember.View.create({
           templateName: 'video',
@@ -462,17 +475,13 @@ SDL.SDLModel = Em.Object.extend({
 
     var appID = null;
 
-    if (SDL.SDLController.model &&
-      this.appTypeComparison(SDL.SDLController.model, 'NAVIGATION')) {
-
+    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
       appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited &&
-      this.appTypeComparison(
-        SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited),
-        'NAVIGATION'
-      )) {
-
-      appID = SDL.SDLModel.data.stateLimited;
+    } else if (SDL.SDLModel.data.stateLimited) {
+      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+      if (this.isStreamingSupported(model)) {
+        appID = SDL.SDLModel.data.stateLimited;
+      }
     }
 
     SDL.StreamAudio.play(
@@ -489,15 +498,13 @@ SDL.SDLModel = Em.Object.extend({
 
     var appID = null;
 
-    if (SDL.SDLController.model &&
-      SDL.SDLController.model.appType == 'NAVIGATION') {
-
+    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
       appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited &&
-      SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited
-      ).appType == 'NAVIGATION') {
-
-      appID = SDL.SDLModel.data.stateLimited;
+    } else if (SDL.SDLModel.data.stateLimited) {
+      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+      if (this.isStreamingSupported(model)) {
+        appID = SDL.SDLModel.data.stateLimited;
+      }
     }
 
     SDL.StreamAudio.stop();
@@ -514,7 +521,17 @@ SDL.SDLModel = Em.Object.extend({
         SDL.SDLModel.data.naviVideo.src = SDL.SDLController.getApplicationModel(
           appID
         ).navigationStream;
-        SDL.SDLModel.data.naviVideo.play();
+
+        var playPromise = SDL.SDLModel.data.naviVideo.play();
+        if (playPromise !== undefined) {
+          playPromise.then(_ => {
+            console.log('Video playback started OK');
+          })
+          .catch(error => {
+            console.log('Video playback start failed: ' + error);
+            SDL.SDLModel.data.naviVideo = null;
+          });
+        }
       }
     },
 
@@ -552,7 +569,7 @@ SDL.SDLModel = Em.Object.extend({
         set('constantTBTParams', params);
     SDL.SDLController.getApplicationModel(params.appID).
         set('tbtActivate', true);
-
+  
     if (SDL.SDLController.model) {
       SDL.SDLController.activateTBT();
     }
@@ -639,12 +656,16 @@ SDL.SDLModel = Em.Object.extend({
     var message = {};
 
     var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
-      app = SDL.SDLController.getApplicationModel(params.appID);
+    app = SDL.SDLController.getApplicationModel(params.appID);
+
+    if (app != null && params.icon != null) {
+    	console.log('Resuming application icon for ' + params.appID);
+    	this.setAppIconByAppId(params.appID, params.icon);
+    }
 
     if (app != undefined && app.initialized == false) {
-
-      if (app.isMedia != params.isMediaApplication) { // If current not initialized model doe not matches the registered application type
-        this.convertModel(params);                   // then model should be changed
+      if (app.isMedia != params.isMediaApplication) { // If current not initialized model does not matches the registered application type
+        this.convertModel(params);                    // then model should be changed
       } else {
         app.disabledToActivate = params.greyOut;
       }
@@ -695,6 +716,31 @@ SDL.SDLModel = Em.Object.extend({
         };
       this.addCommandVR(message);
     }
+  },
+
+  /**
+   * Method to set specified application icon to the new one
+   *
+   * @param {Number}
+   *            appID
+   * @param {String}
+   *            path
+   */
+  setAppIconByAppId: function(appID, path) {
+    var img = new Image();
+    img.onload = function() {
+       var model = SDL.SDLController.getApplicationModel(appID);
+       if (model != null) {
+         console.log('Icon for ' + appID + ' was set to ' + path);
+         model.set('appIcon', img.src + '?' + new Date().getTime());
+        }
+    };
+    img.onerror = function(event) {
+        console.log('Error: Icon for ' + appID + ' was not set properly');
+        return false;
+    };
+
+    img.src = path;
   },
 
   /**
@@ -881,10 +927,10 @@ SDL.SDLModel = Em.Object.extend({
 
       var img = new Image();
       img.onload = function() {
-
+        var model=SDL.SDLController.getApplicationModel(message.appID);
         // code to set the src on success
-        SDL.SDLController.getApplicationModel(message.appID).
-            set('appIcon', message.syncFileName.value);
+        model.set('appIcon', img.src + '?' + new Date().getTime());
+        model.set('isTemplateIcon', message.syncFileName.isTemplate === true);
         FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, id, method);
       };
       img.onerror = function(event) {
@@ -1092,12 +1138,17 @@ SDL.SDLModel = Em.Object.extend({
    */
   onPrompt: function(ttsChunks, appID) {
 
-    var message = '';
+    var message = '', files = '';
     if (ttsChunks) {
       for (var i = 0; i < ttsChunks.length; i++) {
-        message += ttsChunks[i].text + '\n';
+        if ('TEXT' == ttsChunks[i].type) {
+          message += ttsChunks[i].text + '\n';
+        }
+        if ('FILE' == ttsChunks[i].type) {
+          files += ttsChunks[i].text + '\n';
+        }
       }
-      SDL.TTSPopUp.ActivateTTS(message, appID);
+      SDL.TTSPopUp.ActivateTTS(message, files, appID);
     }
   },
 
@@ -1252,13 +1303,12 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      if (SDL.SDLModel.data.stateLimited &&
-        reason === 'AUDIO' &&
-        SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited).
-            appType.indexOf('NAVIGATION') < 0) {
-
-        SDL.SDLModel.data.stateLimited = null;
-        SDL.SDLModel.data.set('limitedExist', false);
+      if (SDL.SDLModel.data.stateLimited && reason === 'AUDIO') {
+        var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+        if (!this.isStreamingSupported(model)) {
+          SDL.SDLModel.data.stateLimited = null;
+          SDL.SDLModel.data.set('limitedExist', false);
+        }
       }
 
       SDL.TurnByTurnView.deactivate();

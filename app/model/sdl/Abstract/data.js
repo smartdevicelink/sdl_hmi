@@ -59,7 +59,7 @@ SDL.SDLModelData = Em.Object.create(
       'PLAY_PAUSE': 0,
       'PLAY': 1,
       'PAUSE': 2,
-      'BUFFERING': 3
+      'STOP': 3
     },
     /**
      * Structure specified for PoliceUpdate retry sequence
@@ -146,7 +146,7 @@ SDL.SDLModelData = Em.Object.create(
      *
      * @type {Object}
      */
-    naviVideo: {},
+    naviVideo: null,
     /**
      * Array of strings came in SDL.GetURLS response
      *
@@ -298,6 +298,23 @@ SDL.SDLModelData = Em.Object.create(
       }
     ],
     /**
+     * List of signals
+     */
+    Signals: [
+      {
+        name: 'WAKE_UP',
+        id: 0
+      },
+      {
+        name: 'IGNITION_OFF',
+        id: 1
+      },
+      {
+        name: 'LOW_VOLTAGE',
+        id: 2
+      }
+    ],
+    /**
      * List of states for OnSystemRequest notification
      */
     systemRequestState: [
@@ -380,8 +397,13 @@ SDL.SDLModelData = Em.Object.create(
       {
         name: 'FOTA',
         id: 19
+      },
+      {
+        name: 'OEM_SPECIFIC',
+        id: 20
       }
     ],
+
     /**
      * Data for AudioPassThruPopUp that contains params for visualisation
      *
@@ -625,6 +647,11 @@ SDL.SDLModelData = Em.Object.create(
       'HU-HU',
       'FI-FI',
       'SK-SK'
+    ],
+    imageModeList:[
+      'Day mode',
+      'Night mode',
+      'Highlighted mode'
     ]
   }
 );
