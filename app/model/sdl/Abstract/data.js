@@ -59,7 +59,7 @@ SDL.SDLModelData = Em.Object.create(
       'PLAY_PAUSE': 0,
       'PLAY': 1,
       'PAUSE': 2,
-      'BUFFERING': 3
+      'STOP': 3
     },
     /**
      * Structure specified for PoliceUpdate retry sequence
