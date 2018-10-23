@@ -871,6 +871,7 @@ FFW.UI = FFW.RPCObserver.create(
                   'navigation': true,
                   'phoneCall': true
                 },
+                'systemCapabilities': SDL.systemCapabilities,
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': 'UI.GetCapabilities'
               }
