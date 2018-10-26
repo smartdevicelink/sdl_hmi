@@ -376,9 +376,6 @@ FFW.BasicCommunication = FFW.RPCObserver
           if (request.method == 'BasicCommunication.AllowApp') {
             this.AllowApp(request);
           }
-          if (request.method == 'BasicCommunication.AllowDeviceToConnect') {
-            this.AllowDeviceToConnect(request.id, request.method, true);
-          }
           if (request.method == 'BasicCommunication.UpdateDeviceList') {
             SDL.SDLModel.onGetDeviceList(request.params);
             this.sendBCResult(
@@ -701,32 +698,6 @@ FFW.BasicCommunication = FFW.RPCObserver
           };
           this.client.send(JSONMessage);
         }
-      },
-      /**
-       * send response from onRPCRequest
-       *
-       * @param {Number}
-       *            id
-       * @param {String}
-       *            method
-       * @param {Boolean}
-       *            allow
-       */
-      AllowDeviceToConnect: function(id, method, allow) {
-        Em.Logger.log('FFW.' + method + 'Response');
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'result': {
-            'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum)
-            // from SDL
-            // protocol
-            'method': method,
-            'allow': allow
-          }
-        };
-        this.client.send(JSONMessage);
       },
       /**
        * Response with params of the last one supports mixing audio (ie
