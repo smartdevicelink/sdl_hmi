@@ -61,6 +61,10 @@ FLAGS = Em.Object.create(
      * 2 - P
      */
     SimpleFunctionality: 1,
-    ExternalPolicies: false
+    ExternalPolicies: false,
+    ProprietaryPolicies: true,
+    HTTPPolicies: false
+
+    
   }
 );

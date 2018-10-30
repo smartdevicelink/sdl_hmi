@@ -31,6 +31,7 @@ from threading import Thread
 from time import sleep
 import os
 import signal
+import json
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -43,8 +44,34 @@ def client_left(client, server):
 
 # Called when a client sends a message
 def message_received(client, server, message):
-	print("Client(%d) said: %s\r" % (client['id'], message))
-	
+	data = json.loads(message)
+	print("Client(%d) said: %s\r" % (client['id'], data))
+	if 'method' in data["params"]:
+		if data['params']['method'] == 'BasicCommunication.SystemRequest':
+			systemRequestEraseData(data['params']['filename'])
+			server.send_message(client,message)
+			return
+
+	sendLowVoltage(data["params"])
+
+# Called when a server received BasicCommunication.SystemRequest method
+def systemRequestEraseData(path):
+	file = open(path,'r')
+	content = file.read()
+	file.close()
+
+	data = json.loads(content)
+
+	if 'data' in data:
+		data = data['data']
+		data_to_write = json.dumps(data)
+
+		file = open(path,'w')
+		file.write(data_to_write)
+		file.close
+
+# Called for creat unix signal
+def sendLowVoltage(message):
 	# The value is taken from the file src/appMain/smartDeviceLink.ini
 	# Offset from SIGRTMIN
 	offset = {'LOW_VOLTAGE': 1, 'WAKE_UP': 2, 'IGNITION_OFF': 3}

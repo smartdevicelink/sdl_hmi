@@ -424,24 +424,28 @@ SDL.warningView = Em.ContainerView
                       'SDL.FuncSwitcher.rev::not-visible'
                     ],
                     childViews: [
-                      'checkBox',
-                      'text'
+                      'select'
                     ],
-                    checkBox: Em.Checkbox.extend(
+                    select: Em.Select.extend(
                       {
-                        elementId: 'externalPoliciesCheckBox',
-                        classNames: 'externalPoliciesCheckBox item',
-                        checkedBinding: 'FLAGS.ExternalPolicies'
-                      }
-                    ),
-                    text: SDL.Label.extend(
-                      {
-                        tagName: 'label',
-                        attributeBindings: [
-                          'this.parentView.checkBox.elementId:for'
-                        ],
-                        classNames: 'externalPoliciesText item',
-                        content: 'External Policies'
+                        contentBinding: 'SDL.SDLModel.data.policiesList',
+                        classNames: 'externalPoliciesCheckBox select',
+                        change: function() {
+                          var value = this.selection;
+                          FLAGS.set('ExternalPolicies', false),
+                          FLAGS.set('ProprietaryPolicies', false),
+                          FLAGS.set('HTTPPolicies', false)
+                          if('EXTERNAL_PROPRIETARY' == value) {
+                            FLAGS.set('ExternalPolicies', true)
+                          }
+                          if('PROPRIETARY' == value) {
+                            FLAGS.set('ProprietaryPolicies', true)
+                          }
+                          if('HTTP' == value) {
+                            FLAGS.set('HTTPPolicies', true)
+                          }
+
+                        }
                       }
                     )
                   }

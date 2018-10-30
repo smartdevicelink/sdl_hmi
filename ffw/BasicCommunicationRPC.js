@@ -405,16 +405,16 @@ FFW.BasicCommunication = FFW.RPCObserver
             SDL.InfoAppsView.showAppList();
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
-            if(FLAGS.ExternalPolicies === true) {
-              FFW.ExternalPolicies.unpack(request.params.fileName);
-            } else {
-              this.OnReceivedPolicyUpdate(request.params.fileName);
+            if(FLAGS.HTTPPolicies === false) {
+              var JSONMessage = {
+                'params': {
+                  'method': request.method,
+                  'filename': request.params.fileName,
+                  'id': request.id
+                }
+              };
+              FFW.RPCSimpleClient.send(JSONMessage);
             }
-            this.sendBCResult(
-              SDL.SDLModel.data.resultCode.SUCCESS,
-              request.id,
-              request.method
-            );
           }
           if (request.method == 'BasicCommunication.DialNumber') {
             SDL.PopUp.create().appendTo('body').popupActivate(
