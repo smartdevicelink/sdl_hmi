@@ -1346,6 +1346,15 @@ input[type=radio]:checked ~ .label {
     -webkit-transition: all 0.25s linear;
 }
 
+ .select {
+    position: relative;
+    float: left;
+    margin-left: 10px;
+    color: black;
+    cursor: pointer;
+    -webkit-transition: all 0.25s linear;
+ }
+
 #warning_view .item:hover{
     color: #FFFFFF;
 }

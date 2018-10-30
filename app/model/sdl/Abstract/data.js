@@ -652,6 +652,11 @@ SDL.SDLModelData = Em.Object.create(
       'Day mode',
       'Night mode',
       'Highlighted mode'
+    ],
+    policiesList: [
+      'PROPRIETARY',
+      'EXTERNAL_PROPRIETARY',
+      'HTTP'
     ]
   }
 );

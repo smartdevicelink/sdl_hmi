@@ -31,6 +31,7 @@ from threading import Thread
 from time import sleep
 import os
 import signal
+import json
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -43,8 +44,82 @@ def client_left(client, server):
 
 # Called when a client sends a message
 def message_received(client, server, message):
-	print("Client(%d) said: %s\r" % (client['id'], message))
+	data = json.loads(message)
+	print("Client(%d) said: %s\r" % (client['id'], data))
+	if 'method' in data["params"]:
+		if data['params']['method'] == 'BasicCommunication.PolicyUpdate':
+			policyUpdate(data['params']['file'])
+			server.send_message(client,message)
+			return
+		
+		if data['params']['method'] == 'BasicCommunication.SystemRequest':
+			systemRequestEraseData(data['params']['filename'])
+			server.send_message(client,message)
+			return
+
+	sendLowVoltage(data["params"])
+
+# Called when a server received BasicCommunication.SystemRequest method
+def systemRequestEraseData(path):
+	file = open(path,'r')
+	content = file.read()
+	file.close()
+
+	data = json.loads(content)
+
+	if 'data' in data:
+		data = data['data']
+		data_to_write = json.dumps(data)
+
+		file = open(path,'w')
+		file.write(data_to_write)
+		file.close
+		
+# Called when a server received BasicCommunication.PolicyUpdate method
+def policyUpdate(path):
+	file = open(path,'r')
+	content = file.read()
+	file.close()
+
+	data = json.loads(content)
+
+	policy_table = data['policy_table']
+	HTTPHeader = createHTTPHeader(policy_table)
+
+	data_to_write = json.dumps(HTTPHeader)
+
+	file = open(path,'w')
+
+	file.write(data_to_write)
+
+	file.close()
+
+# Create HTTPHeader for BasicCommunication.PolicyUpdate request
+def createHTTPHeader(policy_table):
 	
+	HTTPHeader =  {'HTTPRequest': {}}
+	
+	HTTPRequest = HTTPHeader['HTTPRequest']
+	HTTPRequest['headers'] = {}
+
+	encoded = json.dumps(policy_table)
+
+	HTTPRequest['body'] = encoded
+	
+	HTTPRequest['headers']['ConnectTimeout'] = policy_table['module_config']['timeout_after_x_seconds']
+	HTTPRequest['headers']['Content-Length'] = len(encoded)
+	HTTPRequest['headers']['ContentType'] = "application/json"
+	HTTPRequest['headers']['DoInput'] = True
+	HTTPRequest['headers']['DoOutput'] = True
+	HTTPRequest['headers']['InstanceFollowRedirects'] = False
+	HTTPRequest['headers']['ReadTimeout'] = policy_table['module_config']['timeout_after_x_seconds']
+	HTTPRequest['headers']['RequestMethod'] = 'POST'
+	HTTPRequest['headers']['UseCaches'] = False
+	HTTPRequest['headers']['charset'] = 'utf-8'
+	return HTTPHeader
+
+# Called for creat unix signal
+def sendLowVoltage(message):
 	# The value is taken from the file src/appMain/smartDeviceLink.ini
 	# Offset from SIGRTMIN
 	offset = {'LOW_VOLTAGE': 1, 'WAKE_UP': 2, 'IGNITION_OFF': 3}

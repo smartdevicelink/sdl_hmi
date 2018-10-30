@@ -405,16 +405,16 @@ FFW.BasicCommunication = FFW.RPCObserver
             SDL.InfoAppsView.showAppList();
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
-            if(FLAGS.ExternalPolicies === true) {
-              FFW.ExternalPolicies.unpack(request.params.fileName);
-            } else {
-              this.OnReceivedPolicyUpdate(request.params.fileName);
-            }
-            this.sendBCResult(
-              SDL.SDLModel.data.resultCode.SUCCESS,
-              request.id,
-              request.method
-            );
+            if(FLAGS.HTTPPolicies === false) {
+              var JSONMessage = {
+                'params': {
+                  'method': request.method,
+                  'filename': request.params.fileName,
+                  'id': request.id
+                }
+              };
+              FFW.RPCSimpleClient.send(JSONMessage);
+            } 
           }
           if (request.method == 'BasicCommunication.DialNumber') {
             SDL.PopUp.create().appendTo('body').popupActivate(
@@ -507,6 +507,17 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.client.send(JSONMessage);
           }
           if (request.method == 'BasicCommunication.PolicyUpdate') {
+            if(FLAGS.ExternalPolicies) {
+              var JSONMessage = {
+                'params': {
+                  'method': request.method,
+                  'file': request.params.file,
+                  'id': request.id
+                }
+              };
+              FFW.RPCSimpleClient.send(JSONMessage);
+              return;
+            }
             SDL.SettingsController.policyUpdateFile = request.params.file;
             SDL.SDLModel.data.policyUpdateRetry.timeout
               = request.params.timeout;

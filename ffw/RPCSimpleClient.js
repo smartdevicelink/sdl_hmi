@@ -41,6 +41,9 @@ FFW.RPCSimpleClient = Em.Object.create({
       this.socket.onmessage = function(evt) {
         self.onWSMessage(evt);
       };
+      this.socket.onerror = function(evt) {
+        self.onWSerror(evt);
+      };
     },
     triggerMessageSend: function() {
       var self = this;
@@ -50,6 +53,18 @@ FFW.RPCSimpleClient = Em.Object.create({
         }, 100
       );
     },
+    onWSerror: function(data) {
+      var msg = this.sendData.pop();
+      if(msg.params.method !== undefined){
+        FFW.BasicCommunication.sendError(
+          SDL.SDLModel.data.resultCode.REJECTED,
+          msg.params.id,
+          msg.params.method,
+          'Server doesn\'t exist!'
+        );
+      }
+    },
+
     send:function(data){
       this.sendData.push(data);
 
@@ -61,19 +76,26 @@ FFW.RPCSimpleClient = Em.Object.create({
     },
     onSend: function(){
       var msg = this.sendData.pop();
-      Em.Logger.log('Message to be sent: ' + msg);
+      Em.Logger.log('Message to be sent: ' + JSON.stringify(msg));
 
       if (this.socket && this.socket.readyState == this.socket.OPEN){
-        this.socket.send(msg);
-      }
-      if (this.sendData.length > 0) {
-        this.triggerMessageSend();
-      } else {
-        this.socket.close();
+        this.socket.send(JSON.stringify(msg));
+      } 
+      if (msg.params.method == undefined) {
+        if (this.sendData.length > 0) {
+          this.triggerMessageSend();
+        } else {
+          this.socket.close();
+        }
       }
     },
     onWSMessage: function(evt) {
       Em.Logger.log('Message received: ' + evt.data);
+      var jsonObj = JSON.parse(evt.data);
+      FFW.BasicCommunication.sendBCResult(
+        SDL.SDLModel.data.resultCode.SUCCESS, jsonObj.params.id, jsonObj.params.method
+      );
+      this.socket.close();
     },
     onWSOpen: function(evt) {
       Em.Logger.log('RPCSimpleCLient.onWSOpen');
