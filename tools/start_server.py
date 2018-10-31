@@ -49,6 +49,8 @@ def message_received(client, server, message):
 	if 'method' in data["params"]:
 		if data['params']['method'] == 'BasicCommunication.SystemRequest':
 			systemRequestEraseData(data['params']['filename'])
+			data['params']['method'] = 'SDL.OnReceivedPolicyUpdate'
+			message = json.dumps(data)
 			server.send_message(client,message)
 			return
 
@@ -63,7 +65,7 @@ def systemRequestEraseData(path):
 	data = json.loads(content)
 
 	if 'data' in data:
-		data = data['data']
+		data = data['data'][0]
 		data_to_write = json.dumps(data)
 
 		file = open(path,'w')

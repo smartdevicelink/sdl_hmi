@@ -92,6 +92,9 @@ FFW.RPCSimpleClient = Em.Object.create({
     onWSMessage: function(evt) {
       Em.Logger.log('Message received: ' + evt.data);
       var jsonObj = JSON.parse(evt.data);
+      if(jsonObj.params.method == 'SDL.OnReceivedPolicyUpdate') {
+        FFW.BasicCommunication.OnReceivedPolicyUpdate(jsonObj.params.filename);
+      }
       FFW.BasicCommunication.sendBCResult(
         SDL.SDLModel.data.resultCode.SUCCESS, jsonObj.params.id, jsonObj.params.method
       );

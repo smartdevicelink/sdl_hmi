@@ -415,6 +415,11 @@ FFW.BasicCommunication = FFW.RPCObserver
               };
               FFW.RPCSimpleClient.send(JSONMessage);
             }
+            this.sendBCResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
+            );
           }
           if (request.method == 'BasicCommunication.DialNumber') {
             SDL.PopUp.create().appendTo('body').popupActivate(
