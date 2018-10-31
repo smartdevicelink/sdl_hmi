@@ -39,6 +39,7 @@ SDL.ControlButtons = Em.ContainerView.create({
     'VRButton',
     'buttonControls',
     'driverDistractionControl',
+    'lockScreenDismissalControl',
     'infoTable',
     'vehicleInfo',
     'tbtClientState',
@@ -471,37 +472,49 @@ getCurrentDisplayModeClass: function() {
       }
     ),
 
-  driverDistractionControl: Em.ContainerView.extend({
-        elementId: 'driverDistractionControl',
 
-        classNames: 'driverDistractionControl',
+    driverDistractionControl: SDL.Button.create({
+      elementId: 'driverDistractionControl',
+      classNames: 'driverDistractionControl btn',
+      text: 'DD',
+      action: 'driverDistractionButtonPress',
+      target: 'SDL.SDLController',
+      templateName: 'text'
+    }
+  ),
+    lockScreenDismissalControl: Em.ContainerView.extend({
+      elementId: 'lockScreenDismissalControl',
 
-        childViews: [
-          'driverDistractionLabel', 'driverDistractionCheckBox'
-        ],
+      classNames: 'lockScreenDismissalControl',
 
-        driverDistractionLabel: SDL.Label.extend({
+      childViews: [
+        'lockScreenDismissalLabel', 'lockScreenDismissalCheckBox'
+      ],
 
-          elementId: 'driverDistractionControlLabel',
+      lockScreenDismissalLabel: SDL.Label.extend({
 
-          classNames: 'driverDistractionControlLabel',
+        elementId: 'lockScreenDismissalLabel',
 
-          content: 'DD'
-        }
-      ),
+        classNames: 'lockScreenDismissalLabel',
 
-        driverDistractionCheckBox: Em.Checkbox.extend({
-
-          elementId: 'driverDistractionControlCheckBox',
-
-          classNames: 'driverDistractionControlCheckBox',
-
-          checkedBinding: 'SDL.SDLModel.data.driverDistractionState'
-
-        }
-      )
+        content: 'Lock screen'
       }
     ),
+
+    lockScreenDismissalCheckBox: Em.Checkbox.extend({
+
+        elementId: 'lockScreenDismissalCheckBox',
+
+        classNames: 'lockScreenDismissalCheckBox',
+
+        checkedBinding: 'SDL.SDLController.lockScreenDismissal',
+      
+
+        
+      }
+    )
+    }
+  ),
 
   buttonControls: Em.ContainerView.extend({
         elementId: 'buttonControls',

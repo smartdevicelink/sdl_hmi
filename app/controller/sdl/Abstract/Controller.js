@@ -32,7 +32,40 @@
  */
 SDL.SDLController = Em.Object.extend(
   {
+   /**
+    * Link to HMI view
+    **/
+    hmi_view: null,
+
+    /**
+     * Image object for lock screen
+     */
+    lockScreenImage: null,
+
+    /**
+     * Text object for lock screen
+     */
+    lockScreenText: null,
+
+    /**
+     * lockScreenDismissalEnabled Boolean
+     */
+    lockScreenDismissal: false,
+
+    /**
+     * init function
+     */
     init: function() {
+      /**
+       * Call method for initialize lock screen image object
+       */
+       this.lockScreenImageCreator();
+
+       /**
+       * Call method for initialize lock screen text object
+       */
+       this.lockScreenTextCreator();
+
       /**
        * Added object size counter
        */
@@ -45,6 +78,51 @@ SDL.SDLController = Em.Object.extend(
         }
         return size;
       };
+    },
+
+    /**
+     * Lock screen image object initializer
+     */
+    lockScreenImageCreator: function() {
+       this.lockScreenImage = document.createElement('img');
+       this.lockScreenImage.src = "images/common/lockscreen.png";
+       this.lockScreenImage.style = this.getImageStyle();
+    },
+
+    /**
+     * Lock screen text object initializer
+     */
+    lockScreenTextCreator: function() {
+        this.lockScreenText = document.createElement('p');
+        this.lockScreenText.style = this.getTextStyle();
+    },
+
+    /**
+     * Lock screen text css style getter
+     */
+    getTextStyle: function() {
+      return "color: #caaea4d4;" +
+        "font-size: 50px;" +
+        "this.lockScreenText-align: center;" + 
+        "position: absolute;" + 
+        "width: 800px;" + 
+        "z-index: 200;" +
+        "padding: 200px;" +
+        "padding-left: 300px;";
+    },
+
+    /**
+     * Lock screen image css style getter
+     */
+    getImageStyle: function() {
+      return "filter: grayscale(100%);" +
+        "opacity: 0.5;" +
+        "color: #a285c500;" +
+        "z-index: 100;" +
+        "padding: 108px;" +
+        "padding-left: 475px;" +
+        "background-color: #928c7c00;" +
+        "position: absolute;";
     },
     /**
      * Active application model binding type {SDLAppModel}
@@ -988,16 +1066,74 @@ SDL.SDLController = Em.Object.extend(
       }
       SDL.InfoAppsView.showAppList();
     },
+
+    sendDriverDistraction: function(driverState) {
+      var data = {};
+      data.lockScreenDismissalEnabled = this.lockScreenDismissal;
+      data.driverDistractionState = driverState;
+      FFW.UI.onDriverDistraction(data);
+    },
+    
+    driverDistractionButtonPress: function() {
+      this.lockScreen();
+    },
+
     /**
-     * SDL Driver Distraction ON/OFF switcher
+     * Method for unlock screen
      */
-    selectDriverDistraction: function() {
-      if (SDL.SDLModel.data.driverDistractionState) {
-        FFW.UI.onDriverDistraction('DD_ON');
-      } else {
-        FFW.UI.onDriverDistraction('DD_OFF');
+    unlockScreen: function() {
+      SDL.SDLController.sendDriverDistraction('DD_OFF');
+      SDL.SDLController.lockScreenText.textContent = "";
+      SDL.SDLController.lockScreenImage.remove();
+      SDL.SDLController.lockScreenText.remove();
+      SDL.SDLController.hmi_view.hidden = false;
+      if(SDL.SDLController.lockScreenDismissal) {
+        removeEventListener("keydown",SDL.SDLController.unlockScreen);
       }
-    }.observes('SDL.SDLModel.data.driverDistractionState'),
+    },
+
+    /**
+     * Method for lock screen
+     */
+    lockScreen: function() {
+      this.sendDriverDistraction('DD_ON');
+      this.hmi_view = document.getElementById('app');
+      document.body.appendChild(this.lockScreenImage);
+      document.body.appendChild(this.lockScreenText);
+      this.hmi_view.hidden = true;
+      if(this.lockScreenDismissal) {
+        this.lockScreenView();
+        return;
+      }
+      this.lockScreenTimeout();
+    },
+
+    /**
+     * Method for read key
+     */
+    lockScreenView: function() {
+      this.lockScreenText.textContent = "Press any key for unlock";
+      addEventListener("keydown",this.unlockScreen, this)
+    },
+
+    /**
+     * Method for count timeout
+     */
+    lockScreenTimeout: function() {
+        var seconds = 10;
+        var self = this;
+        self.lockScreenText.textContent = "Will be unlocked in " + seconds + " seconds";
+        var timer = setInterval(function(){
+          --seconds;
+          self.lockScreenText.textContent = "Will be unlocked in " + seconds + " seconds";
+          if(seconds == -1){
+            self.unlockScreen();
+            clearInterval(timer);
+            
+          }
+        }, 1000);
+    },
+
     /**
      * Ondisplay keyboard event handler
      * Sends notification on SDL Core with changed value
