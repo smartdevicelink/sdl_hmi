@@ -68,6 +68,9 @@ SDL.SDLMediaController = Em.Object.create(
 
       // store active application id
       this.set('currentAppId', applicationModel.appID);
+      if(applicationModel.seekBar){
+        document.getElementById('sdlmedia').appendChild(applicationModel.progressBar);
+      }
       // set active model
       SDL.SDLController.set('model', applicationModel);
       SDL.MediaController.turnOnSDL();

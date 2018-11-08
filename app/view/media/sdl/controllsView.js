@@ -49,7 +49,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
         template: Em.Handlebars
           .compile(
             '{{#with view}}' +
-            '<div class="track-info">' +
+            '<div class="track-info" id="sdlmedia">' +
             '<div class="device">{{SDL.SDLController.model.deviceName}}</div>' +
             '<div class="divider_o"></div>' +
             '<div class="title textLimit" {{bindAttr style="SDL.SDLController.model.appInfo.alignment"}}>{{SDL.SDLController.model.appInfo.field1}}</div>' +
@@ -57,7 +57,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
             '<div class="artist textLimit"{{bindAttr class="SDL.SDLController.model.mediaPreset:hidden"}}>{{SDL.SDLController.model.appInfo.field3}}</div>' +
             '<div class="time"{{bindAttr class="SDL.SDLController.model.mediaPreset:timeV2"}}>{{SDL.SDLController.model.appInfo.mediaClock}}</div>' +
             '<img class="cd_logo" {{bindAttr class="SDL.SDLController.model.mediaPreset:cd_logoV2"}} {{bindAttr class="SDL.SDLController.model.mode"}} {{bindAttr class="SDL.SDLController.model.isTemplate"}}/>' +       
-            '<img class="cd_logo" {{bindAttr src="SDL.SDLController.model.appInfo.trackIcon" class="SDL.SDLController.model.mediaPreset:cd_logoV2"}} />' +       
+            '<img class="cd_logo" {{bindAttr src="SDL.SDLController.model.appInfo.trackIcon" class="SDL.SDLController.model.mediaPreset:cd_logoV2"}} />' +                
             '</div>' + '{{/with}}'
           )
       }

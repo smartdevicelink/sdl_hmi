@@ -80,16 +80,54 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.set('VRCommands', []);
     this.set('tbtActivate', false);
     this.set('isPlaying', true);
+    this.set('seekBar', false);
     this.set('globalProperties.helpPrompt', []);
     this.set('globalProperties.timeoutPrompt', []);
     this.set('globalProperties.keyboardProperties', Em.Object.create());
     this.set('globalProperties.keyboardProperties.keyboardLayout', 'QWERTY');
     this.set('globalProperties.keyboardProperties.limitedCharacterList', []);
-
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
+    this.initProgressBar();
   },
 
+  /**
+   * Function for initialization a progress bar.
+   * Called from init function of this object
+   */
+  initProgressBar: function() {
+    this.progressBar = document.createElement('progress');
+    this.progressBar.id = this.appID;
+    this.progressBar.value = 0;
+    this.progressBar.max = 100;
+    this.progressBar.style = this.createProgressBarStyle();
+    this.progressBar.onmousemove=this.seekTracking;
+    this.progressBar.onmousedown=this.seekTracking;
+    this.progressBar.onmouseup=this.seekTracking;
+  },
+
+  /**
+   * Function for initialization a progress bar style
+   * Called from initProgressBar function
+   */
+  createProgressBarStyle: function() {
+    return "top: 155px;" +
+    "position: absolute;" +
+    "display: block;" +
+    "width: 450px;" +
+    "height: 16px;" +
+    "margin: 2em auto;" +
+    "padding: 4px;" +
+    "border: 0 none;" +
+    "background: #444;" +
+    "border-radius: 14px;" +
+    "box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,0.2);";
+  },
+
+  /**
+   * Parameter which contain progress bar element
+   */
+  progressBar: null,
   /**
    * Parameter for presets for Media App to show presets on media screen
    *
@@ -133,7 +171,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
   maxTimeValue: 68400, // 19 hours
   duration: 0,
   currTime: 0,
-
+  endTime: 0,
   /**
    * Method hides sdl activation button and sdl application
    *
@@ -178,6 +216,18 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     }
   }.observes('this.pause'),
 
+  /**
+   * Hide/display progress bar call back function
+   * which handle a seekBar Boolean parameter
+   */
+  hideDisplayProgressBar: function() {
+    if(this.seekBar) { 
+      document.getElementById('sdlmedia').appendChild(this.progressBar);
+    } else {
+      this.progressBar.remove();
+    }
+  }.observes('this.seekBar'),
+
   stopTimer: function() {
 
     clearInterval(this.timer);
@@ -188,10 +238,27 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
   setDuration: function() {
 
     var number, str = '', hrs = 0, min = 0, sec = 0;
+    if(this.seekBar) {
+      var divisor = (this.countUp ?  
+        this.endTime - this.duration : 
+        this.duration - this.endTime);
+      var progress = this.currTime / divisor * 100;
+      this.progressBar.value = progress;
+    }
     if (this.countUp) {
+
+      if(this.currTime != (this.endTime - this.duration)){
+
       number = this.duration + this.currTime;
+
+      } else {
+        clearInterval(this.timer);
+        this.currTime = 0;
+        return;
+      }
     } else {
-      if (this.duration <= this.currTime) {
+      if (this.duration <= this.currTime ||
+        this.endTime != 0 && (this.duration - this.endTime) <= this.currTime) {
         clearInterval(this.timer);
         this.currTime = 0;
         this.appInfo.set('mediaClock', '00:00:00');
@@ -218,6 +285,33 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     }
 
   }.observes('this.currTime'),
+
+  /**
+   * seekTracking function for a tracking progress bar
+   */
+  seekTracking: function(event){
+    if(event.which == 1){
+      SDL.SDLController.model.set('pause', true);
+      var percent = event.offsetX / this.offsetWidth;
+      this.value = percent * 100;
+      if(SDL.SDLController.model.countUp){
+        SDL.SDLController.model.set('currTime',parseInt((SDL.SDLController.model.endTime - SDL.SDLController.model.duration) * percent));
+      }
+      else{
+        SDL.SDLController.model.set('currTime',parseInt((SDL.SDLController.model.duration - SDL.SDLController.model.endTime) * percent));
+      }
+      if(event.type == 'mouseup'){
+        var number = SDL.SDLController.model.duration + SDL.SDLController.model.currTime;
+        var params = {};
+        params.appID = SDL.SDLController.model.appID;
+        params.hrs = parseInt(number / 3600); // hours
+        params.min = parseInt(number / 60) % 60; // minutes
+        params.sec = number % 60; // seconds
+        FFW.UI.onSeekMediaClockTimerNotification(params);
+      }
+    }
+    SDL.SDLController.model.set('pause',false);
+  },
 
   changeDuration: function() {
 
@@ -259,6 +353,19 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
           params.startTime.hours * 3600 + params.startTime.minutes * 60 +
           params.startTime.seconds
         );
+        if(params.endTime) {
+          this.set('endTime', null);
+          this.set('endTime',
+            params.endTime.hours * 3600 + params.endTime.minutes * 60 +
+            params.endTime.seconds
+          );
+          if(params.enableSeek !== undefined){
+            this.set('seekBar', params.enableSeek);
+          }
+        }
+        else {
+          this.set('seekBar', false);
+        }
       }
       this.set('pause', false);
     }
