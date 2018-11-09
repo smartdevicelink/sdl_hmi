@@ -160,7 +160,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         'dimension': '2D',
         'altitude': 7.7E0,
         'heading': 173.99E0,
-        'speed': 2.78E0
+        'speed': 2.78E0,
+        'shifted': false
       },
       'speed': 0,
       'rpm': 100,
