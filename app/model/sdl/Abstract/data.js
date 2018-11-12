@@ -204,8 +204,6 @@ SDL.SDLModelData = Em.Object.create(
      * @type bool
      */
     driverDistractionState: false,
-    
-    // lockScreenDismissalEnabled: false,
     /**
      * Flag to sent Send Data extended params
      *

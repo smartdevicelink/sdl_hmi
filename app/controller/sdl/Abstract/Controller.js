@@ -1067,6 +1067,10 @@ SDL.SDLController = Em.Object.extend(
       SDL.InfoAppsView.showAppList();
     },
 
+    /**
+     * Method for send of driver distraction state to SDL
+     * @param {String} driverState 
+     */
     sendDriverDistraction: function(driverState) {
       var data = {};
       data.lockScreenDismissalEnabled = this.lockScreenDismissal;
@@ -1074,6 +1078,9 @@ SDL.SDLController = Em.Object.extend(
       FFW.UI.onDriverDistraction(data);
     },
     
+    /**
+     * Action of DD (Driver distraction) button on HMI view
+     */
     driverDistractionButtonPress: function() {
       this.lockScreen();
     },
