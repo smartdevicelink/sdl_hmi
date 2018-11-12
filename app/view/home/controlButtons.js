@@ -476,10 +476,17 @@ getCurrentDisplayModeClass: function() {
     driverDistractionControl: SDL.Button.create({
       elementId: 'driverDistractionControl',
       classNames: 'driverDistractionControl btn',
+      attributeBindings: ['disabled'],
       text: 'DD',
       action: 'driverDistractionButtonPress',
       target: 'SDL.SDLController',
-      templateName: 'text'
+      templateName: 'text',
+      isDisabled: function() {
+        return !FLAGS.warningViewDisable;
+      }.property(
+        'FLAGS.warningViewDisable'
+      ),
+      disabledBinding: 'isDisabled'
     }
   ),
     lockScreenDismissalControl: Em.ContainerView.extend({

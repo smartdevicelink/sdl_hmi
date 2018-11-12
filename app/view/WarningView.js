@@ -455,6 +455,7 @@ SDL.warningView = Em.ContainerView
           },
           actionUp: function(event) {
             this.set('pressed', false);
+            FLAGS.set('warningViewDisable', true);
             var self = this;
             this._parentView.set(
               'fade', this

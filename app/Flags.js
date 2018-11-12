@@ -61,6 +61,12 @@ FLAGS = Em.Object.create(
      * 2 - P
      */
     SimpleFunctionality: 1,
-    ExternalPolicies: false
+    ExternalPolicies: false,
+
+    /**
+     * Value for state of warning view
+     */
+    warningViewDisable: false,
+
   }
 );

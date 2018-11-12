@@ -53,6 +53,11 @@ SDL.SDLController = Em.Object.extend(
     lockScreenDismissal: false,
 
     /**
+     * Value for disable/enable sending notification of lockScreenDismissal parameter
+     */
+    sendLockScreen: true,
+
+    /**
      * init function
      */
     init: function() {
@@ -60,12 +65,11 @@ SDL.SDLController = Em.Object.extend(
        * Call method for initialize lock screen image object
        */
        this.lockScreenImageCreator();
-
+       
        /**
        * Call method for initialize lock screen text object
        */
        this.lockScreenTextCreator();
-
       /**
        * Added object size counter
        */
@@ -1073,7 +1077,9 @@ SDL.SDLController = Em.Object.extend(
      */
     sendDriverDistraction: function(driverState) {
       var data = {};
-      data.lockScreenDismissalEnabled = this.lockScreenDismissal;
+      if(this.sendLockScreen){
+        data.lockScreenDismissalEnabled = this.lockScreenDismissal;
+      }
       data.driverDistractionState = driverState;
       FFW.UI.onDriverDistraction(data);
     },
@@ -1082,7 +1088,11 @@ SDL.SDLController = Em.Object.extend(
      * Action of DD (Driver distraction) button on HMI view
      */
     driverDistractionButtonPress: function() {
-      this.lockScreen();
+      popUp = SDL.PopUp.create();
+      popUp.buttonOk.text = "Yes";
+      popUp.buttonCancel.text = "No";
+      popUp.appendTo('body').popupActivate("Would you like send lockScreenDismissalEnable parameter",
+        this.lockScreen);
     },
 
     /**
@@ -1102,17 +1112,19 @@ SDL.SDLController = Em.Object.extend(
     /**
      * Method for lock screen
      */
-    lockScreen: function() {
-      this.sendDriverDistraction('DD_ON');
-      this.hmi_view = document.getElementById('app');
-      document.body.appendChild(this.lockScreenImage);
-      document.body.appendChild(this.lockScreenText);
-      this.hmi_view.hidden = true;
-      if(this.lockScreenDismissal) {
-        this.lockScreenView();
+    lockScreen: function(answer) {
+      var self = SDL.SDLController;
+      self.set('sendLockScreen', answer);
+      self.sendDriverDistraction('DD_ON');
+      self.hmi_view = document.getElementById('app');
+      document.body.appendChild(self.lockScreenImage);
+      document.body.appendChild(self.lockScreenText);
+      self.hmi_view.hidden = true;
+      if(self.lockScreenDismissal) {
+        self.lockScreenView();
         return;
       }
-      this.lockScreenTimeout();
+      self.lockScreenTimeout();
     },
 
     /**

@@ -652,6 +652,6 @@ SDL.SDLModelData = Em.Object.create(
       'Day mode',
       'Night mode',
       'Highlighted mode'
-    ]
+    ],
   }
 );
