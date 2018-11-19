@@ -178,9 +178,9 @@ FFW.TTS = FFW.RPCObserver.create(
             SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
             SDL.ResetTimeoutPopUp.expandCallbacks(function(){
               SDL.SDLController.TTSResponseHandler();
-            });
-
-            SDL.ResetTimeoutPopUp.ActivatePopUp(SDL.AlertPopUp.setTimer);
+            }, request.method);
+            SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertPopUp.setTimerTTS, request.method);
+            SDL.ResetTimeoutPopUp.ActivatePopUp();
             
             SDL.SDLModel.onPrompt(request.params.ttsChunks);
             if (request.params.playTone) {
@@ -349,6 +349,9 @@ FFW.TTS = FFW.RPCObserver.create(
      */
     sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
+      if(SDL.ResetTimeoutPopUp.active) {
+        SDL.ResetTimeoutPopUp.DeactivatePopUp();
+      }
       if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
 
         // send repsonse

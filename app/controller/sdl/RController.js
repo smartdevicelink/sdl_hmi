@@ -635,6 +635,19 @@ SDL.RController = SDL.SDLController.extend(
       }
 
       return properties;
-    }
+    },
+
+    /**
+     * isEmptyObject function. Checks that the object is empty
+     */
+    isEmptyObject: function(object) {
+      var l = 0;
+      for (var key in object) {
+           if(object.hasOwnProperty(key)) {
+               ++l;
+           }
+      }
+      return l == 0;
+   },
   }
 );

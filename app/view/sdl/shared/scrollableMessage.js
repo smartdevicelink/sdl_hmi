@@ -63,6 +63,9 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
       this.set('active', false);
       this.softButtons.set('page', 0);
       this.timeout = null;
+      if(SDL.ResetTimeoutPopUp.active) {
+        SDL.ResetTimeoutPopUp.DeactivatePopUp();
+      }
       SDL.SDLController.scrollableMessageResponse(
         ABORTED ? SDL.SDLModel.data.resultCode['ABORTED'] :
           SDL.SDLModel.data.resultCode.SUCCESS, this.messageRequestId
@@ -100,7 +103,11 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
       clearTimeout(self.timer);
       self.timer = setTimeout(
         function() {
-          self.deactivate();
+          clearTimeout(self.timer);
+          self.set('active', false);
+          self.softButtons.set('page', 0);
+          self.timeout = null;
+          SDL.SDLController.onSystemContextChange();
         }, self.timeout
       );
     },

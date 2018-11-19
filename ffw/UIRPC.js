@@ -184,7 +184,17 @@ FFW.UI = FFW.RPCObserver.create(
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
               if(!request.params.softButtons){
                 SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
-              }
+                SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertPopUp.setTimerUI , request.method);
+                SDL.ResetTimeoutPopUp.expandCallbacks(function(){
+                  SDL.AlertPopUp.deactivate('timeout');
+                }, request.method);
+                  if(request.params.duration) {
+                    SDL.ResetTimeoutPopUp.set('timeoutSeconds',
+                    {'UI.Alert': request.params.duration/1000,
+                    'TTS.Speak': request.params.duration/1000});
+                  }
+                  
+                }
               SDL.SDLController.onSystemContextChange(request.params.appID, request.id);
             }
             SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -345,6 +355,8 @@ FFW.UI = FFW.RPCObserver.create(
             // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
             if (SDL.SDLModel.uiPerformInteraction(request)) {
+              SDL.ResetTimeoutPopUp.expandCallbacks(function()
+               {SDL.InteractionChoicesView.deactivate('TIMED_OUT')},request.method);
               SDL.SDLController.onSystemContextChange(null, request.id);
               SDL.SDLModel.data.registeredApps.forEach(app => {
                 app.activeWindows.forEach(widget => {
@@ -353,6 +365,22 @@ FFW.UI = FFW.RPCObserver.create(
               })
 
               SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
+              SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.InteractionChoicesView.timerUpdate, request.method);
+              var increase_value = 1;
+              var array = {};
+              if(SDL.SDLModel.data.get('VRActive') == true){
+                array['VR.PerformInteraction'] = request.params.timeout/1000;
+                increase_value = 2;
+              } else {
+                SDL.ResetTimeoutPopUp.resetTimeoutRPCs.removeObject('VR.PerformInteraction');
+              }
+              array['UI.PerformInteraction'] =  request.params.timeout/1000 * increase_value;
+              SDL.ResetTimeoutPopUp.set('timeoutSeconds',array);
+                if(0 < SDL.ResetTimeoutPopUp.resetTimeoutRPCs.length) {
+                  SDL.ResetTimeoutPopUp.resetTimeOutLabel();
+                  SDL.ResetTimeoutPopUp.ActivatePopUp();
+                }
+
             }
             break;
           }
@@ -418,11 +446,14 @@ FFW.UI = FFW.RPCObserver.create(
             if (SDL.SDLModel.uiSlider(request)) {
               SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
               SDL.ResetTimeoutPopUp.expandCallbacks(function(){
-                SDL.SliderView.deactivate(false);
-              });
+                SDL.SliderView.deactivate(true);
+              }, request.method);
               SDL.ResetTimeoutPopUp.setContext(request.method);
+              SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.SliderView.activate, request.method);
               SDL.ResetTimeoutPopUp.ActivatePopUp();
-              SDL.ResetTimeoutPopUp.timeoutSeconds = 10;
+              SDL.ResetTimeoutPopUp.set('timeoutSeconds',
+                {'UI.Slider': request.params.timeout/1000});
+              SDL.ResetTimeoutPopUp.set('timeoutString', request.params.timeout/1000);
               SDL.SDLController.onSystemContextChange(null, request.id);
               SDL.SDLModel.data.registeredApps.forEach(app => {
                 app.activeWindows.forEach(widget => {
@@ -437,8 +468,15 @@ FFW.UI = FFW.RPCObserver.create(
             if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
               SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
               SDL.ResetTimeoutPopUp.setContext(request.method);
-              SDL.ResetTimeoutPopUp.timeoutSeconds = request.params.timeout/1000;
-              SDL.ResetTimeoutPopUp.ActivatePopUp(SDL.ScrollableMessage.setTimer);
+              SDL.ResetTimeoutPopUp.set('timeoutSeconds',
+                {'UI.ScrollableMessage': request.params.timeout/1000});
+              SDL.ResetTimeoutPopUp.set('timeoutString', request.params.timeout/1000);
+              SDL.ResetTimeoutPopUp.expandCallbacks(function(){
+                SDL.ScrollableMessage.deactivate(true);
+              }, request.method);
+
+              SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.ScrollableMessage.setTimer, request.method);
+              SDL.ResetTimeoutPopUp.ActivatePopUp();
               SDL.SDLController.onSystemContextChange(null, request.id);
               SDL.SDLModel.data.registeredApps.forEach(app => {
                 app.activeWindows.forEach(widget => {

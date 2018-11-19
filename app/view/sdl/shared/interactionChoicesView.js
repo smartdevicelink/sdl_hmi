@@ -96,7 +96,8 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
             FFW.BasicCommunication.OnResetTimeout(
               this.requestID, 'UI.PerformInteraction'
             );
-          }
+            }
+            SDL.ResetTimeoutPopUp.DeactivatePopUp();
         },
         naviChoises: Em.ContainerView.extend(
           {
@@ -150,14 +151,18 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
     /**
      * Method updates popup timer when data changes through keyboard
      */
-    timerUpdate: function() {
-      if (this.timeout) {
-        clearTimeout(this.timer);
-        var self = this;
-        this.timer = setTimeout(
+    timerUpdate: function(timer) {
+      self = SDL.InteractionChoicesView === undefined ? this : SDL.InteractionChoicesView;
+      if(timer) {
+        self.timeout = timer;
+      }
+      if (self.timeout) {
+        clearTimeout(self.timer);
+        
+        self.timer = setTimeout(
           function() {
-            self.deactivate('TIMED_OUT');
-          }, this.timeout
+            SDL.InteractionChoicesView.deactivate('TIMED_OUT');
+          }, self.timeout
         );
       }
     }.observes('this.input.value'),

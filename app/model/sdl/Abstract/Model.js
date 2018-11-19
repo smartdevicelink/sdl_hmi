@@ -69,6 +69,11 @@ SDL.SDLModel = Em.Object.extend({
 
   applicationStatusBar: '',
 
+  /**
+   * timeout for VR
+   */
+  timeout: null,
+
   updateStatusBar: function() {
 
     if (this.data.limitedExist &&
@@ -1208,13 +1213,11 @@ SDL.SDLModel = Em.Object.extend({
     setTimeout(function() {
         if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
           SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
-          SDL.ResetTimeoutPopUp.ActivatePopUp();
         } else if (!message.params.grammarID &&
           SDL.SDLController.getApplicationModel(message.params.appID
           ).activeRequests.uiPerformInteraction) {
           // If UI PerformInteraction session is still active and PerformInteraction mode is MANUAL only
           SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
-          SDL.ResetTimeoutPopUp.ActivatePopUp();
         }
 
       }, message.params.timeout - 2000
@@ -1228,33 +1231,50 @@ SDL.SDLModel = Em.Object.extend({
 
       this.data.set('performInteractionSession', message.params.grammarID);
       SDL.SDLModel.data.set('VRActive', true);
-
-      setTimeout(function() {
-            if (SDL.SDLModel.data.VRActive) {
-              if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
-                SDL.SDLController.vrInteractionResponse(
-                  SDL.SDLModel.data.resultCode['TIMED_OUT']
-                );
-              } else {
-                console.error(
-                  'SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction is empty!'
-                );
-              }
-
-              SDL.SDLModel.data.set('VRActive', false);
-            }
-          }, message.params.timeout
-        );
+      this.vrTimeout(message.params.timeout);
 
       SDL.InteractionChoicesView.timerUpdate();
     } else {
-
+      
       SDL.SDLController.vrInteractionResponse(
         SDL.SDLModel.data.resultCode.SUCCESS
       );
     }
   },
+  
+  /**
+   * deactivateVr function.
+   */
+  deactivateVr: function() {
+    SDL.SDLController.vrInteractionResponse(
+        SDL.SDLModel.data.resultCode['SUCCESS']
+      );
+    SDL.SDLModel.data.set('VRActive', false);
 
+  },
+
+  /**
+   * vrTimeout function
+   */
+  vrTimeout: function(timer) {
+    self = SDL.SDLModel;
+    clearTimeout(self.timeout);
+    self.timeout = setTimeout(function() {
+        if (SDL.SDLModel.data.VRActive) {
+          if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
+            SDL.SDLController.vrInteractionResponse(
+              SDL.SDLModel.data.resultCode['TIMED_OUT']
+            );
+          } else {
+            console.error(
+              'SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction is empty!'
+            );
+          }
+          SDL.SDLModel.data.set('VRActive', false);
+        }
+      }, timer - 1000
+    );
+  },
   /**
    * SDL UI Slider response handler show popup window
    *

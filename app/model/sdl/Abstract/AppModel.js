@@ -657,6 +657,8 @@ SDL.ABSAppModel = Em.Object.extend(
     onSlider: function(message) {
       SDL.SliderView.loadData(message);
       SDL.SliderView.activate(this.appName, message.params.timeout);
+      // SDL.SliderView.setText(this.appName);
+      // SDL.SliderView.activate(message.params.timeout);
     },
 
     /**

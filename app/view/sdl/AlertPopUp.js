@@ -61,6 +61,8 @@ SDL.AlertPopUp = Em.ContainerView.create(
     active: false,
     timer: null,
     timeout: null,
+    ttsTimer: null,
+    ttsTimeout: null,
     progressIndicator: false,
     reason: '',
     message: undefined,
@@ -267,20 +269,39 @@ SDL.AlertPopUp = Em.ContainerView.create(
         }
       }
       this.set('active', true);
-      this.setTimer(message.duration ? message.duration : this.defaultTimeout);
+      this.setTimerUI(message.duration ? message.duration : this.defaultTimeout);
+      
     },
 
     /*
-     * function setTimer. Sets the active timer of the view
+     * function setTimerTTS. Sets the active timer of the view for TTS RPC
      */
-    setTimer: function(time){
+    setTimerTTS: function(time){
+      var self = SDL.AlertPopUp;
+      self.set('ttsTimeout', time);
+      clearTimeout(self.ttsTimer);
+      self.ttsTimer = setTimeout(
+        function() {
+          clearTimeout(self.ttsTimer);
+        }, self.ttsTimeout
+      );
+    },
+
+    /*
+     * function setTimerUI. Sets the active timer of the view for UI RPC
+     */
+    setTimerUI: function(time){
       var self = SDL.AlertPopUp;
       self.set('timeout', time);
       clearTimeout(self.timer);
       self.timer = setTimeout(
         function() {
-          self.deactivate(self.reason, self.message);
-        }, this.timeout
+          self.set('active', false);
+          clearTimeout(self.timer);
+          self.set('content1', '');
+          self.set('content2', '');
+          self.set('content3', '');
+        }, self.timeout
       );
     }
   }

@@ -238,6 +238,10 @@ FFW.VR = FFW.RPCObserver.create(
             // return; } }
 
             SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
+            SDL.ResetTimeoutPopUp.expandCallbacks(function()
+             {SDL.SDLModel.deactivateVr()}, request.method);
+            SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.SDLModel.vrTimeout, request.method);
+            SDL.ResetTimeoutPopUp.set('timeoutString', request.params.timeout/1000);
             SDL.SDLModel.vrPerformInteraction(request);
             break;
           }

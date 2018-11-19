@@ -531,13 +531,33 @@
     background: #393939;
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
 #app_controlButtons .imageModeLabel {
     top: 234px;
     left: 1215px;
     width: 150px;
 }
 
+#app_controlButtons .resetPeriodLabel {
+    top: 294px;
+    left: 1215px;
+    width: 150px;
+}
 
+#app_controlButtons .resetPeriodInput {
+    top: 325px;
+    position: absolute;
+    width: 176px;
+    left: 1215px;
+    height: 22px;
+    color: white;
+    background: #393939;
+}
 
 #app_controlButtons .languageSelect {
     position: absolute;

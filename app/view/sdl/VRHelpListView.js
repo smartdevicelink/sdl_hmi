@@ -54,7 +54,12 @@ SDL.VRHelpListView = SDL.SDLAbstractView.create(
         SDL.SDLController.vrInteractionResponse(
           SDL.SDLModel.data.resultCode['ABORTED']
         );
+        
       }
+      document.getElementById('VR.PerformInteraction' + 'checkBox').disabled = true;
+      var element = document.getElementById('UI.PerformInteraction' + 'checkBox');
+      element.disabled = false;
+      SDL.ResetTimeoutPopUp.resetTimeoutRPCs.removeObject('VR.PerformInteraction');
       SDL.SDLController.VRMove();
     },
     /**

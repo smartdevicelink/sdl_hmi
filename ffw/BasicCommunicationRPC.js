@@ -949,7 +949,6 @@ FFW.BasicCommunication = FFW.RPCObserver
 
         var JSONMessage = {
           'jsonrpc': '2.0',
-          'id': this.client.generateId(),
           'method': 'BasicCommunication.OnResetTimeout',
           'params': {
             'requestID' : requestID,

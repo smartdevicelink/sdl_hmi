@@ -58,6 +58,9 @@ SDL.SDLAbstractView = Em.ContainerView.extend(
      */
     deactivate: function() {
       this.set('active', false);
+      if(SDL.ResetTimeoutPopUp.active && this.elementId != "vr_help_list_view") {
+        SDL.ResetTimeoutPopUp.DeactivatePopUp();
+      }
     },
     onStateChange: function() {
       if (this.active) {

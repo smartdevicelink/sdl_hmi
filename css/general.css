@@ -338,8 +338,8 @@ button.next-home {
 }
 
 #ResetTimeoutPopUp .contextView {
-    width: 300px;
-    height: 100px;
+    width: 295px;
+    height: 204px;
     border: 1px solid white;
     border-radius: 20px;
     background-color: black;
@@ -347,17 +347,44 @@ button.next-home {
 
 #ResetTimeoutPopUp .contextView .textArea {
     width: 280px;
-    height: 80px;
+    height: 34px;
     color: white;
     margin: 10px;
     background-color: black;
 }
 
-#ResetTimeoutPopUp .resetTimeoutButton,
-#ResetTimeoutPopUp .respondButton {
+#ResetTimeoutPopUp .contextView .list {
+    height: 140px;
+    float: left;
+    position: relative;
+    text-shadow: 1px 1px 2px black, 0 0 6px rgba(255, 0, 0, 0.51), 0 13px 10px black;
+ }
+ 
+ #ResetTimeoutPopUp .contextView .list .component {
+    display: flex;
+    flex-flow: column wrap;
+    position: relative;
+    padding:1px;
+}
+
+#ResetTimeoutPopUp .contextView .list .send {
+    float: right;
+    height: 100%;
+    padding: 38px;
+    right: 18px;
+}
+
+#ResetTimeoutPopUp .contextView .list .sendBox {
+    float: right;
+    height: 100%;
+    padding: 38px;
+    right: 18px;
+}
+
+#ResetTimeoutPopUp .resetTimeoutButton {
     width: 115px;
     height: 31px;
-    top: 114px;
+    top: 219px;
     text-align: center;
     border: 1px solid white;
     border-radius: 7px;
@@ -365,14 +392,11 @@ button.next-home {
     line-height: 30px;
 }
 
-#ResetTimeoutPopUp .respondButton {
-    left: 185px;
-}
-
 #ResetTimeoutPopUp .timerLabel {
     width: 65px;
     height: 31px;
-    top: 114px;
+    top: 257px;
+    white-space: pre;
     left: 118px;
     text-align: center;
     line-height: 30px;
@@ -1143,7 +1167,8 @@ margin-top: 90px;
     border-top: 1px solid #393939;
     border-left: 1px solid #393939;
     border-right: 1px solid #393939;
-    width: 279px;
+    width: 293px;
+    height: 100px;
 }
 
 /* List item */
