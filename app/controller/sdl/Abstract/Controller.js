@@ -198,6 +198,9 @@ SDL.SDLController = Em.Object.extend(
      */
     deactivateApp: function() {
       if (this.model) {
+        if(this.model.seekBar) {
+          this.model.progressBar.remove();
+        }
         SDL.SDLModel.onDeactivateApp(SDL.States.nextState, this.model.appID);
       }
       SDL.SDLController.onSubMenu('top');

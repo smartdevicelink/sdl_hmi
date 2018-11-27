@@ -59,6 +59,10 @@ SDL.ABSAppModel = Em.Object.extend(
      */
     TUNEDOWN: false,
     /**
+     * Flag to display/hide seek bar on media screen
+     */
+    seekBar: false,
+    /**
      * mediaPlayerIndicator flag for SDL.SDLMediaControlls view
      */
     mediaPlayerIndicator: 0,
