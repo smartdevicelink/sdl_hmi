@@ -89,6 +89,11 @@
     left: 20px;
 }
 
+#lockScreenDismissalControl .lockScreenDismissalSelect {
+    left: 270px;
+    position: absolute;
+}
+
 #keyboard_view .back-button {
     top: 58px;
 }

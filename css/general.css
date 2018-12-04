@@ -1777,3 +1777,28 @@ to {
     width: 50px;
     z-index: 1001;
 }
+
+#lockScreenImageId {
+    background: url(../images/common/lockscreen.png);
+    filter: grayscale(100%);
+    opacity: 0.5;
+    color: #a285c500;
+    z-index: 100;
+    padding: 108px;
+    padding-left: 150px;
+    background-color: #928c7c00;
+    top: 100px;
+    left: 255px;
+    height: 40px;
+    position: absolute;
+}
+
+#lockScreenTextId {
+    color: #caaea4d4;
+    font-size: 50px;
+    position: absolute;
+    width: 800px;
+    z-index: 200;
+    padding: 200px;
+    padding-left: 110px;
+}

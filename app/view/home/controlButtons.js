@@ -482,9 +482,9 @@ getCurrentDisplayModeClass: function() {
       target: 'SDL.SDLController',
       templateName: 'text',
       isDisabled: function() {
-        return !FLAGS.warningViewDisable;
+        return !FLAGS.warningViewEnabled;
       }.property(
-        'FLAGS.warningViewDisable'
+        'FLAGS.warningViewEnabled'
       ),
       disabledBinding: 'isDisabled'
     }
@@ -495,32 +495,30 @@ getCurrentDisplayModeClass: function() {
       classNames: 'lockScreenDismissalControl',
 
       childViews: [
-        'lockScreenDismissalLabel', 'lockScreenDismissalCheckBox'
+        'lockScreenDismissalLabel',
+        'lockScreenDismissalCheckBox',
+        'lockScreenDismissalSelect'
       ],
-
-      lockScreenDismissalLabel: SDL.Label.extend({
-
-        elementId: 'lockScreenDismissalLabel',
-
-        classNames: 'lockScreenDismissalLabel',
-
-        content: 'Lock screen'
-      }
-    ),
-
-    lockScreenDismissalCheckBox: Em.Checkbox.extend({
-
-        elementId: 'lockScreenDismissalCheckBox',
-
-        classNames: 'lockScreenDismissalCheckBox',
-
-        checkedBinding: 'SDL.SDLController.lockScreenDismissal',
-      
-
-        
-      }
-    )
-    }
+      lockScreenDismissalSelect: Em.Select.extend(
+        {
+          elementId: 'lockScreenDismissalSelect',
+          classNames: 'lockScreenDismissalSelect',
+          contentBinding: 'SDL.SDLModel.data.boolStruct',
+          valueBinding: 'SDL.SDLController.lockScreenDismissalEnabled'
+        }),
+      lockScreenDismissalLabel: SDL.Label.extend(
+        {
+          elementId: 'lockScreenDismissalLabel',
+          classNames: 'lockScreenDismissalLabel',
+          content: 'Send LockScreenDismissalEnable'
+        }),
+      lockScreenDismissalCheckBox: Em.Checkbox.extend(
+        {
+          elementId: 'lockScreenDismissalCheckBox',
+          classNames: 'lockScreenDismissalCheckBox',
+          checkedBinding: 'SDL.SDLController.sendLockScreen',
+        })
+     }
   ),
 
   buttonControls: Em.ContainerView.extend({

@@ -50,10 +50,10 @@ SDL.SDLController = Em.Object.extend(
     /**
      * lockScreenDismissalEnabled Boolean
      */
-    lockScreenDismissal: false,
+    lockScreenDismissalEnabled: true,
 
     /**
-     * Value for disable/enable sending notification of lockScreenDismissal parameter
+     * Value for disable/enable sending notification of lockScreenDismissalEnabled parameter
      */
     sendLockScreen: true,
 
@@ -89,8 +89,7 @@ SDL.SDLController = Em.Object.extend(
      */
     lockScreenImageCreator: function() {
        this.lockScreenImage = document.createElement('img');
-       this.lockScreenImage.src = "images/common/lockscreen.png";
-       this.lockScreenImage.style = this.getImageStyle();
+       this.lockScreenImage.id="lockScreenImageId"
     },
 
     /**
@@ -98,40 +97,14 @@ SDL.SDLController = Em.Object.extend(
      */
     lockScreenTextCreator: function() {
         this.lockScreenText = document.createElement('p');
-        this.lockScreenText.style = this.getTextStyle();
+        this.lockScreenText.id = "lockScreenTextId"
     },
 
-    /**
-     * Lock screen text css style getter
-     */
-    getTextStyle: function() {
-      return "color: #caaea4d4;" +
-        "font-size: 50px;" +
-        "this.lockScreenText-align: center;" + 
-        "position: absolute;" + 
-        "width: 800px;" + 
-        "z-index: 200;" +
-        "padding: 200px;" +
-        "padding-left: 300px;";
-    },
-
-    /**
-     * Lock screen image css style getter
-     */
-    getImageStyle: function() {
-      return "filter: grayscale(100%);" +
-        "opacity: 0.5;" +
-        "color: #a285c500;" +
-        "z-index: 100;" +
-        "padding: 108px;" +
-        "padding-left: 475px;" +
-        "background-color: #928c7c00;" +
-        "position: absolute;";
-    },
     /**
      * Active application model binding type {SDLAppModel}
      */
     model: null,
+
     /**
      * Function to add application to application list
      */
@@ -1078,7 +1051,7 @@ SDL.SDLController = Em.Object.extend(
     sendDriverDistraction: function(driverState) {
       var data = {};
       if(this.sendLockScreen){
-        data.lockScreenDismissalEnabled = this.lockScreenDismissal;
+        data.lockScreenDismissalEnabled = this.lockScreenDismissalEnabled;
       }
       data.driverDistractionState = driverState;
       FFW.UI.onDriverDistraction(data);
@@ -1088,11 +1061,7 @@ SDL.SDLController = Em.Object.extend(
      * Action of DD (Driver distraction) button on HMI view
      */
     driverDistractionButtonPress: function() {
-      popUp = SDL.PopUp.create();
-      popUp.buttonOk.text = "Yes";
-      popUp.buttonCancel.text = "No";
-      popUp.appendTo('body').popupActivate("Would you like send lockScreenDismissalEnable parameter",
-        this.lockScreen);
+      this.lockScreen();
     },
 
     /**
@@ -1104,7 +1073,7 @@ SDL.SDLController = Em.Object.extend(
       SDL.SDLController.lockScreenImage.remove();
       SDL.SDLController.lockScreenText.remove();
       SDL.SDLController.hmi_view.hidden = false;
-      if(SDL.SDLController.lockScreenDismissal) {
+      if(SDL.SDLController.lockScreenDismissalEnabled) {
         removeEventListener("keydown",SDL.SDLController.unlockScreen);
       }
     },
@@ -1112,19 +1081,17 @@ SDL.SDLController = Em.Object.extend(
     /**
      * Method for lock screen
      */
-    lockScreen: function(answer) {
-      var self = SDL.SDLController;
-      self.set('sendLockScreen', answer);
-      self.sendDriverDistraction('DD_ON');
-      self.hmi_view = document.getElementById('app');
-      document.body.appendChild(self.lockScreenImage);
-      document.body.appendChild(self.lockScreenText);
-      self.hmi_view.hidden = true;
-      if(self.lockScreenDismissal) {
-        self.lockScreenView();
+    lockScreen: function() {
+      this.sendDriverDistraction('DD_ON');
+      this.hmi_view = document.getElementById('app');
+      document.body.appendChild(this.lockScreenImage);
+      document.body.appendChild(this.lockScreenText);
+      this.hmi_view.hidden = true;
+      if(this.lockScreenDismissalEnabled) {
+        this.lockScreenView();
         return;
       }
-      self.lockScreenTimeout();
+      this.lockScreenTimeout();
     },
 
     /**
@@ -1135,20 +1102,23 @@ SDL.SDLController = Em.Object.extend(
       addEventListener("keydown",this.unlockScreen, this)
     },
 
+    changeTimerValueOnLockScreen: function(second) {
+      this.lockScreenText.textContent = 
+        "Will be unlocked in " + second + " seconds";
+    },
     /**
      * Method for count timeout
      */
     lockScreenTimeout: function() {
         var seconds = 10;
         var self = this;
-        self.lockScreenText.textContent = "Will be unlocked in " + seconds + " seconds";
+        self.changeTimerValueOnLockScreen(seconds);
         var timer = setInterval(function(){
           --seconds;
-          self.lockScreenText.textContent = "Will be unlocked in " + seconds + " seconds";
-          if(seconds == -1){
+          self.changeTimerValueOnLockScreen(seconds);
+          if(seconds < 0){
             self.unlockScreen();
             clearInterval(timer);
-            
           }
         }, 1000);
     },

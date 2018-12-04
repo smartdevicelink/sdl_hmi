@@ -66,7 +66,7 @@ FLAGS = Em.Object.create(
     /**
      * Value for state of warning view
      */
-    warningViewDisable: false,
+    warningViewEnabled: false,
 
   }
 );
