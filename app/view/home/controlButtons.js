@@ -39,6 +39,7 @@ SDL.ControlButtons = Em.ContainerView.create({
     'VRButton',
     'buttonControls',
     'driverDistractionControl',
+    'lockScreenDismissalControl',
     'infoTable',
     'vehicleInfo',
     'tbtClientState',
@@ -471,37 +472,54 @@ getCurrentDisplayModeClass: function() {
       }
     ),
 
-  driverDistractionControl: Em.ContainerView.extend({
-        elementId: 'driverDistractionControl',
 
-        classNames: 'driverDistractionControl',
-
-        childViews: [
-          'driverDistractionLabel', 'driverDistractionCheckBox'
-        ],
-
-        driverDistractionLabel: SDL.Label.extend({
-
-          elementId: 'driverDistractionControlLabel',
-
-          classNames: 'driverDistractionControlLabel',
-
-          content: 'DD'
-        }
+    driverDistractionControl: SDL.Button.create({
+      elementId: 'driverDistractionControl',
+      classNames: 'driverDistractionControl btn',
+      attributeBindings: ['disabled'],
+      text: 'DD',
+      action: 'driverDistractionButtonPress',
+      target: 'SDL.SDLController',
+      templateName: 'text',
+      isDisabled: function() {
+        return !FLAGS.warningViewEnabled;
+      }.property(
+        'FLAGS.warningViewEnabled'
       ),
+      disabledBinding: 'isDisabled'
+    }
+  ),
+    lockScreenDismissalControl: Em.ContainerView.extend({
+      elementId: 'lockScreenDismissalControl',
 
-        driverDistractionCheckBox: Em.Checkbox.extend({
+      classNames: 'lockScreenDismissalControl',
 
-          elementId: 'driverDistractionControlCheckBox',
-
-          classNames: 'driverDistractionControlCheckBox',
-
-          checkedBinding: 'SDL.SDLModel.data.driverDistractionState'
-
-        }
-      )
-      }
-    ),
+      childViews: [
+        'lockScreenDismissalLabel',
+        'lockScreenDismissalCheckBox',
+        'lockScreenDismissalSelect'
+      ],
+      lockScreenDismissalSelect: Em.Select.extend(
+        {
+          elementId: 'lockScreenDismissalSelect',
+          classNames: 'lockScreenDismissalSelect',
+          contentBinding: 'SDL.SDLModel.data.boolStruct',
+          valueBinding: 'SDL.SDLController.lockScreenDismissalEnabled'
+        }),
+      lockScreenDismissalLabel: SDL.Label.extend(
+        {
+          elementId: 'lockScreenDismissalLabel',
+          classNames: 'lockScreenDismissalLabel',
+          content: 'Send LockScreenDismissalEnable'
+        }),
+      lockScreenDismissalCheckBox: Em.Checkbox.extend(
+        {
+          elementId: 'lockScreenDismissalCheckBox',
+          classNames: 'lockScreenDismissalCheckBox',
+          checkedBinding: 'SDL.SDLController.sendLockScreen',
+        })
+     }
+  ),
 
   buttonControls: Em.ContainerView.extend({
         elementId: 'buttonControls',

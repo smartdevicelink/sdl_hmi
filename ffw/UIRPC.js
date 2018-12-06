@@ -1237,16 +1237,20 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {String}
      *            driverDistractionState
      */
-    onDriverDistraction: function(driverDistractionState) {
+    onDriverDistraction: function(data) {
       Em.Logger.log('FFW.UI.DriverDistraction');
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
         'method': 'UI.OnDriverDistraction',
         'params': {
-          'state': driverDistractionState
+          'state': data.driverDistractionState
         }
       };
+      if(data.lockScreenDismissalEnabled !== undefined) {
+        JSONMessage.params.lockScreenDismissalEnabled = 
+          data.lockScreenDismissalEnabled;
+      }
       this.client.send(JSONMessage);
     },
     /**

@@ -66,14 +66,32 @@
 }
 
 #driverDistractionControl.driverDistractionControl {
-    width: 302px;
-    height: 20px;
-    top: 423px;
+    width: 100px;
+    height: 48px;
+    top: 418px;
     left: 810px;
+    text-align: center;
+    line-height: 48px;
 }
 
 #driverDistractionControl .driverDistractionControlLabel {
     left: 20px;
+}
+
+#lockScreenDismissalControl.lockScreenDismissalControl {
+    width: 302px;
+    height: 20px;
+    top: 470px;
+    left: 810px;
+}
+
+#lockScreenDismissalControl .lockScreenDismissalLabel {
+    left: 20px;
+}
+
+#lockScreenDismissalControl .lockScreenDismissalSelect {
+    left: 270px;
+    position: absolute;
 }
 
 #keyboard_view .back-button {

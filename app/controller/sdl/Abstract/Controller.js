@@ -32,7 +32,44 @@
  */
 SDL.SDLController = Em.Object.extend(
   {
+   /**
+    * Link to HMI view
+    **/
+    hmi_view: null,
+
+    /**
+     * Image object for lock screen
+     */
+    lockScreenImage: null,
+
+    /**
+     * Text object for lock screen
+     */
+    lockScreenText: null,
+
+    /**
+     * lockScreenDismissalEnabled Boolean
+     */
+    lockScreenDismissalEnabled: true,
+
+    /**
+     * Value for disable/enable sending notification of lockScreenDismissalEnabled parameter
+     */
+    sendLockScreen: true,
+
+    /**
+     * init function
+     */
     init: function() {
+      /**
+       * Call method for initialize lock screen image object
+       */
+       this.lockScreenImageCreator();
+       
+       /**
+       * Call method for initialize lock screen text object
+       */
+       this.lockScreenTextCreator();
       /**
        * Added object size counter
        */
@@ -46,10 +83,28 @@ SDL.SDLController = Em.Object.extend(
         return size;
       };
     },
+
+    /**
+     * Lock screen image object initializer
+     */
+    lockScreenImageCreator: function() {
+       this.lockScreenImage = document.createElement('img');
+       this.lockScreenImage.id="lockScreenImageId"
+    },
+
+    /**
+     * Lock screen text object initializer
+     */
+    lockScreenTextCreator: function() {
+        this.lockScreenText = document.createElement('p');
+        this.lockScreenText.id = "lockScreenTextId"
+    },
+
     /**
      * Active application model binding type {SDLAppModel}
      */
     model: null,
+
     /**
      * Function to add application to application list
      */
@@ -988,16 +1043,86 @@ SDL.SDLController = Em.Object.extend(
       }
       SDL.InfoAppsView.showAppList();
     },
+
     /**
-     * SDL Driver Distraction ON/OFF switcher
+     * Method for send of driver distraction state to SDL
+     * @param {String} driverState 
      */
-    selectDriverDistraction: function() {
-      if (SDL.SDLModel.data.driverDistractionState) {
-        FFW.UI.onDriverDistraction('DD_ON');
-      } else {
-        FFW.UI.onDriverDistraction('DD_OFF');
+    sendDriverDistraction: function(driverState) {
+      var data = {};
+      if(this.sendLockScreen){
+        data.lockScreenDismissalEnabled = this.lockScreenDismissalEnabled;
       }
-    }.observes('SDL.SDLModel.data.driverDistractionState'),
+      data.driverDistractionState = driverState;
+      FFW.UI.onDriverDistraction(data);
+    },
+    
+    /**
+     * Action of DD (Driver distraction) button on HMI view
+     */
+    driverDistractionButtonPress: function() {
+      this.lockScreen();
+    },
+
+    /**
+     * Method for unlock screen
+     */
+    unlockScreen: function() {
+      SDL.SDLController.sendDriverDistraction('DD_OFF');
+      SDL.SDLController.lockScreenText.textContent = "";
+      SDL.SDLController.lockScreenImage.remove();
+      SDL.SDLController.lockScreenText.remove();
+      SDL.SDLController.hmi_view.hidden = false;
+      if(SDL.SDLController.lockScreenDismissalEnabled) {
+        removeEventListener("keydown",SDL.SDLController.unlockScreen);
+      }
+    },
+
+    /**
+     * Method for lock screen
+     */
+    lockScreen: function() {
+      this.sendDriverDistraction('DD_ON');
+      this.hmi_view = document.getElementById('app');
+      document.body.appendChild(this.lockScreenImage);
+      document.body.appendChild(this.lockScreenText);
+      this.hmi_view.hidden = true;
+      if(this.lockScreenDismissalEnabled) {
+        this.lockScreenView();
+        return;
+      }
+      this.lockScreenTimeout();
+    },
+
+    /**
+     * Method for read key
+     */
+    lockScreenView: function() {
+      this.lockScreenText.textContent = "Press any key for unlock";
+      addEventListener("keydown",this.unlockScreen, this)
+    },
+
+    changeTimerValueOnLockScreen: function(second) {
+      this.lockScreenText.textContent = 
+        "Will be unlocked in " + second + " seconds";
+    },
+    /**
+     * Method for count timeout
+     */
+    lockScreenTimeout: function() {
+        var seconds = 10;
+        var self = this;
+        self.changeTimerValueOnLockScreen(seconds);
+        var timer = setInterval(function(){
+          --seconds;
+          self.changeTimerValueOnLockScreen(seconds);
+          if(seconds < 0){
+            self.unlockScreen();
+            clearInterval(timer);
+          }
+        }, 1000);
+    },
+
     /**
      * Ondisplay keyboard event handler
      * Sends notification on SDL Core with changed value
