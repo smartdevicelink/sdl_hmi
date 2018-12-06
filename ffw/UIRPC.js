@@ -140,6 +140,11 @@ FFW.UI = FFW.RPCObserver.create(
       Em.Logger.log('FFW.UI.onRPCRequest');
       if (this.validationCheck(request)) {
         switch (request.method) {
+          case 'UI.ShowAppMenu':
+          {
+            SDL.SDLModel.showAppMenu(request);
+            break;
+          }
           case 'UI.Alert':
           {
 

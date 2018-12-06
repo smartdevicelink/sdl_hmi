@@ -2023,6 +2023,18 @@ SDL.RPCController = Em.Object.create(
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
           return this.resultStruct;
+        },
+        /**
+         * Validate method for request ShowAppMenu
+         *
+         * @param {Object}
+         *            params
+         */
+        ShowAppMenu: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
         }
       }
     ),
