@@ -192,20 +192,53 @@ SDL.SDLController = Em.Object.extend(
     openCommandsList: function() {
       SDL.OptionsView.activate();
     },
+
     /**
-     * Notification of deactivation of current application model initiated in
-     * StateManager
+     * Function for enable\disable progress bar tracking
      */
-    deactivateApp: function() {
-      if (this.model) {
-        if(this.model.seekBar) {
-          this.model.progressBar.remove();
-        }
-        SDL.SDLModel.onDeactivateApp(SDL.States.nextState, this.model.appID);
+    seekBarActive: function() {
+      if(SDL.SDLController.model === null) {
+        return;
       }
+      var seekBar = SDL.SDLController.model.seekBar;
+      SDL.SDLController.model.set('seekBarStyle', seekBar ? "progressBarWithSeek" : "progressBarWithoutSeek");
+    }.observes('SDL.SDLController.model.seekBar'),
+    
+    /**
+     * Deactivate current application
+     */    
+    deactivateApp: function() {
+      SDL.SDLModel.onDeactivateApp(SDL.States.nextState, this.model.appID);
       SDL.SDLController.onSubMenu('top');
       SDL.SDLController.model.set('tbtActivate', false);
       this.set('model', null);
+    },
+
+    /**
+    * seekTracking function for a tracking progress bar
+    */
+    seekTracking: function(event){
+      if(event.type == 'change'){
+        SDL.SDLController.model.set('pause', true);
+        var percent = event.currentTarget.value;
+        SDL.SDLController.model.set('valueOfSeekBar',percent);
+        var currentTime = 0;
+        if(SDL.SDLController.model.countUp){
+          currentTime = parseInt((SDL.SDLController.model.endTime - SDL.SDLController.model.duration) * percent/100);
+        }
+        else {
+          currentTime = parseInt((SDL.SDLController.model.duration - SDL.SDLController.model.endTime) * percent/100);
+        }
+        SDL.SDLController.model.set('currTime', currentTime);
+        var number = SDL.SDLController.model.duration + SDL.SDLController.model.currTime;
+        var params = {};
+        params.appID = SDL.SDLController.model.appID;
+        params.hrs = parseInt(number / 3600); // hours
+        params.min = parseInt(number / 60) % 60; // minutes
+        params.sec = number % 60; // seconds
+        FFW.UI.onSeekMediaClockTimerNotification(params);
+        SDL.SDLController.model.set('pause',false);
+      }
     },
     /**
      * Notification to SDL about triggered events on HMI
@@ -619,9 +652,6 @@ SDL.SDLController = Em.Object.extend(
       if (methodName == 'UI.Slider') {
         SDL.SliderView.deactivate(true);
       }
-      //            if (SDL.VRHelpListView.active) {
-      //                SDL.VRHelpListView.deactivate();
-      //            }
     },
     /**
      * Method to close InteractionChoices view

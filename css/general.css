@@ -1777,3 +1777,119 @@ to {
     width: 50px;
     z-index: 1001;
 }
+
+#progressBarWithSeek{  /* container */
+    top: 187px;
+    width: 463px;
+    position: absolute;
+    -webkit-appearance: none;
+            appearance: none;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: inset 0 1px #ccc, inset 0 1px 1px #575555, inset 0 -2px #ccc;
+    background: #fff linear-gradient(#BCBCBC, #fff0f5);
+    overflow: hidden;
+  }
+
+  #progressBarWithSeek::-webkit-slider-thumb {  /* slider in Chrome/Chromium */
+    -webkit-appearance: none;
+    width:15px;
+    height:15px;
+    border: 1px solid #818181;
+    border-radius: 2px;
+    background-image: linear-gradient(#dedede, #f2f2f2);
+    box-shadow: -13px 0 #40310a,
+                -26px 0 #40310a,
+                -39px 0 #40310a,
+                -52px 0 #40310a,
+                -65px 0 #40310a,
+                -78px 0 #40310a,
+                -91px 0 #40310a,
+                -104px 0 #40310a,
+                -117px 0 #40310a,
+                -130px 0 #40310a,
+                -143px 0 #40310a,
+                -156px 0 #40310a,
+                -169px 0 #40310a,
+                -182px 0 #40310a,
+                -195px 0 #40310a,
+                -208px 0 #40310a,
+                -221px 0 #40310a,
+                -234px 0 #40310a,
+                -247px 0 #40310a,
+                -260px 0 #40310a,
+                -273px 0 #40310a,
+                -286px 0 #40310a,
+                -299px 0 #40310a,
+                -312px 0 #40310a,
+                -325px 0 #40310a,
+                -338px 0 #40310a,
+                -351px 0 #40310a,
+                -364px 0 #40310a,
+                -377px 0 #40310a,
+                -390px 0 #40310a,
+                -403px 0 #40310a,
+                -416px 0 #40310a,
+                -429px 0 #40310a,
+                -442px 0 #40310a,
+                -455px 0 #40310a;
+  }
+
+  #progressBarWithoutSeek{  /* container */
+    top: 187px;
+    width: 463px;
+    position: absolute;
+    -webkit-appearance: none;
+            appearance: none;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: inset 0 1px #ccc, inset 0 1px 1px #575555, inset 0 -2px #ccc;
+    background: #fff linear-gradient(#BCBCBC, #fff0f5);
+    overflow: hidden;
+  }
+
+  #progressBarWithoutSeek::-webkit-slider-thumb {  /* slider in Chrome/Chromium */
+    -webkit-appearance: none;
+    width:15px;
+    height:15px;
+    border: 1px solid #40310a;
+    border-radius: 2px;
+    background-image: linear-gradient(#40310a, #40310a);
+    box-shadow: -13px 0 #40310a,
+                -26px 0 #40310a,
+                -39px 0 #40310a,
+                -52px 0 #40310a,
+                -65px 0 #40310a,
+                -78px 0 #40310a,
+                -91px 0 #40310a,
+                -104px 0 #40310a,
+                -117px 0 #40310a,
+                -130px 0 #40310a,
+                -143px 0 #40310a,
+                -156px 0 #40310a,
+                -169px 0 #40310a,
+                -182px 0 #40310a,
+                -195px 0 #40310a,
+                -208px 0 #40310a,
+                -221px 0 #40310a,
+                -234px 0 #40310a,
+                -247px 0 #40310a,
+                -260px 0 #40310a,
+                -273px 0 #40310a,
+                -286px 0 #40310a,
+                -299px 0 #40310a,
+                -312px 0 #40310a,
+                -325px 0 #40310a,
+                -338px 0 #40310a,
+                -351px 0 #40310a,
+                -364px 0 #40310a,
+                -377px 0 #40310a,
+                -390px 0 #40310a,
+                -403px 0 #40310a,
+                -416px 0 #40310a,
+                -429px 0 #40310a,
+                -442px 0 #40310a,
+                -455px 0 #40310a;
+  }
