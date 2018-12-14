@@ -95,6 +95,18 @@ SDL.ABSAppModel = Em.Object.extend(
      */
     appID: null,
     /**
+     * Current value of seek bar
+     *
+     * @type {Number}
+     */
+    valueOfSeekBar: null,
+    /**
+     * Style for progress bar
+     *
+     * @type {String}
+     */
+    seekBarStyle: "",
+    /**
      * Application name
      *
      * @type {String}
