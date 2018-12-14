@@ -240,7 +240,7 @@ SDL.ABSAppModel = Em.Object.extend(
     }.property('this.currentSubMenuId'),
 
     /**
-     * Identificator where submenu was called
+     * Indicator where submenu was called
      */
     subMenuInitFromApp: false,
 

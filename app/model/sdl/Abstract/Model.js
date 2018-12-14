@@ -796,7 +796,7 @@ SDL.SDLModel = Em.Object.extend({
   /**
    * SDL UI showAppMenu activation function
    * @param {Object}
-   *            params Object with parameters come from SDLCore.
+   *            request Object with parameters come from SDLCore.
    */
   showAppMenu: function(request) {
     SDL.OptionsView.activate();

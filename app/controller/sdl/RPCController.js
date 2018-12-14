@@ -2031,6 +2031,13 @@ SDL.RPCController = Em.Object.create(
          *            params
          */
         ShowAppMenu: function(params) {
+          if (params == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'params\' does not exists!'
+            };
+            return this.resultStruct;
+          }
           this.resultStruct = {
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
