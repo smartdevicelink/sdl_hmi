@@ -238,6 +238,12 @@ SDL.ABSAppModel = Em.Object.extend(
     currentCommandsList: function() {
       return this.get('commandsList.' + this.get('currentSubMenuId'));
     }.property('this.currentSubMenuId'),
+
+    /**
+     * Indicator where submenu was called
+     */
+    subMenuInitFromApp: false,
+
     /**
      * Current command submenu identificator
      *

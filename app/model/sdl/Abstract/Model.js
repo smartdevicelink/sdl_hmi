@@ -794,6 +794,20 @@ SDL.SDLModel = Em.Object.extend({
   },
 
   /**
+   * SDL UI showAppMenu activation function
+   * @param {Object}
+   *            request Object with parameters come from SDLCore.
+   */
+  showAppMenu: function(request) {
+    SDL.OptionsView.activate();
+    if(request.params.menuID !== undefined) {
+      SDL.SDLController.model.set('subMenuInitFromApp', true);
+      SDL.SDLController.onSubMenu(request.params.menuID);
+    }
+    FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
+  },
+
+  /**
    * SDL UI ScrolableMessage activation function dependent of Driver
    * Distraction toggle state
    *
