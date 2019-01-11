@@ -222,7 +222,7 @@ FFW.RC = FFW.RPCObserver.create(
                 return;
               }
             }
-
+            
             var newClimateControlData = null;
             var newRadioControlData = null;
             var newAudioControlData= null;    
@@ -231,6 +231,27 @@ FFW.RC = FFW.RPCObserver.create(
             var newSeatControlData = null;
             
             if (request.params.moduleData.climateControlData) {
+              var currentClimateState = 
+                SDL.ClimateController.getClimateControlData().climateEnable;
+              var requestedClimateState = 
+                request.params.moduleData.climateControlData.climateEnable;
+              if(!currentClimateState) {
+                if(requestedClimateState === undefined) {
+                  this.sendError(
+                    SDL.SDLModel.data.resultCode.REJECTED,
+                    request.id, request.method,
+                    'Climate Control is disable. Turn Climate on.'
+                  );
+                  return;
+                } else if(requestedClimateState === false) {
+                  this.sendError(
+                    SDL.SDLModel.data.resultCode.REJECTED,
+                    request.id, request.method,
+                    'Climate Control is disabled already.'
+                  );
+                  return;
+                }
+              }
               newClimateControlData =
                 SDL.ClimateController.model.setClimateData(
                   request.params.moduleData.climateControlData);
@@ -361,7 +382,7 @@ FFW.RC = FFW.RPCObserver.create(
             );
             switch(moduleType){
               case 'CLIMATE':{
-                climateControlData = SDL.ClimateController.model.getClimateControlData();
+                climateControlData = SDL.ClimateController.getClimateControlData();
                 break
               }
               case 'RADIO':{
