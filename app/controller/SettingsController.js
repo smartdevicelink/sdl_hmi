@@ -35,6 +35,21 @@ SDL.SettingsController = Em.Object.create(
   {
     activeState: 'settings.policies',
     hiddenLeftMenu: false,
+
+    /**
+     * @name getSystemTimeResultCode
+     * @desc parameter of response result code
+     * for GetSystemTime RPC
+     */
+    getSystemTimeResultCode: 0,
+
+    /**
+     * @name getSystemTimeButtonText
+     * @desc parameter for changing text of 
+     * GetSystemTime result code button
+     */
+    getSystemTimeButtonText: 'GetSystemTime result code - SUCCESS',
+
     /**
      * File name for SDL.OnSystemRequest
      * Came in SDL.PolicyUpdate request
@@ -392,6 +407,16 @@ SDL.SettingsController = Em.Object.create(
         SDL.SeatModel.goToStates();
         SDL.States.goToStates('settings.seat');
         }
+    },
+    changeGetSystemTimeResultCode: function() {
+      this.set('getSystemTimeResultCode', this.getSystemTimeResultCode == 0
+        ? SDL.SDLModel.data.resultCode.REJECTED
+        : SDL.SDLModel.data.resultCode.SUCCESS);
+
+      var buttonText = "GetSystemTime result code - ";
+      this.set('getSystemTimeButtonText', this.getSystemTimeResultCode == 0 
+        ? buttonText + 'SUCCESS'
+        : buttonText + 'REJECTED');
     }
   }
 );

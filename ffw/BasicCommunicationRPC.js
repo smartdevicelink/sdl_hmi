@@ -551,30 +551,11 @@ FFW.BasicCommunication = FFW.RPCObserver
             );
           }
           if (request.method == 'BasicCommunication.GetSystemTime') {
-            var date = new Date();
-            var systemTime = {
-              millisecond: date.getMilliseconds(),
-              second: date.getSeconds(),
-              minute: date.getMinutes(),
-              hour: date.getHours(),
-              day: date.getDate(),
-              month: date.getMonth()+1,
-              year: date.getFullYear(),
-              tz_hour: Math.floor(date.getTimezoneOffset()/-60),
-              tz_minute: Math.abs(date.getTimezoneOffset()%60)
-            };
-
-            var JSONMessage = {
-              'jsonrpc': '2.0',
-              'id': request.id,
-              'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
-                'method': request.method,
-                'systemTime':systemTime
-              }
-            };
-
-            this.sendMessage(JSONMessage);
+            var resultCode = SDL.SettingsController.get('getSystemTimeResultCode');
+            resultCode == SDL.SDLModel.data.resultCode.SUCCESS
+            ? this.GetSystemTimeResponse(request)
+            : this.sendError(resultCode, request.id, request.method,
+               "GetSystemTime request rejected on HMI Settings");
           }
         }
       },
@@ -836,6 +817,38 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.sendMessage(JSONMessage);
       },
+      /**
+       * @name GetSystemTimeResponse
+       * @type function
+       * @desc Send GetSystemTime response
+       * @param {Object} request
+       */
+      GetSystemTimeResponse: function(request) {
+        var date = new Date();
+            var systemTime = {
+              millisecond: date.getMilliseconds(),
+              second: date.getSeconds(),
+              minute: date.getMinutes(),
+              hour: date.getHours(),
+              day: date.getDate(),
+              month: date.getMonth()+1,
+              year: date.getFullYear(),
+              tz_hour: Math.floor(date.getTimezoneOffset()/-60),
+              tz_minute: Math.abs(date.getTimezoneOffset()%60)
+            };
+
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
+                'method': request.method,
+                'systemTime':systemTime
+              }
+            };
+
+            this.client.send(JSONMessage);
+      },  
       /********************* Responses end *********************/
 
       /********************* Notifications BEGIN *********************/
