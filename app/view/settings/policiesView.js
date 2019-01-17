@@ -67,6 +67,15 @@ SDL.PoliciesView = Em.ContainerView.create(
           {
             type: SDL.Button,
             params: {
+              textBinding: 'SDL.SettingsController.getSystemTimeButtonText',
+              action: 'changeGetSystemTimeResultCode',
+              target: 'SDL.SettingsController',
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
               goToState: 'policies.deviceConfig',
               text: 'Allow SDL Functionality',
               action: 'onState',
