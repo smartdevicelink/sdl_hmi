@@ -408,6 +408,11 @@ SDL.SettingsController = Em.Object.create(
         SDL.States.goToStates('settings.seat');
         }
     },
+    
+    /**
+     * @function changeGetSystemTimeResultCode
+     * @description Change result code of GetSystemTime response to SDL
+     */
     changeGetSystemTimeResultCode: function() {
       this.set('getSystemTimeResultCode', this.getSystemTimeResultCode == 0
         ? SDL.SDLModel.data.resultCode.REJECTED
