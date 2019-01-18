@@ -52,6 +52,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLCloseSubscribeRequestID: -1,
       onSDLConsentNeededSubscribeRequestID: -1,
       onResumeAudioSourceSubscribeRequestID: -1,
+      onServiceUpdateNotificationSubscribeRequestID: -1,
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
       onAppPermissionChangedUnsubscribeRequestID: -1,
@@ -62,6 +63,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLCloseUnsubscribeRequestID: -1,
       onSDLConsentNeededUnsubscribeRequestID: -1,
       onResumeAudioSourceUnsubscribeRequestID: -1,
+      onServiceUpdateNotificationUnsubscribeRequestID: -1,
       // const
       onStatusUpdateNotification: 'SDL.OnStatusUpdate',
       onAppPermissionChangedNotification: 'SDL.OnAppPermissionChanged',
@@ -74,6 +76,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLCloseNotification: 'BasicCommunication.OnSDLClose',
       onResumeAudioSourceNotification: 'BasicCommunication.OnResumeAudioSource',
       componentName: "BasicCommunication",
+      onServiceUpdateNotification: 'BasicCommunication.OnServiceUpdate',
 
       /**
        * connect to RPC bus
