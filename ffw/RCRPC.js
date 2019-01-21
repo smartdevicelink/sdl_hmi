@@ -201,7 +201,7 @@ FFW.RC = FFW.RPCObserver.create(
             this.set('isSetVdInProgress', true);
 
             if (request.params.moduleData.radioControlData) {
-              if (request.params.moduleData.radioControlData.radioEnable == null
+              if (request.params.moduleData.radioControlData.radioEnable == undefined
                   && SDL.RadioModel.radioControlStruct.radioEnable == false) {
                 this.sendError(
                   SDL.SDLModel.data.resultCode.IGNORED,
@@ -209,6 +209,16 @@ FFW.RC = FFW.RPCObserver.create(
                   'Radio module must be activated.'
                 );
                 return;
+              }
+              if(request.params.moduleData.radioControlData.hdChannel !== undefined
+                 && request.params.moduleData.radioControlData.hdRadioEnable == undefined
+                  && SDL.RadioModel.radioControlStruct.hdRadioEnable == false) {
+                  this.sendError(
+                    SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
+                    request.id, request.method,
+                    'HD Radio module does not supported.'
+                  );
+                  return;
               }
               var result = SDL.RadioModel.checkRadioFrequencyBoundaries(
                 request.params.moduleData.radioControlData

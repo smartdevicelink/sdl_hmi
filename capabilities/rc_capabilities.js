@@ -145,7 +145,7 @@ SDL.remoteControlCapability =
         climateEnableAvailable: true
     }],
     radioControlCapabilities: [{
-        availableHDsAvailable: true,
+        availableHdChannelsAvailable: true,
         hdChannelAvailable: true,
         hdRadioEnableAvailable: true,
         moduleName: 'radio',
