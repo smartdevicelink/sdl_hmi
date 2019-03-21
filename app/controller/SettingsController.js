@@ -39,7 +39,8 @@ SDL.SettingsController = Em.Object.create(
     /**
      * @name getSystemTimeResultCode
      * @desc parameter of response result code
-     * for GetSystemTime RPC
+     * for GetSystemTime RPC. Initial value sets as a zero which equals with
+     * SUCCESS result code.
      */
     getSystemTimeResultCode: 0,
 
@@ -414,12 +415,16 @@ SDL.SettingsController = Em.Object.create(
      * @description Change result code of GetSystemTime response to SDL
      */
     changeGetSystemTimeResultCode: function() {
-      this.set('getSystemTimeResultCode', this.getSystemTimeResultCode == 0
+      var successResultCode = SDL.SDLModel.data.resultCode.SUCCESS;
+
+      this.set('getSystemTimeResultCode', 
+      this.getSystemTimeResultCode == successResultCode
         ? SDL.SDLModel.data.resultCode.REJECTED
         : SDL.SDLModel.data.resultCode.SUCCESS);
 
       var buttonText = "GetSystemTime result code - ";
-      this.set('getSystemTimeButtonText', this.getSystemTimeResultCode == 0 
+      this.set('getSystemTimeButtonText', 
+      this.getSystemTimeResultCode == successResultCode 
         ? buttonText + 'SUCCESS'
         : buttonText + 'REJECTED');
     }
