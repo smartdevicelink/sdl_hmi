@@ -106,7 +106,13 @@ SDL.ServiceUpdatePopUp = Em.ContainerView.create(
           break;
         }
         case 'REQUEST_ACCEPTED': {
-          this.deactivate();
+          var self = this;
+          this.timer = setTimeout(
+            function() {
+              self.deactivate();
+            },
+            2000
+          );
           break;
         }
         case 'REQUEST_REJECTED': {
