@@ -868,7 +868,12 @@ SDL.SDLModel = Em.Object.extend({
 
     if (SDL.SDLModel.driverDevice && SDL.SDLModel.driverDeviceInfo === null &&
       params.deviceList.length > 0) {
-      SDL.SDLModel.set('driverDeviceInfo', params.deviceList[0]);
+      for(var i = 0; i<params.deviceList.length; i++) {
+        if(params.deviceList[i].transportType != "CLOUD_WEBSOCKET") {
+          SDL.SDLModel.set('driverDeviceInfo', params.deviceList[i]);
+        }
+      }
+      
 
       // According to SDL.SDLModel.deviceRank enum 0 - is driver's device
       FFW.RC.OnDeviceRankChanged(params.deviceList[0],

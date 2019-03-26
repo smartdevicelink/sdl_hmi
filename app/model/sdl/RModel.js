@@ -148,7 +148,7 @@ SDL.RModel = SDL.SDLModel.extend({
     }
 
     if (this.driverDevice && this.driverDeviceInfo == null) {
-      if (params.deviceInfo) {
+      if (params.deviceInfo && params.deviceInfo.transportType != "CLOUD_WEBSOCKET") {
         this.set('driverDeviceInfo', params.deviceInfo);
       }
     }
