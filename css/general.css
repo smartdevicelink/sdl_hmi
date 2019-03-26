@@ -195,10 +195,10 @@ div {
     opacity: 1;
     display: block;
     z-index: 10000;
-    left: 200px;
-    width: 400px;
-    height: 245px;
-    top: 110px;
+    left: 480px;
+    width: 300px;
+    height: 217px;
+    top: 56px;
     -webkit-transition: opacity 1s ease-in-out;
     background-color: black;
     border: #A6A6A6 solid 2px;
@@ -211,19 +211,58 @@ div {
     background: url(../images/sdl/progressindicator.gif) no-repeat;
     top: 155px;
     background-size: contain;
-    left: 180px;
+    left: 125px;
 }
 
 #ServiceUpdatePopUp .text {
-    top: 70px;
+    top: 95px;
     left: 5px;
-    width: 390px;
+    width: 300px;
     height: 120px;
     line-height: 20px;
     position: absolute;
     overflow: hidden;
     text-align: center;
     text-overflow: ellipsis;
+}
+
+#ServiceUpdatePopUp .serviceTypeLabel {
+    top: 20px;
+    left: 20px;
+    width: 290px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    color: antiquewhite;
+}
+
+#ServiceUpdatePopUp .serviceEventLabel {
+    top: 40px;
+    left: 20px;
+    width: 290px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    color: antiquewhite;
+}
+
+#ServiceUpdatePopUp .serviceReasonLabel {
+    top: 60px;
+    left: 20px;
+    width: 290px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    color: antiquewhite;
 }
 
 #TTSPopUp .popUp {

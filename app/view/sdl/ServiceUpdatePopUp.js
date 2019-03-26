@@ -42,13 +42,19 @@ SDL.ServiceUpdatePopUp = Em.ContainerView.create(
     childViews: [
       'message',
       'progressIndicatorView',
-      'backButton'
+      'backButton',
+      'serviceEventLabel',
+      'serviceTypeLabel',
+      'serviceReasonLabel'
     ],
 
     timer: null,
     active: false,
     content: '',
     progress: false,
+    serviceEventContent: '',
+    serviceTypeContent: '',
+    serviceReasonContent: '',
 
     progressIndicatorView: Em.View.extend(
       {
@@ -74,6 +80,27 @@ SDL.ServiceUpdatePopUp = Em.ContainerView.create(
         contentBinding: 'parentView.content'
       }
     ),
+    serviceEventLabel: SDL.Label.extend(
+      {
+        elementId: 'serviceEventLabel',
+        classNames: 'serviceEventLabel',
+        contentBinding: 'parentView.serviceEventContent'
+      }
+    ),
+    serviceTypeLabel: SDL.Label.extend(
+      {
+        elementId: 'serviceTypeLabel',
+        classNames: 'serviceTypeLabel',
+        contentBinding: 'parentView.serviceTypeContent'
+      }
+    ),
+    serviceReasonLabel: SDL.Label.extend(
+      {
+        elementId: 'serviceReasonLabel',
+        classNames: 'serviceReasonLabel',
+        contentBinding: 'parentView.serviceReasonContent'
+      }
+    ),
 
     /**
      * @function deactivate
@@ -84,8 +111,17 @@ SDL.ServiceUpdatePopUp = Em.ContainerView.create(
       this.set('active', false);
       this.set('progress', false);
       this.set('content', '');
+      this.set('infoContent', '');
+      this.set('serviceTypeContent', '');
+      this.set('serviceEventContent', '');
+      this.set('serviceReasonContent', '');
     },
 
+    setLogMessage: function(serviceType, serviceEvent, serviceReason) {
+      this.set('serviceTypeContent', serviceType ? 'Service type: ' + serviceType : '');
+      this.set('serviceEventContent', serviceEvent ? 'Service event: ' + serviceEvent : '');
+      this.set('serviceReasonContent', serviceReason ? 'Service reason: ' + serviceReason : '');
+    },
     /**
      * @function activate
      * @desc activate ServiceUpdatePopUp
@@ -97,7 +133,7 @@ SDL.ServiceUpdatePopUp = Em.ContainerView.create(
       if(serviceType === undefined) {
         return;
       }
-
+      this.setLogMessage(serviceType, serviceEvent, serviceReason);
       switch (serviceEvent) {
         case 'REQUEST_RECEIVED': {
           this.setContentByServiceType(serviceType);
