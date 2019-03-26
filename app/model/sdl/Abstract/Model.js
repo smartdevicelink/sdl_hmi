@@ -868,9 +868,10 @@ SDL.SDLModel = Em.Object.extend({
 
     if (SDL.SDLModel.driverDevice && SDL.SDLModel.driverDeviceInfo === null &&
       params.deviceList.length > 0) {
-      for(var i = 0; i<params.deviceList.length; i++) {
-        if(params.deviceList[i].transportType != "CLOUD_WEBSOCKET") {
+      for (var i = 0; i<params.deviceList.length; i++) {
+        if (params.deviceList[i].transportType != "CLOUD_WEBSOCKET") {
           SDL.SDLModel.set('driverDeviceInfo', params.deviceList[i]);
+          break;
         }
       }
       
