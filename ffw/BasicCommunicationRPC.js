@@ -138,6 +138,9 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceSubscribeRequestID = this
           .subscribeToNotification(this.onResumeAudioSourceNotification);
+        this.onServiceUpdateNotificationSubscribeRequestID = this.client
+          .subscribeToNotification(this.onServiceUpdateNotification);
+        this
         setTimeout(function() {
           FFW.BasicCommunication.OnSystemTimeReady();
         }, 500);
@@ -171,6 +174,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .unsubscribeFromNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceUnsubscribeRequestID = this.client
           .unsubscribeFromNotification(this.onResumeAudioSourceNotification);
+        this.onServiceUpdateNotificationUnsubscribeRequestID = this.client
+          .unsubscribeFromNotification(this.onServiceUpdateNotification);
       },
       /**
        * Client disconnected.
@@ -299,11 +304,18 @@ FFW.BasicCommunication = FFW.RPCObserver
       onRPCNotification: function(notification) {
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCNotification');
         this._super();
+        if (notification.method == this.onServiceUpdateNotification) {
+          SDL.ServiceUpdatePopUp.activate(notification.params.serviceType,
+            notification.params.serviceEvent,
+            notification.params.reason);
+        }
         if (notification.method == this.onFileRemovedNotification) {
           SDL.SDLModel.onFileRemoved(notification.params);
         }
         if (notification.method == this.onStatusUpdateNotification) {
-          SDL.PopUp.create().appendTo('body').popupActivate(
+          var popUp = SDL.PopUp.create().appendTo('body');
+          popUp.set('minimalSize',SDL.ServiceUpdatePopUp.active);
+          popUp.popupActivate(
             'onStatusUpdate Notification: ' + notification.params.status
           );
           var messageCode = '';
