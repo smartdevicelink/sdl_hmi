@@ -551,20 +551,16 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Object} params
    */
   tbtActivate: function(params) {
+    var text1 = params.navigationTexts.
+                        filterProperty('fieldName', 'navigationText1'
+                        )[0].fieldText;
+    var text2 = params.navigationTexts.
+                        filterProperty('fieldName', 'navigationText2'
+                        )[0].fieldText;
 
-    if (SDL.SDLModel.driverDeviceInfo.name ==
-      SDL.SDLController.getApplicationModel(params.appID).deviceName
-    ) {
-      var text1 = params.navigationTexts.
-                         filterProperty('fieldName', 'navigationText1'
-                         )[0].fieldText;
-      var text2 = params.navigationTexts.
-                         filterProperty('fieldName', 'navigationText2'
-                         )[0].fieldText;
+    SDL.NavigationModel.set('startLoc', text1);
+    SDL.NavigationModel.set('endLoc', text2);
 
-      SDL.NavigationModel.set('startLoc', text1);
-      SDL.NavigationModel.set('endLoc', text2);
-    }
     SDL.SDLController.getApplicationModel(params.appID).
         set('constantTBTParams', params);
     SDL.SDLController.getApplicationModel(params.appID).

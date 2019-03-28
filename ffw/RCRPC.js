@@ -584,12 +584,7 @@ FFW.RC = FFW.RPCObserver.create(
         moduleType = request.params.moduleType;
       }
 
-      var deviceName = SDL.SDLController.getApplicationModel(appID)
-        .deviceName;
-
-      if ((SDL.SDLModel.driverDeviceInfo &&
-        deviceName != SDL.SDLModel.driverDeviceInfo.name) ||
-        !SDL.SDLModel.reverseFunctionalityEnabled) {
+      if (!SDL.SDLModel.reverseFunctionalityEnabled) {
         return false;
       }
 
