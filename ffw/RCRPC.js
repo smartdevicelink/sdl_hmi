@@ -56,18 +56,33 @@ FFW.RC = FFW.RPCObserver.create(
     /**
      * access to basic RPC functionality
      */
-    client: FFW.RPCClient.create(
-      {
-        componentName: 'RC'
-      }
-    ),
+    client: FFW.RPCClient,
+    componentName: "RC",
     /**
      * connect to RPC bus
      */
     connect: function() {
-      this.client.connect(this, 900); // Magic number is unique identifier for
-      // component
+      this.client.connect(this.componentName, this);
     },
+
+    /**
+     * @function sendMessage
+     * @param {Em.Object} JSONMessage
+     * @desc sending message to SDL
+     */
+    sendMessage: function(JSONMessage){
+      this.client.send(JSONMessage, this.componentName);
+    },
+
+    /**
+     * @function subscribeToNotification
+     * @param {Em.Object} notification
+     * @desc subscribe to notifications from SDL
+     */
+    subscribeToNotification: function(notification){
+      this.client.subscribeToNotification(notification, this.componentName);
+    },
+
     /**
      * disconnect from RPC bus
      */
@@ -75,6 +90,7 @@ FFW.RC = FFW.RPCObserver.create(
       this.onRPCUnregistered();
       this.client.disconnect();
     },
+
     /**
      * Client is registered - we can send request starting from this point of
      * time
@@ -92,7 +108,7 @@ FFW.RC = FFW.RPCObserver.create(
         500
       );
       this._super();
-      this.client.subscribeToNotification(this.onRCStatusNotification);
+      this.subscribeToNotification(this.onRCStatusNotification);
     },
     /**
      * Client is unregistered - no more requests
@@ -175,7 +191,7 @@ FFW.RC = FFW.RPCObserver.create(
                 'method': request.method
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'RC.GetCapabilities':
@@ -192,7 +208,7 @@ FFW.RC = FFW.RPCObserver.create(
                 'remoteControlCapability': SDL.remoteControlCapability
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'RC.SetInteriorVehicleData':
@@ -340,7 +356,7 @@ FFW.RC = FFW.RPCObserver.create(
                 newSeatControlData;
             }
 
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             this.set('isSetVdInProgress', false);
             break;
           }
@@ -427,7 +443,7 @@ FFW.RC = FFW.RPCObserver.create(
                 request.params.subscribe;
             }
 
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'RC.GetInteriorVehicleDataConsent':
@@ -471,7 +487,7 @@ FFW.RC = FFW.RPCObserver.create(
             }
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -497,7 +513,7 @@ FFW.RC = FFW.RPCObserver.create(
             'method': method
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     GetInteriorVehicleDataConsentResponse: function(request, allowed) {
@@ -511,7 +527,7 @@ FFW.RC = FFW.RPCObserver.create(
           'allowed': allowed
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * From HMI to RSDL
@@ -531,7 +547,7 @@ FFW.RC = FFW.RPCObserver.create(
             'deviceRank': rank
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -552,7 +568,7 @@ FFW.RC = FFW.RPCObserver.create(
       if (allowed === true) {
         JSONMessage.params.accessMode = accessMode;
       }
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * @param moduleType
@@ -566,7 +582,7 @@ FFW.RC = FFW.RPCObserver.create(
           }
         };
         Em.Logger.log('FFW.RC.OnInteriorVehicleData Notification');
-        FFW.RC.client.send(JSONMessage);
+        FFW.RC.sendMessage(JSONMessage);
     },
     /**
      * Verification for consented apps

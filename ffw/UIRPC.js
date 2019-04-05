@@ -48,11 +48,7 @@ FFW.UI = FFW.RPCObserver.create(
     /**
      * access to basic RPC functionality
      */
-    client: FFW.RPCClient.create(
-      {
-        componentName: 'UI'
-      }
-    ),
+    client: FFW.RPCClient,
     // temp var for debug
     appID: 1,
     onRecordStartSubscribeRequestID: -1,
@@ -64,13 +60,33 @@ FFW.UI = FFW.RPCObserver.create(
      */
     performAudioPassThruRequestID: -1,
     endAudioPassThruRequestID: -1,
+    componentName: "UI",
     /**
      * connect to RPC bus
      */
     connect: function() {
-      this.client.connect(this, 400); // Magic number is unique identifier
-      // for component
+      this.client.connect(this.componentName, this);
     },
+
+    /**
+     * @function sendMessage
+     * @param {Em.Object} JSONMessage
+     * @desc sending message to SDL
+     */
+
+    sendMessage: function(JSONMessage){
+      this.client.send(JSONMessage, this.componentName);
+    },
+    /**
+     * @function subscribeToNotification
+     * @param {Em.Object} notification
+     * @desc subscribe to notifications from SDL
+     */
+
+    subscribeToNotification: function(notification){
+      this.client.subscribeToNotification(notification, this.componentName);
+    },
+
     /**
      * disconnect from RPC bus
      */
@@ -78,6 +94,7 @@ FFW.UI = FFW.RPCObserver.create(
       this.onRPCUnregistered();
       this.client.disconnect();
     },
+
     /**
      * Client is registered - we can send request starting from this point
      * of time
@@ -87,7 +104,7 @@ FFW.UI = FFW.RPCObserver.create(
       this._super();
       // subscribe to notifications
       this.onRecordStartSubscribeRequestID =
-        this.client.subscribeToNotification(this.onRecordStartNotification);
+        this.subscribeToNotification(this.onRecordStartNotification);
     },
     /**
      * Client is unregistered - no more requests
@@ -397,7 +414,7 @@ FFW.UI = FFW.RPCObserver.create(
                   'method': 'UI.SetDisplayLayout'
                 }
               };
-              this.client.send(JSONMessage);
+              this.sendMessage(JSONMessage);
             } else {
               this.sendError(
                 SDL.SDLModel.data.resultCode['UNSUPPORTED_REQUEST'], request.id,
@@ -461,7 +478,7 @@ FFW.UI = FFW.RPCObserver.create(
                 'languages': SDL.SDLModel.data.sdlLanguagesList
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.GetLanguage':
@@ -479,7 +496,7 @@ FFW.UI = FFW.RPCObserver.create(
                 'language': SDL.SDLModel.data.hmiUILanguage
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.GetCapabilities':
@@ -877,7 +894,7 @@ FFW.UI = FFW.RPCObserver.create(
             };
             JSONMessage.result.hmiCapabilities.steeringWheelLocation
               = FLAGS.steeringWheelLocation;
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.IsReady':
@@ -893,7 +910,7 @@ FFW.UI = FFW.RPCObserver.create(
                 'method': 'UI.IsReady'
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.ClosePopUp':
@@ -909,7 +926,7 @@ FFW.UI = FFW.RPCObserver.create(
                 'method': 'UI.ClosePopUp'
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.ShowVrHelp':
@@ -971,7 +988,7 @@ FFW.UI = FFW.RPCObserver.create(
             }
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -1007,7 +1024,7 @@ FFW.UI = FFW.RPCObserver.create(
             'method': method
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -1083,7 +1100,7 @@ FFW.UI = FFW.RPCObserver.create(
           JSONMessage.error.data.sliderPosition = sliderPosition;
         }
       }
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notification method to send touch event data to SDLCore
@@ -1101,7 +1118,7 @@ FFW.UI = FFW.RPCObserver.create(
           'appID': appID
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when command was triggered
@@ -1121,7 +1138,7 @@ FFW.UI = FFW.RPCObserver.create(
           'appID': appID
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notification method to send touch event data to SDLCore
@@ -1140,7 +1157,7 @@ FFW.UI = FFW.RPCObserver.create(
           'event': event
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when command was triggered
@@ -1160,7 +1177,7 @@ FFW.UI = FFW.RPCObserver.create(
           'appID': appID
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when command was triggered
@@ -1195,7 +1212,7 @@ FFW.UI = FFW.RPCObserver.create(
         if (manualTextEntry != null) {
           JSONMessage.error.data.manualTextEntry = manualTextEntry;
         }
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
         this.errorResponsePull[requestID] = null;
         return;
       }
@@ -1229,7 +1246,7 @@ FFW.UI = FFW.RPCObserver.create(
           }
         };
       }
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when DriverDistraction PopUp is visible
@@ -1247,7 +1264,7 @@ FFW.UI = FFW.RPCObserver.create(
           'state': driverDistractionState
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notifies if system context is changed
@@ -1268,7 +1285,7 @@ FFW.UI = FFW.RPCObserver.create(
       if (appID) {
         JSONMessage.params.appID = appID;
       }
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notifies if sdl UI components language was changed
@@ -1286,7 +1303,7 @@ FFW.UI = FFW.RPCObserver.create(
           'language': lang
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      *  Sends notification on SDL Core display keyboard value
@@ -1305,7 +1322,7 @@ FFW.UI = FFW.RPCObserver.create(
           'event': event
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Callback for the seek media clock timer notification
@@ -1324,7 +1341,7 @@ FFW.UI = FFW.RPCObserver.create(
           'appID': appID
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     }
   }
 );

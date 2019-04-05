@@ -342,7 +342,6 @@ SDL.ABSAppModel = Em.Object.extend(
           SDL.SDLController.buttonsSort(parentID, this.appID);
           SDL.OptionsView.commands.refreshItems();
         }
-        console.log(commands.length);
         if(request.params.cmdIcon){
           var image = request.params.cmdIcon.value;
           var length=image.length;
