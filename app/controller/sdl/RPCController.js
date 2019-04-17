@@ -382,32 +382,6 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         /**
-         * Validate method for request AllowDeviceToConnect
-         *
-         * @param {Object}
-         *            params
-         */
-        AllowDeviceToConnect: function(params) {
-          if (params == null) {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Parameter \'params\' does not exists!'
-            };
-            return this.resultStruct;
-          }
-          if (params.device == null) {
-            this.resultStruct = {
-              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
-              'resultMessage': 'Parameter \'device\' does not exists!'
-            };
-            return this.resultStruct;
-          }
-          this.resultStruct = {
-            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
-          };
-          return this.resultStruct;
-        },
-        /**
          * Validate method for request GetSystemInfo
          *
          * @param {Object}
