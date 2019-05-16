@@ -627,20 +627,3 @@
     width: 150px;
     height: 40px;
 }
-
-#app_controlButtons .phone_call_button {
-    height: 40px;
-    width: 163px;
-    font-size: 20px;
-    line-height: 41px;
-    border: 1px solid #FFFF30;
-    top: 2px;
-    color: #FFFF30;
-    padding-left: 10px;
-    left: 244px;
-    transition: left 2s;
-}
-
-#app_controlButtons .phone_call_button.expand {
-    left: 156px;
-}
