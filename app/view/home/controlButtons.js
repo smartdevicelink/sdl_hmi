@@ -496,7 +496,11 @@ getCurrentDisplayModeClass: function() {
 
           classNames: 'driverDistractionControlCheckBox',
 
-          checkedBinding: 'SDL.SDLModel.data.driverDistractionState'
+          checkedBinding: 'SDL.SDLModel.data.driverDistractionState',
+
+          click: function(event) {
+            SDL.SDLController.selectDriverDistraction(event.currentTarget.checked);
+          }
 
         }
       )
