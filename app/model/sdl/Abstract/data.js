@@ -73,7 +73,8 @@ SDL.SDLModelData = Em.Object.create(
       retry: [],
       try: null,
       timer: null,
-      oldTimer: 0
+      oldTimer: 0,
+      isRetry: false
     },
     /**
      * Application's container for current processed requests on VR component

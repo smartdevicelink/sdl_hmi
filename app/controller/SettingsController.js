@@ -347,27 +347,41 @@ SDL.SettingsController = Em.Object.create(
     policyUpdateRetry: function(abort) {
       clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
       SDL.SDLModel.data.policyUpdateRetry.timer = null;
-      if (abort !== 'ABORT' && (
-        SDL.SDLModel.data.policyUpdateRetry.try <
-        SDL.SDLModel.data.policyUpdateRetry.retry.length)) {
-        SDL.SDLModel.data.policyUpdateRetry.oldTimer =
-          SDL.SDLModel.data.policyUpdateRetry.oldTimer +
-          SDL.SDLModel.data.policyUpdateRetry.timeout * 1000 +
-          SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] *
-          1000;
+
+      var sendOnSystemRequest = function() {
+        FFW.BasicCommunication.OnSystemRequest(
+          'PROPRIETARY',
+          SDL.SettingsController.policyUpdateFile,
+          SDL.SDLModel.data.policyURLs[0].url,
+          SDL.SDLModel.data.policyURLs[0].appID
+        );
+      }
+      if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+        SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
         SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
           function() {
-            FFW.BasicCommunication.OnSystemRequest(
-              'PROPRIETARY',
-              SDL.SettingsController.policyUpdateFile,
-              SDL.SDLModel.data.policyURLs[0].url,
-              SDL.SDLModel.data.policyURLs[0].appID
-            );
-            SDL.SettingsController.policyUpdateRetry();
+            sendOnSystemRequest();
+          }, 1000
+        );
+        return;
+      }
+      var length = SDL.SDLModel.data.policyUpdateRetry.retry.length;
+      if(length == SDL.SDLModel.data.policyUpdateRetry.try) {
+        SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
+      }
+      if (abort !== 'ABORT' && SDL.SDLModel.data.policyUpdateRetry.isRetry) {           
+        
+        SDL.SDLModel.data.policyUpdateRetry.oldTimer = 
+          SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] * 1000;
+     
+        SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
+          function() {
+            sendOnSystemRequest();
           }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
         );
         SDL.SDLModel.data.policyUpdateRetry.try++;
       } else {
+        SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
         clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
         SDL.SDLModel.data.policyUpdateRetry = {
           timeout: null,
