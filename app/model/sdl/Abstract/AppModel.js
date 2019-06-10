@@ -301,6 +301,38 @@ SDL.ABSAppModel = Em.Object.extend(
       return result;
     },
     /**
+     * Method to refresh updated images used in HMI
+     *
+     * @param imageName
+     */
+    onPutFile: function(imageName) {
+      var result = false;
+      // Get list of subMenus with commands
+      for (var commands in this.commandsList) {
+
+        // Check if object item (subMenu list of commands) is added list with
+        // command in object and not an inherited method of object
+        if (this.commandsList.hasOwnProperty(commands)) {
+          var len = this.commandsList[commands].length;
+          for (var i = 0; i < len; i++) {
+
+            // Check image name with each command in each subMenu
+            if (this.commandsList[commands][i].icon) {
+              if (this.commandsList[commands][i].icon.indexOf(imageName) !=
+                -1) {
+
+                // If found same image path than set default icon path
+                this.commandsList[commands][i].icon =
+                  imageName + "?m=" + new Date().getTime();
+                result = true;
+              }
+            }
+          }
+        }
+      }
+      return result;
+    },
+    /**
      * Update Soft Buttons will handle on command Show
      *
      * @param {Array}

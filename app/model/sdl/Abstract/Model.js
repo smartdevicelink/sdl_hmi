@@ -382,6 +382,170 @@ SDL.SDLModel = Em.Object.extend({
     }
   },
 
+  onPutFile: function(params) {
+
+    var result = false;
+
+    if ((
+      params.fileType === 'GRAPHIC_PNG' || params.fileType === 'GRAPHIC_BMP' ||
+      params.fileType === 'GRAPHIC_JPEG') &&
+      SDL.SDLController.getApplicationModel(params.appID)) {
+      result = SDL.SDLController.getApplicationModel(params.appID).
+                   onPutFile(params.syncFileName);
+
+      if (SDL.SDLController.getApplicationModel(params.appID).appIcon.
+              indexOf(params.syncFileName) != -1) {
+        SDL.SDLController.getApplicationModel(params.appID).
+            set('appIcon', params.syncFileName + "?m=" + new Date().getTime());
+      }
+
+      if (SDL.SDLController.getApplicationModel(params.appID
+        ).constantTBTParams) {
+
+        if (SDL.SDLController.getApplicationModel(params.appID
+          ).constantTBTParams.turnIcon &&
+          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
+              turnIcon.value.indexOf(params.syncFileName) != -1) {
+          SDL.SDLController.getApplicationModel(params.appID
+          ).constantTBTParams.turnIcon.value            =
+              params.syncFileName + "?m=" + new Date().getTime();
+          SDL.TurnByTurnView.activate(params.appID);
+        }
+
+        if (SDL.SDLController.getApplicationModel(params.appID
+          ).constantTBTParams.nextTurnIcon &&
+          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
+              nextTurnIcon.value.indexOf(params.syncFileName) != -1) {
+          SDL.SDLController.getApplicationModel(params.appID
+          ).constantTBTParams.nextTurnIcon.value            =
+              params.syncFileName + "?m=" + new Date().getTime();
+          SDL.TurnByTurnView.activate(params.appID);
+        }
+      }
+
+      if (SDL.SDLController.model.appInfo.trackIcon &&
+        SDL.SDLController.model.appInfo.trackIcon.indexOf(params.syncFileName) !=
+        -1) {
+        SDL.SDLController.model.appInfo.set('trackIcon',
+          params.syncFileName + "?m=" + new Date().getTime()
+        );
+      }
+
+      if (SDL.SDLController.model.appInfo.mainImage &&
+        SDL.SDLController.model.appInfo.mainImage.indexOf(params.syncFileName) !=
+        -1) {
+        SDL.SDLController.model.appInfo.set('mainImage',
+          params.syncFileName + "?m=" + new Date().getTime()
+        );
+      }
+
+      var len = SDL.SDLController.getApplicationModel(params.appID
+      ).turnList.length;
+      for (var i = 0; i < len; i++) {
+        if (!SDL.SDLController.getApplicationModel(params.appID
+          ).turnList[i].turnIcon) {
+          continue;
+        }
+        if (SDL.SDLController.getApplicationModel(params.appID
+          ).turnList[i].turnIcon.value.indexOf(params.syncFileName) != -1 &&
+          params.syncFileName.length == SDL.SDLController.getApplicationModel(
+            params.appID
+          ).turnList[i].turnIcon.value.length) {
+          SDL.SDLController.getApplicationModel(params.appID
+          ).turnList[i].turnIcon.value            =
+              params.syncFileName + "?m=" + new Date().getTime();
+        }
+      }
+
+      SDL.TBTTurnList.updateList(params.appID);
+
+      if (SDL.SDLController.getApplicationModel(params.appID).softButtons) {
+        var len = SDL.SDLController.getApplicationModel(params.appID
+        ).softButtons.length;
+        for (var i = 0; i < len; i++) {
+          if (!SDL.SDLController.getApplicationModel(params.appID
+            ).softButtons[i].image) {
+            continue;
+          }
+          if (SDL.SDLController.getApplicationModel(params.appID
+            ).softButtons[i].image.value.indexOf(params.syncFileName) != -1) {
+            SDL.SDLController.getApplicationModel(params.appID
+            ).softButtons[i].image.value              =
+                params.syncFileName + "?m=" + new Date().getTime();
+          }
+        }
+
+        if (params.appID == SDL.SDLController.model.appID) {
+          SDL.sdlView.innerMenu.refreshItems();
+        }
+      }
+
+      var len = SDL.VRHelpListView.helpList.items.length;
+      for (var i = 0; i < len; i++) {
+        if (!SDL.VRHelpListView.helpList.items[i].params.icon) {
+          continue;
+        }
+        if (SDL.VRHelpListView.helpList.items[i].params.icon.indexOf(
+            params.syncFileName
+          ) != -1) {
+          SDL.VRHelpListView.helpList.items[i].params.icon            =
+              params.syncFileName + "?m=" + new Date().getTime();
+        }
+      }
+
+      if (SDL.SDLController.getApplicationModel(params.appID
+        ).globalProperties.vrHelp) {
+        for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID
+        ).globalProperties.vrHelp.length; i++) {
+          if (SDL.SDLController.getApplicationModel(params.appID
+            ).globalProperties.vrHelp[i].image.value.indexOf(params.syncFileName) != -1) {
+            SDL.SDLController.getApplicationModel(params.appID
+            ).globalProperties.vrHelp[i].image.value =
+              params.syncFileName + "?m=" + new Date().getTime();
+          }
+        }
+      }
+
+      SDL.VRHelpListView.helpList.list.refresh();
+
+      var len = SDL.InteractionChoicesView.listOfChoices.items.length;
+      for (var i = 0; i < len; i++) {
+        if (!SDL.InteractionChoicesView.listOfChoices.items[i].params.icon) {
+          continue;
+        }
+        if (SDL.InteractionChoicesView.listOfChoices.items[i].params.icon.indexOf(
+            params.syncFileName
+          ) != -1) {
+          SDL.InteractionChoicesView.listOfChoices.items[i].params.icon            =
+              params.syncFileName + "?m=" + new Date().getTime();
+        }
+      }
+
+      SDL.InteractionChoicesView.listOfChoices.list.refresh();
+
+      var len = SDL.InteractionChoicesView.listWrapper.naviChoises._childViews.length;
+      for (var i = 0; i < len; i++) {
+        if (!SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon) {
+          continue;
+        }
+        if (SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon.indexOf(
+            params.syncFileName
+          ) != -1) {
+          SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon            =
+              params.syncFileName + "?m=" + new Date().getTime();
+        }
+      }
+
+      SDL.InteractionChoicesView.listWrapper.naviChoises.rerender();
+
+    }
+
+    if (result && SDL.OptionsView.active &&
+      SDL.SDLController.model.appID == params.appID) {
+      SDL.OptionsView.commands.refreshItems();
+    }
+  },
+
   /**
    * Method to start playing video from streaming video source
    * provided by SDLCore
