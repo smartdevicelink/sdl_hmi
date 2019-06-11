@@ -225,6 +225,11 @@ SDL.ServiceUpdatePopUp = Em.ContainerView.create(
             'Make sure your device has access to GPS signal');
           break;
         }
+        case 'PROTECTION_ENFORCED': {
+          this.set('content', 'Attempting to start unprotected service which '
+            + 'is configured as a force protected');
+          break;
+        }
         default: {
           this.set('content', 'Rejected by unknown reason');
           break;
