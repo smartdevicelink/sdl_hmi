@@ -475,6 +475,14 @@ FFW.BasicCommunication = FFW.RPCObserver
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
           }
+          if (request.method == 'BasicCommunication.CloseApplication') {
+            SDL.SDLController.getApplicationModel(request.params.appID).level
+              = 'NONE';
+            SDL.SDLController.closeApplication(request.params.appID);
+            this.sendBCResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
+          }
           if (request.method == 'BasicCommunication.GetSystemInfo') {
             Em.Logger.log('BasicCommunication.GetSystemInfo Response');
             // send repsonse
