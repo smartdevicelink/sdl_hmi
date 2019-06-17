@@ -236,6 +236,23 @@
     width: 590px;
 }
 
+#sdl_sub_nav_buttons_list .list {
+  width: 650px;
+  height: 251px;
+  border-radius: 2px;
+  left: 75px;
+  top: 150px;
+}
+
+#sdl_sub_nav_buttons_list .list-content {
+  width: 590px;
+}
+
+#sdl_sub_nav_buttons_list .list-item span{
+  margin-left: 5px;
+  float: none;
+}
+
 #VRPopUp.move {
     left: 800px;
 }
@@ -284,6 +301,43 @@
     position: absolute;
     height: 49px;
     width: 49px;
+}
+
+#sdl_sub_nav_buttons_list .list-content .ico {
+  height: 49px;
+  width: 49px;
+  float: left;
+  position: relative;
+}
+
+#sdl_sub_nav_buttons_list .day-mode .ico-overlay
+{
+  background:url(../images/template/imagetype-pattern-day.png);
+  opacity: 0.6;
+  z-index: 1001;
+  position: absolute;
+  height: 49px;
+  width: 49px;
+}
+
+#sdl_sub_nav_buttons_list .night-mode .ico-overlay
+{
+  background:url(../images/template/imagetype-pattern-night.png);
+  opacity: 0.6;
+  z-index: 1001;
+  position: absolute;
+  height: 49px;
+  width: 49px;
+}
+
+#sdl_sub_nav_buttons_list .high-lighted-mode .ico-overlay
+{
+  background:url(../images/template/imagetype-pattern-highlighted.png);
+  opacity: 0.6;
+  z-index: 1001;
+  position: absolute;
+  height: 49px;
+  width: 49px;
 }
 
 #info_nonMedia_options_submenu {
@@ -1255,6 +1309,21 @@
     width: 105px;
     position: absolute;
 }
+
+#baseNavigation .naviSubscribeMenuBtn {
+  border: 1px solid #393939;
+  border-radius: 3px;
+  height: 42px;
+  line-height: 42px;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  top: 233px;
+  right: 6px;
+  width: 105px;
+  position: absolute;
+}
+
 
 #AlertManeuverPopUp .closeButton {
     width: 170px;

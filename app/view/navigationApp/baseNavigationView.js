@@ -44,6 +44,7 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       'mainField4',
       'mainField5',
       'mainField6',
+      'navSubButtons',
       'optionsBtn'
     ],
     update: function() {
@@ -163,6 +164,14 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       {
         classNames: 'mainField6 mainField',
         contentBinding: 'parentView.mainField6'
+      }
+    ),
+    navSubButtons: SDL.Button.extend(
+      {
+        classNames: 'naviSubscribeMenuBtn navButton',
+        text: 'Nav Buttons',
+        action: 'openNavButtonsList',
+        target: 'SDL.SDLController'
       }
     ),
     optionsBtn: SDL.Button.extend(

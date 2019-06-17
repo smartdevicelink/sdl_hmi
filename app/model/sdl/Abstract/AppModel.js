@@ -58,6 +58,86 @@ SDL.ABSAppModel = Em.Object.extend(
      * depends on BC.SubscribeButton request
      */
     TUNEDOWN: false,
+    /*
+     * Set of display text and subscription flags to display 
+     * navigation subscription buttons.
+     * Depends on BC.SubscribeButton request.
+     */    
+    NAV_BUTTONS: {
+        NAV_CENTER_LOCATION: {
+          subscribed: false,
+          text: "Center"
+        },
+        NAV_ZOOM_IN: {
+          subscribed: false,
+          text: "Zoom In"
+        },
+    
+        NAV_ZOOM_OUT: {
+          subscribed: false,
+          text: "Zoom Out"
+        },
+    
+        NAV_PAN_UP: {
+          subscribed: false,
+          text: "Pan Up"
+        },
+    
+        NAV_PAN_UP_RIGHT: {
+          subscribed: false,
+          text: "Pan Up Right"
+        },
+    
+        NAV_PAN_RIGHT: {
+          subscribed: false,
+          text: "Pan Right"
+        },
+    
+        NAV_PAN_DOWN_RIGHT: {
+          subscribed: false,
+          text: "Pan Down Right"
+        },
+    
+        NAV_PAN_DOWN: {
+          subscribed: false,
+          text: "Pan Down"
+        },
+    
+        NAV_PAN_DOWN_LEFT: {
+          subscribed: false,
+          text: "Pan Down Left"
+        },
+    
+        NAV_PAN_LEFT: {
+          subscribed: false,
+          text: "Pan Left"
+        },
+    
+        NAV_PAN_UP_LEFT: {
+          subscribed: false,
+          text: "Pan Up Left"
+        },
+    
+        NAV_TILT_TOGGLE: {
+          subscribed: false,
+          text: "Pan Tilt Toggle"
+        },
+    
+        NAV_ROTATE_CLOCKWISE: {
+          subscribed: false,
+          text: "Rotate Clockwise"
+        },
+    
+        NAV_ROTATE_COUNTERCLOCKWISE: {
+          subscribed: false,
+          text: "Rotate Counterclockwise"
+        },
+    
+        NAV_HEADING_TOGGLE: {
+          subscribed: false,
+          text: "Toggle Heading"
+        }
+    },
     /**
      * mediaPlayerIndicator flag for SDL.SDLMediaControlls view
      */
@@ -230,6 +310,17 @@ SDL.ABSAppModel = Em.Object.extend(
      * @type {Boolean}
      */
     tbtActivate: false,
+    /**
+     * Setter method for navigation subscription buttons
+     *
+     * @return none
+     */
+    setNavButton: function(button, subscribe) {
+      if (!this.NAV_BUTTONS[button]) {
+        return;
+      }
+      this.NAV_BUTTONS[button].subscribed = subscribe
+    },
     /**
      * Return current menu commands
      *

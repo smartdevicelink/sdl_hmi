@@ -118,8 +118,15 @@ FFW.Buttons = FFW.RPCObserver.create(
 
       if (notification.method == this.onButtonSubscriptionNotification) {
         var model = SDL.SDLController.getApplicationModel(notification.params.appID);
-        if (model) {
-          model.set(notification.params.name, notification.params.isSubscribed);
+        var buttonName = notification.params.name;
+        if (!model) {
+          return;
+        }
+        if (buttonName.includes("NAV_")) {
+          model.setNavButton(buttonName, notification.params.isSubscribed);
+        }
+        else {
+          model.set(buttonName, notification.params.isSubscribed);
         }
       }
     },

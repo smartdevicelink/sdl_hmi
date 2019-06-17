@@ -111,6 +111,9 @@ SDL.SDLController = Em.Object.extend(
         SDL.OptionsView.deactivate();
       }
     },
+    onNavButton: function(element) {
+      // Empty target function.
+    },
     /**
      * Handeler for VR command button press
      *
@@ -191,6 +194,9 @@ SDL.SDLController = Em.Object.extend(
      */
     openCommandsList: function() {
       SDL.OptionsView.activate();
+    },
+    openNavButtonsList: function() {
+      SDL.NavigationSubscriptionButtonsView.activate();
     },
     /**
      * Notification of deactivation of current application model initiated in
