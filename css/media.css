@@ -319,6 +319,115 @@
     width: 200px;
 }
 
+#hd_channel_container.channel {
+    position: relative;
+    top: -26px;
+    left: -10px;
+}
+
+#radio_options_view_container .availableHdChannelsCheckBox_0 {
+    top: 183px;
+    position: absolute;
+    left: 232px;
+}
+
+#radio_options_view_container .availableHdChannelsLabel_0 {
+    top: 183px;
+    position: absolute;
+    left: 220px;
+    font-size: 12px;
+}
+
+#radio_options_view_container .availableHdChannelsCheckBox_1 {
+    top: 183px;
+    position: absolute;
+    left: 259px;
+}
+
+#radio_options_view_container .availableHdChannelsLabel_1 {
+    top: 183px;
+    position: absolute;
+    left: 247px;
+    font-size: 12px;
+}
+
+#radio_options_view_container .availableHdChannelsCheckBox_2 {
+    top: 183px;
+    position: absolute;
+    left: 285px;
+}
+
+#radio_options_view_container .availableHdChannelsLabel_2 {
+    top: 183px;
+    position: absolute;
+    left: 274px;
+    font-size: 12px;
+}
+
+#radio_options_view_container .availableHdChannelsCheckBox_3 {
+    top: 183px;
+    position: absolute;
+    left: 311px;
+}
+
+#radio_options_view_container .availableHdChannelsLabel_3 {
+    top: 183px;
+    position: absolute;
+    left: 300px;
+    font-size: 12px;
+}
+
+#radio_options_view_container .availableHdChannelsCheckBox_4 {
+    top: 183px;
+    position: absolute;
+    left: 339px;
+}
+
+#radio_options_view_container .availableHdChannelsLabel_4 {
+    top: 183px;
+    position: absolute;
+    left: 327px;
+    font-size: 12px;
+}
+
+#radio_options_view_container .availableHdChannelsCheckBox_5 {
+    top: 183px;
+    position: absolute;
+    left: 365px;
+}
+
+#radio_options_view_container .availableHdChannelsLabel_5 {
+    top: 183px;
+    position: absolute;
+    left: 354px;
+    font-size: 12px;
+}
+
+#radio_options_view_container .availableHdChannelsCheckBox_6 {
+    top: 183px;
+    position: absolute;
+    left: 390px;
+}
+
+#radio_options_view_container .availableHdChannelsLabel_6 {
+    top: 183px;
+    position: absolute;
+    left: 378px;
+    font-size: 12px;
+}
+
+#radio_options_view_container .availableHdChannelsCheckBox_7 {
+    top: 183px;
+    position: absolute;
+    left: 417px;
+}
+
+#radio_options_view_container .availableHdChannelsLabel_7 {
+    top: 183px;
+    position: absolute;
+    left: 405px;
+    font-size: 12px;
+}
 
 #radio_options_view_container .stationLongNameCheckBox {
     position: absolute;

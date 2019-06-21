@@ -201,7 +201,7 @@ FFW.RC = FFW.RPCObserver.create(
             this.set('isSetVdInProgress', true);
 
             if (request.params.moduleData.radioControlData) {
-              if (request.params.moduleData.radioControlData.radioEnable == null
+              if (request.params.moduleData.radioControlData.radioEnable == undefined
                   && SDL.RadioModel.radioControlStruct.radioEnable == false) {
                 this.sendError(
                   SDL.SDLModel.data.resultCode.IGNORED,
@@ -209,6 +209,16 @@ FFW.RC = FFW.RPCObserver.create(
                   'Radio module must be activated.'
                 );
                 return;
+              }
+              if(request.params.moduleData.radioControlData.hdChannel !== undefined
+                 && request.params.moduleData.radioControlData.hdRadioEnable == undefined
+                  && SDL.RadioModel.radioControlStruct.hdRadioEnable == false) {
+                  this.sendError(
+                    SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
+                    request.id, request.method,
+                    'HD Radio module does not supported.'
+                  );
+                  return;
               }
               var result = SDL.RadioModel.checkRadioFrequencyBoundaries(
                 request.params.moduleData.radioControlData
@@ -222,7 +232,7 @@ FFW.RC = FFW.RPCObserver.create(
                 return;
               }
             }
-
+            
             var newClimateControlData = null;
             var newRadioControlData = null;
             var newAudioControlData= null;    
@@ -231,6 +241,27 @@ FFW.RC = FFW.RPCObserver.create(
             var newSeatControlData = null;
             
             if (request.params.moduleData.climateControlData) {
+              var currentClimateState = 
+                SDL.ClimateController.getClimateControlData().climateEnable;
+              var requestedClimateState = 
+                request.params.moduleData.climateControlData.climateEnable;
+              if(!currentClimateState) {
+                if(requestedClimateState === undefined) {
+                  this.sendError(
+                    SDL.SDLModel.data.resultCode.REJECTED,
+                    request.id, request.method,
+                    'Climate Control is disable. Turn Climate on.'
+                  );
+                  return;
+                } else if(requestedClimateState === false) {
+                  this.sendError(
+                    SDL.SDLModel.data.resultCode.REJECTED,
+                    request.id, request.method,
+                    'Climate Control is disabled already.'
+                  );
+                  return;
+                }
+              }
               newClimateControlData =
                 SDL.ClimateController.model.setClimateData(
                   request.params.moduleData.climateControlData);
@@ -361,7 +392,7 @@ FFW.RC = FFW.RPCObserver.create(
             );
             switch(moduleType){
               case 'CLIMATE':{
-                climateControlData = SDL.ClimateController.model.getClimateControlData();
+                climateControlData = SDL.ClimateController.getClimateControlData();
                 break
               }
               case 'RADIO':{
