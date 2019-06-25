@@ -385,40 +385,31 @@ SDL.SDLModel = Em.Object.extend({
   onPutFile: function(params) {
 
     var result = false;
-
+    var appModel = SDL.SDLController.getApplicationModel(params.appID);
+    var updatedFileName = params.syncFileName + "?m=" + new Date().getTime();
     if ((
       params.fileType === 'GRAPHIC_PNG' || params.fileType === 'GRAPHIC_BMP' ||
       params.fileType === 'GRAPHIC_JPEG') &&
-      SDL.SDLController.getApplicationModel(params.appID)) {
-      result = SDL.SDLController.getApplicationModel(params.appID).
-                   onPutFile(params.syncFileName);
+      appModel) {
+      result = appModel.onPutFile(params.syncFileName);
 
-      if (SDL.SDLController.getApplicationModel(params.appID).appIcon.
-              indexOf(params.syncFileName) != -1) {
-        SDL.SDLController.getApplicationModel(params.appID).
-            set('appIcon', params.syncFileName + "?m=" + new Date().getTime());
+      if (appModel.appIcon.indexOf(params.syncFileName) != -1) {
+        appModel.set('appIcon', updatedFileName);
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID
-        ).constantTBTParams) {
+      if (appModel.constantTBTParams) {
 
-        if (SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.turnIcon &&
-          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
+        if (appModel.constantTBTParams.turnIcon &&
+          appModel.constantTBTParams.
               turnIcon.value.indexOf(params.syncFileName) != -1) {
-          SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.turnIcon.value            =
-              params.syncFileName + "?m=" + new Date().getTime();
+          appModel.constantTBTParams.turnIcon.value = updatedFileName;
           SDL.TurnByTurnView.activate(params.appID);
         }
 
-        if (SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.nextTurnIcon &&
-          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
+        if (appModel.constantTBTParams.nextTurnIcon &&
+          appModel.constantTBTParams.
               nextTurnIcon.value.indexOf(params.syncFileName) != -1) {
-          SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.nextTurnIcon.value            =
-              params.syncFileName + "?m=" + new Date().getTime();
+          appModel.constantTBTParams.nextTurnIcon.value = updatedFileName;
           SDL.TurnByTurnView.activate(params.appID);
         }
       }
@@ -426,52 +417,34 @@ SDL.SDLModel = Em.Object.extend({
       if (SDL.SDLController.model.appInfo.trackIcon &&
         SDL.SDLController.model.appInfo.trackIcon.indexOf(params.syncFileName) !=
         -1) {
-        SDL.SDLController.model.appInfo.set('trackIcon',
-          params.syncFileName + "?m=" + new Date().getTime()
-        );
+        SDL.SDLController.model.appInfo.set('trackIcon', updatedFileName);
       }
 
       if (SDL.SDLController.model.appInfo.mainImage &&
         SDL.SDLController.model.appInfo.mainImage.indexOf(params.syncFileName) !=
         -1) {
-        SDL.SDLController.model.appInfo.set('mainImage',
-          params.syncFileName + "?m=" + new Date().getTime()
-        );
+        SDL.SDLController.model.appInfo.set('mainImage', updatedFileName);
       }
 
-      var len = SDL.SDLController.getApplicationModel(params.appID
-      ).turnList.length;
+      var len = appModel.turnList.length;
       for (var i = 0; i < len; i++) {
-        if (!SDL.SDLController.getApplicationModel(params.appID
-          ).turnList[i].turnIcon) {
+        if (!appModel.turnList[i].turnIcon) {
           continue;
         }
-        if (SDL.SDLController.getApplicationModel(params.appID
-          ).turnList[i].turnIcon.value.indexOf(params.syncFileName) != -1 &&
-          params.syncFileName.length == SDL.SDLController.getApplicationModel(
-            params.appID
-          ).turnList[i].turnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID
-          ).turnList[i].turnIcon.value            =
-              params.syncFileName + "?m=" + new Date().getTime();
+        if (appModel.turnList[i].turnIcon.value.indexOf(params.syncFileName) != -1) {
+          appModel.turnList[i].turnIcon.value = updatedFileName;
         }
       }
 
       SDL.TBTTurnList.updateList(params.appID);
 
-      if (SDL.SDLController.getApplicationModel(params.appID).softButtons) {
-        var len = SDL.SDLController.getApplicationModel(params.appID
-        ).softButtons.length;
-        for (var i = 0; i < len; i++) {
-          if (!SDL.SDLController.getApplicationModel(params.appID
-            ).softButtons[i].image) {
+      if (appModel.softButtons) {
+        for (var i = 0; i < appModel.softButtons.length; i++) {
+          if (!appModel.softButtons[i].image) {
             continue;
           }
-          if (SDL.SDLController.getApplicationModel(params.appID
-            ).softButtons[i].image.value.indexOf(params.syncFileName) != -1) {
-            SDL.SDLController.getApplicationModel(params.appID
-            ).softButtons[i].image.value              =
-                params.syncFileName + "?m=" + new Date().getTime();
+          if (appModel.softButtons[i].image.value.indexOf(params.syncFileName) != -1) {
+            appModel.softButtons[i].image.value = updatedFileName;
           }
         }
 
@@ -480,59 +453,45 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      var len = SDL.VRHelpListView.helpList.items.length;
-      for (var i = 0; i < len; i++) {
-        if (!SDL.VRHelpListView.helpList.items[i].params.icon) {
+      var helpList = SDL.VRHelpListView.helpList.items;
+      for (var i = 0; i < helpList.length; i++) {
+        if (!helpList[i].params.icon) {
           continue;
         }
-        if (SDL.VRHelpListView.helpList.items[i].params.icon.indexOf(
-            params.syncFileName
-          ) != -1) {
-          SDL.VRHelpListView.helpList.items[i].params.icon            =
-              params.syncFileName + "?m=" + new Date().getTime();
+        if (helpList[i].params.icon.indexOf(params.syncFileName) != -1) {
+          helpList[i].params.icon = updatedFileName;
         }
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID
-        ).globalProperties.vrHelp) {
-        for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID
-        ).globalProperties.vrHelp.length; i++) {
-          if (SDL.SDLController.getApplicationModel(params.appID
-            ).globalProperties.vrHelp[i].image.value.indexOf(params.syncFileName) != -1) {
-            SDL.SDLController.getApplicationModel(params.appID
-            ).globalProperties.vrHelp[i].image.value =
-              params.syncFileName + "?m=" + new Date().getTime();
+      if (appModel.globalProperties.vrHelp) {
+        for (var i = 0; i < appModel.globalProperties.vrHelp.length; i++) {
+          if (appModel.globalProperties.vrHelp[i].image.value.indexOf(params.syncFileName) != -1) {
+            appModel.globalProperties.vrHelp[i].image.value = updatedFileName;
           }
         }
       }
 
       SDL.VRHelpListView.helpList.list.refresh();
 
-      var len = SDL.InteractionChoicesView.listOfChoices.items.length;
-      for (var i = 0; i < len; i++) {
-        if (!SDL.InteractionChoicesView.listOfChoices.items[i].params.icon) {
+      var choices = SDL.InteractionChoicesView.listOfChoices.items;
+      for (var i = 0; i < choices.length; i++) {
+        if (!choices[i].params.icon) {
           continue;
         }
-        if (SDL.InteractionChoicesView.listOfChoices.items[i].params.icon.indexOf(
-            params.syncFileName
-          ) != -1) {
-          SDL.InteractionChoicesView.listOfChoices.items[i].params.icon            =
-              params.syncFileName + "?m=" + new Date().getTime();
+        if (choices[i].params.icon.indexOf(params.syncFileName) != -1) {
+          choices[i].params.icon = updatedFileName;
         }
       }
 
       SDL.InteractionChoicesView.listOfChoices.list.refresh();
 
-      var len = SDL.InteractionChoicesView.listWrapper.naviChoises._childViews.length;
-      for (var i = 0; i < len; i++) {
-        if (!SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon) {
+      var naviChoices = SDL.InteractionChoicesView.listWrapper.naviChoises._childViews;
+      for (var i = 0; i < naviChoices.length; i++) {
+        if (!naviChoices[i].icon) {
           continue;
         }
-        if (SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon.indexOf(
-            params.syncFileName
-          ) != -1) {
-          SDL.InteractionChoicesView.listWrapper.naviChoises._childViews[i].icon            =
-              params.syncFileName + "?m=" + new Date().getTime();
+        if (naviChoices[i].icon.indexOf(params.syncFileName) != -1) {
+          naviChoices[i].icon = updatedFileName;
         }
       }
 

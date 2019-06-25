@@ -313,8 +313,7 @@ SDL.ABSAppModel = Em.Object.extend(
         // Check if object item (subMenu list of commands) is added list with
         // command in object and not an inherited method of object
         if (this.commandsList.hasOwnProperty(commands)) {
-          var len = this.commandsList[commands].length;
-          for (var i = 0; i < len; i++) {
+          for (var i = 0; i < this.commandsList[commands].length; i++) {
 
             // Check image name with each command in each subMenu
             if (this.commandsList[commands][i].icon) {
