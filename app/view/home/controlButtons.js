@@ -356,7 +356,7 @@ getCurrentDisplayModeClass: function() {
 
           classNames: 'sdlGPLabel',
 
-          content: 'HELP_PROMPT: TIMEOUT_PROMPT: AUTOCOMPLETE_TEXT: POLICY_GetURLS:'
+          content: 'HELP_PROMPT: TIMEOUT_PROMPT: AUTOCOMPLETE_LIST: POLICY_GetURLS:'
         }
       ),
 
@@ -449,22 +449,22 @@ getCurrentDisplayModeClass: function() {
 
           classNames: 'sdlGPData',
 
-          contentBinding: 'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteText',
+          contentBinding: 'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList',
 
           propertiesData: function() {
+              var str = '';
+              if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties 
+                && SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList) {
+                  var i = 0;
+                  for (i = 0; i < SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList.length; i++) {
+                      str += SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList[i]
+                          + ' ';
+                  }
+              }
 
-            //                        var str = '';
-            //                        if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.timeoutPrompt) {
-            //                            var i = 0;
-            //                            for (i = 0; i < SDL.SDLController.model.globalProperties.timeoutPrompt.length; i++) {
-            //                                str += SDL.SDLController.model.globalProperties.timeoutPrompt[i].text
-            //                                    + ' ';
-            //                            }
-            //                        }
-            //
-            //                        return str;
+              return str;
           }.property(
-            'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteText.@each'
+            'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList.@each'
           )
         }
       )
