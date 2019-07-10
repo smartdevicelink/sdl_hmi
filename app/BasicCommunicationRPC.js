@@ -359,6 +359,9 @@ FFW.BasicCommunication = FFW.RPCObserver
           SDL.SDLModel.data.stateLimited = notification.params.device;
           SDL.VRPopUp.updateVR();
         }
+        if (notification.method == this.onPutFileNotification) {
+          SDL.SDLModel.onPutFile(notification.params);
+        }
       },
       /**
        * handle RPC requests here
