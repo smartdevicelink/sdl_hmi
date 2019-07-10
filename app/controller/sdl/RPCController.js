@@ -1606,6 +1606,46 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         /**
+         * Validate method for request CancelInteraction
+         *
+         * @param {Object}
+         *            params
+         */
+        CancelInteraction: function(params) {
+          if (params == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'params\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if (params.functionID == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'functionID\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if (typeof params.functionID != 'number') {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Wrong type of parameter \'functionID\'!'
+            };
+            return this.resultStruct;
+          }
+          if (params.cancelID != null && typeof params.cancelID != 'number') {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Wrong type of parameter \'cancelID\'!'
+            };
+            return this.resultStruct;
+          }
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        /**
          * Validate method for request SetMediaClockTimer
          *
          * @param {Object}

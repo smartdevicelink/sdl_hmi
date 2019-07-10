@@ -202,6 +202,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
     AlertActive: function(message, alertRequestId) {
       var self = this;
       this.set('alertRequestId', alertRequestId);
+      this.set('cancelID', message.cancelID);
       this.addSoftButtons(message.softButtons, message.appID);
       this.set('progressIndicator', message.progressIndicator);
       this.set(

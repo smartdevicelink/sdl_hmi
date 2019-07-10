@@ -287,6 +287,33 @@ FFW.UI = FFW.RPCObserver.create(
             }
             break;
           }
+          case 'UI.CancelInteraction':
+          {
+            var targetID = request.params.cancelID;
+            var typeID = request.params.functionID;
+            
+            if (typeID === 10 && SDL.InteractionChoicesView.active
+               && (targetID === -1 || targetID === SDL.InteractionChoicesView.cancelID)) {
+              SDL.InteractionChoicesView.deactivate('ABORTED');
+            } else if (typeID === 12 && SDL.AlertPopUp.active
+               && (targetID === -1 || targetID === SDL.AlertPopUp.cancelID)) {
+              SDL.AlertPopUp.deactivate();
+            } else if (typeID === 25 && SDL.ScrollableMessage.active
+               && (targetID === -1 || targetID === SDL.ScrollableMessage.cancelID)) {
+              SDL.ScrollableMessage.deactivate(true);
+            } else if (typeID === 26 && SDL.SliderView.active
+               && (targetID === -1 || targetID === SDL.SliderView.cancelID)) {
+              SDL.SliderView.deactivate(true);
+            } else {
+              this.sendError(SDL.SDLModel.data.resultCode.IGNORED,
+                request.id, request.method,
+                'Request is ignored, because the intended result is already in effect.');
+              break;
+            }
+
+            this.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
+            break;
+          }
           case 'UI.SetMediaClockTimer':
           {
             var resultCode = SDL.SDLController.getApplicationModel(
