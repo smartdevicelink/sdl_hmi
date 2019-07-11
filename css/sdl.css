@@ -1164,11 +1164,10 @@
 }
 
 #AlertPopUp .alertPopUpImage {
-    width: 83px;
-    height: 74px;
-    background: url(../images/sdl/Warning.png) no-repeat;
-    top: 45px;
-    left: 10px;
+    max-width: 120px;
+    margin: auto;
+    padding-top: 35px;
+    padding-left: 10px;
 }
 
 #AlertPopUp .progressIndicator {
