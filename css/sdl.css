@@ -1167,7 +1167,9 @@
     max-width: 120px;
     margin: auto;
     padding-top: 35px;
-    padding-left: 10px;
+    padding-left: 20px;
+    height: auto;
+    width: auto;
 }
 
 #AlertPopUp .progressIndicator {
