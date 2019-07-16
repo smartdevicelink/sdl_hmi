@@ -164,6 +164,14 @@ SDL.SDLController = Em.Object.extend(
     },
     userExitAction: function(appID) {
       FFW.BasicCommunication.ExitApplication(appID, 'USER_EXIT');
+      this.closeApplication(appID);
+    },
+    /**
+     * Handler for CloseApplication RPC
+     *
+     * @param appID {Number}
+     */
+    closeApplication: function(appID) {
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia') {
         SDL.States.goToStates('info.apps');
