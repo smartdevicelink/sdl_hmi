@@ -44,6 +44,7 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       'mainField4',
       'mainField5',
       'mainField6',
+      'templateTitle',
       'optionsBtn'
     ],
     update: function() {
@@ -163,6 +164,12 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       {
         classNames: 'mainField6 mainField',
         contentBinding: 'parentView.mainField6'
+      }
+    ),
+    templateTitle: SDL.Label.extend(
+      {
+        classNames: 'templateTitle mainField',
+        contentBinding: 'SDL.SDLController.model.appInfo.title'
       }
     ),
     optionsBtn: SDL.Button.extend(
