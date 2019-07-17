@@ -52,6 +52,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
           field1: '<field1>',
           field2: '<field2>',
           field3: '<field3>',
+          title: '',
           mediaClock: '<mediaClock>',
           trackIcon: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
           customPresets: [
@@ -276,6 +277,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.appInfo.set('field2', '');
     this.appInfo.set('field3', '');
     this.appInfo.set('field4', '');
+    this.appInfo.set('title' , '');
     this.appInfo.set('alignment', '');
     this.set('statusText', '');
     this.appInfo.set('mediaClock', '');
@@ -327,6 +329,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
         }
         case 'mediaTrack': {
           this.appInfo.set('mediaTrack', params.showStrings[i].fieldText);
+          break;
+        }
+        case 'templateTitle': {
+          this.appInfo.set('title', params.showStrings[i].fieldText);
           break;
         }
         default : {
