@@ -652,6 +652,311 @@ SDL.SDLModelData = Em.Object.create(
       'Day mode',
       'Night mode',
       'Highlighted mode'
-    ]
+    ],
+    windowType: {
+      "MAIN": 0,
+      "WIDGET": 1
+    },
+    defaultWindowCapability: {
+      "MAIN": {
+        "systemCapability": {
+          "systemCapabilityType": "DISPLAY",
+          "displayCapabilities": [{
+            "displayName": "MAIN",
+            "windowTypeSupported": [{
+              "type": "MAIN",
+              "maximumNumberOfWindows": 1
+            }],
+            "windowCapabilities": [{
+              "textFields": [{
+                "name": "mainField1",
+                "characterSet": "TYPE2SET",
+                "width": 500,
+                "rows": 1
+              }],
+              "imageFields": [{
+                "name": "softButtonImage",
+                "imageTypeSupported": ["GRAPHIC_PNG"],
+                "imageResolution": {
+                  "resolutionWidth": 35,
+                  "resolutionHeight": 35
+                }
+              }],
+              "imageTypeSupported": ["STATIC"],
+              "numCustomPresetsAvailable": 8,
+              "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP"],
+              "buttonCapabilities": [
+                {
+                  "longPressAvailable": true,
+                  "name": "AC_MAX",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "AC",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "RECIRCULATE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "FAN_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "FAN_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "TEMP_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "TEMP_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST_MAX",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST_REAR",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "UPPER_VENT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "LOWER_VENT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "VOLUME_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "VOLUME_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "EJECT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "SOURCE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "SHUFFLE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "REPEAT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                }
+              ],
+              "softButtonCapabilities": [{
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true
+              }]
+            }]
+          }],
+        }
+      },
+      "WIDGET": {
+        "systemCapability": {
+          "systemCapabilityType": "DISPLAY",
+          "displayCapabilities": [{
+            "displayName": "WIDGET",
+            "windowTypeSupported": [{
+              "type": "WIDGET",
+              "maximumNumberOfWindows": 1
+            }],
+            "windowCapabilities": [{
+              "textFields": [{
+                "name": "mainField1",
+                "characterSet": "TYPE2SET",
+                "width": 500,
+                "rows": 1
+              }],
+              "imageFields": [{
+                "name": "softButtonImage",
+                "imageTypeSupported": ["GRAPHIC_PNG"],
+                "imageResolution": {
+                  "resolutionWidth": 35,
+                  "resolutionHeight": 35
+                }
+              }],
+              "imageTypeSupported": ["STATIC"],
+              "numCustomPresetsAvailable": 8,
+              "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP"],
+              "buttonCapabilities": [
+                {
+                  "longPressAvailable": true,
+                  "name": "AC_MAX",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "AC",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "RECIRCULATE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "FAN_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "FAN_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "TEMP_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "TEMP_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST_MAX",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST_REAR",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "UPPER_VENT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "LOWER_VENT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "VOLUME_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "VOLUME_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "EJECT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "SOURCE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "SHUFFLE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "REPEAT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                }
+              ],
+              "softButtonCapabilities": [{
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true
+              }]
+            }]
+          }],
+        }
+      }
+    },
+     defaultTemplateColorScheme: {
+      "primaryColor": {"red" : 0 , "green" : 0, "blue" : 0},
+      "secondaryColor": {"red" : 0 , "green" : 0, "blue" : 0},
+      "backgroundColor": {"red" : 255 , "green" : 255, "blue" : 255}
+    }
   }
 );

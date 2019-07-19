@@ -1228,6 +1228,18 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
         };
         this.sendMessage(JSONMessage);
+      },
+      OnSystemCapabilityUpdated: function (data) {
+        Em.Logger.log('FFW.BasicCommunication.OnSystemCapabilityUpdated');
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'method': 'BasicCommunication.OnSystemCapabilityUpdated',
+          'params': {
+            'appID': data.appID,
+            'systemCapability':data.systemCapability
+          }
+        };
+        this.sendMessage(JSONMessage);
       }
 
       /********************* Notifications END *********************/

@@ -928,11 +928,155 @@ FFW.UI = FFW.RPCObserver.create(
                   },
                   'numCustomPresetsAvailable': 10
                 },
-                'audioPassThruCapabilitiesList': [{
+                "systemCapabilities": {
+                  "displayCapabilities": [{
+                    "displayType" : "CID",
+                    "displayName": "MAIN",
+                    "windowTypeSupported": [{
+                        "type": "MAIN",
+                        "maximumNumberOfWindows": 1
+                    }],
+                    "windowCapabilities": [{
+                        "textFields": [{
+                            "name": "mainField1",
+                            "characterSet": "TYPE2SET",
+                            "width": 500,
+                            "rows": 1
+                        }],
+                        "imageFields": [{
+                            "name": "softButtonImage",
+                            "imageTypeSupported": ["GRAPHIC_PNG"],
+                            "imageResolution": {
+                                "resolutionWidth": 35,
+                                "resolutionHeight": 35
+                            }
+                        }],
+                        "imageTypeSupported": ["STATIC"],
+                        "numCustomPresetsAvailable": 8,
+                        "buttonCapabilities": [
+                            {
+                                "longPressAvailable": true,
+                                "name": "AC_MAX",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "AC",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "RECIRCULATE",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "FAN_UP",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "FAN_DOWN",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "TEMP_UP",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "TEMP_DOWN",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "DEFROST_MAX",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "DEFROST",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "DEFROST_REAR",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "UPPER_VENT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "LOWER_VENT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "VOLUME_UP",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "VOLUME_DOWN",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "EJECT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "SOURCE",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "SHUFFLE",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "REPEAT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            }
+                        ],
+                        "softButtonCapabilities": [{
+                            "shortPressAvailable": true,
+                            "longPressAvailable": true,
+                            "upDownAvailable": true,
+                            "imageSupported": true
+                        }]
+                      }]
+                    }],
+                },
+                'audioPassThruCapabilities': {
                   'samplingRate': '44KHZ',
                   'bitsPerSample': '8_BIT',
                   'audioType': 'PCM'
-                }],
+                },
                 'hmiZoneCapabilities': 'FRONT',
                 'softButtonCapabilities': [
                   {
