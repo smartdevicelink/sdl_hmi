@@ -414,17 +414,19 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      if (SDL.SDLController.model.appInfo.trackIcon &&
-        SDL.SDLController.model.appInfo.trackIcon.indexOf(params.syncFileName) !=
-        -1) {
-        SDL.SDLController.model.appInfo.set('trackIcon', updatedFileName);
-      }
-
-      if (SDL.SDLController.model.appInfo.mainImage &&
-        SDL.SDLController.model.appInfo.mainImage.indexOf(params.syncFileName) !=
-        -1) {
-        SDL.SDLController.model.appInfo.set('mainImage', updatedFileName);
-      }
+      if(SDL.SDLController.model) {      
+        if (SDL.SDLController.model.appInfo.trackIcon &&
+          SDL.SDLController.model.appInfo.trackIcon.indexOf(params.syncFileName) !=
+          -1) {
+          SDL.SDLController.model.appInfo.set('trackIcon', updatedFileName);
+        }
+  
+        if (SDL.SDLController.model.appInfo.mainImage &&
+          SDL.SDLController.model.appInfo.mainImage.indexOf(params.syncFileName) !=
+          -1) {
+          SDL.SDLController.model.appInfo.set('mainImage', updatedFileName);
+        }
+     }
 
       var len = appModel.turnList.length;
       for (var i = 0; i < len; i++) {
@@ -448,7 +450,7 @@ SDL.SDLModel = Em.Object.extend({
           }
         }
 
-        if (params.appID == SDL.SDLController.model.appID) {
+        if (SDL.SDLController.model && params.appID == SDL.SDLController.model.appID) {
           SDL.sdlView.innerMenu.refreshItems();
         }
       }
@@ -464,8 +466,8 @@ SDL.SDLModel = Em.Object.extend({
       }
 
       if (appModel.globalProperties.vrHelp) {
-        for (var i = 0; i < appModel.globalProperties.vrHelp.length; i++) {
-          if (appModel.globalProperties.vrHelp[i].image.value.indexOf(params.syncFileName) != -1) {
+        for(vrHelpItem of appModel.globalProperties.vrHelp) {
+          if ("image" in vrHelpItem && vrHelpItem.image.value.indexOf(params.syncFileName) != -1) {
             appModel.globalProperties.vrHelp[i].image.value = updatedFileName;
           }
         }

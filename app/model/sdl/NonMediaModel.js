@@ -144,7 +144,44 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
    * @param {Object}
    */
   onSDLUIShow: function(params) {
+    clearInterval(this.timer);
+    
+    let isWidget = (("windowID" in params) && params.windowID !== 0);
+    let that = this;
+    let windowID = isWidget ? params.windowID : 0;
+    let isDuplicateWidget = (function(params) {
+      let widgetModel = that.getWidgetModel(params.windowID);
+       if(widgetModel && "duplicateUpdatesFromWindowID" in widgetModel) {
+         return true;
+       }
+       return false;
+    }(params));
 
+    if(isWidget) {
+      if(isDuplicateWidget) {
+        return SDL.SDLModel.data.resultCode.REJECTED;
+      }
+      this.widgetShow(params);
+      return;
+    }
+
+    this.mainWindowShow(params);
+    let duplicateWidgets = this.getDuplicateWidgets(windowID);
+    for(widget of duplicateWidgets) {
+      this.widgetShow(params);
+    }
+
+    if(this.getWidgetModel(params.windowID)) {
+      this.widgetShow(params);
+    }
+  },
+
+  /**
+   * @function mainWindowShow
+   * @param {Object} params 
+   * @description UI show for main window of application
+   */
+  mainWindowShow: function(params) {
     for (var i = 0; i < params.showStrings.length; i++) {
       switch (params.showStrings[i].fieldName) {
         case 'mainField1': {
@@ -226,6 +263,10 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
 
     if ('softButtons' in params) {
       this.updateSoftButtons(params.softButtons);
+    }
+
+    if('templateConfiguration' in params) {
+      this.set('templateConfiguration', params.templateConfiguration);
     }
   },
 

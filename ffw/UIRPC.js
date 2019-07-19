@@ -210,11 +210,42 @@ FFW.UI = FFW.RPCObserver.create(
               }
             }
             SDL.TurnByTurnView.deactivate();
-            SDL.SDLController.getApplicationModel(request.params.appID)
-              .onSDLUIShow(request.params);
+            let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
+            const isWindowIDExist = "windowID" in request.params; 
+            const isWidgetID = isWindowIDExist && parseInt(request.params.windowID) != 0;
+            const windowID = isWindowIDExist ? parseInt(request.params.windowID) : 0;
+            let model = isWidgetID ? appModel.getWidgetModel(windowID).content : appModel;
+            let sendCapabilityUpdated = false;
+            if("templateConfiguration" in request.params) {
+              if (model.templateConfiguration.template !== request.params.templateConfiguration.template) {
+                sendCapabilityUpdated = true;
+              }
+              if ("dayColorScheme" in  request.params.templateConfiguration
+              && !SDL.SDLController.isColorSchemesEqual(
+                model.templateConfiguration.dayColorScheme,
+                request.params.templateConfiguration.dayColorScheme)) {
+                  sendCapabilityUpdated = true;
+              }
+              if ("nightColorScheme" in request.params.templateConfiguration
+              && !SDL.SDLController.isColorSchemesEqual(
+                model.templateConfiguration.nightColorScheme,
+                request.params.templateConfiguration.nightColorScheme)) {
+                  sendCapabilityUpdated = true;
+              }
+          }
+            if(appModel.onSDLUIShow(request.params) === SDL.SDLModel.data.resultCode.REJECTED) {
+              this.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method,
+                    "Widget is duplicating other window. Rejecting UI.Show request.");
+              return;
+            }
+            SDL.InfoAppsView.showAppList();
             this.sendUIResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
+            if (sendCapabilityUpdated) {
+              let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+              FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
+            }
             break;
           }
           case 'UI.SetGlobalProperties':
@@ -421,11 +452,11 @@ FFW.UI = FFW.RPCObserver.create(
                 break;
               }
             }
+            var model = SDL.SDLController.getApplicationModel(request.params.appID);
             if (sendResponseFlag) {
               Em.Logger.log('FFW.' + request.method + 'Response');
               var displayLayout = request.params.displayLayout;
               if (displayLayout === "DEFAULT") {
-                var model = SDL.SDLController.getApplicationModel(request.params.appID);
                 for (var i=0; i<model.appType.length; i++) {
                   if (model.appType[i] === "NAVIGATION") {
                     displayLayout = NAV_FULLSCREEN_MAP;
@@ -454,6 +485,35 @@ FFW.UI = FFW.RPCObserver.create(
                 }
               };
               this.sendMessage(JSONMessage);
+
+              let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
+              const isWindowIDExist = "windowID" in request.params; 
+              const isWidgetID = isWindowIDExist && parseInt(request.params.windowID) != 0;
+              const windowID = isWindowIDExist ? parseInt(request.params.windowID) : 0;
+              let model = isWidgetID ? appModel.getWidgetModel(windowID).content : appModel;
+              let sendCapabilityUpdated = false;
+              if ("displayLayout" in request.params && model.templateConfiguration.template !== request.params.displayLayout) {
+                model.templateConfiguration.template = request.params.displayLayout
+                sendCapabilityUpdated = true;
+              }
+              if ("dayColorScheme" in request.params
+                  && !SDL.SDLController.isColorSchemesEqual(
+                    model.templateConfiguration.dayColorScheme,
+                    request.params.dayColorScheme)) {
+                model.templateConfiguration.dayColorScheme = request.params.dayColorScheme;
+                sendCapabilityUpdated = true;
+              }
+              if ("nightColorScheme" in request.params
+              && !SDL.SDLController.isColorSchemesEqual(
+                model.templateConfiguration.nightColorScheme,
+                request.params.nightColorScheme)) {
+                model.templateConfiguration.nightColorScheme = request.params.nightColorScheme;
+               sendCapabilityUpdated = true;
+              }
+              if (sendCapabilityUpdated) {
+                let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+                FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
+              }
             } else {
               this.sendError(
                 SDL.SDLModel.data.resultCode['UNSUPPORTED_REQUEST'], request.id,
@@ -1154,6 +1214,26 @@ FFW.UI = FFW.RPCObserver.create(
                 'No application in FULL mode'
               );
             }
+            break;
+          }
+          case 'UI.CreateWindow':
+          {
+            var app = SDL.SDLController.getApplicationModel(request.params.appID);
+            app.createWindow(request.params);
+            this.sendUIResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
+              let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+              FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+            break;
+          }
+          case 'UI.DeleteWindow':
+          {
+            var app = SDL.SDLController.getApplicationModel(request.params.appID);
+            app.deleteWindow(request.params);
+            this.sendUIResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
             break;
           }
           default:

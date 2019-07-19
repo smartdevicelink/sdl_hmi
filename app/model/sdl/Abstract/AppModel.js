@@ -657,7 +657,73 @@ SDL.ABSAppModel = Em.Object.extend(
     onSlider: function(message) {
       SDL.SliderView.loadData(message);
       SDL.SliderView.activate(this.appName, message.params.timeout);
-    }
+    },
+
+    /**
+     * @function createWindow
+     * @param {Object} windowParam
+     * @description Called after receiving CreateWindow request 
+     */
+    createWindow: function(windowParam) {
+      windowParam.content = {"templateConfiguration" : this.defaultTemplateConfiguration};
+      this.inactiveWindows.push(windowParam);
+    },
+
+    /**
+     * @function deleteWindow
+     * @param {Object} windowParam
+     * @description Called after receiving DeleteWindow request 
+     */
+    deleteWindow: function(windowParam) {
+      if(this.unregisteringInProgress) {
+        return;
+      }
+      
+      this.inactiveWindows.forEach(function(element, index, array) {
+        if(element.windowID == windowParam.windowID) {
+          array.splice(index,1);
+          return;
+        }
+      });
+
+      var self = this;
+      this.backgroundWindows.forEach(function(element, index, array) {
+        if(element.windowID == windowParam.windowID) {
+          array.splice(index,1);
+          SDL.RightSideView.getWidgetContainer().removeWidget(self.appID, windowParam.windowID);
+        }
+      });
+
+      this.activeWindows.forEach(function(element, index, array) {
+        if(element.windowID == windowParam.windowID) {
+          array.splice(index,1);
+          SDL.RightSideView.getWidgetContainer().removeWidget(self.appID, windowParam.windowID);
+        }
+      });
+    },
+    
+    /**
+     * @function getDuplicateWidgets
+     * @param {Integer} windowID 
+     * @description Get widget models that duplicate windowID
+     * @return {Array} array of duplicate widgets
+     */
+    getDuplicateWidgets: function (windowID) {
+      let duplicateWidgets = [];
+
+      let populateDuplicateWidgets = function (element) {
+        if (element.duplicateUpdatesFromWindowID === windowID) {
+          duplicateWidgets.push(element);
+        }
+      };
+
+      this.activeWindows.forEach(populateDuplicateWidgets);
+      this.backgroundWindows.forEach(populateDuplicateWidgets);
+      this.inactiveWindows.forEach(populateDuplicateWidgets);
+
+      return duplicateWidgets;
+    },
+    
     /**
      * @function activateWindow
      * @param {Object} window 
@@ -711,6 +777,66 @@ SDL.ABSAppModel = Em.Object.extend(
         }
       });
       FFW.BasicCommunication.OnAppDeactivated(window.appID, window.windowID);      
+    },
+
+    /**
+     * @function widgetShow
+     * @param {Object} params
+     * @description Call after receiving request show for widgets 
+     */
+    widgetShow: function(params) {
+      var setElementsToShow = function(element) {
+        var masStringsToShow = 2;
+        if(masStringsToShow < params.showStrings.length) {
+          params.showStrings.length = masStringsToShow;
+        }
+        let currentTemplateConfiguation = element.content.templateConfiguration;
+        element['content'] = {};
+        element['content']['showStrings'] = params.showStrings;
+        if('softButtons' in params) {
+          var maxSoftButtonsToShow = 4;
+          if(maxSoftButtonsToShow < params.softButtons.length) {
+            params.softButtons.length = maxSoftButtonsToShow;
+          }
+          element['content']['softButtons'] =  params.softButtons;
+        } else {
+          delete element.softButtons;
+        }
+        if('graphic' in params) {
+          element['content']['graphic'] = params.graphic;
+        }
+        if('templateConfiguration' in params) {
+          element['content']['templateConfiguration'] = params.templateConfiguration;
+        } else {
+          element['content']['templateConfiguration'] = currentTemplateConfiguation;
+        }
+      }
+
+      let getWindowIDToApplyShow = function(params, element) {
+        let windowID = "windowID" in params ? params.windowID : 0;
+        if(windowID === element.windowID ||
+            windowID === element.duplicateUpdatesFromWindowID) {
+          return element.windowID;
+        }
+
+        return null;
+      };
+
+      this.backgroundWindows.forEach(element => {
+        let windowID = getWindowIDToApplyShow(params, element);
+        if(windowID !== null) {
+          setElementsToShow(element);
+          SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
+        }
+      });
+
+      this.activeWindows.forEach(element => {
+        let windowID = getWindowIDToApplyShow(params, element);
+        if(windowID !== null) {
+          setElementsToShow(element);
+          SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
+        }
+      });
     },
 
     /**
