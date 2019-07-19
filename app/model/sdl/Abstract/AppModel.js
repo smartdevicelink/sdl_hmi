@@ -210,6 +210,11 @@ SDL.ABSAppModel = Em.Object.extend(
      * @type {String}
      */
     appType: '',
+
+    /**
+     * @name initialColorScheme
+     */
+    initialColorScheme: {},
     /**
      * Navigation streaming url
      */
@@ -310,6 +315,50 @@ SDL.ABSAppModel = Em.Object.extend(
      * @type {Boolean}
      */
     tbtActivate: false,
+
+    /**
+     * @param inactiveWindows
+     * @type {Array}
+     * @description Created window by the current application in NONE state
+     */
+    inactiveWindows: [],
+
+     /**
+     * @param backgroundWindows
+     * @type {Array}
+     * @description Created window by the current application in not visible state
+     */
+    backgroundWindows: [],
+
+    /**
+     * @param activeWindows
+     * @type {Array}
+     * @description Created window by the current application in visible state
+     */
+    activeWindows: [],
+
+    /**
+     * @param defaultTemplateConfiguration
+     * @type {Object}
+     * @description template configuration app is registered with
+     */
+    defaultTemplateConfiguration: {},
+
+    /**
+     * @param templateConfiguration
+     * @type {Object}
+     * @description current template configuration of an app
+     */
+    templateConfiguration: {},
+
+    /**
+     * @param unregisteringInProgress
+     * @type {Boolean}
+     * @description parameter to handle an application currently is in unregistering
+     *  and clearing data
+     */
+    unregisteringInProgress: false,
+
     /**
      * Setter method for navigation subscription buttons
      *
@@ -609,5 +658,109 @@ SDL.ABSAppModel = Em.Object.extend(
       SDL.SliderView.loadData(message);
       SDL.SliderView.activate(this.appName, message.params.timeout);
     }
+    /**
+     * @function activateWindow
+     * @param {Object} window 
+     * @description Called for moving widget to active state
+     */
+    activateWindow: function(window) {
+      if(this.unregisteringInProgress) {
+        return;
+      }
+      var self = this;
+      this.backgroundWindows.forEach(function(element, index, array) {
+        if(element.windowID == window.windowID) {
+          self.activeWindows.push(element);
+          array.splice(index,1);
+        }
+      });
+
+      this.inactiveWindows.forEach(function(element, index, array) {
+        if(element.windowID == window.windowID) {
+          self.backgroundWindows.push(element);
+          array.splice(index,1);
+        }
+      });
+      FFW.BasicCommunication.OnAppActivated(window.appID, window.windowID);
+    },
+
+    /**
+     * @function deactivateWindow
+     * @param {Object} window 
+     * @description Called for moving widget to inactive state
+     */
+    deactivateWindow: function(window) {
+      if(this.unregisteringInProgress) {
+        return;
+      }
+
+      var self = this;
+      this.backgroundWindows.forEach(function(element, index, array) {
+        if(element.windowID == window.windowID) {
+          delete element.content;
+          element.content = {"templateConfiguration" : self.defaultTemplateConfiguration};
+          self.inactiveWindows.push(element);
+          array.splice(index,1);
+        }
+      });
+
+      this.activeWindows.forEach(function(element, index, array) {
+        if(element.windowID == window.windowID) {
+          self.backgroundWindows.push(element);
+          array.splice(index,1);
+        }
+      });
+      FFW.BasicCommunication.OnAppDeactivated(window.appID, window.windowID);      
+    },
+
+    /**
+     * @function getWidgetModel
+     * @param {Number} windowID
+     * @returns {Object} 
+     * @description Returns widget model for current app by the windowID 
+     */
+    getWidgetModel: function(windowID) {
+      var elementToReturn = null;
+      this.inactiveWindows.forEach(element => {
+        if(windowID == element.windowID) {
+          elementToReturn = element;
+        }
+      });
+
+      this.backgroundWindows.forEach(element => {
+        if(windowID == element.windowID) {
+          elementToReturn = element;
+        }
+      });
+
+      this.activeWindows.forEach(element => {
+        if(windowID == element.windowID) {
+          elementToReturn = element;
+        }
+      });
+      return elementToReturn;
+    },
+
+    /**
+     * @function removeWidgets
+     * @description Clear all widget after disconected app
+     */
+    removeWidgets: function() {
+      this.inactiveWindows.forEach(element => {
+          SDL.RightSideView.getWidgetContainer().removeWidget(this.appID, element.windowID);
+      });
+      this.inactiveWindows.length = 0;
+
+      this.backgroundWindows.forEach(element => {
+          SDL.RightSideView.getWidgetContainer().removeWidget(this.appID, element.windowID);
+      });
+      this.backgroundWindows.length = 0;
+
+      this.activeWindows.forEach(element => {
+          SDL.RightSideView.getWidgetContainer().removeWidget(this.appID, element.windowID);
+      });
+      this.activeWindows.length = 0;
+    },
+
   }
 );

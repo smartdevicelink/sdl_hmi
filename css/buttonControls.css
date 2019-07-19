@@ -463,6 +463,7 @@
 }
 
 #app_controlButtons {
+    left: -44.5%;
     z-index: 2;
 }
 
@@ -554,7 +555,7 @@
 #app_controlButtons .appTTSVRLanguagesLabel {
     top: 151px;
     left: 1195px;
-    width: 250px;
+    width: 235px;
 }
 
 #app_controlButtons .appUILang {
@@ -627,3 +628,43 @@
     width: 150px;
     height: 40px;
 }
+
+#right_view.expand {
+    left:100%;    
+}
+
+#right_view {
+    left:49%;
+    width:100%;
+    height:100%;
+    transition: left 2s;
+    z-index: -10;
+}
+
+#right_view.hmi_not_run {
+    left:45%;
+    z-index: -10;
+}
+
+#expand_button {
+    height: 99%;
+    width: 30px;
+    left: 51%;
+    top: 0%;
+    background: url(../images/common/button.png) repeat;
+    border-radius: 3px;
+    border: 1px solid #393939;
+}
+
+#expand_button .ico{
+    height: 9%;
+    top: 42%;
+    position: absolute;
+    transform: rotate(180deg);
+    transition: 2s;
+}
+
+#expand_button.expand .ico {
+    transform: rotate(0deg);
+}
+

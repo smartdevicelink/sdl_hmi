@@ -78,6 +78,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
         )
       );
 
+    this.set('initialColorScheme.dayColorScheme', this.dayColorScheme);
+    this.set('initialColorScheme.nightColorScheme', this.nightColorScheme);
+    this.set('initialColorScheme.displayLayout', this.displayLayout);
     this.set('VRCommands', []);
     this.set('tbtActivate', false);
     this.set('isPlaying', true);
@@ -89,6 +92,11 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
+
+    this.set('inactiveWindows', []);
+    this.set('backgroundWindows', []);
+    this.set('activeWindows', []);
+    this.set('unregisteringInProgress', false);
   },
 
   /**

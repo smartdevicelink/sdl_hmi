@@ -883,19 +883,19 @@ SDL.SDLModel = Em.Object.extend({
    */
   onAppUnregistered: function(params) {
 
-    if (SDL.SDLController.getApplicationModel(params.appID)) {
-
+    var app = SDL.SDLController.getApplicationModel(params.appID);
+    if (app) {
+      app.set('unregisteringInProgress', true);
       if (params.unexpectedDisconnect) {
         SDL.PopUp.create().appendTo('body').popupActivate(
           'The connection with the ' +
-          SDL.SDLController.getApplicationModel(params.appID).appName +
+          app.appName +
           ' was unexpectedly lost.'
         );
         this.data.unRegisteredApps.push(params.appID);
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID
-        ).activeRequests.uiPerformInteraction) {
+      if (app.activeRequests.uiPerformInteraction) {
         SDL.InteractionChoicesView.deactivate('ABORTED');
       }
 
@@ -906,7 +906,7 @@ SDL.SDLModel = Em.Object.extend({
         );
       }
 
-      SDL.SDLController.getApplicationModel(params.appID).level = 'NONE';
+      app.level = 'NONE';
 
       SDL.SDLController.unregisterApplication(params.appID);
     }

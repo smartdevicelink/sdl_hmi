@@ -575,6 +575,11 @@ SDL.SDLController = Em.Object.extend(
           this.onActivateSDLApp(element);
           break;
         }
+        case 'WidgetAction': 
+        {
+          this.onActivateSDLApp(element);
+          break;
+        }
       }
     },
     /**
@@ -860,6 +865,8 @@ SDL.SDLController = Em.Object.extend(
      */
     registerApplication: function(params, applicationType) {
       if (applicationType === undefined || applicationType === null) {
+        const isDayColorSchemeDefined = "dayColorScheme" in params;
+        const isNightColorSchemeDefined = "nightColorScheme" in params;
         SDL.SDLModel.data.get('registeredApps').pushObject(
           this.applicationModels[0].create(
             { //Magic number 0 - Default media model for not initialized applications
@@ -868,7 +875,10 @@ SDL.SDLController = Em.Object.extend(
               deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: 0,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
+              nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme
             }
           )
         );
@@ -882,7 +892,10 @@ SDL.SDLController = Em.Object.extend(
               appType: params.appType,
               isMedia: applicationType == 0 ? true : false,
               initialized: true,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
+              nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme
             }
           )
         );
@@ -937,8 +950,11 @@ SDL.SDLController = Em.Object.extend(
      *            appID
      */
     unregisterApplication: function(appID) {
-      this.getApplicationModel(appID).VRCommands = [];
-      this.getApplicationModel(appID).onDeleteApplication(appID);
+      var app = this.getApplicationModel(appID);
+      app.VRCommands = [];
+      app.removeWidgets();
+      SDL.AddWidgetPopUp.updateWidgetList();
+      app.onDeleteApplication(appID);
       var len = SDL.SDLModel.data.VRCommands.length;
       for (var i = len - 1; i >= 0; i--) {
         if (SDL.SDLModel.data.VRCommands[i].appID == appID) {
@@ -1299,6 +1315,164 @@ SDL.SDLController = Em.Object.extend(
         return true;
       }
       return false;
-    }
+    },
+
+    /**
+     * @function expandWidgetView
+     * @param {Boolean} expand 
+     * @description action to expand widget container
+     */
+    expandWidgetView: function(expand) {      
+      if(expand) {
+        var glider_slides = SDL.RightSideView.getWidgetContainer().widgetContainer.view.slides;
+        var length = glider_slides.length;
+        for(var i=0; i< length; ++i) {
+          var item = glider_slides.item(i);
+          if('add-window' == item.id) {
+            continue;
+          }
+          if(-1 !== item.className.indexOf('visible')) {
+            var window = {
+              'appID': item.appID,
+              'windowID': item.windowID
+            };
+            SDL.SDLController.getApplicationModel(item.appID).activateWindow(window);
+          }
+        }
+        return;
+      }
+      var apps = SDL.SDLModel.data.registeredApps;
+        apps.forEach(app => {
+          var windows = [];
+          app.activeWindows.forEach(element => {
+            var window = {};
+            window['appID'] = app.appID;
+            window['windowID'] = element.windowID;
+            windows.push(window);
+          });
+          windows.forEach(element => {
+            app.deactivateWindow(element);
+          });
+        });
+    },
+
+    /**
+     * @function activateWidget
+     * @param {Object} event 
+     * @description action to activate widgets
+     */
+    activateWidget: function(event) {
+      var app = this.getApplicationModel(event.appID);
+      app.activateWindow(event);
+      SDL.AddWidgetPopUp.updateWidgetList();
+      SDL.RightSideView.getWidgetContainer().addWidget(event);
+    },
+
+    /**
+     * @function closeWidget
+     * @param {Object} event 
+     * @description action to close widget
+     */
+    closeWidget:function(event) {
+      var window = event._parentView;
+      var app = SDL.SDLController.getApplicationModel(window.appID);
+      SDL.RightSideView.getWidgetContainer().removeWidget(window.appID, window.windowID);
+      app.deactivateWindow(window);
+      app.deactivateWindow(window);
+      SDL.AddWidgetPopUp.updateWidgetList();
+    },
+
+    /**
+     * @function widgetVisible
+     * @param {Object} event 
+     * @param {Object} widgetContainer 
+     * @description action when a widget got a visible state
+     */
+    widgetVisible: function(event, widgetContainer) {
+      var window = widgetContainer.view.slides[event.detail.slide];
+      if('add-window' == window.id) {
+        return;
+      }
+      var app = SDL.SDLController.getApplicationModel(window.appID);
+      app.activateWindow(window);
+    },
+
+    /**
+     * @function widgetNonVisible
+     * @param {Object} event 
+     * @param {Object} widgetContainer
+     * @description action when a widget got an invisible state
+     */
+    widgetNonVisible: function(event, widgetContainer) {
+      var window = widgetContainer.view.slides[event.detail.slide];
+      if('add-window' == window.id) {
+        return;
+      }
+      var app = SDL.SDLController.getApplicationModel(window.appID);
+      app.deactivateWindow(window);
+    },
+
+    /**
+     * @function getDefaultCapabilities
+     * @param {Integer} windowID
+     * @description returns string of predefined system capabilities for windowID
+     */
+    getDefaultCapabilities: function (windowID, appID) {
+      let windowType = (windowID === undefined || windowID === 0) ? "MAIN" : "WIDGET";
+
+      let windowCapability = SDL.SDLModelData.defaultWindowCapability[windowType];
+      if(windowType === "WIDGET") {
+        windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["windowID"] = windowID;
+      }
+      if(appID) {
+        windowCapability["appID"] = appID;
+      }
+      return windowCapability;
+    },
+    /**
+     * @function isColorSchemesEqual
+     * @param {Object} left - color scheme object
+     * @param {Object} right - color scheme object
+     * @return {Boolean} true if colorschemes are equel, otherwise - false
+     * @description utility function, compares two color scheme objects
+     */
+    isColorSchemesEqual: function (left, right) {
+      //utility functions to compare colors
+      let isColorEqual = function (colorLeft, colorRight) {
+        return colorLeft["red"] === colorRight["red"] 
+          && colorLeft["green"] === colorRight["green"]
+          && colorLeft["blue"] === colorRight["blue"];
+      };
+
+      let compareSchemesByColor = function (lhs, rhs, color) {
+         let colorInLhs = color in lhs;
+         let colorRhs = color in rhs;
+         if(colorInLhs && colorRhs) {
+           return isColorEqual(lhs[color], rhs[color]);
+         } else if (!colorInLhs && !colorRhs) {
+           return true;
+         }
+
+         return false;
+      };
+
+      return compareSchemesByColor(left, right, "primaryColor") 
+        && compareSchemesByColor(left, right, "secondaryColor") 
+        && compareSchemesByColor(left, right, "backgroundColor");
+    },
+
+    /**
+     * @function generateAppWidgetTitle
+     * @param {Object} titleData
+     * @description generate title message for widget or application by the templateConfiguration
+     * @returns {String}
+     */
+    generateAppWidgetTitle: function(titleData) {
+      var title = '';
+      for(key in titleData) {
+        title = title + key + ': \n' + JSON.stringify(titleData[key]) + '\n\n';
+      }
+      return title;
+    },
   }
 );
