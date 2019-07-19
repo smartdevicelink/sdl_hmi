@@ -750,6 +750,24 @@
     border: 1px solid white;
 }
 
+#addWidgetPopUp {
+    opacity: 0;
+    left: 200px;
+    width: 330px;
+    height: 325px;
+    background-color: black;
+    z-index: 2;
+    top: 70px;
+    -webkit-transition: opacity 1s ease-in-out;
+    display: none;
+    border: 1px solid white;
+}
+
+#info_widgets_list {
+    top: 70px;
+    right: 0px;
+}
+
 #exitAppView .exitAppViewLabel,
 #systemRequestView .systemRequestViewLabel,
 #tbtClientStateView .tbtClientStateLabel,
@@ -771,6 +789,7 @@
 #exitAppView.active,
 #systemRequestView.active,
 #tbtClientStateView.active,
+#addWidgetPopUp.active,
 #sendMessageView.active,
 #VehicleInfo.active,
 #PrimaryDevice.active {
