@@ -455,8 +455,7 @@ getCurrentDisplayModeClass: function() {
               var str = '';
               if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties 
                 && SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList) {
-                  var i = 0;
-                  for (i = 0; i < SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList.length; i++) {
+                  for (var i = 0; i < SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList.length; i++) {
                       str += SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList[i]
                           + ' ';
                   }
