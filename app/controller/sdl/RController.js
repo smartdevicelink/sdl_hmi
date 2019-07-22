@@ -543,7 +543,8 @@ SDL.RController = SDL.SDLController.extend(
 
       var result = data;
       for (var key in result) {
-        if (typeof result[key] == 'object') {
+        if (typeof result[key] == 'object' &&
+        !Array.isArray(result[key])) {
           result[key] = this.filterObjectProperty(
             result[key], properties, key + '.'
           );
@@ -571,12 +572,26 @@ SDL.RController = SDL.SDLController.extend(
 
       var properties = [];
       for (var key in rhs) {
-        if (typeof rhs[key] == 'object') {
+        if (typeof rhs[key] == 'object' && 
+          !Array.isArray(rhs[key])) {
           var obj_properties = this.getChangedProperties(
             lhs[key], rhs[key], key + '.'
           );
           properties = properties.concat(obj_properties);
         } else if (lhs[key] != rhs[key]) {
+          if(Array.isArray(rhs[key])) {
+            if(rhs[key].length !== lhs[key].length) {
+              properties.push(stack + key);
+            } else {
+              lhs[key].forEach(function(value) {
+                if(!rhs[key].includes(value)) {
+                  properties.push(stack + key);
+                  return;
+                }
+              });
+            }
+            continue;
+          }
           properties.push(stack + key);
         }
       }

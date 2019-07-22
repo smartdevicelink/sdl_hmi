@@ -52,6 +52,12 @@ SDL.ClimateView = Em.ContainerView.create(
       {
         elementId: 'climate_control',
         classNameBindings: 'SDL.FuncSwitcher.rev::is-disabled',
+        isDisabled: function() {
+          return !SDL.ClimateController.model.climateControlData.climateEnable;
+        }.property(
+          'SDL.ClimateController.model.climateControlData.climateEnable'
+        ),
+        disabledBinding: 'isDisabled',
         childViews: [
           'desiredTemp',
           'desiredTempLabel',
@@ -73,12 +79,33 @@ SDL.ClimateView = Em.ContainerView.create(
           'heatedWindshieldEnable',
           'heatedRearWindowEnable',
           'heatedSteeringWheelEnable',
-          'heatedMirrorsEnable'
+          'heatedMirrorsEnable',
+          'climateEnable'
         ],
+
+        climateEnable: SDL.Button.extend(
+          {
+            elementId: 'enableClimate',
+            classNames: 'enableClimate switcher',
+            iconBinding: 'onIconChange',
+            onIconChange: function() {
+              return SDL.SDLController.getLedIndicatorImagePath(
+                SDL.ClimateController.model.climateControlData.climateEnable);
+            }.property(
+              'SDL.ClimateController.model.climateControlData.climateEnable'
+            ),
+            action: 'toggleClimateEnable',
+            target: 'SDL.ClimateController.model',
+            onDown: false,
+            textBinding: 'SDL.ClimateController.model.climateEnableButtonText'
+          }
+        ),
+
         desiredTemp: Em.ContainerView.extend(
           {
             elementId: 'desiredTemp_container',
             classNames: 'calc_container',
+            disabledBinding: 'parentView.disabled',
             childViews: [
               'desiredTemp_label',
               'desiredTemp_minus',
@@ -92,13 +119,15 @@ SDL.ClimateView = Em.ContainerView.create(
                 icon: 'images/climate/minus_ico.png',
                 onDown: false,
                 action: 'desiredTempDown',
-                target: 'SDL.ClimateController.model'
+                target: 'SDL.ClimateController.model',
+                disabledBinding: 'parentView.disabled'
               }
             ),
             desiredTemp_label: SDL.Label.extend(
               {
                 elementId: 'desiredTemp_label',
                 temp: function() {
+                  var self = this._parentView.disabled;
                   temperature_struct = SDL.ClimateController.getTemperatureStruct(
                     SDL.ClimateController.model.climateControlData.temperatureUnit,
                     SDL.ClimateController.model.climateControlData.desiredTemp
@@ -108,7 +137,8 @@ SDL.ClimateView = Em.ContainerView.create(
                   'SDL.ClimateController.model.climateControlData.desiredTemp',
                   'SDL.ClimateController.model.climateControlData.temperatureUnit'
                 ),
-                contentBinding: 'temp'
+                contentBinding: 'temp',
+                disabledBinding: 'parentView.disabled'
               }
             ),
             desiredTemp_plus: SDL.Button.extend(
@@ -119,7 +149,8 @@ SDL.ClimateView = Em.ContainerView.create(
                 icon: 'images/climate/plus_ico.png',
                 onDown: false,
                 action: 'desiredTempUp',
-                target: 'SDL.ClimateController.model'
+                target: 'SDL.ClimateController.model',
+                disabledBinding: 'parentView.disabled'
               }
             )
           }
@@ -134,6 +165,7 @@ SDL.ClimateView = Em.ContainerView.create(
           {
             elementId: 'fanSpeed_container',
             classNames: 'calc_container',
+            disabledBinding: 'parentView.disabled',
             childViews: [
               'fanSpeed_label',
               'fanSpeed_minus',
@@ -147,13 +179,15 @@ SDL.ClimateView = Em.ContainerView.create(
                 icon: 'images/climate/minus_ico.png',
                 onDown: false,
                 action: 'fanSpeedDown',
-                target: 'SDL.ClimateController.model'
+                target: 'SDL.ClimateController.model',
+                disabledBinding: 'parentView.disabled'
               }
             ),
             fanSpeed_label: SDL.Label.extend(
               {
                 elementId: 'fanSpeed_label',
-                contentBinding: 'SDL.ClimateController.model.climateControlData.fanSpeed'
+                contentBinding: 'SDL.ClimateController.model.climateControlData.fanSpeed',
+                disabledBinding: 'parentView.disabled'
               }
             ),
             fanSpeed_plus: SDL.Button.extend(
@@ -164,7 +198,8 @@ SDL.ClimateView = Em.ContainerView.create(
                 icon: 'images/climate/plus_ico.png',
                 onDown: false,
                 action: 'fanSpeedUp',
-                target: 'SDL.ClimateController.model'
+                target: 'SDL.ClimateController.model',
+                disabledBinding: 'parentView.disabled'
               }
             )
           }
@@ -179,6 +214,7 @@ SDL.ClimateView = Em.ContainerView.create(
           {
             elementId: 'currentTemp_container',
             classNames: 'calc_container',
+            disabledBinding: 'parentView.disabled',
             childViews: [
               'currentTemp_label',
               'currentTemp_minus',
@@ -192,7 +228,8 @@ SDL.ClimateView = Em.ContainerView.create(
                 icon: 'images/climate/minus_ico.png',
                 onDown: false,
                 action: 'currentTempDown',
-                target: 'SDL.ClimateController.model'
+                target: 'SDL.ClimateController.model',
+                disabledBinding: 'parentView.disabled'
               }
             ),
             currentTemp_label: SDL.Label.extend(
@@ -208,7 +245,8 @@ SDL.ClimateView = Em.ContainerView.create(
                   'SDL.ClimateController.model.climateControlData.currentTemp',
                   'SDL.ClimateController.model.climateControlData.temperatureUnit'
                 ),
-                contentBinding: 'temp'
+                contentBinding: 'temp',
+                disabledBinding: 'parentView.disabled'
               }
             ),
             currentTemp_plus: SDL.Button.extend(
@@ -219,7 +257,8 @@ SDL.ClimateView = Em.ContainerView.create(
                 icon: 'images/climate/plus_ico.png',
                 onDown: false,
                 action: 'currentTempUp',
-                target: 'SDL.ClimateController.model'
+                target: 'SDL.ClimateController.model',
+                disabledBinding: 'parentView.disabled'
               }
             )
           }

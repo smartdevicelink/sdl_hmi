@@ -111,6 +111,9 @@ SDL.SDLController = Em.Object.extend(
         SDL.OptionsView.deactivate();
       }
     },
+    onNavButton: function(element) {
+      // Empty target function.
+    },
     /**
      * Handeler for VR command button press
      *
@@ -164,6 +167,14 @@ SDL.SDLController = Em.Object.extend(
     },
     userExitAction: function(appID) {
       FFW.BasicCommunication.ExitApplication(appID, 'USER_EXIT');
+      this.closeApplication(appID);
+    },
+    /**
+     * Handler for CloseApplication RPC
+     *
+     * @param appID {Number}
+     */
+    closeApplication: function(appID) {
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia') {
         SDL.States.goToStates('info.apps');
@@ -191,6 +202,9 @@ SDL.SDLController = Em.Object.extend(
      */
     openCommandsList: function() {
       SDL.OptionsView.activate();
+    },
+    openNavButtonsList: function() {
+      SDL.NavigationSubscriptionButtonsView.activate();
     },
     /**
      * Notification of deactivation of current application model initiated in

@@ -134,7 +134,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'abs_State': 'VEHICLEDATA_ABS_STATE',
       'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'tirePressureValue': 'VEHICLEDATA_TIREPRESSURE_VALUE',
-      'tpms': 'VEHICLEDATA_TPMS'
+      'tpms': 'VEHICLEDATA_TPMS',
+      'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID'
     },
     /**
      * Stored VehicleInfo Data
@@ -160,7 +161,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         'dimension': '2D',
         'altitude': 7.7E0,
         'heading': 173.99E0,
-        'speed': 2.78E0
+        'speed': 2.78E0,
+        'shifted': false
       },
       'speed': 0,
       'rpm': 100,
@@ -304,7 +306,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         'frontRecommended': 2.2E0,
         'rearRecommended': 2.2E0
       },
-      'tpms': 'TIRES_NOT_TRAINED'
+      'tpms': 'TIRES_NOT_TRAINED',
+      'cloudAppVehicleID': 'SDLVehicleNo123'
       //
       // 'avgFuelEconomy': 0.1,
       // 'batteryVoltage': 12.5,

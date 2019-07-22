@@ -77,21 +77,9 @@ SDL.RadioModel = Em.Object.create({
 
   band: 'FM',
 
-
-  availableHDs: 3,
-
-  hdChannelsStruct: [
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7
-  ],
-
   hdChannelCurrent:[
     true,
+    false,
     false,
     false,
     false,
@@ -100,15 +88,16 @@ SDL.RadioModel = Em.Object.create({
     false
   ],
 
-  hdChannelAvailableCurrent:[
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true
-  ],
+  hdChannelAvailable: {
+    0: true,
+    1: true,
+    2: true,
+    3: true,
+    4: true,
+    5: true,
+    6: true,
+    7: true
+  },
 
   stateStruct: [
     'ACQUIRING',
@@ -287,11 +276,11 @@ SDL.RadioModel = Em.Object.create({
       },
       stationMessage:'station message'
     },
-    availableHDs: 3,
-    hdChannel: 1,
+    availableHdChannels: [3],
+    hdChannel: 0,
     signalStrength: 50,
     signalChangeThreshold: 60,
-    radioEnable: false,
+    radioEnable: true,
     state: 'ACQUIRING'
   },
 
@@ -320,7 +309,7 @@ SDL.RadioModel = Em.Object.create({
       },
       stationMessage:true
     },
-    availableHDs: true,
+    availableHdChannels: true,
     hdChannel: true,
     signalStrength: true,
     signalChangeThreshold: true,
@@ -333,7 +322,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 89,
           'fraction': 5,
-          'availableHDs': 7,
+          'availableHdChannels': [0,1,2,3,4,5,6,7],
           'currentHD': 1
         },
         'songInfo': {
@@ -349,7 +338,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 95,
           'fraction': 3,
-          'availableHDs': 2,
+          'availableHdChannels': [0,1,2],
           'currentHD': 1
         },
         'songInfo': {
@@ -365,7 +354,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 100,
           'fraction': 1,
-          'availableHDs': 1,
+          'availableHdChannels':  [0,1],
           'currentHD': 1
         },
         'songInfo': {
@@ -381,7 +370,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 103,
           'fraction': 5,
-          'availableHDs': 0,
+          'availableHdChannels': [0],
           'currentHD': 0
         },
         'songInfo': {
@@ -397,7 +386,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 105,
           'fraction': 3,
-          'availableHDs': 3,
+          'availableHdChannels': [0,1,2,3],
           'currentHD': 1
         },
         'songInfo': {
@@ -415,7 +404,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 89,
           'fraction': 5,
-          'availableHDs': 3,
+          'availableHdChannels': [0,1,2,3],
           'currentHD': 1
         },
         'songInfo': {
@@ -431,7 +420,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 65,
           'fraction': 0,
-          'availableHDs': 2,
+          'availableHdChannels': [0,1,2],
           'currentHD': 1
         },
         'songInfo': {
@@ -447,7 +436,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 800,
           'fraction': 0,
-          'availableHDs': 1,
+          'availableHdChannels': [0,1],
           'currentHD': 1
         },
         'songInfo': {
@@ -463,7 +452,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 1095,
           'fraction': 0,
-          'availableHDs': 0,
+          'availableHdChannels': [0],
           'currentHD': 0
         },
         'songInfo': {
@@ -479,7 +468,7 @@ SDL.RadioModel = Em.Object.create({
         'radioStation': {
           'frequency': 1450,
           'fraction': 0,
-          'availableHDs': 3,
+          'availableHdChannels': [0,1,2,3],
           'currentHD': 1
         },
         'songInfo': {
@@ -500,7 +489,7 @@ SDL.RadioModel = Em.Object.create({
       radioStation: {
         frequency: 87,
         fraction: 9,
-        availableHDs: 0,
+        availableHdChannels: [0],
         currentHD: 0
       },
       event: {
@@ -686,14 +675,16 @@ SDL.RadioModel = Em.Object.create({
           }
 
           if (this.radioControlStruct.hdRadioEnable) {
-            if (forceGetAll || this.radioControlCheckboxes.availableHDs) {
-              if (this.radioControlStruct.availableHDs > 0) {
-                result.availableHDs = this.radioControlStruct.availableHDs;
+            if (forceGetAll || this.radioControlCheckboxes.availableHdChannels) {
+              if (this.radioControlStruct.availableHdChannels.length >= 0) {
+                result.availableHdChannels = SDL.deepCopy(this.radioControlStruct.availableHdChannels);
               }
             }
             if (forceGetAll || this.radioControlCheckboxes.hdChannel) {
-              if (this.radioControlStruct.hdChannel > 0) {
-                result.hdChannel = this.radioControlStruct.hdChannel;
+              if(this.radioControlStruct.availableHdChannels.length > 0){
+                if (this.radioControlStruct.hdChannel <= 7) {
+                  result.hdChannel = this.radioControlStruct.hdChannel;
+                }
               }
             }
             if (forceGetAll || this.radioControlCheckboxes.sisData.stationShortName) {
@@ -761,17 +752,11 @@ SDL.RadioModel = Em.Object.create({
     return;
   },
 
-  setCurrentHd:function(data){
+  updateCurrentHdView:function(data){
     for(var i =0; i<this.hdChannelCurrent.length;i++){
       this.set('hdChannelCurrent.'+i,false);
     }
-    this.set('hdChannelCurrent.'+ (data-1),true);
-  },
-
-  setCurrentAvailabilityHD:function(data){
-    for(var i =0; i<this.hdChannelAvailableCurrent.length;i++){
-      this.set('hdChannelAvailableCurrent.'+i, i < data);
-    }
+    this.set('hdChannelCurrent.'+ data, true);
   },
 
   setRadioData: function(data) {
@@ -786,7 +771,7 @@ SDL.RadioModel = Em.Object.create({
         properties.push('band');
         switch(this.radioControlStruct.band){
           case 'AM':
-            properties.push('availableHDs');
+            properties.push('availableHdChannels');
             properties.push('hdChannel');
             properties.push('signalStrength');
             properties.push('signalChangeThreshold');
@@ -798,7 +783,7 @@ SDL.RadioModel = Em.Object.create({
             }
             break;
           case 'FM':
-            properties.push('availableHDs');
+            properties.push('availableHdChannels');
             properties.push('hdChannel');
             properties.push('frequencyFraction');
             properties.push('rdsData.*');
@@ -820,13 +805,13 @@ SDL.RadioModel = Em.Object.create({
     if (this.radioControlStruct.radioEnable) {
       if(data.hdRadioEnable != null){
         this.setHDRadioEnable(data.hdRadioEnable);
-        this.set('radioControlCheckboxes.availableHDs',data.hdRadioEnable);
+        this.set('radioControlCheckboxes.availableHdChannels',data.hdRadioEnable);
         this.set('radioControlCheckboxes.hdChannel',data.hdRadioEnable);
         if(data.hdRadioEnable){
           properties.push('sisData.*');
           properties.push('stationIDNumber.*');
           properties.push('stationLocation.*');     
-          properties.push('availableHDs');
+          properties.push('availableHdChannels');
           properties.push('hdChannel');
         }
       }
@@ -838,17 +823,15 @@ SDL.RadioModel = Em.Object.create({
         this.setFrequencyFraction(data.frequencyFraction);
       }
 
-      if (data.availableHDs != null) {
-        this.setAvailableHDs(data.availableHDs);
-        this.setCurrentAvailabilityHD(data.availableHDs);
+      if (data.availableHdChannels != null) {
+        this.setAvailableHdChannels(data.availableHdChannels);
       }
 
       if (data.hdChannel != null) {
         this.setCurrentHdChannel(data.hdChannel);
-        this.setCurrentHd(data.hdChannel);
       }
 
-      if (data.availableHDs != null || data.hdChannel != null) {
+      if (data.availableHdChannels != null || data.hdChannel != null) {
         this.updateRadioStationHdChannelInfo(data);
       }
 
@@ -947,7 +930,7 @@ SDL.RadioModel = Em.Object.create({
           'fccFacilityId': this.radioControlStruct.sisData.stationIDNumber.fccFacilityId
         },
       },
-      'availableHDs': this.radioControlStruct.availableHDs,
+      'availableHdChannels': SDL.deepCopy(this.radioControlStruct.availableHdChannels),
       'hdChannel': this.radioControlStruct.hdChannel,
       'signalStrength': this.radioControlStruct.signalStrength,
       'signalChangeThreshold': this.radioControlStruct.signalChangeThreshold,
@@ -955,6 +938,29 @@ SDL.RadioModel = Em.Object.create({
       'state': this.radioControlStruct.state
     };
     return result;
+  },
+
+  updateHD: function(availableHdChannels) {
+    for(key in this.hdChannelAvailable) {
+        this.set('hdChannelAvailable.' + key, availableHdChannels.includes(parseInt(key)));
+    }
+  },
+
+  changeAvailableHDsTempData: function(event, number) {
+    if(event.currentTarget.checked) {
+      this.lastOptionParams.availableHdChannels.push(number);
+      this.lastOptionParams.availableHdChannels.sort();
+    } else {
+      var index = SDL.RadioModel.lastOptionParams.availableHdChannels.indexOf(number);
+      this.lastOptionParams.availableHdChannels.splice(index,1);
+    }
+    var length = this.lastOptionParams.availableHdChannels.length;
+    this.set('radioControlCheckboxes.hdChannel', length);
+    if(length === 0) {
+      var outOfRange = 8; // Magic number which sets when theres is no available channel 
+      this.set('radioControlStruct.hdChannel', outOfRange);
+    }
+    
   },
 
   getStation: function(stationID) {
@@ -987,7 +993,7 @@ SDL.RadioModel = Em.Object.create({
     this.set('lastOptionParams.sisData.stationIDNumber', {});
     this.set('lastOptionParams.sisData.stationIDNumber.countryCode', result.sisData.stationIDNumber.countryCode);
     this.set('lastOptionParams.sisData.stationIDNumber.fccFacilityId', result.sisData.stationIDNumber.fccFacilityId);
-    this.set('lastOptionParams.availableHDs', result.availableHDs);
+    this.set('lastOptionParams.availableHdChannels', SDL.deepCopy(result.availableHdChannels));
     this.set('lastOptionParams.hdChannel', result.hdChannel);
     this.set('lastOptionParams.hdRadioEnable', result.hdRadioEnable);
     this.set('lastOptionParams.signalStrength', result.signalStrength);
@@ -1079,8 +1085,8 @@ SDL.RadioModel = Em.Object.create({
       if (params.fraction != null) {
         this.setFrequencyFraction(params.fraction);
       }
-      if (params.availableHDs != null) {
-        this.setAvailableHDs(params.availableHDs);
+      if (params.availableHdChannels != null) {
+        this.setAvailableHdChannels(params.availableHdChannels);
       }
       if (params.currentHD != null) {
         this.setCurrentHdChannel(params.currentHD);
@@ -1115,19 +1121,19 @@ SDL.RadioModel = Em.Object.create({
     var stationData = this.stationsData[band][station];
 
     if (stationData != null && band != 'XM') {
-      var availableHDs = stationData.radioStation.availableHDs;
+      var availableHdChannels = stationData.radioStation.availableHdChannels;
       var hdChannel = stationData.radioStation.currentHD;
-      hdChannel = (hdChannel < 1 && availableHDs > 0 ? 1 : hdChannel);
-      if (availableHDs != this.radioControlStruct.availableHDs) {
-        this.setAvailableHDs(availableHDs);
+      if (availableHdChannels != this.radioControlStruct.availableHdChannels) {
+        this.setAvailableHdChannels(availableHdChannels);
         this.setCurrentHdChannel(hdChannel);
       } else if (hdChannel != this.radioControlStruct.hdChannel) {
         this.setCurrentHdChannel(hdChannel);
       }
     } else {
-      this.setAvailableHDs(0);
+      this.setAvailableHdChannels([0]);
       this.setCurrentHdChannel(0);
     }
+    this.updateHD(this.radioControlStruct.availableHdChannels);
   },
 
   updateRadioStationHdChannelInfo: function(params) {
@@ -1138,23 +1144,22 @@ SDL.RadioModel = Em.Object.create({
     var station = this.changeFrequency(0);
     var stationData = this.stationsData[band][station];
 
-    var availableHDs = (params.availableHDs != null ?
-      params.availableHDs : this.radioControlStruct.availableHDs
+    var availableHdChannels = (params.availableHdChannels != null ?
+      params.availableHdChannels : this.radioControlStruct.availableHdChannels
     );
     var hdChannel = (params.hdChannel ?
       params.hdChannel : this.radioControlStruct.hdChannel
     );
 
     if (stationData != null) {
-      stationData.radioStation.availableHDs = availableHDs;
+      stationData.radioStation.availableHdChannels = availableHdChannels;
       stationData.radioStation.currentHD = hdChannel;
     } else {
-      hdChannel = (hdChannel < 1 && availableHDs > 0 ? 1 : hdChannel);
       this.stationsData[band][station] = {
         'radioStation': {
           'frequency': this.radioControlStruct.frequencyInteger,
           'fraction': this.radioControlStruct.frequencyFraction,
-          'availableHDs': availableHDs,
+          'availableHdChannels': availableHdChannels,
           'currentHD': hdChannel
         }
       };
@@ -1295,7 +1300,7 @@ SDL.RadioModel = Em.Object.create({
                                         'frequencyInteger',
                                         'frequencyFraction',
                                         'band',
-                                        'availableHDs',
+                                        'availableHdChannels',
                                         'hdChannel',
                                         'signalStrength',
                                         'signalChangeThreshold',
@@ -1311,7 +1316,7 @@ SDL.RadioModel = Em.Object.create({
                                         'hdRadioEnable',
                                         'frequencyInteger',
                                         'band',
-                                        'availableHDs',
+                                        'availableHdChannels',
                                         'signalStrength',
                                         'signalChangeThreshold',
                                         'state',
@@ -1533,19 +1538,13 @@ SDL.RadioModel = Em.Object.create({
         resultTable.info = (resultTable.success ?
           '' : 'Invalid radio frequency for desination radio band');
 
-        return resultTable;
       }
-      else {
-        var channel = (data.hdChannel != null
-          ? data.hdChannel : this.radioControlStruct.hdChannel);
-        var maxChannels = (data.availableHDs != null
-          ? data.availableHDs : this.radioControlStruct.availableHDs);
-        resultTable.success = (channel >= 1 && channel <= maxChannels);
+      else if(data.hdChannel != null) {
+        resultTable.success = this.radioControlStruct.availableHdChannels.includes(data.hdChannel);
         resultTable.info = resultTable.success ?
-          '' : 'Selected HD channel is not available';
-
-        return resultTable;
+          '' : 'Selected HD channel is not available';          
       }
+      return resultTable;
     }
 
     if (band == 'AM') {
@@ -1569,18 +1568,13 @@ SDL.RadioModel = Em.Object.create({
         resultTable.success = (frequencyTotal >= 525 && frequencyTotal <= 1705);
         resultTable.info = (resultTable.success ?
           '' : 'Invalid radio frequency for desination radio band');
-        return resultTable;
       }
-      else {
-        var channel = (data.hdChannel != null
-          ? data.hdChannel : this.radioControlStruct.hdChannel);
-        var maxChannels = (data.availableHDs != null
-          ? data.availableHDs : this.radioControlStruct.availableHDs);
-        resultTable.success = (channel >= 1 && channel <= maxChannels);
-        resultTable.info = (resultTable.success ?
-          '' : 'Selected HD channel is not available');
-        return resultTable;
+      else if(data.hdChannel != null) {
+        resultTable.success = this.radioControlStruct.availableHdChannels.includes(data.hdChannel);
+        resultTable.info = resultTable.success ?
+          '' : 'Selected HD channel is not available';
       }
+      return resultTable;
     }
 
     if (band == 'XM') {
@@ -1615,13 +1609,13 @@ SDL.RadioModel = Em.Object.create({
       this.sendRadioChangeNotification(
         ['frequencyInteger',
          'frequencyFraction',
-         'availableHDs',
+         'availableHdChannels',
          'hdChannel']
       );
     }
     if (this.radioControlStruct.band === 'AM') {
       this.sendRadioChangeNotification(['frequencyInteger',
-                                        'availableHDs',
+                                        'availableHdChannels',
                                         'hdChannel']);
     }
     if (this.radioControlStruct.band === 'XM') {
@@ -1647,7 +1641,9 @@ SDL.RadioModel = Em.Object.create({
     SDL.RadioModel.toggleProperty('optionsEnabled');
     if (this.optionsEnabled) {
       this.saveCurrentOptions();
+      return;
     }
+    this.updateHD(this.radioControlStruct.availableHdChannels);
   },
 
   switchRadioBandFrequency: function(useDefault) {
@@ -1723,6 +1719,7 @@ SDL.RadioModel = Em.Object.create({
     if(!this.validateStrings()){return;}
     var currentData = SDL.deepCopy(SDL.RadioModel.getCurrentOptions());
     var changedData = SDL.deepCopy(SDL.RadioModel.lastOptionParams);
+    this.updateHD(changedData.availableHdChannels);
     SDL.RadioModel.setRadioData(changedData);
 
     SDL.RadioModel.toggleProperty('optionsEnabled');
@@ -1829,17 +1826,15 @@ SDL.RadioModel = Em.Object.create({
       this.set('radioControlStruct.sisData.stationLocation.altitude',data.stationLocation.altitude);
     }
   },
-  setAvailableHDs: function(value) {
-    if (this.hdChannelsStruct.indexOf(value) >= 0) {
-      this.set('radioControlStruct.availableHDs', value);
-    }
+  setAvailableHdChannels: function(value) {
+      this.set('radioControlStruct.availableHdChannels', value);
   },
 
   setCurrentHdChannel: function(value) {
-    if (this.hdChannelsStruct.indexOf(value) >= 0
-        && value <= this.radioControlStruct.availableHDs) {
+    if (this.radioControlStruct.availableHdChannels.includes(value)) {
       this.set('radioControlStruct.hdChannel', value);
     }
+    this.updateCurrentHdView(value);
   },
 
   setSignalStrength: function(value) {

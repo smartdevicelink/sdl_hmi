@@ -44,6 +44,7 @@ SDL.ClimateControlModel = Em.Object.create({
   acEnableString: 'OFF',
   defrostZoneStruct: ['FRONT', 'REAR', 'ALL', 'NONE'],
   ventilationModeStruct: ['UPPER', 'LOWER', 'BOTH', 'NONE'],
+  climateEnableButtonText: "Climate ON",
 
   climateControlData: {
     temperatureUnit: 'CELSIUS',
@@ -64,7 +65,8 @@ SDL.ClimateControlModel = Em.Object.create({
     heatedWindshieldEnable: false,
     heatedRearWindowEnable: false,
     heatedSteeringWheelEnable: false,
-    heatedMirrorsEnable: false
+    heatedMirrorsEnable: false,
+    climateEnable: true
   },
 
   getClimateControlCapabilities: function() {
@@ -194,7 +196,8 @@ SDL.ClimateControlModel = Em.Object.create({
       heatedWindshieldEnable: this.climateControlData.heatedWindshieldEnable,
       heatedRearWindowEnable: this.climateControlData.heatedRearWindowEnable,
       heatedSteeringWheelEnable: this.climateControlData.heatedSteeringWheelEnable,
-      heatedMirrorsEnable: this.climateControlData.heatedMirrorsEnable
+      heatedMirrorsEnable: this.climateControlData.heatedMirrorsEnable,
+      climateEnable: this.climateControlData.climateEnable
     };
 
     return result;
@@ -202,6 +205,10 @@ SDL.ClimateControlModel = Em.Object.create({
 
   setClimateData: function(data) {
     var before_set = SDL.deepCopy(this.getClimateControlData());
+
+    if(data.climateEnable != null) {
+      this.setClimateEnable(data.climateEnable);
+    }
 
     if (data.fanSpeed != null) {
       this.setFanSpeed(data.fanSpeed);
@@ -448,6 +455,36 @@ SDL.ClimateControlModel = Em.Object.create({
     this.onAcEnableChanged(true);
   },
 
+  toggleClimateEnable: function() {
+    this.toggleProperty('climateControlData.climateEnable');
+    var dataForSending = this.getDataForSending();
+    this.sendClimateChangeNotification(dataForSending);
+  },
+
+  getDataForSending: function() {
+    var dataForSending = [];
+    var climateData = this.getClimateControlData();
+    var climateEnable = climateData.climateEnable;
+    if(climateEnable) {
+      for(var key in climateData) {
+        if(typeof climateData[key] == 'object') {
+          dataForSending.push(key + ".*");
+          continue;
+        }
+        dataForSending.push(key);
+      }
+    } else {
+      dataForSending.push('climateEnable');
+    }
+    return dataForSending;
+  },
+
+  changeClimateEnableButtonText: function() {
+    var enable = this.climateControlData.climateEnable;
+    var buttonText = enable ? 'Climate ON' : 'Climate OFF';
+    this.set('climateEnableButtonText', buttonText);
+  }.observes('this.climateControlData.climateEnable'),
+
   toggleAcMaxEnable: function() {
     this.toggleProperty('climateControlData.acMaxEnable');
     this.onAcMaxEnableChanged(true);
@@ -500,6 +537,10 @@ SDL.ClimateControlModel = Em.Object.create({
     if (sendNotification) {
       this.sendClimateChangeNotification(properties);
     }
+  },
+
+  setClimateEnable: function(climateEnable) {
+    this.set('climateControlData.climateEnable', climateEnable);
   },
 
   setFanSpeed: function(speed) {
