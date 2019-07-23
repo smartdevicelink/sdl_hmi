@@ -831,6 +831,18 @@ FFW.UI = FFW.RPCObserver.create(
                         'resolutionWidth': 64,
                         'resolutionHeight': 64
                       }
+                    },
+                    {
+                      'name': 'alertIcon',
+                      'imageTypeSupported': [
+                        'GRAPHIC_BMP',
+                        'GRAPHIC_JPEG',
+                        'GRAPHIC_PNG'
+                      ],
+                      'imageResolution': {
+                        'resolutionWidth': 225,
+                        'resolutionHeight': 225
+                      }
                     }
                   ],
                   'mediaClockFormats': [
