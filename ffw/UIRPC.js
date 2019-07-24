@@ -342,6 +342,11 @@ FFW.UI = FFW.RPCObserver.create(
             // return; } }
             if (SDL.SDLModel.uiPerformInteraction(request)) {
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -406,6 +411,11 @@ FFW.UI = FFW.RPCObserver.create(
           {
             if (SDL.SDLModel.uiSlider(request)) {
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -413,6 +423,11 @@ FFW.UI = FFW.RPCObserver.create(
           {
             if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -558,6 +573,11 @@ FFW.UI = FFW.RPCObserver.create(
               this.performAudioPassThruRequestID = request.id;
               SDL.SDLModel.UIPerformAudioPassThru(request.params);
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
