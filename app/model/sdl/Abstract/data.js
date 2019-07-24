@@ -660,7 +660,7 @@ SDL.SDLModelData = Em.Object.create(
     defaultWindowCapability: {
       "MAIN": {
         "systemCapability": {
-          "systemCapabilityType": "DISPLAY",
+          "systemCapabilityType": "DISPLAYS",
           "displayCapabilities": [{
             "displayName": "MAIN",
             "windowTypeSupported": [{
@@ -807,7 +807,7 @@ SDL.SDLModelData = Em.Object.create(
       },
       "WIDGET": {
         "systemCapability": {
-          "systemCapabilityType": "DISPLAY",
+          "systemCapabilityType": "DISPLAYS",
           "displayCapabilities": [{
             "displayName": "WIDGET",
             "windowTypeSupported": [{
