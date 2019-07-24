@@ -1263,16 +1263,16 @@ SDL.SDLController = Em.Object.extend(
     /**
      * Send system context
      */
-    onSystemContextChange: function(appID) {
+    onSystemContextChange: function(appID, windowID) {
       var sysContextValue = this.get('sysContext');
       if ((
         appID &&
         SDL.SDLController.getApplicationModel(appID) !=
-        SDL.SDLController.model) ||
+        SDL.SDLController.model && undefined === windowID ) ||
         (
         this.backgroundAlertAppID &&
         SDL.SDLController.getApplicationModel(this.backgroundAlertAppID) !=
-        SDL.SDLController.model)) {
+        SDL.SDLController.model && undefined === windowID)) {
         if (appID) {
           this.backgroundAlertAppID = appID;
           FFW.UI.OnSystemContext(sysContextValue, appID);
@@ -1289,6 +1289,9 @@ SDL.SDLController = Em.Object.extend(
             );
           }
         }
+      } else if (windowID && appID) {
+        FFW.UI.OnSystemContext(sysContextValue, appID, windowID);
+        return;
       } else {
         if (SDL.SDLController.model) {
           appID = SDL.SDLController.model.appID;
