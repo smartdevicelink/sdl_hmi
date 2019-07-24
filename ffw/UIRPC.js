@@ -840,8 +840,8 @@ FFW.UI = FFW.RPCObserver.create(
                         'GRAPHIC_PNG'
                       ],
                       'imageResolution': {
-                        'resolutionWidth': 225,
-                        'resolutionHeight': 225
+                        'resolutionWidth': 105,
+                        'resolutionHeight': 65
                       }
                     }
                   ],
