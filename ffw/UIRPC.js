@@ -838,6 +838,7 @@ FFW.UI = FFW.RPCObserver.create(
                     'CLOCKTEXT3', 'CLOCKTEXT4'
                   ],
                   'graphicSupported': true,
+                  'menuLayoutsAvailable': ['LIST'],
                   'imageCapabilities': ['DYNAMIC', 'STATIC'],
                   'templatesAvailable': ['TEMPLATE'],
                   'screenParams': {
