@@ -327,6 +327,18 @@ SDL.templateCapabilities = {
                         "resolutionWidth": 64,
                         "resolutionHeight": 64
                     }
+                },
+                {
+                    "name": "alertIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 105,
+                        "resolutionHeight": 65
+                    }
                 }
             ],
             "mediaClockFormats": [
@@ -767,6 +779,18 @@ SDL.templateCapabilities = {
                     "imageResolution": {
                         "resolutionWidth": 64,
                         "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "alertIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 105,
+                        "resolutionHeight": 65
                     }
                 }
             ],
@@ -1216,6 +1240,18 @@ SDL.templateCapabilities = {
                         "resolutionWidth": 64,
                         "resolutionHeight": 64
                     }
+                },
+                {
+                    "name": "alertIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 105,
+                        "resolutionHeight": 65
+                    }
                 }
             ],
             "mediaClockFormats": [
@@ -1627,6 +1663,18 @@ SDL.templateCapabilities = {
                     "imageResolution": {
                         "resolutionWidth": 64,
                         "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "alertIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 105,
+                        "resolutionHeight": 65
                     }
                 }
             ],
