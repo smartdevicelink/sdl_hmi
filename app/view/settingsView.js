@@ -47,7 +47,6 @@ SDL.SettingsView = Em.ContainerView.create(
       SDL.AppPermissionsView,
       SDL.DeviceConfigView,
       SDL.StatisticsInfoView,
-      SDL.GetUrlsView,
       SDL.SystemErrorView,
       SDL.ConnectionSettingsView,
       SDL.RSDLOptionsView,
@@ -57,7 +56,8 @@ SDL.SettingsView = Em.ContainerView.create(
       SDL.LocationLightView,
       SDL.InteriorLightView,
       SDL.ExteriorLightView,
-      SDL.SeatView
+      SDL.SeatView,
+      SDL.PolicyConfigListView
     ],
     /** Left menu */
     leftMenu: Em.ContainerView.extend(

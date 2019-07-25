@@ -165,12 +165,18 @@ var StateManager = Em.StateManager.extend(
         policies: Em.State.create(
           {
             statisticsInfo: Em.State.create({}),
-            getUrls: Em.State.create({}),
             connectionSettings: Em.State.create(
               {
                 enter: function() {
                   this._super();
                   SDL.ConnectionSettingsView.showEntitiesList();
+                }
+              }
+            ),
+            policyConfig: Em.State.create(
+              {
+                enter: function() {
+                  this._super();
                 }
               }
             ),
