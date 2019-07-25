@@ -67,6 +67,16 @@ SDL.PoliciesView = Em.ContainerView.create(
           {
             type: SDL.Button,
             params: {
+              goToState: 'policies.policyConfig',
+              text: 'Send GetPolicyConfigurationData request to SDL',              
+              target: 'SDL.SettingsController',
+              onDown: false,
+              action: 'onState',
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
               goToState: 'policies.deviceConfig',
               text: 'Allow SDL Functionality',
               action: 'onState',
@@ -90,17 +100,6 @@ SDL.PoliciesView = Em.ContainerView.create(
               text: 'Policy table update status',
               action: 'getStatusUpdate',
               target: 'SDL.SettingsController',
-              onDown: false
-            }
-          },
-          {
-            type: SDL.Button,
-            params: {
-              text: 'Request GetURLS',
-              action: 'onState',
-              target: 'SDL.SettingsController',
-              templateName: 'arrow',
-              goToState: 'policies.getUrls',
               onDown: false
             }
           },

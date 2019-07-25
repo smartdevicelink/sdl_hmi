@@ -286,40 +286,23 @@ SDL.SettingsController = Em.Object.create(
       SDL.SettingsController.currentDeviceAllowance = null;
     },
     /**
-     * Method to check Array of GetUrls data
-     * And verify what OnSystemRequest should be sent
+     * Method verify what OnSystemRequest should be sent
      *
-     * @param {Object} urls
+     * @param {String} url
      */
-    GetUrlsHandler: function(urls) {
-      var url;
-      for (i in urls) {
-        if (urls.hasOwnProperty(i)) {
-          url = urls[i];
-          var appID = null;
-          if ('appID' in url) {
-            appID = url.appID;
-          } else {  //If
-            console.error(
-              'WARNING! No appID in GetURLs response'
-            );
-          }
-          if(FLAGS.ExternalPolicies === true) {
-            FFW.ExternalPolicies.pack({
-              type: 'PROPRIETARY',
-              policyUpdateFile: SDL.SettingsController.policyUpdateFile,
-              url: url.url,
-              appID: appID
-            })
-          } else {
-            FFW.BasicCommunication.OnSystemRequest(
-              'PROPRIETARY',
-              SDL.SettingsController.policyUpdateFile,
-              url.url,
-              appID
-            );
-          }
-        }
+    OnSystemRequestHandler: function(url) {
+      if(FLAGS.ExternalPolicies === true) {
+        FFW.ExternalPolicies.pack({
+          type: 'PROPRIETARY',
+          policyUpdateFile: SDL.SettingsController.policyUpdateFile,
+          url: url
+        })
+      } else {
+        FFW.BasicCommunication.OnSystemRequest(
+          'PROPRIETARY',
+          SDL.SettingsController.policyUpdateFile,
+          url
+        );
       }
     },
     /**
@@ -344,8 +327,7 @@ SDL.SettingsController = Em.Object.create(
             FFW.BasicCommunication.OnSystemRequest(
               'PROPRIETARY',
               SDL.SettingsController.policyUpdateFile,
-              SDL.SDLModel.data.policyURLs[0].url,
-              SDL.SDLModel.data.policyURLs[0].appID
+              SDL.SDLModel.data.policyURLs[0]
             );
             SDL.SettingsController.policyUpdateRetry();
           }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
@@ -392,6 +374,34 @@ SDL.SettingsController = Em.Object.create(
         SDL.SeatModel.goToStates();
         SDL.States.goToStates('settings.seat');
         }
+    },
+
+    /**
+     * @function sendGetPolicyConfigurationDataRequest
+     * @description send GetPolicyConfigurationData request from HMI by user action
+     */
+    sendGetPolicyConfigurationDataRequest: function() {
+      var policyConfigurationData = {
+        policyType: SDL.SDLModel.data.policyType,
+        property: SDL.SDLModel.data.property
+      };
+      if('endpoint_properties' === policyConfigurationData.property) {
+        policyConfigurationData.nestedProperty = 'custom_vehicle_data_mapping_url';
+      }
+      FFW.BasicCommunication.GetPolicyConfigurationData(policyConfigurationData);
+    },
+
+    /**
+     * @function checkPolicyVersionButtonPress
+     * @description send GetPolicyConfigurationData request from HMI by user action
+     */
+    checkPolicyVersionButtonPress: function() {
+      var policyConfigurationData = {
+        policyType: 'module_config',
+        property: 'endpoint_properties',
+        nestedProperty: 'custom_vehicle_data_mapping_url'
+      };
+      FFW.BasicCommunication.GetPolicyConfigurationData(policyConfigurationData);
     }
   }
 );

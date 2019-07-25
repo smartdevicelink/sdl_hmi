@@ -187,6 +187,86 @@ FFW.BasicCommunication = FFW.RPCObserver
       onRPCResult: function(response) {
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCResult');
         this._super();
+        if(response.result.method == 'SDL.GetPolicyConfigurationData') {
+          var policyConfigRequestsData = SDL.SDLModel.data.getPolicyConfigurationDataRequestsList;
+          var dataToremove = null;
+          policyConfigRequestsData.forEach(requstedData => {
+            if(requstedData.id == response.id) {
+              dataToremove = requstedData;
+
+              var resultCode = SDL.SDLModel.data.resultCode;
+              if(response.result.code !== resultCode.SUCCESS) {
+                var resultCodeString = '';
+                for(key in resultCode) {
+                  if(resultCode[key] === response.result.code) {
+                    resultCodeString = key;
+                    break;
+                  }
+                }
+                SDL.PopUp.create().appendTo('body').popupActivate(
+                  `${response.result.method} request from HMI wasn't successful.
+                  Error code: ${response.result.code}( ${resultCodeString} )`
+                )
+                return;
+              }
+              if(response.result.value) {
+                var policyConfigData = SDL.SDLModel.data.policyConfigData;
+                response.result.value.forEach(element => {
+                  var data = JSON.parse(element);
+                  if(typeof data === 'object') {
+                    for(key in data) {
+                      if(requstedData.nestedProperty == key &&
+                      requstedData.property == 'endpoint_properties') {
+                        policyConfigData.forEach(configData => {
+                          if(undefined !== configData[key] &&
+                              data[key]['version'] !== configData[key]['version']) {
+                            configData[key]['version'] = data[key]['version'];
+                            this.GetPolicyConfigurationData({
+                              policyType: 'module_config',
+                              property: 'endpoints',
+                              nestedProperty: 'custom_vehicle_data_mapping_url'
+                            });
+                          }
+                        })
+                      }
+                      else if (requstedData.nestedProperty == key &&
+                      requstedData.property == 'endpoints') {
+                        if(undefined !== data[key]) {
+                          if(key == 'custom_vehicle_data_mapping_url') {
+                            var fileName = "/tmp/fs/mp/images/ivsu_cache/oemMappingTable.json";
+                            this.OnSystemRequest('OEM_SPECIFIC',
+                                    fileName,
+                                    data[key].default[0],
+                                    undefined,
+                                    'VEHICLE_DATA_MAPPING')
+                          }
+                          if(key == 7) {
+                            SDL.SDLModel.data.set('policyURLs', data[key].default);
+                            if (data[key].default.length) {
+                              data[key].default.forEach(url => {
+                                SDL.SettingsController.OnSystemRequestHandler(url);
+                              })
+                            } else {
+                              this.OnSystemRequest('PROPRIETARY');
+                            }
+                            if (FLAGS.ExternalPolicies === true) {
+                              SDL.SettingsController.policyUpdateRetry();
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                })
+              }
+            }
+          })
+
+          var index = policyConfigRequestsData.indexOf(dataToremove);
+          if(-1 <= index) {
+            policyConfigRequestsData.splice(index,1);
+          }
+        }
         if (response.result.method == 'SDL.GetUserFriendlyMessage') {
           Em.Logger.log('SDL.GetUserFriendlyMessage: Response from SDL!');
           if (response.id in SDL.SDLModel.data.userFriendlyMessagePull) {
@@ -251,18 +331,6 @@ FFW.BasicCommunication = FFW.RPCObserver
           Em.Logger.log('SDL.GetStatusUpdate: Response from SDL!');
           SDL.PopUp.create().appendTo('body').popupActivate(response.result);
         }
-        if (response.result.method == 'SDL.GetURLS') {
-          SDL.SDLModel.data.set('policyURLs', response.result.urls);
-          if (response.result.urls.length) {
-            SDL.SettingsController.GetUrlsHandler(response.result.urls);
-          } else {
-            this.OnSystemRequest('PROPRIETARY');
-          }
-
-          if (FLAGS.ExternalPolicies === true) {
-            SDL.SettingsController.policyUpdateRetry();
-          }
-        }
       },
       /**
        * handle RPC erros here
@@ -314,6 +382,11 @@ FFW.BasicCommunication = FFW.RPCObserver
                 SDL.SettingsController.policyUpdateRetry('ABORT');
               }
               SDL.SettingsController.policyUpdateFile = null;
+              this.GetPolicyConfigurationData({
+                policyType: 'module_config',
+                property: 'endpoint_properties',
+                nestedProperty: 'custom_vehicle_data_mapping_url'
+              });
               break;
             }
             case 'UPDATING':
@@ -540,7 +613,11 @@ FFW.BasicCommunication = FFW.RPCObserver
               = request.params.timeout;
             SDL.SDLModel.data.policyUpdateRetry.retry = request.params.retry;
             SDL.SDLModel.data.policyUpdateRetry.try = 0;
-            this.GetURLS(7); //Service type for policies
+            this.GetPolicyConfigurationData({
+              policyType: 'module_config',
+              property: 'endpoints',
+              nestedProperty: 7 //Service type for policies
+            }); 
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
@@ -580,6 +657,34 @@ FFW.BasicCommunication = FFW.RPCObserver
       },
       /********************* Requests BEGIN *********************/
 
+       /**
+       * @function GetPolicyConfigurationData
+       * @param {Array} identifiers 
+       * @description Send request SDL.GetPolicyConfigurationData
+       */
+      GetPolicyConfigurationData: function(data) {
+        Em.Logger.log('SDL.GetPolicyConfigurationData: Request from HMI!');
+
+        var itemIndex = this.client.generateId();
+        var policyConfigRequestsData = SDL.SDLModel.data.getPolicyConfigurationDataRequestsList;
+        policyConfigRequestsData.push({
+          id: itemIndex,
+          policyType: data.policyType,
+          property: data.property,
+          nestedProperty: data.nestedProperty        
+        });
+        // send request
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': itemIndex,
+          'method': 'SDL.GetPolicyConfigurationData',
+          'params': {
+            'policyType': data.policyType,
+            'property': data.property
+          }
+        };
+        this.client.send(JSONMessage);
+      },
       /**
        * Send request if application was activated
        *

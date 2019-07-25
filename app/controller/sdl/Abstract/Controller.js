@@ -390,6 +390,11 @@ SDL.SDLController = Em.Object.extend(
           var params = {};
           var parsedData = JSON.parse(data);
           for (var i in parsedData) {
+            if(undefined === SDL.SDLVehicleInfoModel.vehicleData[i]) {
+              SDL.SDLVehicleInfoModel.eVehicleDataType[i] = 'OEM_SPECIFIC';
+              params[i] = parsedData[i];
+              continue;
+            }
             if (SDL.SDLController.compareObjects(
                 SDL.SDLVehicleInfoModel.vehicleData[i],
                 parsedData[i]
@@ -407,6 +412,22 @@ SDL.SDLController = Em.Object.extend(
       SDL.VehicleInfo.vehicleDataCodeEditor.editor.set(
         'code',
         JSON.stringify(SDL.SDLVehicleInfoModel.vehicleData, null, 2)
+      );
+    },
+
+    /**
+     * @function policyConfigDataChange
+     * @description Policy config data button handler on Vehicle Info view
+     */
+    policyConfigDataChange: function() {
+      SDL.PolicyConfigListView.policyConfigCodeEditor.activate(
+        function(data) {
+          SDL.SDLModel.data.policyConfigData = JSON.parse(data);
+        }
+      );
+      SDL.PolicyConfigListView.policyConfigCodeEditor.editor.set(
+        'code',
+        JSON.stringify(SDL.SDLModel.data.policyConfigData, null, 2)
       );
     },
     /**
