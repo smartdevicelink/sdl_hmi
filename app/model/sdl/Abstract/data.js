@@ -666,6 +666,10 @@ SDL.SDLModelData = Em.Object.create(
             "windowTypeSupported": [{
               "type": "MAIN",
               "maximumNumberOfWindows": 1
+            },
+            {
+              "type": "WIDGET",
+              "maximumNumberOfWindows": 16  
             }],
             "windowCapabilities": [{
               "textFields": [{
@@ -799,7 +803,29 @@ SDL.SDLModelData = Em.Object.create(
                 "shortPressAvailable": true,
                 "longPressAvailable": true,
                 "upDownAvailable": true,
-                "imageSupported": true
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
               }]
             }]
           }],
@@ -811,8 +837,12 @@ SDL.SDLModelData = Em.Object.create(
           "displayCapabilities": [{
             "displayName": "WIDGET",
             "windowTypeSupported": [{
-              "type": "WIDGET",
+              "type": "MAIN",
               "maximumNumberOfWindows": 1
+            },
+            {
+              "type": "WIDGET",
+              "maximumNumberOfWindows": 16
             }],
             "windowCapabilities": [{
               "textFields": [{
@@ -946,7 +976,29 @@ SDL.SDLModelData = Em.Object.create(
                 "shortPressAvailable": true,
                 "longPressAvailable": true,
                 "upDownAvailable": true,
-                "imageSupported": true
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
               }]
             }]
           }],
