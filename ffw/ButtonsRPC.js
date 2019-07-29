@@ -118,8 +118,15 @@ FFW.Buttons = FFW.RPCObserver.create(
 
       if (notification.method == this.onButtonSubscriptionNotification) {
         var model = SDL.SDLController.getApplicationModel(notification.params.appID);
-        if (model) {
-          model.set(notification.params.name, notification.params.isSubscribed);
+        var buttonName = notification.params.name;
+        if (!model) {
+          return;
+        }
+        if (buttonName.includes("NAV_")) {
+          model.setNavButton(buttonName, notification.params.isSubscribed);
+        }
+        else {
+          model.set(buttonName, notification.params.isSubscribed);
         }
       }
     },
@@ -246,6 +253,81 @@ FFW.Buttons = FFW.RPCObserver.create(
                 'upDownAvailable': true
               }, {
                 'name': 'CUSTOM_BUTTON',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_CENTER_LOCATION',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_ZOOM_IN',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_ZOOM_OUT',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_PAN_UP',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_PAN_UP_RIGHT',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_PAN_RIGHT',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_PAN_DOWN_RIGHT',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_PAN_DOWN',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_PAN_DOWN_LEFT',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_PAN_LEFT',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_PAN_UP_LEFT',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_TILT_TOGGLE',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_ROTATE_CLOCKWISE',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_ROTATE_COUNTERCLOCKWISE',
+                'shortPressAvailable': true,
+                'longPressAvailable': true,
+                'upDownAvailable': true
+              }, {
+                'name': 'NAV_HEADING_TOGGLE',
                 'shortPressAvailable': true,
                 'longPressAvailable': true,
                 'upDownAvailable': true

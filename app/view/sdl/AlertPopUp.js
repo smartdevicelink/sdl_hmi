@@ -67,7 +67,9 @@ SDL.AlertPopUp = Em.ContainerView.create(
     image: Em.View.extend(
       {
         elementId: 'alertPopUpImage',
-        classNames: 'alertPopUpImage'
+        template: Ember.Handlebars.compile(
+          '<img class="alertPopUpImage" onerror="this.style.display=\'none\'" {{bindAttr src="SDL.AlertPopUp.icon"}}>'
+        )
       }
     ),
     /**
@@ -207,6 +209,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
       this.set(
         'appName', SDL.SDLController.getApplicationModel(message.appID).appName
       );
+      this.set('icon', message.alertIcon ? message.alertIcon.value : "images/sdl/Warning.png");
       for (var i = 0; i < message.alertStrings.length; i++) {
         switch (message.alertStrings[i].fieldName) {
           case 'alertText1':
