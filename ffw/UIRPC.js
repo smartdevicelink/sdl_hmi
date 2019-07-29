@@ -303,7 +303,7 @@ FFW.UI = FFW.RPCObserver.create(
               SDL.ScrollableMessage.deactivate(true);
             } else if (typeID === 26 && SDL.SliderView.active
                && (targetID === undefined || targetID === SDL.SliderView.cancelID)) {
-              SDL.SliderView.deactivate(true);
+              SDL.SliderView.deactivate(false);
             } else {
               this.sendError(SDL.SDLModel.data.resultCode.IGNORED,
                 request.id, request.method,
