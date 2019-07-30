@@ -68,10 +68,10 @@
 }
 
 #baseNavigation .mainField2 {
-    top: 0;
-    height: 40px;
-    width: 380px;
-    left: 204px;
+    top: 50px;
+    height: 30px;
+    width: 190px;
+    left: 0;
 }
 
 #baseNavigation .mainField3 {
@@ -102,6 +102,13 @@
     height: 40px;
     width: 280px;
     left: 254px;
+}
+
+#baseNavigation .templateTitle {
+    top: 0;
+    height: 40px;
+    width: 380px;
+    left: 204px;
 }
 
 #baseNavigation .softButton1 {

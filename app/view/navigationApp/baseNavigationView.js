@@ -44,6 +44,7 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       'mainField4',
       'mainField5',
       'mainField6',
+      'templateTitle',
       'navSubButtons',
       'optionsBtn'
     ],
@@ -164,6 +165,12 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       {
         classNames: 'mainField6 mainField',
         contentBinding: 'parentView.mainField6'
+      }
+    ),
+    templateTitle: SDL.Label.extend(
+      {
+        classNames: 'templateTitle mainField',
+        contentBinding: 'SDL.SDLController.model.appInfo.title'
       }
     ),
     navSubButtons: SDL.Button.extend(

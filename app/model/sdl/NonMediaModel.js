@@ -53,6 +53,7 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
           field2: '<field2>',
           field3: '<field3>',
           field4: '<field4>',
+          title: '',
           mainImage: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
           image: '',
           customPresets: [
@@ -120,6 +121,7 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
     this.appInfo.set('field2', '');
     this.appInfo.set('field3', '');
     this.appInfo.set('field4', '');
+    this.appInfo.set('title', '');
     this.appInfo.set('alignment', '');
     this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
     this.updateSoftButtons();
@@ -164,6 +166,10 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
         }
         case 'mediaTrack': {
           this.appInfo.set('mediaTrack', params.showStrings[i].fieldText);
+          break;
+        }
+        case 'templateTitle': {
+          this.appInfo.set('title', params.showStrings[i].fieldText);
           break;
         }
         default : {
