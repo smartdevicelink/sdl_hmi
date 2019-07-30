@@ -391,7 +391,7 @@ SDL.SDLController = Em.Object.extend(
           var parsedData = JSON.parse(data);
           for (var i in parsedData) {
             if(undefined === SDL.SDLVehicleInfoModel.vehicleData[i]) {
-              SDL.SDLVehicleInfoModel.eVehicleDataType[i] = 'OEM_SPECIFIC';
+              SDL.SDLVehicleInfoModel.eVehicleDataType[i] = 'oemCustomDataType';
               params[i] = parsedData[i];
               continue;
             }
