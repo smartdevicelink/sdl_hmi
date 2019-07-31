@@ -51,10 +51,13 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
     // Extend deactivate window
     deactivate: function() {
       if (SDL.SDLController.model) {
-        if (SDL.SDLController.model.get('currentSubMenuId') >= 0) {
+        if (SDL.SDLController.model.get('currentSubMenuId') >= 0  && 
+        !SDL.SDLController.model.get('subMenuInitFromApp')) {
           SDL.SDLController.onSubMenu('top');
         } else {
+          SDL.SDLController.onSubMenu('top');
           this._super();
+          SDL.SDLController.model.set('subMenuInitFromApp', false);
         }
       }
       SDL.SDLController.onSystemContextChange();
