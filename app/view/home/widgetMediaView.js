@@ -68,7 +68,7 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
               '<div class="stationimg"></div>' +
               '</div>' +
               '<span class="station">' +
-              '{{SDL.RadioModel.station}}' +
+              '{{SDL.RCModulesController.currentRadioModel.station}}' +
               '</span>' +
               '</div>'
             )
@@ -85,7 +85,7 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
 
             tuneUp: SDL.Button.extend({
                 elementId: 'radio_media_tuneUp_button',
-                target: 'SDL.RadioModel',
+                target: 'SDL.RCModulesController.currentRadioModel',
                 action: 'tuneUpPress',
                 text: '>>'
               }
@@ -93,7 +93,7 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
 
             tuneDown: SDL.Button.extend({
                 elementId: 'radio_media_tuneDown_button',
-                target: 'SDL.RadioModel',
+                target: 'SDL.RCModulesController.currentRadioModel',
                 action: 'tuneDownPress',
                 text: '<<'
               }
@@ -122,10 +122,10 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
                 elementId: 'radio_media_home_preset_button1',
                 classNames: 'a0',
                 getPresetText: function() {
-                  var band = SDL.RadioModel.radioControlStruct.band;
-                  return SDL.RadioModel.preset[band][0];
+                  var band = SDL.RCModulesController.currentRadioModel.radioControlStruct.band;
+                  return SDL.RCModulesController.currentRadioModel.preset[band][0];
                 }.property(
-                  'SDL.RadioModel.radioControlStruct.band'
+                  'SDL.RCModulesController.currentRadioModel.radioControlStruct.band'
                 ),
                 textBinding: 'getPresetText',
                 templateName: 'text',
@@ -138,10 +138,10 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
                 elementId: 'radio_media_home_preset_button2',
                 classNames: 'a1',
                 getPresetText: function() {
-                  var band = SDL.RadioModel.radioControlStruct.band;
-                  return SDL.RadioModel.preset[band][1];
+                  var band = SDL.RCModulesController.currentRadioModel.radioControlStruct.band;
+                  return SDL.RCModulesController.currentRadioModel.preset[band][1];
                 }.property(
-                  'SDL.RadioModel.radioControlStruct.band'
+                  'SDL.RCModulesController.currentRadioModel.radioControlStruct.band'
                 ),
                 textBinding: 'getPresetText',
                 templateName: 'text',
@@ -154,10 +154,10 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
                 elementId: 'radio_media_home_preset_button3',
                 classNames: 'a2',
                 getPresetText: function() {
-                  var band = SDL.RadioModel.radioControlStruct.band;
-                  return SDL.RadioModel.preset[band][2];
+                  var band = SDL.RCModulesController.currentRadioModel.radioControlStruct.band;
+                  return SDL.RCModulesController.currentRadioModel.preset[band][2];
                 }.property(
-                  'SDL.RadioModel.radioControlStruct.band'
+                  'SDL.RCModulesController.currentRadioModel.radioControlStruct.band'
                 ),
                 textBinding: 'getPresetText',
                 templateName: 'text',
@@ -170,10 +170,10 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
                 elementId: 'radio_media_home_preset_button4',
                 classNames: 'a3',
                 getPresetText: function() {
-                  var band = SDL.RadioModel.radioControlStruct.band;
-                  return SDL.RadioModel.preset[band][3];
+                  var band = SDL.RCModulesController.currentRadioModel.radioControlStruct.band;
+                  return SDL.RCModulesController.currentRadioModel.preset[band][3];
                 }.property(
-                  'SDL.RadioModel.radioControlStruct.band'
+                  'SDL.RCModulesController.currentRadioModel.radioControlStruct.band'
                 ),
                 textBinding: 'getPresetText',
                 templateName: 'text',
@@ -186,10 +186,10 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
                 elementId: 'radio_media_home_preset_button5',
                 classNames: 'a4',
                 getPresetText: function() {
-                  var band = SDL.RadioModel.radioControlStruct.band;
-                  return SDL.RadioModel.preset[band][4];
+                  var band = SDL.RCModulesController.currentRadioModel.radioControlStruct.band;
+                  return SDL.RCModulesController.currentRadioModel.preset[band][4];
                 }.property(
-                  'SDL.RadioModel.radioControlStruct.band'
+                  'SDL.RCModulesController.currentRadioModel.radioControlStruct.band'
                 ),
                 textBinding: 'getPresetText',
                 templateName: 'text',
@@ -202,10 +202,10 @@ SDL.WidgetMediaView = Em.ContainerView.extend({
                 elementId: 'radio_media_home_preset_button6',
                 classNames: 'a5',
                 getPresetText: function() {
-                  var band = SDL.RadioModel.radioControlStruct.band;
-                  return SDL.RadioModel.preset[band][5];
+                  var band = SDL.RCModulesController.currentRadioModel.radioControlStruct.band;
+                  return SDL.RCModulesController.currentRadioModel.preset[band][5];
                 }.property(
-                  'SDL.RadioModel.radioControlStruct.band'
+                  'SDL.RCModulesController.currentRadioModel.radioControlStruct.band'
                 ),
                 textBinding: 'getPresetText',
                 templateName: 'text',

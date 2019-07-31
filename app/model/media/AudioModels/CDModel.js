@@ -31,7 +31,7 @@
  * @version 1.0
  */
 
-SDL.CDModel = Em.Object.create({
+SDL.CDModel = Em.Object.extend({
 
   active: true,
 
@@ -146,14 +146,14 @@ SDL.CDModel = Em.Object.create({
 sendAudioNotification:function()
   {
     this.setSource();
-    var data = SDL.MediaController.getAudioControlData();
+    var data = SDL.RCModulesController.currentAudioModel.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:{'source':data.source}});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', moduleId: this.UUID, audioControlData:{'source':data.source}});
   }
   },
   setSource:function()
   {
-    SDL.MediaController.lastRadioControlStruct.source='CD';
+    SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.source='CD';
   },
 }
 );

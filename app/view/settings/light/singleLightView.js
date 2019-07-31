@@ -31,4 +31,4 @@ SDL.SingleLightView = Em.ContainerView.create({
           items: []
     })
 })
-SDL.LightView.initList(SDL.LightModel.singleLightNameStruct,SDL.SingleLightView.appList.items);
+SDL.LightView.initList(SDL.RCModulesController.currentLightModel.singleLightNameStruct,SDL.SingleLightView.appList.items);

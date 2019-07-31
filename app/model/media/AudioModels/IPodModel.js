@@ -24,27 +24,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
- SDL.LineInModel=Em.Object.create({
+ SDL.IPodModel=Em.Object.extend({
 active: false,
 selectedIndex:0,
 optionsEnabled:false,
-statusBar: 'Line-in',
+statusBar: 'IPod track 1',
 sendAudioNotification:function()
   {
     this.setSource();
-    var data = SDL.MediaController.getAudioControlData();
+    var data = SDL.RCModulesController.currentAudioModel.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:{'source':data.source}});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', moduleId: this.UUID, audioControlData: {'source':data.source}});
   }
   },
   setSource:function()
   {
-    SDL.MediaController.lastRadioControlStruct.source='LINE_IN';
+    SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.source='IPOD';
   },
 init:function(){
 	this._super();
 	this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
-	this.set('player.name','LINE_IN');
+	this.set('player.name','IPOD');
 },
 	PlayList: SDL.Playlist.create({
         selectedIndex: 0,
@@ -107,7 +107,6 @@ init:function(){
         //homeWidgetIcon: 'images/media/usb-h-ico.png'
       }
     )
-    
   }
  
 );

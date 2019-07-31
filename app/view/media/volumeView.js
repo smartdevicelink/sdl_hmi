@@ -63,17 +63,19 @@ SDL.VolumeMenuView = Em.ContainerView.extend(
             templateName: 'icon',
             icon: 'images/climate/minus_ico.png',
             onDown: false,
-            action: 'volumeDownPress',
-            target: 'SDL.MediaController'
+            model: 'currentAudioModel',
+            method: 'volumeDownPress',
+            target: 'SDL.RCModulesController',
+            action: 'action'
           }
         ),
         currentVolume_label: SDL.Label.extend(
           {
             elementId: 'currentVolume_label',
             getVolume: function() {
-              return SDL.MediaController.currentVolume.toString() + '%';
+              return SDL.RCModulesController.currentAudioModel.currentVolume.toString() + '%';
             }.property(
-              'SDL.MediaController.currentVolume'
+              'SDL.RCModulesController.currentAudioModel.currentVolume'
             ),
             contentBinding: 'getVolume'
           }
@@ -85,8 +87,10 @@ SDL.VolumeMenuView = Em.ContainerView.extend(
             templateName: 'icon',
             icon: 'images/climate/plus_ico.png',
             onDown: false,
-            action: 'volumeUpPress',
-            target: 'SDL.MediaController'
+            model: 'currentAudioModel',
+            method: 'volumeUpPress',
+            target: 'SDL.RCModulesController',
+            action: 'action'
           }
         )
       }

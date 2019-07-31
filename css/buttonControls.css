@@ -496,9 +496,34 @@
     margin-top: 10px;
 }
 
-#app_controlButtons .imageModeSelect{
+#app_controlButtons .RCInfo {
     position: absolute;
     width: 150px;
+    height: 30px;
+    top: 310px;
+    left: 1215px;
+    -webkit-transition: 2s;
+    opacity: 0;
+    display: none;
+}
+
+#app_controlButtons .RCInfo.show {
+    opacity: 1;
+    display: block;
+}
+
+#app_controlButtons .RCModulesSelect{
+    position: absolute;
+    width: 175px;
+    height: 30px;
+    top: 20px;
+    color: white;
+    background: #393939;
+}
+
+#app_controlButtons .imageModeSelect{
+    position: absolute;
+    width: 175px;
     height: 30px;
     top: 252px;
     left: 1215px;
@@ -511,6 +536,8 @@
     left: 1215px;
     width: 150px;
 }
+
+
 
 #app_controlButtons .languageSelect {
     position: absolute;

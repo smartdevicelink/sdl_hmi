@@ -32,7 +32,7 @@
  * @version 1.0
  */
 
-SDL.HmiSettingsModel = Em.Object.create({
+SDL.HmiSettingsModel = Em.Object.extend({
 
 /**
  * Display mode of the HMI display
@@ -71,11 +71,11 @@ SDL.HmiSettingsModel = Em.Object.create({
 /*
  * Current temperature Unit used in the HMI (for temperature measuring systems)
  */ 
-  temperatureUnit: SDL.ClimateControlModel.climateControlData.temperatureUnit,
+  temperatureUnit: 'CELSIUS',
 
   getHmiSettingsCapabilities: function() {
     var capabilities = {
-      moduleName: 'HMISettingsControlCapabilities',
+      moduleName: 'HMI Settings Control Module',
       distanceUnitAvailable: true,
       temperatureUnitAvailable: true,
       displayModeUnitAvailable: true
@@ -93,9 +93,9 @@ SDL.HmiSettingsModel = Em.Object.create({
       if(data.temperatureUnit && this.temperatureUnit != data.temperatureUnit) {
         this.set('temperatureUnit',data.temperatureUnit);
         if('CELSIUS' == data.temperatureUnit){
-          SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
+          SDL.RCModulesController.climateModels[this.ID].temperatureUnitCelsiusEnable();
         }else{
-          SDL.ClimateControlModel.temperatureUnitFahrenheitEnable();
+          SDL.RCModulesController.climateModels[this.ID].temperatureUnitFahrenheitEnable();
         }
         result.temperatureUnit = data.temperatureUnit;
       }
@@ -119,5 +119,94 @@ SDL.HmiSettingsModel = Em.Object.create({
       result.displayMode = (time > 7 && time < 20? 'DAY': 'NIGHT');
     }
     return result;
+  },
+
+  /**
+   * @description Function to generate default HMI settings capabilities
+   * supported by HMI
+   * @type {Object}
+   */
+  generateHMISettingsCapabilities: function(element) {
+    var capabilities = this.getHmiSettingsCapabilities();
+    if(element) {
+      var moduleInfo = {
+        'allowMultipleAccess': true,
+        'moduleId': this.UUID,
+        'serviceArea': SDL.deepCopy(element),
+        'location': SDL.deepCopy(element),
+      };
+
+      moduleInfo.location['colspan'] = 1;
+      moduleInfo.location['rowspan'] = 1;
+      moduleInfo.location['levelspan'] = 1;
+      capabilities['moduleInfo'] = moduleInfo;
+    }
+    SDL.remoteControlCapabilities.remoteControlCapability['hmiSettingsControlCapabilities'] = capabilities;
+  },
+
+  /**
+   * @function toggleDisplayMode
+   * @description Callback for sending HMI settings notification with changed displayMode
+   */
+  toggleDisplayMode: function() {
+    var next = SDL.SDLController.nextElement(SDL.RCModulesController.currentHMISettingsModel.displayModeStruct, SDL.RCModulesController.currentHMISettingsModel.displayMode);
+    SDL.RCModulesController.currentHMISettingsModel.set('displayMode',next);
+    var data = {
+      displayMode: SDL.RCModulesController.currentHMISettingsModel.getHmiSettingsControlData().displayMode
+    }
+    this.sendHMISettingsNotification(data);
+  },
+
+  /**
+   * @function toggleDistanceUnit
+   * @description Callback for sending HMI settings notification with changed distanceUnit
+   */
+ toggleDistanceUnit: function() {
+    var next = SDL.SDLController.nextElement(SDL.RCModulesController.currentHMISettingsModel.distanceUnitStruct, SDL.RCModulesController.currentHMISettingsModel.distanceUnit);
+    SDL.RCModulesController.currentHMISettingsModel.set('distanceUnit',next);
+    var data = {
+      distanceUnit: next
+    }
+    this.sendHMISettingsNotification(data);
+  },
+
+/**
+ * @function toggleDistanceUnit
+ * @description Callback for sending HMI settings notification with changed distanceUnit
+ */ 
+ toggleTemperatureUnit: function() {
+    var next = SDL.SDLController.nextElement(SDL.RCModulesController.currentHMISettingsModel.temperatureUnitStruct, SDL.RCModulesController.currentHMISettingsModel.temperatureUnit);
+    SDL.RCModulesController.currentHMISettingsModel.set('temperatureUnit',next);
+    SDL.RCModulesController.climateModels[this.ID].set('climateControlData.temperatureUnit', next);
+    if(next == 'FAHRENHEIT') {
+      SDL.RCModulesController.climateModels[this.ID].temperatureUnitFahrenheitEnable();
+    } else {
+      SDL.RCModulesController.climateModels[this.ID].temperatureUnitCelsiusEnable();
+    }
+    var data = {
+      temperatureUnit: next
+    }
+    this.sendHMISettingsNotification(data);
+  },
+
+  /**
+   * @function sendHMISettingsNotification
+   * @param {Object} data
+   * @description Sending OnInteriorVehicleData notification
+   */
+  sendHMISettingsNotification: function(data){
+    if (Object.keys(data).length > 0) {
+      FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', moduleId: this.UUID, hmiSettingsControlData: data});
+    }
+  },
+
+  /**
+   * @function update
+   * @description updating of all bind values
+   */
+  update: function() {
+    this.set('displayMode', this.displayMode);
+    this.set('distanceUnit', this.distanceUnit);
+    this.set('temperatureUnit', this.temperatureUnit);
   }
 })

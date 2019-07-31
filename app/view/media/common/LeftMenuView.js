@@ -36,6 +36,8 @@ SDL.LeftMenuView = Em.ContainerView.extend(
   {
     /** View ID */
     elementId: 'media_leftmenu',
+
+    modelBinding: 'SDL.RCModulesController.currentAudioModel',
     /** View components */
     childViews: [
       'border',
@@ -45,8 +47,7 @@ SDL.LeftMenuView = Em.ContainerView.extend(
       'bluetoothButton',
       'lineInButton',
       'ipodButton',
-      'sdlButton'
-      
+      'sdlButton'      
     ],
     /** Border decoration */
     border: Em.View.extend(
@@ -68,7 +69,7 @@ SDL.LeftMenuView = Em.ContainerView.extend(
         elementId: 'media_radioButton',
         classNames: 'media-ls-item',
         action: 'turnOnRadio',
-        target: 'SDL.MediaController',
+        target: 'parentView.model',
         icon: 'images/media/ico_fm.png',
         textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_radio')
       }
@@ -84,7 +85,7 @@ SDL.LeftMenuView = Em.ContainerView.extend(
         classNames: 'media-ls-item',
         action: 'turnOnCD',
         icon: 'images/media/ico_cd.png',
-        target: 'SDL.MediaController',
+        target: 'parentView.model',
         textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_cd')
       }
     ),
@@ -100,7 +101,7 @@ SDL.LeftMenuView = Em.ContainerView.extend(
         action: 'turnOnUSB',
         icon: 'images/media/ico_usb.png',
 
-        target: 'SDL.MediaController',
+        target: 'parentView.model',
         textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_usb')
       }
     ),
@@ -114,7 +115,7 @@ SDL.LeftMenuView = Em.ContainerView.extend(
     elementId:'media_bluetoothButton',
     classNames: 'media-ls-item',
     icon: 'images/media/ico_bluetooth.png',
-    target:'SDL.MediaController',
+    target:'parentView.model',
     textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_bluetooth')
 
   }
@@ -129,7 +130,7 @@ SDL.LeftMenuView = Em.ContainerView.extend(
     elementId:'media_lineInButton',
     icon: 'images/media/line_in.png',
     classNames: 'media-ls-item',
-    target:'SDL.MediaController',
+    target:'parentView.model',
     textBinding:Ember.Binding.oneWay('SDL.locale.label.view_media_lineIn')
   }),
 
@@ -143,7 +144,7 @@ SDL.LeftMenuView = Em.ContainerView.extend(
     elementId:'media_ipodButton',
     classNames: 'media-ls-item',
     icon: 'images/media/ico_ipod.png',
-    target:'SDL.MediaController',
+    target:'parentView.model',
     textBinding: Ember.Binding.oneWay('SDL.locale.label.view_media_ipod')
   }
   ),

@@ -54,8 +54,45 @@ SDL.ControlButtons = Em.ContainerView.create({
     'appTTSVRLang',
     'keyboard',
     'imageMode',
-    'imageModeLabel'
+    'imageModeLabel',
+    'RCInfo'
   ],
+
+  RCInfo: Em.ContainerView.extend({
+    elementId: 'RCInfo',
+    classNames: 'RCInfo',
+    classNameBindings: ['this.show:show'],
+    show: false,
+    childViews: [
+      'RCModules',
+      'RCModulesLabel'
+    ],
+    
+    RCModulesLabel: SDL.Label.extend({
+        elementId: 'RCModulesLabel',
+        classNames: 'RCModulesLabel',
+        content: 'Selected seat:'
+      }
+    ),
+
+    RCModules: Em.Select.extend({
+
+        elementId: 'RCModule',
+
+        classNames: 'RCModulesSelect',
+
+        show: function(event) {
+          this._parentView.set('show', true);
+        }.observes('this.content'),
+
+        change: function(event) {
+          SDL.RCModulesController.changeCurrentModule(this.selection);
+        }
+
+      }
+    ),
+  }),
+
   imageModeLabel: SDL.Label.extend({
     elementId: 'imageModeLabel',
     classNames: 'imageModeLabel',

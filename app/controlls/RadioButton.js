@@ -39,6 +39,7 @@ SDL.RadioButton = Em.ContainerView.extend(
       'check'
     ],
     classNames: 'radioButton',
+    clickCallback: null,
     text: '',
     name: '',
     value: '',
@@ -56,6 +57,9 @@ SDL.RadioButton = Em.ContainerView.extend(
         ],
         click: function(event) {
           this.set('parentView.selection', event.target.value);
+          if (this._parentView.clickCallback) {
+            this._parentView.clickCallback(event);
+          }
         },
         checked: function() {
           return this.get('parentView.value') ==

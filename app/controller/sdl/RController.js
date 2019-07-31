@@ -65,7 +65,7 @@ SDL.RController = SDL.SDLController.extend(
       };
 
       if (params.moduleType == 'CLIMATE') {
-        var model = SDL.ClimateController.model;
+        var model = SDL.RCModulesController.currentClimateModel;
         switch (params.buttonName) {
           case 'AC_MAX': {
             model.toggleAcMaxEnable();
@@ -127,16 +127,16 @@ SDL.RController = SDL.SDLController.extend(
       if (params.moduleType == 'RADIO') {
         switch (params.buttonName) {
           case 'VOLUME_UP': {
-            SDL.MediaController.volumeUpPress();
+            SDL.RCModulesController.currentAudioModel.volumeUpPress();
             break;
           }
           case 'VOLUME_DOWN': {
-            SDL.MediaController.volumeDownPress();
+            SDL.RCModulesController.currentAudioModel.volumeDownPress();
             break;
           }
           case 'EJECT': {
-            if (SDL.MediaController.activeState == 'media.player.cd') {
-              SDL.MediaController.ejectCD();
+            if (SDL.RCModulesController.currentAudioModel.activeState == 'media.player.cd') {
+              SDL.RCModulesController.currentAudioModel.ejectCD();
             } else {
               result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
               result_struct.resultInfo = 'CD audio source must be selected';
@@ -145,13 +145,13 @@ SDL.RController = SDL.SDLController.extend(
             break;
           }
           case 'SOURCE': {
-            SDL.MediaController.changeSource();
+            SDL.RCModulesController.currentAudioModel.changeSource();
             break;
           }
           case 'SHUFFLE': {
-            if (SDL.MediaController.activeState == 'media.player.cd' ||
-                SDL.MediaController.activeState == 'media.player.usb') {
-              SDL.MediaController.turnOnShuffle();
+            if (SDL.RCModulesController.currentAudioModel.activeState == 'media.player.cd' ||
+                SDL.RCModulesController.currentAudioModel.activeState == 'media.player.usb') {
+              SDL.RCModulesController.currentAudioModel.turnOnShuffle();
             } else {
               result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
               result_struct.resultInfo = 'CD or USB audio source must be selected';
@@ -160,9 +160,9 @@ SDL.RController = SDL.SDLController.extend(
             break;
           }
           case 'REPEAT': {
-            if (SDL.MediaController.activeState == 'media.player.cd' ||
-                SDL.MediaController.activeState == 'media.player.usb') {
-              SDL.MediaController.repeatPress();
+            if (SDL.RCModulesController.currentAudioModel.activeState == 'media.player.cd' ||
+                SDL.RCModulesController.currentAudioModel.activeState == 'media.player.usb') {
+              SDL.RCModulesController.currentAudioModel.repeatPress();
             } else {
               result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
               result_struct.resultInfo = 'CD or USB audio source must be selected';
@@ -213,45 +213,6 @@ SDL.RController = SDL.SDLController.extend(
         SDL.SDLModel.reverseFunctionalityEnabled,
         SDL.SDLModel.reverseAccessMode
       );
-    },
-
-   toggleDisplayMode: function() {
-      var next = this.nextElement(SDL.HmiSettingsModel.displayModeStruct, SDL.HmiSettingsModel.displayMode);
-      SDL.HmiSettingsModel.set('displayMode',next);
-      var data = {
-        displayMode: SDL.HmiSettingsModel.getHmiSettingsControlData().displayMode
-      }
-      this.sendHMISettingsNotification(data);
-    },
-
-   toggleDistanceUnit: function() {
-      var next = this.nextElement(SDL.HmiSettingsModel.distanceUnitStruct, SDL.HmiSettingsModel.distanceUnit);
-      SDL.HmiSettingsModel.set('distanceUnit',next);
-      var data = {
-        distanceUnit: next
-      }
-      this.sendHMISettingsNotification(data);
-    },
-
-   toggleTemperatureUnit: function() {
-      var next = this.nextElement(SDL.HmiSettingsModel.temperatureUnitStruct, SDL.HmiSettingsModel.temperatureUnit);
-      SDL.HmiSettingsModel.set('temperatureUnit',next);
-      SDL.ClimateControlModel.set('climateControlData.temperatureUnit', next);
-      if(next == 'FAHRENHEIT') {
-        SDL.ClimateControlModel.temperatureUnitFahrenheitEnable();
-      } else {
-        SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
-      }
-      var data = {
-        temperatureUnit: next
-      }
-      this.sendHMISettingsNotification(data);
-    },
-
-   sendHMISettingsNotification: function(data){
-      if (Object.keys(data).length > 0) {
-        FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
-      }
     },
 
    nextElement: function(data, currentItem){
@@ -537,26 +498,36 @@ SDL.RController = SDL.SDLController.extend(
       }else if (request.params.moduleType == 'HMI_SETTINGS') {
         module = 'HMI settings';
       }
-
-      var popUp = SDL.PopUp.create().appendTo('body').popupActivate(
-        'Would you like to grant access for ' + appName +
-        ' application for module ' + module + '?',
-        function(result) {
-          FFW.RC.GetInteriorVehicleDataConsentResponse(request, result);
-        }
-      );
-
-      setTimeout(
-        function() {
-          if (popUp && popUp.active) {
-            popUp.deactivate();
-            FFW.RC.sendError(
-              SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
-              request.method, 'The resource is in use and the driver did not respond in time'
-            );
+      var moduleIds = request.params.moduleIds;
+      var allowed = [];
+      var timedOutSended = false;
+      moduleIds.forEach(element => {
+        var popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+          'Would you like to grant access for ' + appName +
+          ' application for module ' + module + ' and for module id ' + element + '?',
+          function(result) {
+            allowed.push(result);
+            if(allowed.length == moduleIds.length) {
+              FFW.RC.GetInteriorVehicleDataConsentResponse(request, allowed);
+            }
           }
-        }, 9500
-      ); //Magic number is timeout for RC consent popUp
+        );
+        
+        setTimeout(
+          function() {
+            if (popUp && popUp.active) {
+              popUp.deactivate();
+              if(!timedOutSended) {
+                FFW.RC.sendError(
+                  SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
+                  request.method, 'The resource is in use and the driver did not respond in time'
+                );
+                timedOutSended = true;
+              }
+            }
+          }, 9500
+        ); //Magic number is timeout for RC consent popUp
+      });
     },
 
    /**
