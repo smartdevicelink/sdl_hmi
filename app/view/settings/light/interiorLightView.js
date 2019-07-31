@@ -32,4 +32,4 @@ SDL.InteriorLightView = Em.ContainerView.create({
           items: []
     })
 })
-SDL.LightView.initList(SDL.LightModel.interiorLightNameStruct,SDL.InteriorLightView.appList.items);
+SDL.LightView.initList(SDL.RCModulesController.currentLightModel.interiorLightNameStruct,SDL.InteriorLightView.appList.items);

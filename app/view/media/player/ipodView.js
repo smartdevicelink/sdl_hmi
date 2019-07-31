@@ -41,11 +41,11 @@ SDL.ipodView = Em.ContainerView.create(
         elementId: 'media_player_ipod_view_info',
         template: Em.Handlebars.compile(
           '<div class="track-info">' +
-          '<div class="total">{{SDL.MediaController.currentSelectedPlayer.currentTrack}}/{{SDL.MediaController.currentSelectedPlayer.totalTracks}}</div>' +
+          '<div class="total">{{SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.currentTrack}}/{{SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.totalTracks}}</div>' +
           '<div class="divider_o"></div>' +
-          '<div class="title">{{SDL.MediaController.currentSelectedPlayer.data.selectedItem.album}}</div>' +
-          '<div class="track-number" >{{SDL.MediaController.currentSelectedPlayer.data.selectedItem.name}}</div>' +
-          '<div class="time">{{SDL.MediaController.currentSelectedPlayer.formatTimeToString}}</div>' +
+          '<div class="title">{{SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.data.selectedItem.album}}</div>' +
+          '<div class="track-number" >{{SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.data.selectedItem.name}}</div>' +
+          '<div class="time">{{SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.formatTimeToString}}</div>' +
           '<div id="ipod_logo"></div>' +
           '</div>'
         )
@@ -73,7 +73,7 @@ SDL.ipodView = Em.ContainerView.create(
             elementId: 'media_ipod_rightmenu_repeatButton',
             classNames: ['rs-item'],
             onRepeatPressed: function() {
-              switch (SDL.BluetoothModel.player.repeat) {
+              switch (SDL.RCModulesController.currentAudioModel.bluetoothModel.player.repeat) {
                 case 'NONE':
                   return SDL.locale.label.view_media_repeat_no;
                 case 'ALL':
@@ -85,7 +85,7 @@ SDL.ipodView = Em.ContainerView.create(
               'SDL.IpodModel.player.repeat'
             ),
             textBinding: 'onRepeatPressed',
-            target: 'SDL.MediaController',
+            target: 'SDL.RCModulesController.currentAudioModel',
             action: 'repeatPress'
           }
         ),
@@ -95,7 +95,7 @@ SDL.ipodView = Em.ContainerView.create(
             classNames: ['rs-item'],
             onIconChange: function() {
               return SDL.SDLController.getLedIndicatorImagePath(
-                SDL.BluetoothModel.player.shuffle
+                SDL.RCModulesController.currentAudioModel.bluetoothModel.player.shuffle
               );
             }.property(
               'SDL.IpodModel.player.shuffle'
@@ -104,7 +104,7 @@ SDL.ipodView = Em.ContainerView.create(
             textBinding: Ember.Binding.oneWay(
               'SDL.locale.label.view_media_shuffle'
             ),
-            target: 'SDL.MediaController',
+            target: 'SDL.RCModulesController.currentAudioModel',
             action: 'turnOnShuffle',
             onDown: false
           }
@@ -115,7 +115,7 @@ SDL.ipodView = Em.ContainerView.create(
             classNameBindings: ['SDL.helpMode:moreinfoButton_help'],
             elementId: 'media_ipod_rightmenu_moreinfoButton',
             action: 'turnOnMoreInfo',
-            target: 'SDL.MediaController',
+            target: 'SDL.RCModulesController.currentAudioModel',
             classNames: ['rs-item'],
             icon: 'images/media/active_arrow.png',
             textBinding: Ember.Binding.oneWay(
@@ -141,7 +141,7 @@ SDL.ipodView = Em.ContainerView.create(
           {
             elementId: 'media_player_ipod_view_controlls_prev_track_button',
             classNames: ['bc-item-big', 'prev-ipod'],
-            target: 'SDL.MediaController',
+            target: 'SDL.RCModulesController.currentAudioModel',
             action: 'prevTrack',
             icon: 'images/media/ico_prew.png'
           }
@@ -150,12 +150,12 @@ SDL.ipodView = Em.ContainerView.create(
           {
             elementId: 'media_player_ipod_view_controlls_play_button',
             classNames: ['bc-item-big', 'play-ipod'],
-            target: 'SDL.MediaController',
+            target: 'SDL.RCModulesController.currentAudioModel',
             action: 'playTrack',
             /** Define button template */
             template: Ember.Handlebars.compile(
-              '<img class="playIcon hideicon"{{bindAttr class="SDL.MediaController.currentSelectedPlayer.isPlaying:visible"}} src="images/media/ico_pause.png" />' +
-              '<img class="playIcon showicon"{{bindAttr class="SDL.MediaController.currentSelectedPlayer.isPlaying:not-visible"}} src="images/media/ico-play.png" />'
+              '<img class="playIcon hideicon"{{bindAttr class="SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.isPlaying:visible"}} src="images/media/ico_pause.png" />' +
+              '<img class="playIcon showicon"{{bindAttr class="SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.isPlaying:not-visible"}} src="images/media/ico-play.png" />'
             )
           }
         ),
@@ -163,7 +163,7 @@ SDL.ipodView = Em.ContainerView.create(
           {
             elementId: 'media_player_ipod_view_controlls_next_track_button',
             classNames: ['bc-item-big', 'next-ipod'],
-            target: 'SDL.MediaController',
+            target: 'SDL.RCModulesController.currentAudioModel',
             action: 'nextTrack',
             icon: 'images/media/ico_next.png'
           }

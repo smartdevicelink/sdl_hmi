@@ -250,42 +250,44 @@ var StateManager = Em.StateManager.extend(
             },
             radio: Em.State.create(
               {
+                modelBinding: 'SDL.RCModulesController',
                 enter: function() {
-                  SDL.MediaController.set('activeState', SDL.States.nextState);
+                  this.model.currentAudioModel.set('activeState', SDL.States.nextState);
                   if (!FFW.RC.isSetVdInProgress) {
-                    SDL.RadioModel.sendAudioNotification();
+                    this.model.currentRadioModel.sendAudioNotification();
                   }
-                  if (!SDL.RadioModel.radioControlStruct.radioEnable) {
-                    SDL.RadioModel.radioEnableKeyPress();
+                  if (!this.model.currentRadioModel.radioControlStruct.radioEnable) {
+                    this.model.currentRadioModel.radioEnableKeyPress();
                   }
                   this._super();
                 },
                 exit: function() {
-                  SDL.MediaController.deactivateCD();
-                  SDL.MediaController.currentSelectedPlayer.pause();
-                  SDL.MediaController.deactivateUSB();
-                  SDL.MediaController.deactivateBluetooth();
-                  SDL.MediaController.deactivateLineIn();
-                  SDL.MediaController.deactivateIPod();
+                  this.model.currentAudioModel.deactivateCD();
+                  this.model.currentAudioModel.currentSelectedPlayer.pause();
+                  this.model.currentAudioModel.deactivateUSB();
+                  this.model.currentAudioModel.deactivateBluetooth();
+                  this.model.currentAudioModel.deactivateLineIn();
+                  this.model.currentAudioModel.deactivateIPod();
                   this._super();
                 }
               }
             ),
             cd: Em.State.create(
               {
+                modelBinding: 'SDL.RCModulesController',
                 enter: function() {
-                  SDL.MediaController.set('activeState', SDL.States.nextState);
+                  this.model.currentAudioModel.set('activeState', SDL.States.nextState);
                   if (!FFW.RC.isSetVdInProgress) {
-                    SDL.CDModel.sendAudioNotification();
+                    this.model.currentAudioModel.cdModel.sendAudioNotification();
                   }
                   this._super();
                 },
                 exit: function() {
-                  SDL.MediaController.deactivateRadio();
-                  SDL.MediaController.deactivateUSB();
-                  SDL.MediaController.deactivateBluetooth();
-                  SDL.MediaController.deactivateLineIn();
-                  SDL.MediaController.deactivateIPod();
+                  this.model.currentAudioModel.deactivateRadio();
+                  this.model.currentAudioModel.deactivateUSB();
+                  this.model.currentAudioModel.deactivateBluetooth();
+                  this.model.currentAudioModel.deactivateLineIn();
+                  this.model.currentAudioModel.deactivateIPod();
                   
                   this._super();
                 },
@@ -296,20 +298,21 @@ var StateManager = Em.StateManager.extend(
             ),
             usb: Em.State.create(
               {
+                modelBinding: 'SDL.RCModulesController',
                 enter: function() {
-                  SDL.MediaController.set('activeState', SDL.States.nextState);
+                  this.model.currentAudioModel.set('activeState', SDL.States.nextState);
                   if (!FFW.RC.isSetVdInProgress) {
-                    SDL.USBModel.sendAudioNotification();
+                    this.model.currentAudioModel.usbModel.sendAudioNotification();
                   }
                   this._super();
                 },
                 exit: function() {
                   this._super();
-                  SDL.MediaController.deactivateRadio();
-                  SDL.MediaController.deactivateCD();
-                  SDL.MediaController.deactivateBluetooth();
-                  SDL.MediaController.deactivateLineIn();
-                  SDL.MediaController.deactivateIPod();
+                  this.model.currentAudioModel.deactivateRadio();
+                  this.model.currentAudioModel.deactivateCD();
+                  this.model.currentAudioModel.deactivateBluetooth();
+                  this.model.currentAudioModel.deactivateLineIn();
+                  this.model.currentAudioModel.deactivateIPod();
                 },
                 moreinfo: Em.State.create(
                   {
@@ -321,22 +324,23 @@ var StateManager = Em.StateManager.extend(
 
             bluetooth: Em.State.create(
             {
+              modelBinding: 'SDL.RCModulesController',
               enter:function()
               {
-                SDL.MediaController.set('activeState', SDL.States.nextState);
+                this.model.currentAudioModel.set('activeState', SDL.States.nextState);
                 if (!FFW.RC.isSetVdInProgress) {
-                  SDL.BluetoothModel.sendAudioNotification();
+                  this.model.currentAudioModel.bluetoothModel.sendAudioNotification();
                 }
                 this._super();
               },
               exit:function()
               {
                 this._super();
-                SDL.MediaController.deactivateRadio();
-                SDL.MediaController.deactivateCD();
-                SDL.MediaController.deactivateUSB();
-                SDL.MediaController.deactivateLineIn();
-                SDL.MediaController.deactivateIPod();
+                this.model.currentAudioModel.deactivateRadio();
+                this.model.currentAudioModel.deactivateCD();
+                this.model.currentAudioModel.deactivateUSB();
+                this.model.currentAudioModel.deactivateLineIn();
+                this.model.currentAudioModel.deactivateIPod();
               },
               moreinfo:Em.State.create(
               {}
@@ -345,22 +349,23 @@ var StateManager = Em.StateManager.extend(
         ),
             lineIn: Em.State.create(
             {
+              modelBinding: 'SDL.RCModulesController',
               enter:function()
               {
-                SDL.MediaController.set('activeState', SDL.States.nextState);
+                this.model.currentAudioModel.set('activeState', SDL.States.nextState);
                 if (!FFW.RC.isSetVdInProgress) {
-                  SDL.LineInModel.sendAudioNotification();
+                  this.model.currentAudioModel.lineInModel.sendAudioNotification();
                 }
                 this._super();
               },
               exit:function()
               {
                 this._super();
-                SDL.MediaController.deactivateRadio();
-                SDL.MediaController.deactivateCD();
-                SDL.MediaController.deactivateUSB();
-                SDL.MediaController.deactivateBluetooth();
-                SDL.MediaController.deactivateIPod();
+                this.model.currentAudioModel.deactivateRadio();
+                this.model.currentAudioModel.deactivateCD();
+                this.model.currentAudioModel.deactivateUSB();
+                this.model.currentAudioModel.deactivateBluetooth();
+                this.model.currentAudioModel.deactivateIPod();
               },
               moreinfo:Em.State.create(
               {}
@@ -370,22 +375,23 @@ var StateManager = Em.StateManager.extend(
          
             ipod: Em.State.create(
             {
+              modelBinding: 'SDL.RCModulesController',
               enter:function()
               {
-                SDL.MediaController.set('activeState', SDL.States.nextState);
+                this.model.currentAudioModel.set('activeState', SDL.States.nextState);
                 if (!FFW.RC.isSetVdInProgress) {
-                  SDL.IPodModel.sendAudioNotification();
+                  this.model.currentAudioModel.ipodModel.sendAudioNotification();
                 }
                 this._super();
               },
               exit:function()
               {
                 this._super();
-                SDL.MediaController.deactivateRadio();
-                SDL.MediaController.deactivateCD();
-                SDL.MediaController.deactivateUSB();
-                SDL.MediaController.deactivateLineIn();
-                SDL.MediaController.deactivateBluetooth();
+                this.model.currentAudioModel.deactivateRadio();
+                this.model.currentAudioModel.deactivateCD();
+                this.model.currentAudioModel.deactivateUSB();
+                this.model.currentAudioModel.deactivateLineIn();
+                this.model.currentAudioModel.deactivateBluetooth();
               },
             }
           ),
@@ -394,21 +400,28 @@ var StateManager = Em.StateManager.extend(
           
         sdlmedia: Em.State.create(
           {
+            modelBinding: 'SDL.RCModulesController',
             enter: function() {
-              SDL.MediaController.deactivateRadio();
-              SDL.MediaController.deactivateUSB();
-              SDL.MediaController.deactivateCD();
-              SDL.MediaController.lastRadioControlStruct.source='MOBILE_APP';
-              var data = SDL.MediaController.getAudioControlData();
-              FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData:{'source':data.source}});
+              this.model.currentAudioModel.deactivateRadio();
+              this.model.currentAudioModel.deactivateUSB();
+              this.model.currentAudioModel.deactivateCD();
+              this.model.currentAudioModel.lastRadioControlStruct.source='MOBILE_APP';
+              var data = this.model.currentAudioModel.getAudioControlData();
               if (SDL.SDLModel.data.mediaPlayerActive) {
                 SDL.SDLController.onEventChanged('player', false);
               }
-              SDL.SDLController.activateTBT();
-
-              SDL.MediaController.set('activeState',
-                SDL.States.nextState);
+              SDL.SDLController.activateTBT();              
+              this.model.currentAudioModel.set('activeState',
+              SDL.States.nextState);
               this._super();
+              
+              if(FFW.RC.OnIVDNotificationWasSent) {
+                FFW.RC.OnIVDNotificationWasSent = false;
+                return;
+              }
+              var moduleUUID = this.model.currentAudioModel.UUID;
+              FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', moduleId: moduleUUID, 
+              audioControlData:{'source':data.source}});
             },
             exit: function() {
               this._super();
@@ -422,17 +435,18 @@ var StateManager = Em.StateManager.extend(
     ),
     navigationApp: Em.State.create(
       {
+        modelBinding: 'SDL.RCModulesController',
         baseNavigation: Em.State.create(
           {}
         ),
         enter: function() {
           if (SDL.SDLModel.data.mediaPlayerActive) {
             SDL.SDLController.onEventChanged('player', false);
-            SDL.MediaController.deactivateCD();
-            SDL.MediaController.deactivateUSB();
-            SDL.MediaController.deactivateRadio();
+            this.model.currentAudioModel.deactivateCD();
+            this.model.currentAudioModel.deactivateUSB();
+            this.model.currentAudioModel.deactivateRadio();
           }
-          SDL.MediaController.set('activeState',
+          this.model.currentAudioModel.set('activeState',
             SDL.States.nextState);
           this._super();
         },

@@ -31,4 +31,4 @@ SDL.LocationLightView = Em.ContainerView.create({
           items: []
     })
 })
-SDL.LightView.initList(SDL.LightModel.locationLightNameStruct,SDL.LocationLightView.appList.items);
+SDL.LightView.initList(SDL.RCModulesController.currentLightModel.locationLightNameStruct,SDL.LocationLightView.appList.items);

@@ -51,7 +51,7 @@ SDL.SeatView = Em.ContainerView.create({
         'massageMode',
         'cushionFirmness'
     ],
-
+    
     heating: Em.ContainerView.create({
         elementId: 'heating',
         classNames: 'in_seat_heating_view', 
@@ -79,12 +79,12 @@ SDL.SeatView = Em.ContainerView.create({
             enableSelect:  Em.Select.extend({
                 elementId: 'heating_enableSelect',
                 classNames: 'enableSelect',
-                contentBinding: 'SDL.SeatModel.enableStruct',
-                valueBinding: 'SDL.SeatModel.heatingEnableData',
+                contentBinding: 'SDL.RCModulesController.currentSeatModel.enableStruct',
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.heatingEnableData',
                 change:function(){
-                    SDL.SeatModel.set('tempSeatControlData.heatingEnabled',
-                (SDL.SeatModel.heatingEnableData=='OFF')? true:false);
-                SDL.SeatModel.update();
+                    SDL.RCModulesController.currentSeatModel.set('tempSeatControlData.heatingEnabled',
+                (SDL.RCModulesController.currentSeatModel.heatingEnableData=='OFF')? true:false);
+                SDL.RCModulesController.currentSeatModel.update();
                 }
             })
         }),
@@ -108,7 +108,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'levelInput',
                 classNames: 'levelInput',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.heatingLevel',      
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.heatingLevel',      
             })
         })
     }),
@@ -140,12 +140,12 @@ SDL.SeatView = Em.ContainerView.create({
             enableSelect:  Em.Select.extend({
                 elementId: 'cooling_enableSelect',
                 classNames: 'enableSelect',
-                contentBinding: 'SDL.SeatModel.enableStruct',
-                valueBinding: 'SDL.SeatModel.coolingEnabledData',
+                contentBinding: 'SDL.RCModulesController.currentSeatModel.enableStruct',
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.coolingEnabledData',
                 change:function(){
-                    SDL.SeatModel.set('tempSeatControlData.coolingEnabled',
-                (SDL.SeatModel.coolingEnabledData=='OFF')? true:false);
-                SDL.SeatModel.update();
+                    SDL.RCModulesController.currentSeatModel.set('tempSeatControlData.coolingEnabled',
+                (SDL.RCModulesController.currentSeatModel.coolingEnabledData=='OFF')? true:false);
+                SDL.RCModulesController.currentSeatModel.update();
                 }
             })
         }),
@@ -169,7 +169,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'coolingLevelInput',
                 classNames: 'levelInput',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.coolingLevel'     
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.coolingLevel'     
             })
         })  
     }),
@@ -189,16 +189,16 @@ SDL.SeatView = Em.ContainerView.create({
         ],
 
         rm: function(item){
-            var length = SDL.SeatModel.tempSeatControlData.massageCushionFirmness.length;
+            var length = SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.length;
             if(length < 2){
                 return;
             }
             for(var i = item; i < length - 1; ++i){
-                SDL.SeatModel.tempSeatControlData.massageCushionFirmness[i] = 
-                    SDL.SeatModel.tempSeatControlData.massageCushionFirmness[i+1];
+                SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness[i] = 
+                    SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness[i+1];
             }
-            SDL.SeatModel.tempSeatControlData.massageCushionFirmness.pop();
-            SDL.SeatModel.update();        
+            SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.pop();
+            SDL.RCModulesController.currentSeatModel.update();        
         },
 
         addButton: SDL.Button.extend({
@@ -208,11 +208,11 @@ SDL.SeatView = Em.ContainerView.create({
               'addButton'
               ],
               action: function(){
-                if(SDL.SeatModel.tempSeatControlData.massageCushionFirmness.length > 4){
+                if(SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.length > 4){
                     return;
                 }
-                SDL.SeatModel.tempSeatControlData.massageCushionFirmness.push(SDL.SeatModel.massageCushionFirmness);
-                SDL.SeatModel.update();
+                SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.push(SDL.RCModulesController.currentSeatModel.massageCushionFirmness);
+                SDL.RCModulesController.currentSeatModel.update();
               },
               text: 'Add',
               onDown: false,
@@ -229,7 +229,7 @@ SDL.SeatView = Em.ContainerView.create({
             classNames: 'in_seat_cushionFirmnes_view',
 
             classNameBindings: [
-                'SDL.SeatModel.massageCushionFirmness0:active_state:inactive_state'
+                'SDL.RCModulesController.currentSeatModel.massageCushionFirmness0:active_state:inactive_state'
             ],
        
             childViews: [
@@ -270,8 +270,8 @@ SDL.SeatView = Em.ContainerView.create({
                 cushionSelect: Em.Select.create({
                     elementId: 'cushionSelect',
                     classNames: 'cushionSelect',
-                    contentBinding: 'SDL.SeatModel.massageCushionStruct',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.0.cushion'
+                    contentBinding: 'SDL.RCModulesController.currentSeatModel.massageCushionStruct',
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.0.cushion'
                 })
             }),
 
@@ -294,7 +294,7 @@ SDL.SeatView = Em.ContainerView.create({
                     elementId: 'firmnesInput',
                     classNames: 'firmnesInput',
                     tupe: 'integer',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.0.firmness' 
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.0.firmness' 
                 })
             })
         }),
@@ -304,7 +304,7 @@ SDL.SeatView = Em.ContainerView.create({
             classNames: 'in_seat_cushionFirmnes_view',
             
             classNameBindings: [
-                'SDL.SeatModel.massageCushionFirmness1:active_state:inactive_state'
+                'SDL.RCModulesController.currentSeatModel.massageCushionFirmness1:active_state:inactive_state'
             ],
             
             childViews: [
@@ -348,8 +348,8 @@ SDL.SeatView = Em.ContainerView.create({
                 cushionSelect1: Em.Select.create({
                     elementId: 'cushionSelect1',
                     classNames: 'cushionSelect',
-                    contentBinding: 'SDL.SeatModel.massageCushionStruct',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.1.cushion'
+                    contentBinding: 'SDL.RCModulesController.currentSeatModel.massageCushionStruct',
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.1.cushion'
                 })
             }),
 
@@ -372,7 +372,7 @@ SDL.SeatView = Em.ContainerView.create({
                     elementId: 'massageCushionFirmness1_firmnesInput',
                     classNames: 'firmnesInput',
                     tupe: 'integer',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.1.firmness' 
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.1.firmness' 
                 })
             })
         }),
@@ -382,7 +382,7 @@ SDL.SeatView = Em.ContainerView.create({
             classNames: 'in_seat_cushionFirmnes_view',
             
             classNameBindings: [
-                'SDL.SeatModel.massageCushionFirmness2:active_state:inactive_state'
+                'SDL.RCModulesController.currentSeatModel.massageCushionFirmness2:active_state:inactive_state'
             ],
        
             
@@ -427,8 +427,8 @@ SDL.SeatView = Em.ContainerView.create({
                 cushionSelect2: Em.Select.create({
                     elementId: 'cushionSelect2',
                     classNames: 'cushionSelect',
-                    contentBinding: 'SDL.SeatModel.massageCushionStruct',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.2.cushion'
+                    contentBinding: 'SDL.RCModulesController.currentSeatModel.massageCushionStruct',
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.2.cushion'
                 })
             }),
             firmnes:Em.ContainerView.create({
@@ -450,7 +450,7 @@ SDL.SeatView = Em.ContainerView.create({
                     elementId: 'massageCushionFirmness2_firmnesInput',
                     classNames: 'firmnesInput',
                     tupe: 'integer',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.2.firmness' 
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.2.firmness' 
                 })
             })
         }),
@@ -459,7 +459,7 @@ SDL.SeatView = Em.ContainerView.create({
             classNames: 'in_seat_cushionFirmnes_view',
             
             classNameBindings: [
-                'SDL.SeatModel.massageCushionFirmness3:active_state:inactive_state'
+                'SDL.RCModulesController.currentSeatModel.massageCushionFirmness3:active_state:inactive_state'
             ],
        
             childViews: [
@@ -503,8 +503,8 @@ SDL.SeatView = Em.ContainerView.create({
                 cushionSelect3: Em.Select.create({
                     elementId: 'cushionSelect3',
                     classNames: 'cushionSelect',
-                    contentBinding: 'SDL.SeatModel.massageCushionStruct',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.3.cushion'
+                    contentBinding: 'SDL.RCModulesController.currentSeatModel.massageCushionStruct',
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.3.cushion'
                 })
             }),
 
@@ -527,7 +527,7 @@ SDL.SeatView = Em.ContainerView.create({
                     elementId: 'massageCushionFirmness3_firmnesInput',
                     classNames: 'firmnesInput',
                     tupe: 'integer',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.3.firmness' 
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.3.firmness' 
                 })
             })
         }),
@@ -537,7 +537,7 @@ SDL.SeatView = Em.ContainerView.create({
             classNames: 'in_seat_cushionFirmnes_view',
             
             classNameBindings: [
-                'SDL.SeatModel.massageCushionFirmness4:active_state:inactive_state'
+                'SDL.RCModulesController.currentSeatModel.massageCushionFirmness4:active_state:inactive_state'
             ],
 
             childViews: [
@@ -580,8 +580,8 @@ SDL.SeatView = Em.ContainerView.create({
                 cushionSelect4: Em.Select.create({
                     elementId: 'cushionSelect4',
                     classNames: 'cushionSelect',
-                    contentBinding: 'SDL.SeatModel.massageCushionStruct',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.4.cushion'
+                    contentBinding: 'SDL.RCModulesController.currentSeatModel.massageCushionStruct',
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.4.cushion'
                 })
             }),
 
@@ -604,7 +604,7 @@ SDL.SeatView = Em.ContainerView.create({
                     elementId: 'massageCushionFirmness4_firmnesInput',
                     classNames: 'firmnesInput',
                     tupe: 'integer',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageCushionFirmness.4.firmness' 
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageCushionFirmness.4.firmness' 
                 })
             })
         })
@@ -650,7 +650,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'horisontalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.horizontalPosition'      
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.horizontalPosition'      
             })
         }),
 
@@ -673,7 +673,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'verticalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.verticalPosition'      
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.verticalPosition'      
             })
         }),
 
@@ -696,7 +696,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'seatFrontVerticalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.frontVerticalPosition',      
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.frontVerticalPosition',      
             })
         }),
 
@@ -719,7 +719,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'seatBackVerticalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.backVerticalPosition'      
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.backVerticalPosition'      
             })
         }),
 
@@ -742,7 +742,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'headSupportHorizontalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.headSupportHorizontalPosition'            
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.headSupportHorizontalPosition'            
             })
         }),
 
@@ -765,7 +765,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'headSupportVerticalInput',
                 classNames: 'input',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.headSupportVerticalPosition'      
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.headSupportVerticalPosition'      
             })
         })
     }),
@@ -789,7 +789,7 @@ SDL.SeatView = Em.ContainerView.create({
             elementId: 'backTiltAngleInput',
             classNames: 'input',
             tupe: 'integer',
-            valueBinding: 'SDL.SeatModel.tempSeatControlData.backTiltAngle'               
+            valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.backTiltAngle'               
         })
     }),
 
@@ -801,13 +801,44 @@ SDL.SeatView = Em.ContainerView.create({
             'memoryLabel',
             'memoryId',
             'label',
-            'action'
+            'action',
+            'applyMemory',
+            'memoryInfo',
+            
         ],
-
+        memoryInfo: Em.ContainerView.create({
+            elementId: 'memoryInfo',
+            classNames: 'memoryInfo',
+            childViews: [
+                'createdMemSlotLabel',
+                'createdMemStringLabel'
+            ],
+            createdMemStringLabel: SDL.Label.extend({
+                elementId: 'createdMemStringLabel',
+                classNames: 'createdMemStringLabel',
+                contentBinding: 'SDL.RCModulesController.currentSeatModel.createdMemory'
+            }),
+            createdMemSlotLabel: SDL.Label.extend({
+                elementId: 'createdMemSlotLabel',
+                classNames: 'createdMemSlotLabel',
+                content: 'Created memory slots: '
+            }),
+        }),
+        applyMemory: SDL.Button.create({
+            classNames: 'applyMemory',
+            elementId: 'applyMemory',
+            text: 'Apply',
+            onDown: false,
+            model: 'currentSeatModel',
+            target: 'SDL.RCModulesController',
+            method: 'applyMemory',
+            action: 'action'
+        }),
         memoryLabel: SDL.Label.extend({
             elementId: 'memoryLabel',
             classNames: 'memoryLabel',
-            content: 'Memory action'
+            content: 'Memory action',
+            buttonAction: true
         }),
 
         memoryId: Em.ContainerView.create({
@@ -828,8 +859,8 @@ SDL.SeatView = Em.ContainerView.create({
             inputId: Ember.TextField.extend({
                 elementId: 'inputId',
                 classNames: 'inputId',
-                tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.id'               
+                type: 'Number',
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.memory.id'               
             })
         }),
         label: Em.ContainerView.create({
@@ -851,7 +882,7 @@ SDL.SeatView = Em.ContainerView.create({
                 elementId: 'inputLabel',
                 classNames: 'inputLabel',
                 tupe: 'integer',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.label'               
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.memory.label'               
             })
         }),
 
@@ -873,64 +904,8 @@ SDL.SeatView = Em.ContainerView.create({
             actionSelect: Em.Select.extend({
                 elementId: 'actionSelect',
                 classNames: 'actionSelect',
-                contentBinding: 'SDL.SeatModel.seatMemoryActionTypeStruct',
-                valueBinding: 'SDL.SeatModel.tempSeatControlData.memory.action',
-                change:function(){
-                    switch(this.selection){
-                        case 'SAVE':
-                        if(SDL.SeatModel.tempSeatControlData.memory.id>0 &
-                            SDL.SeatModel.tempSeatControlData.memory.id<=10){
-                        if(SDL.SeatModel.ID=='DRIVER'){
-                            SDL.SeatModel.set('seatControlData',
-                                SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]
-                            );
-                            SDL.SeatModel.applySettings();
-
-                            SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]=
-                                SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
-                            return;
-                        }
-                        if(SDL.SeatModel.ID=='FRONT_PASSENGER'){
-                            SDL.SeatModel.set('seatControlData',
-                                SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]
-                            );
-                            SDL.SeatModel.applySettings();
-
-                            SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]=
-                                SDL.deepCopy(SDL.SeatModel.tempSeatControlData);
-                            return;
-                        }
-                        }
-                        break;
-                        case 'RESTORE':
-                        if(SDL.SeatModel.ID=='DRIVER'){
-                            if(SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]){
-                                SDL.SeatModel.set('seatControlData',
-                                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData)
-                                );
-                                SDL.SeatModel.set('tempSeatControlData',
-                                    SDL.SeatModel.driverMemory[SDL.SeatModel.tempSeatControlData.memory.id]
-                                );
-                                SDL.SeatModel.update();
-                                SDL.SeatModel.applySettings();
-                            }
-                        }
-                        if(SDL.SeatModel.ID=='FRONT_PASSENGER'){
-                            if(SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]){
-                                SDL.SeatModel.set('seatControlData',
-                                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData)
-                                );
-                                SDL.SeatModel.set('tempSeatControlData',
-                                    SDL.SeatModel.passengerMemory[SDL.SeatModel.tempSeatControlData.memory.id]
-                                );
-                                SDL.SeatModel.update();
-                                SDL.SeatModel.applySettings();
-                            }
-                        }
-                        break;
-                        case 'NONE':break;
-                    }
-                }
+                contentBinding: 'SDL.RCModulesController.currentSeatModel.seatMemoryActionTypeStruct',
+                valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.memory.action'              
             })
         }),
     }),
@@ -941,8 +916,10 @@ SDL.SeatView = Em.ContainerView.create({
 
             text: 'Set',
             onDown: false,
-            target: 'SDL.SeatModel',
-            action: 'applySettings'
+            model: 'currentSeatModel',
+            method: 'applySettings',
+            target: 'SDL.RCModulesController',
+            action: 'action'
     }),
 
     massageEnable: Em.ContainerView.extend({
@@ -963,12 +940,12 @@ SDL.SeatView = Em.ContainerView.create({
         select: Em.Select.create({
             elementId: 'massageEnable_enableSelect',
             classNames: 'massageEnable_enableSelect',
-            contentBinding: 'SDL.SeatModel.enableStruct',
-            valueBinding: 'SDL.SeatModel.massageEnabledData',
+            contentBinding: 'SDL.RCModulesController.currentSeatModel.enableStruct',
+            valueBinding: 'SDL.RCModulesController.currentSeatModel.massageEnabledData',
             change:function(){
-                SDL.SeatModel.set('tempSeatControlData.massageEnabled',
-            (SDL.SeatModel.massageEnabledData=='OFF')? true:false);
-            SDL.SeatModel.update();
+                SDL.RCModulesController.currentSeatModel.set('tempSeatControlData.massageEnabled',
+            (SDL.RCModulesController.currentSeatModel.massageEnabledData=='OFF')? true:false);
+            SDL.RCModulesController.currentSeatModel.update();
             }
         })
     }),    
@@ -978,7 +955,7 @@ SDL.SeatView = Em.ContainerView.create({
 
         childViews: [
             'label',
-            'select'
+            'moduleName'
         ],
         label: SDL.Label.extend({
             elementId: 'idlabel',
@@ -986,29 +963,10 @@ SDL.SeatView = Em.ContainerView.create({
             content: 'ID'
         }),
 
-        select: Em.Select.create({
-            elementId: 'idSelect',
-            classNames: 'idSelect',
-            contentBinding: 'SDL.SeatModel.supportedSeatStruct',
-            valueBinding: 'SDL.SeatModel.ID',
-            change: function(){
-                if(SDL.SeatModel.ID!='DRIVER'){
-                    SDL.SeatModel.set('temp.1',
-                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData));
-                    SDL.SeatModel.set('tempSeatControlData',
-                    SDL.deepCopy(SDL.SeatModel.temp[0]));
-                    SDL.SeatModel.update();
-                    return;
-                }
-                if(SDL.SeatModel.ID!='FRONT_PASSENGER'){
-                    SDL.SeatModel.set('temp.0',
-                    SDL.deepCopy(SDL.SeatModel.tempSeatControlData));
-                    SDL.SeatModel.tempSeatControlData=
-                    SDL.deepCopy(SDL.SeatModel.temp[1]);
-                    SDL.SeatModel.update();
-                    return;
-                }
-            }
+        moduleName: SDL.Label.create({
+            elementId: 'seatModelCurrent',
+            classNames: 'seatModelCurrent',
+            contentBinding: 'SDL.RCModulesController.getSeatCurrentID'
         })
     }),
 
@@ -1024,16 +982,16 @@ SDL.SeatView = Em.ContainerView.create({
         ],
 
         rm: function(item){
-            var length = SDL.SeatModel.tempSeatControlData.massageMode.length;
+            var length = SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.length;
             if(length < 2){
                 return;
             }
             for(var i = item; i < length - 1; ++i){
-                SDL.SeatModel.tempSeatControlData.massageMode[i] = 
-                    SDL.SeatModel.tempSeatControlData.massageMode[i+1];
+                SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode[i] = 
+                    SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode[i+1];
             }
-            SDL.SeatModel.tempSeatControlData.massageMode.pop();
-            SDL.SeatModel.update();        
+            SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.pop();
+            SDL.RCModulesController.currentSeatModel.update();        
         },
 
         addButton: SDL.Button.extend({
@@ -1045,11 +1003,11 @@ SDL.SeatView = Em.ContainerView.create({
             ],
 
             action: function(){
-                if(SDL.SeatModel.tempSeatControlData.massageMode.length > 2){
+                if(SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.length > 2){
                     return;
                 }
-                SDL.SeatModel.tempSeatControlData.massageMode.push(SDL.SeatModel.massageModeData);
-                SDL.SeatModel.update();
+                SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.push(SDL.RCModulesController.currentSeatModel.massageModeData);
+                SDL.RCModulesController.currentSeatModel.update();
             },
 
             text: 'Add',
@@ -1067,7 +1025,7 @@ SDL.SeatView = Em.ContainerView.create({
             classNames: 'in_seat_massageMode_view',
 
             classNameBindings: [
-                'SDL.SeatModel.massageMode0:active_state:inactive_state'
+                'SDL.RCModulesController.currentSeatModel.massageMode0:active_state:inactive_state'
             ],
 
             childViews: [
@@ -1111,8 +1069,8 @@ SDL.SeatView = Em.ContainerView.create({
                 select: Em.Select.create({
                     elementId: 'zone_select',
                     classNames: 'zone_select',
-                    contentBinding: 'SDL.SeatModel.massageZoneStruct',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageMode.0.massageZone'
+                    contentBinding: 'SDL.RCModulesController.currentSeatModel.massageZoneStruct',
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.0.massageZone'
                 })
             }),
 
@@ -1134,8 +1092,8 @@ SDL.SeatView = Em.ContainerView.create({
                 select: Em.Select.create({
                     elementId: 'mode_select',
                     classNames: 'mode_select',
-                    contentBinding: 'SDL.SeatModel.massageModeStruct',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageMode.0.massageMode'
+                    contentBinding: 'SDL.RCModulesController.currentSeatModel.massageModeStruct',
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.0.massageMode'
                 })
             })
         }),
@@ -1145,7 +1103,7 @@ SDL.SeatView = Em.ContainerView.create({
             classNames: 'in_seat_massageMode_view',
 
             classNameBindings: [
-                'SDL.SeatModel.massageMode1:active_state:inactive_state'
+                'SDL.RCModulesController.currentSeatModel.massageMode1:active_state:inactive_state'
             ],
 
             childViews: [
@@ -1189,8 +1147,8 @@ SDL.SeatView = Em.ContainerView.create({
                 select: Em.Select.create({
                     elementId: 'massageMode1_zone_select',
                     classNames: 'zone_select',
-                    contentBinding: 'SDL.SeatModel.massageZoneStruct',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageMode.1.massageZone'
+                    contentBinding: 'SDL.RCModulesController.currentSeatModel.massageZoneStruct',
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.1.massageZone'
                 })
             }),
 
@@ -1212,8 +1170,8 @@ SDL.SeatView = Em.ContainerView.create({
                 select: Em.Select.create({
                     elementId: 'massageMode1_mode_select',
                     classNames: 'mode_select',
-                    contentBinding: 'SDL.SeatModel.massageModeStruct',
-                    valueBinding: 'SDL.SeatModel.tempSeatControlData.massageMode.1.massageMode'
+                    contentBinding: 'SDL.RCModulesController.currentSeatModel.massageModeStruct',
+                    valueBinding: 'SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.1.massageMode'
                 })
             })
         })

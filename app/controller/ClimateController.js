@@ -33,7 +33,7 @@
 
 SDL.ClimateController = Em.Object.create(
   {
-    modelBinding: 'SDL.ClimateControlModel',
+    modelBinding: 'SDL.RCModulesController.currentClimateModel',
     getTemperatureStruct: function(type, value) {
       var t = (type == 'CELSIUS' ? value : value * 9 / 5 + 32);
       var result = {
