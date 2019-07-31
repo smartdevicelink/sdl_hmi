@@ -297,13 +297,13 @@ FFW.UI = FFW.RPCObserver.create(
               SDL.InteractionChoicesView.deactivate('ABORTED');
             } else if (typeID === 12 && SDL.AlertPopUp.active
                && (targetID === undefined || targetID === SDL.AlertPopUp.cancelID)) {
-              SDL.AlertPopUp.deactivate();
+              SDL.AlertPopUp.deactivate("ABORTED");
             } else if (typeID === 25 && SDL.ScrollableMessage.active
                && (targetID === undefined || targetID === SDL.ScrollableMessage.cancelID)) {
               SDL.ScrollableMessage.deactivate(true);
             } else if (typeID === 26 && SDL.SliderView.active
                && (targetID === undefined || targetID === SDL.SliderView.cancelID)) {
-              SDL.SliderView.deactivate(false);
+              SDL.SliderView.deactivate();
             } else {
               this.sendError(SDL.SDLModel.data.resultCode.IGNORED,
                 request.id, request.method,
