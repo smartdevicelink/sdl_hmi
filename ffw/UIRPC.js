@@ -294,7 +294,10 @@ FFW.UI = FFW.RPCObserver.create(
 
             if (typeID === 10 && (SDL.InteractionChoicesView.active || SDL.Keyboard.active)
                && (targetID === undefined || targetID === SDL.InteractionChoicesView.cancelID)) {
-              SDL.Keyboard.deactivate();
+              if (SDL.Keyboard.active) {
+                SDL.Keyboard.deactivate();
+                this.OnKeyboardInput('', 'ENTRY_ABORTED');
+              }
               SDL.InteractionChoicesView.deactivate('ABORTED');
             } else if (typeID === 12 && SDL.AlertPopUp.active
                && (targetID === undefined || targetID === SDL.AlertPopUp.cancelID)) {
