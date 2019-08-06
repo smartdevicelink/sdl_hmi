@@ -20,6 +20,7 @@ SDL.usbView = Em.ContainerView.create(
     childViews: [
       'controlls',
       'info',
+      'audioModuleUUID',
       'rightmenu'
     ],
     
@@ -38,6 +39,12 @@ SDL.usbView = Em.ContainerView.create(
         )
       }
     ),
+
+    audioModuleUUID: SDL.Label.create({
+      elementId: 'audioModuleCurrent',
+      classNames: 'audioModuleCurrent',
+      contentBinding: 'SDL.RCModulesController.getAudioCurrentID'
+    }),
     
     controlls: Em.ContainerView.extend(
       {

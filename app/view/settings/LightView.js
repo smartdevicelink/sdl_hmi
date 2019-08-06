@@ -42,7 +42,8 @@ SDL.LightView = Em.ContainerView.create({
     ],
 
     childViews: [
-      'SettingsList'
+      'LightModuleUUID',
+      'SettingsList'      
     ],
 
     initList: function(list, arr){
@@ -60,6 +61,12 @@ SDL.LightView = Em.ContainerView.create({
             arr.push(temp);
         }
     },
+
+    LightModuleUUID: SDL.Label.create({
+        elementId: 'lightModuleCurrent',
+        classNames: 'lightModuleCurrent',
+        contentBinding: 'SDL.RCModulesController.getLightCurrentID'
+    }),
     
     SettingsList: SDL.List.extend({
         elementId: 'light_list',

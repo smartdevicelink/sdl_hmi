@@ -80,7 +80,8 @@ SDL.ClimateView = Em.ContainerView.create(
           'heatedRearWindowEnable',
           'heatedSteeringWheelEnable',
           'heatedMirrorsEnable',
-          'climateEnable'
+          'climateEnable',
+          'climateModuleUUID'
         ],
 
         climateEnable: SDL.Button.extend(
@@ -102,6 +103,12 @@ SDL.ClimateView = Em.ContainerView.create(
             textBinding: 'SDL.ClimateController.model.climateEnableButtonText'
           }
         ),
+
+        climateModuleUUID: SDL.Label.create({
+          elementId: 'climateModuleCurrent',
+          classNames: 'climateModuleCurrent',
+          contentBinding: 'SDL.RCModulesController.getClimateCurrentID'
+        }),
 
         desiredTemp: Em.ContainerView.extend(
           {

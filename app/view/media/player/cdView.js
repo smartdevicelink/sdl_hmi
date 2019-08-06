@@ -20,6 +20,7 @@ SDL.cdView = Em.ContainerView.create(
     childViews: [
       'controlls',
       'info',
+      'audioModuleUUID',
       'rightmenu'
     ],
     info: Em.View.extend(
@@ -50,6 +51,13 @@ SDL.cdView = Em.ContainerView.create(
         )
       }
     ),
+
+    audioModuleUUID: SDL.Label.create({
+      elementId: 'audioModuleCurrent',
+      classNames: 'audioModuleCurrent',
+      contentBinding: 'SDL.RCModulesController.getAudioCurrentID'
+    }),
+
     controlls: Em.ContainerView.extend(
       {
         elementId: 'media_player_cd_view_controlls',

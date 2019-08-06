@@ -33,6 +33,7 @@ SDL.lineInView = Em.ContainerView.create(
     childViews: [
     	'info',
       'controlls',
+      'audioModuleUUID',
       'rightmenu'
     ],
     info: Em.View.extend(
@@ -50,6 +51,13 @@ SDL.lineInView = Em.ContainerView.create(
         )
       }
     ),
+
+    audioModuleUUID: SDL.Label.create({
+      elementId: 'audioModuleCurrent',
+      classNames: 'audioModuleCurrent',
+      contentBinding: 'SDL.RCModulesController.getAudioCurrentID'
+    }),
+
     rightmenu: Em.ContainerView.create(
       {
         /** View ID */

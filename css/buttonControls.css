@@ -695,3 +695,20 @@
     transform: rotate(0deg);
 }
 
+#app_controlButtons .phone_call_button.expand {
+    left: 156px;
+}
+
+#app_controlButtons .vehicle_emulation_btn {
+    width: 130px;
+    height: 45px;
+    position: absolute;
+    cursor: pointer;
+    float: right;
+    display: none;
+    font-size: 20px;
+    text-align: center;
+    line-height: 45px;
+    left: 1215px;
+    top: 400px;
+}

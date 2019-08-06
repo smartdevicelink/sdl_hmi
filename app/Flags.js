@@ -68,6 +68,11 @@ FLAGS = Em.Object.create(
      * 'vehicle_2x3' - emulate 2x3 one level vehicle
      * 'vehicle_3x3' - emulate 3x3 one level vehicle
      */
-    VehicleEmulationType: 'no_emulation'
+    VehicleEmulationType: 'no_emulation',
+
+    /**
+     * Flag for storing last applied vehicle emulation type
+     */
+    lastVehicleEmulationtype: 'no_emulation'
   }
 );

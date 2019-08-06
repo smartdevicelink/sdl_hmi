@@ -55,8 +55,42 @@ SDL.ControlButtons = Em.ContainerView.create({
     'keyboard',
     'imageMode',
     'imageModeLabel',
-    'RCInfo'
+    'RCInfo',
+    'vehicleEmulation'
   ],
+  vehicleEmulation: Em.View.create(
+    {
+      elementId: 'warning_vehicle_emulation_btn',
+      classNameBindings: [
+        'isReady: visible_display', 'pressed:pressed'
+      ],
+      classNames: [
+        'vehicle_emulation_btn',
+        'ffw-button'
+      ],
+      template: Ember.Handlebars.compile('<span>Vehicle</span>'),
+      appLoaded: function() {
+        var self = this;
+        setTimeout(
+          function() {
+            self.set('isReady', true);
+          }, 2000
+        );
+      }.observes('SDL.appReady'),
+      actionDown: function(event) {
+        this.set('pressed', true);
+      },
+      actionUp: function(event) {
+        this.set('pressed', false);
+        SDL.VehicleEmulationView.set('hide', !SDL.VehicleEmulationView.hide);
+        if (SDL.VehicleEmulationView.hide) {
+          SDL.VehicleModuleCoverageView.set('hide', true);
+          FLAGS.set('VehicleEmulationType', FLAGS.lastVehicleEmulationtype);
+          SDL.RCModulesController.populateModels();
+        }
+      }
+    }
+  ),
 
   RCInfo: Em.ContainerView.extend({
     elementId: 'RCInfo',
@@ -82,7 +116,7 @@ SDL.ControlButtons = Em.ContainerView.create({
         classNames: 'RCModulesSelect',
 
         show: function(event) {
-          this._parentView.set('show', true);
+          this._parentView.set('show', this.content.length);
         }.observes('this.content'),
 
         change: function(event) {

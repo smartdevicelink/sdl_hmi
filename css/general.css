@@ -1780,20 +1780,6 @@ input[type=radio]:checked ~ .label {
     bottom: 25px;
 }
 
-#warning_view .vehicle_emulation_btn {
-    width: 130px;
-    height: 45px;
-    position: absolute;
-    cursor: pointer;
-    float: right;
-    display: none;
-    font-size: 20px;
-    text-align: center;
-    line-height: 45px;
-    bottom: 75px;
-    right: 40px;
-}
-
 #warning_view .components{
     margin-top: 30px;
     width: 600px;

@@ -31,7 +31,7 @@
  * @version 1.0
  */
 
-SDL.remoteControlCapabilities = 
+SDL.initialRemoteControlCapabilities =
 {
     remoteControlCapability: {
         buttonCapabilities: [],
@@ -49,3 +49,97 @@ SDL.remoteControlCapabilities =
         seats: []
     }
 }
+
+SDL.remoteControlCapabilities = {}
+
+SDL.defaultButtonCapabilities = [{
+    longPressAvailable: true,
+    name: 'AC_MAX',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'AC',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'RECIRCULATE',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'FAN_UP',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'FAN_DOWN',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'TEMP_UP',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'TEMP_DOWN',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'DEFROST_MAX',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'DEFROST',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'DEFROST_REAR',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'UPPER_VENT',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'LOWER_VENT',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'VOLUME_UP',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'VOLUME_DOWN',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'EJECT',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'SOURCE',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'SHUFFLE',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}, {
+    longPressAvailable: true,
+    name: 'REPEAT',
+    shortPressAvailable: true,
+    upDownAvailable: false
+}]

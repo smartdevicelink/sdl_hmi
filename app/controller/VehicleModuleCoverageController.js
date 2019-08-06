@@ -66,6 +66,12 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   savedCoverageSettings: {},
 
   /**
+   * @description Map of initial settings for each emulation type
+   * @type {Map}
+   */
+  defaultCoverageSettings: {},
+  
+  /**
    * @description Function for controller initialization
    */
   init: function() {
@@ -89,11 +95,17 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
     var default_settings = {};
 
     this.availableModules.forEach(module => {
-      if('HMI_SETTINGS' == module || 'LIGHT' == module) {
-        default_settings[module] = this.createFullCoverage(currentSeatsData);
+      if ('SEAT' == module) {
+        default_settings[module] = SDL.deepCopy(currentSeatsData);
         return;
       }
-      default_settings[module] = SDL.deepCopy(currentSeatsData);
+
+      if ('CLIMATE' == module) {
+        default_settings[module] = this.createDriverPassangerCoverage(currentSeatsData);
+        return;
+      }
+
+      default_settings[module] = this.createFullCoverage(currentSeatsData);      
     });
 
     this.set('coverageSettings', SDL.deepCopy(default_settings));
@@ -123,6 +135,38 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @description Function to generate two modules which cover all vehicle seats
+   * @param {Array} data 
+   */
+  createDriverPassangerCoverage: function(data) {
+    var full_seat_module = SDL.deepCopy(data[0]);
+    
+    var max_row_index = this.getVehicleMaxIndex(data, 'row');
+    var max_row_value = this.getVehicleItemValue(data[max_row_index], 'row');    
+    full_seat_module['rowspan'] = max_row_value + 1;
+
+    var max_col_index = this.getVehicleMaxIndex(data, 'col');
+    var max_col_value = this.getVehicleItemValue(data[max_col_index], 'col');
+    full_seat_module['colspan'] = max_col_value + 1;
+    
+    var max_level_index = this.getVehicleMaxIndex(data, 'level');
+    var max_level_value = this.getVehicleItemValue(data[max_level_index], 'level');
+    full_seat_module['levelspan'] = max_level_value + 1;
+
+    var driver_seat_module = SDL.deepCopy(full_seat_module);
+    driver_seat_module['colspan'] --;
+
+    var passanger_seat_module = SDL.deepCopy(full_seat_module);
+    passanger_seat_module['col'] = max_col_value;
+    passanger_seat_module['colspan'] = 1;
+
+    return [
+      driver_seat_module,
+      passanger_seat_module
+    ];
+  },
+
+  /**
    * @description Function for saving current coverage settings into the map
    */
   saveCoverageSettings: function() {
@@ -139,7 +183,9 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
     if (this.savedCoverageSettings.hasOwnProperty(emulation_type)) {
       delete this.savedCoverageSettings[emulation_type];
     }
-    this.loadSavedCoverageSettings();
+    this.set('coverageSettings', 
+      SDL.deepCopy(this.defaultCoverageSettings[emulation_type])
+    );
     this.showModuleCoverage();
   },
 
@@ -149,7 +195,17 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
    * @returns current coverage settings for the chosen vehicle
    */
   getCoverageSettings: function() {
-    this.loadSavedCoverageSettings();    
+    var emulation_type = FLAGS.VehicleEmulationType;
+    if (this.savedCoverageSettings.hasOwnProperty(emulation_type)) {
+      var saved_settings = this.savedCoverageSettings[emulation_type];
+      var service_areas = {};
+      Object.keys(saved_settings).forEach(module => {
+        service_areas[module] = this.extractModulesCoverage(saved_settings[module]);
+      });
+      return service_areas;
+    }
+
+    this.loadSavedCoverageSettings();
     return this.coverageSettings;
   },
 
@@ -159,35 +215,132 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
    */
   showModuleCoverage: function() {
     this.targetView.coverageEditor.activate();
-    this.switchModule(this.targetView.currentModule);    
+    this.switchModule(this.targetView.currentModule);
   },
 
   /**
+   * @function getModuleInfo
+   * @param {String} module_type
+   * @description get module info
+   */
+  getModuleInfo: function(module_type) {
+    var data = [];
+    switch(module_type) {
+      case 'RADIO': {
+        SDL.remoteControlCapabilities.remoteControlCapability.radioControlCapabilities.forEach(element => {
+          data.push(element.moduleInfo)
+        });
+        break;
+      }
+      case 'AUDIO': {
+        SDL.remoteControlCapabilities.remoteControlCapability.audioControlCapabilities.forEach(element => {
+          data.push(element.moduleInfo)
+        });
+        break;
+      }
+      case 'CLIMATE': {
+        SDL.remoteControlCapabilities.remoteControlCapability.climateControlCapabilities.forEach(element => {
+          data.push(element.moduleInfo)
+        });
+        break;
+      }
+      case 'SEAT': {
+        SDL.remoteControlCapabilities.remoteControlCapability.seatControlCapabilities.forEach(element => {
+          data.push(element.moduleInfo)
+        });
+        break;
+      }
+      case 'LIGHT': {
+        data = SDL.remoteControlCapabilities.remoteControlCapability.lightControlCapabilities.moduleInfo
+        break;
+      }
+      case 'HMI_SETTINGS': {
+        data = SDL.remoteControlCapabilities.remoteControlCapability.hmiSettingsControlCapabilities.moduleInfo
+        break;
+      }
+    }
+    return data;
+  },
+
+  /**
+   * @function setModuleInfo
+   * @param {String} module_type
+   * @param {String} data
+   * @description Set module info
+   */
+  setModuleInfo: function(module_type, data) {
+    var parsed_settings = JSON.parse(data);
+    switch(module_type) {
+      case 'RADIO': {
+        SDL.remoteControlCapabilities.remoteControlCapability.radioControlCapabilities.forEach(function(element,index) {
+          element.moduleInfo = parsed_settings[index];
+        });
+        break;
+      }
+      case 'AUDIO': {
+        SDL.remoteControlCapabilities.remoteControlCapability.audioControlCapabilities.forEach(function(element,index) {
+          element.moduleInfo = parsed_settings[index];
+        });
+        break;
+      }
+      case 'CLIMATE': {
+        SDL.remoteControlCapabilities.remoteControlCapability.climateControlCapabilities.forEach(function(element,index) {
+          element.moduleInfo = parsed_settings[index];
+        });
+        break;
+      }
+      case 'SEAT': {
+        SDL.remoteControlCapabilities.remoteControlCapability.seatControlCapabilities.forEach(function(element,index) {
+          element.moduleInfo = parsed_settings[index];
+        });
+        break;
+      }
+      case 'LIGHT': {
+        SDL.remoteControlCapabilities.remoteControlCapability.lightControlCapabilities.moduleInfo = parsed_settings;
+        break;
+      }
+      case 'HMI_SETTINGS': {
+        SDL.remoteControlCapabilities.remoteControlCapability.hmiSettingsControlCapabilities.moduleInfo = parsed_settings;
+        break;
+      }
+    }
+  },
+  /**
    * @description Function to change the content of editor to display settings
    * of another module
-   * @param {String} module_name 
+   * @param {String} module_type 
    */
-  switchModule: function(module_name) {
-    var settings = this.coverageSettings[module_name];
-    this.targetView.coverageEditor.set('content', JSON.stringify(settings, null, 2));
+  switchModule: function(module_type) {
+    var emulation_type = FLAGS.VehicleEmulationType;
+    if (!this.defaultCoverageSettings.hasOwnProperty(emulation_type)) {
+      this.availableModules.forEach(module => {
+        this.coverageSettings[module] = this.getModuleInfo(module);
+      });
+      this.defaultCoverageSettings[emulation_type] = SDL.deepCopy(this.coverageSettings);
+    }
+
+    var moduleInfo = this.coverageSettings[module_type];    
+    this.targetView.coverageEditor.set('content', JSON.stringify(moduleInfo, null, 2));
     this.targetView.coverageEditor.reset();
 
     var self = this;
     this.targetView.coverageEditor.activate(function(data) {
         self.saveModuleSettings(self.targetView.currentModule, data);
+        SDL.RCModulesController.resetData(data,module_type);
+        self.setModuleInfo(self.targetView.currentModule, data);
     });
   },
 
   /**
    * @description Function to save current module settings before switching
-   * @param {String} module_name 
+   * @param {String} module_type 
    * @param {Object} data 
    */
-  saveModuleSettings: function(module_name, data) {
-    var parsed_settings = JSON.parse(data); 
-    this.set('coverageSettings.' + module_name, parsed_settings);
+  saveModuleSettings: function(module_type, data) {
+    var parsed_settings = JSON.parse(data);
+    this.set('coverageSettings.' + module_type, parsed_settings);
   },
-  
+
   /**
    * @description Function to validate current settings
    * @returns true if settings are valid, otherwise returns false
@@ -211,6 +364,14 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
       return false;
     }
 
+    validation_message = this.checkModuleLocationMatching();
+    if (validation_message !== "") {
+      SDL.PopUp.create().appendTo('#' + this.targetView.elementId).popupActivate(
+        'Invalid JSON settings:\n' + validation_message
+      );
+      return false;
+    }
+
     validation_message = this.checkModuleCoverage();
     if (validation_message !== "") {
       SDL.PopUp.create().appendTo('#' + this.targetView.elementId).popupActivate(
@@ -220,6 +381,22 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
     }
 
     return true;
+  },
+
+  /**
+   * @description Function to extract module coverage settings from provided object
+   * @param {Object} module_settings
+   * @returns array of module coverage settings
+   */
+  extractModulesCoverage(module_settings) {
+    var array_of_settings = Array.isArray(module_settings) ? module_settings : [module_settings];
+    var service_areas = [];
+
+    array_of_settings.forEach(element => {
+      service_areas.push(element['serviceArea']);
+    });
+
+    return service_areas;    
   },
 
   /**
@@ -286,10 +463,26 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
 
     Object.keys(this.coverageSettings).forEach(module_type => {
       var module_coverage = this.coverageSettings[module_type];
+      if (!Array.isArray(module_coverage)) {
+        module_coverage = [module_coverage];
+      }
       
       module_coverage.forEach(
         function(element, index) {
-          if (!element.hasOwnProperty('col') || !element.hasOwnProperty('row')) {
+          if (!element.hasOwnProperty('moduleId')) {
+            validation_message += module_type + ": Element #" + index + " does not contain moduleId field!\n";
+            return;
+          }
+          if (!element.hasOwnProperty('serviceArea')) {
+            validation_message += module_type + ": Element #" + index + " does not contain serviceArea field!\n";
+            return;
+          }
+          if (!element.hasOwnProperty('location')) {
+            validation_message += module_type + ": Element #" + index + " does not contain location field!\n";
+            return;
+          }
+          var service_area = element['serviceArea'];
+          if (!service_area.hasOwnProperty('col') || !service_area.hasOwnProperty('row')) {
             validation_message += module_type + ": Element #" + index + " does not contain col/row field!\n";
           }
       });
@@ -318,27 +511,70 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
 
     Object.keys(this.coverageSettings).forEach(module_type => {
       var module_coverage = this.coverageSettings[module_type];
-      var module_max_col_index = this.getVehicleMaxIndex(module_coverage, 'col');
-      var module_max_col_value = this.getVehicleItemValue(module_coverage[module_max_col_index], 'col');
+      var service_areas = this.extractModulesCoverage(module_coverage);
 
-      var module_max_row_index = this.getVehicleMaxIndex(module_coverage, 'row');
-      var module_max_row_value = this.getVehicleItemValue(module_coverage[module_max_row_index], 'row');
+      var module_max_col_index = this.getVehicleMaxIndex(service_areas, 'col');
+      var module_max_col_value = this.getVehicleItemValue(service_areas[module_max_col_index], 'col');
 
-      var module_max_level_index = this.getVehicleMaxIndex(module_coverage, 'level');
-      var module_max_level_value = this.getVehicleItemValue(module_coverage[module_max_level_index], 'level');  
+      var module_max_row_index = this.getVehicleMaxIndex(service_areas, 'row');
+      var module_max_row_value = this.getVehicleItemValue(service_areas[module_max_row_index], 'row');
+
+      var module_max_level_index = this.getVehicleMaxIndex(service_areas, 'level');
+      var module_max_level_value = this.getVehicleItemValue(service_areas[module_max_level_index], 'level');  
 
       if (module_max_col_value > max_col_value) {
         validation_message += module_type + ": out-of-bound column in " + 
-          this.getModuleKeyName(module_coverage[module_max_col_index]) + "\n";
+          this.getModuleKeyName(service_areas[module_max_col_index]) + "\n";
       }
       if (module_max_row_value > max_row_value) {
         validation_message += module_type + ": out-of-bound row in " +
-          this.getModuleKeyName(module_coverage[module_max_row_index]) + "\n";
+          this.getModuleKeyName(service_areas[module_max_row_index]) + "\n";
       }
       if (module_max_level_value > max_level_value) {
         validation_message += module_type + ": out-of-bound level in " +
-          this.getModuleKeyName(module_coverage[module_max_level_index]) + "\n";
+          this.getModuleKeyName(service_areas[module_max_level_index]) + "\n";
       }
+    });
+
+    return validation_message;
+  },
+
+  /**
+   * @description Function to check that module physical locations matches the
+   * service areas of these modules
+   * @returns true if settings are valid, otherwise returns false
+   */
+  checkModuleLocationMatching: function() {
+    var validation_message = "";
+
+    Object.keys(this.coverageSettings).forEach(module_type => {
+      var module_coverage = this.coverageSettings[module_type];
+      if (!Array.isArray(module_coverage)) {
+        module_coverage = [module_coverage];
+      }
+
+      module_coverage.forEach(module_element => {
+        var module_location = module_element['location'];
+        var module_area = module_element['serviceArea'];
+        var module_key_name = this.getModuleKeyName(module_location);
+
+        if (module_location['col'] != module_area['col']) {
+          validation_message += module_type + ": " + module_key_name + " has a 'col' mismatch!\n";
+          return;
+        }
+
+        if (module_location['row'] != module_area['row']) {
+          validation_message += module_type + ": " + module_key_name + " has a 'row' mismatch!\n";
+          return;
+        }
+
+        var location_level = module_location.hasOwnProperty('level') ? module_location['level'] : 0;
+        var area_level = module_area.hasOwnProperty('level') ? module_area['level'] : 0;
+        if (location_level != area_level) {
+          validation_message += module_type + ": " + module_key_name + " has a 'level' mismatch!\n";
+          return;
+        }
+      });      
     });
 
     return validation_message;
@@ -365,7 +601,9 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
       });
       
       var module_coverage = this.coverageSettings[module_type];
-      module_coverage.forEach(module => {
+      var service_areas = this.extractModulesCoverage(module_coverage);
+
+      service_areas.forEach(module => {
         // These fields are not mandatory according to API so should be checked
         var module_level = module.hasOwnProperty('level') ? module.level : 0;
 

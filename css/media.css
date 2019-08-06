@@ -1170,6 +1170,20 @@
     -webkit-border-radius: 3px;
 }
 
+.audioModuleCurrent {
+    top: 330px;
+    left: 5px;
+    width: 470px;
+    text-align: center;
+}
+
+.radioModuleCurrent {
+    top: 330px;
+    left: 5px;
+    width: 470px;
+    text-align: center;
+}
+
 #sdl_view_container .track-info {
     left: 165px;
     top: 55px;

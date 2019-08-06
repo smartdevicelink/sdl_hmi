@@ -43,7 +43,6 @@ SDL.warningView = Em.ContainerView
       childViews: [
         'content',
         'button',
-        'vehicleEmulation',
         'openSDL',
         'pluginRC',
         'otherSDL'
@@ -467,38 +466,9 @@ SDL.warningView = Em.ContainerView
                 self._parentView.set('hide', true);
               }, 1000
             );
-            SDL.RCModulesController.populateModels();
             SDL.RPCController.ConnectToSDL();
           }
         }
       ),
-      vehicleEmulation: Em.View.create(
-        {
-          elementId: 'warning_vehicle_emulation_btn',
-          classNameBindings: [
-            'isReady: visible_display', 'pressed:pressed'
-          ],
-          classNames: [
-            'vehicle_emulation_btn',
-            'ffw-button'
-          ],
-          template: Ember.Handlebars.compile('<span>Vehicle</span>'),
-          appLoaded: function() {
-            var self = this;
-            setTimeout(
-              function() {
-                self.set('isReady', true);
-              }, 2000
-            );
-          }.observes('SDL.appReady'),
-          actionDown: function(event) {
-            this.set('pressed', true);
-          },
-          actionUp: function(event) {
-            this.set('pressed', false);
-            SDL.VehicleEmulationView.set('hide', false);
-          }
-        }
-      )
     }
   );
