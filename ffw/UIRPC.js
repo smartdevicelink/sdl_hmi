@@ -292,11 +292,14 @@ FFW.UI = FFW.RPCObserver.create(
             var targetID = request.params.cancelID;
             var typeID = request.params.functionID;
 
-            if (typeID === 10 && (SDL.InteractionChoicesView.active || SDL.Keyboard.active)
+            if (typeID === 10 && (SDL.InteractionChoicesView.active || SDL.Keyboard.active || SDL.VRPopUp.VRActive)
                && (targetID === undefined || targetID === SDL.InteractionChoicesView.cancelID)) {
               if (SDL.Keyboard.active) {
                 SDL.Keyboard.deactivate();
                 this.OnKeyboardInput('', 'ENTRY_ABORTED');
+              }
+              if (SDL.VRPopUp.VRActive) {
+                SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode.ABORTED);
               }
               SDL.InteractionChoicesView.deactivate('ABORTED');
             } else if (typeID === 12 && SDL.AlertPopUp.active
