@@ -321,6 +321,7 @@ SDL.SDLController = Em.Object.extend(
       for (var i = 0; i < SDL.SDLModel.data.registeredComponents.length; i++) {
         if (SDL.SDLModel.data.registeredComponents[i].type == component) {
           SDL.SDLModel.data.set('registeredComponents.' + i + '.state', true);
+          this.componentsReadiness();
           return;
         }
       }
@@ -422,7 +423,7 @@ SDL.SDLController = Em.Object.extend(
         }
       }
       FFW.BasicCommunication.onReady();
-    }.observes('SDL.SDLModel.data.registeredComponents.@each.state'),
+    },
     /**
      * Show VrHelpItems popup with necessary params
      * if VRPopUp is active - show data from Global Properties
