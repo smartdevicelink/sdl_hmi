@@ -46,6 +46,7 @@ SDL.RadioView = Em.ContainerView
       childViews: [
         'rightmenu',
         'info',
+        'radioModuleUUID',
         'tuneButtons',
         'optionsMenu'
       ],
@@ -69,6 +70,12 @@ SDL.RadioView = Em.ContainerView
           
         }
       },
+
+      radioModuleUUID: SDL.Label.create({
+        elementId: 'radioModuleCurrent',
+        classNames: 'radioModuleCurrent',
+        contentBinding: 'SDL.RCModulesController.getRadioCurrentID'
+      }),
 
       optionsMenu: Em.ContainerView.create(
         {

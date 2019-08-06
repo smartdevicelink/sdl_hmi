@@ -42,6 +42,7 @@ SDL.HMISettingsView = Em.ContainerView.create({
     ],
 
     childViews: [
+      'HmiSettingsModuleUUID',
       'SettingsList'
     ],
 
@@ -62,6 +63,12 @@ SDL.HMISettingsView = Em.ContainerView.create({
     }.property(
       'SDL.RCModulesController.currentHMISettingsModel.temperatureUnit'
     ),
+
+    HmiSettingsModuleUUID: SDL.Label.create({
+      elementId: 'settingsModuleCurrent',
+      classNames: 'settingsModuleCurrent',
+      contentBinding: 'SDL.RCModulesController.getHmiSettingsCurrentID'
+    }),
 
     SettingsList: SDL.List.extend({
         elementId: 'HMI_settings_list',

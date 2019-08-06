@@ -955,7 +955,7 @@ SDL.SeatView = Em.ContainerView.create({
 
         childViews: [
             'label',
-            'moduleName'
+            'seatModuleUUID'
         ],
         label: SDL.Label.extend({
             elementId: 'idlabel',
@@ -963,7 +963,7 @@ SDL.SeatView = Em.ContainerView.create({
             content: 'ID'
         }),
 
-        moduleName: SDL.Label.create({
+        seatModuleUUID: SDL.Label.create({
             elementId: 'seatModelCurrent',
             classNames: 'seatModelCurrent',
             contentBinding: 'SDL.RCModulesController.getSeatCurrentID'

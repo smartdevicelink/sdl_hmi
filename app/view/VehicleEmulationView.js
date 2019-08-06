@@ -68,7 +68,13 @@ SDL.VehicleEmulationView = Em.ContainerView.create({
         ),
         
         select: function() {
-          return 'no_emulation' == FLAGS.VehicleEmulationType;
+          var radio = document.getElementById('radioNoEmulation');
+          var emulationEqual = 'no_emulation' == FLAGS.VehicleEmulationType
+          if(radio && emulationEqual){
+            radio.checked = true;
+            SDL.RCModulesController.populateModels();
+          }
+          return emulationEqual;
         }.property('FLAGS.VehicleEmulationType'),
 
         actionDown: function() {
@@ -90,7 +96,13 @@ SDL.VehicleEmulationView = Em.ContainerView.create({
         elementId: 'option_vehicle2x3',
 
         select: function() {
-          return 'vehicle_2x3' == FLAGS.VehicleEmulationType;
+          var radio = document.getElementById('radioVehicle2x3');
+          var emulationEqual = 'vehicle_2x3' == FLAGS.VehicleEmulationType;
+          if(radio && emulationEqual){
+            radio.checked = true;
+            SDL.RCModulesController.populateModels();
+          }
+          return emulationEqual;
         }.property('FLAGS.VehicleEmulationType'),
 
         actionDown: function() {
@@ -112,7 +124,13 @@ SDL.VehicleEmulationView = Em.ContainerView.create({
         elementId: 'option_vehicle3x3',
 
         select: function() {
-          return 'vehicle_3x3' == FLAGS.VehicleEmulationType;
+          var radio = document.getElementById('radioVehicle3x3');
+          var emulationEqual = 'vehicle_3x3' == FLAGS.VehicleEmulationType;
+          if(radio && emulationEqual){
+            radio.checked = true;
+            SDL.RCModulesController.populateModels();
+          }
+          return emulationEqual;
         }.property('FLAGS.VehicleEmulationType'),
 
         actionDown: function() {
@@ -142,6 +160,17 @@ SDL.VehicleEmulationView = Em.ContainerView.create({
         actionUp: function(event) {
           this.set('pressed', false);
           this._parentView.set('hide', true);
+          SDL.RCModulesController.changeCurrentModule(
+            document.getElementById("RCModule").value
+          );
+          FLAGS.set('lastVehicleEmulationtype', FLAGS.VehicleEmulationType);
+          var systemCapability = {
+            'systemCapability' : {
+              'systemCapabilityType': 'REMOTE_CONTROL',
+              'remoteControlCapability': SDL.remoteControlCapabilities.remoteControlCapability              
+            }
+          };
+          FFW.BasicCommunication.OnSystemCapabilityUpdated(systemCapability);          
         }
       }
     ),
@@ -159,7 +188,7 @@ SDL.VehicleEmulationView = Em.ContainerView.create({
           'coverage_settings',
           'ffw-button'
         ],
-        template: Ember.Handlebars.compile('<span>Coverage</span>'),
+        template: Ember.Handlebars.compile('<span>Module Info</span>'),
         disabledBinding: 'isDisabled',
         
         isDisabled: function() {

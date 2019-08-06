@@ -32,6 +32,14 @@
  * @version 1.0
  */
 SDL.RCModulesController = Em.Object.create({
+  modelsNameMapping:{
+    AUDIO: 'audioModels',
+    RADIO: 'radioModels',
+    CLIMATE: 'climateModels',
+    SEAT: 'seatModels',
+    LIGHT: 'lightModels',
+    HMI_SETTINGS: 'hmiSettingsModels'
+  },
     /**
      * @description Mapping of module seats and audio data models
      * @type {Map}
@@ -145,6 +153,24 @@ SDL.RCModulesController = Em.Object.create({
     },
 
     /**
+     * @function resetToDefault
+     * @description Reset all parameters of current object to default
+     */
+    resetToDefault: function() {
+      SDL.remoteControlCapabilities = SDL.deepCopy(SDL.initialRemoteControlCapabilities);
+      this.set('audioModels', {});
+      this.set('climateModels', {});
+      this.set('radioModels', {});
+      this.set('seatModels', {});
+      this.set('hmiSettingsModels', {});
+      this.set('lightModels', {});
+      this.set('moduleModelsMapping', {});
+      this.set('moduleIDMapping', {});
+      this.set('moduleUUIDMapping', {});
+      this.set('seatKeyLabelMapping', {});
+      this.init();
+    },
+    /**
      * @description Function for generating a coverage according to specified
      * settings and saving into the moduleModelsMapping  
      * @param {String} module_type
@@ -250,6 +276,8 @@ SDL.RCModulesController = Em.Object.create({
      * responsible modules according to coverage settings
      */
     populateModels: function() {
+      this.resetToDefault();
+
         if('no_emulation' == FLAGS.VehicleEmulationType) {
           var moduleId = FLAGS.VehicleEmulationType;
 
@@ -266,47 +294,65 @@ SDL.RCModulesController = Em.Object.create({
           this.currentLightModel.generateLightCapabilities();
           this.currentSeatModel.generateSeatCapabilities();
           this.currentHMISettingsModel.generateHMISettingsCapabilities();
+          this.currentRadioModel.generateRadioControlCapabilities();
           delete SDL.remoteControlCapabilities.seatLocationCapability;
+          SDL.remoteControlCapabilities.remoteControlCapability['buttonCapabilities'] = SDL.defaultButtonCapabilities;
+          this.fillModuleSeatLocationContent([]);
           return;
         }
         var vehicleRepresentation = 
             SDL.SDLModelData.vehicleSeatRepresentation[FLAGS.VehicleEmulationType];
         
         var contentBinding = [];
-        var self = this;
         vehicleRepresentation.forEach(function(element, index) {
           var moduleKeyName =  SDL.VehicleModuleCoverageController.getModuleKeyName(element);
           contentBinding.push(moduleKeyName);
-          self.moduleUUIDMapping[moduleKeyName] = self.generateUUID(moduleKeyName, index + 1);
         });
 
         var self = this;
         var coverageSettings = SDL.VehicleModuleCoverageController.getCoverageSettings();
         Object.keys(coverageSettings).forEach(module_type => {
+
+          self.moduleUUIDMapping[module_type] = {};
+          vehicleRepresentation.forEach(function(element, index) {
+            var moduleKeyName =  SDL.VehicleModuleCoverageController.getModuleKeyName(element);
+            self.moduleUUIDMapping[module_type][moduleKeyName] = 
+              self.generateUUID(moduleKeyName, index + 1);
+          });
+
           var module_coverage = coverageSettings[module_type];
           switch (module_type) {
             case 'CLIMATE': {
               module_coverage.forEach(module => {
                 var key_name = SDL.VehicleModuleCoverageController.getModuleKeyName(module);
-                self.set('climateModels.' + key_name, SDL.ClimateControlModel.create({ID: key_name, UUID: this.moduleUUIDMapping[key_name]}));
+                self.set('climateModels.' + key_name, SDL.ClimateControlModel.create({
+                  ID: key_name,
+                  UUID: this.moduleUUIDMapping[module_type][key_name]
+                }));
                 self.climateModels[key_name].generateClimateCapabilities(module);
-                self.fillButtonCapabilitiesContent(self.climateModels[key_name], module);   
+                self.fillButtonCapabilitiesContent(self.climateModels[key_name], module_type, module);   
               });              
               break;
             }
             case 'RADIO': {
               module_coverage.forEach(module => {
                 var key_name = SDL.VehicleModuleCoverageController.getModuleKeyName(module);
-                self.set('radioModels.' + key_name, SDL.RadioModel.create({ID: key_name, UUID: this.moduleUUIDMapping[key_name]})); 
+                self.set('radioModels.' + key_name, SDL.RadioModel.create({
+                  ID: key_name, 
+                  UUID: this.moduleUUIDMapping[module_type][key_name]}
+                )); 
                 self.radioModels[key_name].generateRadioControlCapabilities(module);
-                self.fillButtonCapabilitiesContent(self.radioModels[key_name], module);        
+                self.fillButtonCapabilitiesContent(self.radioModels[key_name], module_type, module);        
               });
               break;
             }
             case 'SEAT': {
               module_coverage.forEach(module => {
                 var key_name = SDL.VehicleModuleCoverageController.getModuleKeyName(module);
-                self.set('seatModels.' + key_name, SDL.SeatModel.create({ID: key_name, UUID: this.moduleUUIDMapping[key_name]}));
+                self.set('seatModels.' + key_name, SDL.SeatModel.create({
+                  ID: key_name, 
+                  UUID: this.moduleUUIDMapping[module_type][key_name]}
+                ));
                 self.seatModels[key_name].generateSeatCapabilities(module);
               });
               break;    
@@ -314,7 +360,10 @@ SDL.RCModulesController = Em.Object.create({
             case 'AUDIO': {
               module_coverage.forEach(module => {
                 var key_name = SDL.VehicleModuleCoverageController.getModuleKeyName(module);
-                self.set('audioModels.' + key_name, SDL.AudioModel.create({ID: key_name, UUID: this.moduleUUIDMapping[key_name]}));   
+                self.set('audioModels.' + key_name, SDL.AudioModel.create({
+                  ID: key_name, 
+                  UUID: this.moduleUUIDMapping[module_type][key_name]}
+                ));   
                 this.audioModels[key_name].generateAudioCapabilities(module);
               });              
               break;   
@@ -322,7 +371,10 @@ SDL.RCModulesController = Em.Object.create({
             case 'LIGHT': {
               module_coverage.forEach(module => {
                 var key_name = SDL.VehicleModuleCoverageController.getModuleKeyName(module);
-                self.set('lightModels.' + key_name, SDL.LightModel.create({ID: key_name, UUID: this.moduleUUIDMapping[key_name]}));
+                self.set('lightModels.' + key_name, SDL.LightModel.create({
+                  ID: key_name, 
+                  UUID: this.moduleUUIDMapping[module_type][key_name]}
+                ));
                 self.lightModels[key_name].generateLightCapabilities(module);  
               });
               break;
@@ -330,7 +382,10 @@ SDL.RCModulesController = Em.Object.create({
             case 'HMI_SETTINGS': {
               module_coverage.forEach(module => {
                 var key_name = SDL.VehicleModuleCoverageController.getModuleKeyName(module);
-                self.set('hmiSettingsModels.' + key_name, SDL.HmiSettingsModel.create({ID: key_name, UUID: this.moduleUUIDMapping[key_name]}));
+                self.set('hmiSettingsModels.' + key_name, SDL.HmiSettingsModel.create({
+                  ID: key_name, 
+                  UUID: this.moduleUUIDMapping[module_type][key_name]}
+                ));
                 self.hmiSettingsModels[key_name].generateHMISettingsCapabilities(module);   
               });
               break;
@@ -373,9 +428,9 @@ SDL.RCModulesController = Em.Object.create({
      * @param {Object} model
      * @param {Object} module 
      */
-    fillButtonCapabilitiesContent: function(model, module) {
+    fillButtonCapabilitiesContent: function(model, type, module) {
       var moduleKeyName = SDL.VehicleModuleCoverageController.getModuleKeyName(module);
-      var moduleUUID = this.moduleUUIDMapping[moduleKeyName];
+      var moduleUUID = this.moduleUUIDMapping[type][moduleKeyName];
       var moduleInfo = {
         'allowMultipleAccess': true,
         'moduleId': moduleUUID,
@@ -419,6 +474,7 @@ SDL.RCModulesController = Em.Object.create({
      */
     fillModuleSeatLocationContent: function(content_binding) {
       if (1 >= content_binding.length) {
+        SDL.ControlButtons.RCInfo.RCModules.set('content', content_binding);
         return;
       }
 
@@ -516,14 +572,77 @@ SDL.RCModulesController = Em.Object.create({
     },
 
     /**
+     * @function getModuleCurrentId
+     * @description getter for a readable module name to display on UI
+     * @param {String} module_id
+     */
+    getModuleCurrentId: function(module_type, module_id) {      
+      var moduleGuid;
+      if (this.moduleUUIDMapping.hasOwnProperty(module_type)) {
+        moduleGuid = this.moduleUUIDMapping[module_type][module_id];
+      }      
+      return moduleGuid ? moduleGuid : 'DRIVER';      
+    },
+
+    /**
      * @function getSeatCurrentID
      * @description callback to get current module id name for Seat View
      */
     getSeatCurrentID: function() {
-      var moduleId = this.currentSeatModel.ID;
-      var moduleName = this.moduleIDMapping[moduleId];
-      return moduleName ? moduleName : moduleId;
-    }.property('SDL.RCModulesController.currentSeatModel.ID'),
+      var moduleGuid = SDL.RCModulesController.currentSeatModel.UUID ? 
+      SDL.RCModulesController.currentSeatModel.UUID : 'DRIVER';
+      return moduleGuid;
+    }.property('SDL.RCModulesController.currentSeatModel.UUID'),
+
+    /**
+     * @function getLightCurrentID
+     * @description callback to get current module id name for Light View
+     */
+    getLightCurrentID: function() {
+      var moduleGuid = SDL.RCModulesController.currentLightModel.UUID ? 
+      SDL.RCModulesController.currentLightModel.UUID : 'DRIVER';
+      return "Module ID: " + moduleGuid;
+    }.property('SDL.RCModulesController.currentLightModel.UUID'),
+
+    /**
+     * @function getHmiSettingsCurrentID
+     * @description callback to get current module id name for HMI Settings View
+     */
+    getHmiSettingsCurrentID: function() {
+      var moduleGuid = SDL.RCModulesController.currentHMISettingsModel.UUID ? 
+      SDL.RCModulesController.currentHMISettingsModel.UUID : 'DRIVER';
+      return "Module ID: " + moduleGuid;
+    }.property('SDL.RCModulesController.currentHMISettingsModel.UUID'),
+
+    /**
+     * @function getClimateCurrentID
+     * @description callback to get current module id name for Climate View
+     */
+    getClimateCurrentID: function() {
+      var moduleGuid = SDL.RCModulesController.currentClimateModel.UUID ? 
+      SDL.RCModulesController.currentClimateModel.UUID : 'DRIVER';
+      return "Module ID: " + moduleGuid;
+    }.property('SDL.RCModulesController.currentClimateModel.UUID'),
+
+    /**
+     * @function getAudioCurrentID
+     * @description callback to get current module id name for Audio Views
+     */
+    getAudioCurrentID: function() {
+      var moduleGuid = SDL.RCModulesController.currentAudioModel.UUID ? 
+      SDL.RCModulesController.currentAudioModel.UUID : 'DRIVER';
+      return "Module ID: " + moduleGuid;
+    }.property('SDL.RCModulesController.currentAudioModel.UUID'),
+
+    /**
+     * @function getRadioCurrentID
+     * @description callback to get current module id name for Radio View
+     */
+    getRadioCurrentID: function() {
+      var moduleGuid = SDL.RCModulesController.currentRadioModel.UUID ? 
+      SDL.RCModulesController.currentRadioModel.UUID : 'DRIVER';
+      return "Module ID: " + moduleGuid;
+    }.property('SDL.RCModulesController.currentRadioModel.UUID'),
 
     /**
      * @description Function invoked when user changes a seat zone
@@ -573,16 +692,21 @@ SDL.RCModulesController = Em.Object.create({
      */
     setInteriorVehicleData: function(data) {
         var moduleUUId = data.params.moduleData.moduleId;
+        var moduleType = data.params.moduleData.moduleType;
+
         var moduleId = null;
-        for(key in this.moduleUUIDMapping) {
-          if(moduleUUId === this.moduleUUIDMapping[key]) {
-            moduleId = key;
+        if (this.moduleUUIDMapping.hasOwnProperty(moduleType)) {
+          for(key in this.moduleUUIDMapping[moduleType]) {
+            if(moduleUUId === this.moduleUUIDMapping[moduleType][key]) {
+              moduleId = key;
+            }
           }
         }
+        
         if('no_emulation' == FLAGS.VehicleEmulationType) {
           moduleId = FLAGS.VehicleEmulationType;
         }
-        var moduleType = data.params.moduleData.moduleType;
+        
         var dataToReturn = {};
         switch (moduleType) {
             case 'RADIO': 
@@ -755,18 +879,22 @@ SDL.RCModulesController = Em.Object.create({
      */
     getInteriorVehicleData: function(data) {
         var moduleUUId = data.params.moduleId;
+        var moduleType = data.params.moduleType;
+
         var moduleId = null;
-        for(key in this.moduleUUIDMapping) {
-          if(moduleUUId === this.moduleUUIDMapping[key]) {
-            moduleId = key;
+        if (this.moduleUUIDMapping.hasOwnProperty(moduleType)) {
+          for(key in this.moduleUUIDMapping[moduleType]) {
+            if(moduleUUId === this.moduleUUIDMapping[moduleType][key]) {
+              moduleId = key;
+            }
           }
         }
+
         if('no_emulation' == FLAGS.VehicleEmulationType) {
           moduleId = FLAGS.VehicleEmulationType;
         }
-        var moduleType = data.params.moduleType;
-        var dataToReturn = {};
 
+        var dataToReturn = {};
         switch(moduleType){
           case 'CLIMATE':{
             dataToReturn.climateControlData = this.climateModels[moduleId].getClimateControlData();
@@ -794,5 +922,32 @@ SDL.RCModulesController = Em.Object.create({
           }
         }
         return dataToReturn;
+    },
+
+    /**
+     * @function resetData
+     * @param {Object} data
+     * @param {String} module_name
+     * @description Method to reset data of a module after change parameters in vehicle
+     * editor
+     */
+    resetData: function(data,module_name) {
+      var parsed_data = JSON.parse(data);
+      var models = this.modelsNameMapping[module_name];
+      var self = this;
+      var setUUID = function(moduleID, UUID) {
+        self[models][moduleID].set('UUID', UUID);
+        self.moduleUUIDMapping[module_name][moduleID] = UUID;
+      }
+      if(Array.isArray(parsed_data)) {
+        for(value of parsed_data) {
+          var moduleId = SDL.VehicleModuleCoverageController.getModuleKeyName(value.location);
+          setUUID(moduleId, value.moduleId);
+        }
+        return;
+      }
+      var moduleId = SDL.VehicleModuleCoverageController.getModuleKeyName(parsed_data.location);
+      setUUID(moduleId, parsed_data.moduleId);
+
     }
 })

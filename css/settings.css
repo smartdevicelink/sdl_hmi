@@ -447,6 +447,18 @@
     left: 10px;;
 }
 
+#settingsView .lightModuleCurrent {
+    position: relative;
+    top: -15px;
+    left: 10px;
+}
+
+#settingsView .settingsModuleCurrent {
+    position: relative;
+    top: -15px;
+    left: 10px;
+}
+
 #HMI_settings_list .list-content .ffw-button,
 #light_list .list-content .ffw-button {
     width: 537px;

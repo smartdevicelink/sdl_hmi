@@ -262,21 +262,27 @@
 }
 
 #climate_control .heatedWindshieldEnable{
-    top: 270px;
+    top: 300px;
     left: 140px;
 }
 
 #climate_control .heatedRearWindowEnable{
-    top: 270px;
+    top: 300px;
     left: 256px;
 }
 
 #climate_control .heatedSteeringWheelEnable{
-    top: 270px;
+    top: 300px;
     left: 372px;
 }
 
 #climate_control .heatedMirrorsEnable{
-    top: 270px;
+    top: 300px;
     left: 488px;
+}
+
+#climate_control .climateModuleCurrent{
+    top: 265px;
+    width: 800px;
+    text-align: center;
 } 
