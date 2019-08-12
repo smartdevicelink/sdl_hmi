@@ -171,6 +171,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         this.set('caption', message.params.initialText.fieldText);
       }
       this.appID = message.params.appID;
+      this.cancelID = message.params.cancelID;
       if (message.params.interactionLayout) {
         switch (message.params.interactionLayout) {
           case 'ICON_ONLY' :

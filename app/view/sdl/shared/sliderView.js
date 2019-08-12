@@ -186,6 +186,7 @@ SDL.SliderView = SDL.SDLAbstractView.create(
     loadData: function(message) {
       var data = message.params;
       this.set('sliderRequestId', message.id);
+      this.set('cancelID', data.cancelID)
       this.set('headerLabel.content', data.sliderHeader);
       this.get('adjustControl.sliderValue').set('range', data.numTicks);
       this.get('adjustControl.sliderValue').set('value', data.position);
