@@ -662,7 +662,7 @@ SDL.SDLModelData = Em.Object.create(
         "systemCapability": {
           "systemCapabilityType": "DISPLAYS",
           "displayCapabilities": [{
-            "displayName": "MAIN",
+            "displayName": "SDL_HMI",
             "windowTypeSupported": [{
               "type": "MAIN",
               "maximumNumberOfWindows": 1
@@ -835,7 +835,7 @@ SDL.SDLModelData = Em.Object.create(
         "systemCapability": {
           "systemCapabilityType": "DISPLAYS",
           "displayCapabilities": [{
-            "displayName": "WIDGET",
+            "displayName": "SDL_HMI",
             "windowTypeSupported": [{
               "type": "MAIN",
               "maximumNumberOfWindows": 1
