@@ -1448,8 +1448,8 @@ SDL.SDLController = Em.Object.extend(
       };
 
       let compareSchemesByColor = function (lhs, rhs, color) {
-         let colorInLhs = color in lhs;
-         let colorRhs = color in rhs;
+         let colorInLhs = lhs ? color in lhs : null;
+         let colorRhs = rhs ? color in rhs : null;
          if(colorInLhs && colorRhs) {
            return isColorEqual(lhs[color], rhs[color]);
          } else if (!colorInLhs && !colorRhs) {
