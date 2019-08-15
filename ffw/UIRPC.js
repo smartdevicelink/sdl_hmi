@@ -1239,7 +1239,7 @@ FFW.UI = FFW.RPCObserver.create(
           'result': {
             'code': SDL.SDLModel.data.resultCode.WARNINGS,
             'method': 'UI.PerformInteraction',
-            'message': 'Unsupported ' + this.errorResponsePull[requestID].type 
+            'info': 'Unsupported ' + this.errorResponsePull[requestID].type 
                 + ' type. Available data in request was processed.'
           }
         }
