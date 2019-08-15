@@ -352,6 +352,7 @@ SDL.templateCapabilities = {
                 "CLOCKTEXT3", "CLOCKTEXT4"
             ],
             "graphicSupported": true,
+            "menuLayoutsAvailable": ["LIST"],
             "imageCapabilities": ["DYNAMIC", "STATIC"],
             "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP"],
             "screenParams": {
@@ -811,6 +812,7 @@ SDL.templateCapabilities = {
                 "CLOCKTEXT3", "CLOCKTEXT4"
             ],
             "graphicSupported": true,
+            "menuLayoutsAvailable": ["LIST"],
             "imageCapabilities": ["DYNAMIC", "STATIC"],
             "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP"],
             "screenParams": {
@@ -1277,6 +1279,7 @@ SDL.templateCapabilities = {
                 "CLOCKTEXT3", "CLOCKTEXT4"
             ],
             "graphicSupported": true,
+            "menuLayoutsAvailable": ["LIST"],
             "imageCapabilities": ["DYNAMIC", "STATIC"],
             "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP"],
             "screenParams": {
@@ -1707,6 +1710,7 @@ SDL.templateCapabilities = {
                 "CLOCKTEXT3", "CLOCKTEXT4"
             ],
             "graphicSupported": true,
+            "menuLayoutsAvailable": ["LIST"],
             "imageCapabilities": ["DYNAMIC", "STATIC"],
             "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP"],
             "screenParams": {
