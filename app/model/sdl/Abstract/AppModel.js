@@ -521,9 +521,9 @@ SDL.ABSAppModel = Em.Object.extend(
         }
         if(request.params.cmdIcon){
           var image = request.params.cmdIcon.value;
-          var length=image.length;
+          var search_offset = image.lastIndexOf('.');
           str='.png';
-          var isPng=image.includes(str,length-5);
+          var isPng=image.includes(str, search_offset);
           if(!isPng){
           FFW.UI.sendUIResult(
             SDL.SDLModel.data.resultCode.WARNINGS, request.id,
