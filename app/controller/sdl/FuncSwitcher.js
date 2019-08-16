@@ -59,7 +59,6 @@ SDL.FuncSwitcher = Em.Object.create(
     }.property('FLAGS.SimpleFunctionality'),
     rev: function() {
       var result = parseInt(FLAGS.SimpleFunctionality) === 1;
-      SDL.NavigationModel.set('poi', !result);
       return result;
     }.property('FLAGS.SimpleFunctionality'),
     pan: function() {

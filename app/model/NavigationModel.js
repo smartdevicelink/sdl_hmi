@@ -40,19 +40,14 @@ SDL.NavigationModel = Em.Object.create({
   appReqPull: [],
 
   /**
-   * Start navigation point
+   * Initial location point
    */
-  startLoc: '98 Walker St, New York, NY 10013, USA',
+  initialLoc: '230 Canal St, New York, NY 10013, USA',
 
   /**
-   * End navigation point
+   * WP list switcher flag
    */
-  endLoc: '128 Seaman Ave, New York, NY 10034, USA',
-
-  /**
-   * POI list switcher flag
-   */
-  poi: true,
+  wp: false,
 
   /**
    * Content for code editor view to display current waypoint data
@@ -68,110 +63,26 @@ SDL.NavigationModel = Em.Object.create({
    * Delay Time in ms
    * used to set the delay of GetWayPoints response
    */
-  wpProcessTime: 4000,
+  wpProcessTime: 5,
 
-  LocationDetails: [
-      {
-        coordinate: {
-          latitudeDegrees: 0,
-          longitudeDegrees: 0
-        },
-        locationName: 'locationName',
-        addressLines: ['addressLines'],
-        locationDescription: 'locationDescription',
-        phoneNumber: 'phoneNumber',
-        locationImage: {
-          value: 'images/common/defaultButtonImage.png',
-          imageType: 'DYNAMIC'
-        },
-        searchAddress: {
-          countryName: 'countryName',
-          countryCode: 'countryCode',
-          postalCode: 'postalCode',
-          administrativeArea: 'administrativeArea',
-          subAdministrativeArea: 'subAdministrativeArea',
-          locality: 'locality',
-          subLocality: 'subLocality',
-          thoroughfare: 'thoroughfare',
-          subThoroughfare: 'subThoroughfare'
-        }
-      },
-      {
-        coordinate: {
-          latitudeDegrees: 0,
-          longitudeDegrees: 0
-        },
-        locationName: 'locationName',
-        addressLines: ['addressLines'],
-        locationDescription: 'locationDescription',
-        phoneNumber: 'phoneNumber',
-        locationImage: {
-          value: 'images/common/defaultButtonImage.png',
-          imageType: 'DYNAMIC'
-        },
-        searchAddress: {
-          countryName: 'countryName',
-          countryCode: 'countryCode',
-          postalCode: 'postalCode',
-          administrativeArea: 'administrativeArea',
-          subAdministrativeArea: 'subAdministrativeArea',
-          locality: 'locality',
-          subLocality: 'subLocality',
-          thoroughfare: 'thoroughfare',
-          subThoroughfare: 'subThoroughfare'
-        }
-      },
-      {
-        coordinate: {
-          latitudeDegrees: 0,
-          longitudeDegrees: 0
-        },
-        locationName: 'locationName',
-        addressLines: ['addressLines'],
-        locationDescription: 'locationDescription',
-        phoneNumber: 'phoneNumber',
-        locationImage: {
-          value: 'images/common/defaultButtonImage.png',
-          imageType: 'DYNAMIC'
-        },
-        searchAddress: {
-          countryName: 'countryName',
-          countryCode: 'countryCode',
-          postalCode: 'postalCode',
-          administrativeArea: 'administrativeArea',
-          subAdministrativeArea: 'subAdministrativeArea',
-          locality: 'locality',
-          subLocality: 'subLocality',
-          thoroughfare: 'thoroughfare',
-          subThoroughfare: 'subThoroughfare'
-        }
-      },
-      {
-        coordinate: {
-          latitudeDegrees: 0,
-          longitudeDegrees: 0
-        },
-        locationName: 'locationName',
-        addressLines: ['addressLines'],
-        locationDescription: 'locationDescription',
-        phoneNumber: 'phoneNumber',
-        locationImage: {
-          value: 'images/common/defaultButtonImage.png',
-          imageType: 'DYNAMIC'
-        },
-        searchAddress: {
-          countryName: 'countryName',
-          countryCode: 'countryCode',
-          postalCode: 'postalCode',
-          administrativeArea: 'administrativeArea',
-          subAdministrativeArea: 'subAdministrativeArea',
-          locality: 'locality',
-          subLocality: 'subLocality',
-          thoroughfare: 'thoroughfare',
-          subThoroughfare: 'subThoroughfare'
-        }
-      }
-    ]
+  /**
+   * Current location of the vehicle
+   */
+  vehicleLocationMarker: null,
 
+  /**
+   * Selected location
+   */
+  selectedLocationMarker: null,
+
+  /**
+   * Saved waypoints array
+   */
+  WayPointDetails: [],
+
+  /**
+   * Waypoint markers array
+   */
+  WayPointMarkers: []
 }
 );

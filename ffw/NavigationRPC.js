@@ -572,32 +572,55 @@ FFW.Navigation = FFW.RPCObserver.create(
       }
     },
     /**
+     * Clears empty waypoint data lines
+     */
+    clearWayPointData: function(data, stack) {
+      var result = SDL.deepCopy(data);
+      for (var key in result) {
+        if (typeof result[key] == 'object') {
+          result[key] = this.clearWayPointData(
+            result[key], key + '.'
+          );
+          if (Object.keys(result[key]).length === 0) {
+            delete result[key];
+          }
+        } else if (typeof result[key] == 'string' && result[key] == "") {
+          delete result[key];
+        }
+      }
+      if (result.locationImage && result.locationImage.value == null) {
+        delete result['locationImage'];
+      }
+      if (result.timeStamp) {
+        delete result['timeStamp'];
+      }
+      return result;
+    },
+    /**
      * Response sender for GetWayPoints request
      *
      * @param {Number} resultCode
      * @param {Object} data
      * @param {number} id
      */
-    wayPointSend: function(resultCode, data, id, appID) {
+    wayPointSend: function(resultCode, data, request) {
       if (resultCode == SDL.SDLModel.data.resultCode.SUCCESS &&
-        data && id) {
+        data && request.id) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
-          'id': id,
+          'id': request.id,
           'result': {
             'code': resultCode, // type (enum) from SDL protocol
-            'appID': appID,
             'wayPoints': data,
             'method': 'Navigation.GetWayPoints'
           }
         };
+        data = this.clearWayPointData(data);
+        if (data.length > 0) {
+          JSONMessage.result.wayPoints = data;
+        }
         this.client.send(JSONMessage);
-      } else if (resultCode == SDL.SDLModel.data.resultCode.IN_USE) {
-        FFW.Navigation.sendError(
-          resultCode, id, 'Navigation.GetWayPoints',
-          'Current WayPoint is under processing'
-        );
       }
     },
     /**
@@ -606,6 +629,7 @@ FFW.Navigation = FFW.RPCObserver.create(
      * @param {Object} data
      */
     onWayPointChange: function(data) {
+      data = this.clearWayPointData(data);
       var JSONMessage = {
         'jsonrpc': '2.0',
         'method': 'Navigation.OnWayPointChange',

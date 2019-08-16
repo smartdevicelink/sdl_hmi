@@ -17,20 +17,73 @@
     top: 70px;
     left: 15px;
     z-index: 1;
+    position: absolute;
 }
 
-.POIButton {
+#poiList .list-content {
+    border-top: 0px;
+}
+
+#poiList .list-item {
+    overflow: hidden;
+}
+
+#wpList {
+    top: 70px;
+    left: 15px;
     z-index: 1;
-    top: 335px;
-    left: 20px;
-    width: 50px;
-    text-align: center;
+    position: absolute;
+}
+
+#wpList .list-content {
+    border-top: 0px;
+}
+
+#wpList .list-item {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#wpList .right_text{
+    position: absolute;
 }
 
 .navigationButton {
+    z-index: 1;
+    top: 335px;
+    left: 20px;
+    width: 80px;
+    text-align: center;
+}
+
+.WPButton {
+    z-index: 1;
+    top: 335px;
+    left: 110px;
+    width: 125px;
+    text-align: center;
+}
+
+.AddWP {
+    z-index: 1;
+    top: 335px;
+    left: 245px;
+    width: 125px;
+    text-align: center;
+}
+
+.clearButton {
+    z-index: 1;
     bottom: 60px;
     left: 20px;
     width: 80px;
+    text-align: center;
+}
+
+.animateButton {
+    bottom: 60px;
+    left: 110px;
+    width: 125px;
     text-align: center;
 }
 
