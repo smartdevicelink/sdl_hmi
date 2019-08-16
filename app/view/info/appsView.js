@@ -66,57 +66,30 @@ SDL.InfoAppsView = Em.ContainerView.create({
     var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
 
     for (i = 0; i < apps.length; i++) {
+      appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+      iconTemplateName = SDL.SDLModel.data.registeredApps[appIndex].isTemplateIcon ===true ?
+      'rightTextOverLay':
+      'rightText';
+
+      var disabledToActivate = false;
       if (apps[i].appType.indexOf('REMOTE_CONTROL') === -1) {
-        appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
-        iconTemplateName = SDL.SDLModel.data.registeredApps[appIndex].isTemplateIcon ===true ?
-        'rightTextOverLay':
-        'rightText';
-
-        this.get('listOfApplications.list.childViews').
-               pushObject(SDL.Button.create({
-                   action: 'onActivateSDLApp',
-                   target: 'SDL.SDLController',
-                   text: apps[i].appName + ' - ' + apps[i].deviceName,
-                   appName: apps[i].appName,
-                   appID: apps[i].appID,
-                   classNames: 'list-item button',
-                   iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
-                   '.appIcon',
-                   disabled: apps[i].disabledToActivate,
-                   templateName: iconTemplateName
-                 }
-                 )
-               );
-      } else if (apps[i].appType.indexOf('REMOTE_CONTROL') != -1 &&
-        apps[i].level != 'NONE' &&
-        apps[i].level != 'BACKGROUND' ||
-        SDL.SDLModel.driverDeviceInfo &&
-        apps[i].deviceName === SDL.SDLModel.driverDeviceInfo.name) {
-
-        var driverDevice = (
-        SDL.SDLModel.driverDeviceInfo &&
-        apps[i].deviceName == SDL.SDLModel.driverDeviceInfo.name);
-
-        appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
-        iconTemplateName = SDL.SDLModel.data.registeredApps[appIndex].isTemplateIcon ===true ?
-        'rightTextOverLay':
-        'rightText';
-        this.get('listOfApplications.list.childViews').
-               pushObject(SDL.Button.create({
-                   action: driverDevice ? 'onActivateSDLApp' :
-                     'onDeactivatePassengerApp',
-                   target: 'SDL.SDLController',
-                   text: apps[i].appName + ' - ' + apps[i].deviceName,
-                   appName: apps[i].appName,
-                   appID: apps[i].appID,
-                   classNames: 'list-item button',
-                   iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
-                   '.appIcon',
-                   disabled: false,
-                   templateName: iconTemplateName
-                 })
-               );
+          disabledToActivate = apps[i].disabledToActivate;
       }
+
+      this.get('listOfApplications.list.childViews').
+              pushObject(SDL.Button.create({
+                  action: 'onActivateSDLApp',
+                  target: 'SDL.SDLController',
+                  text: apps[i].appName + ' - ' + apps[i].deviceName,
+                  appName: apps[i].appName,
+                  appID: apps[i].appID,
+                  classNames: 'list-item button',
+                  iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
+                  '.appIcon',
+                  disabled: disabledToActivate,
+                  templateName: iconTemplateName
+                })
+              );
     }
 
   },

@@ -59,26 +59,41 @@ FFW.Navigation = FFW.RPCObserver.create(
     /**
      * access to basic RPC functionality
      */
-    client: FFW.RPCClient.create(
-      {
-        componentName: 'Navigation'
-      }
-    ),
+    client: FFW.RPCClient,
     onAudioDataStreamingSubscribeRequestID: -1,
     onVideoDataStreamingSubscribeRequestID: -1,
     onAudioDataStreamingUnsubscribeRequestID: -1,
     onVideoDataStreamingUnsubscribeRequestID: -1,
     onAudioDataStreamingNotification: 'Navigation.OnAudioDataStreaming',
     onVideoDataStreamingNotification: 'Navigation.OnVideoDataStreaming',
+    componentName: "Navigation",
     // temp var for debug
     appID: 1,
     /**
      * connect to RPC bus
      */
     connect: function() {
-      this.client.connect(this, 800); // Magic number is unique identifier for
-      // component
+      this.client.connect(this.componentName, this);
     },
+
+    /**
+     * @function sendMessage
+     * @param {Em.Object} JSONMessage
+     * @desc sending message to SDL
+     */
+    sendMessage: function(JSONMessage){
+      this.client.send(JSONMessage, this.componentName);
+    },
+
+    /**
+     * @function subscribeToNotification
+     * @param {Em.Object} notification
+     * @desc subscribe to notifications from SDL
+     */
+    subscribeToNotification: function(notification){
+      this.client.subscribeToNotification(notification, this.componentName);
+    },
+
     /**
      * disconnect from RPC bus
      */
@@ -86,6 +101,7 @@ FFW.Navigation = FFW.RPCObserver.create(
       this.onRPCUnregistered();
       this.client.disconnect();
     },
+
     /**
      * Client is registered - we can send request starting from this point of
      * time
@@ -94,9 +110,9 @@ FFW.Navigation = FFW.RPCObserver.create(
       Em.Logger.log('FFW.Navigation.onRPCRegistered');
       this._super();
       // subscribe to notifications
-      this.onAudioDataStreamingSubscribeRequestID = this.client
+      this.onAudioDataStreamingSubscribeRequestID = this
         .subscribeToNotification(this.onAudioDataStreamingNotification);
-      this.onVideoDataStreamingSubscribeRequestID = this.client
+      this.onVideoDataStreamingSubscribeRequestID = this
         .subscribeToNotification(this.onVideoDataStreamingNotification);
     },
     /**
@@ -229,7 +245,7 @@ FFW.Navigation = FFW.RPCObserver.create(
                 'method': 'Navigation.IsReady'
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'Navigation.GetWayPoints':
@@ -427,7 +443,7 @@ FFW.Navigation = FFW.RPCObserver.create(
                   'rejectedParams': rejectedParams
                 }
               };
-              this.client.send(JSONMessage);
+              this.sendMessage(JSONMessage);
             } else {
               this.sendNavigationResult(
                 SDL.SDLModel.data.resultCode.SUCCESS,
@@ -534,7 +550,7 @@ FFW.Navigation = FFW.RPCObserver.create(
             }
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -568,7 +584,7 @@ FFW.Navigation = FFW.RPCObserver.create(
             'method': method
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -592,7 +608,7 @@ FFW.Navigation = FFW.RPCObserver.create(
             'method': 'Navigation.GetWayPoints'
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       } else if (resultCode == SDL.SDLModel.data.resultCode.IN_USE) {
         FFW.Navigation.sendError(
           resultCode, id, 'Navigation.GetWayPoints',
@@ -613,7 +629,7 @@ FFW.Navigation = FFW.RPCObserver.create(
           'wayPoints': data
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notifies if TBTClientState was activated
@@ -631,7 +647,7 @@ FFW.Navigation = FFW.RPCObserver.create(
           'state': state
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     }
   }
 );
