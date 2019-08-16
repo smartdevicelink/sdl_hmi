@@ -189,10 +189,10 @@ FFW.BasicCommunication = FFW.RPCObserver
         this._super();
         if(response.result.method == 'SDL.GetPolicyConfigurationData') {
           var policyConfigRequestsData = SDL.SDLModel.data.getPolicyConfigurationDataRequestsList;
-          var dataToremove = null;
-          policyConfigRequestsData.forEach(requstedData => {
-            if(requstedData.id == response.id) {
-              dataToremove = requstedData;
+          var dataToRemove = null;
+          policyConfigRequestsData.forEach(requestedData => {
+            if(requestedData.id == response.id) {
+              dataToRemove = requestedData;
 
               var resultCode = SDL.SDLModel.data.resultCode;
               if(response.result.code !== resultCode.SUCCESS) {
@@ -215,8 +215,8 @@ FFW.BasicCommunication = FFW.RPCObserver
                   var data = JSON.parse(element);
                   if(typeof data === 'object') {
                     for(key in data) {
-                      if(requstedData.nestedProperty == key &&
-                      requstedData.property == 'endpoint_properties') {
+                      if(requestedData.nestedProperty == key &&
+                      requestedData.property == 'endpoint_properties') {
                         policyConfigData.forEach(configData => {
                           if(undefined !== configData[key] &&
                               data[key]['version'] !== configData[key]['version']) {
@@ -229,8 +229,8 @@ FFW.BasicCommunication = FFW.RPCObserver
                           }
                         })
                       }
-                      else if (requstedData.nestedProperty == key &&
-                      requstedData.property == 'endpoints') {
+                      else if (requestedData.nestedProperty == key &&
+                      requestedData.property == 'endpoints') {
                         if(undefined !== data[key]) {
                           if(key == 'custom_vehicle_data_mapping_url') {
                             var fileName = "/tmp/fs/mp/images/ivsu_cache/oemMappingTable.json";
@@ -262,7 +262,7 @@ FFW.BasicCommunication = FFW.RPCObserver
             }
           })
 
-          var index = policyConfigRequestsData.indexOf(dataToremove);
+          var index = policyConfigRequestsData.indexOf(dataToRemove);
           if(-1 <= index) {
             policyConfigRequestsData.splice(index,1);
           }
