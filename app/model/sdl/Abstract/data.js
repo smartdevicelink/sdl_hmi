@@ -688,7 +688,7 @@ SDL.SDLModelData = Em.Object.create(
               }],
               "imageTypeSupported": ["STATIC"],
               "numCustomPresetsAvailable": 8,
-              "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP"],
+              "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
               "buttonCapabilities": [
                 {
                   "longPressAvailable": true,
@@ -861,7 +861,7 @@ SDL.SDLModelData = Em.Object.create(
               }],
               "imageTypeSupported": ["STATIC"],
               "numCustomPresetsAvailable": 8,
-              "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP"],
+              "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
               "buttonCapabilities": [
                 {
                   "longPressAvailable": true,
