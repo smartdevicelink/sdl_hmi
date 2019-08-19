@@ -709,7 +709,7 @@ FFW.BasicCommunication = FFW.RPCObserver
             'property': data.property
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       },
       /**
        * Send request if application was activated
@@ -778,25 +778,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         if (appID) {
           JSONMessage.params.appID = appID;
-        }
-        this.sendMessage(JSONMessage);
-      },
-      /**
-       * Send request if application was activated
-       *
-       * @param {Number} type
-       */
-      GetURLS: function(type) {
-        Em.Logger.log('FFW.SDL.GetURLS: Request from HMI!');
-        // send notification
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': this.client.generateId(),
-          'method': 'SDL.GetURLS',
-          'params': {}
-        };
-        if (type) {
-          JSONMessage.params.service = type;
         }
         this.sendMessage(JSONMessage);
       },
