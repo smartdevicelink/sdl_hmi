@@ -42,6 +42,11 @@ FFW.BasicCommunication = FFW.RPCObserver
        * were some kind of errors Error codes will be injected into response.
        */
       errorResponsePull: {},
+      /**
+       * Contains keys and versions from vehicle data mapping which should be updated
+       * once PTU sequence is finished (SystemRequest is received)
+       */
+      pendingVersionsToApply: {},
       onPutFileSubscribeRequestID: -1,
       onStatusUpdateSubscribeRequestID: -1,
       onAppPermissionChangedSubscribeRequestID: -1,
@@ -217,11 +222,16 @@ FFW.BasicCommunication = FFW.RPCObserver
                     for(key in data) {
                       if(requestedData.nestedProperty == key &&
                       requestedData.property == 'endpoint_properties') {
-                        policyConfigData.forEach(configData => {
+                        var self = this;
+                        policyConfigData.forEach(function(configData, configIndex) {
                           if(undefined !== configData[key] &&
                               data[key]['version'] !== configData[key]['version']) {
-                            configData[key]['version'] = data[key]['version'];
-                            this.GetPolicyConfigurationData({
+                            if (!self.pendingVersionsToApply.hasOwnProperty(configIndex)) {
+                              self.pendingVersionsToApply[configIndex] = {};
+                            }
+                            self.pendingVersionsToApply[configIndex][key] = data[key]['version'];
+
+                            self.GetPolicyConfigurationData({
                               policyType: 'module_config',
                               property: 'endpoints',
                               nestedProperty: 'custom_vehicle_data_mapping_url'
@@ -498,11 +508,27 @@ FFW.BasicCommunication = FFW.RPCObserver
             SDL.InfoAppsView.showAppList();
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
-            if(FLAGS.ExternalPolicies === true) {
+            if (FLAGS.ExternalPolicies === true) {
               FFW.ExternalPolicies.unpack(request.params.fileName);
             } else {
               this.OnReceivedPolicyUpdate(request.params.fileName);
             }
+
+            if (request.params.requestType == 'OEM_SPECIFIC' &&
+                request.params.requestSubType == 'VEHICLE_DATA_MAPPING') {
+              var policyConfigData = SDL.SDLModel.data.policyConfigData;
+              var self = this;
+              policyConfigData.forEach(function(configData, configIndex) {
+                if (self.pendingVersionsToApply.hasOwnProperty(configIndex)) {
+                  var configVersionsToApply = self.pendingVersionsToApply[configIndex];
+                  Object.keys(configVersionsToApply).forEach(keyToApply => {
+                    configData[keyToApply]['version'] = configVersionsToApply[keyToApply];
+                  });
+                  delete self.pendingVersionsToApply[configIndex];
+                }
+              });
+            }
+
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,
