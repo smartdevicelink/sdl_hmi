@@ -1116,9 +1116,6 @@ SDL.SDLModel = Em.Object.extend({
 
     if (!SDL.SDLController.getApplicationModel(message.params.appID
       ).activeRequests.uiPerformInteraction) {
-      SDL.SDLController.getApplicationModel(message.params.appID
-      ).activeRequests.uiPerformInteraction = message.id;
-
       if (message.params && message.params.vrHelpTitle &&
         message.params.vrHelp) {
 
@@ -1127,6 +1124,17 @@ SDL.SDLModel = Em.Object.extend({
         );
         SDL.SDLModel.data.set('interactionData.vrHelp', message.params.vrHelp);
       }
+
+      SDL.InteractionChoicesView.cancelID = message.params.cancelID;
+
+      if (message.params && message.params.choiceSet == null) {
+        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, 
+          message.id, 'UI.PerformInteraction');
+        return true;
+      }
+
+      SDL.SDLController.getApplicationModel(message.params.appID)
+        .activeRequests.uiPerformInteraction = message.id;
 
       SDL.InteractionChoicesView.activate(message);
       SDL.SDLController.VRMove();
