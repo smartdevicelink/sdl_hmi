@@ -928,11 +928,11 @@ FFW.UI = FFW.RPCObserver.create(
                   },
                   'numCustomPresetsAvailable': 10
                 },
-                'audioPassThruCapabilities': {
+                'audioPassThruCapabilitiesList': [{
                   'samplingRate': '44KHZ',
                   'bitsPerSample': '8_BIT',
                   'audioType': 'PCM'
-                },
+                }],
                 'hmiZoneCapabilities': 'FRONT',
                 'softButtonCapabilities': [
                   {
