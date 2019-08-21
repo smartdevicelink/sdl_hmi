@@ -67,7 +67,7 @@ SDL.systemCapabilities =
             }
         ],
         hapticSpatialDataSupported: true,
-        diagonalScreenSize: 22,
+        diagonalScreenSize: 8,
         pixelPerInch: 96,
         scale: 1
     }
