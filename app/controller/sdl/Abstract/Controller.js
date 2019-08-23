@@ -45,6 +45,7 @@ SDL.SDLController = Em.Object.extend(
         }
         return size;
       };
+      this.updateCustomVehicleDataTypesMapping();
     },
     /**
      * Active application model binding type {SDLAppModel}
@@ -382,6 +383,23 @@ SDL.SDLController = Em.Object.extend(
       return 0;
     },
     /**
+     * @description Updates custom OEM data types according to current VD
+     */
+    updateCustomVehicleDataTypesMapping() {
+      for (key in SDL.SDLVehicleInfoModel.eVehicleDataType) {
+        if (SDL.SDLVehicleInfoModel.eVehicleDataType[key] == 'VEHICLEDATA_OEM_CUSTOM_DATA' &&
+            !SDL.SDLVehicleInfoModel.vehicleData.hasOwnProperty(key)) {
+          delete SDL.SDLVehicleInfoModel.eVehicleDataType[key];
+        }
+      }
+
+      for (key in SDL.SDLVehicleInfoModel.vehicleData) {
+        if (!SDL.SDLVehicleInfoModel.eVehicleDataType.hasOwnProperty(key)) {
+          SDL.SDLVehicleInfoModel.eVehicleDataType[key] = 'VEHICLEDATA_OEM_CUSTOM_DATA';
+        }
+      }
+    },
+    /**
      * vehicleDataChange button handler on VehicleInfo View
      */
     vehicleDataChange: function() {
@@ -390,21 +408,18 @@ SDL.SDLController = Em.Object.extend(
           var params = {};
           var parsedData = JSON.parse(data);
           for (var i in parsedData) {
-            if(undefined === SDL.SDLVehicleInfoModel.vehicleData[i]) {
-              SDL.SDLVehicleInfoModel.eVehicleDataType[i] = 'VEHICLEDATA_OEM_CUSTOM_DATA';
-              params[i] = parsedData[i];
-              continue;
-            }
-            if (SDL.SDLController.compareObjects(
-                SDL.SDLVehicleInfoModel.vehicleData[i],
-                parsedData[i]
-              )
-            ) {
+            if (undefined === SDL.SDLVehicleInfoModel.vehicleData[i] ||
+                SDL.SDLController.compareObjects(
+                  SDL.SDLVehicleInfoModel.vehicleData[i],
+                  parsedData[i]
+                )) {
               params[i] = parsedData[i];
             }
           }
           SDL.SDLVehicleInfoModel.vehicleData = parsedData;
-          if (params) {
+          SDL.SDLController.updateCustomVehicleDataTypesMapping();
+
+          if (Object.keys(params).length > 0) {
             FFW.VehicleInfo.OnVehicleData(params);
           }
         }
