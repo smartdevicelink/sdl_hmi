@@ -66,10 +66,11 @@ SDL.InfoAppsView = Em.ContainerView.create({
     var i, apps = SDL.SDLModel.data.registeredApps, appIndex;
 
     for (i = 0; i < apps.length; i++) {
-      appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
-      iconTemplateName = SDL.SDLModel.data.registeredApps[appIndex].isTemplateIcon ===true ?
-      'rightTextOverLay':
-      'rightText';
+      var title = SDL.SDLController.generateAppWidgetTitle(apps[i].templateConfiguration);
+        appIndex = SDL.SDLModel.data.registeredApps.indexOf(apps[i]);
+        iconTemplateName = SDL.SDLModel.data.registeredApps[appIndex].isTemplateIcon ===true ?
+        'rightTextOverLay':
+        'rightText';
 
       var disabledToActivate = false;
       if (apps[i].appType.indexOf('REMOTE_CONTROL') === -1) {
@@ -77,21 +78,23 @@ SDL.InfoAppsView = Em.ContainerView.create({
       }
 
       this.get('listOfApplications.list.childViews').
-              pushObject(SDL.Button.create({
-                  action: 'onActivateSDLApp',
-                  target: 'SDL.SDLController',
-                  text: apps[i].appName + ' - ' + apps[i].deviceName,
-                  appName: apps[i].appName,
-                  appID: apps[i].appID,
-                  classNames: 'list-item button',
-                  iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
-                  '.appIcon',
-                  disabled: disabledToActivate,
-                  templateName: iconTemplateName
-                })
-              );
-    }
-
+        pushObject(SDL.Button.create({
+            action: 'onActivateSDLApp',
+            target: 'SDL.SDLController',
+            attributeBindings: ['title:title'],
+            title: title,
+            text: apps[i].appName + ' - ' + apps[i].deviceName,
+            appName: apps[i].appName,
+            appID: apps[i].appID,
+            classNames: 'list-item button',
+            iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
+            '.appIcon',
+            disabled: disabledToActivate,
+            templateName: iconTemplateName
+          })
+        );
+      }
+      SDL.AddWidgetPopUp.updateWidgetList();
   },
 
   vehicleHealthReport: SDL.Button.extend({

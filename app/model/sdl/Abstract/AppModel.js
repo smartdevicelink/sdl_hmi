@@ -210,6 +210,11 @@ SDL.ABSAppModel = Em.Object.extend(
      * @type {String}
      */
     appType: '',
+
+    /**
+     * @name initialColorScheme
+     */
+    initialColorScheme: {},
     /**
      * Navigation streaming url
      */
@@ -310,6 +315,50 @@ SDL.ABSAppModel = Em.Object.extend(
      * @type {Boolean}
      */
     tbtActivate: false,
+
+    /**
+     * @param inactiveWindows
+     * @type {Array}
+     * @description Created window by the current application in NONE state
+     */
+    inactiveWindows: [],
+
+     /**
+     * @param backgroundWindows
+     * @type {Array}
+     * @description Created window by the current application in not visible state
+     */
+    backgroundWindows: [],
+
+    /**
+     * @param activeWindows
+     * @type {Array}
+     * @description Created window by the current application in visible state
+     */
+    activeWindows: [],
+
+    /**
+     * @param defaultTemplateConfiguration
+     * @type {Object}
+     * @description template configuration app is registered with
+     */
+    defaultTemplateConfiguration: {},
+
+    /**
+     * @param templateConfiguration
+     * @type {Object}
+     * @description current template configuration of an app
+     */
+    templateConfiguration: {},
+
+    /**
+     * @param unregisteringInProgress
+     * @type {Boolean}
+     * @description parameter to handle an application currently is in unregistering
+     *  and clearing data
+     */
+    unregisteringInProgress: false,
+
     /**
      * Setter method for navigation subscription buttons
      *
@@ -472,9 +521,9 @@ SDL.ABSAppModel = Em.Object.extend(
         }
         if(request.params.cmdIcon){
           var image = request.params.cmdIcon.value;
-          var length=image.length;
+          var search_offset = image.lastIndexOf('.');
           str='.png';
-          var isPng=image.includes(str,length-5);
+          var isPng=image.includes(str, search_offset);
           if(!isPng){
           FFW.UI.sendUIResult(
             SDL.SDLModel.data.resultCode.WARNINGS, request.id,
@@ -608,6 +657,236 @@ SDL.ABSAppModel = Em.Object.extend(
     onSlider: function(message) {
       SDL.SliderView.loadData(message);
       SDL.SliderView.activate(this.appName, message.params.timeout);
-    }
+    },
+
+    /**
+     * @function createWindow
+     * @param {Object} windowParam
+     * @description Called after receiving CreateWindow request 
+     */
+    createWindow: function(windowParam) {
+      windowParam.content = {"templateConfiguration" : this.defaultTemplateConfiguration};
+      this.inactiveWindows.push(windowParam);
+    },
+
+    /**
+     * @function deleteWindow
+     * @param {Object} windowParam
+     * @description Called after receiving DeleteWindow request 
+     */
+    deleteWindow: function(windowParam) {
+      if(this.unregisteringInProgress) {
+        return;
+      }
+      
+      this.inactiveWindows.forEach(function(element, index, array) {
+        if(element.windowID == windowParam.windowID) {
+          array.splice(index,1);
+          return;
+        }
+      });
+
+      var self = this;
+      this.backgroundWindows.forEach(function(element, index, array) {
+        if(element.windowID == windowParam.windowID) {
+          array.splice(index,1);
+          SDL.RightSideView.getWidgetContainer().removeWidget(self.appID, windowParam.windowID);
+        }
+      });
+
+      this.activeWindows.forEach(function(element, index, array) {
+        if(element.windowID == windowParam.windowID) {
+          array.splice(index,1);
+          SDL.RightSideView.getWidgetContainer().removeWidget(self.appID, windowParam.windowID);
+        }
+      });
+    },
+    
+    /**
+     * @function getDuplicateWidgets
+     * @param {Integer} windowID 
+     * @description Get widget models that duplicate windowID
+     * @return {Array} array of duplicate widgets
+     */
+    getDuplicateWidgets: function (windowID) {
+      let duplicateWidgets = [];
+
+      let populateDuplicateWidgets = function (element) {
+        if (element.duplicateUpdatesFromWindowID === windowID) {
+          duplicateWidgets.push(element);
+        }
+      };
+
+      this.activeWindows.forEach(populateDuplicateWidgets);
+      this.backgroundWindows.forEach(populateDuplicateWidgets);
+      this.inactiveWindows.forEach(populateDuplicateWidgets);
+
+      return duplicateWidgets;
+    },
+    
+    /**
+     * @function activateWindow
+     * @param {Object} window 
+     * @description Called for moving widget to active state
+     */
+    activateWindow: function(window) {
+      if(this.unregisteringInProgress) {
+        return;
+      }
+      var self = this;
+      this.backgroundWindows.forEach(function(element, index, array) {
+        if(element.windowID == window.windowID) {
+          self.activeWindows.push(element);
+          array.splice(index,1);
+        }
+      });
+
+      this.inactiveWindows.forEach(function(element, index, array) {
+        if(element.windowID == window.windowID) {
+          self.backgroundWindows.push(element);
+          array.splice(index,1);
+        }
+      });
+      FFW.BasicCommunication.OnAppActivated(window.appID, window.windowID);
+    },
+
+    /**
+     * @function deactivateWindow
+     * @param {Object} window 
+     * @description Called for moving widget to inactive state
+     */
+    deactivateWindow: function(window) {
+      if(this.unregisteringInProgress) {
+        return;
+      }
+
+      var self = this;
+      this.backgroundWindows.forEach(function(element, index, array) {
+        if(element.windowID == window.windowID) {
+          delete element.content;
+          element.content = {"templateConfiguration" : self.defaultTemplateConfiguration};
+          self.inactiveWindows.push(element);
+          array.splice(index,1);
+        }
+      });
+
+      this.activeWindows.forEach(function(element, index, array) {
+        if(element.windowID == window.windowID) {
+          self.backgroundWindows.push(element);
+          array.splice(index,1);
+        }
+      });
+      FFW.BasicCommunication.OnAppDeactivated(window.appID, window.windowID);      
+    },
+
+    /**
+     * @function widgetShow
+     * @param {Object} params
+     * @description Call after receiving request show for widgets 
+     */
+    widgetShow: function(params) {
+      var setElementsToShow = function(element) {
+        var masStringsToShow = 2;
+        if(masStringsToShow < params.showStrings.length) {
+          params.showStrings.length = masStringsToShow;
+        }
+        let currentTemplateConfiguation = element.content.templateConfiguration;
+        element['content'] = {};
+        element['content']['showStrings'] = params.showStrings;
+        if('softButtons' in params) {
+          var maxSoftButtonsToShow = 4;
+          if(maxSoftButtonsToShow < params.softButtons.length) {
+            params.softButtons.length = maxSoftButtonsToShow;
+          }
+          element['content']['softButtons'] =  params.softButtons;
+        } else {
+          delete element.softButtons;
+        }
+        if('graphic' in params) {
+          element['content']['graphic'] = params.graphic;
+        }
+        if('templateConfiguration' in params) {
+          element['content']['templateConfiguration'] = params.templateConfiguration;
+        } else {
+          element['content']['templateConfiguration'] = currentTemplateConfiguation;
+        }
+      }
+
+      let getWindowIDToApplyShow = function(params, element) {
+        let windowID = "windowID" in params ? params.windowID : 0;
+        if(windowID === element.windowID ||
+            windowID === element.duplicateUpdatesFromWindowID) {
+          return element.windowID;
+        }
+
+        return null;
+      };
+
+      this.backgroundWindows.forEach(element => {
+        let windowID = getWindowIDToApplyShow(params, element);
+        if(windowID !== null) {
+          setElementsToShow(element);
+          SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
+        }
+      });
+
+      this.activeWindows.forEach(element => {
+        let windowID = getWindowIDToApplyShow(params, element);
+        if(windowID !== null) {
+          setElementsToShow(element);
+          SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
+        }
+      });
+    },
+
+    /**
+     * @function getWidgetModel
+     * @param {Number} windowID
+     * @returns {Object} 
+     * @description Returns widget model for current app by the windowID 
+     */
+    getWidgetModel: function(windowID) {
+      var elementToReturn = null;
+      this.inactiveWindows.forEach(element => {
+        if(windowID == element.windowID) {
+          elementToReturn = element;
+        }
+      });
+
+      this.backgroundWindows.forEach(element => {
+        if(windowID == element.windowID) {
+          elementToReturn = element;
+        }
+      });
+
+      this.activeWindows.forEach(element => {
+        if(windowID == element.windowID) {
+          elementToReturn = element;
+        }
+      });
+      return elementToReturn;
+    },
+
+    /**
+     * @function removeWidgets
+     * @description Clear all widget after disconected app
+     */
+    removeWidgets: function() {
+      this.inactiveWindows.forEach(element => {
+          SDL.RightSideView.getWidgetContainer().removeWidget(this.appID, element.windowID);
+      });
+      this.inactiveWindows.length = 0;
+
+      this.backgroundWindows.forEach(element => {
+          SDL.RightSideView.getWidgetContainer().removeWidget(this.appID, element.windowID);
+      });
+      this.backgroundWindows.length = 0;
+
+      this.activeWindows.forEach(element => {
+          SDL.RightSideView.getWidgetContainer().removeWidget(this.appID, element.windowID);
+      });
+      this.activeWindows.length = 0;
+    },
+
   }
 );

@@ -183,6 +183,11 @@ FFW.UI = FFW.RPCObserver.create(
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
               SDL.SDLController.onSystemContextChange(request.params.appID);
             }
+            SDL.SDLModel.data.registeredApps.forEach(app => {
+              app.activeWindows.forEach(widget => {
+                SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+              })
+            })
             break;
           }
           case 'UI.Show':
@@ -210,11 +215,42 @@ FFW.UI = FFW.RPCObserver.create(
               }
             }
             SDL.TurnByTurnView.deactivate();
-            SDL.SDLController.getApplicationModel(request.params.appID)
-              .onSDLUIShow(request.params);
+            let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
+            const isWindowIDExist = "windowID" in request.params; 
+            const isWidgetID = isWindowIDExist && parseInt(request.params.windowID) != 0;
+            const windowID = isWindowIDExist ? parseInt(request.params.windowID) : 0;
+            let model = isWidgetID ? appModel.getWidgetModel(windowID).content : appModel;
+            let sendCapabilityUpdated = false;
+            if("templateConfiguration" in request.params) {
+              if (model.templateConfiguration.template !== request.params.templateConfiguration.template) {
+                sendCapabilityUpdated = true;
+              }
+              if ("dayColorScheme" in  request.params.templateConfiguration
+              && !SDL.SDLController.isColorSchemesEqual(
+                model.templateConfiguration.dayColorScheme,
+                request.params.templateConfiguration.dayColorScheme)) {
+                  sendCapabilityUpdated = true;
+              }
+              if ("nightColorScheme" in request.params.templateConfiguration
+              && !SDL.SDLController.isColorSchemesEqual(
+                model.templateConfiguration.nightColorScheme,
+                request.params.templateConfiguration.nightColorScheme)) {
+                  sendCapabilityUpdated = true;
+              }
+          }
+            if(appModel.onSDLUIShow(request.params) === SDL.SDLModel.data.resultCode.REJECTED) {
+              this.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method,
+                    "Widget is duplicating other window. Rejecting UI.Show request.");
+              return;
+            }
+            SDL.InfoAppsView.showAppList();
             this.sendUIResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
+            if (sendCapabilityUpdated) {
+              let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+              FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
+            }
             break;
           }
           case 'UI.SetGlobalProperties':
@@ -306,6 +342,11 @@ FFW.UI = FFW.RPCObserver.create(
             // return; } }
             if (SDL.SDLModel.uiPerformInteraction(request)) {
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -370,6 +411,11 @@ FFW.UI = FFW.RPCObserver.create(
           {
             if (SDL.SDLModel.uiSlider(request)) {
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -377,6 +423,11 @@ FFW.UI = FFW.RPCObserver.create(
           {
             if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -421,11 +472,11 @@ FFW.UI = FFW.RPCObserver.create(
                 break;
               }
             }
+            var model = SDL.SDLController.getApplicationModel(request.params.appID);
             if (sendResponseFlag) {
               Em.Logger.log('FFW.' + request.method + 'Response');
               var displayLayout = request.params.displayLayout;
               if (displayLayout === "DEFAULT") {
-                var model = SDL.SDLController.getApplicationModel(request.params.appID);
                 for (var i=0; i<model.appType.length; i++) {
                   if (model.appType[i] === "NAVIGATION") {
                     displayLayout = NAV_FULLSCREEN_MAP;
@@ -454,6 +505,35 @@ FFW.UI = FFW.RPCObserver.create(
                 }
               };
               this.sendMessage(JSONMessage);
+
+              let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
+              const isWindowIDExist = "windowID" in request.params; 
+              const isWidgetID = isWindowIDExist && parseInt(request.params.windowID) != 0;
+              const windowID = isWindowIDExist ? parseInt(request.params.windowID) : 0;
+              let model = isWidgetID ? appModel.getWidgetModel(windowID).content : appModel;
+              let sendCapabilityUpdated = false;
+              if ("displayLayout" in request.params && model.templateConfiguration.template !== request.params.displayLayout) {
+                model.templateConfiguration.template = request.params.displayLayout
+                sendCapabilityUpdated = true;
+              }
+              if ("dayColorScheme" in request.params
+                  && !SDL.SDLController.isColorSchemesEqual(
+                    model.templateConfiguration.dayColorScheme,
+                    request.params.dayColorScheme)) {
+                model.templateConfiguration.dayColorScheme = request.params.dayColorScheme;
+                sendCapabilityUpdated = true;
+              }
+              if ("nightColorScheme" in request.params
+              && !SDL.SDLController.isColorSchemesEqual(
+                model.templateConfiguration.nightColorScheme,
+                request.params.nightColorScheme)) {
+                model.templateConfiguration.nightColorScheme = request.params.nightColorScheme;
+               sendCapabilityUpdated = true;
+              }
+              if (sendCapabilityUpdated) {
+                let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+                FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
+              }
             } else {
               this.sendError(
                 SDL.SDLModel.data.resultCode['UNSUPPORTED_REQUEST'], request.id,
@@ -493,6 +573,11 @@ FFW.UI = FFW.RPCObserver.create(
               this.performAudioPassThruRequestID = request.id;
               SDL.SDLModel.UIPerformAudioPassThru(request.params);
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -928,11 +1013,155 @@ FFW.UI = FFW.RPCObserver.create(
                   },
                   'numCustomPresetsAvailable': 10
                 },
-                'audioPassThruCapabilitiesList': [{
+                "systemCapabilities": {
+                  "displayCapabilities": [{
+                    "displayType" : "CID",
+                    "displayName": "MAIN",
+                    "windowTypeSupported": [{
+                        "type": "MAIN",
+                        "maximumNumberOfWindows": 1
+                    }],
+                    "windowCapabilities": [{
+                        "textFields": [{
+                            "name": "mainField1",
+                            "characterSet": "TYPE2SET",
+                            "width": 500,
+                            "rows": 1
+                        }],
+                        "imageFields": [{
+                            "name": "softButtonImage",
+                            "imageTypeSupported": ["GRAPHIC_PNG"],
+                            "imageResolution": {
+                                "resolutionWidth": 35,
+                                "resolutionHeight": 35
+                            }
+                        }],
+                        "imageTypeSupported": ["STATIC"],
+                        "numCustomPresetsAvailable": 8,
+                        "buttonCapabilities": [
+                            {
+                                "longPressAvailable": true,
+                                "name": "AC_MAX",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "AC",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "RECIRCULATE",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "FAN_UP",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "FAN_DOWN",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "TEMP_UP",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "TEMP_DOWN",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "DEFROST_MAX",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "DEFROST",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "DEFROST_REAR",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "UPPER_VENT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "LOWER_VENT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "VOLUME_UP",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "VOLUME_DOWN",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "EJECT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "SOURCE",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "SHUFFLE",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "REPEAT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            }
+                        ],
+                        "softButtonCapabilities": [{
+                            "shortPressAvailable": true,
+                            "longPressAvailable": true,
+                            "upDownAvailable": true,
+                            "imageSupported": true
+                        }]
+                      }]
+                    }],
+                },
+                'audioPassThruCapabilities': {
                   'samplingRate': '44KHZ',
                   'bitsPerSample': '8_BIT',
                   'audioType': 'PCM'
-                }],
+                },
                 'hmiZoneCapabilities': 'FRONT',
                 'softButtonCapabilities': [
                   {
@@ -1011,6 +1240,26 @@ FFW.UI = FFW.RPCObserver.create(
                 'No application in FULL mode'
               );
             }
+            break;
+          }
+          case 'UI.CreateWindow':
+          {
+            var app = SDL.SDLController.getApplicationModel(request.params.appID);
+            app.createWindow(request.params);
+            this.sendUIResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
+              let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+              FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+            break;
+          }
+          case 'UI.DeleteWindow':
+          {
+            var app = SDL.SDLController.getApplicationModel(request.params.appID);
+            app.deleteWindow(request.params);
+            this.sendUIResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
             break;
           }
           default:
@@ -1331,7 +1580,7 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {String}
      *            systemContextValue
      */
-    OnSystemContext: function(systemContextValue, appID) {
+    OnSystemContext: function(systemContextValue, appID, windowID) {
       Em.Logger.log('FFW.UI.OnSystemContext');
       // send repsonse
       var JSONMessage = {
@@ -1343,6 +1592,9 @@ FFW.UI = FFW.RPCObserver.create(
       };
       if (appID) {
         JSONMessage.params.appID = appID;
+      }
+      if(windowID) {
+        JSONMessage.params.windowID = windowID;
       }
       this.sendMessage(JSONMessage);
     },

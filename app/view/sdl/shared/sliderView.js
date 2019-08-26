@@ -89,6 +89,11 @@ SDL.SliderView = SDL.SDLAbstractView.create(
         );
       }
       SDL.SDLController.onSystemContextChange();
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        app.activeWindows.forEach(widget => {
+          SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+        })
+      })
     },
     activate: function(text, timeout) {
       if (text) {

@@ -455,6 +455,7 @@ SDL.warningView = Em.ContainerView
           },
           actionUp: function(event) {
             this.set('pressed', false);
+            SDL.RightSideView.set('hmi_not_run', false);
             var self = this;
             this._parentView.set(
               'fade', this
