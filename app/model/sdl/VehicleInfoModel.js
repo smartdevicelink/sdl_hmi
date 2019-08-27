@@ -421,7 +421,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         return SDL.SDLModel.data.resultCode.WARNINGS;
       }
 
-      return SDL.SDLModel.data.resultCode.DATA_NOT_AVAILABLE;
+      return SDL.SDLModel.data.resultCode.IGNORED;
     },
     /**
      * Function returns response message to VehicleInfoRPC
