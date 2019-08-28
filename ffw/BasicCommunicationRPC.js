@@ -304,6 +304,9 @@ FFW.BasicCommunication = FFW.RPCObserver
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCNotification');
         this._super();
         if (notification.method == this.onServiceUpdateNotification) {
+          if('RPC' === notification.params.serviceType) {
+            return;
+          }
           SDL.ServiceUpdatePopUp.activate(notification.params.serviceType,
             notification.params.serviceEvent,
             notification.params.reason);

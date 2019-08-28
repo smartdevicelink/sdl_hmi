@@ -193,10 +193,6 @@ SDL.ServiceUpdatePopUp = Em.ContainerView.create(
           this.set('content', 'Starting Audio Stream');
           break;
         }
-        case 'RPC': {
-          this.set('content', 'Starting RPC Service');
-          break;
-        }
         default: break;
       }
     },
