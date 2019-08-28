@@ -47,6 +47,11 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
       SDL.SDLController.buttonsSort('top', SDL.SDLController.model.appID);
       SDL.OptionsView.commands.refreshItems();
       SDL.SDLController.onSystemContextChange();
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        app.activeWindows.forEach(widget => {
+          SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+        })
+      })
     },
     // Extend deactivate window
     deactivate: function() {
@@ -61,6 +66,11 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
         }
       }
       SDL.SDLController.onSystemContextChange();
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        app.activeWindows.forEach(widget => {
+          SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+        })
+      })
     },
     commands: SDL.List.extend(
       {

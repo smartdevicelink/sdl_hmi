@@ -62,6 +62,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLCloseUnsubscribeRequestID: -1,
       onSDLConsentNeededUnsubscribeRequestID: -1,
       onResumeAudioSourceUnsubscribeRequestID: -1,
+      
       // const
       onStatusUpdateNotification: 'SDL.OnStatusUpdate',
       onAppPermissionChangedNotification: 'SDL.OnAppPermissionChanged',
@@ -362,6 +363,9 @@ FFW.BasicCommunication = FFW.RPCObserver
             notification.params.application, notification.params.vrSynonyms
           );
           this.OnFindApplications();
+          const mainWindowID = 0;
+          let capability = SDL.SDLController.getDefaultCapabilities(mainWindowID, notification.params.application.appID);
+          FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
         }
         if (notification.method == this.onAppUnregisteredNotification) {
           // remove app from list
@@ -837,6 +841,25 @@ FFW.BasicCommunication = FFW.RPCObserver
       /********************* Notifications BEGIN *********************/
 
       /**
+       * @function OnAppActivated
+       * @param {Number} appID 
+       * @param {Number} windowID 
+       * @description Sending OnAppActivated notification to the SDL
+       */
+      OnAppActivated: function(appID, windowID) {
+        Em.Logger.log('FFW.BasicCommunication.OnAppActivated');
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'method': 'BasicCommunication.OnAppActivated',
+          'params': {
+            'appID': appID,
+            'windowID': windowID
+          }
+        };
+        this.sendMessage(JSONMessage);
+      },
+      
+      /**
        * Notifies if functionality was changed
        *
        * @param {Boolean} allowed
@@ -1024,13 +1047,13 @@ FFW.BasicCommunication = FFW.RPCObserver
         this.sendMessage(JSONMessage);
       },
       /**
-       * Invoked by UI component when user switches to any functionality which
+       * @function OnAppDeactivated
+       * @param {Number} AppID
+       * @param {Number} windowID 
+       * @description Invoked by UI component when user switches to any functionality which
        * is not other mobile application.
-       *
-       * @params {String}
-       * @params {Number}
        */
-      OnAppDeactivated: function(appID) {
+      OnAppDeactivated: function(appID, windowID) {
         Em.Logger.log('FFW.BasicCommunication.OnAppDeactivated');
         // send request
         var JSONMessage = {
@@ -1040,6 +1063,9 @@ FFW.BasicCommunication = FFW.RPCObserver
             'appID': appID
           }
         };
+        if(windowID) {
+          JSONMessage.params['windowID'] = windowID;
+        }
         this.sendMessage(JSONMessage);
       },
       /**
@@ -1225,6 +1251,18 @@ FFW.BasicCommunication = FFW.RPCObserver
           'params': {
             'eventName': eventName,
             'isActive': status
+          }
+        };
+        this.sendMessage(JSONMessage);
+      },
+      OnSystemCapabilityUpdated: function (data) {
+        Em.Logger.log('FFW.BasicCommunication.OnSystemCapabilityUpdated');
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'method': 'BasicCommunication.OnSystemCapabilityUpdated',
+          'params': {
+            'appID': data.appID,
+            'systemCapability':data.systemCapability
           }
         };
         this.sendMessage(JSONMessage);

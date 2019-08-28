@@ -47,7 +47,7 @@ SDL.AppViews = Em.ContainerView.extend(
       SDL.PhoneView,
       SDL.ClimateView,
       SDL.NavigationView,
-      SDL.ControlButtons,
+      SDL.RightSideView,
       SDL.SettingsView,
       SDL.TurnByTurnView,
       SDL.TBTTurnList,
@@ -76,8 +76,39 @@ SDL.AppViews = Em.ContainerView.extend(
       SDL.ExitApp,
       SDL.PrimaryDevice,
       SDL.SystemRequest,
-      SDL.SendMessage
+      SDL.SendMessage,
+      SDL.AddWidgetPopUp,
+      'phoneCall'
     ],
+
+    /**
+     * Button to initiate phone call emulation on HMI
+     */
+      phoneCall: SDL.Button.extend({
+        elementId: 'phone_call_button',
+
+        classNames: ['phone_call_button', 'button'],
+
+        expand: false,
+
+        classNameBindings: ['this.expand:expand'],
+
+        mouseEnter: function() {
+          this.set('expand', true);
+        },
+
+        mouseLeave: function() {
+          this.set('expand', false);
+        },
+
+        action: 'phoneCall',
+
+        target: 'SDL.SettingsController',
+
+        text: 'Incoming call!'
+      }
+    ),
+  
     /*
      * This method is called when the app is fully rendered and ready to be
      * displayed. We notify the backend to hide the splash and load internal

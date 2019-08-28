@@ -1122,6 +1122,48 @@ SDL.RPCController = Em.Object.create(
           };
           return this.resultStruct;
         },
+
+        /**
+         * @function CreateWindow
+         * @param {Object} params
+         * @description Validate method for request UI.CreateWindow
+         */
+        CreateWindow: function(params) {
+          if('windowID' in params && 
+              'windowName' in params &&
+              'type' in params) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+            };
+            return this.resultStruct;
+          }
+         
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+            'resultMessage': 'Mandatory parameters are missing!'
+          };
+          return this.resultStruct;
+        },
+
+        /**
+         * @function DeleteWindow
+         * @param {Object} params
+         * @description Validate method for request UI.DeleteWindow 
+         */
+        DeleteWindow: function(params) {
+          if('windowID' in params) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+            };
+            return this.resultStruct;           
+          }
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+            'resultMessage': 'Mandatory parameters are missing!'
+          };
+          return this.resultStruct;          
+        },
+
         /**
          * Validate method for request SetGlobalProperties
          *

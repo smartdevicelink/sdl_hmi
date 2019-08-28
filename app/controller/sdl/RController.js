@@ -276,6 +276,51 @@ SDL.RController = SDL.SDLController.extend(
       SDL.SDLModel.toggleProperty('errorResponse');
     },
 
+    /**
+     * setInitalWindowTemplate
+     * @param {Object} params parameters of request
+     * @param {Object} model application model
+     * @description sets initial template configuration when app is registered. 
+     * If there are color schemes present in register app interface request,
+     * they are set, otherwise, defaults are used 
+     */
+    setInitalWindowTemplate: function(params, model) {
+      const isDayColorSchemeExists = "dayColorScheme" in params ;
+      const isNightColorSchemeExists = "nightColorScheme" in params;
+
+      let defaultTemplateConfiguration = {
+        "template" : "DEFAULT"
+      };
+
+      const defaultColorScheme = {
+        "primaryColor" : {
+          "red" : 0,
+          "green" : 0,
+          "blue" : 0
+        },
+        "secondaryColor" : {
+          "red" : 0,
+          "green" : 0,
+          "blue" : 0
+        },
+        "backgroundColor" : {
+          "red" : 255,
+          "green" : 255,
+          "blue" : 255
+        }
+      };
+
+      if(!isDayColorSchemeExists) {
+        defaultTemplateConfiguration.dayColorScheme = defaultColorScheme;
+      }
+      if(!isNightColorSchemeExists) {
+        defaultTemplateConfiguration.nightColorScheme = defaultColorScheme;
+      }
+
+      model.defaultTemplateConfiguration = defaultTemplateConfiguration;
+      model.templateConfiguration = defaultTemplateConfiguration;
+    },
+
    /**
      * Register application method
      * @param {Object} params
@@ -293,7 +338,10 @@ SDL.RController = SDL.SDLController.extend(
               deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: 0,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
+              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme
             }
           )
         );
@@ -309,7 +357,10 @@ SDL.RController = SDL.SDLController.extend(
               appType: params.appType,
               isMedia: false,
               initialized: true,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
+              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme
             }
           )
         );
@@ -323,7 +374,10 @@ SDL.RController = SDL.SDLController.extend(
               appType: params.appType,
               isMedia: applicationType == 0,
               initialized: true,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
+              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme
             }
           )
         );
@@ -370,9 +424,9 @@ SDL.RController = SDL.SDLController.extend(
          cmdID: -3
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      let model = SDL.SDLController.getApplicationModel(params.appID);
+      model.addCommand(exitCommand);
+      this.setInitalWindowTemplate(params, model);
     },
 
    toggleDriverDeviceWindow: function(element) {
