@@ -466,6 +466,7 @@ SDL.warningView = Em.ContainerView
                 self._parentView.set('hide', true);
               }, 1000
             );
+            SDL.RCModulesController.populateModels();
             SDL.RPCController.ConnectToSDL();
           }
         }

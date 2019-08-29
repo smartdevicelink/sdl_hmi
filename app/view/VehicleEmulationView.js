@@ -167,7 +167,8 @@ SDL.VehicleEmulationView = Em.ContainerView.create({
           var systemCapability = {
             'systemCapability' : {
               'systemCapabilityType': 'REMOTE_CONTROL',
-              'remoteControlCapability': SDL.remoteControlCapabilities.remoteControlCapability              
+              'remoteControlCapability': SDL.remoteControlCapabilities.remoteControlCapability,
+              'seatLocationCapability': SDL.remoteControlCapabilities.seatLocationCapability
             }
           };
           FFW.BasicCommunication.OnSystemCapabilityUpdated(systemCapability);          

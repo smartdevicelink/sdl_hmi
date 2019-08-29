@@ -101,7 +101,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
       }
 
       if ('CLIMATE' == module) {
-        default_settings[module] = this.createDriverPassangerCoverage(currentSeatsData);
+        default_settings[module] = this.createDriverPassengerCoverage(currentSeatsData);
         return;
       }
 
@@ -138,7 +138,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
    * @description Function to generate two modules which cover all vehicle seats
    * @param {Array} data 
    */
-  createDriverPassangerCoverage: function(data) {
+  createDriverPassengerCoverage: function(data) {
     var full_seat_module = SDL.deepCopy(data[0]);
     
     var max_row_index = this.getVehicleMaxIndex(data, 'row');
@@ -154,7 +154,8 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
     full_seat_module['levelspan'] = max_level_value + 1;
 
     var driver_seat_module = SDL.deepCopy(full_seat_module);
-    driver_seat_module['colspan'] --;
+    driver_seat_module['colspan'] --; /* Driver seat covered only the first two columns.
+                                         Decremented from full coverage columns */
 
     var passanger_seat_module = SDL.deepCopy(full_seat_module);
     passanger_seat_module['col'] = max_col_value;
@@ -219,11 +220,11 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
-   * @function getModuleInfo
+   * @function getModuleInfoForType
    * @param {String} module_type
    * @description get module info
    */
-  getModuleInfo: function(module_type) {
+  getModuleInfoForType: function(module_type) {
     var data = [];
     switch(module_type) {
       case 'RADIO': {
@@ -314,7 +315,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
     var emulation_type = FLAGS.VehicleEmulationType;
     if (!this.defaultCoverageSettings.hasOwnProperty(emulation_type)) {
       this.availableModules.forEach(module => {
-        this.coverageSettings[module] = this.getModuleInfo(module);
+        this.coverageSettings[module] = this.getModuleInfoForType(module);
       });
       this.defaultCoverageSettings[emulation_type] = SDL.deepCopy(this.coverageSettings);
     }

@@ -276,8 +276,9 @@ SDL.RCModulesController = Em.Object.create({
      * responsible modules according to coverage settings
      */
     populateModels: function() {
-      this.resetToDefault();
-
+        this.resetToDefault();
+        var vehicleRepresentation =
+        SDL.SDLModelData.vehicleSeatRepresentation[FLAGS.VehicleEmulationType];
         if('no_emulation' == FLAGS.VehicleEmulationType) {
           var moduleId = FLAGS.VehicleEmulationType;
 
@@ -298,10 +299,9 @@ SDL.RCModulesController = Em.Object.create({
           delete SDL.remoteControlCapabilities.seatLocationCapability;
           SDL.remoteControlCapabilities.remoteControlCapability['buttonCapabilities'] = SDL.defaultButtonCapabilities;
           this.fillModuleSeatLocationContent([]);
+          this.fillSeatLocationCapabilities(vehicleRepresentation);
           return;
         }
-        var vehicleRepresentation = 
-            SDL.SDLModelData.vehicleSeatRepresentation[FLAGS.VehicleEmulationType];
         
         var contentBinding = [];
         vehicleRepresentation.forEach(function(element, index) {
