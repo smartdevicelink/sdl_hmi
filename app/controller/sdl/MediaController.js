@@ -96,7 +96,7 @@ SDL.SDLMediaController = Em.Object.create(
         }
         if (this.model.currentAudioModel.activeState == 'media.sdlmedia') {
           this.model.currentAudioModel.set('activeState', 'media.player.cd');
-          SDL.CDModel.set('active', true);
+          this.model.currentAudioModel.cdModel.set('active', true);
         }
         SDL.SDLModel.data.set('limitedExist', false);
         this.set('currentAppId', null);
