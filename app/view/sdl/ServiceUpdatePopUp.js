@@ -226,6 +226,11 @@ SDL.ServiceUpdatePopUp = Em.ContainerView.create(
             + 'is configured as a force protected');
           break;
         }
+        case 'PROTECTION_DISABLED': {
+          this.set('content', 'Attempting to start protected service which '
+            + 'is configured as force unprotected');
+          break;
+        }
         default: {
           this.set('content', 'Rejected by unknown reason');
           break;
