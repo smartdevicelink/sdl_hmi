@@ -35,6 +35,22 @@ SDL.SettingsController = Em.Object.create(
   {
     activeState: 'settings.policies',
     hiddenLeftMenu: false,
+
+    /**
+     * @name getSystemTimeResultCode
+     * @desc parameter of response result code
+     * for GetSystemTime RPC. Initial value sets as a zero which equals with
+     * SUCCESS result code.
+     */
+    getSystemTimeResultCode: 0,
+
+    /**
+     * @name getSystemTimeButtonText
+     * @desc parameter for changing text of 
+     * GetSystemTime result code button
+     */
+    getSystemTimeButtonText: 'GetSystemTime result code - SUCCESS',
+
     /**
      * File name for SDL.OnSystemRequest
      * Came in SDL.PolicyUpdate request
@@ -329,29 +345,49 @@ SDL.SettingsController = Em.Object.create(
      * @param {Boolean} abort
      */
     policyUpdateRetry: function(abort) {
+      if(SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress) {
+        return;
+      }
       clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
       SDL.SDLModel.data.policyUpdateRetry.timer = null;
-      if (abort !== 'ABORT' && (
-        SDL.SDLModel.data.policyUpdateRetry.try <
-        SDL.SDLModel.data.policyUpdateRetry.retry.length)) {
-        SDL.SDLModel.data.policyUpdateRetry.oldTimer =
-          SDL.SDLModel.data.policyUpdateRetry.oldTimer +
-          SDL.SDLModel.data.policyUpdateRetry.timeout * 1000 +
-          SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] *
-          1000;
+
+      var sendOnSystemRequest = function() {
+        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = false;
+        FFW.BasicCommunication.OnSystemRequest(
+          'PROPRIETARY',
+          SDL.SettingsController.policyUpdateFile,
+          SDL.SDLModel.data.policyURLs[0].url,
+          SDL.SDLModel.data.policyURLs[0].appID
+        );
+      }
+      if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+        SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
+        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
         SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
           function() {
-            FFW.BasicCommunication.OnSystemRequest(
-              'PROPRIETARY',
-              SDL.SettingsController.policyUpdateFile,
-              SDL.SDLModel.data.policyURLs[0].url,
-              SDL.SDLModel.data.policyURLs[0].appID
-            );
-            SDL.SettingsController.policyUpdateRetry();
+            sendOnSystemRequest();
+          }, 1000
+        );
+        return;
+      }
+      var length = SDL.SDLModel.data.policyUpdateRetry.retry.length;
+      if(length == SDL.SDLModel.data.policyUpdateRetry.try) {
+        SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
+      }
+      if (abort !== 'ABORT' && SDL.SDLModel.data.policyUpdateRetry.isRetry) {           
+        
+        SDL.SDLModel.data.policyUpdateRetry.oldTimer = 
+          SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] * 1000;
+     
+        SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
+          function() {
+            sendOnSystemRequest();
           }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
         );
+        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
         SDL.SDLModel.data.policyUpdateRetry.try++;
       } else {
+        SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
         clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
         SDL.SDLModel.data.policyUpdateRetry = {
           timeout: null,
@@ -392,6 +428,25 @@ SDL.SettingsController = Em.Object.create(
         SDL.SeatModel.goToStates();
         SDL.States.goToStates('settings.seat');
         }
+    },
+    
+    /**
+     * @function changeGetSystemTimeResultCode
+     * @description Change result code of GetSystemTime response to SDL
+     */
+    changeGetSystemTimeResultCode: function() {
+      var successResultCode = SDL.SDLModel.data.resultCode.SUCCESS;
+
+      this.set('getSystemTimeResultCode', 
+      this.getSystemTimeResultCode == successResultCode
+        ? SDL.SDLModel.data.resultCode.REJECTED
+        : SDL.SDLModel.data.resultCode.SUCCESS);
+
+      var buttonText = "GetSystemTime result code - ";
+      this.set('getSystemTimeButtonText', 
+      this.getSystemTimeResultCode == successResultCode 
+        ? buttonText + 'SUCCESS'
+        : buttonText + 'REJECTED');
     }
   }
 );

@@ -52,6 +52,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLCloseSubscribeRequestID: -1,
       onSDLConsentNeededSubscribeRequestID: -1,
       onResumeAudioSourceSubscribeRequestID: -1,
+      onServiceUpdateNotificationSubscribeRequestID: -1,
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
       onAppPermissionChangedUnsubscribeRequestID: -1,
@@ -62,7 +63,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLCloseUnsubscribeRequestID: -1,
       onSDLConsentNeededUnsubscribeRequestID: -1,
       onResumeAudioSourceUnsubscribeRequestID: -1,
-      
+      onServiceUpdateNotificationUnsubscribeRequestID: -1,
       // const
       onStatusUpdateNotification: 'SDL.OnStatusUpdate',
       onAppPermissionChangedNotification: 'SDL.OnAppPermissionChanged',
@@ -75,6 +76,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLCloseNotification: 'BasicCommunication.OnSDLClose',
       onResumeAudioSourceNotification: 'BasicCommunication.OnResumeAudioSource',
       componentName: "BasicCommunication",
+      onServiceUpdateNotification: 'BasicCommunication.OnServiceUpdate',
 
       /**
        * connect to RPC bus
@@ -136,6 +138,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceSubscribeRequestID = this
           .subscribeToNotification(this.onResumeAudioSourceNotification);
+        this.onServiceUpdateNotificationSubscribeRequestID = this.client
+          .subscribeToNotification(this.onServiceUpdateNotification);
         setTimeout(function() {
           FFW.BasicCommunication.OnSystemTimeReady();
         }, 500);
@@ -169,6 +173,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .unsubscribeFromNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceUnsubscribeRequestID = this.client
           .unsubscribeFromNotification(this.onResumeAudioSourceNotification);
+        this.onServiceUpdateNotificationUnsubscribeRequestID = this.client
+          .unsubscribeFromNotification(this.onServiceUpdateNotification);
       },
       /**
        * Client disconnected.
@@ -297,11 +303,21 @@ FFW.BasicCommunication = FFW.RPCObserver
       onRPCNotification: function(notification) {
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCNotification');
         this._super();
+        if (notification.method == this.onServiceUpdateNotification) {
+          if('RPC' === notification.params.serviceType) {
+            return;
+          }
+          SDL.ServiceUpdatePopUp.activate(notification.params.serviceType,
+            notification.params.serviceEvent,
+            notification.params.reason);
+        }
         if (notification.method == this.onFileRemovedNotification) {
           SDL.SDLModel.onFileRemoved(notification.params);
         }
         if (notification.method == this.onStatusUpdateNotification) {
-          SDL.PopUp.create().appendTo('body').popupActivate(
+          var popUp = SDL.PopUp.create().appendTo('body');
+          popUp.set('minimalSize',SDL.ServiceUpdatePopUp.active);
+          popUp.popupActivate(
             'onStatusUpdate Notification: ' + notification.params.status
           );
           var messageCode = '';
@@ -324,6 +340,10 @@ FFW.BasicCommunication = FFW.RPCObserver
             case 'UPDATE_NEEDED':
             {
               messageCode = 'StatusNeeded';
+              if (FLAGS.ExternalPolicies === true && 
+                  SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+                SDL.SettingsController.policyUpdateRetry();
+              }
               break;
             }
           }
@@ -551,30 +571,11 @@ FFW.BasicCommunication = FFW.RPCObserver
             );
           }
           if (request.method == 'BasicCommunication.GetSystemTime') {
-            var date = new Date();
-            var systemTime = {
-              millisecond: date.getMilliseconds(),
-              second: date.getSeconds(),
-              minute: date.getMinutes(),
-              hour: date.getHours(),
-              day: date.getDate(),
-              month: date.getMonth()+1,
-              year: date.getFullYear(),
-              tz_hour: Math.floor(date.getTimezoneOffset()/-60),
-              tz_minute: Math.abs(date.getTimezoneOffset()%60)
-            };
-
-            var JSONMessage = {
-              'jsonrpc': '2.0',
-              'id': request.id,
-              'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
-                'method': request.method,
-                'systemTime':systemTime
-              }
-            };
-
-            this.sendMessage(JSONMessage);
+            var resultCode = SDL.SettingsController.get('getSystemTimeResultCode');
+            resultCode == SDL.SDLModel.data.resultCode.SUCCESS
+            ? this.GetSystemTimeResponse(request)
+            : this.sendError(resultCode, request.id, request.method,
+               "GetSystemTime request rejected on HMI Settings");
           }
         }
       },
@@ -836,6 +837,38 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.sendMessage(JSONMessage);
       },
+      /**
+       * @name GetSystemTimeResponse
+       * @type function
+       * @desc Send GetSystemTime response
+       * @param {Object} request
+       */
+      GetSystemTimeResponse: function(request) {
+        var date = new Date();
+            var systemTime = {
+              millisecond: date.getMilliseconds(),
+              second: date.getSeconds(),
+              minute: date.getMinutes(),
+              hour: date.getHours(),
+              day: date.getDate(),
+              month: date.getMonth()+1,
+              year: date.getFullYear(),
+              tz_hour: Math.floor(date.getTimezoneOffset()/-60),
+              tz_minute: Math.abs(date.getTimezoneOffset()%60)
+            };
+
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'code': SDL.SDLModel.data.resultCode.SUCCESS, // type (enum) from SDL protocol
+                'method': request.method,
+                'systemTime':systemTime
+              }
+            };
+
+            this.client.send(JSONMessage);
+      },  
       /********************* Responses end *********************/
 
       /********************* Notifications BEGIN *********************/
