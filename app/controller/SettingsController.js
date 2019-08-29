@@ -345,10 +345,14 @@ SDL.SettingsController = Em.Object.create(
      * @param {Boolean} abort
      */
     policyUpdateRetry: function(abort) {
+      if(SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress) {
+        return;
+      }
       clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
       SDL.SDLModel.data.policyUpdateRetry.timer = null;
 
       var sendOnSystemRequest = function() {
+        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = false;
         FFW.BasicCommunication.OnSystemRequest(
           'PROPRIETARY',
           SDL.SettingsController.policyUpdateFile,
@@ -358,6 +362,7 @@ SDL.SettingsController = Em.Object.create(
       }
       if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
         SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
+        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
         SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
           function() {
             sendOnSystemRequest();
@@ -379,6 +384,7 @@ SDL.SettingsController = Em.Object.create(
             sendOnSystemRequest();
           }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
         );
+        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
         SDL.SDLModel.data.policyUpdateRetry.try++;
       } else {
         SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
