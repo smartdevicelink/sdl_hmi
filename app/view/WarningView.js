@@ -119,6 +119,7 @@ SDL.warningView = Em.ContainerView
             setTimeout(
               function() {
                 self.set('isReady', true);
+                SDL.RCModulesController.populateModels();
               }, 2000
             );
             var timer = setInterval(
@@ -466,7 +467,6 @@ SDL.warningView = Em.ContainerView
                 self._parentView.set('hide', true);
               }, 1000
             );
-            SDL.RCModulesController.populateModels();
             SDL.RPCController.ConnectToSDL();
           }
         }
