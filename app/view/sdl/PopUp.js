@@ -42,13 +42,15 @@ SDL.PopUp = Em.ContainerView.extend(
       'backButton'
     ],
     classNameBindings: [
-      'this.active:active_state:inactive_state'
+      'this.active:active_state:inactive_state',
+      'minimalSize'
     ],
     popUpId: 0,
     /**
      * Callback function to return result of made action by user
      */
     callback: null,
+    minimalSize: false,
     content: 'Title',
     active: false,
     timer: null,

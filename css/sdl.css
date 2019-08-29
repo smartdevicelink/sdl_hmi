@@ -1169,11 +1169,23 @@
 }
 
 .PopUp {
-    left: 200px;
-    width: 400px;
-    height: 245px;
+    left: 480px;
+    width: 300px;
+    height: 215px;
     z-index: 2;
-    top: 110px;
+    top: 57px;
+    -webkit-transition: opacity 1s ease-in-out;
+    background-color: black;
+    border: #A6A6A6 solid 2px;
+    border-radius: 6px;
+}
+
+.PopUp.minimal-size {
+    left: 8px;
+    width: 300px;
+    height: 150px;
+    z-index: 2;
+    top: 278px;
     -webkit-transition: opacity 1s ease-in-out;
     background-color: black;
     border: #A6A6A6 solid 2px;
@@ -1183,19 +1195,41 @@
 .PopUp .text {
     top: 41px;
     left: 5px;
-    width: 390px;
+    width: 295px;
     height: 120px;
     line-height: 20px;
     position: absolute;
     overflow: hidden;
     text-align: center;
     text-overflow: ellipsis;
+    overflow: auto;
+}
+
+.PopUp.minimal-size .text {
+    top: 15px;
+    left: 12px;
+    width: 280px;
+    height: 70px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: auto;
+}
+
+.PopUp.minimal-size .OkButton {
+    top: 93px;
+    left: 5px;
+    width: 140px;
+    border: 1px solid #393939;
+    text-align: center;
 }
 
 .PopUp .OkButton {
-    top: 190px;
+    top: 160px;
     left: 5px;
-    width: 190px;
+    width: 140px;
     border: 1px solid #393939;
     text-align: center;
 }
@@ -1207,9 +1241,17 @@
 }
 
 .PopUp .CancelButton {
-    top: 190px;
-    left: 205px;
-    width: 190px;
+    top: 160px;
+    left: 150px;
+    width: 140px;
+    border: 1px solid #393939;
+    text-align: center;
+}
+
+.PopUp.minimal-size .CancelButton {
+    top: 93px;
+    left: 150px;
+    width: 140px;
     border: 1px solid #393939;
     text-align: center;
 }
