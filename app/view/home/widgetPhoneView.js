@@ -52,17 +52,21 @@ SDL.WidgetPhoneView = Em.ContainerView.extend({
   }),
 
   rcStatusLabel: SDL.Label.extend(
-			
           {
           	getLabelText: function(){
 
           		if (SDL.SDLModel.appRCStatus.length == 0){
-          			return [];	
-          		} 
+          			return [];
+          		}
           		else {
           			var rcStatus = [];
                     for (var key in SDL.SDLModel.appRCStatus){
-          				var model = SDL.SDLController.getApplicationModel(+key);
+						var model = SDL.SDLController.getApplicationModel(+key);
+						if (!model) {
+						  // Resources info should not be printed if app model was destroyed
+						  continue;
+						}
+
           				var strHeader = model.appName+': ';
           				rcStatus.push(strHeader);
           				if (SDL.SDLModel.appRCStatus[+key].allocated.length > 0){
@@ -70,7 +74,7 @@ SDL.WidgetPhoneView = Em.ContainerView.extend({
           					var allocatedStr = 'Allocates:';
           					for (var i = 0; i < allocated.length; ++i) {
           						allocatedStr += (i>0)? ', ': ' ';
-          						allocatedStr += allocated[i].moduleType.toLowerCase() ;  							 					
+          						allocatedStr += allocated[i].moduleType.toLowerCase();
           					}
           					rcStatus.push(allocatedStr);
           				}
@@ -80,7 +84,7 @@ SDL.WidgetPhoneView = Em.ContainerView.extend({
           					var freeStr = 'Can allocate:';
           					for (var i = 0; i < free.length; ++i) {
           						freeStr += (i>0)? ', ': ' ';
-          						freeStr += free[i].moduleType.toLowerCase() ;  							        						
+          						freeStr += free[i].moduleType.toLowerCase();
           					}
           					rcStatus.push(freeStr);
           				}
@@ -91,9 +95,7 @@ SDL.WidgetPhoneView = Em.ContainerView.extend({
             elementId: 'rcStatusLabel',
             linesBinding:'getLabelText',
             templateName: 'multiLine'
-            //'SDL.SDLModel.appRCStatus'
           }
-
         )
 }
 );
