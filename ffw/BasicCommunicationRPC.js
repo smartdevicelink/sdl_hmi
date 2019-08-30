@@ -42,6 +42,11 @@ FFW.BasicCommunication = FFW.RPCObserver
        * were some kind of errors Error codes will be injected into response.
        */
       errorResponsePull: {},
+      /**
+       * Contains keys and versions from vehicle data mapping which should be updated
+       * once PTU sequence is finished (SystemRequest is received)
+       */
+      pendingVersionsToApply: {},
       onPutFileSubscribeRequestID: -1,
       onStatusUpdateSubscribeRequestID: -1,
       onAppPermissionChangedSubscribeRequestID: -1,
@@ -193,6 +198,91 @@ FFW.BasicCommunication = FFW.RPCObserver
       onRPCResult: function(response) {
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCResult');
         this._super();
+        if(response.result.method == 'SDL.GetPolicyConfigurationData') {
+          var policyConfigRequestsData = SDL.SDLModel.data.getPolicyConfigurationDataRequestsList;
+          var dataToRemove = null;
+          policyConfigRequestsData.forEach(requestedData => {
+            if(requestedData.id == response.id) {
+              dataToRemove = requestedData;
+
+              var resultCode = SDL.SDLModel.data.resultCode;
+              if(response.result.code !== resultCode.SUCCESS) {
+                var resultCodeString = '';
+                for(key in resultCode) {
+                  if(resultCode[key] === response.result.code) {
+                    resultCodeString = key;
+                    break;
+                  }
+                }
+                SDL.PopUp.create().appendTo('body').popupActivate(
+                  `${response.result.method} request from HMI wasn't successful.
+                  Error code: ${response.result.code}( ${resultCodeString} )`
+                )
+                return;
+              }
+              if(response.result.value) {
+                var policyConfigData = SDL.SDLModel.data.policyConfigData;
+                response.result.value.forEach(element => {
+                  var data = JSON.parse(element);
+                  if(typeof data === 'object') {
+                    for(key in data) {
+                      if(requestedData.nestedProperty == key &&
+                      requestedData.property == 'endpoint_properties') {
+                        var self = this;
+                        policyConfigData.forEach(function(configData, configIndex) {
+                          if(undefined !== configData[key] &&
+                              data[key]['version'] !== configData[key]['version']) {
+                            if (!self.pendingVersionsToApply.hasOwnProperty(configIndex)) {
+                              self.pendingVersionsToApply[configIndex] = {};
+                            }
+                            self.pendingVersionsToApply[configIndex][key] = data[key]['version'];
+
+                            self.GetPolicyConfigurationData({
+                              policyType: 'module_config',
+                              property: 'endpoints',
+                              nestedProperty: 'custom_vehicle_data_mapping_url'
+                            });
+                          }
+                        })
+                      }
+                      else if (requestedData.nestedProperty == key &&
+                      requestedData.property == 'endpoints') {
+                        if(undefined !== data[key]) {
+                          if(key == 'custom_vehicle_data_mapping_url') {
+                            var fileName = "/tmp/fs/mp/images/ivsu_cache/oemMappingTable.json";
+                            this.OnSystemRequest('OEM_SPECIFIC',
+                                    fileName,
+                                    data[key].default[0],
+                                    undefined,
+                                    'VEHICLE_DATA_MAPPING')
+                          }
+                          if(key == 7) {
+                            SDL.SDLModel.data.set('policyURLs', data[key].default);
+                            if (data[key].default.length) {
+                              data[key].default.forEach(url => {
+                                SDL.SettingsController.OnSystemRequestHandler(url);
+                              })
+                            } else {
+                              this.OnSystemRequest('PROPRIETARY');
+                            }
+                            if (FLAGS.ExternalPolicies === true) {
+                              SDL.SettingsController.policyUpdateRetry();
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                })
+              }
+            }
+          })
+
+          var index = policyConfigRequestsData.indexOf(dataToRemove);
+          if(-1 <= index) {
+            policyConfigRequestsData.splice(index,1);
+          }
+        }
         if (response.result.method == 'SDL.GetUserFriendlyMessage') {
           Em.Logger.log('SDL.GetUserFriendlyMessage: Response from SDL!');
           if (response.id in SDL.SDLModel.data.userFriendlyMessagePull) {
@@ -257,18 +347,6 @@ FFW.BasicCommunication = FFW.RPCObserver
           Em.Logger.log('SDL.GetStatusUpdate: Response from SDL!');
           SDL.PopUp.create().appendTo('body').popupActivate(response.result);
         }
-        if (response.result.method == 'SDL.GetURLS') {
-          SDL.SDLModel.data.set('policyURLs', response.result.urls);
-          if (response.result.urls.length) {
-            SDL.SettingsController.GetUrlsHandler(response.result.urls);
-          } else {
-            this.OnSystemRequest('PROPRIETARY');
-          }
-
-          if (FLAGS.ExternalPolicies === true) {
-            SDL.SettingsController.policyUpdateRetry();
-          }
-        }
       },
       /**
        * handle RPC erros here
@@ -330,6 +408,11 @@ FFW.BasicCommunication = FFW.RPCObserver
                 SDL.SettingsController.policyUpdateRetry('ABORT');
               }
               SDL.SettingsController.policyUpdateFile = null;
+              this.GetPolicyConfigurationData({
+                policyType: 'module_config',
+                property: 'endpoint_properties',
+                nestedProperty: 'custom_vehicle_data_mapping_url'
+              });
               break;
             }
             case 'UPDATING':
@@ -445,11 +528,27 @@ FFW.BasicCommunication = FFW.RPCObserver
             SDL.InfoAppsView.showAppList();
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
-            if(FLAGS.ExternalPolicies === true) {
+            if (FLAGS.ExternalPolicies === true) {
               FFW.ExternalPolicies.unpack(request.params.fileName);
             } else {
               this.OnReceivedPolicyUpdate(request.params.fileName);
             }
+
+            if (request.params.requestType == 'OEM_SPECIFIC' &&
+                request.params.requestSubType == 'VEHICLE_DATA_MAPPING') {
+              var policyConfigData = SDL.SDLModel.data.policyConfigData;
+              var self = this;
+              policyConfigData.forEach(function(configData, configIndex) {
+                if (self.pendingVersionsToApply.hasOwnProperty(configIndex)) {
+                  var configVersionsToApply = self.pendingVersionsToApply[configIndex];
+                  Object.keys(configVersionsToApply).forEach(keyToApply => {
+                    configData[keyToApply]['version'] = configVersionsToApply[keyToApply];
+                  });
+                  delete self.pendingVersionsToApply[configIndex];
+                }
+              });
+            }
+
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS,
               request.id,
@@ -560,7 +659,11 @@ FFW.BasicCommunication = FFW.RPCObserver
               = request.params.timeout;
             SDL.SDLModel.data.policyUpdateRetry.retry = request.params.retry;
             SDL.SDLModel.data.policyUpdateRetry.try = 0;
-            this.GetURLS(7); //Service type for policies
+            this.GetPolicyConfigurationData({
+              policyType: 'module_config',
+              property: 'endpoints',
+              nestedProperty: 7 //Service type for policies
+            }); 
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
@@ -581,6 +684,34 @@ FFW.BasicCommunication = FFW.RPCObserver
       },
       /********************* Requests BEGIN *********************/
 
+       /**
+       * @function GetPolicyConfigurationData
+       * @param {Array} identifiers 
+       * @description Send request SDL.GetPolicyConfigurationData
+       */
+      GetPolicyConfigurationData: function(data) {
+        Em.Logger.log('SDL.GetPolicyConfigurationData: Request from HMI!');
+
+        var itemIndex = this.client.generateId();
+        var policyConfigRequestsData = SDL.SDLModel.data.getPolicyConfigurationDataRequestsList;
+        policyConfigRequestsData.push({
+          id: itemIndex,
+          policyType: data.policyType,
+          property: data.property,
+          nestedProperty: data.nestedProperty        
+        });
+        // send request
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': itemIndex,
+          'method': 'SDL.GetPolicyConfigurationData',
+          'params': {
+            'policyType': data.policyType,
+            'property': data.property
+          }
+        };
+        this.sendMessage(JSONMessage);
+      },
       /**
        * Send request if application was activated
        *
@@ -648,25 +779,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         if (appID) {
           JSONMessage.params.appID = appID;
-        }
-        this.sendMessage(JSONMessage);
-      },
-      /**
-       * Send request if application was activated
-       *
-       * @param {Number} type
-       */
-      GetURLS: function(type) {
-        Em.Logger.log('FFW.SDL.GetURLS: Request from HMI!');
-        // send notification
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': this.client.generateId(),
-          'method': 'SDL.GetURLS',
-          'params': {}
-        };
-        if (type) {
-          JSONMessage.params.service = type;
         }
         this.sendMessage(JSONMessage);
       },

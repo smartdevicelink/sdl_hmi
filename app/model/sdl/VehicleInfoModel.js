@@ -396,6 +396,34 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       );
     },
     /**
+     * Function calculates result code according to subscriptions result
+     * @param {Object} subscriptions
+     * @returns calculated result code
+     */
+    CalculateSubscriptionsResultCode: function(subscriptions) {
+      var statistic = {
+        success_count: 0,
+        total_count: 0
+      };
+
+      for (var key in subscriptions) {
+        statistic.total_count++;
+        if (subscriptions[key].resultCode == 'SUCCESS') {
+          statistic.success_count++;
+        }
+      }
+
+      if (statistic.total_count == statistic.success_count) {
+        return SDL.SDLModel.data.resultCode.SUCCESS;
+      }
+
+      if (statistic.success_count > 0) {
+        return SDL.SDLModel.data.resultCode.WARNINGS;
+      }
+
+      return SDL.SDLModel.data.resultCode.IGNORED;
+    },
+    /**
      * Function returns response message to VehicleInfoRPC
      *
      * @type {Object} message
@@ -406,27 +434,44 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         if (key === 'clusterModeStatus') {
           key = 'clusterModes';
         }
-        if (SDL.SDLModel.subscribedData[key] === true) {
+
+        var vehicleDataType = this.eVehicleDataType.hasOwnProperty(key) ?
+          this.eVehicleDataType[key] : "VEHICLEDATA_OEM_CUSTOM_DATA";
+
+        if (!this.eVehicleDataType.hasOwnProperty(key)) {
           subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'DATA_ALREADY_SUBSCRIBED'
-          };
-        } else if (key === 'externalTemperature') {
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
+            dataType: vehicleDataType,
             resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
           };
-        } else {
-          SDL.SDLModel.subscribedData[key] = true;
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'SUCCESS'
-          };
+          continue;
         }
+
+        if (SDL.SDLModel.subscribedData[key] === true) {
+          subscribeVIData[key] = {
+            dataType: vehicleDataType,
+            resultCode: 'DATA_ALREADY_SUBSCRIBED'
+          };
+          continue;
+        }
+
+        if (key === 'externalTemperature') {
+          subscribeVIData[key] = {
+            dataType: vehicleDataType,
+            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
+          };
+          continue;
+        }
+
+        SDL.SDLModel.subscribedData[key] = true;
+        subscribeVIData[key] = {
+          dataType: vehicleDataType,
+          resultCode: 'SUCCESS'
+        };
       }
+
+      var resultCode = this.CalculateSubscriptionsResultCode(subscribeVIData);
       FFW.VehicleInfo.sendVISubscribeVehicleDataResult(
-        SDL.SDLModel.data.resultCode.SUCCESS, message.id, message.method,
-        subscribeVIData
+        resultCode, message.id, message.method, subscribeVIData
       );
     },
     /**
@@ -440,27 +485,44 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         if (key === 'clusterModeStatus') {
           key = 'clusterModes';
         }
-        if (SDL.SDLModel.subscribedData[key] === false) {
+
+        var vehicleDataType = this.eVehicleDataType.hasOwnProperty(key) ?
+          this.eVehicleDataType[key] : "VEHICLEDATA_OEM_CUSTOM_DATA";
+
+        if (!this.eVehicleDataType.hasOwnProperty(key)) {
           subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'DATA_NOT_SUBSCRIBED'
-          };
-        } else if (key === 'externalTemperature') {
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
+            dataType: vehicleDataType,
             resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
           };
-        } else {
-          SDL.SDLModel.subscribedData[key] = false;
-          subscribeVIData[key] = {
-            dataType: this.eVehicleDataType[key],
-            resultCode: 'SUCCESS'
-          };
+          continue;
         }
+
+        if (SDL.SDLModel.subscribedData[key] === false) {
+          subscribeVIData[key] = {
+            dataType: vehicleDataType,
+            resultCode: 'DATA_NOT_SUBSCRIBED'
+          };
+          continue;
+        }
+
+        if (key === 'externalTemperature') {
+          subscribeVIData[key] = {
+            dataType: vehicleDataType,
+            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
+          };
+          continue;
+        }
+
+        SDL.SDLModel.subscribedData[key] = false;
+        subscribeVIData[key] = {
+          dataType: vehicleDataType,
+          resultCode: 'SUCCESS'
+        };
       }
+
+      var resultCode = this.CalculateSubscriptionsResultCode(subscribeVIData);
       FFW.VehicleInfo.sendVISubscribeVehicleDataResult(
-        SDL.SDLModel.data.resultCode.SUCCESS, message.id, message.method,
-        subscribeVIData
+        resultCode, message.id, message.method, subscribeVIData
       );
     },
     /**

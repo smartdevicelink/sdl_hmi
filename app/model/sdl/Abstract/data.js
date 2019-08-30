@@ -112,6 +112,12 @@ SDL.SDLModelData = Em.Object.create(
      */
     activateAppRequestsList: {},
     /**
+     * List of GetPolicyConfiguration requests
+     *
+     * @type {Array}
+     */
+    getPolicyConfigurationDataRequestsList: [],
+    /**
      * ID of app in LIMITED HMI state
      */
     stateLimited: null,
@@ -150,7 +156,7 @@ SDL.SDLModelData = Em.Object.create(
      */
     naviVideo: null,
     /**
-     * Array of strings came in SDL.GetURLS response
+     * Array of strings came in SDL.GetPolicyConfigurationData response
      *
      * @type {Object}
      */
@@ -671,7 +677,7 @@ SDL.SDLModelData = Em.Object.create(
             },
             {
               "type": "WIDGET",
-              "maximumNumberOfWindows": 16  
+              "maximumNumberOfWindows": 16
             }],
             "windowCapabilities": [{
               "textFields": [{
@@ -1007,10 +1013,37 @@ SDL.SDLModelData = Em.Object.create(
         }
       }
     },
-     defaultTemplateColorScheme: {
+    defaultTemplateColorScheme: {
       "primaryColor": {"red" : 0 , "green" : 0, "blue" : 0},
       "secondaryColor": {"red" : 0 , "green" : 0, "blue" : 0},
       "backgroundColor": {"red" : 255 , "green" : 255, "blue" : 255}
-    }
+    },
+
+    /**
+     * @name policyConfigData
+     * @type {Array}
+     * @description Policy config data version
+     */
+    policyConfigData: [
+      {
+        "custom_vehicle_data_mapping_url": {
+          "version": ""
+        }
+      }
+    ],
+
+    /**
+     * @name policyType
+     * @type {String}
+     * @description policy type of PolicyConfigData
+     */
+    policyType: '',
+
+    /**
+     *@name property
+     *@type {String}
+     *@description property of PolicyConfigData
+     */
+    property: ''
   }
 );

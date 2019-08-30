@@ -327,7 +327,7 @@ getCurrentDisplayModeClass: function() {
 
           classNames: 'sdlGPLabel',
 
-          content: 'HELP_PROMPT: TIMEOUT_PROMPT: AUTOCOMPLETE_LIST: POLICY_GetURLS:'
+          content: 'HELP_PROMPT: TIMEOUT_PROMPT: AUTOCOMPLETE_TEXT: POLICY_URLS:'
         }
       ),
 
