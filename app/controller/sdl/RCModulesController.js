@@ -922,32 +922,5 @@ SDL.RCModulesController = Em.Object.create({
           }
         }
         return dataToReturn;
-    },
-
-    /**
-     * @function resetData
-     * @param {Object} data
-     * @param {String} module_name
-     * @description Method to reset data of a module after change parameters in vehicle
-     * editor
-     */
-    resetData: function(data,module_name) {
-      var parsed_data = JSON.parse(data);
-      var models = this.modelsNameMapping[module_name];
-      var self = this;
-      var setUUID = function(moduleID, UUID) {
-        self[models][moduleID].set('UUID', UUID);
-        self.moduleUUIDMapping[module_name][moduleID] = UUID;
-      }
-      if(Array.isArray(parsed_data)) {
-        for(value of parsed_data) {
-          var moduleId = SDL.VehicleModuleCoverageController.getModuleKeyName(value.location);
-          setUUID(moduleId, value.moduleId);
-        }
-        return;
-      }
-      var moduleId = SDL.VehicleModuleCoverageController.getModuleKeyName(parsed_data.location);
-      setUUID(moduleId, parsed_data.moduleId);
-
     }
 })
