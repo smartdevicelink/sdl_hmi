@@ -501,7 +501,7 @@ SDL.RController = SDL.SDLController.extend(
       var moduleIds = request.params.moduleIds;
       var allowed = [];
       var timedOutSended = false;
-      moduleIds.forEach(element => {
+      moduleIds.reverse().forEach(element => {
         var popUp = SDL.PopUp.create().appendTo('body').popupActivate(
           'Would you like to grant access for ' + appName +
           ' application for module ' + module + ' and for module id ' + element + '?',
