@@ -439,7 +439,7 @@ SDL.SettingsController = Em.Object.create(
         nestedProperty: 'custom_vehicle_data_mapping_url'
       };
       FFW.BasicCommunication.GetPolicyConfigurationData(policyConfigurationData);
-    }
+    },
     
     /**
      * @function changeGetSystemTimeResultCode
