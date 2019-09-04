@@ -738,12 +738,6 @@ FFW.UI = FFW.RPCObserver.create(
                       'rows': 1
                     },
                     {
-                      'name': 'navigationText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
                       'name': 'audioPassThruDisplayText1',
                       'characterSet': 'TYPE2SET',
                       'width': 500,
@@ -768,12 +762,6 @@ FFW.UI = FFW.RPCObserver.create(
                       'rows': 1
                     },
                     {
-                      'name': 'notificationText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
                       'name': 'menuName',
                       'characterSet': 'TYPE2SET',
                       'width': 500,
@@ -787,18 +775,6 @@ FFW.UI = FFW.RPCObserver.create(
                     },
                     {
                       'name': 'tertiaryText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'timeToDestination',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'turnText',
                       'characterSet': 'TYPE2SET',
                       'width': 500,
                       'rows': 1
