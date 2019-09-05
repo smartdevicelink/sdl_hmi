@@ -32,14 +32,19 @@
  * @version 1.0
  */
 SDL.RCModulesController = Em.Object.create({
-  modelsNameMapping:{
-    AUDIO: 'audioModels',
-    RADIO: 'radioModels',
-    CLIMATE: 'climateModels',
-    SEAT: 'seatModels',
-    LIGHT: 'lightModels',
-    HMI_SETTINGS: 'hmiSettingsModels'
-  },
+    /**
+     * @description Mapping of module names and corresponding data models
+     * @type {Map}
+     */
+    modelsNameMapping:{
+      AUDIO: 'audioModels',
+      RADIO: 'radioModels',
+      CLIMATE: 'climateModels',
+      SEAT: 'seatModels',
+      LIGHT: 'lightModels',
+      HMI_SETTINGS: 'hmiSettingsModels'
+    },
+
     /**
      * @description Mapping of module seats and audio data models
      * @type {Map}
@@ -108,7 +113,7 @@ SDL.RCModulesController = Em.Object.create({
      * @type {Object}
      */
     currentSeatModel: null,
-    
+
     /**
      * @description Reference to currently active audio model
      * @type {Object}
@@ -172,18 +177,18 @@ SDL.RCModulesController = Em.Object.create({
     },
     /**
      * @description Function for generating a coverage according to specified
-     * settings and saving into the moduleModelsMapping  
+     * settings and saving into the moduleModelsMapping
      * @param {String} module_type
-     * @param {Array} module_coverage 
+     * @param {Array} module_coverage
      */
     fillModuleModelsMapping: function(module_type, module_coverage) {
       var mapping = {};
 
-      module_coverage.forEach(module => {
+      module_coverage.forEach(module_service_area => {
         // These fields are not mandatory according to API so should be checked
-        var module_level = module.hasOwnProperty('level') ? module.level : 0;
-        var module_row = module.row;
-        var module_col = module.col;
+        var module_level = module_service_area.hasOwnProperty('level') ? module_service_area.level : 0;
+        var module_row = module_service_area.row;
+        var module_col = module_service_area.col;
 
         var covering_module_name = SDL.VehicleModuleCoverageController.getModuleKeyName({
           "col": module_col,
@@ -191,10 +196,10 @@ SDL.RCModulesController = Em.Object.create({
           "level": module_level
         });
 
-        var level_span = module.hasOwnProperty('levelspan') ? module.levelspan : 1;
-        var row_span = module.hasOwnProperty('rowspan') ? module.rowspan : 1;
-        var col_span = module.hasOwnProperty('colspan') ? module.colspan : 1;
-        
+        var level_span = module_service_area.hasOwnProperty('levelspan') ? module_service_area.levelspan : 1;
+        var row_span = module_service_area.hasOwnProperty('rowspan') ? module_service_area.rowspan : 1;
+        var col_span = module_service_area.hasOwnProperty('colspan') ? module_service_area.colspan : 1;
+
         for (var level = module_level; level < module_level + level_span; ++level) {
           for (var row = module_row; row < module_row + row_span; ++row) {
             for (var col = module_col; col < module_col + col_span; ++col) {
@@ -203,17 +208,17 @@ SDL.RCModulesController = Em.Object.create({
                 "row" : row,
                 "level" : level
               }
-              var covered_module_name = 
+              var covered_module_name =
                 SDL.VehicleModuleCoverageController.getModuleKeyName(covered_item);
-              mapping[covered_module_name] = covering_module_name;              
+              mapping[covered_module_name] = covering_module_name;
             }
           }
         }
       });
 
       this.moduleModelsMapping[module_type] = mapping;
-    }, 
-    
+    },
+
     /**
      * @description Function for getting covering module key by specified
      * module type + actual seat key

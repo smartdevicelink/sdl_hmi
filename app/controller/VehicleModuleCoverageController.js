@@ -121,19 +121,21 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
    * @returns generated array with object which covers all vehicle seats
    */
   createFullCoverage: function(currentSeatsData) {
-    var coverage_element = SDL.deepCopy(currentSeatsData[0]);
-
     var max_col_index = this.getVehicleMaxIndex(currentSeatsData, 'col');
     var max_col_value = this.getVehicleItemValue(currentSeatsData[max_col_index], 'col');
-    coverage_element['colspan'] = max_col_value + 1;
-
     var max_row_index = this.getVehicleMaxIndex(currentSeatsData, 'row');
     var max_row_value = this.getVehicleItemValue(currentSeatsData[max_row_index], 'row');
-    coverage_element['rowspan'] = max_row_value + 1;
-
     var max_level_index = this.getVehicleMaxIndex(currentSeatsData, 'level');
     var max_level_value = this.getVehicleItemValue(currentSeatsData[max_level_index], 'level');
-    coverage_element['levelspan'] = max_level_value + 1;
+
+    var coverage_element = {
+      row: 0,
+      col: 0,
+      level: 0,
+      colspan: max_col_value + 1,
+      rowspan: max_row_value + 1,
+      levelspan: max_level_value + 1
+    };
 
     return [coverage_element];
   },
