@@ -72,6 +72,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   defaultCoverageSettings: {},
   
   /**
+   * @function init
    * @description Function for controller initialization
    */
   init: function() {
@@ -79,6 +80,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function loadSavedCoverageSettings
    * @description Function for loading saved coverage settings for a chosen
    * vehicle. If there is no saved settings, default settings will be generated
    */
@@ -112,62 +114,67 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function createFullCoverage
    * @description Function to generate a single module which covers all vehicle
    * seats
-   * @param {Array} data 
+   * @param {Array} currentSeatsData
+   * @returns generated array with object which covers all vehicle seats
    */
-  createFullCoverage: function(data) {
-    var coverage_element = SDL.deepCopy(data[0]);
+  createFullCoverage: function(currentSeatsData) {
+    var coverage_element = SDL.deepCopy(currentSeatsData[0]);
 
-    var max_col_index = this.getVehicleMaxIndex(data, 'col');
-    var max_col_value = this.getVehicleItemValue(data[max_col_index], 'col');
+    var max_col_index = this.getVehicleMaxIndex(currentSeatsData, 'col');
+    var max_col_value = this.getVehicleItemValue(currentSeatsData[max_col_index], 'col');
     coverage_element['colspan'] = max_col_value + 1;
 
-    var max_row_index = this.getVehicleMaxIndex(data, 'row');
-    var max_row_value = this.getVehicleItemValue(data[max_row_index], 'row');
+    var max_row_index = this.getVehicleMaxIndex(currentSeatsData, 'row');
+    var max_row_value = this.getVehicleItemValue(currentSeatsData[max_row_index], 'row');
     coverage_element['rowspan'] = max_row_value + 1;
 
-    var max_level_index = this.getVehicleMaxIndex(data, 'level');
-    var max_level_value = this.getVehicleItemValue(data[max_level_index], 'level');
+    var max_level_index = this.getVehicleMaxIndex(currentSeatsData, 'level');
+    var max_level_value = this.getVehicleItemValue(currentSeatsData[max_level_index], 'level');
     coverage_element['levelspan'] = max_level_value + 1;
 
     return [coverage_element];
   },
 
   /**
+   * @function createDriverPassengerCoverage
    * @description Function to generate two modules which cover all vehicle seats
-   * @param {Array} data 
+   * @param {Array} currentSeatsData
+   * @returns array with objects of driver and passenger seats which covers all vehicle seats
    */
-  createDriverPassengerCoverage: function(data) {
-    var full_seat_module = SDL.deepCopy(data[0]);
+  createDriverPassengerCoverage: function(currentSeatsData) {
+    var full_seat_module = SDL.deepCopy(currentSeatsData[0]);
     
-    var max_row_index = this.getVehicleMaxIndex(data, 'row');
-    var max_row_value = this.getVehicleItemValue(data[max_row_index], 'row');    
+    var max_row_index = this.getVehicleMaxIndex(currentSeatsData, 'row');
+    var max_row_value = this.getVehicleItemValue(currentSeatsData[max_row_index], 'row');
     full_seat_module['rowspan'] = max_row_value + 1;
 
-    var max_col_index = this.getVehicleMaxIndex(data, 'col');
-    var max_col_value = this.getVehicleItemValue(data[max_col_index], 'col');
+    var max_col_index = this.getVehicleMaxIndex(currentSeatsData, 'col');
+    var max_col_value = this.getVehicleItemValue(currentSeatsData[max_col_index], 'col');
     full_seat_module['colspan'] = max_col_value + 1;
     
-    var max_level_index = this.getVehicleMaxIndex(data, 'level');
-    var max_level_value = this.getVehicleItemValue(data[max_level_index], 'level');
+    var max_level_index = this.getVehicleMaxIndex(currentSeatsData, 'level');
+    var max_level_value = this.getVehicleItemValue(currentSeatsData[max_level_index], 'level');
     full_seat_module['levelspan'] = max_level_value + 1;
 
     var driver_seat_module = SDL.deepCopy(full_seat_module);
     driver_seat_module['colspan'] --; /* Driver seat covered only the first two columns.
                                          Decremented from full coverage columns */
 
-    var passanger_seat_module = SDL.deepCopy(full_seat_module);
-    passanger_seat_module['col'] = max_col_value;
-    passanger_seat_module['colspan'] = 1;
+    var passenger_seat_module = SDL.deepCopy(full_seat_module);
+    passenger_seat_module['col'] = max_col_value;
+    passenger_seat_module['colspan'] = 1;
 
     return [
       driver_seat_module,
-      passanger_seat_module
+      passenger_seat_module
     ];
   },
 
   /**
+   * @function saveCoverageSettings
    * @description Function for saving current coverage settings into the map
    */
   saveCoverageSettings: function() {
@@ -176,6 +183,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function resetCoverageSettings
    * @description Function to reset current coverage settings and set them to
    * default ones
    */
@@ -191,6 +199,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function getCoverageSettings
    * @description Function to get current coverage settings. If no settings
    * were set, default will be generated
    * @returns current coverage settings for the chosen vehicle
@@ -211,6 +220,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function showModuleCoverage
    * @description Function to display current module coverage settings in the
    * target view's editor
    */
@@ -223,42 +233,27 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
    * @function getModuleInfoForType
    * @param {String} module_type
    * @description get module info
+   * @returns {object} with moduleinfo
    */
   getModuleInfoForType: function(module_type) {
     var data = [];
-    switch(module_type) {
-      case 'RADIO': {
-        SDL.remoteControlCapabilities.remoteControlCapability.radioControlCapabilities.forEach(element => {
-          data.push(element.moduleInfo)
-        });
-        break;
-      }
-      case 'AUDIO': {
-        SDL.remoteControlCapabilities.remoteControlCapability.audioControlCapabilities.forEach(element => {
-          data.push(element.moduleInfo)
-        });
-        break;
-      }
-      case 'CLIMATE': {
-        SDL.remoteControlCapabilities.remoteControlCapability.climateControlCapabilities.forEach(element => {
-          data.push(element.moduleInfo)
-        });
-        break;
-      }
-      case 'SEAT': {
-        SDL.remoteControlCapabilities.remoteControlCapability.seatControlCapabilities.forEach(element => {
-          data.push(element.moduleInfo)
-        });
-        break;
-      }
-      case 'LIGHT': {
-        data = SDL.remoteControlCapabilities.remoteControlCapability.lightControlCapabilities.moduleInfo
-        break;
-      }
-      case 'HMI_SETTINGS': {
-        data = SDL.remoteControlCapabilities.remoteControlCapability.hmiSettingsControlCapabilities.moduleInfo
-        break;
-      }
+    var moduleTypeToCapabilityName = {
+      'RADIO': "radioControlCapabilities",
+      'AUDIO': "audioControlCapabilities",
+      'CLIMATE': "climateControlCapabilities",
+      'SEAT': "seatControlCapabilities",
+      'LIGHT': "lightControlCapabilities",
+      'HMI_SETTINGS': "hmiSettingsControlCapabilities"
+    };
+    var capabilitiesData = SDL.remoteControlCapabilities.remoteControlCapability[moduleTypeToCapabilityName[module_type]];
+
+    if(!Array.isArray(capabilitiesData)) {
+      data = capabilitiesData.moduleInfo;
+    }
+    else{
+      capabilitiesData.forEach(element => {
+        data.push(element.moduleInfo);
+      });
     }
     return data;
   },
@@ -285,11 +280,11 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
 
       module_coverage.forEach(
         function(element, index) {
-          var moduleId = self.getModuleKeyName(element.location);
-          var model = SDL.RCModulesController.modelsNameMapping[module_type];
+          var moduleKey = self.getModuleKeyName(element.location);
+          var modelKey = SDL.RCModulesController.modelsNameMapping[module_type];
 
-          SDL.RCModulesController[model][moduleId].set('UUID', element.moduleId);
-          SDL.RCModulesController.moduleUUIDMapping[module_type][moduleId] = element.moduleId;
+          SDL.RCModulesController[modelKey][moduleKey].set('UUID', element.moduleId);
+          SDL.RCModulesController.moduleUUIDMapping[module_type][moduleKey] = element.moduleId;
       });
 
       self.setModuleInfo(module_type, module_coverage);
@@ -299,46 +294,30 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   /**
    * @function setModuleInfo
    * @param {String} module_type
-   * @param {String} data
+   * @param {Array} parsed_module_infos
    * @description Set module info
    */
-  setModuleInfo: function(module_type, parsed_settings) {
-    switch(module_type) {
-      case 'RADIO': {
-        SDL.remoteControlCapabilities.remoteControlCapability.radioControlCapabilities.forEach(function(element,index) {
-          element.moduleInfo = parsed_settings[index];
-        });
-        break;
-      }
-      case 'AUDIO': {
-        SDL.remoteControlCapabilities.remoteControlCapability.audioControlCapabilities.forEach(function(element,index) {
-          element.moduleInfo = parsed_settings[index];
-        });
-        break;
-      }
-      case 'CLIMATE': {
-        SDL.remoteControlCapabilities.remoteControlCapability.climateControlCapabilities.forEach(function(element,index) {
-          element.moduleInfo = parsed_settings[index];
-        });
-        break;
-      }
-      case 'SEAT': {
-        SDL.remoteControlCapabilities.remoteControlCapability.seatControlCapabilities.forEach(function(element,index) {
-          element.moduleInfo = parsed_settings[index];
-        });
-        break;
-      }
-      case 'LIGHT': {
-        SDL.remoteControlCapabilities.remoteControlCapability.lightControlCapabilities.moduleInfo = parsed_settings[0];
-        break;
-      }
-      case 'HMI_SETTINGS': {
-        SDL.remoteControlCapabilities.remoteControlCapability.hmiSettingsControlCapabilities.moduleInfo = parsed_settings[0];
-        break;
-      }
+  setModuleInfo: function(module_type, parsed_module_infos) {
+    var moduleTypeToCapabilityName = {
+      'RADIO': "radioControlCapabilities",
+      'AUDIO': "audioControlCapabilities",
+      'CLIMATE': "climateControlCapabilities",
+      'SEAT': "seatControlCapabilities",
+      'LIGHT': "lightControlCapabilities",
+      'HMI_SETTINGS': "hmiSettingsControlCapabilities"
+    };
+    var capabilitiesData = SDL.remoteControlCapabilities.remoteControlCapability[moduleTypeToCapabilityName[module_type]];
+    if(!Array.isArray(capabilitiesData)){
+      capabilitiesData.moduleInfo = parsed_module_infos[0];
+    }
+    else{
+      capabilitiesData.forEach(function(element, index){
+        element.moduleInfo = parsed_module_infos[index];
+      });
     }
   },
   /**
+   * @function switchModule
    * @description Function to change the content of editor to display settings
    * of another module
    * @param {String} module_type 
@@ -363,16 +342,18 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function saveModuleSettings
    * @description Function to save current module settings before switching
    * @param {String} module_type 
-   * @param {Object} data 
+   * @param {Object} module_infos
    */
-  saveModuleSettings: function(module_type, data) {
-    var parsed_settings = JSON.parse(data);
+  saveModuleSettings: function(module_type, module_infos) {
+    var parsed_settings = JSON.parse(module_infos);
     this.set('coverageSettings.' + module_type, parsed_settings);
   },
 
   /**
+   * @function validateSettings
    * @description Function to validate current settings
    * @returns true if settings are valid, otherwise returns false
    */
@@ -386,7 +367,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
       );
       return false;
     }
-    
+
     validation_message = this.checkModulesBoundaries();
     if (validation_message !== "") {
       SDL.PopUp.create().appendTo('#' + this.targetView.elementId).popupActivate(
@@ -415,6 +396,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function extractModulesCoverage
    * @description Function to extract module coverage settings from provided object
    * @param {Object} module_settings
    * @returns array of module coverage settings
@@ -431,6 +413,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function getModuleKeyName
    * @description Function to get current module key by its location
    * @param {Object} item
    * @returns stringified key of the module 
@@ -440,6 +423,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function getVehicleMaxIndex
    * @description Function to get index of element in array which has max value
    * in the specified field
    * @param {Array} data 
@@ -465,6 +449,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function getVehicleItemValue
    * @description Function to get value of the element considering its "span"
    * addition
    * @param {Object} item 
@@ -486,6 +471,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function checkModulesConsistency
    * @description Function to check settings consistency according to API
    * @returns true if settings are valid, otherwise returns false
    */
@@ -523,6 +509,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
+   * @function checkModulesBoundaries
    * @description Function to check settings boundaries according to physical
    * seats location of the chosen vehicle
    * @returns true if settings are valied, otherwise returns false
@@ -553,6 +540,24 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
       var module_max_level_index = this.getVehicleMaxIndex(service_areas, 'level');
       var module_max_level_value = this.getVehicleItemValue(service_areas[module_max_level_index], 'level');  
 
+      service_areas.forEach(element => {
+        var serviceAreaCol = element['col'];
+        var serviceAreaRow = element['row'];
+        var serviceAreaLevel = element['level'];
+        if (0 > serviceAreaCol) {
+          validation_message += module_type + ": out-of-bound column in " +
+            this.getModuleKeyName(element) + "\n";
+        }
+        if (0 > serviceAreaRow) {
+          validation_message += module_type + ": out-of-bound row in " +
+            this.getModuleKeyName(element) + "\n";
+        }
+        if (0 > serviceAreaLevel) {
+          validation_message += module_type + ": out-of-bound level in " +
+            this.getModuleKeyName(element) + "\n";
+        }
+      })
+
       if (module_max_col_value > max_col_value) {
         validation_message += module_type + ": out-of-bound column in " + 
           this.getModuleKeyName(service_areas[module_max_col_index]) + "\n";
@@ -565,6 +570,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
         validation_message += module_type + ": out-of-bound level in " +
           this.getModuleKeyName(service_areas[module_max_level_index]) + "\n";
       }
+      
     });
 
     return validation_message;
@@ -611,7 +617,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
     return validation_message;
   },
 
-  /**
+    /**
    * @description Function to check coverage by specified settings of the
    * physical seats of the chosen vehicle
    * @returns true if settings are valied, otherwise returns false
