@@ -103,6 +103,15 @@ FFW.RPCObserver = Em.Object.extend(
             params.image.value = params.image.value + '?m=' + new Date().getTime();
           }
         }
+        if ('alertIcon' in params) {
+          if (params.alertIcon.imageType === 'STATIC') {
+            delete params.alertIcon;
+            return false;
+          } else {
+            params.alertIcon.value = params.alertIcon.value.replace(/\\/g, '%5C');
+            params.alertIcon.value = params.alertIcon.value + '?m=' + new Date().getTime();
+          }
+        }
         if ('secondaryImage' in params) {
           if (params.secondaryImage.imageType === 'STATIC') {
             delete params.secondaryImage;
