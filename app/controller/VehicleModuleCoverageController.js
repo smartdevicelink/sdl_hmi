@@ -376,14 +376,6 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
       return false;
     }
 
-    validation_message = this.checkModuleLocationMatching();
-    if (validation_message !== "") {
-      SDL.PopUp.create().appendTo('#' + this.targetView.elementId).popupActivate(
-        'Invalid JSON settings:\n' + validation_message
-      );
-      return false;
-    }
-
     validation_message = this.checkModuleCoverage();
     if (validation_message !== "") {
       SDL.PopUp.create().appendTo('#' + this.targetView.elementId).popupActivate(
@@ -571,47 +563,6 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
           this.getModuleKeyName(service_areas[module_max_level_index]) + "\n";
       }
       
-    });
-
-    return validation_message;
-  },
-
-  /**
-   * @description Function to check that module physical locations matches the
-   * service areas of these modules
-   * @returns true if settings are valid, otherwise returns false
-   */
-  checkModuleLocationMatching: function() {
-    var validation_message = "";
-
-    Object.keys(this.coverageSettings).forEach(module_type => {
-      var module_coverage = this.coverageSettings[module_type];
-      if (!Array.isArray(module_coverage)) {
-        module_coverage = [module_coverage];
-      }
-
-      module_coverage.forEach(module_element => {
-        var module_location = module_element['location'];
-        var module_area = module_element['serviceArea'];
-        var module_key_name = this.getModuleKeyName(module_location);
-
-        if (module_location['col'] != module_area['col']) {
-          validation_message += module_type + ": " + module_key_name + " has a 'col' mismatch!\n";
-          return;
-        }
-
-        if (module_location['row'] != module_area['row']) {
-          validation_message += module_type + ": " + module_key_name + " has a 'row' mismatch!\n";
-          return;
-        }
-
-        var location_level = module_location.hasOwnProperty('level') ? module_location['level'] : 0;
-        var area_level = module_area.hasOwnProperty('level') ? module_area['level'] : 0;
-        if (location_level != area_level) {
-          validation_message += module_type + ": " + module_key_name + " has a 'level' mismatch!\n";
-          return;
-        }
-      });      
     });
 
     return validation_message;
