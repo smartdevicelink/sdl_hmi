@@ -400,10 +400,14 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
     var service_areas = [];
 
     array_of_settings.forEach(element => {
-      service_areas.push(element['serviceArea']);
+      if (element.hasOwnProperty('serviceArea')) {
+        service_areas.push(element['serviceArea']);
+      } else {
+        service_areas.push(element['location']);
+      }
     });
 
-    return service_areas;    
+    return service_areas;
   },
 
   /**
@@ -477,24 +481,28 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
       if (!Array.isArray(module_coverage)) {
         module_coverage = [module_coverage];
       }
-      
+
       module_coverage.forEach(
         function(element, index) {
           if (!element.hasOwnProperty('moduleId')) {
             validation_message += module_type + ": Element #" + index + " does not contain moduleId field!\n";
             return;
           }
-          if (!element.hasOwnProperty('serviceArea')) {
-            validation_message += module_type + ": Element #" + index + " does not contain serviceArea field!\n";
-            return;
-          }
           if (!element.hasOwnProperty('location')) {
             validation_message += module_type + ": Element #" + index + " does not contain location field!\n";
             return;
+          } else {
+            var location_area = element['location'];
+            if (!location_area.hasOwnProperty('col') || !location_area.hasOwnProperty('row')) {
+              validation_message += module_type + ": Element #" + index + " location does not contain col/row field!\n";
+              return;
+            }
           }
-          var service_area = element['serviceArea'];
-          if (!service_area.hasOwnProperty('col') || !service_area.hasOwnProperty('row')) {
-            validation_message += module_type + ": Element #" + index + " does not contain col/row field!\n";
+          if (element.hasOwnProperty('serviceArea')) {
+            var service_area = element['serviceArea'];
+            if (!service_area.hasOwnProperty('col') || !service_area.hasOwnProperty('row')) {
+              validation_message += module_type + ": Element #" + index + " serviceArea does not contain col/row field!\n";
+            }
           }
       });
     });
