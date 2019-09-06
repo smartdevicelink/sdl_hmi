@@ -107,7 +107,7 @@ SDL.ClimateView = Em.ContainerView.create(
         climateModuleUUID: SDL.Label.create({
           elementId: 'climateModuleCurrent',
           classNames: 'climateModuleCurrent',
-          contentBinding: 'SDL.RCModulesController.getClimateCurrentID'
+          contentBinding: 'SDL.RCModulesController.currentClimateModuleID'
         }),
 
         desiredTemp: Em.ContainerView.extend(

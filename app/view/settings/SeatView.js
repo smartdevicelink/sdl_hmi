@@ -966,7 +966,7 @@ SDL.SeatView = Em.ContainerView.create({
         seatModuleUUID: SDL.Label.create({
             elementId: 'seatModelCurrent',
             classNames: 'seatModelCurrent',
-            contentBinding: 'SDL.RCModulesController.getSeatCurrentID'
+            contentBinding: 'SDL.RCModulesController.currentSeatModuleID'
         })
     }),
 

@@ -67,7 +67,7 @@ SDL.HMISettingsView = Em.ContainerView.create({
     HmiSettingsModuleUUID: SDL.Label.create({
       elementId: 'settingsModuleCurrent',
       classNames: 'settingsModuleCurrent',
-      contentBinding: 'SDL.RCModulesController.getHmiSettingsCurrentID'
+      contentBinding: 'SDL.RCModulesController.currentHmiSettingsModuleID'
     }),
 
     SettingsList: SDL.List.extend({

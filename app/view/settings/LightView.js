@@ -65,7 +65,7 @@ SDL.LightView = Em.ContainerView.create({
     LightModuleUUID: SDL.Label.create({
         elementId: 'lightModuleCurrent',
         classNames: 'lightModuleCurrent',
-        contentBinding: 'SDL.RCModulesController.getLightCurrentID'
+        contentBinding: 'SDL.RCModulesController.currentLightModuleID'
     }),
     
     SettingsList: SDL.List.extend({

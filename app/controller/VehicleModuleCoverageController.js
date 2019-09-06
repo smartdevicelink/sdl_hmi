@@ -282,7 +282,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
 
       module_coverage.forEach(
         function(element, index) {
-          var moduleKey = self.getModuleKeyName(element.location);
+          var moduleKey = self.getLocationName(element.location);
           var modelKey = SDL.RCModulesController.modelsNameMapping[module_type];
 
           SDL.RCModulesController[modelKey][moduleKey].set('UUID', element.moduleId);
@@ -411,13 +411,13 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
   },
 
   /**
-   * @function getModuleKeyName
+   * @function getLocationName
    * @description Function to get current module key by its location
-   * @param {Object} item
-   * @returns stringified key of the module 
+   * @param {Object} grid
+   * @returns stringified key of the module
    */
-  getModuleKeyName: function(item) {
-    return "L" + item.level + "R" + item.row + "C" + item.col;
+  getLocationName: function(grid) {
+    return "L" + grid.level + "R" + grid.row + "C" + grid.col;
   },
 
   /**
@@ -548,29 +548,29 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
         var serviceAreaLevel = element['level'];
         if (0 > serviceAreaCol) {
           validation_message += module_type + ": out-of-bound column in " +
-            this.getModuleKeyName(element) + "\n";
+            this.getLocationName(element) + "\n";
         }
         if (0 > serviceAreaRow) {
           validation_message += module_type + ": out-of-bound row in " +
-            this.getModuleKeyName(element) + "\n";
+            this.getLocationName(element) + "\n";
         }
         if (0 > serviceAreaLevel) {
           validation_message += module_type + ": out-of-bound level in " +
-            this.getModuleKeyName(element) + "\n";
+            this.getLocationName(element) + "\n";
         }
       })
 
       if (module_max_col_value > max_col_value) {
         validation_message += module_type + ": out-of-bound column in " + 
-          this.getModuleKeyName(service_areas[module_max_col_index]) + "\n";
+          this.getLocationName(service_areas[module_max_col_index]) + "\n";
       }
       if (module_max_row_value > max_row_value) {
         validation_message += module_type + ": out-of-bound row in " +
-          this.getModuleKeyName(service_areas[module_max_row_index]) + "\n";
+          this.getLocationName(service_areas[module_max_row_index]) + "\n";
       }
       if (module_max_level_value > max_level_value) {
         validation_message += module_type + ": out-of-bound level in " +
-          this.getModuleKeyName(service_areas[module_max_level_index]) + "\n";
+          this.getLocationName(service_areas[module_max_level_index]) + "\n";
       }
       
     });
@@ -595,7 +595,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
       var coverage = {};
     
       representation.forEach(item => {
-        coverage[this.getModuleKeyName(item)] = 0;
+        coverage[this.getLocationName(item)] = 0;
       });
       
       var module_coverage = this.coverageSettings[module_type];
@@ -617,7 +617,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
                 "row" : row,
                 "level" : level
               }
-              var covered_module_name = this.getModuleKeyName(covered_item);
+              var covered_module_name = this.getLocationName(covered_item);
               if (coverage.hasOwnProperty(covered_module_name)) {
                 coverage[covered_module_name]++;
               }

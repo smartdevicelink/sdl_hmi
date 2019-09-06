@@ -56,7 +56,7 @@ SDL.bluetoothView = Em.ContainerView.create(
     audioModuleUUID: SDL.Label.create({
       elementId: 'audioModuleCurrent',
       classNames: 'audioModuleCurrent',
-      contentBinding: 'SDL.RCModulesController.getAudioCurrentID'
+      contentBinding: 'SDL.RCModulesController.currentAudioModuleID'
     }),
 
     rightmenu: Em.ContainerView.create(

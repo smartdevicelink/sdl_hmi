@@ -74,7 +74,7 @@ SDL.RadioView = Em.ContainerView
       radioModuleUUID: SDL.Label.create({
         elementId: 'radioModuleCurrent',
         classNames: 'radioModuleCurrent',
-        contentBinding: 'SDL.RCModulesController.getRadioCurrentID'
+        contentBinding: 'SDL.RCModulesController.currentRadioModuleID'
       }),
 
       optionsMenu: Em.ContainerView.create(
