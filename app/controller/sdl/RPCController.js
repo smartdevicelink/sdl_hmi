@@ -2213,6 +2213,23 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         /**
+         * Validate method for request SetGlobalProperties
+         * @param {Object} params 
+         */
+        SetGlobalProperties: function(params) {          
+          if (params == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'params\' does not exists!'
+            };
+            return this.resultStruct;
+          }          
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        /**
          * Validate method for request GrantAccess
          *
          * @param {Object}

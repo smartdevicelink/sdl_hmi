@@ -24,29 +24,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
- SDL.IPodModel=Em.Object.create({
+ SDL.BluetoothModel=Em.Object.extend({
 active: false,
-selectedIndex:0,
+selectedIndex: 0,
 optionsEnabled:false,
-statusBar: 'IPod track 1',
-sendAudioNotification:function()
+statusBar: 'Bluetooth',
+init: function() {
+      this._super();
+      this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
+      this.set('player.name', 'BLUETOOTH');
+    },
+ sendAudioNotification:function()
   {
     this.setSource();
-    var data = SDL.MediaController.getAudioControlData();
+    var data = SDL.RCModulesController.currentAudioModel.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':data.source}});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', moduleId: this.UUID, audioControlData:{'source':data.source}});
   }
   },
   setSource:function()
   {
-    SDL.MediaController.lastRadioControlStruct.source='IPOD';
+    SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.source='BLUETOOTH_STEREO_BTST';
   },
-init:function(){
-	this._super();
-	this.set('player', SDL.MediaCDPlayer.create({data: this.PlayList}));
-	this.set('player.name','IPOD');
-},
-	PlayList: SDL.Playlist.create({
+	
+    PlayList: SDL.Playlist.create({
         selectedIndex: 0,
         items: {
           0: SDL.PlaylistItem.create({
@@ -104,9 +105,10 @@ init:function(){
              }
           )
         },
-        //homeWidgetIcon: 'images/media/usb-h-ico.png'
+       // homeWidgetIcon: 'images/media/usb-h-ico.png'
       }
     )
+
   }
  
 );

@@ -52,6 +52,7 @@ SDL.PopUp = Em.ContainerView.extend(
     callback: null,
     minimalSize: false,
     content: 'Title',
+    lines: [],
     active: false,
     timer: null,
     backButton: SDL.Button.extend(
@@ -93,7 +94,9 @@ SDL.PopUp = Em.ContainerView.extend(
       {
         elementId: 'text',
         classNames: 'text',
-        contentBinding: 'parentView.content'
+        contentBinding: 'parentView.content',
+        linesBinding: 'parentView.lines',
+        templateName: 'multiLine'
       }
     ),
     /**
@@ -142,7 +145,12 @@ SDL.PopUp = Em.ContainerView.extend(
           5000
         );
       }
+
       this.set('content', textBody);
+      
+      var textLines = textBody.split("\n");
+      this.set('lines', textLines);
+      
       this.set('label', label);
       this.set('line1', line1);
       this.set('line2', line2);

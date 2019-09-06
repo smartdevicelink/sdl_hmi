@@ -258,7 +258,9 @@
     z-index: 1001;
     margin: 5px;
     display: block;
-    position: relative
+    position: relative;
+    border: 1px solid #fffafa;
+    border-radius: 2px;
 }
 
 #seat .setButton{
@@ -268,14 +270,16 @@
     text-align: center;
     line-height: 24px;
     display: block;
-    position: relative;
+    position: sticky;
+    top: 0;
+    bottom: 0;
     margin: 20px 20px 20px 20px;
 }
 
 #seat .in_seat_cushionFirmness_view,
 #seat .in_seat_massageModes_view {
     z-index: 1001;
-    margin: 5px 5px 19px 5px;
+    margin: 15px 5px 19px 5px;
     display: block;
     position: relative
 }
@@ -394,7 +398,9 @@
     z-index: 1001;
     margin: 5px;
     display: block;
-    position: relative
+    position: relative;
+    border: 1px solid #fffafa;
+    border-radius: 2px;
 }
 
 #seat .in_seat_cushionFirmness_view .in_seat_cushionFirmnessLabel_view,
@@ -449,6 +455,29 @@
     width: 76px;
 }
 
+#seat .in_memory_view .applyMemory {
+    z-index: 1001;
+    left: 340px;
+    width: 70px;
+    top: -18px;
+    text-align: center;
+    border: 1px solid #fffafa;
+    border-radius: 2px;
+    position: relative;
+}
+
+
+ #seat .in_memory_view .memoryInfo {
+    top: 18px;
+    left: 300px;
+    width: 300px;
+    height: 20px;
+}
+
+#seat .in_memory_view .memoryInfo .createdMemStringLabel {
+    left: 165px;
+}
+
 #seat .in_memory_view .in_memoryId_view .labelId,
 #seat .in_memory_view .in_label_view .labelLabel,
 #seat .in_memory_view .in_action_view .actionLabel,
@@ -472,6 +501,18 @@
     left: 10px;;
 }
 
+#settingsView .lightModuleCurrent {
+    position: relative;
+    top: -15px;
+    left: 10px;
+}
+
+#settingsView .settingsModuleCurrent {
+    position: relative;
+    top: -15px;
+    left: 10px;
+}
+
 #HMI_settings_list .list-content .ffw-button,
 #light_list .list-content .ffw-button {
     width: 537px;
@@ -488,9 +529,15 @@
 }
 
 #seat .in_massageEnable_view .massageEnable_enableSelect,
-#seat .in_id_view .idSelect {
+#seat .in_id_view .seatModelCurrent {
     display: inline-block;
     position: relative;
     z-index: 1001;
     margin: 0px 0px 0px 71px;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }

@@ -52,6 +52,16 @@ SDL.CodeEditor = Em.ContainerView.extend(
     callback: null,
     content: 'Title',
     active: false,
+    
+    /**
+     * Callback function in case JSON was invalidated 
+     */
+    invalidJsonCallback: function() {
+      SDL.PopUp.create().appendTo('body').popupActivate(
+        'Incorrect JSON format'
+      );
+    },
+
     backButton: SDL.Button.extend(
       {
         classNames: 'button backButton',
@@ -111,9 +121,9 @@ SDL.CodeEditor = Em.ContainerView.extend(
         try {
           JSON.parse(this.editor.editor.getSession().getValue());
         } catch (e) {
-          SDL.PopUp.create().appendTo('body').popupActivate(
-            'Incorrect JSON format'
-          );
+          if (this.invalidJsonCallback) {
+            this.invalidJsonCallback();
+          }          
           return;
         }
         this.callback(

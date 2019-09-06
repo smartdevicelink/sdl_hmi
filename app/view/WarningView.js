@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @name SDL.WarningViewg
+ * @name SDL.WarningView
  * @desc Warning representation
  * @category View
  * @filesource app/view/WarningView.js
@@ -119,6 +119,7 @@ SDL.warningView = Em.ContainerView
             setTimeout(
               function() {
                 self.set('isReady', true);
+                SDL.RCModulesController.populateModels();
               }, 2000
             );
             var timer = setInterval(
@@ -469,6 +470,6 @@ SDL.warningView = Em.ContainerView
             SDL.RPCController.ConnectToSDL();
           }
         }
-      )
+      ),
     }
   );

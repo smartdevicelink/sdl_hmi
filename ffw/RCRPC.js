@@ -44,6 +44,14 @@ FFW.RC = FFW.RPCObserver.create(
      * If true then RC controller currently handles SetIVD request
      */
     isSetVdInProgress: false,
+
+    /**
+     * @param OnIVDNotificationWasSent
+     * @type {Boolean}
+     * @description If true MOBILE_APP has been activated by SetIVd reqeuest and has sent OnInterioirVehicleData
+     * notification
+     */
+    OnIVDNotificationWasSent: false,
     /**
      * Contains response codes for request that should be processed but there
      * were some kind of errors Error codes will be injected into response.
@@ -146,7 +154,7 @@ FFW.RC = FFW.RPCObserver.create(
     onRPCNotification: function(notification) {
       Em.Logger.log('FFW.RC.onRPCNotification');
       this._super();
-      switch (notification.method) {  
+      switch (notification.method) {
         case 'RC.OnRCStatus':
           {
             Em.Logger.log(notification.method);
@@ -205,7 +213,8 @@ FFW.RC = FFW.RPCObserver.create(
               'result': {
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
-                'remoteControlCapability': SDL.remoteControlCapability
+                'seatLocationCapability': SDL.remoteControlCapabilities.seatLocationCapability,
+                'remoteControlCapability': SDL.remoteControlCapabilities.remoteControlCapability
               }
             };
             this.sendMessage(JSONMessage);
@@ -215,179 +224,25 @@ FFW.RC = FFW.RPCObserver.create(
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
             this.set('isSetVdInProgress', true);
-
-            if (request.params.moduleData.radioControlData) {
-              if (request.params.moduleData.radioControlData.radioEnable == undefined
-                  && SDL.RadioModel.radioControlStruct.radioEnable == false) {
-                this.sendError(
-                  SDL.SDLModel.data.resultCode.IGNORED,
-                  request.id, request.method,
-                  'Radio module must be activated.'
-                );
-                return;
-              }
-              if(request.params.moduleData.radioControlData.hdChannel !== undefined
-                 && request.params.moduleData.radioControlData.hdRadioEnable == undefined
-                  && SDL.RadioModel.radioControlStruct.hdRadioEnable == false) {
-                  this.sendError(
-                    SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
-                    request.id, request.method,
-                    'HD Radio module does not supported.'
-                  );
-                  return;
-              }
-              var result = SDL.RadioModel.checkRadioFrequencyBoundaries(
-                request.params.moduleData.radioControlData
-              );
-              if (!result.success) {
-                this.sendError(
-                  SDL.SDLModel.data.resultCode.INVALID_DATA,
-                  request.id, request.method,
-                  result.info
-                );
-                return;
-              }
-            }
-            
-            var newClimateControlData = null;
-            var newRadioControlData = null;
-            var newAudioControlData= null;    
-            var newHMISettingsControlData = null;
-            var newLightControlData = null;
-            var newSeatControlData = null;
-            
-            if (request.params.moduleData.climateControlData) {
-              var currentClimateState = 
-                SDL.ClimateController.getClimateControlData().climateEnable;
-              var requestedClimateState = 
-                request.params.moduleData.climateControlData.climateEnable;
-              if(!currentClimateState) {
-                if(requestedClimateState === undefined) {
-                  this.sendError(
-                    SDL.SDLModel.data.resultCode.REJECTED,
-                    request.id, request.method,
-                    'Climate Control is disable. Turn Climate on.'
-                  );
-                  return;
-                } else if(requestedClimateState === false) {
-                  this.sendError(
-                    SDL.SDLModel.data.resultCode.REJECTED,
-                    request.id, request.method,
-                    'Climate Control is disabled already.'
-                  );
-                  return;
-                }
-              }
-              newClimateControlData =
-                SDL.ClimateController.model.setClimateData(
-                  request.params.moduleData.climateControlData);
-              if (Object.keys(request.params.moduleData.climateControlData).length > 0) {
-                FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE', 
-                                                          climateControlData: newClimateControlData});
-              }     
-            }
-            if (request.params.moduleData.radioControlData) {
-             if(request.params.moduleData.radioControlData.band && 
-              request.params.moduleData.radioControlData.band == 'DAB'){
-                this.sendError(
-                  SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
-                  request.id, request.method,'DAB not supported'
-                );
-                return;
-              } else {
-                newRadioControlData =
-                  SDL.RadioModel.setRadioData(
-                    request.params.moduleData.radioControlData);
-                if (SDL.RadioModel.radioControlStruct.radioEnable) {
-                  SDL.RadioModel.saveCurrentOptions();
-                }
-                if (Object.keys(newRadioControlData).length > 0) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', 
-                                                            radioControlData: newRadioControlData});
-                }
-              }
-            }
-            if(request.params.moduleData.audioControlData){
-              if(request.params.moduleData.audioControlData.source && 
-                request.params.moduleData.audioControlData.source == 'DAB'){
-                  this.sendError(
-                    SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE,
-                    request.id, request.method,'DAB not supported'
-                  );
-                  return;
-                } else {
-              newAudioControlData = (request.params.moduleData.audioControlData.keepContext!=null)?
-              SDL.MediaController.setAudioControlDataWithKeepContext(request.params.moduleData.audioControlData)
-              :SDL.MediaController.setAudioControlData(request.params.moduleData.audioControlData);
-                if (Object.keys(request.params.moduleData.audioControlData).length > 0) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', 
-                                                          audioControlData: newAudioControlData});
-                }
-              }
-            }
-            if(request.params.moduleData.hmiSettingsControlData){
-              newHMISettingsControlData = SDL.HmiSettingsModel.setHmiSettingsData(
-                request.params.moduleData.hmiSettingsControlData);
-                if (Object.keys(request.params.moduleData.hmiSettingsControlData).length > 0) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', 
-                                                            hmiSettingsControlData: newHMISettingsControlData});
-                }  
-            }
-            if(request.params.moduleData.lightControlData){
-              newLightControlData = SDL.LightModel.setLightControlData(
-                request.params.moduleData.lightControlData);
-
-                if (Object.keys(newLightControlData).length > 0) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT', 
-                                                            lightControlData: request.params.moduleData.lightControlData});
-                }
-            }
-            if(request.params.moduleData.seatControlData){
-              newSeatControlData = SDL.SeatModel.setSeatControlData(
-                request.params.moduleData.seatControlData);
-                if (Object.keys(request.params.moduleData.seatControlData).length > 0) {
-                  FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT', 
-                                                            seatControlData: newSeatControlData});
-                }   
-            };
-            // send response
-            var JSONMessage = {
+             var JSONMessage = {
               'jsonrpc': '2.0',
               'id': request.id,
               'result': {
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
                 'moduleData': {
-                  'moduleType': request.params.moduleData.moduleType
+                  'moduleType': request.params.moduleData.moduleType,
+                  'moduleId': request.params.moduleData.moduleId
                 }
               }
             };
-            if (newAudioControlData) {
-              JSONMessage.result.moduleData.audioControlData =
-              newAudioControlData;
-            }
-            if (newClimateControlData) {
-              JSONMessage.result.moduleData.climateControlData =
-                newClimateControlData;
-            }
-            if (newRadioControlData) {
-              JSONMessage.result.moduleData.radioControlData =
-                newRadioControlData;
-            }
-            if(newHMISettingsControlData){
-              JSONMessage.result.moduleData.hmiSettingsControlData =
-                newHMISettingsControlData;
-            }
-            if(newLightControlData){
-              JSONMessage.result.moduleData.lightControlData =
-                newLightControlData;
-            }
-            if(newSeatControlData){
-              JSONMessage.result.moduleData.seatControlData =
-                newSeatControlData;
-            }
 
-            this.sendMessage(JSONMessage);
+            var newControlData = SDL.RCModulesController.setInteriorVehicleData(request);
+            if(newControlData) {
+              var key = Object.keys(newControlData)[0];
+              JSONMessage.result.moduleData[key] = newControlData[key];
+              this.client.send(JSONMessage);
+            }
             this.set('isSetVdInProgress', false);
             break;
           }
@@ -395,86 +250,26 @@ FFW.RC = FFW.RPCObserver.create(
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
 
-            var moduleType = request.params.moduleType;
-            var climateControlData = null;
-            var radioControlData = null;
-            var audioControlData=null;
-            var hmiSettingsControlData = null;
-            var lightControlData = null;
-            var seatControlData = null;
-
-            var app = SDL.SDLController.getApplicationModel(
-              request.params.appID
-            );
-            switch(moduleType){
-              case 'CLIMATE':{
-                climateControlData = SDL.ClimateController.getClimateControlData();
-                break
-              }
-              case 'RADIO':{
-                radioControlData = SDL.RadioModel.getRadioControlData(false);
-                break
-              }
-              case 'HMI_SETTINGS':{
-                hmiSettingsControlData = SDL.HmiSettingsModel.getHmiSettingsControlData(false);
-                break
-              }
-              case 'AUDIO':{
-                audioControlData = SDL.MediaController.getAudioControlData(false);
-                break;
-              }
-              case 'LIGHT':{
-                lightControlData = SDL.LightModel.getLightControlData(false);
-                break
-              }
-              case 'SEAT':{
-                seatControlData = SDL.SeatModel.getSeatControlData(false);
-                break
-              }
-            }
-
             var JSONMessage = {
               'jsonrpc': '2.0',
               'id': request.id,
               'result': {
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': request.method,
+                'isSubscribed': request.params.subscribe,
                 'moduleData': {
-                  'moduleType': moduleType
+                  'moduleType': request.params.moduleType,
+                  'moduleId': request.params.moduleId
                 }
               }
             };
 
-            if (radioControlData) {
-              JSONMessage.result.moduleData.radioControlData =
-                radioControlData;
+            var data = SDL.RCModulesController.getInteriorVehicleData(request);
+            if(data) {
+              var key = Object.keys(data)[0];
+              JSONMessage.result.moduleData[key] = data[key];
+              this.client.send(JSONMessage);
             }
-            if (climateControlData) {
-              JSONMessage.result.moduleData.climateControlData
-                = climateControlData;
-            }
-            if (audioControlData) {
-              JSONMessage.result.moduleData.audioControlData
-                = audioControlData;
-            }
-            if(hmiSettingsControlData){
-              JSONMessage.result.moduleData.hmiSettingsControlData = 
-              hmiSettingsControlData;
-            }
-            if(lightControlData){
-              JSONMessage.result.moduleData.lightControlData = 
-                lightControlData;
-            }
-            if(seatControlData){
-              JSONMessage.result.moduleData.seatControlData = 
-              seatControlData;
-            }
-            if (request.params.subscribe !== undefined) {
-              JSONMessage.result.isSubscribed =
-                request.params.subscribe;
-            }
-
-            this.sendMessage(JSONMessage);
             break;
           }
           case 'RC.GetInteriorVehicleDataConsent':
@@ -482,6 +277,38 @@ FFW.RC = FFW.RPCObserver.create(
             Em.Logger.log('FFW.' + request.method + ' Request');
             SDL.SDLController.interiorDataConsent(request);
             break;
+          }
+          case 'RC.SetGlobalProperties':
+          {
+            Em.Logger.log('FFW.' + request.method + ' Request');
+
+            if (request.params.userLocation !== null) {
+              var user_location = request.params.userLocation.grid;
+              var app = SDL.SDLController.getApplicationModel(request.params.appID);
+
+              if (!app) {
+                this.sendError(
+                  SDL.SDLModel.data.resultCode.REJECTED,
+                  request.id,
+                  request.method,
+                  "Application is not registered"
+                );
+                return;
+              }
+
+              app.userLocation = user_location;
+              SDL.RCModulesController.updateModuleSeatLocationContent();
+            }
+
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                'method': request.method
+              }
+            };
+            this.client.send(JSONMessage);
           }
 
           default:

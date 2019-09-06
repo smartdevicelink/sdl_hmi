@@ -31,4 +31,4 @@ SDL.ExteriorLightView = Em.ContainerView.create({
           items: []
     })
 })
-SDL.LightView.initList(SDL.LightModel.exteriorLightNameStruct,SDL.ExteriorLightView.appList.items);
+SDL.LightView.initList(SDL.RCModulesController.currentLightModel.exteriorLightNameStruct,SDL.ExteriorLightView.appList.items);

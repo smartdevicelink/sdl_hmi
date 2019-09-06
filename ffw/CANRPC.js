@@ -372,7 +372,7 @@ FFW.CAN = FFW.RPCObserver.create(
       this.sendMessage(JSONMessage);
     },
     sendPlayerDetails: function() {
-      var player = SDL.MediaController.get('currentSelectedPlayer');
+      var player = SDL.RCModulesController.currentAudioModel.get('currentSelectedPlayer');
       if (player) {
         var media = player.data.get('selectedItem'),
           params = {

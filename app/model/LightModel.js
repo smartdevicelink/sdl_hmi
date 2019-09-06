@@ -31,7 +31,7 @@
  * @version 1.0
  */
 
-SDL.LightModel = Em.Object.create({
+SDL.LightModel = Em.Object.extend({
    
     /*
     * Common Single Light
@@ -197,8 +197,8 @@ SDL.LightModel = Em.Object.create({
                         this.set('lightState.'+j+'.color', 
                             data.lightState[i].color);
                     } 
-                    if(data.lightState[i].id == SDL.LightModel.lightSettings.id){
-                        SDL.LightModel.set('lightSettings',this.lightState[j])
+                    if(data.lightState[i].id == SDL.RCModulesController.currentLightModel.lightSettings.id){
+                        SDL.RCModulesController.currentLightModel.set('lightSettings',this.lightState[j])
                     }
                 }
             }
@@ -213,5 +213,27 @@ SDL.LightModel = Em.Object.create({
             lightState: this.lightState
         };
         return result;
+    },
+
+    /**
+     * @description Function to generate light capabilities
+     * @param {Object} element 
+     */
+    generateLightCapabilities: function(element) {
+        var capabilities = this.getLightCapabilities();
+        if(element) {
+            var moduleInfo = {
+                'allowMultipleAccess': true,
+                'moduleId': this.UUID,
+                'serviceArea': SDL.deepCopy(element),
+                'location': SDL.deepCopy(element),
+            };
+        
+            moduleInfo.location['colspan'] = 1;
+            moduleInfo.location['rowspan'] = 1;
+            moduleInfo.location['levelspan'] = 1;
+            capabilities['moduleInfo'] = moduleInfo;
+        }
+        SDL.remoteControlCapabilities.remoteControlCapability['lightControlCapabilities'] = capabilities;
     }
 });

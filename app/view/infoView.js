@@ -172,7 +172,7 @@ SDL.InfoView = Em.ContainerView.create(
                 text: 'Go To CD',
                 action: 'turnOnCD',
                 icon: 'images/media/ico_cd.png',
-                target: 'SDL.MediaController'
+                target: 'SDL.RCModulesController.currentAudioModel'
               }
             )
           }

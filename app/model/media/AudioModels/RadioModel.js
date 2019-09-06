@@ -31,13 +31,13 @@
  * @version 1.0
  */
 
-SDL.RadioModel = Em.Object.create({
+SDL.RadioModel = Em.Object.extend({
 
   init: function() {
 
     var i;
     this._super();
-
+    this.radioControlStruct = {};
     for (i = 879; i <= 1079; i+=2) {
       this.directTuneItems.FM.push(i.toString().split(''));
     }
@@ -45,6 +45,20 @@ SDL.RadioModel = Em.Object.create({
     for (i = 525; i <= 1705; i+=5) {
       this.directTuneItems.AM.push(i.toString().split(''));
     }
+    this.set('radioControlStruct.frequencyInteger', 87);
+    this.set('radioControlStruct.frequencyFraction', 9);
+    this.set('radioControlStruct.hdRadioEnable', true);
+    this.set('radioControlStruct.band', 'FM');
+    this.set('radioControlStruct.rdsData', {PS: 'name', RT:'radio', CT:'YYYY-MM-DDThh:mm:ss.sTZD', PI:'Sign',
+        PTY:1, TP:true, TA:true, REG:'Murica'});
+    this.set('radioControlStruct.sisData', {stationShortName: 'Name1',stationIDNumber: {countryCode:101, fccFacilityId:100},
+    stationLongName:'Name2',stationLocation:{longitudeDegrees:0.1, latitudeDegrees:0.1,altitude:0.1},stationMessage:'st mes'});
+    this.set('radioControlStruct.availableHDs', 3);
+    this.set('radioControlStruct.hdChannel', 1);
+    this.set('radioControlStruct.signalStrength', 50);
+    this.set('radioControlStruct.signalChangeThreshold', 60);
+    this.set('radioControlStruct.radioEnable', true);
+    this.set('radioControlStruct.state', 'ACQUIRING');
 
     this.updateRadioFrequency();
   },
@@ -247,42 +261,6 @@ SDL.RadioModel = Em.Object.create({
 
   directTuneKeypressed: false,
 
-  radioControlStruct: {
-    frequencyInteger: 87,
-    frequencyFraction: 9,
-    hdRadioEnable: true,
-    band: 'FM',
-    rdsData: {
-      PS: 'name',
-      RT: 'radio',
-      CT: 'YYYY-MM-DDThh:mm:ss.sTZD',
-      PI: 'Sign',
-      PTY: 1,
-      TP: true,
-      TA: true,
-      REG: 'Murica'
-    },
-    sisData:{
-      stationShortName:'Name1',
-      stationIDNumber:{
-        countryCode:101,
-        fccFacilityId:100
-      },
-      stationLongName:'Name2',
-      stationLocation:{
-        longitudeDegrees:0.1,
-        latitudeDegrees:0.1,
-        altitude:0.1
-      },
-      stationMessage:'station message'
-    },
-    availableHdChannels: [3],
-    hdChannel: 0,
-    signalStrength: 50,
-    signalChangeThreshold: 60,
-    radioEnable: true,
-    state: 'ACQUIRING'
-  },
 
   radioControlCheckboxes: {
     band: true,
@@ -564,7 +542,7 @@ SDL.RadioModel = Em.Object.create({
       radioFrequencyAvailable: true,
       hdChannelAvailable: true,
       rdsDataAvailable: true,
-      availableHDsAvailable: true,
+      availableHdChannelsAvailable: true,
       hdRadioEnableAvailable: true,
       siriusxmRadioAvailable: true,
       stateAvailable: true,
@@ -578,7 +556,7 @@ SDL.RadioModel = Em.Object.create({
     return result;
   },
 
-  getRadioButtonCapabilities: function() {
+  getButtonCapabilities: function() {
     var result = [
       {
         'name': 'VOLUME_UP',
@@ -743,7 +721,7 @@ SDL.RadioModel = Em.Object.create({
           data.source == 'XM'){
       
       if (data.source != this.radioControlStruct.band) {
-        SDL.RadioModel.setRadioBand(data.source);
+        this.setRadioBand(data.source);
           this.switchRadioBandFrequency(data.frequencyInteger == null);
       } else {
         this.updateCurrentFrequencyInfo();
@@ -896,7 +874,7 @@ SDL.RadioModel = Em.Object.create({
     var data = this.getRadioControlData(false);
     data = SDL.SDLController.filterObjectProperty(data, properties);
     if (Object.keys(data).length > 0) {
-      FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', radioControlData: data});
+      FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO',moduleId: this.UUID ,radioControlData: data});
     }
     if(data.band != null){
       this.sendAudioNotification();
@@ -951,7 +929,7 @@ SDL.RadioModel = Em.Object.create({
       this.lastOptionParams.availableHdChannels.push(number);
       this.lastOptionParams.availableHdChannels.sort();
     } else {
-      var index = SDL.RadioModel.lastOptionParams.availableHdChannels.indexOf(number);
+      var index = this.lastOptionParams.availableHdChannels.indexOf(number);
       this.lastOptionParams.availableHdChannels.splice(index,1);
     }
     var length = this.lastOptionParams.availableHdChannels.length;
@@ -1002,7 +980,7 @@ SDL.RadioModel = Em.Object.create({
   },
 
   bandSelect: function(element) {
-      SDL.RadioModel.band = element.selection.name;
+      this.band = element.selection.name;
     },
 
   saveStationToPreset: function(element) {
@@ -1010,7 +988,7 @@ SDL.RadioModel = Em.Object.create({
     element.set('text', this.station);
     this.preset[band][element.preset] = this.station;
 
-    SDL.RadioModel.set('activePreset', element.preset);
+    this.set('activePreset', element.preset);
   },
 
   afterDirectTune: function() {
@@ -1217,9 +1195,9 @@ SDL.RadioModel = Em.Object.create({
         this.setFrequencyInteger(parseInt(
           (function(value){
             var kArray = [], vArray = [];
-            for (key in SDL.RadioModel.xmStations) {
+            for (key in this.xmStations) {
               kArray.push(key);
-              vArray.push(SDL.RadioModel.xmStations[key]);
+              vArray.push(this.xmStations[key]);
             }
 
             var vIndex = vArray.indexOf(value);
@@ -1232,7 +1210,7 @@ SDL.RadioModel = Em.Object.create({
       this.updateCurrentFrequencyInfo();
       this.sendFrequencyChangeNotification();
 
-      SDL.RadioModel.set('activePreset', element.preset);
+      this.set('activePreset', element.preset);
     },
 
   tuneRadioStation: function(element) {
@@ -1265,7 +1243,7 @@ SDL.RadioModel = Em.Object.create({
         this.set('directTuneKeyItems', []);
       }
       if (element.preset == 'X') {
-        SDL.RadioModel.set('station', SDL.RadioModel.station.slice(0, -1));
+        this.set('station', this.station.slice(0, -1));
         this.set('directTuneFinished', false);
         this.directTuneKeyItems.popObject();
 
@@ -1291,7 +1269,7 @@ SDL.RadioModel = Em.Object.create({
       this.toggleOptions();
     }
 
-    SDL.RadioModel.toggleProperty('radioControlStruct.radioEnable');
+    this.set('radioControlStruct.radioEnable', !this.radioControlStruct.radioEnable);
     var data = this.getRadioControlData(true);
     data = SDL.SDLController.filterObjectProperty(data, 'band');
     if (data.band == 'FM') {
@@ -1350,8 +1328,8 @@ SDL.RadioModel = Em.Object.create({
     if (this.tuneUpTimer === null) {
       this.tuneUpTimer = setInterval(function() {
 
-        if (SDL.RadioModel.tuneUpTimer != null) {
-          SDL.RadioModel.tuneUp();
+        if (this.tuneUpTimer != null) {
+          this.tuneUp();
         }
 
       }, 200
@@ -1385,9 +1363,6 @@ SDL.RadioModel = Em.Object.create({
       );
 
       this.findStationPresets();
-
-      //FFW.VehicleInfo.sendVIResult(SDL.SDLModel.data.resultCode["SUCCESS"], FFW.VehicleInfo.VITuneRadioRequestID, "VehicleInfo.TuneRadio");
-      //FFW.CAN.send('frequency_set_' + Number(SDL.RadioModel.station)*1000);
     },
 
   tuneUpPress: function() {
@@ -1490,10 +1465,10 @@ SDL.RadioModel = Em.Object.create({
         this.tuneUpTimer = null;
 
         setTimeout(function() {
-              if (SDL.RadioModel.scanState === true &&
-                SDL.RadioModel.tuneUpTimer === null) {
-                SDL.RadioModel.tuneUpTimer = setInterval(function() {
-                    SDL.RadioModel.tuneUp();
+              if (this.scanState === true &&
+                this.tuneUpTimer === null) {
+                this.tuneUpTimer = setInterval(function() {
+                    this.tuneUp();
                   }, 200
                 );
               }
@@ -1638,7 +1613,7 @@ SDL.RadioModel = Em.Object.create({
   },
 
   toggleOptions: function() {
-    SDL.RadioModel.toggleProperty('optionsEnabled');
+    this.toggleProperty('optionsEnabled');
     if (this.optionsEnabled) {
       this.saveCurrentOptions();
       return;
@@ -1666,19 +1641,19 @@ SDL.RadioModel = Em.Object.create({
   sendAudioNotification:function()
   {
     this.setSource();
-    var data = SDL.MediaController.getAudioControlData();
+    var data = SDL.RCModulesController.currentAudioModel.getAudioControlData();
     if(data){
-    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',audioControlData: {'source':this.radioControlStruct.band }});
+    FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO',moduleId: this.UUID ,audioControlData: {'source':this.radioControlStruct.band }});
   }
   },
   setSource:function()
   {
-    SDL.MediaController.set('lastRadioControlStruct.source', this.radioControlStruct.band );
+    SDL.RCModulesController.currentAudioModel.set('lastRadioControlStruct.source', this.radioControlStruct.band );
   },
 
   exitPopUp:function (param){
     if(false == param){
-      SDL.RadioModel.toggleProperty('optionsEnabled');
+      this.toggleProperty('optionsEnabled');
     }
   },
 
@@ -1717,34 +1692,34 @@ SDL.RadioModel = Em.Object.create({
 
   sendButtonPress: function() {
     if(!this.validateStrings()){return;}
-    var currentData = SDL.deepCopy(SDL.RadioModel.getCurrentOptions());
-    var changedData = SDL.deepCopy(SDL.RadioModel.lastOptionParams);
+    var currentData = SDL.deepCopy(this.getCurrentOptions());
+    var changedData = SDL.deepCopy(this.lastOptionParams);
     this.updateHD(changedData.availableHdChannels);
-    SDL.RadioModel.setRadioData(changedData);
+    this.setRadioData(changedData);
 
-    SDL.RadioModel.toggleProperty('optionsEnabled');
+    this.toggleProperty('optionsEnabled');
 
     var properties = SDL.SDLController.getChangedProperties(changedData, currentData);
 
     if (properties.indexOf('band') >= 0) {
-      if (SDL.RadioModel.tuneRadio) {
-        SDL.RadioModel.directTune();
+      if (this.tuneRadio) {
+        this.directTune();
       }
-      if (SDL.RadioModel.scanState) {
-        SDL.RadioModel.scanKeyPress();
+      if (this.scanState) {
+        this.scanKeyPress();
       }
-      if (SDL.RadioModel.radioControlStruct.band == 'FM') {
+      if (this.radioControlStruct.band == 'FM') {
         properties.push('frequencyInteger');
         properties.push('frequencyFraction');
-        SDL.RadioModel.switchRadioBandFrequency(true);
+        this.switchRadioBandFrequency(true);
       }
-      if (SDL.RadioModel.radioControlStruct.band == 'AM') {
+      if (this.radioControlStruct.band == 'AM') {
         properties.push('frequencyInteger');
-        SDL.RadioModel.switchRadioBandFrequency(true);
+        this.switchRadioBandFrequency(true);
       }
-      if (SDL.RadioModel.radioControlStruct.band == 'XM') {
+      if (this.radioControlStruct.band == 'XM') {
         properties.push('frequencyInteger');
-        SDL.RadioModel.switchRadioBandFrequency(true);
+        this.switchRadioBandFrequency(true);
       }
       this.setSource();
     }
@@ -1757,7 +1732,7 @@ SDL.RadioModel = Em.Object.create({
       properties.push('stationLocation.latitudeDegrees');
       properties.push('stationLocation.longitudeDegrees');
     }
-    SDL.RadioModel.sendRadioChangeNotification(properties);
+    this.sendRadioChangeNotification(properties);
   },
 
   setFrequencyInteger: function(value) {
@@ -1855,7 +1830,38 @@ SDL.RadioModel = Em.Object.create({
 
   setRadioState: function(state) {
     this.set('radioControlStruct.state', state);
-  }
+  },
 
+  /**
+   * @function update
+   * @description Update current radio data
+   */
+  update: function() {
+    var data = this.getCurrentOptions();
+    this.setRadioData(data);
+  },
+
+  /**
+   * @description Function to generate radio capabilities
+   * @param {Object} element 
+   */
+  generateRadioControlCapabilities: function(element) {
+    var capabilities = this.getRadioControlCapabilities()[0];
+    if(element) {
+      var moduleInfo = {
+        'allowMultipleAccess': true,
+        'moduleId': this.UUID,
+        'serviceArea': SDL.deepCopy(element),
+        'location': SDL.deepCopy(element),
+      };
+
+      moduleInfo.location['colspan'] = 1;
+      moduleInfo.location['rowspan'] = 1;
+      moduleInfo.location['levelspan'] = 1;
+      capabilities['moduleInfo'] = moduleInfo;
+    }
+        
+    SDL.remoteControlCapabilities.remoteControlCapability['radioControlCapabilities'].push(capabilities);
+  }
 }
 );

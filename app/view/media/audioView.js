@@ -57,7 +57,7 @@ EqualizerSettingsView = Em.ContainerView.create({
     stateInput: Ember.TextField.extend({
       elementId: 'stateInput',
       classNames: 'stateInput',
-      valueBinding: 'SDL.MediaController.tempEqualizerSettIndex',
+      valueBinding: 'SDL.RCModulesController.currentAudioModel.tempEqualizerSettIndex',
       disabled:true
     }),
 
@@ -83,19 +83,19 @@ EqualizerSettingsView = Em.ContainerView.create({
     channelIdInput:Ember.TextField.extend({
       elementId:'channelIdInput',
       classNames:'channelIdInput',
-      valueBinding: 'SDL.MediaController.tempEqualizerSettings.channelId'
+      valueBinding: 'SDL.RCModulesController.currentAudioModel.tempEqualizerSettings.channelId'
     }),
 
     channelNameInput:Ember.TextField.extend({
       elementId:'channelNameInput',
       classNames:'channelNameInput',
-      valueBinding: 'SDL.MediaController.tempEqualizerSettings.channelName'
+      valueBinding: 'SDL.RCModulesController.currentAudioModel.tempEqualizerSettings.channelName'
     }),
 
     channelSettingInput:Ember.TextField.extend({
       elementId:'channelSettingInput',
       classNames:'channelSettingInput',
-      valueBinding: 'SDL.MediaController.tempEqualizerSettings.channelSetting'
+      valueBinding: 'SDL.RCModulesController.currentAudioModel.tempEqualizerSettings.channelSetting'
     }),
 
     leftButton:  SDL.Button.extend({
@@ -103,16 +103,16 @@ EqualizerSettingsView = Em.ContainerView.create({
         'leftButton'
       ],
       action: function(){
-        if(SDL.MediaController.tempEqualizerSettIndex-1 == 0){
+        if(SDL.RCModulesController.currentAudioModel.tempEqualizerSettIndex-1 == 0){
           return;
         }  
         
-          SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex-1]=
-          SDL.MediaController.tempEqualizerSettings;
-        SDL.MediaController.set('tempEqualizerSettIndex',SDL.MediaController.tempEqualizerSettIndex-1);
-        SDL.MediaController.set('tempEqualizerSettings', 
-          SDL.MediaController.lastRadioControlStruct.equalizerSettings
-          [SDL.MediaController.tempEqualizerSettIndex-1]);
+          SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.equalizerSettings[SDL.RCModulesController.currentAudioModel.tempEqualizerSettIndex-1]=
+          SDL.RCModulesController.currentAudioModel.tempEqualizerSettings;
+        SDL.RCModulesController.currentAudioModel.set('tempEqualizerSettIndex',SDL.RCModulesController.currentAudioModel.tempEqualizerSettIndex-1);
+        SDL.RCModulesController.currentAudioModel.set('tempEqualizerSettings', 
+          SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.equalizerSettings
+          [SDL.RCModulesController.currentAudioModel.tempEqualizerSettIndex-1]);
 
       },
       icon: 'images/media/left_button.png',
@@ -125,13 +125,13 @@ EqualizerSettingsView = Em.ContainerView.create({
       ],
       action: function(){
         var length = 
-          SDL.MediaController.lastRadioControlStruct.equalizerSettings.length;
-        if(SDL.MediaController.tempEqualizerSettIndex == length ){
+          SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.equalizerSettings.length;
+        if(SDL.RCModulesController.currentAudioModel.tempEqualizerSettIndex == length ){
           return;
         }  
-        SDL.MediaController.set('tempEqualizerSettIndex',SDL.MediaController.tempEqualizerSettIndex+1);
-        SDL.MediaController.set('tempEqualizerSettings', 
-          SDL.MediaController.lastRadioControlStruct.equalizerSettings[SDL.MediaController.tempEqualizerSettIndex-1]);
+        SDL.RCModulesController.currentAudioModel.set('tempEqualizerSettIndex',SDL.RCModulesController.currentAudioModel.tempEqualizerSettIndex+1);
+        SDL.RCModulesController.currentAudioModel.set('tempEqualizerSettings', 
+          SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.equalizerSettings[SDL.RCModulesController.currentAudioModel.tempEqualizerSettIndex-1]);
       },
       icon: 'images/media/left_button.png',
       onDown: false,
@@ -150,7 +150,7 @@ SDL.audioView= Em.ContainerView.extend(
         {
           elementId:'audio_options_view_container',
           classNames:'option',
-          classNameBindings: ['SDL.MediaController.optionsEnabled:active_state:inactive_state'],
+          classNameBindings: ['SDL.RCModulesController.currentAudioModel.optionsEnabled:active_state:inactive_state'],
         
         childViews:[
           'volumeInput',
@@ -165,11 +165,11 @@ SDL.audioView= Em.ContainerView.extend(
              elementId:'equalizerChannelSettingInput',
              classNames:'equalizerChannelSettingInput',
              type:'Number',
-             valueBinding:'SDL.MediaController.lastRadioControlStruct.equalizerSettings.channelSetting',
+             valueBinding:'SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.equalizerSettings.channelSetting',
              isDisabled: function() {
-                return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
+                return !SDL.RCModulesController.currentAudioModel.radioControlAudioValue.equalizerSettings;
               }.property(
-                'SDL.MediaController.radioControlAudioValue.equalizerSettings'
+                'SDL.RCModulesController.currentAudioModel.radioControlAudioValue.equalizerSettings'
               ),
               disabledBinding: 'isDisabled'
            }
@@ -180,11 +180,11 @@ SDL.audioView= Em.ContainerView.extend(
               attributeBindings: ['disabled'],
               elementId: 'equalizerChannelNameCheckBox',
               classNames: 'equalizerChannelNameCheckBox',
-              checkedBinding: 'SDL.MediaController.radioControlAudioValue.channelName',
+              checkedBinding: 'SDL.RCModulesController.currentAudioModel.radioControlAudioValue.channelName',
               isDisabled: function() {
-                return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
+                return !SDL.RCModulesController.currentAudioModel.radioControlAudioValue.equalizerSettings;
               }.property(
-                'SDL.MediaController.radioControlAudioValue.equalizerSettings'
+                'SDL.RCModulesController.currentAudioModel.radioControlAudioValue.equalizerSettings'
               ),
               disabledBinding: 'isDisabled'
             }
@@ -195,14 +195,14 @@ SDL.audioView= Em.ContainerView.extend(
              elementId:'equalizerChannelNameInput',
              classNames:'equalizerChannelNameInput',
 
-             valueBinding:'SDL.MediaController.lastRadioControlStruct.equalizerSettings.channelName',
+             valueBinding:'SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.equalizerSettings.channelName',
              isDisabled: function() {
-                return !SDL.MediaController.radioControlAudioValue.equalizerSettings ?
-                !SDL.MediaController.radioControlAudioValue.equalizerSettings
-                :!SDL.MediaController.radioControlAudioValue.channelName;
+                return !SDL.RCModulesController.currentAudioModel.radioControlAudioValue.equalizerSettings ?
+                !SDL.RCModulesController.currentAudioModel.radioControlAudioValue.equalizerSettings
+                :!SDL.RCModulesController.currentAudioModel.radioControlAudioValue.channelName;
               }.property(
-                'SDL.MediaController.radioControlAudioValue.equalizerSettings',
-                'SDL.MediaController.radioControlAudioValue.channelName'
+                'SDL.RCModulesController.currentAudioModel.radioControlAudioValue.equalizerSettings',
+                'SDL.RCModulesController.currentAudioModel.radioControlAudioValue.channelName'
               ),
               disabledBinding: 'isDisabled'
            }
@@ -213,11 +213,11 @@ SDL.audioView= Em.ContainerView.extend(
              elementId:'equalizerChannelIdInput',
              classNames:'equalizerChannelIdInput',
              type:'Number',
-             valueBinding:'SDL.MediaController.lastRadioControlStruct.equalizerSettings.channelId',
+             valueBinding:'SDL.RCModulesController.currentAudioModel.lastRadioControlStruct.equalizerSettings.channelId',
              isDisabled: function() {
-                return !SDL.MediaController.radioControlAudioValue.equalizerSettings;
+                return !SDL.RCModulesController.currentAudioModel.radioControlAudioValue.equalizerSettings;
               }.property(
-                'SDL.MediaController.radioControlAudioValue.equalizerSettings'
+                'SDL.RCModulesController.currentAudioModel.radioControlAudioValue.equalizerSettings'
               ),
               disabledBinding: 'isDisabled'
            }
@@ -226,7 +226,7 @@ SDL.audioView= Em.ContainerView.extend(
          {
            elementId:'volumeInput',
            classNames:'volumeInput',
-           valueBinding: 'SDL.MediaController.currentVolume',
+           valueBinding: 'SDL.RCModulesController.currentAudioModel.currentVolume',
            disabled:true
            }
            ),
@@ -241,7 +241,7 @@ SDL.audioView= Em.ContainerView.extend(
             {
               elementId: 'volumeCheckBox',
               classNames: 'volumeCheckBox',
-              checkedBinding: 'SDL.MediaController.radioControlAudioValue.volume'
+              checkedBinding: 'SDL.RCModulesController.currentAudioModel.radioControlAudioValue.volume'
             }
           ),
          save: SDL.Button.extend(
@@ -250,8 +250,10 @@ SDL.audioView= Em.ContainerView.extend(
                classNames: 'save',
                text: 'Save',
                onDown: false,
-               target: 'SDL.MediaController',
-               action: 'saveButtonPress'
+               model: 'currentAudioModel',
+               method: 'saveButtonPress',
+               target: 'SDL.RCModulesController',
+               action: 'action'
              }
            ),
         equalizerSettings: EqualizerSettingsView
@@ -270,12 +272,12 @@ SDL.audioView= Em.ContainerView.extend(
               classNames: 'media_optionButton',
               text: 'Audio',
               onDown: false,
-              target: 'SDL.MediaController',
+              target: 'SDL.RCModulesController.currentAudioModel',
               action: 'toggleOptions',
               isDisabled: function() {
-                return SDL.MediaController.optionsEnabled;
+                return SDL.RCModulesController.currentAudioModel.optionsEnabled;
               }.property(
-                'SDL.MediaController.optionsEnabled'
+                'SDL.RCModulesController.currentAudioModel.optionsEnabled'
               ),
               disabledBinding: 'isDisabled'
 
@@ -285,7 +287,3 @@ SDL.audioView= Em.ContainerView.extend(
   ),
 }
 );
-
-
-
-

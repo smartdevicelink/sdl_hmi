@@ -57,6 +57,7 @@ SDL.SDLController = Em.Object.extend(
     showAppList: function() {
       SDL.InfoAppsView.showAppList();
       SDL.AppPermissionsListView.showAppList();
+      SDL.RCModulesController.updateModuleSeatLocationContent();
     }.observes('SDL.SDLModel.data.registeredApps.@each'),
     /**
      * Handeler for command button press

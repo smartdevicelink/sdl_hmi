@@ -51,11 +51,18 @@ SDL.SettingsController = Em.Object.create(
      */
     getSystemTimeButtonText: 'GetSystemTime result code - SUCCESS',
 
+    /*
+     * @name modelBinding
+     * @description Model of binding
+     */
+    modelBinding: 'SDL.RCModulesController',
+
     /**
      * File name for SDL.OnSystemRequest
      * Came in SDL.PolicyUpdate request
      */
     policyUpdateFile: null,
+
     /**
      * Data of current requested devices which access will be allowed or
      * disallowed.
@@ -302,23 +309,40 @@ SDL.SettingsController = Em.Object.create(
       SDL.SettingsController.currentDeviceAllowance = null;
     },
     /**
-     * Method verify what OnSystemRequest should be sent
+     * Method to check Array of GetUrls data
+     * And verify what OnSystemRequest should be sent
      *
-     * @param {String} url
+     * @param {Object} urls
      */
-    OnSystemRequestHandler: function(url) {
-      if(FLAGS.ExternalPolicies === true) {
-        FFW.ExternalPolicies.pack({
-          type: 'PROPRIETARY',
-          policyUpdateFile: SDL.SettingsController.policyUpdateFile,
-          url: url
-        })
-      } else {
-        FFW.BasicCommunication.OnSystemRequest(
-          'PROPRIETARY',
-          SDL.SettingsController.policyUpdateFile,
-          url
-        );
+    GetUrlsHandler: function(urls) {
+      var url;
+      for (i in urls) {
+        if (urls.hasOwnProperty(i)) {
+          url = urls[i];
+          var appID = null;
+          if ('appID' in url) {
+            appID = url.appID;
+          } else {  //If
+            console.error(
+              'WARNING! No appID in GetURLs response'
+            );
+          }
+          if(FLAGS.ExternalPolicies === true) {
+            FFW.ExternalPolicies.pack({
+              type: 'PROPRIETARY',
+              policyUpdateFile: SDL.SettingsController.policyUpdateFile,
+              url: url.url,
+              appID: appID
+            })
+          } else {
+            FFW.BasicCommunication.OnSystemRequest(
+              'PROPRIETARY',
+              SDL.SettingsController.policyUpdateFile,
+              url.url,
+              appID
+            );
+          }
+        }
       }
     },
     /**
@@ -397,10 +421,10 @@ SDL.SettingsController = Em.Object.create(
       }
     },
     turnOnLightSubMenu: function(event){
-      var length = SDL.LightModel.lightState.length;
+      var length = this.model.currentLightModel.lightState.length;
       for(var i = 0; i < length; ++i){
-          if(event.text == SDL.LightModel.lightState[i].id){
-            SDL.LightModel.set('lightSettings',SDL.deepCopy(SDL.LightModel.lightState[i]));
+          if(event.text == this.model.currentLightModel.lightState[i].id){
+            this.model.currentLightModel.set('lightSettings',SDL.deepCopy(this.model.currentLightModel.lightState[i]));
             break;
           }
       }
@@ -408,7 +432,7 @@ SDL.SettingsController = Em.Object.create(
     },
     turnOnSeat: function () {
       if(!SDL.States.settings.seat.active){
-        SDL.SeatModel.goToStates();
+        this.model.currentSeatModel.goToStates();
         SDL.States.goToStates('settings.seat');
         }
     },
