@@ -309,40 +309,23 @@ SDL.SettingsController = Em.Object.create(
       SDL.SettingsController.currentDeviceAllowance = null;
     },
     /**
-     * Method to check Array of GetUrls data
-     * And verify what OnSystemRequest should be sent
+     * Method verify what OnSystemRequest should be sent
      *
-     * @param {Object} urls
+     * @param {String} url
      */
-    GetUrlsHandler: function(urls) {
-      var url;
-      for (i in urls) {
-        if (urls.hasOwnProperty(i)) {
-          url = urls[i];
-          var appID = null;
-          if ('appID' in url) {
-            appID = url.appID;
-          } else {  //If
-            console.error(
-              'WARNING! No appID in GetURLs response'
-            );
-          }
-          if(FLAGS.ExternalPolicies === true) {
-            FFW.ExternalPolicies.pack({
-              type: 'PROPRIETARY',
-              policyUpdateFile: SDL.SettingsController.policyUpdateFile,
-              url: url.url,
-              appID: appID
-            })
-          } else {
-            FFW.BasicCommunication.OnSystemRequest(
-              'PROPRIETARY',
-              SDL.SettingsController.policyUpdateFile,
-              url.url,
-              appID
-            );
-          }
-        }
+    OnSystemRequestHandler: function(url) {
+      if(FLAGS.ExternalPolicies === true) {
+        FFW.ExternalPolicies.pack({
+          type: 'PROPRIETARY',
+          policyUpdateFile: SDL.SettingsController.policyUpdateFile,
+          url: url
+        })
+      } else {
+        FFW.BasicCommunication.OnSystemRequest(
+          'PROPRIETARY',
+          SDL.SettingsController.policyUpdateFile,
+          url
+        );
       }
     },
     /**
