@@ -146,6 +146,7 @@ SDL.LightModel = Em.Object.extend({
                 state.push(tempState);
             }
         }
+        this.lightState = [];
         initialization(this.singleLightNameStruct, this.lightState);
         initialization(this.exteriorLightNameStruct, this.lightState);
         initialization(this.interiorLightNameStruct, this.lightState);
