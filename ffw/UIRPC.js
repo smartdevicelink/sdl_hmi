@@ -973,7 +973,6 @@ FFW.UI = FFW.RPCObserver.create(
                     'CLOCKTEXT3', 'CLOCKTEXT4'
                   ],
                   'graphicSupported': true,
-                  'menuLayoutsAvailable': ['LIST'],
                   'imageCapabilities': ['DYNAMIC', 'STATIC'],
                   'templatesAvailable': ['TEMPLATE'],
                   'screenParams': {
@@ -998,6 +997,7 @@ FFW.UI = FFW.RPCObserver.create(
                         "maximumNumberOfWindows": 1
                     }],
                     "windowCapabilities": [{
+                        "menuLayoutsAvailable": ["LIST"],
                         "textFields": [{
                             "name": "mainField1",
                             "characterSet": "TYPE2SET",
