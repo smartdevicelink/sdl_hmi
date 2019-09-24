@@ -685,6 +685,7 @@ SDL.SDLModelData = Em.Object.create(
               "maximumNumberOfWindows": 16
             }],
             "windowCapabilities": [{
+              "menuLayoutsAvailable": ["LIST"],
               "textFields": [{
                 "name": "mainField1",
                 "characterSet": "TYPE2SET",
@@ -858,6 +859,7 @@ SDL.SDLModelData = Em.Object.create(
               "maximumNumberOfWindows": 16
             }],
             "windowCapabilities": [{
+              "menuLayoutsAvailable": ["LIST"],
               "textFields": [{
                 "name": "mainField1",
                 "characterSet": "TYPE2SET",
