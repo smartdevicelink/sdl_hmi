@@ -258,13 +258,21 @@ FFW.BasicCommunication = FFW.RPCObserver
                           }
                           if(key == 7) {
                             SDL.SDLModel.data.set('policyURLs', data[key].default);
-                            if (data[key].default.length) {
-                              data[key].default.forEach(url => {
-                                SDL.SettingsController.OnSystemRequestHandler(url);
-                              })
-                            } else {
-                              this.OnSystemRequest('PROPRIETARY');
-                            }
+                            if(FLAGS.PolicyUpdateMode === 'PTUWithMobile') {
+                              if (data[key].default.length) {
+                                data[key].default.forEach(url => {
+                                  SDL.SettingsController.OnSystemRequestHandler(url);
+                                })
+                              } else {
+                                this.OnSystemRequest('PROPRIETARY');
+                              }
+                            } else if(FLAGS.PolicyUpdateMode === 'PTUWithVehicleModem') {
+                              that = this;
+                              let filePath = SDL.PolicyUpdateModePopUp.PTUFilePathInput.value;
+                              setTimeout(function() {
+                                that.OnReceivedPolicyUpdate(filePath);
+                              }, 1000);
+                            } 
                             if (FLAGS.ExternalPolicies === true) {
                               SDL.SettingsController.policyUpdateRetry();
                             }

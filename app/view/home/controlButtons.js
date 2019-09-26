@@ -56,7 +56,8 @@ SDL.ControlButtons = Em.ContainerView.create({
     'imageMode',
     'imageModeLabel',
     'RCInfo',
-    'vehicleEmulation'
+    'vehicleEmulation',
+    'PolicyUpdateMode'
   ],
   vehicleEmulation: Em.View.create(
     {
@@ -335,6 +336,17 @@ getCurrentDisplayModeClass: function() {
         templateName: 'text'
       }
     ),
+
+  PolicyUpdateMode: SDL.Button.create({
+    elementId: 'policyUpdateMode',
+    classNames: 'policyUpdateMode',
+    text: 'Policy Update Mode',
+    action: function() {
+      SDL.PolicyUpdateModePopUp.toggleActivity();
+    },
+    templateName: 'text'
+  }
+  ),
 
   /**
    * Exit Application button opens Exit Application reasons popup

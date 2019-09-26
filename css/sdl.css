@@ -734,9 +734,19 @@
     line-height: 48px;
 }
 
+#policyUpdateMode.policyUpdateMode {
+    width: 135px;
+    height: 48px;
+    left: 1214px;
+    top: 308px;
+    text-align: center;
+    line-height: 24px;
+}
+
 #exitAppView, #tbtClientStateView,
 #VehicleInfo, #systemRequestView,
-#PrimaryDevice, #sendMessageView {
+#PrimaryDevice, #sendMessageView,
+#policyUpdateModePopUp {
     opacity: 0;
     left: 50px;
     width: 700px;
@@ -748,6 +758,40 @@
     -webkit-transition: opacity 1s ease-in-out;
     display: none;
     border: 1px solid white;
+}
+
+#policyUpdateModePopUp .PTUFilePathInput {
+    top: 24px;
+    position: absolute;
+    width: 400px;
+    left: 290px;
+    height: 40px;
+    color: white;
+    line-height: 16px;
+    font-size: 13px;
+    background: #393939;
+}
+
+#policyUpdateModePopUp .PTUFilePathLabel {
+    top: 24px;
+    width: 55px;
+    left: 203px;
+    height: 20px;
+    padding: 10px;
+    background: #535353;
+    line-height: 12px;
+    text-align: center;
+    font-size: 12px;
+}
+
+#policyUpdateModePopUp .radioButton{
+    float: top;
+    position: relative;
+    width: 200px;
+    height: 80px;
+    top: 29px;
+    margin-left: 26px;
+    text-shadow: 1px 1px 2px black, 0 0 6px rgba(255, 0, 0, 0.6), 0 11px 10px black;
 }
 
 #addWidgetPopUp {
@@ -792,7 +836,8 @@
 #addWidgetPopUp.active,
 #sendMessageView.active,
 #VehicleInfo.active,
-#PrimaryDevice.active {
+#PrimaryDevice.active,
+#policyUpdateModePopUp.active {
     opacity: 1;
     display: block;
 }
