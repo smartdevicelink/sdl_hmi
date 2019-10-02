@@ -307,7 +307,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         'rearRecommended': 2.2E0
       },
       'tpms': 'TIRES_NOT_TRAINED',
-      'cloudAppVehicleID': 'SDLVehicleNo123'
+      'cloudAppVehicleID': 'SDLVehicleNo123',
       //
       // 'avgFuelEconomy': 0.1,
       // 'batteryVoltage': 12.5,
@@ -318,10 +318,10 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       // 'genericbinary': '165165650',
       // 'satRadioESN': '165165650',
       // 'rainSensor': 165165650,
-      // 'displayResolution': {
-      //   'width': 800,
-      //   'height': 480
-      // }
+      'displayResolution': {
+         'width': 800,
+         'height': 480
+      }
     },
     /**
      * Method to set selected state of vehicle transmission to vehicleData
