@@ -374,28 +374,10 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.StartAudioStream':
           {
-            var text = 'Would you like to start Audio stream?';
-            if (this.startAudioStreamingPopup && this.startAudioStreamingPopup.active) {
-              this.startAudioStreamingPopup.deactivate();
-            }
-
-            this.startAudioStreamingPopup = SDL.PopUp.create().appendTo('body').popupActivate(
-              text, function(result) {
-                if (result) {
-                  FFW.Navigation.sendNavigationResult(
-                    SDL.SDLModel.data.resultCode.SUCCESS,
-                    request.id,
-                    request.method
-                  );
-                } else if (result === false) {
-                  FFW.Navigation.sendError(
-                    SDL.SDLModel.data.resultCode.REJECTED,
-                    request.id,
-                    request.method,
-                    'Ignored by USER!'
-                  );
-                }
-              }
+            FFW.Navigation.sendNavigationResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
             );
             SDL.SDLController.getApplicationModel(
               request.params.appID
@@ -457,30 +439,12 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.StartStream':
           {
-            var text = 'Would you like to start Video stream?';
-            if (this.startVideoStreamingPopup && this.startVideoStreamingPopup.active) {
-              this.startVideoStreamingPopup.deactivate();
-            }
-
-            this.startVideoStreamingPopup = SDL.PopUp.create().appendTo('body').popupActivate(
-              text, function(result) {
-                if (result) {
-                  SDL.SDLController.getApplicationModel(request.params.appID)
-                    .set('navigationStream', request.params.url);
-                  FFW.Navigation.sendNavigationResult(
-                    SDL.SDLModel.data.resultCode.SUCCESS,
-                    request.id,
-                    request.method
-                  );
-                } else if (result === false) {
-                  FFW.Navigation.sendError(
-                    SDL.SDLModel.data.resultCode.REJECTED,
-                    request.id,
-                    request.method,
-                    'Ignored by USER!'
-                  );
-                }
-              }
+            SDL.SDLController.getApplicationModel(request.params.appID)
+              .set('navigationStream', request.params.url);
+            FFW.Navigation.sendNavigationResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
             );
             SDL.SDLController.getApplicationModel(
               request.params.appID
