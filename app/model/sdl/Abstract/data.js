@@ -850,14 +850,164 @@ SDL.SDLModelData = Em.Object.create(
                   "rows": 1
                 }
               ],
-              "imageFields": [{
-                "name": "softButtonImage",
-                "imageTypeSupported": ["GRAPHIC_PNG"],
-                "imageResolution": {
-                  "resolutionWidth": 35,
-                  "resolutionHeight": 35
+              'imageFields': [
+                {
+                  'name': 'softButtonImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'choiceImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'choiceSecondaryImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'vrHelpItem',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'turnIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'menuIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'cmdIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'graphic',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'secondaryGraphic',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'showConstantTBTIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'showConstantTBTNextTurnIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'showConstantTBTNextTurnIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'alertIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 105,
+                    'resolutionHeight': 65
+                  }
                 }
-              }],
+              ],
               "imageTypeSupported": ["STATIC"],
               "numCustomPresetsAvailable": 8,
               "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
