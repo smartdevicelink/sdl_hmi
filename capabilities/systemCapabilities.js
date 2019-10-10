@@ -35,8 +35,8 @@ SDL.systemCapabilities =
 {
     videoStreamingCapability: {
         preferredResolution: {
-            resolutionWidth: window.screen.availWidth,
-            resolutionHeight: window.screen.availHeight
+            resolutionWidth: 800,
+            resolutionHeight: 380
         },
         maxBitrate: 2147483647,
         supportedFormats: [

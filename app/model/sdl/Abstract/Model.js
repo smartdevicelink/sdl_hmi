@@ -177,8 +177,8 @@ SDL.SDLModel = Em.Object.extend({
           event.originalEvent.changedTouches[i].pageX :
           event.originalEvent.pageX;
         events[i].c[0].y = event.originalEvent.changedTouches ?
-          event.originalEvent.changedTouches[i].pageY :
-          event.originalEvent.pageY;
+          event.originalEvent.changedTouches[i].pageY-50 :
+          event.originalEvent.pageY-50;
         events[i].ts = [parseInt(event.timeStamp)];
 
       }
