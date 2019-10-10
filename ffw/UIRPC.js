@@ -1332,7 +1332,7 @@ FFW.UI = FFW.RPCObserver.create(
                             }
                           }
                         ],
-                        "imageTypeSupported": ["STATIC"],
+                        "imageTypeSupported": ["STATIC", "DYNAMIC"],
                         "numCustomPresetsAvailable": 8,
                         "buttonCapabilities": [
                             {

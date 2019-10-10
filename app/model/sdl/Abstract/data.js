@@ -1008,7 +1008,7 @@ SDL.SDLModelData = Em.Object.create(
                   }
                 }
               ],
-              "imageTypeSupported": ["STATIC"],
+              "imageTypeSupported": ["STATIC", "DYNAMIC"],
               "numCustomPresetsAvailable": 8,
               "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
               "buttonCapabilities": [
@@ -1182,7 +1182,7 @@ SDL.SDLModelData = Em.Object.create(
                   "resolutionHeight": 35
                 }
               }],
-              "imageTypeSupported": ["STATIC"],
+              "imageTypeSupported": ["STATIC", "DYNAMIC"],
               "numCustomPresetsAvailable": 8,
               "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
               "buttonCapabilities": [
