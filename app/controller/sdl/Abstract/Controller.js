@@ -770,8 +770,8 @@ SDL.SDLController = Em.Object.extend(
      * @param {Number}
      *            alertRequestID
      */
-    alertResponse: function(result, alertRequestID) {
-      FFW.UI.alertResponse(result, alertRequestID);
+    alertResponse: function(result, alertRequestID, info) {
+      FFW.UI.alertResponse(result, alertRequestID, info);
     },
     /**
      * Method to sent notification for Scrollable Message
