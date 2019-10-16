@@ -1610,7 +1610,7 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {String}
      *            method
      */
-    sendUIResult: function(resultCode, id, method) {
+    sendUIResult: function(resultCode, id, method, info) {
       if (this.errorResponsePull[id]) {
         this.sendError(
           this.errorResponsePull[id].code, id, method,
@@ -1630,7 +1630,8 @@ FFW.UI = FFW.RPCObserver.create(
           'id': id,
           'result': {
             'code': resultCode, // type (enum) from SDL protocol
-            'method': method
+            'method': method,
+            'info': info
           }
         };
         this.sendMessage(JSONMessage);
@@ -1644,12 +1645,13 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {Number}
      *            id
      */
-    alertResponse: function(resultCode, id) {
+    alertResponse: function(resultCode, id, info) {
       Em.Logger.log('FFW.UI.AlertResponse');
       switch (resultCode) {
+        case SDL.SDLModel.data.resultCode.WARNINGS:
         case SDL.SDLModel.data.resultCode.SUCCESS:
         {
-          this.sendUIResult(resultCode, id, 'UI.Alert');
+          this.sendUIResult(resultCode, id, 'UI.Alert', info);
           break;
         }
         case SDL.SDLModel.data.resultCode['ABORTED']:
