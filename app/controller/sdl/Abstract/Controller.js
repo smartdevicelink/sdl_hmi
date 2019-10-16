@@ -1059,13 +1059,13 @@ SDL.SDLController = Em.Object.extend(
     /**
      * SDL Driver Distraction ON/OFF switcher
      */
-    selectDriverDistraction: function() {
-      if (SDL.SDLModel.data.driverDistractionState) {
+    selectDriverDistraction: function(driverDistractionState) {
+      if (driverDistractionState) {
         FFW.UI.onDriverDistraction('DD_ON');
       } else {
         FFW.UI.onDriverDistraction('DD_OFF');
       }
-    }.observes('SDL.SDLModel.data.driverDistractionState'),
+    },
     /**
      * Ondisplay keyboard event handler
      * Sends notification on SDL Core with changed value
