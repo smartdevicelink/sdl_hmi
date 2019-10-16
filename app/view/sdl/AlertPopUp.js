@@ -252,7 +252,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
         }
       }
       this.set('active', true);
-      this.set('timeout', message.duration ? message.duration : 30000); //default
+      this.set('timeout', message.duration ? message.duration - 500 : 30000); //default
                                                                         // timeout
                                                                         // defined
                                                                         // for
