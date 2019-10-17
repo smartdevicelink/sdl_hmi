@@ -678,8 +678,27 @@ SDL.ABSAppModel = Em.Object.extend(
           "fieldText": SDL.SDLController.model.appInfo.field2
         }) : null ;
 
-        content["showStrings"] = showStringsArray;       
+        content["showStrings"] = showStringsArray;    
+
+        var softButtonsArray = this.get("softButtons");
+        if (softButtonsArray.length > 4) {
+          softButtonsArray.length = 4;
+        }
+        
+        content["softButtons"] = softButtonsArray;
+
+        if (SDL.SDLController.model.appInfo.mainImage) {
+          content["graphic"] = {
+            "value" : SDL.SDLController.model.appInfo.mainImage
+          };
+        } else if (SDL.SDLController.model.appInfo.trackIcon) {
+          content["graphic"] = {
+            "value" : SDL.SDLController.model.appInfo.trackIcon
+          };
+        }
+
         content["templateConfiguration"] = this.templateConfiguration;
+
         windowParam.content = content;
       } else if (windowParam.duplicateUpdatesFromWindowID && windowParam.duplicateUpdatesFromWindowID > 0) {
         var duplicateWindowID = windowParam.duplicateUpdatesFromWindowID;
