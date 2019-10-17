@@ -43,27 +43,22 @@ SDL.systemCapabilities =
             {
                 protocol:  "RAW",
                 codec: "H264"
-                
             },
             {
                 protocol:  "RTP",
-                codec: "H265"
-                
+                codec: "H264"
             },
             {
                 protocol:  "RTSP",
                 codec: "Theora"
-                
             },
             {
                 protocol:  "RTMP",
                 codec: "VP8"
-                
             },
             {
                 protocol:  "WEBM",
                 codec: "VP9"
-                
             }
         ],
         hapticSpatialDataSupported: true,

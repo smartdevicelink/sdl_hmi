@@ -421,15 +421,18 @@ FFW.Navigation = FFW.RPCObserver.create(
           case 'Navigation.SetVideoConfig':
           {
             var rejectedParams = [];
+            var video_formats = SDL.systemCapabilities.videoStreamingCapability.supportedFormats;
             if ('protocol' in request.params.config) {
-              if (request.params.config.protocol != 'RAW') {
+              video_formats = video_formats.filter(x => x.protocol === request.params.config.protocol);
+              if (video_formats.length === 0) {
                 Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
                               + request.params.config.protocol);
                 rejectedParams.push('protocol');
               }
             }
-            if ('codec' in request.params.config) {
-              if (request.params.config.codec != 'H264') {
+            if ('codec' in request.params.config && video_formats.length > 0) {
+              video_formats = video_formats.filter(x => x.codec === request.params.config.codec);
+              if (video_formats.length === 0) {
                 Em.Logger.log('FFW.' + request.method + ' rejects codec: '
                               + request.params.config.codec);
                 rejectedParams.push('codec');
