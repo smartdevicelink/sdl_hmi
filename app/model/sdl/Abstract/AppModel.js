@@ -665,7 +665,44 @@ SDL.ABSAppModel = Em.Object.extend(
      * @description Called after receiving CreateWindow request 
      */
     createWindow: function(windowParam) {
-      windowParam.content = {"templateConfiguration" : this.defaultTemplateConfiguration};
+      var content = {};
+      if (windowParam.duplicateUpdatesFromWindowID === 0) {
+        var showStringsArray = [];
+        SDL.SDLController.model.appInfo.field1 ? showStringsArray.push({
+          "fieldName": "mainField1",
+          "fieldText": SDL.SDLController.model.appInfo.field1
+        }) : null ;
+
+        SDL.SDLController.model.appInfo.field2 ? showStringsArray.push({
+          "fieldName": "mainField2",
+          "fieldText": SDL.SDLController.model.appInfo.field2
+        }) : null ;
+
+        content["showStrings"] = showStringsArray;    
+        
+        content["softButtons"] = this.get("softButtons").slice(0,4);
+
+        if (SDL.SDLController.model.appInfo.mainImage) {
+          content["graphic"] = {
+            "value" : SDL.SDLController.model.appInfo.mainImage
+          };
+        } else if (SDL.SDLController.model.appInfo.trackIcon) {
+          content["graphic"] = {
+            "value" : SDL.SDLController.model.appInfo.trackIcon
+          };
+        }
+
+        content["templateConfiguration"] = this.templateConfiguration;
+
+        windowParam.content = content;
+      } else if (windowParam.duplicateUpdatesFromWindowID && windowParam.duplicateUpdatesFromWindowID > 0) {
+        var duplicateWindowID = windowParam.duplicateUpdatesFromWindowID;
+        var modelToDuplicate = this.getWidgetModel(duplicateWindowID);
+        windowParam.content = modelToDuplicate.content ? modelToDuplicate.content : 
+                                {"templateConfiguration" : this.defaultTemplateConfiguration};
+      } else {
+        windowParam.content = {"templateConfiguration" : this.defaultTemplateConfiguration};
+      }
       this.inactiveWindows.push(windowParam);
     },
 
@@ -791,8 +828,29 @@ SDL.ABSAppModel = Em.Object.extend(
           params.showStrings.length = masStringsToShow;
         }
         let currentTemplateConfiguation = element.content.templateConfiguration;
-        element['content'] = {};
-        element['content']['showStrings'] = params.showStrings;
+        if (!element.content.showStrings) {
+          element['content']['showStrings'] = params.showStrings;
+        } else {
+          var mergedShowStrings = [];
+          // Deep Copy
+          element.content.showStrings.forEach(function(value, index, array) {
+            mergedShowStrings.push(value);
+          });
+          // Merge existing show strings with new show request
+          for(var i=0; i<params.showStrings.length; i++) {
+            for (var j=0; j<mergedShowStrings.length; j++) {
+              var newField = params.showStrings[i];
+              var existingField = mergedShowStrings[i];
+              if (newField.fieldName === existingField.fieldName) {
+                mergedShowStrings[i].fieldText = newField.fieldText;
+              } else {
+                mergedShowStrings.push(newField);
+              }
+            }
+          }
+          element.content.showStrings = mergedShowStrings;
+        }
+        
         if('softButtons' in params) {
           var maxSoftButtonsToShow = 4;
           if(maxSoftButtonsToShow < params.softButtons.length) {
@@ -822,9 +880,17 @@ SDL.ABSAppModel = Em.Object.extend(
         return null;
       };
 
+      this.inactiveWindows.forEach(element => {
+        let windowID = getWindowIDToApplyShow(params, element);
+        if(windowID) {
+          setElementsToShow(element);
+          SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
+        }
+      });
+
       this.backgroundWindows.forEach(element => {
         let windowID = getWindowIDToApplyShow(params, element);
-        if(windowID !== null) {
+        if(windowID) {
           setElementsToShow(element);
           SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
         }
@@ -832,7 +898,7 @@ SDL.ABSAppModel = Em.Object.extend(
 
       this.activeWindows.forEach(element => {
         let windowID = getWindowIDToApplyShow(params, element);
-        if(windowID !== null) {
+        if(windowID) {
           setElementsToShow(element);
           SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
         }
