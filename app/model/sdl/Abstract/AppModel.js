@@ -679,13 +679,8 @@ SDL.ABSAppModel = Em.Object.extend(
         }) : null ;
 
         content["showStrings"] = showStringsArray;    
-
-        var softButtonsArray = this.get("softButtons");
-        if (softButtonsArray.length > 4) {
-          softButtonsArray.length = 4;
-        }
         
-        content["softButtons"] = softButtonsArray;
+        content["softButtons"] = this.get("softButtons").slice(0,4);
 
         if (SDL.SDLController.model.appInfo.mainImage) {
           content["graphic"] = {
@@ -833,9 +828,6 @@ SDL.ABSAppModel = Em.Object.extend(
           params.showStrings.length = masStringsToShow;
         }
         let currentTemplateConfiguation = element.content.templateConfiguration;
-        if (!element.content) {
-          element["content"] = {}
-        }
         if (!element.content.showStrings) {
           element['content']['showStrings'] = params.showStrings;
         } else {
@@ -890,7 +882,7 @@ SDL.ABSAppModel = Em.Object.extend(
 
       this.inactiveWindows.forEach(element => {
         let windowID = getWindowIDToApplyShow(params, element);
-        if(windowID !== null) {
+        if(windowID) {
           setElementsToShow(element);
           SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
         }
@@ -898,7 +890,7 @@ SDL.ABSAppModel = Em.Object.extend(
 
       this.backgroundWindows.forEach(element => {
         let windowID = getWindowIDToApplyShow(params, element);
-        if(windowID !== null) {
+        if(windowID) {
           setElementsToShow(element);
           SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
         }
@@ -906,7 +898,7 @@ SDL.ABSAppModel = Em.Object.extend(
 
       this.activeWindows.forEach(element => {
         let windowID = getWindowIDToApplyShow(params, element);
-        if(windowID !== null) {
+        if(windowID) {
           setElementsToShow(element);
           SDL.RightSideView.getWidgetContainer().updateWidgetContent(this, windowID);
         }
