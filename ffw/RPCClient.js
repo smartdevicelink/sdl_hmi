@@ -171,6 +171,7 @@ FFW.RPCClient = Em.Object.create(
 
       if(this.responseHandlers.hasOwnProperty(jsonObj.id)){
         this.responseHandlers[jsonObj.id](jsonObj);
+        delete this.responseHandlers[jsonObj.id];
         return;
       }
 
