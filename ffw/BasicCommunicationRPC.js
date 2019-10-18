@@ -143,7 +143,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onSDLConsentNeededNotification);
         this.onResumeAudioSourceSubscribeRequestID = this
           .subscribeToNotification(this.onResumeAudioSourceNotification);
-        this.onServiceUpdateNotificationSubscribeRequestID = this.client
+        this.onServiceUpdateNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onServiceUpdateNotification);
         setTimeout(function() {
           FFW.BasicCommunication.OnSystemTimeReady();
