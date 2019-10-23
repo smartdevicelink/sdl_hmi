@@ -97,7 +97,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
      */
     vehicleType: {
       make: 'SDL',
-      model: 'Car',
+      model: 'Generic',
       modelYear: '2019',
       trim: 'SE'
     },
