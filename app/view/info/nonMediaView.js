@@ -65,7 +65,7 @@ SDL.InfoNonMedia = Em.ContainerView.create(
         ],
 
         childViews: [
-          'deviceName', 'image', 'fields', 'innerMenu', 'presets'
+          'templateTitle', 'image', 'fields', 'innerMenu', 'presets'
         ],
 
         /**
@@ -76,14 +76,14 @@ SDL.InfoNonMedia = Em.ContainerView.create(
           SDL.States.goToStates('info.apps');
         },
 
-        deviceName: SDL.Label.extend(
+        templateTitle: SDL.Label.extend(
           {
 
             classNames: [
               'app_title'
             ],
 
-            contentBinding: 'SDL.SDLController.model.deviceName'
+            contentBinding: 'SDL.SDLController.model.appInfo.title'
           }
         ),
 

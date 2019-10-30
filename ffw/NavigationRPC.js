@@ -59,26 +59,41 @@ FFW.Navigation = FFW.RPCObserver.create(
     /**
      * access to basic RPC functionality
      */
-    client: FFW.RPCClient.create(
-      {
-        componentName: 'Navigation'
-      }
-    ),
+    client: FFW.RPCClient,
     onAudioDataStreamingSubscribeRequestID: -1,
     onVideoDataStreamingSubscribeRequestID: -1,
     onAudioDataStreamingUnsubscribeRequestID: -1,
     onVideoDataStreamingUnsubscribeRequestID: -1,
     onAudioDataStreamingNotification: 'Navigation.OnAudioDataStreaming',
     onVideoDataStreamingNotification: 'Navigation.OnVideoDataStreaming',
+    componentName: "Navigation",
     // temp var for debug
     appID: 1,
     /**
      * connect to RPC bus
      */
     connect: function() {
-      this.client.connect(this, 800); // Magic number is unique identifier for
-      // component
+      this.client.connect(this.componentName, this);
     },
+
+    /**
+     * @function sendMessage
+     * @param {Em.Object} JSONMessage
+     * @desc sending message to SDL
+     */
+    sendMessage: function(JSONMessage){
+      this.client.send(JSONMessage, this.componentName);
+    },
+
+    /**
+     * @function subscribeToNotification
+     * @param {Em.Object} notification
+     * @desc subscribe to notifications from SDL
+     */
+    subscribeToNotification: function(notification){
+      this.client.subscribeToNotification(notification, this.componentName);
+    },
+
     /**
      * disconnect from RPC bus
      */
@@ -86,6 +101,7 @@ FFW.Navigation = FFW.RPCObserver.create(
       this.onRPCUnregistered();
       this.client.disconnect();
     },
+
     /**
      * Client is registered - we can send request starting from this point of
      * time
@@ -94,9 +110,9 @@ FFW.Navigation = FFW.RPCObserver.create(
       Em.Logger.log('FFW.Navigation.onRPCRegistered');
       this._super();
       // subscribe to notifications
-      this.onAudioDataStreamingSubscribeRequestID = this.client
+      this.onAudioDataStreamingSubscribeRequestID = this
         .subscribeToNotification(this.onAudioDataStreamingNotification);
-      this.onVideoDataStreamingSubscribeRequestID = this.client
+      this.onVideoDataStreamingSubscribeRequestID = this
         .subscribeToNotification(this.onVideoDataStreamingNotification);
     },
     /**
@@ -163,9 +179,9 @@ FFW.Navigation = FFW.RPCObserver.create(
       var returnValue=true;
       if(params.nextTurnIcon){
         var image = params.nextTurnIcon.value;
-        var length=image.length;
+        var search_offset = image.lastIndexOf('.');
         str='.png';
-        var isPng=image.includes(str,length-5);
+        var isPng=image.includes(str, search_offset);
         if(!isPng){
           delete params.nextTurnIcon;
           returnValue=false;
@@ -173,9 +189,9 @@ FFW.Navigation = FFW.RPCObserver.create(
       }
       if(params.turnIcon){
         var image = params.turnIcon.value;
-        var length=image.length;
+        var search_offset = image.lastIndexOf('.');
         str='.png';
-        var isPng=image.includes(str,length-5);
+        var isPng=image.includes(str, search_offset);
         if(!isPng){
           delete params.turnIcon;
           returnValue=false;
@@ -186,8 +202,9 @@ FFW.Navigation = FFW.RPCObserver.create(
         for(var i=0;i<countList;i++){
           if(params.turnList[i].turnIcon){
           var image=params.turnList[i].turnIcon.value;
+          var search_offset = image.lastIndexOf('.');
           str='.png';
-          var isPng=image.includes(str,length-5);
+          var isPng=image.includes(str, search_offset);
           if(!isPng){
             delete params.turnList[i].turnIcon;
             returnValue=false;
@@ -199,8 +216,9 @@ FFW.Navigation = FFW.RPCObserver.create(
         var countButtons=params.softButtons.length;
         for(var i=0;i<countButtons;i++){
           var image=params.softButtons[i].image.value;
+          var search_offset = image.lastIndexOf('.');
           str='.png';
-          var isPng=image.includes(str,length-5);
+          var isPng=image.includes(str, search_offset);
           if(!isPng){
             delete params.softButtons[i].image;
             returnValue=false;
@@ -229,7 +247,7 @@ FFW.Navigation = FFW.RPCObserver.create(
                 'method': 'Navigation.IsReady'
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'Navigation.GetWayPoints':
@@ -403,15 +421,18 @@ FFW.Navigation = FFW.RPCObserver.create(
           case 'Navigation.SetVideoConfig':
           {
             var rejectedParams = [];
+            var video_formats = SDL.systemCapabilities.videoStreamingCapability.supportedFormats;
             if ('protocol' in request.params.config) {
-              if (request.params.config.protocol != 'RAW') {
+              video_formats = video_formats.filter(x => x.protocol === request.params.config.protocol);
+              if (video_formats.length === 0) {
                 Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
                               + request.params.config.protocol);
                 rejectedParams.push('protocol');
               }
             }
-            if ('codec' in request.params.config) {
-              if (request.params.config.codec != 'H264') {
+            if ('codec' in request.params.config && video_formats.length > 0) {
+              video_formats = video_formats.filter(x => x.codec === request.params.config.codec);
+              if (video_formats.length === 0) {
                 Em.Logger.log('FFW.' + request.method + ' rejects codec: '
                               + request.params.config.codec);
                 rejectedParams.push('codec');
@@ -427,7 +448,7 @@ FFW.Navigation = FFW.RPCObserver.create(
                   'rejectedParams': rejectedParams
                 }
               };
-              this.client.send(JSONMessage);
+              this.sendMessage(JSONMessage);
             } else {
               this.sendNavigationResult(
                 SDL.SDLModel.data.resultCode.SUCCESS,
@@ -534,7 +555,7 @@ FFW.Navigation = FFW.RPCObserver.create(
             }
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -568,7 +589,7 @@ FFW.Navigation = FFW.RPCObserver.create(
             'method': method
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -592,7 +613,7 @@ FFW.Navigation = FFW.RPCObserver.create(
             'method': 'Navigation.GetWayPoints'
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       } else if (resultCode == SDL.SDLModel.data.resultCode.IN_USE) {
         FFW.Navigation.sendError(
           resultCode, id, 'Navigation.GetWayPoints',
@@ -613,7 +634,7 @@ FFW.Navigation = FFW.RPCObserver.create(
           'wayPoints': data
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notifies if TBTClientState was activated
@@ -631,7 +652,7 @@ FFW.Navigation = FFW.RPCObserver.create(
           'state': state
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     }
   }
 );

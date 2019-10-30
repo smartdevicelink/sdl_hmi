@@ -42,26 +42,33 @@ SDL.HMISettingsView = Em.ContainerView.create({
     ],
 
     childViews: [
+      'HmiSettingsModuleUUID',
       'SettingsList'
     ],
 
     getDisplayModeStatus: function() {
-      return 'Display mode - ' + SDL.HmiSettingsModel.displayMode;
+      return 'Display mode - ' + SDL.RCModulesController.currentHMISettingsModel.displayMode;
     }.property(
-      'SDL.HmiSettingsModel.displayMode'
+      'SDL.RCModulesController.currentHMISettingsModel.displayMode'
     ),
 
     getDistanceUnit: function() {
-      return 'Distance unit - ' + SDL.HmiSettingsModel.distanceUnit;
+      return 'Distance unit - ' + SDL.RCModulesController.currentHMISettingsModel.distanceUnit;
     }.property(
-      'SDL.HmiSettingsModel.distanceUnit'
+      'SDL.RCModulesController.currentHMISettingsModel.distanceUnit'
     ),
     
     getTemperatureUnit: function() {
-      return 'Temperature unit - ' + SDL.HmiSettingsModel.temperatureUnit;
+      return 'Temperature unit - ' + SDL.RCModulesController.currentHMISettingsModel.temperatureUnit;
     }.property(
-      'SDL.HmiSettingsModel.temperatureUnit'
+      'SDL.RCModulesController.currentHMISettingsModel.temperatureUnit'
     ),
+
+    HmiSettingsModuleUUID: SDL.Label.create({
+      elementId: 'settingsModuleCurrent',
+      classNames: 'settingsModuleCurrent',
+      contentBinding: 'SDL.RCModulesController.currentHmiSettingsModuleID'
+    }),
 
     SettingsList: SDL.List.extend({
         elementId: 'HMI_settings_list',
@@ -71,24 +78,30 @@ SDL.HMISettingsView = Em.ContainerView.create({
         items: [{
             type: SDL.Button,
             params: {
-              action: 'toggleDisplayMode',
-              target: 'SDL.SDLController',
+              action: 'action',
+              target: 'SDL.RCModulesController',
+              model: 'currentHMISettingsModel',
+              method: 'toggleDisplayMode',
               textBinding: 'SDL.HMISettingsView.getDisplayModeStatus'
             }
           },
           {
             type: SDL.Button,
             params: {
-              action: 'toggleDistanceUnit',
-              target: 'SDL.SDLController',
+              action: 'action',
+              target: 'SDL.RCModulesController',
+              model: 'currentHMISettingsModel',
+              method: 'toggleDistanceUnit',
               textBinding: 'SDL.HMISettingsView.getDistanceUnit'
             }
           },
           {
             type: SDL.Button,
             params: {
-              action: 'toggleTemperatureUnit',
-              target: 'SDL.SDLController',
+              action: 'action',
+              target: 'SDL.RCModulesController',
+              model: 'currentHMISettingsModel',
+              method: 'toggleTemperatureUnit',
               textBinding: 'SDL.HMISettingsView.getTemperatureUnit'
             }
           }]

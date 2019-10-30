@@ -61,15 +61,29 @@ SDL.AlertPopUp = Em.ContainerView.create(
     timer: null,
     timeout: null,
     progressIndicator: false,
+    reason: '',
+    message: undefined,
     /**
      * Wagning image on Alert PopUp
      */
     image: Em.View.extend(
       {
         elementId: 'alertPopUpImage',
-        classNames: 'alertPopUpImage'
+        template: Ember.Handlebars.compile(
+          '<img class="alertPopUpImage" onerror="SDL.AlertPopUp.imageUndefined(event)" {{bindAttr src="SDL.AlertPopUp.icon"}}>'
+        )
       }
     ),
+    /**
+     * @function imageUndefined
+     * @param {Object} event
+     * @description action if an image undefined.
+     */
+    imageUndefined: function(event) {
+      event.target.style.display='none';
+      this.message = "Requested image(s) not found";
+      this.reason = "WARNINGS"
+    },
     /**
      * Wagning image on Alert PopUp
      */
@@ -110,7 +124,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
     /**
      * Deactivate PopUp
      */
-    deactivate: function(reason) {
+    deactivate: function(reason, info) {
       this.set('active', false);
       clearTimeout(this.timer);
       this.set('content1', '');
@@ -120,18 +134,25 @@ SDL.AlertPopUp = Em.ContainerView.create(
         this.softbuttons.buttons._childViews.length > 0) ||
         reason === 'ABORTED') {
         SDL.SDLController.alertResponse(
-          SDL.SDLModel.data.resultCode['ABORTED'], this.alertRequestId
+          SDL.SDLModel.data.resultCode['ABORTED'], this.alertRequestId, info
         );
-      }else if(reason=='WARNINGS'){
+      }else if(reason=='WARNINGS' ||
+            this.reason == 'WARNINGS'){
+        info = info ? info : this.message;
         SDL.SDLController.alertResponse(
-          SDL.SDLModel.data.resultCode.WARNINGS, this.alertRequestId
+          SDL.SDLModel.data.resultCode.WARNINGS, this.alertRequestId, info
         );
       }else {
         SDL.SDLController.alertResponse(
-          SDL.SDLModel.data.resultCode.SUCCESS, this.alertRequestId
+          SDL.SDLModel.data.resultCode.SUCCESS, this.alertRequestId, info
         );
       }
       SDL.SDLController.onSystemContextChange();
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        app.activeWindows.forEach(widget => {
+          SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+        })
+      })
     },
     /**
      * Container for softbuttons
@@ -202,11 +223,15 @@ SDL.AlertPopUp = Em.ContainerView.create(
     AlertActive: function(message, alertRequestId) {
       var self = this;
       this.set('alertRequestId', alertRequestId);
+      this.set('cancelID', message.cancelID);
+      this.set('reason', 'timeout');
+      this.set('message', undefined);
       this.addSoftButtons(message.softButtons, message.appID);
       this.set('progressIndicator', message.progressIndicator);
       this.set(
         'appName', SDL.SDLController.getApplicationModel(message.appID).appName
       );
+      this.set('icon', message.alertIcon ? message.alertIcon.value : "images/sdl/Warning.png");
       for (var i = 0; i < message.alertStrings.length; i++) {
         switch (message.alertStrings[i].fieldName) {
           case 'alertText1':
@@ -236,7 +261,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
       clearTimeout(this.timer);
       this.timer = setTimeout(
         function() {
-          self.deactivate('timeout');
+          self.deactivate(self.reason, self.message);
         }, this.timeout
       );
     }

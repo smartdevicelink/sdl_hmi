@@ -52,6 +52,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
           field1: '<field1>',
           field2: '<field2>',
           field3: '<field3>',
+          title: '',
           mediaClock: '<mediaClock>',
           trackIcon: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
           customPresets: [
@@ -77,6 +78,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
         )
       );
 
+    this.set('initialColorScheme.dayColorScheme', this.dayColorScheme);
+    this.set('initialColorScheme.nightColorScheme', this.nightColorScheme);
+    this.set('initialColorScheme.displayLayout', this.displayLayout);
     this.set('VRCommands', []);
     this.set('tbtActivate', false);
     this.set('isPlaying', true);
@@ -88,6 +92,11 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
+
+    this.set('inactiveWindows', []);
+    this.set('backgroundWindows', []);
+    this.set('activeWindows', []);
+    this.set('unregisteringInProgress', false);
   },
 
   /**
@@ -276,6 +285,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.appInfo.set('field2', '');
     this.appInfo.set('field3', '');
     this.appInfo.set('field4', '');
+    this.appInfo.set('title' , '');
     this.appInfo.set('alignment', '');
     this.set('statusText', '');
     this.appInfo.set('mediaClock', '');
@@ -295,9 +305,39 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
    * @param {Object}
    */
   onSDLUIShow: function(params) {
-
     clearInterval(this.timer);
 
+    let isWidget = (("windowID" in params) && params.windowID !== 0);
+    let windowID = isWidget ? params.windowID : 0;
+    let that = this;
+    let isDuplicateWidget = function(params) {
+      let widgetModel = that.getWidgetModel(params.windowID);
+       if(widgetModel && "duplicateUpdatesFromWindowID" in widgetModel) {
+         return true;
+       }
+       return false;
+    };
+
+    if(isWidget) {
+      if(isDuplicateWidget(params)) {
+        return SDL.SDLModel.data.resultCode.REJECTED;
+      }
+      this.widgetShow(params);
+      return;
+    }
+
+    this.mainWindowShow(params);
+    let duplicateWidgets = this.getDuplicateWidgets(windowID);
+    for(widget of duplicateWidgets) {
+      this.widgetShow(params);
+    }
+
+    if(this.getWidgetModel(params.windowID)) {
+      this.widgetShow(params);
+    }
+  },
+
+  mainWindowShow: function(params) {
     for (var i = 0; i < params.showStrings.length; i++) {
       switch (params.showStrings[i].fieldName) {
         case 'mainField1': {
@@ -329,6 +369,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
           this.appInfo.set('mediaTrack', params.showStrings[i].fieldText);
           break;
         }
+        case 'templateTitle': {
+          this.appInfo.set('title', params.showStrings[i].fieldText);
+          break;
+        }
         default : {
           break;
         }
@@ -357,17 +401,17 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     if (params.graphic != null) {
       var image = params.graphic.value;
-          var length = image.length;
-          str = '.png';
-          var isPng = image.includes(str,length - 5);
-          if (isPng) {
-            if (params.graphic.value != '') {
-              this.appInfo.set('trackIcon', params.graphic.value);
-            } else {
-              this.appInfo.set('trackIcon', 'images/sdl/audio_icon.jpg');
-            }
-            this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
-          }
+      var search_offset = image.lastIndexOf('.');
+      str = '.png';
+      var isPng = image.includes(str,search_offset);
+      if (isPng) {
+        if (params.graphic.value != '') {
+          this.appInfo.set('trackIcon', params.graphic.value);
+        } else {
+          this.appInfo.set('trackIcon', 'images/sdl/audio_icon.jpg');
+        }
+        this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
+      }
     }
 
     if ('softButtons' in params) {
@@ -382,6 +426,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       } else {
         this.appInfo.set('customPresets.' + i, params.customPresets[i]);
       }
+    }
+
+    if('templateConfiguration' in params) {
+      this.set('templateConfiguration', params.templateConfiguration);
     }
     this.set('mediaPreset', true);
   }

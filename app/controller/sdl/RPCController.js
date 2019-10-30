@@ -349,6 +349,39 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         /**
+         * Validate method for request CloseApplication
+         *
+         * @param {Object}
+         *            params
+         */
+        CloseApplication: function(params) {
+          if (params == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'params\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if (params.appID == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'appID\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if (typeof params.appID != 'number') {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Wrong type of parameter \'appID\'!'
+            };
+            return this.resultStruct;
+          }
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        /**
          * Validate method for request AllowSDLFunctionality
          *
          * @param {Object}
@@ -1089,6 +1122,48 @@ SDL.RPCController = Em.Object.create(
           };
           return this.resultStruct;
         },
+
+        /**
+         * @function CreateWindow
+         * @param {Object} params
+         * @description Validate method for request UI.CreateWindow
+         */
+        CreateWindow: function(params) {
+          if('windowID' in params && 
+              'windowName' in params &&
+              'type' in params) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+            };
+            return this.resultStruct;
+          }
+         
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+            'resultMessage': 'Mandatory parameters are missing!'
+          };
+          return this.resultStruct;
+        },
+
+        /**
+         * @function DeleteWindow
+         * @param {Object} params
+         * @description Validate method for request UI.DeleteWindow 
+         */
+        DeleteWindow: function(params) {
+          if('windowID' in params) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+            };
+            return this.resultStruct;           
+          }
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+            'resultMessage': 'Mandatory parameters are missing!'
+          };
+          return this.resultStruct;          
+        },
+
         /**
          * Validate method for request SetGlobalProperties
          *
@@ -1606,6 +1681,46 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         /**
+         * Validate method for request CancelInteraction
+         *
+         * @param {Object}
+         *            params
+         */
+        CancelInteraction: function(params) {
+          if (params == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'params\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if (params.functionID == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'functionID\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if (typeof params.functionID != 'number') {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Wrong type of parameter \'functionID\'!'
+            };
+            return this.resultStruct;
+          }
+          if (params.cancelID != null && typeof params.cancelID != 'number') {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Wrong type of parameter \'cancelID\'!'
+            };
+            return this.resultStruct;
+          }
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        /**
          * Validate method for request SetMediaClockTimer
          *
          * @param {Object}
@@ -2023,6 +2138,25 @@ SDL.RPCController = Em.Object.create(
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };
           return this.resultStruct;
+        },
+        /**
+         * Validate method for request ShowAppMenu
+         *
+         * @param {Object}
+         *            params
+         */
+        ShowAppMenu: function(params) {
+          if (params == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'params\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
         }
       }
     ),
@@ -2073,6 +2207,23 @@ SDL.RPCController = Em.Object.create(
           return this.resultStruct;
         },
         GetInteriorVehicleData: function(params) {
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        /**
+         * Validate method for request SetGlobalProperties
+         * @param {Object} params 
+         */
+        SetGlobalProperties: function(params) {          
+          if (params == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'params\' does not exists!'
+            };
+            return this.resultStruct;
+          }          
           this.resultStruct = {
             'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
           };

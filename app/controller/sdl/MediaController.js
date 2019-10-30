@@ -39,6 +39,12 @@ SDL.SDLMediaController = Em.Object.create(
      * @type {Number}
      */
     currentAppId: null,
+
+    /**
+     * @name modelBinding
+     * @description Model for binding 
+     */
+    modelBinding: 'SDL.RCModulesController',
     /**
      * Return current Media application name used for application button
      */
@@ -70,7 +76,7 @@ SDL.SDLMediaController = Em.Object.create(
       this.set('currentAppId', applicationModel.appID);
       // set active model
       SDL.SDLController.set('model', applicationModel);
-      SDL.MediaController.turnOnSDL();
+      this.model.currentAudioModel.turnOnSDL();
     },
     /**
      * Restore current application to active state
@@ -88,9 +94,9 @@ SDL.SDLMediaController = Em.Object.create(
           SDL.SDLController.getApplicationModel(appID).set('active', false);
           SDL.States.goToStates('info.apps');
         }
-        if (SDL.MediaController.activeState == 'media.sdlmedia') {
-          SDL.MediaController.set('activeState', 'media.player.cd');
-          SDL.CDModel.set('active', true);
+        if (this.model.currentAudioModel.activeState == 'media.sdlmedia') {
+          this.model.currentAudioModel.set('activeState', 'media.player.cd');
+          this.model.currentAudioModel.cdModel.set('active', true);
         }
         SDL.SDLModel.data.set('limitedExist', false);
         this.set('currentAppId', null);

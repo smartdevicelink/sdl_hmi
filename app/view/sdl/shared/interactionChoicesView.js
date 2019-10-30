@@ -302,6 +302,11 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         }
         this.appID = null;
         SDL.SDLController.onSystemContextChange();
+        SDL.SDLModel.data.registeredApps.forEach(app => {
+          app.activeWindows.forEach(widget => {
+            SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+          })
+        })
       }
     },
     /**

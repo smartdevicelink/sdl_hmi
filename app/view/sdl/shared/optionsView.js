@@ -47,17 +47,30 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
       SDL.SDLController.buttonsSort('top', SDL.SDLController.model.appID);
       SDL.OptionsView.commands.refreshItems();
       SDL.SDLController.onSystemContextChange();
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        app.activeWindows.forEach(widget => {
+          SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+        })
+      })
     },
     // Extend deactivate window
     deactivate: function() {
       if (SDL.SDLController.model) {
-        if (SDL.SDLController.model.get('currentSubMenuId') >= 0) {
+        if (SDL.SDLController.model.get('currentSubMenuId') >= 0  && 
+        !SDL.SDLController.model.get('subMenuInitFromApp')) {
           SDL.SDLController.onSubMenu('top');
         } else {
+          SDL.SDLController.onSubMenu('top');
           this._super();
+          SDL.SDLController.model.set('subMenuInitFromApp', false);
         }
       }
       SDL.SDLController.onSystemContextChange();
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        app.activeWindows.forEach(widget => {
+          SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+        })
+      })
     },
     commands: SDL.List.extend(
       {

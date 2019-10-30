@@ -16,6 +16,7 @@
     <link rel="stylesheet" type="text/css" href="css/media.css"/>
     <link rel="stylesheet" type="text/css" href="css/sdl.css"/>
     <link rel="stylesheet" type="text/css" href="css/home.css"/>
+    <link rel="stylesheet" type="text/css" href="css/glider.min.css">
 
     <!--Libs-->
 
@@ -27,7 +28,7 @@
             src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript"
             src="http://www.geocodezip.com/scripts/v3_epoly.js"></script>
-
+    <script type="text/javascript" src="lib/glider.min.js"></script>
     <!-- RELEASE's min versions -->
 
     <script type="text/javascript" src="lib/jquery-1.7.2.min.js"></script>
@@ -83,8 +84,11 @@
 <script type="text/javascript" src="app/controlls/MenuList.js"></script>
 <script type="text/javascript" src="app/controlls/ScrollableText.js"></script>
 <script type="text/javascript" src="app/controlls/CodeEditor.js"></script>
+<script type="text/javascript" src="app/controlls/GliderView.js"></script>
 
 <script type="text/javascript" src="app/view/WarningView.js"></script>
+<script type="text/javascript" src="app/view/VehicleEmulationView.js"></script>
+<script type="text/javascript" src="app/view/VehicleModuleCoverageView.js"></script>
 
 <script type="text/javascript"
         src="app/controlls/RadioPresetButton.js"></script>
@@ -96,16 +100,18 @@
 
 <!-- Models -->
 
-<script type="text/javascript" src="app/model/media/PlaylistItem.js"></script>
-<script type="text/javascript" src="app/model/media/MediaCDPlayer.js"></script>
-<script type="text/javascript" src="app/model/media/Playlist.js"></script>
 
-<script type="text/javascript" src="app/model/media/CDModel.js"></script>
-<script type="text/javascript" src="app/model/media/USBModel.js"></script>
-<script type="text/javascript" src="app/model/media/BluetoothModel.js"></script>
-<script type="text/javascript" src="app/model/media/LineInModel.js"></script>
-<script type="text/javascript" src="app/model/media/IPodModel.js"></script>
-<script type="text/javascript" src="app/model/media/RadioModel.js"></script>
+<script type="text/javascript" src="app/model/media/AudioModels/PlaylistItem.js"></script>
+<script type="text/javascript" src="app/model/media/AudioModels/MediaCDPlayer.js"></script>
+<script type="text/javascript" src="app/model/media/AudioModels/Playlist.js"></script>
+
+<script type="text/javascript" src="app/model/media/AudioModels/CDModel.js"></script>
+<script type="text/javascript" src="app/model/media/AudioModels/USBModel.js"></script>
+<script type="text/javascript" src="app/model/media/AudioModels/BluetoothModel.js"></script>
+<script type="text/javascript" src="app/model/media/AudioModels/LineInModel.js"></script>
+<script type="text/javascript" src="app/model/media/AudioModels/IPodModel.js"></script>
+<script type="text/javascript" src="app/model/media/AudioModels/RadioModel.js"></script>
+<script type="text/javascript" src="app/model/media/AudioModel.js"></script>
 <script type="text/javascript" src="app/model/PhoneModel.js"></script>
 <script type="text/javascript" src="app/model/NavigationModel.js"></script>
 <script type="text/javascript" src="app/model/ClimateControlModel.js"></script>
@@ -129,7 +135,8 @@
 
 <!-- Controllers -->
 
-<script type="text/javascript" src="app/controller/MediaController.js"></script>
+<script type="text/javascript"
+        src= "app/controller/sdl/RCModulesController.js"></script>
 <script type="text/javascript" src="app/controller/PhoneController.js"></script>
 <script type="text/javascript"
         src="app/controller/NavigationController.js"></script>
@@ -138,6 +145,8 @@
 <script type="text/javascript" src="app/controller/InfoController.js"></script>
 <script type="text/javascript"
         src="app/controller/SettingsController.js"></script>
+<script type="text/javascript"
+        src="app/controller/VehicleModuleCoverageController.js"></script>
 
 <script type="text/javascript"
         src="app/controller/sdl/Abstract/Controller.js"></script>
@@ -197,6 +206,8 @@
 <script type="text/javascript"
         src="app/view/home/widgetNavigationView.js"></script>
 <script type="text/javascript" src="app/view/home/widgetPhoneView.js"></script>
+<script type="text/javascript" src="app/view/home/widgetContainerView.js"></script>
+<script type="text/javascript" src="app/view/home/widgetTemplate.js"></script>
 <!-- settings views -->
 
 <script type="text/javascript" src="app/view/settings/SeatView.js"></script>
@@ -217,8 +228,6 @@
 <script type="text/javascript"
         src="app/view/settings/policies/statisticsInfoView.js"></script>
 <script type="text/javascript"
-        src="app/view/settings/policies/getUrlsView.js"></script>
-<script type="text/javascript"
         src="app/view/settings/policies/connectionSettingsView.js"></script>
 <script type="text/javascript"
         src="app/view/settings/policies/systemErrorView.js"></script>
@@ -226,6 +235,7 @@
         src="app/view/settings/policies/rsdlOptionsView.js"></script>
 <script type="text/javascript" src="app/view/settings/policiesView.js"></script>
 <script type="text/javascript" src="app/view/settings/HMISettingsView.js"></script>
+<script type="text/javascript" src="app/view/settings/policies/policyConfigDataList.js"></script>
 
 <script type="text/javascript" src="app/view/homeView.js"></script>
 <script type="text/javascript" src="app/view/mediaView.js"></script>
@@ -246,6 +256,7 @@
 <script type="text/javascript" src="app/view/home/statusMediaView.js"></script>
 <script type="text/javascript" src="app/view/home/statusPhoneView.js"></script>
 <script type="text/javascript" src="app/view/home/statusInfoView.js"></script>
+<script type="text/javascript" src="app/view/home/rightView.js"></script>
 <script type="text/javascript"
         src="app/view/home/statusNavigationView.js"></script>
 <script type="text/javascript"
@@ -254,6 +265,7 @@
 <!-- SDL Capabilities -->
 <script type="text/javascript" src="capabilities/rc_capabilities.js"></script>
 <script type="text/javascript" src="capabilities/display_capabilities.js"></script>
+<script type="text/javascript" src="capabilities/systemCapabilities.js"></script>
 
 <!-- SDL views -->
 <script type="text/javascript"
@@ -263,6 +275,8 @@
 <script type="text/javascript" src="app/view/sdl/shared/sliderView.js"></script>
 <script type="text/javascript"
         src="app/view/sdl/shared/optionsView.js"></script>
+<script type="text/javascript" src="app/view/navigationApp/navigationSubscriptionButtonsView.js"></script>
+
 <script type="text/javascript"
         src="app/view/sdl/shared/scrollableMessage.js"></script>
 <script type="text/javascript"
@@ -272,6 +286,7 @@
 <script type="text/javascript" src="app/view/sdl/shared/keyboard.js"></script>
 <script type="text/javascript" src="app/view/sdl/TTSPopUp.js"></script>
 <script type="text/javascript" src="app/view/sdl/AlertPopUp.js"></script>
+<script type="text/javascript" src="app/view/sdl/ServiceUpdatePopUp.js"></script>
 <script type="text/javascript" src="app/view/sdl/PopUp.js"></script>
 <script type="text/javascript"
         src="app/view/sdl/AlertManeuverPopUp.js"></script>
@@ -286,6 +301,7 @@
 <script type="text/javascript" src="app/view/sdl/ExitAppView.js"></script>
 <script type="text/javascript" src="app/view/sdl/PrimaryDevice.js"></script>
 <script type="text/javascript" src="app/view/sdl/SystemRequestView.js"></script>
+<script type="text/javascript" src="app/view/sdl/addWidgetPopUp.js"></script>
 
 
 <script type="text/javascript" src="app/StateManager.js"></script>

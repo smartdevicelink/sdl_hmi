@@ -69,7 +69,7 @@ SDL.StatusMediaView = Em.ContainerView.extend({
 
         info: Em.View.extend({
             elementId: 'media_status_radio_info',
-            controlerBinding: 'SDL.MediaController',
+            controlerBinding: 'SDL.RCModulesController.currentAudioModel',
             /** Bind class for visual representation */
             classNameBindings: [
               'SDL.States.home.active:hidden_display:visible_display'
@@ -78,23 +78,23 @@ SDL.StatusMediaView = Em.ContainerView.extend({
             template: Em.Handlebars.compile('<div class="statusInfo">' +
               '<div class="station">' +
               // HMI media
-              '<span {{bindAttr class="SDL.CDModel.active:visible_display"}}>{{SDL.CDModel.statusBar}}</span>' +
-              '<span {{bindAttr class="SDL.USBModel.active:visible_display"}}>{{SDL.USBModel.statusBar}}</span>' +
-              '<span {{bindAttr class="SDL.RadioModel.active:visible_display"}}>{{SDL.RadioModel.statusBar}}</span>' +
-              '<span {{bindAttr class="SDL.IPodModel.active:visible_display"}}>{{SDL.IPodModel.statusBar}}</span>' +
-              '<span {{bindAttr class="SDL.BluetoothModel.active:visible_display"}}>{{SDL.BluetoothModel.statusBar}}</span>' +
-              '<span {{bindAttr class="SDL.LineInModel.active:visible_display"}}>{{SDL.LineInModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.RCModulesController.currentAudioModel.cdModel.active:visible_display"}}>{{SDL.RCModulesController.currentAudioModel.cdModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.RCModulesController.currentAudioModel.usbModel.active:visible_display"}}>{{SDL.RCModulesController.currentAudioModel.usbModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.RCModulesController.currentRadioModel.active:visible_display"}}>{{SDL.RCModulesController.currentRadioModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.RCModulesController.currentAudioModel.ipodModel.active:visible_display"}}>{{SDL.RCModulesController.currentAudioModel.ipodModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.RCModulesController.currentAudioModel.bluetoothModel.active:visible_display"}}>{{SDL.RCModulesController.currentAudioModel.currentBluetoothModel.statusBar}}</span>' +
+              '<span {{bindAttr class="SDL.RCModulesController.currentAudioModel.lineInModel.active:visible_display"}}>{{SDL.RCModulesController.currentAudioModel.lineInModel.statusBar}}</span>' +
               // SDL
               '<span {{bindAttr class="SDL.SDLModel.data.limitedExist:visible_display"}}>{{SDL.SDLModel.applicationStatusBar}}</span>' +
               '</div>' +
               '<div class="icon cdIco"' +
               // HMI media
-              '{{bindAttr class="SDL.CDModel.active:cdIco"}}' +
-              '{{bindAttr class="SDL.USBModel.active:usbIco"}}' +
-              '{{bindAttr class="SDL.RadioModel.active:fmIco"}}' +
-              '{{bindAttr class="SDL.IPodModel.active:ipodIco"}}' +
-              '{{bindAttr class="SDL.BluetoothModel.active:bluetoothIco"}}' +
-              '{{bindAttr class="SDL.LineInModel.active:lineInIco"}}' +
+              '{{bindAttr class="SDL.RCModulesController.currentAudioModel.cdModel.active:cdIco"}}' +
+              '{{bindAttr class="SDL.RCModulesController.currentAudioModel.usbModel.active:usbIco"}}' +
+              '{{bindAttr class="SDL.RCModulesController.currentRadioModel.active:fmIco"}}' +
+              '{{bindAttr class="SDL.RCModulesController.currentAudioModel.ipodModel.active:ipodIco"}}' +
+              '{{bindAttr class="SDL.RCModulesController.currentAudioModel.bluetoothModel.active:bluetoothIco"}}' +
+              '{{bindAttr class="SDL.RCModulesController.currentAudioModel.lineInModel.active:lineInIco"}}' +
               // SDL
               '{{bindAttr class="SDL.SDLModel.data.limitedExist:appIco"}}>' +
               '</div>' + '</div>'
@@ -105,14 +105,14 @@ SDL.StatusMediaView = Em.ContainerView.extend({
     ),
   actionUp: function(event) {
 
-    if (SDL.MediaController.activeState.indexOf('media.sdlmedia') >= 0) {
+    if (SDL.RCModulesController.currentAudioModel.activeState.indexOf('media.sdlmedia') >= 0) {
       SDL.SDLMediaController.activateCurrentApp();
     }
-   else if (SDL.MediaController.activeState.indexOf('navigationApp.baseNavigation') >= 0) {
+   else if (SDL.RCModulesController.currentAudioModel.activeState.indexOf('navigationApp.baseNavigation') >= 0) {
       SDL.SDLMediaController.activateCurrentApp();
     } 
     else {
-      SDL.States.goToStates(SDL.MediaController.activeState);
+      SDL.States.goToStates(SDL.RCModulesController.currentAudioModel.activeState);
     }
   }
 }

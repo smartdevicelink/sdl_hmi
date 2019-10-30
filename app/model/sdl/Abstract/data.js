@@ -73,7 +73,9 @@ SDL.SDLModelData = Em.Object.create(
       retry: [],
       try: null,
       timer: null,
-      oldTimer: 0
+      oldTimer: 0,
+      isRetry: false,
+      isIterationInProgress: false
     },
     /**
      * Application's container for current processed requests on VR component
@@ -109,6 +111,12 @@ SDL.SDLModelData = Em.Object.create(
      * @type {Object}
      */
     activateAppRequestsList: {},
+    /**
+     * List of GetPolicyConfiguration requests
+     *
+     * @type {Array}
+     */
+    getPolicyConfigurationDataRequestsList: [],
     /**
      * ID of app in LIMITED HMI state
      */
@@ -148,7 +156,7 @@ SDL.SDLModelData = Em.Object.create(
      */
     naviVideo: null,
     /**
-     * Array of strings came in SDL.GetURLS response
+     * Array of strings came in SDL.GetPolicyConfigurationData response
      *
      * @type {Object}
      */
@@ -648,10 +656,827 @@ SDL.SDLModelData = Em.Object.create(
       'FI-FI',
       'SK-SK'
     ],
+
+    /**
+     * @description List of available display modes
+     * @type {Array}
+     */
     imageModeList:[
       'Day mode',
       'Night mode',
       'Highlighted mode'
-    ]
+    ],
+    windowType: {
+      "MAIN": 0,
+      "WIDGET": 1
+    },
+    defaultWindowCapability: {
+      "MAIN": {
+        "systemCapability": {
+          "systemCapabilityType": "DISPLAYS",
+          "displayCapabilities": [{
+            "displayName": "SDL_HMI",
+            "windowTypeSupported": [{
+              "type": "MAIN",
+              "maximumNumberOfWindows": 1
+            },
+            {
+              "type": "WIDGET",
+              "maximumNumberOfWindows": 16
+            }],
+            "windowCapabilities": [{
+              "menuLayoutsAvailable": ["LIST"],
+              "textFields": [
+                {
+                  "name": "mainField1",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "mainField2",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "statusBar",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "mediaClock",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "mediaTrack",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "templateTitle",
+                  "characterSet": "TYPE2SET",
+                  "width": 100,
+                  "rows": 1
+                },
+                {
+                  "name": "alertText1",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "alertText2",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "alertText3",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "scrollableMessageBody",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "initialInteractionText",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "navigationText1",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "navigationText2",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "ETA",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "totalDistance",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "audioPassThruDisplayText1",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "audioPassThruDisplayText2",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "sliderHeader",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "sliderFooter",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "menuName",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "secondaryText",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "tertiaryText",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "menuTitle",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "locationName",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "locationDescription",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "addressLines",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                },
+                {
+                  "name": "phoneNumber",
+                  "characterSet": "TYPE2SET",
+                  "width": 500,
+                  "rows": 1
+                }
+              ],
+              'imageFields': [
+                {
+                  'name': 'softButtonImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'choiceImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'choiceSecondaryImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'vrHelpItem',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'turnIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'menuIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'cmdIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'graphic',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'secondaryGraphic',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'showConstantTBTIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'showConstantTBTNextTurnIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'showConstantTBTNextTurnIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 64,
+                    'resolutionHeight': 64
+                  }
+                },
+                {
+                  'name': 'alertIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 105,
+                    'resolutionHeight': 65
+                  }
+                }
+              ],
+              "imageTypeSupported": ["STATIC", "DYNAMIC"],
+              "numCustomPresetsAvailable": 8,
+              "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
+              "buttonCapabilities": [
+                {
+                  "longPressAvailable": true,
+                  "name": "AC_MAX",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "AC",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "RECIRCULATE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "FAN_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "FAN_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "TEMP_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "TEMP_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST_MAX",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST_REAR",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "UPPER_VENT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "LOWER_VENT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "VOLUME_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "VOLUME_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "EJECT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "SOURCE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "SHUFFLE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "REPEAT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                }
+              ],
+              "softButtonCapabilities": [{
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              }]
+            }]
+          }],
+        }
+      },
+      "WIDGET": {
+        "systemCapability": {
+          "systemCapabilityType": "DISPLAYS",
+          "displayCapabilities": [{
+            "displayName": "SDL_HMI",
+            "windowTypeSupported": [{
+              "type": "MAIN",
+              "maximumNumberOfWindows": 1
+            },
+            {
+              "type": "WIDGET",
+              "maximumNumberOfWindows": 16
+            }],
+            "windowCapabilities": [{
+              "menuLayoutsAvailable": ["LIST"],
+              "textFields": [{
+                "name": "mainField1",
+                "characterSet": "TYPE2SET",
+                "width": 500,
+                "rows": 1
+              }],
+              "imageFields": [{
+                "name": "softButtonImage",
+                "imageTypeSupported": ["GRAPHIC_PNG"],
+                "imageResolution": {
+                  "resolutionWidth": 35,
+                  "resolutionHeight": 35
+                }
+              }],
+              "imageTypeSupported": ["STATIC", "DYNAMIC"],
+              "numCustomPresetsAvailable": 8,
+              "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
+              "buttonCapabilities": [
+                {
+                  "longPressAvailable": true,
+                  "name": "AC_MAX",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "AC",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "RECIRCULATE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "FAN_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "FAN_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "TEMP_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "TEMP_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST_MAX",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "DEFROST_REAR",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "UPPER_VENT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "LOWER_VENT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "VOLUME_UP",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "VOLUME_DOWN",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "EJECT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "SOURCE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "SHUFFLE",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                },
+                {
+                  "longPressAvailable": true,
+                  "name": "REPEAT",
+                  "shortPressAvailable": true,
+                  "upDownAvailable": false
+                }
+              ],
+              "softButtonCapabilities": [{
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              },
+              {
+                "shortPressAvailable": true,
+                "longPressAvailable": true,
+                "upDownAvailable": true,
+                "imageSupported": true,
+                "textSupported": true
+              }]
+            }]
+          }],
+        }
+      }
+    },
+    defaultTemplateColorScheme: {
+      "primaryColor": {"red" : 0 , "green" : 0, "blue" : 0},
+      "secondaryColor": {"red" : 0 , "green" : 0, "blue" : 0},
+      "backgroundColor": {"red" : 255 , "green" : 255, "blue" : 255}
+    },
+
+    /**
+     * @name policyConfigData
+     * @type {Array}
+     * @description Policy config data version
+     */
+    policyConfigData: [
+      {
+        "custom_vehicle_data_mapping_url": {
+          "version": ""
+        }
+      }
+    ],
+
+    /**
+     * @name policyType
+     * @type {String}
+     * @description policy type of PolicyConfigData
+     */
+    policyType: '',
+
+    /**
+     *@name property
+     *@type {String}
+     *@description property of PolicyConfigData
+     */
+    property: '',
+
+    /**
+     * @description Map of supported vehicles and array representing their
+     * seats and locations
+     * @type {Map}
+     */
+    vehicleSeatRepresentation: {
+      'no_emulation' : [
+        {
+          col: 0,
+          row: 0,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        }
+      ],
+      'vehicle_2x3' : [
+        {
+          col: 0,
+          row: 0,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 2,
+          row: 0,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 0,
+          row: 1,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 1,
+          row: 1,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 2,
+          row: 1,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        }
+      ],
+      'vehicle_3x3' : [
+        {
+          col: 0,
+          row: 0,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 2,
+          row: 0,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 0,
+          row: 1,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 2,
+          row: 1,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 0,
+          row: 2,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 1,
+          row: 2,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        },
+        {
+          col: 2,
+          row: 2,
+          level: 0,
+          colspan: 1,
+          rowspan: 1,
+          levelspan: 1
+        }
+      ]
+    }
   }
 );

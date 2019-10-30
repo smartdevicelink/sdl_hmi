@@ -48,11 +48,7 @@ FFW.UI = FFW.RPCObserver.create(
     /**
      * access to basic RPC functionality
      */
-    client: FFW.RPCClient.create(
-      {
-        componentName: 'UI'
-      }
-    ),
+    client: FFW.RPCClient,
     // temp var for debug
     appID: 1,
     onRecordStartSubscribeRequestID: -1,
@@ -64,13 +60,33 @@ FFW.UI = FFW.RPCObserver.create(
      */
     performAudioPassThruRequestID: -1,
     endAudioPassThruRequestID: -1,
+    componentName: "UI",
     /**
      * connect to RPC bus
      */
     connect: function() {
-      this.client.connect(this, 400); // Magic number is unique identifier
-      // for component
+      this.client.connect(this.componentName, this);
     },
+
+    /**
+     * @function sendMessage
+     * @param {Em.Object} JSONMessage
+     * @desc sending message to SDL
+     */
+
+    sendMessage: function(JSONMessage){
+      this.client.send(JSONMessage, this.componentName);
+    },
+    /**
+     * @function subscribeToNotification
+     * @param {Em.Object} notification
+     * @desc subscribe to notifications from SDL
+     */
+
+    subscribeToNotification: function(notification){
+      this.client.subscribeToNotification(notification, this.componentName);
+    },
+
     /**
      * disconnect from RPC bus
      */
@@ -78,6 +94,7 @@ FFW.UI = FFW.RPCObserver.create(
       this.onRPCUnregistered();
       this.client.disconnect();
     },
+
     /**
      * Client is registered - we can send request starting from this point
      * of time
@@ -87,7 +104,7 @@ FFW.UI = FFW.RPCObserver.create(
       this._super();
       // subscribe to notifications
       this.onRecordStartSubscribeRequestID =
-        this.client.subscribeToNotification(this.onRecordStartNotification);
+        this.subscribeToNotification(this.onRecordStartNotification);
     },
     /**
      * Client is unregistered - no more requests
@@ -140,6 +157,11 @@ FFW.UI = FFW.RPCObserver.create(
       Em.Logger.log('FFW.UI.onRPCRequest');
       if (this.validationCheck(request)) {
         switch (request.method) {
+          case 'UI.ShowAppMenu':
+          {
+            SDL.SDLModel.showAppMenu(request);
+            break;
+          }
           case 'UI.Alert':
           {
 
@@ -161,6 +183,11 @@ FFW.UI = FFW.RPCObserver.create(
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
               SDL.SDLController.onSystemContextChange(request.params.appID);
             }
+            SDL.SDLModel.data.registeredApps.forEach(app => {
+              app.activeWindows.forEach(widget => {
+                SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+              })
+            })
             break;
           }
           case 'UI.Show':
@@ -188,11 +215,42 @@ FFW.UI = FFW.RPCObserver.create(
               }
             }
             SDL.TurnByTurnView.deactivate();
-            SDL.SDLController.getApplicationModel(request.params.appID)
-              .onSDLUIShow(request.params);
+            let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
+            const isWindowIDExist = "windowID" in request.params; 
+            const isWidgetID = isWindowIDExist && parseInt(request.params.windowID) != 0;
+            const windowID = isWindowIDExist ? parseInt(request.params.windowID) : 0;
+            let model = isWidgetID ? appModel.getWidgetModel(windowID).content : appModel;
+            let sendCapabilityUpdated = false;
+            if("templateConfiguration" in request.params) {
+              if (model.templateConfiguration.template !== request.params.templateConfiguration.template) {
+                sendCapabilityUpdated = true;
+              }
+              if ("dayColorScheme" in  request.params.templateConfiguration
+              && !SDL.SDLController.isColorSchemesEqual(
+                model.templateConfiguration.dayColorScheme,
+                request.params.templateConfiguration.dayColorScheme)) {
+                  sendCapabilityUpdated = true;
+              }
+              if ("nightColorScheme" in request.params.templateConfiguration
+              && !SDL.SDLController.isColorSchemesEqual(
+                model.templateConfiguration.nightColorScheme,
+                request.params.templateConfiguration.nightColorScheme)) {
+                  sendCapabilityUpdated = true;
+              }
+          }
+            if(appModel.onSDLUIShow(request.params) === SDL.SDLModel.data.resultCode.REJECTED) {
+              this.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method,
+                    "Widget is duplicating other window. Rejecting UI.Show request.");
+              return;
+            }
+            SDL.InfoAppsView.showAppList();
             this.sendUIResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
+            if (sendCapabilityUpdated) {
+              let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+              FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
+            }
             break;
           }
           case 'UI.SetGlobalProperties':
@@ -284,7 +342,46 @@ FFW.UI = FFW.RPCObserver.create(
             // return; } }
             if (SDL.SDLModel.uiPerformInteraction(request)) {
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
+            break;
+          }
+          case 'UI.CancelInteraction':
+          {
+            var targetID = request.params.cancelID;
+            var typeID = request.params.functionID;
+
+            if (typeID === 10 && (SDL.InteractionChoicesView.active || SDL.Keyboard.active || SDL.VRPopUp.VRActive)
+               && (targetID === undefined || targetID === SDL.InteractionChoicesView.cancelID)) {
+              if (SDL.Keyboard.active) {
+                SDL.Keyboard.deactivate();
+                this.OnKeyboardInput('', 'ENTRY_ABORTED');
+              }
+              if (SDL.VRPopUp.VRActive) {
+                SDL.SDLController.vrInteractionResponse(SDL.SDLModel.data.resultCode.ABORTED);
+              }
+              SDL.InteractionChoicesView.deactivate('ABORTED');
+            } else if (typeID === 12 && SDL.AlertPopUp.active
+               && (targetID === undefined || targetID === SDL.AlertPopUp.cancelID)) {
+              SDL.AlertPopUp.deactivate("ABORTED");
+            } else if (typeID === 25 && SDL.ScrollableMessage.active
+               && (targetID === undefined || targetID === SDL.ScrollableMessage.cancelID)) {
+              SDL.ScrollableMessage.deactivate(true);
+            } else if (typeID === 26 && SDL.SliderView.active
+               && (targetID === undefined || targetID === SDL.SliderView.cancelID)) {
+              SDL.SliderView.deactivate();
+            } else {
+              this.sendError(SDL.SDLModel.data.resultCode.IGNORED,
+                request.id, request.method,
+                'Request is ignored, because the intended result is already in effect.');
+              break;
+            }
+
+            this.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
             break;
           }
           case 'UI.SetMediaClockTimer':
@@ -314,6 +411,11 @@ FFW.UI = FFW.RPCObserver.create(
           {
             if (SDL.SDLModel.uiSlider(request)) {
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -321,6 +423,11 @@ FFW.UI = FFW.RPCObserver.create(
           {
             if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -365,11 +472,11 @@ FFW.UI = FFW.RPCObserver.create(
                 break;
               }
             }
+            var model = SDL.SDLController.getApplicationModel(request.params.appID);
             if (sendResponseFlag) {
               Em.Logger.log('FFW.' + request.method + 'Response');
               var displayLayout = request.params.displayLayout;
               if (displayLayout === "DEFAULT") {
-                var model = SDL.SDLController.getApplicationModel(request.params.appID);
                 for (var i=0; i<model.appType.length; i++) {
                   if (model.appType[i] === "NAVIGATION") {
                     displayLayout = NAV_FULLSCREEN_MAP;
@@ -397,7 +504,36 @@ FFW.UI = FFW.RPCObserver.create(
                   'method': 'UI.SetDisplayLayout'
                 }
               };
-              this.client.send(JSONMessage);
+              this.sendMessage(JSONMessage);
+
+              let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
+              const isWindowIDExist = "windowID" in request.params; 
+              const isWidgetID = isWindowIDExist && parseInt(request.params.windowID) != 0;
+              const windowID = isWindowIDExist ? parseInt(request.params.windowID) : 0;
+              let model = isWidgetID ? appModel.getWidgetModel(windowID).content : appModel;
+              let sendCapabilityUpdated = false;
+              if ("displayLayout" in request.params && model.templateConfiguration.template !== request.params.displayLayout) {
+                model.templateConfiguration.template = request.params.displayLayout
+                sendCapabilityUpdated = true;
+              }
+              if ("dayColorScheme" in request.params
+                  && !SDL.SDLController.isColorSchemesEqual(
+                    model.templateConfiguration.dayColorScheme,
+                    request.params.dayColorScheme)) {
+                model.templateConfiguration.dayColorScheme = request.params.dayColorScheme;
+                sendCapabilityUpdated = true;
+              }
+              if ("nightColorScheme" in request.params
+              && !SDL.SDLController.isColorSchemesEqual(
+                model.templateConfiguration.nightColorScheme,
+                request.params.nightColorScheme)) {
+                model.templateConfiguration.nightColorScheme = request.params.nightColorScheme;
+               sendCapabilityUpdated = true;
+              }
+              if (sendCapabilityUpdated) {
+                let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+                FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
+              }
             } else {
               this.sendError(
                 SDL.SDLModel.data.resultCode['UNSUPPORTED_REQUEST'], request.id,
@@ -437,6 +573,11 @@ FFW.UI = FFW.RPCObserver.create(
               this.performAudioPassThruRequestID = request.id;
               SDL.SDLModel.UIPerformAudioPassThru(request.params);
               SDL.SDLController.onSystemContextChange();
+              SDL.SDLModel.data.registeredApps.forEach(app => {
+                app.activeWindows.forEach(widget => {
+                  SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+                })
+              })
             }
             break;
           }
@@ -461,7 +602,7 @@ FFW.UI = FFW.RPCObserver.create(
                 'languages': SDL.SDLModel.data.sdlLanguagesList
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.GetLanguage':
@@ -479,7 +620,7 @@ FFW.UI = FFW.RPCObserver.create(
                 'language': SDL.SDLModel.data.hmiUILanguage
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.GetCapabilities':
@@ -537,6 +678,12 @@ FFW.UI = FFW.RPCObserver.create(
                       'rows': 1
                     },
                     {
+                      "name": "templateTitle",
+                      "characterSet": "TYPE2SET",
+                      "width": 100,
+                      "rows": 1
+                    },
+                    {
                       'name': 'alertText1',
                       'characterSet': 'TYPE2SET',
                       'width': 500,
@@ -591,12 +738,6 @@ FFW.UI = FFW.RPCObserver.create(
                       'rows': 1
                     },
                     {
-                      'name': 'navigationText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
                       'name': 'audioPassThruDisplayText1',
                       'characterSet': 'TYPE2SET',
                       'width': 500,
@@ -621,12 +762,6 @@ FFW.UI = FFW.RPCObserver.create(
                       'rows': 1
                     },
                     {
-                      'name': 'notificationText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
                       'name': 'menuName',
                       'characterSet': 'TYPE2SET',
                       'width': 500,
@@ -640,18 +775,6 @@ FFW.UI = FFW.RPCObserver.create(
                     },
                     {
                       'name': 'tertiaryText',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'timeToDestination',
-                      'characterSet': 'TYPE2SET',
-                      'width': 500,
-                      'rows': 1
-                    },
-                    {
-                      'name': 'turnText',
                       'characterSet': 'TYPE2SET',
                       'width': 500,
                       'rows': 1
@@ -831,6 +954,18 @@ FFW.UI = FFW.RPCObserver.create(
                         'resolutionWidth': 64,
                         'resolutionHeight': 64
                       }
+                    },
+                    {
+                      'name': 'alertIcon',
+                      'imageTypeSupported': [
+                        'GRAPHIC_BMP',
+                        'GRAPHIC_JPEG',
+                        'GRAPHIC_PNG'
+                      ],
+                      'imageResolution': {
+                        'resolutionWidth': 105,
+                        'resolutionHeight': 65
+                      }
                     }
                   ],
                   'mediaClockFormats': [
@@ -853,11 +988,481 @@ FFW.UI = FFW.RPCObserver.create(
                   },
                   'numCustomPresetsAvailable': 10
                 },
+                "systemCapabilities": {
+                  "displayCapabilities": [{
+                    "displayType" : "CID",
+                    "displayName": "MAIN",
+                    "windowTypeSupported": [{
+                        "type": "MAIN",
+                        "maximumNumberOfWindows": 1
+                    }],
+                    "windowCapabilities": [{
+                        "menuLayoutsAvailable": ["LIST"],
+                        "textFields": [
+                          {
+                            'name': 'mainField1',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'mainField2',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'mainField3',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'mainField4',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'statusBar',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'mediaClock',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'mediaTrack',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            "name": "templateTitle",
+                            "characterSet": "TYPE2SET",
+                            "width": 100,
+                            "rows": 1
+                          },
+                          {
+                            'name': 'alertText1',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'alertText2',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'alertText3',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'scrollableMessageBody',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'initialInteractionText',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'navigationText1',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'navigationText2',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'ETA',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'totalDistance',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'audioPassThruDisplayText1',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'audioPassThruDisplayText2',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'sliderHeader',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'sliderFooter',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'menuName',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'secondaryText',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'tertiaryText',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'menuTitle',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'locationName',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'locationDescription',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'addressLines',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'phoneNumber',
+                            'characterSet': 'TYPE2SET',
+                            'width': 500,
+                            'rows': 1
+                          }
+                        ],
+                        'imageFields': [
+                          {
+                            'name': 'softButtonImage',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'choiceImage',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'choiceSecondaryImage',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'vrHelpItem',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'turnIcon',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'menuIcon',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'cmdIcon',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'graphic',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'secondaryGraphic',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'showConstantTBTIcon',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'showConstantTBTNextTurnIcon',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'showConstantTBTNextTurnIcon',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 64,
+                              'resolutionHeight': 64
+                            }
+                          },
+                          {
+                            'name': 'alertIcon',
+                            'imageTypeSupported': [
+                              'GRAPHIC_BMP',
+                              'GRAPHIC_JPEG',
+                              'GRAPHIC_PNG'
+                            ],
+                            'imageResolution': {
+                              'resolutionWidth': 105,
+                              'resolutionHeight': 65
+                            }
+                          }
+                        ],
+                        "imageTypeSupported": ["STATIC", "DYNAMIC"],
+                        "numCustomPresetsAvailable": 8,
+                        "buttonCapabilities": [
+                            {
+                                "longPressAvailable": true,
+                                "name": "AC_MAX",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "AC",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "RECIRCULATE",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "FAN_UP",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "FAN_DOWN",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "TEMP_UP",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "TEMP_DOWN",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "DEFROST_MAX",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "DEFROST",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "DEFROST_REAR",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "UPPER_VENT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "LOWER_VENT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "VOLUME_UP",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "VOLUME_DOWN",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "EJECT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "SOURCE",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "SHUFFLE",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            },
+                            {
+                                "longPressAvailable": true,
+                                "name": "REPEAT",
+                                "shortPressAvailable": true,
+                                "upDownAvailable": false
+                            }
+                        ],
+                        "softButtonCapabilities": [{
+                            "shortPressAvailable": true,
+                            "longPressAvailable": true,
+                            "upDownAvailable": true,
+                            "imageSupported": true
+                        }]
+                      }]
+                    }],
+                },
                 'audioPassThruCapabilities': {
                   'samplingRate': '44KHZ',
                   'bitsPerSample': '8_BIT',
                   'audioType': 'PCM'
                 },
+                'audioPassThruCapabilitiesList': [{
+                  'samplingRate': '44KHZ',
+                  'bitsPerSample': '8_BIT',
+                  'audioType': 'PCM'
+                }],
                 'hmiZoneCapabilities': 'FRONT',
                 'softButtonCapabilities': [
                   {
@@ -871,13 +1476,14 @@ FFW.UI = FFW.RPCObserver.create(
                   'navigation': true,
                   'phoneCall': true
                 },
+                'systemCapabilities': SDL.systemCapabilities,
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
                 'method': 'UI.GetCapabilities'
               }
             };
             JSONMessage.result.hmiCapabilities.steeringWheelLocation
               = FLAGS.steeringWheelLocation;
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.IsReady':
@@ -893,7 +1499,7 @@ FFW.UI = FFW.RPCObserver.create(
                 'method': 'UI.IsReady'
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.ClosePopUp':
@@ -909,7 +1515,7 @@ FFW.UI = FFW.RPCObserver.create(
                 'method': 'UI.ClosePopUp'
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'UI.ShowVrHelp':
@@ -935,6 +1541,26 @@ FFW.UI = FFW.RPCObserver.create(
                 'No application in FULL mode'
               );
             }
+            break;
+          }
+          case 'UI.CreateWindow':
+          {
+            var app = SDL.SDLController.getApplicationModel(request.params.appID);
+            app.createWindow(request.params);
+            this.sendUIResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
+              let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+              FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+            break;
+          }
+          case 'UI.DeleteWindow':
+          {
+            var app = SDL.SDLController.getApplicationModel(request.params.appID);
+            app.deleteWindow(request.params);
+            this.sendUIResult(
+              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+            );
             break;
           }
           default:
@@ -971,7 +1597,7 @@ FFW.UI = FFW.RPCObserver.create(
             }
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -984,7 +1610,7 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {String}
      *            method
      */
-    sendUIResult: function(resultCode, id, method) {
+    sendUIResult: function(resultCode, id, method, info) {
       if (this.errorResponsePull[id]) {
         this.sendError(
           this.errorResponsePull[id].code, id, method,
@@ -1004,10 +1630,11 @@ FFW.UI = FFW.RPCObserver.create(
           'id': id,
           'result': {
             'code': resultCode, // type (enum) from SDL protocol
-            'method': method
+            'method': method,
+            'info': info
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -1018,12 +1645,13 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {Number}
      *            id
      */
-    alertResponse: function(resultCode, id) {
+    alertResponse: function(resultCode, id, info) {
       Em.Logger.log('FFW.UI.AlertResponse');
       switch (resultCode) {
+        case SDL.SDLModel.data.resultCode.WARNINGS:
         case SDL.SDLModel.data.resultCode.SUCCESS:
         {
-          this.sendUIResult(resultCode, id, 'UI.Alert');
+          this.sendUIResult(resultCode, id, 'UI.Alert', info);
           break;
         }
         case SDL.SDLModel.data.resultCode['ABORTED']:
@@ -1083,7 +1711,7 @@ FFW.UI = FFW.RPCObserver.create(
           JSONMessage.error.data.sliderPosition = sliderPosition;
         }
       }
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notification method to send touch event data to SDLCore
@@ -1101,7 +1729,7 @@ FFW.UI = FFW.RPCObserver.create(
           'appID': appID
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when command was triggered
@@ -1121,7 +1749,7 @@ FFW.UI = FFW.RPCObserver.create(
           'appID': appID
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notification method to send touch event data to SDLCore
@@ -1140,7 +1768,7 @@ FFW.UI = FFW.RPCObserver.create(
           'event': event
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when command was triggered
@@ -1160,7 +1788,7 @@ FFW.UI = FFW.RPCObserver.create(
           'appID': appID
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when command was triggered
@@ -1176,26 +1804,26 @@ FFW.UI = FFW.RPCObserver.create(
       if (this.errorResponsePull[requestID] &&
         resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
-        // send repsonse
-        var JSONMessage = {
+        var json = {
           'jsonrpc': '2.0',
           'id': requestID,
-          'error': {
-            'code': this.errorResponsePull[requestID].code,
-            'message': 'Unsupported ' + this.errorResponsePull[requestID].type +
-            ' type. Available data in request was processed.',
-            'data': {
-              'method': 'UI.PerformInteraction'
-            }
+          'result': {
+            'code': SDL.SDLModel.data.resultCode.WARNINGS,
+            'method': 'UI.PerformInteraction',
+            'info': 'Unsupported ' + this.errorResponsePull[requestID].type 
+                + ' type. Available data in request was processed.'
           }
-        };
+        }
+
+        if (manualTextEntry) {
+          json.result.manualTextEntry = manualTextEntry
+        }
+
         if (commandID) {
-          JSONMessage.error.data.choiceID = commandID;
+          json.result.choiceID = commandID;
         }
-        if (manualTextEntry != null) {
-          JSONMessage.error.data.manualTextEntry = manualTextEntry;
-        }
-        this.client.send(JSONMessage);
+
+        this.client.send(json);
         this.errorResponsePull[requestID] = null;
         return;
       }
@@ -1229,7 +1857,7 @@ FFW.UI = FFW.RPCObserver.create(
           }
         };
       }
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when DriverDistraction PopUp is visible
@@ -1247,7 +1875,7 @@ FFW.UI = FFW.RPCObserver.create(
           'state': driverDistractionState
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notifies if system context is changed
@@ -1255,7 +1883,7 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {String}
      *            systemContextValue
      */
-    OnSystemContext: function(systemContextValue, appID) {
+    OnSystemContext: function(systemContextValue, appID, windowID) {
       Em.Logger.log('FFW.UI.OnSystemContext');
       // send repsonse
       var JSONMessage = {
@@ -1268,7 +1896,10 @@ FFW.UI = FFW.RPCObserver.create(
       if (appID) {
         JSONMessage.params.appID = appID;
       }
-      this.client.send(JSONMessage);
+      if(windowID) {
+        JSONMessage.params.windowID = windowID;
+      }
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notifies if sdl UI components language was changed
@@ -1286,7 +1917,7 @@ FFW.UI = FFW.RPCObserver.create(
           'language': lang
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      *  Sends notification on SDL Core display keyboard value
@@ -1305,7 +1936,7 @@ FFW.UI = FFW.RPCObserver.create(
           'event': event
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Callback for the seek media clock timer notification
@@ -1324,7 +1955,7 @@ FFW.UI = FFW.RPCObserver.create(
           'appID': appID
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     }
   }
 );

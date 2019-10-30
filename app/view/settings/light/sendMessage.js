@@ -24,18 +24,18 @@ SDL.SendMessage = Em.ContainerView.create({
         this.toggleProperty('active');
       },
       setSetting: function(){
-        SDL.LightModel.lightSettings.density = parseFloat(SDL.LightModel.lightSettings.density);
-        SDL.LightModel.lightSettings.color.red = parseInt(SDL.LightModel.lightSettings.color.red);
-        SDL.LightModel.lightSettings.color.green = parseInt(SDL.LightModel.lightSettings.color.green);
-        SDL.LightModel.lightSettings.color.blue = parseInt(SDL.LightModel.lightSettings.color.blue);
-        var length = SDL.LightModel.lightState.length;
-
-        var data = SDL.deepCopy(SDL.LightModel.lightSettings);
+        SDL.RCModulesController.currentLightModel.lightSettings.density = parseFloat(SDL.RCModulesController.currentLightModel.lightSettings.density);
+        SDL.RCModulesController.currentLightModel.lightSettings.color.red = parseInt(SDL.RCModulesController.currentLightModel.lightSettings.color.red);
+        SDL.RCModulesController.currentLightModel.lightSettings.color.green = parseInt(SDL.RCModulesController.currentLightModel.lightSettings.color.green);
+        SDL.RCModulesController.currentLightModel.lightSettings.color.blue = parseInt(SDL.RCModulesController.currentLightModel.lightSettings.color.blue);
+        var length = SDL.RCModulesController.currentLightModel.lightState.length;
+        var moduleUUId = SDL.RCModulesController.currentLightModel.UUID;
+        var data = SDL.deepCopy(SDL.RCModulesController.currentLightModel.lightSettings);
         var oldData;
         for(var i = 0; i < length; ++i){
-          if(SDL.LightModel.lightState[i].id == SDL.LightModel.lightSettings.id){
-            oldData = SDL.deepCopy(SDL.LightModel.lightState[i]);
-            SDL.LightModel.lightState[i] = SDL.deepCopy(SDL.LightModel.lightSettings);
+          if(SDL.RCModulesController.currentLightModel.lightState[i].id == SDL.RCModulesController.currentLightModel.lightSettings.id){
+            oldData = SDL.deepCopy(SDL.RCModulesController.currentLightModel.lightState[i]);
+            SDL.RCModulesController.currentLightModel.lightState[i] = SDL.deepCopy(SDL.RCModulesController.currentLightModel.lightSettings);
             break;
           }
         }
@@ -48,7 +48,7 @@ SDL.SendMessage = Em.ContainerView.create({
           delete data['density'];
         }
         if (Object.keys(data).length > 0) {
-          FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT', lightControlData: {lightState: [data]}});
+          FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT',moduleId: moduleUUId, lightControlData: {lightState: [data]}});
         }
         SDL.SendMessage.toggleActivity();
       },
@@ -73,8 +73,8 @@ SDL.SendMessage = Em.ContainerView.create({
       lightStatusSelect: Em.Select.extend({
           elementId: 'lightStatusSelect',
           classNames: 'lightStatusSelect',
-          contentBinding: 'SDL.LightModel.lightStatusStruct',
-          valueBinding: 'SDL.LightModel.lightSettings.status'
+          contentBinding: 'SDL.RCModulesController.currentLightModel.lightStatusStruct',
+          valueBinding: 'SDL.RCModulesController.currentLightModel.lightSettings.status'
       }),
       lightDensityLabel: SDL.Label.extend({
         elementId: 'lightDensityLabel',
@@ -105,28 +105,28 @@ SDL.SendMessage = Em.ContainerView.create({
         {
           elementId: 'densityInput',
           classNames: 'densityInput',
-          valueBinding: 'SDL.LightModel.lightSettings.density',
+          valueBinding: 'SDL.RCModulesController.currentLightModel.lightSettings.density',
         }
       ),
       rInput: Ember.TextField.extend(
         {
           elementId: 'rInput',
           classNames: 'rInput',
-          valueBinding: 'SDL.LightModel.lightSettings.color.red',
+          valueBinding: 'SDL.RCModulesController.currentLightModel.lightSettings.color.red',
         }
       ),
       gInput: Ember.TextField.extend(
         {
           elementId: 'gInput',
           classNames: 'gInput',
-          valueBinding: 'SDL.LightModel.lightSettings.color.green',
+          valueBinding: 'SDL.RCModulesController.currentLightModel.lightSettings.color.green',
         }
       ),
       bInput: Ember.TextField.extend(
         {
           elementId: 'bInput',
           classNames: 'bInput',
-          valueBinding: 'SDL.LightModel.lightSettings.color.blue',
+          valueBinding: 'SDL.RCModulesController.currentLightModel.lightSettings.color.blue',
         }
       ),
       setButton: SDL.Button.extend({

@@ -50,7 +50,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
           .compile(
             '{{#with view}}' +
             '<div class="track-info">' +
-            '<div class="device">{{SDL.SDLController.model.deviceName}}</div>' +
+            '<div class="device">{{SDL.SDLController.model.appInfo.title}}</div>' +
             '<div class="divider_o"></div>' +
             '<div class="title textLimit" {{bindAttr style="SDL.SDLController.model.appInfo.alignment"}}>{{SDL.SDLController.model.appInfo.field1}}</div>' +
             '<div class="album textLimit" {{bindAttr style="SDL.SDLController.model.appInfo.alignment"}}>{{SDL.SDLController.model.appInfo.field2}}</div>' +

@@ -45,6 +45,7 @@ SDL.SDLController = Em.Object.extend(
         }
         return size;
       };
+      this.updateCustomVehicleDataTypesMapping();
     },
     /**
      * Active application model binding type {SDLAppModel}
@@ -56,6 +57,7 @@ SDL.SDLController = Em.Object.extend(
     showAppList: function() {
       SDL.InfoAppsView.showAppList();
       SDL.AppPermissionsListView.showAppList();
+      SDL.RCModulesController.updateModuleSeatLocationContent();
     }.observes('SDL.SDLModel.data.registeredApps.@each'),
     /**
      * Handeler for command button press
@@ -111,6 +113,9 @@ SDL.SDLController = Em.Object.extend(
         SDL.OptionsView.deactivate();
       }
     },
+    onNavButton: function(element) {
+      // Empty target function.
+    },
     /**
      * Handeler for VR command button press
      *
@@ -164,8 +169,17 @@ SDL.SDLController = Em.Object.extend(
     },
     userExitAction: function(appID) {
       FFW.BasicCommunication.ExitApplication(appID, 'USER_EXIT');
+      this.closeApplication(appID);
+    },
+    /**
+     * Handler for CloseApplication RPC
+     *
+     * @param appID {Number}
+     */
+    closeApplication: function(appID) {
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
-        SDL.States.currentState.getPath('path') === 'info.nonMedia') {
+        SDL.States.currentState.getPath('path') === 'info.nonMedia' ||
+        SDL.States.currentState.getPath('path') === 'navigationApp.baseNavigation') {
         SDL.States.goToStates('info.apps');
       }
     },
@@ -191,6 +205,9 @@ SDL.SDLController = Em.Object.extend(
      */
     openCommandsList: function() {
       SDL.OptionsView.activate();
+    },
+    openNavButtonsList: function() {
+      SDL.NavigationSubscriptionButtonsView.activate();
     },
     /**
      * Notification of deactivation of current application model initiated in
@@ -368,6 +385,23 @@ SDL.SDLController = Em.Object.extend(
       return 0;
     },
     /**
+     * @description Updates custom OEM data types according to current VD
+     */
+    updateCustomVehicleDataTypesMapping() {
+      for (key in SDL.SDLVehicleInfoModel.eVehicleDataType) {
+        if (SDL.SDLVehicleInfoModel.eVehicleDataType[key] == 'VEHICLEDATA_OEM_CUSTOM_DATA' &&
+            !SDL.SDLVehicleInfoModel.vehicleData.hasOwnProperty(key)) {
+          delete SDL.SDLVehicleInfoModel.eVehicleDataType[key];
+        }
+      }
+
+      for (key in SDL.SDLVehicleInfoModel.vehicleData) {
+        if (!SDL.SDLVehicleInfoModel.eVehicleDataType.hasOwnProperty(key)) {
+          SDL.SDLVehicleInfoModel.eVehicleDataType[key] = 'VEHICLEDATA_OEM_CUSTOM_DATA';
+        }
+      }
+    },
+    /**
      * vehicleDataChange button handler on VehicleInfo View
      */
     vehicleDataChange: function() {
@@ -376,16 +410,18 @@ SDL.SDLController = Em.Object.extend(
           var params = {};
           var parsedData = JSON.parse(data);
           for (var i in parsedData) {
-            if (SDL.SDLController.compareObjects(
-                SDL.SDLVehicleInfoModel.vehicleData[i],
-                parsedData[i]
-              )
-            ) {
+            if (undefined === SDL.SDLVehicleInfoModel.vehicleData[i] ||
+                SDL.SDLController.compareObjects(
+                  SDL.SDLVehicleInfoModel.vehicleData[i],
+                  parsedData[i]
+                )) {
               params[i] = parsedData[i];
             }
           }
           SDL.SDLVehicleInfoModel.vehicleData = parsedData;
-          if (params) {
+          SDL.SDLController.updateCustomVehicleDataTypesMapping();
+
+          if (Object.keys(params).length > 0) {
             FFW.VehicleInfo.OnVehicleData(params);
           }
         }
@@ -393,6 +429,22 @@ SDL.SDLController = Em.Object.extend(
       SDL.VehicleInfo.vehicleDataCodeEditor.editor.set(
         'code',
         JSON.stringify(SDL.SDLVehicleInfoModel.vehicleData, null, 2)
+      );
+    },
+
+    /**
+     * @function policyConfigDataChange
+     * @description Policy config data button handler on Vehicle Info view
+     */
+    policyConfigDataChange: function() {
+      SDL.PolicyConfigListView.policyConfigCodeEditor.activate(
+        function(data) {
+          SDL.SDLModel.data.policyConfigData = JSON.parse(data);
+        }
+      );
+      SDL.PolicyConfigListView.policyConfigCodeEditor.editor.set(
+        'code',
+        JSON.stringify(SDL.SDLModel.data.policyConfigData, null, 2)
       );
     },
     /**
@@ -561,6 +613,11 @@ SDL.SDLController = Em.Object.extend(
           this.onActivateSDLApp(element);
           break;
         }
+        case 'WidgetAction': 
+        {
+          this.onActivateSDLApp(element);
+          break;
+        }
       }
     },
     /**
@@ -713,8 +770,8 @@ SDL.SDLController = Em.Object.extend(
      * @param {Number}
      *            alertRequestID
      */
-    alertResponse: function(result, alertRequestID) {
-      FFW.UI.alertResponse(result, alertRequestID);
+    alertResponse: function(result, alertRequestID, info) {
+      FFW.UI.alertResponse(result, alertRequestID, info);
     },
     /**
      * Method to sent notification for Scrollable Message
@@ -846,6 +903,8 @@ SDL.SDLController = Em.Object.extend(
      */
     registerApplication: function(params, applicationType) {
       if (applicationType === undefined || applicationType === null) {
+        const isDayColorSchemeDefined = "dayColorScheme" in params;
+        const isNightColorSchemeDefined = "nightColorScheme" in params;
         SDL.SDLModel.data.get('registeredApps').pushObject(
           this.applicationModels[0].create(
             { //Magic number 0 - Default media model for not initialized applications
@@ -854,7 +913,10 @@ SDL.SDLController = Em.Object.extend(
               deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: 0,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
+              nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme
             }
           )
         );
@@ -868,7 +930,10 @@ SDL.SDLController = Em.Object.extend(
               appType: params.appType,
               isMedia: applicationType == 0 ? true : false,
               initialized: true,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
+              nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme
             }
           )
         );
@@ -923,8 +988,11 @@ SDL.SDLController = Em.Object.extend(
      *            appID
      */
     unregisterApplication: function(appID) {
-      this.getApplicationModel(appID).VRCommands = [];
-      this.getApplicationModel(appID).onDeleteApplication(appID);
+      var app = this.getApplicationModel(appID);
+      app.VRCommands = [];
+      app.removeWidgets();
+      SDL.AddWidgetPopUp.updateWidgetList();
+      app.onDeleteApplication(appID);
       var len = SDL.SDLModel.data.VRCommands.length;
       for (var i = len - 1; i >= 0; i--) {
         if (SDL.SDLModel.data.VRCommands[i].appID == appID) {
@@ -991,13 +1059,13 @@ SDL.SDLController = Em.Object.extend(
     /**
      * SDL Driver Distraction ON/OFF switcher
      */
-    selectDriverDistraction: function() {
-      if (SDL.SDLModel.data.driverDistractionState) {
+    selectDriverDistraction: function(driverDistractionState) {
+      if (driverDistractionState) {
         FFW.UI.onDriverDistraction('DD_ON');
       } else {
         FFW.UI.onDriverDistraction('DD_OFF');
       }
-    }.observes('SDL.SDLModel.data.driverDistractionState'),
+    },
     /**
      * Ondisplay keyboard event handler
      * Sends notification on SDL Core with changed value
@@ -1233,16 +1301,16 @@ SDL.SDLController = Em.Object.extend(
     /**
      * Send system context
      */
-    onSystemContextChange: function(appID) {
+    onSystemContextChange: function(appID, windowID) {
       var sysContextValue = this.get('sysContext');
       if ((
         appID &&
         SDL.SDLController.getApplicationModel(appID) !=
-        SDL.SDLController.model) ||
+        SDL.SDLController.model && undefined === windowID ) ||
         (
         this.backgroundAlertAppID &&
         SDL.SDLController.getApplicationModel(this.backgroundAlertAppID) !=
-        SDL.SDLController.model)) {
+        SDL.SDLController.model && undefined === windowID)) {
         if (appID) {
           this.backgroundAlertAppID = appID;
           FFW.UI.OnSystemContext(sysContextValue, appID);
@@ -1259,6 +1327,9 @@ SDL.SDLController = Em.Object.extend(
             );
           }
         }
+      } else if (windowID && appID) {
+        FFW.UI.OnSystemContext(sysContextValue, appID, windowID);
+        return;
       } else {
         if (SDL.SDLController.model) {
           appID = SDL.SDLController.model.appID;
@@ -1285,6 +1356,164 @@ SDL.SDLController = Em.Object.extend(
         return true;
       }
       return false;
-    }
+    },
+
+    /**
+     * @function expandWidgetView
+     * @param {Boolean} expand 
+     * @description action to expand widget container
+     */
+    expandWidgetView: function(expand) {      
+      if(expand) {
+        var glider_slides = SDL.RightSideView.getWidgetContainer().widgetContainer.view.slides;
+        var length = glider_slides.length;
+        for(var i=0; i< length; ++i) {
+          var item = glider_slides.item(i);
+          if('add-window' == item.id) {
+            continue;
+          }
+          if(-1 !== item.className.indexOf('visible')) {
+            var window = {
+              'appID': item.appID,
+              'windowID': item.windowID
+            };
+            SDL.SDLController.getApplicationModel(item.appID).activateWindow(window);
+          }
+        }
+        return;
+      }
+      var apps = SDL.SDLModel.data.registeredApps;
+        apps.forEach(app => {
+          var windows = [];
+          app.activeWindows.forEach(element => {
+            var window = {};
+            window['appID'] = app.appID;
+            window['windowID'] = element.windowID;
+            windows.push(window);
+          });
+          windows.forEach(element => {
+            app.deactivateWindow(element);
+          });
+        });
+    },
+
+    /**
+     * @function activateWidget
+     * @param {Object} event 
+     * @description action to activate widgets
+     */
+    activateWidget: function(event) {
+      var app = this.getApplicationModel(event.appID);
+      app.activateWindow(event);
+      SDL.AddWidgetPopUp.updateWidgetList();
+      SDL.RightSideView.getWidgetContainer().addWidget(event);
+    },
+
+    /**
+     * @function closeWidget
+     * @param {Object} event 
+     * @description action to close widget
+     */
+    closeWidget:function(event) {
+      var window = event._parentView;
+      var app = SDL.SDLController.getApplicationModel(window.appID);
+      SDL.RightSideView.getWidgetContainer().removeWidget(window.appID, window.windowID);
+      app.deactivateWindow(window);
+      app.deactivateWindow(window);
+      SDL.AddWidgetPopUp.updateWidgetList();
+    },
+
+    /**
+     * @function widgetVisible
+     * @param {Object} event 
+     * @param {Object} widgetContainer 
+     * @description action when a widget got a visible state
+     */
+    widgetVisible: function(event, widgetContainer) {
+      var window = widgetContainer.view.slides[event.detail.slide];
+      if('add-window' == window.id) {
+        return;
+      }
+      var app = SDL.SDLController.getApplicationModel(window.appID);
+      app.activateWindow(window);
+    },
+
+    /**
+     * @function widgetNonVisible
+     * @param {Object} event 
+     * @param {Object} widgetContainer
+     * @description action when a widget got an invisible state
+     */
+    widgetNonVisible: function(event, widgetContainer) {
+      var window = widgetContainer.view.slides[event.detail.slide];
+      if('add-window' == window.id) {
+        return;
+      }
+      var app = SDL.SDLController.getApplicationModel(window.appID);
+      app.deactivateWindow(window);
+    },
+
+    /**
+     * @function getDefaultCapabilities
+     * @param {Integer} windowID
+     * @description returns string of predefined system capabilities for windowID
+     */
+    getDefaultCapabilities: function (windowID, appID) {
+      let windowType = (windowID === undefined || windowID === 0) ? "MAIN" : "WIDGET";
+
+      let windowCapability = SDL.SDLModelData.defaultWindowCapability[windowType];
+      if(windowType === "WIDGET") {
+        windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["windowID"] = windowID;
+      }
+      if(appID) {
+        windowCapability["appID"] = appID;
+      }
+      return windowCapability;
+    },
+    /**
+     * @function isColorSchemesEqual
+     * @param {Object} left - color scheme object
+     * @param {Object} right - color scheme object
+     * @return {Boolean} true if colorschemes are equel, otherwise - false
+     * @description utility function, compares two color scheme objects
+     */
+    isColorSchemesEqual: function (left, right) {
+      //utility functions to compare colors
+      let isColorEqual = function (colorLeft, colorRight) {
+        return colorLeft["red"] === colorRight["red"] 
+          && colorLeft["green"] === colorRight["green"]
+          && colorLeft["blue"] === colorRight["blue"];
+      };
+
+      let compareSchemesByColor = function (lhs, rhs, color) {
+         let colorInLhs = lhs ? color in lhs : null;
+         let colorRhs = rhs ? color in rhs : null;
+         if(colorInLhs && colorRhs) {
+           return isColorEqual(lhs[color], rhs[color]);
+         } else if (!colorInLhs && !colorRhs) {
+           return true;
+         }
+
+         return false;
+      };
+
+      return compareSchemesByColor(left, right, "primaryColor") 
+        && compareSchemesByColor(left, right, "secondaryColor") 
+        && compareSchemesByColor(left, right, "backgroundColor");
+    },
+
+    /**
+     * @function generateAppWidgetTitle
+     * @param {Object} titleData
+     * @description generate title message for widget or application by the templateConfiguration
+     * @returns {String}
+     */
+    generateAppWidgetTitle: function(titleData) {
+      var title = '';
+      for(key in titleData) {
+        title = title + key + ': \n' + JSON.stringify(titleData[key]) + '\n\n';
+      }
+      return title;
+    },
   }
 );

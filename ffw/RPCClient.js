@@ -30,7 +30,7 @@
  * as: registerComponent unregisterComponent subscription to notifications logic
  * to calculate request id
  */
-FFW.RPCClient = Em.Object.extend(
+FFW.RPCClient = Em.Object.create(
   {
     /*
      * transport layer for messages exchange
@@ -41,30 +41,34 @@ FFW.RPCClient = Em.Object.extend(
      */
     url: FLAGS.WEBSOCKET_URL,
     /*
-     * Component name in RPC system It is unique.
-     */
-    componentName: null,
-    /*
-     * observer of RPC states
-     */
-    observer: null,
-    /*
      * these variables are used to have unique request ids for different
      * components in RPC bus idStart is received as a response for
      * registerRPCComponent messages. space for ids for specific RPC
      * component is allocated by message broker
      */
-    idStart: -1,
+    idStart: 200,
     idRange: 1000,
-    requestId: -1,
-    registerRequestId: -1,
-    unregisterRequestId: -1,
-    /*
-     * Open WebSocket and initialize handlers
+    requestId: 200,
+
+    /**
+     * @param observerMap
+     * @desc store pairs {observer name, observer}
      */
-    connect: function(observer, startId) {
-      this.observer = observer;
-      this.idStart = startId;
+    observerMap: {},
+    /**
+     * @param idToComponentName
+     * @desc store pairs {message id, observer name}.
+     * For processing response needs to know who sent a request.
+     */
+    idToComponentName: {},
+    /**
+     * @param responseHandlers
+     * @desc store pairs {message id, responseHandlers}.
+     * Need for processing specific requests.
+     */
+    responseHandlers: {},
+
+    createWebSocket: function(){
       this.socket = new WebSocket(this.url);
       var self = this;
       this.socket.onopen = function(evt) {
@@ -80,15 +84,37 @@ FFW.RPCClient = Em.Object.extend(
         self.onWSError(evt);
       };
     },
+
+    /*
+     * Open WebSocket and initialize handlers
+     */
+    connect: function(componentName, observer) {
+      var map_size = Object.keys(this.observerMap).length
+      this.observerMap[componentName] = observer;
+      if(0 == map_size){
+        this.createWebSocket();
+        return;
+      }
+      if (this.socket.readyState == this.socket.OPEN){
+        this.registerRPCComponent(componentName);
+      }
+    },
+
     /*
      * Close WebSocket connection Please make sure that component was
      * unregistered in advance
      */
-    disconnect: function() {
-      this.unregisterRPCComponent();
-      SDL.SDLController.unregisterComponentStatus(
-        this.observer.client.componentName
-      );
+    disconnect: function(componentName) {
+      if(!this.observerMap.hasOwnProperty(componentName)){
+        Em.Logger.log("An attempt to disconnect the " + componentName +
+                                                                    " failed.");
+        return;
+      }
+
+      SDL.SDLController.unregisterComponentStatus(componentName);
+      this.unregisterRPCComponent(componentName);
+      Em.Logger.log(componentName + " disconnected.");
+      delete this.observerMap[componentName];
     },
     /*
      * WebSocket connection is ready Now RPC component can be registered in
@@ -96,8 +122,11 @@ FFW.RPCClient = Em.Object.extend(
      */
     onWSOpen: function(evt) {
       Em.Logger.log('RPCCLient.onWSOpen');
-      this.registerRPCComponent();
+      for(var i in this.observerMap){
+        this.registerRPCComponent(i);
+      }
     },
+
     /*
      * when result is received from RPC component this function is called It
      * is the propriate place to check results of reuqest execution Please
@@ -105,50 +134,55 @@ FFW.RPCClient = Em.Object.extend(
      * belongs to
      */
     onWSMessage: function(evt) {
-      Em.Logger.log('Message received: ' + evt.data);
+      Em.Logger.log("SDL -> HMI " + this.getTime() +  ": " + evt.data);
       var jsonObj = JSON.parse(evt.data, SDL.RPCController.capabilitiesCheck);
-      //Verification of unsupported params and remove them from original
-      // request Changing filenames with backslash - escape the \ with %5C
-      // due to Issue 45051 in chromium
-      this.observer.checkImage(jsonObj.params);
+
+      var observerName = "";
+      if(jsonObj.method){
+       observerName = jsonObj.method.substring(0,jsonObj.method.indexOf('.'));
+       if(observerName === "SDL"){
+        observerName = "BasicCommunication";
+       }
+
+       // Verification of unsupported params and remove them from original
+       // request Changing filenames with backslash - escape the \ with %5C
+       // due to Issue 45051 in chromium
+       this.observerMap[observerName].checkImage(jsonObj.params);
+      }
+
       // Verification of unsupported params and remove them from original
       // request
-      if (SDL.RPCController.capabilityCheckResult != null) {
-        this.observer.errorResponsePull[jsonObj.id]
+      if (SDL.RPCController.capabilityCheckResult != null ) {
+        this.observerMap[observerName].errorResponsePull[jsonObj.id]
           = SDL.RPCController.capabilityCheckResult;
         SDL.RPCController.capabilityCheckResult = null;
-        this.observer.checkSoftButtons(jsonObj.params);
-        this.observer.checkChoice(jsonObj.params);
-        this.observer.checkChunk(jsonObj.params);
-        this.observer.checkHelpItems(jsonObj.params);
-        this.observer.checkTurnList(jsonObj.params);
+
+        this.observerMap[observerName].checkSoftButtons(jsonObj.params);
+        this.observerMap[observerName].checkChoice(jsonObj.params);
+        this.observerMap[observerName].checkChunk(jsonObj.params);
+        this.observerMap[observerName].checkHelpItems(jsonObj.params);
+        this.observerMap[observerName].checkTurnList(jsonObj.params);
       }
-      // handle component registration
-      if (jsonObj.id == this.registerRequestId && jsonObj.method == null &&
-        typeof jsonObj.result == 'number') {
-        if (jsonObj.error == null) {
-          this.requestId = this.idStart = jsonObj.result;
-          this.observer.onRPCRegistered();
-        }
-        // handle component unregistration
-      } else if (jsonObj.id == this.unregisterRequestId) {
-        if (jsonObj.error == null) {
-          this.socket.close();
-          this.observer.onRPCUnregistered();
-        }
-        // handle result, error, notification, requests
+
+      if (jsonObj.id == null){
+          this.observerMap[observerName].onRPCNotification(jsonObj);
+        return;
+      }
+
+      if(this.responseHandlers.hasOwnProperty(jsonObj.id)){
+        this.responseHandlers[jsonObj.id](jsonObj);
+        delete this.responseHandlers[jsonObj.id];
+        return;
+      }
+
+      if (jsonObj.result != null) {
+        observerName = this.idToComponentName[jsonObj.id]
+        this.observerMap[observerName].onRPCResult(jsonObj);
+      } else if (jsonObj.error != null) {
+        observerName = this.idToComponentName[jsonObj.id]
+        this.observerMap[observerName].onRPCError(jsonObj);
       } else {
-        if (jsonObj.id == null) {
-          this.observer.onRPCNotification(jsonObj);
-        } else {
-          if (jsonObj.result != null) {
-            this.observer.onRPCResult(jsonObj);
-          } else if (jsonObj.error != null) {
-            this.observer.onRPCError(jsonObj);
-          } else {
-            this.observer.onRPCRequest(jsonObj);
-          }
-        }
+        this.observerMap[observerName].onRPCRequest(jsonObj);
       }
     },
     /*
@@ -157,16 +191,17 @@ FFW.RPCClient = Em.Object.extend(
      */
     onWSClose: function(evt) {
       Em.Logger.log('RPCClient: Connection is closed');
-      SDL.SDLController.unregisterComponentStatus(
-        this.observer.client.componentName
-      );
+      for(var i in this.observerMap){
+              SDL.SDLController.unregisterComponentStatus(i);
+              this.observerMap[i].onRPCDisconnected();
+      }
+
       var self = this;
       setTimeout(
         function() {
-          self.connect(self.observer, self.idStart);
+          self.createWebSocket();
         }, 5000
       );
-      this.observer.onRPCDisconnected();
     },
     /*
      * WebSocket connection errors handling
@@ -179,14 +214,20 @@ FFW.RPCClient = Em.Object.extend(
     /*
      * register component is RPC bus
      */
-    registerRPCComponent: function() {
-      this.registerRequestId = this.idStart;
+    registerRPCComponent: function(componentName) {
+      var msgId = this.generateId();
+      var self = this;
+
+      this.responseHandlers[msgId] = function(jsonObj){
+          self.observerMap[componentName].onRPCRegistered();
+      }
+
       var JSONMessage = {
         'jsonrpc': '2.0',
-        'id': this.registerRequestId,
+        'id': msgId,
         'method': 'MB.registerComponent',
         'params': {
-          'componentName': this.componentName
+          'componentName': componentName
         }
       };
       this.send(JSONMessage);
@@ -194,14 +235,20 @@ FFW.RPCClient = Em.Object.extend(
     /*
      * unregister component is RPC bus
      */
-    unregisterRPCComponent: function() {
-      this.unregisterRequestId = this.generateId();
+    unregisterRPCComponent: function(componentName) {
+      var msgId = this.generateId();
+      var self = this;
+
+      this.responseHandlers[msgId] = function(jsonObj){
+          self.observerMap[componentName].onRPCUnregistered();
+      }
+
       var JSONMessage = {
         'jsonrpc': '2.0',
-        'id': this.unregisterRequestId,
+        'id': msgId,
         'method': 'MB.unregisterComponent',
         'params': {
-          'componentName': this.componentName
+          'componentName': componentName
         }
       };
       this.send(JSONMessage);
@@ -209,8 +256,16 @@ FFW.RPCClient = Em.Object.extend(
     /*
      * Subscribes to notification. Returns the request's id.
      */
-    subscribeToNotification: function(notification) {
+    subscribeToNotification: function(notification, componentName) {
       var msgId = this.generateId();
+      var self = this;
+      this.responseHandlers[msgId] = function(jsonObj){
+        if (jsonObj.result != null) {
+          self.observerMap[componentName].onRPCResult(jsonObj);
+        } else if (jsonObj.error ) {
+          self.observerMap[componentName].onRPCError(jsonObj);
+        }
+      }
       var JSONMessage = {
         'jsonrpc': '2.0',
         'id': msgId,
@@ -225,8 +280,20 @@ FFW.RPCClient = Em.Object.extend(
     /*
      * Unsubscribes from notification. Returns the request's id.
      */
-    unsubscribeFromNotification: function(notification) {
+    unsubscribeFromNotification: function(notification, componentName) {
       var msgId = this.generateId();
+      var self = this;
+      if(self.observerMap[componentName] == undefined){
+        return;
+      }
+      this.responseHandlers[msgId] = function(jsonObj){
+        if (jsonObj.result != null) {
+          self.observerMap[componentName].onRPCResult(jsonObj);
+        } else if (jsonObj.error) {
+          self.observerMap[componentName].onRPCError(jsonObj);
+        }
+      }
+
       var JSONMessage = {
         'jsonrpc': '2.0',
         'id': msgId,
@@ -238,24 +305,25 @@ FFW.RPCClient = Em.Object.extend(
       this.send(JSONMessage);
       return msgId;
     },
+
     /*
      * stringify object and send via socket connection
      */
-    send: function(obj) {
+    send: function(obj, componentName) {
       if (this.socket && this.socket.readyState == this.socket.OPEN) {
+        if(componentName){
+          this.idToComponentName[obj.id] = componentName;
+        }
         var strJson = JSON.stringify(obj);
-        Em.Logger.log(strJson);
-        var logTime = new Date();
-        console.log(
-          logTime.getHours() + ':' + logTime.getMinutes() + ':' +
-          logTime.getSeconds() + ':' + logTime.getMilliseconds()
-        );
+        Em.Logger.log("HMI -> SDL " + this.getTime() + ": " + strJson);
+
         this.socket.send(strJson);
       } else {
         Em.Logger
           .error('RPCClient: Can\'t send message since socket is not ready');
       }
     },
+
     /*
      * Generate id for new request to RPC component Function has to be used
      * as private
@@ -266,6 +334,16 @@ FFW.RPCClient = Em.Object.extend(
         this.requestId = this.idStart;
       }
       return this.requestId;
+    },
+
+    /*
+     * return string with the current time
+     */
+    getTime(){
+      var logTime = new Date();
+      var timeStr = logTime.getHours() + ':' + logTime.getMinutes() + ':' +
+      logTime.getSeconds() + ':' + logTime.getMilliseconds();
+      return "[" + timeStr + "]";
     }
   }
 );

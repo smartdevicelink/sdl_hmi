@@ -65,7 +65,7 @@ SDL.RController = SDL.SDLController.extend(
       };
 
       if (params.moduleType == 'CLIMATE') {
-        var model = SDL.ClimateController.model;
+        var model = SDL.RCModulesController.currentClimateModel;
         switch (params.buttonName) {
           case 'AC_MAX': {
             model.toggleAcMaxEnable();
@@ -127,16 +127,16 @@ SDL.RController = SDL.SDLController.extend(
       if (params.moduleType == 'RADIO') {
         switch (params.buttonName) {
           case 'VOLUME_UP': {
-            SDL.MediaController.volumeUpPress();
+            SDL.RCModulesController.currentAudioModel.volumeUpPress();
             break;
           }
           case 'VOLUME_DOWN': {
-            SDL.MediaController.volumeDownPress();
+            SDL.RCModulesController.currentAudioModel.volumeDownPress();
             break;
           }
           case 'EJECT': {
-            if (SDL.MediaController.activeState == 'media.player.cd') {
-              SDL.MediaController.ejectCD();
+            if (SDL.RCModulesController.currentAudioModel.activeState == 'media.player.cd') {
+              SDL.RCModulesController.currentAudioModel.ejectCD();
             } else {
               result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
               result_struct.resultInfo = 'CD audio source must be selected';
@@ -145,13 +145,13 @@ SDL.RController = SDL.SDLController.extend(
             break;
           }
           case 'SOURCE': {
-            SDL.MediaController.changeSource();
+            SDL.RCModulesController.currentAudioModel.changeSource();
             break;
           }
           case 'SHUFFLE': {
-            if (SDL.MediaController.activeState == 'media.player.cd' ||
-                SDL.MediaController.activeState == 'media.player.usb') {
-              SDL.MediaController.turnOnShuffle();
+            if (SDL.RCModulesController.currentAudioModel.activeState == 'media.player.cd' ||
+                SDL.RCModulesController.currentAudioModel.activeState == 'media.player.usb') {
+              SDL.RCModulesController.currentAudioModel.turnOnShuffle();
             } else {
               result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
               result_struct.resultInfo = 'CD or USB audio source must be selected';
@@ -160,9 +160,9 @@ SDL.RController = SDL.SDLController.extend(
             break;
           }
           case 'REPEAT': {
-            if (SDL.MediaController.activeState == 'media.player.cd' ||
-                SDL.MediaController.activeState == 'media.player.usb') {
-              SDL.MediaController.repeatPress();
+            if (SDL.RCModulesController.currentAudioModel.activeState == 'media.player.cd' ||
+                SDL.RCModulesController.currentAudioModel.activeState == 'media.player.usb') {
+              SDL.RCModulesController.currentAudioModel.repeatPress();
             } else {
               result_struct.resultCode = SDL.SDLModel.data.resultCode.IGNORED;
               result_struct.resultInfo = 'CD or USB audio source must be selected';
@@ -215,45 +215,6 @@ SDL.RController = SDL.SDLController.extend(
       );
     },
 
-   toggleDisplayMode: function() {
-      var next = this.nextElement(SDL.HmiSettingsModel.displayModeStruct, SDL.HmiSettingsModel.displayMode);
-      SDL.HmiSettingsModel.set('displayMode',next);
-      var data = {
-        displayMode: SDL.HmiSettingsModel.getHmiSettingsControlData().displayMode
-      }
-      this.sendHMISettingsNotification(data);
-    },
-
-   toggleDistanceUnit: function() {
-      var next = this.nextElement(SDL.HmiSettingsModel.distanceUnitStruct, SDL.HmiSettingsModel.distanceUnit);
-      SDL.HmiSettingsModel.set('distanceUnit',next);
-      var data = {
-        distanceUnit: next
-      }
-      this.sendHMISettingsNotification(data);
-    },
-
-   toggleTemperatureUnit: function() {
-      var next = this.nextElement(SDL.HmiSettingsModel.temperatureUnitStruct, SDL.HmiSettingsModel.temperatureUnit);
-      SDL.HmiSettingsModel.set('temperatureUnit',next);
-      SDL.ClimateControlModel.set('climateControlData.temperatureUnit', next);
-      if(next == 'FAHRENHEIT') {
-        SDL.ClimateControlModel.temperatureUnitFahrenheitEnable();
-      } else {
-        SDL.ClimateControlModel.temperatureUnitCelsiusEnable();
-      }
-      var data = {
-        temperatureUnit: next
-      }
-      this.sendHMISettingsNotification(data);
-    },
-
-   sendHMISettingsNotification: function(data){
-      if (Object.keys(data).length > 0) {
-        FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', hmiSettingsControlData: data});
-      }
-    },
-
    nextElement: function(data, currentItem){
       var arr_length = data.length;
       for (var i = 0; i < arr_length; i++) {
@@ -276,6 +237,51 @@ SDL.RController = SDL.SDLController.extend(
       SDL.SDLModel.toggleProperty('errorResponse');
     },
 
+    /**
+     * setInitalWindowTemplate
+     * @param {Object} params parameters of request
+     * @param {Object} model application model
+     * @description sets initial template configuration when app is registered. 
+     * If there are color schemes present in register app interface request,
+     * they are set, otherwise, defaults are used 
+     */
+    setInitalWindowTemplate: function(params, model) {
+      const isDayColorSchemeExists = "dayColorScheme" in params ;
+      const isNightColorSchemeExists = "nightColorScheme" in params;
+
+      let defaultTemplateConfiguration = {
+        "template" : "DEFAULT"
+      };
+
+      const defaultColorScheme = {
+        "primaryColor" : {
+          "red" : 0,
+          "green" : 0,
+          "blue" : 0
+        },
+        "secondaryColor" : {
+          "red" : 0,
+          "green" : 0,
+          "blue" : 0
+        },
+        "backgroundColor" : {
+          "red" : 255,
+          "green" : 255,
+          "blue" : 255
+        }
+      };
+
+      if(!isDayColorSchemeExists) {
+        defaultTemplateConfiguration.dayColorScheme = defaultColorScheme;
+      }
+      if(!isNightColorSchemeExists) {
+        defaultTemplateConfiguration.nightColorScheme = defaultColorScheme;
+      }
+
+      model.defaultTemplateConfiguration = defaultTemplateConfiguration;
+      model.templateConfiguration = defaultTemplateConfiguration;
+    },
+
    /**
      * Register application method
      * @param {Object} params
@@ -293,7 +299,10 @@ SDL.RController = SDL.SDLController.extend(
               deviceName: params.deviceInfo.name,
               appType: params.appType,
               isMedia: 0,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
+              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme
             }
           )
         );
@@ -309,7 +318,10 @@ SDL.RController = SDL.SDLController.extend(
               appType: params.appType,
               isMedia: false,
               initialized: true,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
+              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme
             }
           )
         );
@@ -323,7 +335,10 @@ SDL.RController = SDL.SDLController.extend(
               appType: params.appType,
               isMedia: applicationType == 0,
               initialized: true,
-              disabledToActivate: params.greyOut ? true : false
+              disabledToActivate: params.greyOut ? true : false,
+              displayLayout: "DEFAULT",
+              dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
+              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme
             }
           )
         );
@@ -370,9 +385,9 @@ SDL.RController = SDL.SDLController.extend(
          cmdID: -3
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      let model = SDL.SDLController.getApplicationModel(params.appID);
+      model.addCommand(exitCommand);
+      this.setInitalWindowTemplate(params, model);
     },
 
    toggleDriverDeviceWindow: function(element) {
@@ -483,26 +498,36 @@ SDL.RController = SDL.SDLController.extend(
       }else if (request.params.moduleType == 'HMI_SETTINGS') {
         module = 'HMI settings';
       }
-
-      var popUp = SDL.PopUp.create().appendTo('body').popupActivate(
-        'Would you like to grant access for ' + appName +
-        ' application for module ' + module + '?',
-        function(result) {
-          FFW.RC.GetInteriorVehicleDataConsentResponse(request, result);
-        }
-      );
-
-      setTimeout(
-        function() {
-          if (popUp && popUp.active) {
-            popUp.deactivate();
-            FFW.RC.sendError(
-              SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
-              request.method, 'The resource is in use and the driver did not respond in time'
-            );
+      var moduleIds = request.params.moduleIds;
+      var allowed = [];
+      var timedOutSended = false;
+      moduleIds.reverse().forEach(element => {
+        var popUp = SDL.PopUp.create().appendTo('body').popupActivate(
+          'Would you like to grant access for ' + appName +
+          ' application for module ' + module + ' and for module id ' + element + '?',
+          function(result) {
+            allowed.push(result);
+            if(allowed.length == moduleIds.length) {
+              FFW.RC.GetInteriorVehicleDataConsentResponse(request, allowed);
+            }
           }
-        }, 9500
-      ); //Magic number is timeout for RC consent popUp
+        );
+        
+        setTimeout(
+          function() {
+            if (popUp && popUp.active) {
+              popUp.deactivate();
+              if(!timedOutSended) {
+                FFW.RC.sendError(
+                  SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
+                  request.method, 'The resource is in use and the driver did not respond in time'
+                );
+                timedOutSended = true;
+              }
+            }
+          }, 9500
+        ); //Magic number is timeout for RC consent popUp
+      });
     },
 
    /**
@@ -543,7 +568,8 @@ SDL.RController = SDL.SDLController.extend(
 
       var result = data;
       for (var key in result) {
-        if (typeof result[key] == 'object') {
+        if (typeof result[key] == 'object' &&
+        !Array.isArray(result[key])) {
           result[key] = this.filterObjectProperty(
             result[key], properties, key + '.'
           );
@@ -571,12 +597,26 @@ SDL.RController = SDL.SDLController.extend(
 
       var properties = [];
       for (var key in rhs) {
-        if (typeof rhs[key] == 'object') {
+        if (typeof rhs[key] == 'object' && 
+          !Array.isArray(rhs[key])) {
           var obj_properties = this.getChangedProperties(
             lhs[key], rhs[key], key + '.'
           );
           properties = properties.concat(obj_properties);
         } else if (lhs[key] != rhs[key]) {
+          if(Array.isArray(rhs[key])) {
+            if(rhs[key].length !== lhs[key].length) {
+              properties.push(stack + key);
+            } else {
+              lhs[key].forEach(function(value) {
+                if(!rhs[key].includes(value)) {
+                  properties.push(stack + key);
+                  return;
+                }
+              });
+            }
+            continue;
+          }
           properties.push(stack + key);
         }
       }

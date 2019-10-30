@@ -41,6 +41,10 @@ div {
     padding: 0;
 }
 
+div.glider-slide {
+    position: relative;
+}
+
 #tbtTurnListView .list-item.high-lighted-mode .ico-overlay
 {
     background:url(../images/template/imagetype-pattern-highlighted.png);
@@ -166,6 +170,167 @@ div {
     /*margin: 25px auto;*/
 }
 
+
+button.next-app {
+    top: 0%;
+    width: 25px;
+    right: 0px;
+    height: 100%;
+    background: url(../images/common/button.png) repeat;
+    border-radius: 3px;
+    border: 1px solid #393939;
+} 
+
+button.next-home .ico{
+    position: relative;
+    height: 15%;
+    transform: rotate(180deg);
+}
+
+button.next-app .ico{
+    position: relative;
+    height: 7%;
+    transform: rotate(180deg);
+}
+
+button.prev-app {
+    top:0%;
+    width:25px;
+    height:100%;
+    background: url(../images/common/button.png) repeat;
+    left:0%;
+    border-radius: 3px;
+    border: 1px solid #393939;
+}
+
+button.prev-home .ico{
+    position: relative;
+    height: 15%;
+}
+
+button.prev-app .ico{
+    position: relative;
+    height: 7%;
+}
+
+.glider {
+    left: 0%;
+    width: 420px;
+    height: 261px;
+    margin: 0px;
+}
+
+.glider-prev {
+    width: 17px;
+    height: 60px;
+    left: 0px;
+    background-color: white;
+    /* position: absolute; */
+    top: 0px;
+}
+
+.glider-track {
+    width: 100%;
+    height: 100%;
+}
+
+.WidgetsHome .glider-dots {
+    left: 50%;
+}
+
+.gliderview .glider-dots {
+    left:50%;
+}
+
+.WidgetContainer.glider {
+    height:100%;
+    width:79%;
+}
+
+button.prev-home {
+    top: 0%;
+    width: 48px;
+    height: 100%;
+    background: url(../images/common/button.png) repeat;
+    left: 0%;
+    border-radius: 3px;
+    border: 1px solid #393939;
+}
+
+button.next-home {
+    top: 0%;
+    width: 48px;
+    right: 0px;
+    height: 100%;
+    background: url(../images/common/button.png) repeat;
+    border-radius: 3px;
+    border: 1px solid #393939;
+}
+
+#WidgetsHome.ico {
+    height:20%;
+}
+
+.WidgetsHome {
+    position:relative;
+    height:100%;
+    width:100%;
+}
+
+.WidgetGlider{
+    opacity:0;
+    z-index: -10;
+    top: 40px;
+    width: 480px;
+    height: 400px;
+    left: -4%;
+    position: relative;
+    transition: 2s;
+    transform: rotate(90deg);
+}
+
+.WidgetGlider.expand {    
+    opacity: 1;    
+}
+
+#add-window .text1 {
+    top: 24%;
+    left: -8%;
+    width: 100px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    transform: rotate(-90deg)translate(-100%);
+}
+
+.glider-slide {
+    user-select: none;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    min-width: 150px;
+    background-color:black;
+    -webkit-transition: opacity 1s ease-in-out;
+    border: #A6A6A6 solid 2px;
+    border-radius: 6px;
+    text-align: center;
+}
+
+
+#add-window .addButton {
+    top: 32%;
+    left: 43%;
+    transform: rotate(-90deg)translate(-100%);
+}
+
+.addButton .ico {
+    width:50px;
+    filter: invert(80%);
+}
+
 /* TTS popUp*/
 #TTSPopUp.TTSPopUp {
     opacity: 0;
@@ -177,6 +342,92 @@ div {
     top: 8px;
     -webkit-transition: opacity 1s ease-in-out;
     display: none;
+}
+
+#ServiceUpdatePopUp.ServiceUpdatePopUp {
+    opacity: 0;
+    left: 500px;
+    width: 295px;
+    height: 100px;
+    z-index: 1;
+    border-radius: 10 PX;
+    top: 8px;
+    -webkit-transition: opacity 1s ease-in-out;
+    display: none;
+}
+
+#ServiceUpdatePopUp.active {
+    opacity: 1;
+    display: block;
+    z-index: 10000;
+    left: 8px;
+    width: 300px;
+    height: 217px;
+    top: 56px;
+    -webkit-transition: opacity 1s ease-in-out;
+    background-color: black;
+    border: #A6A6A6 solid 2px;
+    border-radius: 6px;
+}
+
+#ServiceUpdatePopUp .progress {
+    width: 50px;
+    height: 50px;
+    background: url(../images/sdl/progressindicator.gif) no-repeat;
+    top: 155px;
+    background-size: contain;
+    left: 125px;
+}
+
+#ServiceUpdatePopUp .text {
+    top: 95px;
+    left: 5px;
+    width: 300px;
+    height: 120px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+}
+
+#ServiceUpdatePopUp .serviceTypeLabel {
+    top: 20px;
+    left: 20px;
+    width: 290px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    color: antiquewhite;
+}
+
+#ServiceUpdatePopUp .serviceEventLabel {
+    top: 40px;
+    left: 20px;
+    width: 290px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    color: antiquewhite;
+}
+
+#ServiceUpdatePopUp .serviceReasonLabel {
+    top: 60px;
+    left: 20px;
+    width: 290px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    color: antiquewhite;
 }
 
 #TTSPopUp .popUp {
@@ -1240,6 +1491,211 @@ margin-top: 90px;
     text-shadow: 1px 1px 2px black, 0 0 6px rgba(255, 0, 0, 0.6), 0 11px 10px black;
 }
 
+#vehicle_emulation_view {
+    width: 800px;
+    height: 480px;
+    z-index: 12002;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgb(218, 218, 218)), color-stop(0.3, rgb(0, 0, 0)));
+}
+
+#vehicle_emulation_view .apply_settings {
+    width: 130px;
+    height: 45px;
+    position: absolute;
+    cursor: pointer;
+    float: right;
+    font-size: 20px;
+    text-align: center;
+    line-height: 45px;
+    right: 40px;
+    bottom: 20px;
+}
+
+#vehicle_emulation_view .coverage_settings {
+    width: 130px;
+    height: 45px;
+    position: absolute;
+    cursor: pointer;
+    float: right;
+    font-size: 20px;
+    text-align: center;
+    line-height: 45px;
+    right: 40px;
+    bottom: 70px;
+}
+
+#vehicle_emulation_view .option_no_emulation_view {
+    position: absolute;
+    top: 27px;
+    left: 100px;
+    width: 154px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: gray;
+    height: 322px;
+    text-align: center;
+    -webkit-transition: all 0.25s linear;
+}
+
+
+#vehicle_emulation_view .option_no_emulation_view.select,
+#vehicle_emulation_view .option_vehicle2x3.select,
+#vehicle_emulation_view .option_vehicle3x3.select,
+#vehicle_emulation_view .option_no_emulation_view.select:hover,
+#vehicle_emulation_view .option_vehicle2x3.select:hover,
+#vehicle_emulation_view .option_vehicle3x3.select:hover
+{
+    border-color: orange;
+    -webkit-transition: all 0.25s linear;
+}
+
+#vehicle_emulation_view .option_no_emulation_view:hover,
+#vehicle_emulation_view .option_vehicle2x3:hover,
+#vehicle_emulation_view .option_vehicle3x3:hover {
+    border-color: #d4af6b;
+    cursor: pointer;
+    -webkit-transition: all 0.25s linear;
+}
+
+#vehicle_emulation_view .option_vehicle2x3 {
+    position: absolute;
+    top: 110px;
+    right: 260px;
+    width: 322px;
+    height: 154px;
+    transform: rotate(-90deg);
+    background: url(../images/home/vehicle__2x3.jpg) no-repeat;
+    background-size: contain;
+    border-width: 5px;
+    border-style: solid;
+    border-color: gray;
+}
+
+#vehicle_emulation_view .option_vehicle3x3 {
+    position: absolute;
+    top: 110px;
+    right: 70px;
+    width: 322px;
+    height: 154px;
+    transform: rotate(90deg);
+    background: url(../images/home/vehicle__3x3.jpg) no-repeat;
+    background-size: cover;
+    border-width: 5px;
+    border-style: solid;
+    border-color: gray;
+}
+
+#vehicle_emulation_view .radioNoEmulation {
+    position: absolute;
+    top: 375px;
+    left: 100px;
+}
+
+#vehicle_emulation_view .radioVehicle2x3 {
+    position: absolute;
+    top: 375px;
+    left: 320px;
+}
+
+#vehicle_emulation_view .radioVehicle3x3 {
+    position: absolute;
+    top: 375px;
+    left: 510px;
+}
+
+#vehicle_module_coverage_view {
+    width: 800px;
+    height: 480px;
+    z-index: 12003;
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgb(218, 218, 218)), color-stop(0.3, rgb(0, 0, 0)));
+}
+
+#vehicle_module_coverage_view .apply_settings {
+    width: 130px;
+    height: 45px;
+    position: absolute;
+    cursor: pointer;
+    float: right;
+    font-size: 20px;
+    text-align: center;
+    line-height: 45px;
+    right: 40px;
+    bottom: 20px;
+}
+
+#vehicle_module_coverage_view .reset_settings {
+    width: 130px;
+    height: 45px;
+    position: absolute;
+    cursor: pointer;
+    float: right;
+    font-size: 20px;
+    text-align: center;
+    line-height: 45px;
+    right: 180px;
+    bottom: 20px;
+}
+
+#vehicle_module_coverage_view .codeEditor {
+    top: 30px !important;
+}
+
+#vehicle_module_coverage_view .codeEditor .button {
+    display: none;
+}
+
+#vehicle_module_coverage_view .editor {
+    top: 75px;
+}
+
+#vehicle_module_coverage_view .labelOptions {
+    top: 45px;
+    left: 120px;
+    z-index: 5;
+}
+
+#vehicle_module_coverage_view .optionClimate {
+    position: absolute;
+    top: 75px;
+    left: 125px;
+    z-index: 5;
+}
+
+#vehicle_module_coverage_view .optionRadio {
+    position: absolute;
+    top: 75px;
+    left: 225px;
+    z-index: 5;
+}
+
+#vehicle_module_coverage_view .optionSeat {
+    position: absolute;
+    top: 75px;
+    left: 310px;
+    z-index: 5;
+}
+
+#vehicle_module_coverage_view .optionAudio {
+    position: absolute;
+    top: 75px;
+    left: 400px;
+    z-index: 5;
+}
+
+#vehicle_module_coverage_view .optionLight {
+    position: absolute;
+    top: 75px;
+    left: 490px;
+    z-index: 5;
+}
+
+#vehicle_module_coverage_view .optionHmiSettings {
+    position: absolute;
+    top: 75px;
+    left: 575px;
+    z-index: 5;
+}
+
 .radioButton .label{
     margin-left: 16px;
     color: #848484;
@@ -1312,16 +1768,16 @@ input[type=radio]:checked ~ .label {
 
 #warning_view .okbut {
     width: 130px;
-    height: 51px;
-    position: relative;
-    top: 30px;
+    height: 45px;
+    position: absolute;
     cursor: pointer;
     float: right;
-    margin-right: 83px;
     display: none;
     font-size: 20px;
     text-align: center;
-    line-height: 50px;
+    line-height: 45px;
+    right: 40px;
+    bottom: 25px;
 }
 
 #warning_view .components{
@@ -1776,4 +2232,188 @@ to {
     height: 50px;
     width: 50px;
     z-index: 1001;
+}
+
+#app .phone_call_button {
+    height: 40px;
+    width: 163px;
+    font-size: 20px;
+    line-height: 41px;
+    border: 1px solid #FFFF30;
+    top: 2px;
+    color: #FFFF30;
+    padding-left: 10px;
+    left: 244px;
+    transition: left 2s;
+    z-index: 1;
+}
+
+#app .phone_call_button.expand {
+    left: 156px;
+}
+
+.widgetTemplate .windowName {
+    top: -30%;
+    left: -70%;
+    width: 300px;
+    height: 20px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    transform: rotate(-90deg)translate(-100%);
+}
+
+.widgetTemplate .button {
+    top: -6%;
+    left: 8%;
+    transform: rotate(-90deg)translate(-100%);
+    border: 1px solid #333;
+    border-radius: 2px;
+    line-height: 38px;
+    background-image: url(../images/list/list_item_bg.png);
+    cursor: pointer;
+}
+
+.widgetTemplate .toolTip {
+    top: -2%;
+    left: 8%;
+    transform: rotate(-90deg)translate(-100%);
+    border: 1px solid #333;
+    border-radius: 2px;
+    line-height: 38px;
+    background-image: url(../images/list/list_item_bg.png);
+    cursor: pointer;
+    z-index: 10000;
+}
+
+.widgetTemplate.btn_with_grp .button.softButton_1 {
+    top: 70%;
+    left: 47%;
+    
+}
+
+.widgetTemplate.btn_with_grp .button.softButton_2 {
+    top: 74%;
+    left: 72%;
+}
+
+.widgetTemplate.btn_with_grp .button.softButton_3 {
+    top: 55%;
+    left: 47%;
+}
+
+.widgetTemplate.btn_with_grp .button.softButton_4 {
+    top: 59%;
+    left: 72%;
+}
+
+.widgetTemplate.btn_with_grp .button.softButton {
+    width: 45px;
+    height: 45px;
+    border: 1px solid #9a9494;
+    border-radius: 67px;
+    line-height: 40px;
+    background-image: url(../images/list/list_item_bg.png);
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: small;
+}
+
+.widgetTemplate.btn_with_grp .button.softButton:hover {
+    overflow: visible;
+}
+
+.widgetTemplate.btn_with_grp .textField_1 {
+    left: 10px;
+    top: 35px;
+    transition: 2s;
+}
+
+.widgetTemplate.btn_with_grp .textField_2 {
+    left: 10px;
+    top: 65px;
+    transition: 2s;
+}
+
+.widgetTemplate.txt_with_grp .textField_1 {
+    left: 10px;
+    top: 70px;
+    transition: 2s;
+}
+
+.widgetTemplate.txt_with_grp .textField_2 {
+    left: 10px;
+    top: 100px;
+    transition: 2s;
+}
+
+.widgetTemplate.grp_with_text .textField_1 {
+    left: 150px;
+    top: 70px;
+    transition: 2s;
+}
+
+.widgetTemplate.grp_with_text .textField_2 {
+    left: 150px;
+    top: 100px;
+    transition: 2s;
+}
+
+.widgetTemplate .widget_info {
+    transform: rotate(-90deg);
+    width: 373px;
+    height: 174px;
+    top: 30%;
+    position: relative;
+    right: 96px;
+}
+
+.widgetTemplate .widget_info .app_icon {
+    top: 68px;
+    left: 230px;
+    position: relative;
+    border: #A6A6A6 solid 2px;
+    border-radius: 40px;
+    width: 53px;
+    transition: 2s;
+}
+
+.widgetTemplate.btn_with_grp .widget_info .widget_icon {
+    top: 43px;
+    left: 50px;
+    height: 111px;
+    position: relative;
+    border: #A6A6A6 solid 1px;
+    border-radius: 0px;
+    width: 111px;
+    transition: 2s;
+}
+
+.widgetTemplate.txt_with_grp .widget_info .widget_icon {
+    top: 43px;
+    left: 50px;
+    height: 111px;
+    position: relative;
+    border: #A6A6A6 solid 1px;
+    border-radius: 0px;
+    width: 111px;
+    transition: 2s;
+}
+
+.widgetTemplate.grp_with_text .widget_info .widget_icon {
+    top: 43px;
+    left: -140px;
+    height: 111px;
+    position: relative;
+    border: #A6A6A6 solid 1px;
+    border-radius: 0px;
+    width: 111px;
+    transition: 2s;
+}
+
+#addWidgetPopUp .list-item span {
+    margin-left: 50px;
 }

@@ -236,6 +236,23 @@
     width: 590px;
 }
 
+#sdl_sub_nav_buttons_list .list {
+  width: 650px;
+  height: 251px;
+  border-radius: 2px;
+  left: 75px;
+  top: 150px;
+}
+
+#sdl_sub_nav_buttons_list .list-content {
+  width: 590px;
+}
+
+#sdl_sub_nav_buttons_list .list-item span{
+  margin-left: 5px;
+  float: none;
+}
+
 #VRPopUp.move {
     left: 800px;
 }
@@ -284,6 +301,43 @@
     position: absolute;
     height: 49px;
     width: 49px;
+}
+
+#sdl_sub_nav_buttons_list .list-content .ico {
+  height: 49px;
+  width: 49px;
+  float: left;
+  position: relative;
+}
+
+#sdl_sub_nav_buttons_list .day-mode .ico-overlay
+{
+  background:url(../images/template/imagetype-pattern-day.png);
+  opacity: 0.6;
+  z-index: 1001;
+  position: absolute;
+  height: 49px;
+  width: 49px;
+}
+
+#sdl_sub_nav_buttons_list .night-mode .ico-overlay
+{
+  background:url(../images/template/imagetype-pattern-night.png);
+  opacity: 0.6;
+  z-index: 1001;
+  position: absolute;
+  height: 49px;
+  width: 49px;
+}
+
+#sdl_sub_nav_buttons_list .high-lighted-mode .ico-overlay
+{
+  background:url(../images/template/imagetype-pattern-highlighted.png);
+  opacity: 0.6;
+  z-index: 1001;
+  position: absolute;
+  height: 49px;
+  width: 49px;
 }
 
 #info_nonMedia_options_submenu {
@@ -696,6 +750,24 @@
     border: 1px solid white;
 }
 
+#addWidgetPopUp {
+    opacity: 0;
+    left: 200px;
+    width: 330px;
+    height: 325px;
+    background-color: black;
+    z-index: 2;
+    top: 70px;
+    -webkit-transition: opacity 1s ease-in-out;
+    display: none;
+    border: 1px solid white;
+}
+
+#info_widgets_list {
+    top: 70px;
+    right: 0px;
+}
+
 #exitAppView .exitAppViewLabel,
 #systemRequestView .systemRequestViewLabel,
 #tbtClientStateView .tbtClientStateLabel,
@@ -717,6 +789,7 @@
 #exitAppView.active,
 #systemRequestView.active,
 #tbtClientStateView.active,
+#addWidgetPopUp.active,
 #sendMessageView.active,
 #VehicleInfo.active,
 #PrimaryDevice.active {
@@ -751,11 +824,25 @@
 
 #VehicleInfo .vehicleDataChange {
     top: 125px;
-    width: 150px;
+    width: 125px;
     height: 38px;
-    left: 50px;
+    left: 10px;
     position: absolute;
     text-align: center;
+}
+
+#policies_settings_policyConfigList .policyConfigEditorButton {
+    top: 275px;
+    width: 335px;
+    height: 38px;
+    left: 415px;
+    position: absolute;
+    font-size: 14px;
+    text-align: center;
+}
+
+#policyConfigCodeEditor {
+    top: 10px !important;
 }
 
 #VehicleInfo .vehicleDataLabel {
@@ -1082,11 +1169,23 @@
 }
 
 .PopUp {
-    left: 200px;
-    width: 400px;
-    height: 245px;
+    left: 480px;
+    width: 300px;
+    height: 215px;
     z-index: 2;
-    top: 110px;
+    top: 57px;
+    -webkit-transition: opacity 1s ease-in-out;
+    background-color: black;
+    border: #A6A6A6 solid 2px;
+    border-radius: 6px;
+}
+
+.PopUp.minimal-size {
+    left: 8px;
+    width: 300px;
+    height: 150px;
+    z-index: 2;
+    top: 278px;
     -webkit-transition: opacity 1s ease-in-out;
     background-color: black;
     border: #A6A6A6 solid 2px;
@@ -1096,19 +1195,41 @@
 .PopUp .text {
     top: 41px;
     left: 5px;
-    width: 390px;
+    width: 295px;
     height: 120px;
     line-height: 20px;
     position: absolute;
     overflow: hidden;
     text-align: center;
     text-overflow: ellipsis;
+    overflow: auto;
+}
+
+.PopUp.minimal-size .text {
+    top: 15px;
+    left: 12px;
+    width: 280px;
+    height: 70px;
+    line-height: 20px;
+    position: absolute;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    overflow: auto;
+}
+
+.PopUp.minimal-size .OkButton {
+    top: 93px;
+    left: 5px;
+    width: 140px;
+    border: 1px solid #393939;
+    text-align: center;
 }
 
 .PopUp .OkButton {
-    top: 190px;
+    top: 160px;
     left: 5px;
-    width: 190px;
+    width: 140px;
     border: 1px solid #393939;
     text-align: center;
 }
@@ -1120,9 +1241,17 @@
 }
 
 .PopUp .CancelButton {
-    top: 190px;
-    left: 205px;
-    width: 190px;
+    top: 160px;
+    left: 150px;
+    width: 140px;
+    border: 1px solid #393939;
+    text-align: center;
+}
+
+.PopUp.minimal-size .CancelButton {
+    top: 93px;
+    left: 150px;
+    width: 140px;
     border: 1px solid #393939;
     text-align: center;
 }
@@ -1164,11 +1293,12 @@
 }
 
 #AlertPopUp .alertPopUpImage {
-    width: 83px;
-    height: 74px;
-    background: url(../images/sdl/Warning.png) no-repeat;
-    top: 45px;
-    left: 10px;
+    max-width: 120px;
+    margin: auto;
+    padding-top: 35px;
+    padding-left: 20px;
+    height: auto;
+    width: auto;
 }
 
 #AlertPopUp .progressIndicator {
@@ -1255,6 +1385,21 @@
     width: 105px;
     position: absolute;
 }
+
+#baseNavigation .naviSubscribeMenuBtn {
+  border: 1px solid #393939;
+  border-radius: 3px;
+  height: 42px;
+  line-height: 42px;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  top: 233px;
+  right: 6px;
+  width: 105px;
+  position: absolute;
+}
+
 
 #AlertManeuverPopUp .closeButton {
     width: 170px;

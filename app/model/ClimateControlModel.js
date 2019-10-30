@@ -32,46 +32,52 @@
  * @version 1.0
  */
 
-SDL.ClimateControlModel = Em.Object.create({
+SDL.ClimateControlModel = Em.Object.extend({
 
-  init: function() {},
+  init: function() {
+    this._super();
+    this.set('climateControlData', {});
+    this.set('climateControlData.temperatureUnit', 'CELSIUS');
+    this.set('climateControlData.currentTemp', 20);
+    this.set('climateControlData.desiredTemp', 25);
+    this.set('climateControlData.acEnable', true);
+    this.set('climateControlData.acMaxEnable', true);
+    this.set('climateControlData.circulateAirEnable', true);
+    this.set('climateControlData.autoModeEnable', true);
+    this.set('climateControlData.defrostZone', 'FRONT');
+    this.set('climateControlData.defrostZoneFrontEnable', true);
+    this.set('climateControlData.defrostZoneRearEnable', false);
+    this.set('climateControlData.dualModeEnable', true);
+    this.set('climateControlData.fanSpeed', 0);
+    this.set('climateControlData.ventilationMode', 'UPPER');
+    this.set('climateControlData.ventilationModeLowEnable', false);
+    this.set('climateControlData.ventilationModeUpEnable', false);
+    this.set('climateControlData.heatedWindshieldEnable', false);
+    this.set('climateControlData.heatedRearWindowEnable', false);
+    this.set('climateControlData.heatedSteeringWheelEnable', false);
+    this.set('climateControlData.heatedMirrorsEnable', false);
+    this.set('climateControlData.climateEnable', true);
+    this.set("climateEnableButtonText", "Climate ON");
 
-  currentFanSpeed: 0,
-  autoModeEnableString: 'OFF',
-  dualModeEnableString: 'OFF',
-  passengerDesiredTemp: 70,
-  reciRCulateAirEnableString: 'OFF',
-  acEnableString: 'OFF',
-  defrostZoneStruct: ['FRONT', 'REAR', 'ALL', 'NONE'],
-  ventilationModeStruct: ['UPPER', 'LOWER', 'BOTH', 'NONE'],
-
-  climateControlData: {
-    temperatureUnit: 'CELSIUS',
-    currentTemp: 20,
-    desiredTemp: 25,
-    acEnable: true,
-    acMaxEnable: true,
-    circulateAirEnable: true,
-    autoModeEnable: true,
-    defrostZone: 'FRONT',
-    defrostZoneFrontEnable: true,
-    defrostZoneRearEnable: false,
-    dualModeEnable: true,
-    fanSpeed: 0,
-    ventilationMode: 'UPPER',
-    ventilationModeLowEnable: false,
-    ventilationModeUpEnable: false,
-    heatedWindshieldEnable: false,
-    heatedRearWindowEnable: false,
-    heatedSteeringWheelEnable: false,
-    heatedMirrorsEnable: false
+    this.set('currentFanSpeed', 0);
+    this.set('autoModeEnableString', 'OFF');
+    this.set('dualModeEnableString', 'OFF');
+    this.set('passengerDesiredTemp', 70);
+    this.set('reciRCulateAirEnableString', 'OFF');
+    this.set('acEnableString', 'OFF');
+    this.set('defrostZoneStruct', ['FRONT', 'REAR', 'ALL', 'NONE']);
+    this.set('ventilationModeStruct', ['UPPER', 'LOWER', 'BOTH', 'NONE']);
+    
   },
+
+  climateControlData: {},
 
   getClimateControlCapabilities: function() {
     var result = [];
 
     var capabilities = {
       moduleName: 'Climate Control Module',
+      climateEnableAvailable: true,
       currentTemperatureAvailable: true,
       fanSpeedAvailable: true,
       desiredTemperatureAvailable: true,
@@ -95,7 +101,7 @@ SDL.ClimateControlModel = Em.Object.create({
     return result;
   },
 
-  getClimateButtonCapabilities: function() {
+  getButtonCapabilities: function() {
     var result = [
       {
         'name': 'AC_MAX',
@@ -194,7 +200,8 @@ SDL.ClimateControlModel = Em.Object.create({
       heatedWindshieldEnable: this.climateControlData.heatedWindshieldEnable,
       heatedRearWindowEnable: this.climateControlData.heatedRearWindowEnable,
       heatedSteeringWheelEnable: this.climateControlData.heatedSteeringWheelEnable,
-      heatedMirrorsEnable: this.climateControlData.heatedMirrorsEnable
+      heatedMirrorsEnable: this.climateControlData.heatedMirrorsEnable,
+      climateEnable: this.climateControlData.climateEnable
     };
 
     return result;
@@ -202,6 +209,10 @@ SDL.ClimateControlModel = Em.Object.create({
 
   setClimateData: function(data) {
     var before_set = SDL.deepCopy(this.getClimateControlData());
+
+    if(data.climateEnable != null) {
+      this.setClimateEnable(data.climateEnable);
+    }
 
     if (data.fanSpeed != null) {
       this.setFanSpeed(data.fanSpeed);
@@ -214,9 +225,9 @@ SDL.ClimateControlModel = Em.Object.create({
     if (data.desiredTemperature != null) {
       this.setDesiredTemp(data.desiredTemperature);
       if(data.desiredTemperature.unit == 'FAHRENHEIT') {
-        SDL.ClimateControlModel.temperatureUnitFahrenheitEnable(false);
+        this.temperatureUnitFahrenheitEnable(false);
       } else {
-        SDL.ClimateControlModel.temperatureUnitCelsiusEnable(false);
+        this.temperatureUnitCelsiusEnable(false);
       }
     }
 
@@ -289,7 +300,7 @@ SDL.ClimateControlModel = Em.Object.create({
     var data = this.getClimateControlData();
     data = SDL.SDLController.filterObjectProperty(data, properties);
     if (Object.keys(data).length > 0) {
-      FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE',climateControlData: data});
+      FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE',moduleId: this.UUID, climateControlData: data});
     }
   },
 
@@ -350,7 +361,7 @@ SDL.ClimateControlModel = Em.Object.create({
           'desiredTemperature.unit', 'desiredTemperature.value']
         );
       }
-      SDL.HmiSettingsModel.set('temperatureUnit','FAHRENHEIT');
+      SDL.RCModulesController.currentHMISettingsModel.set('temperatureUnit','FAHRENHEIT');
   },
 
   temperatureUnitCelsiusEnable: function(sendNotification = true) {
@@ -361,7 +372,7 @@ SDL.ClimateControlModel = Em.Object.create({
           'desiredTemperature.unit', 'desiredTemperature.value']
         );
       }
-      SDL.HmiSettingsModel.set('temperatureUnit','CELSIUS');
+      SDL.RCModulesController.currentHMISettingsModel.set('temperatureUnit','CELSIUS');
   },
 
   refreshDefrostZoneValue: function() {
@@ -448,6 +459,36 @@ SDL.ClimateControlModel = Em.Object.create({
     this.onAcEnableChanged(true);
   },
 
+  toggleClimateEnable: function() {
+    this.toggleProperty('climateControlData.climateEnable');
+    var dataForSending = this.getDataForSending();
+    this.sendClimateChangeNotification(dataForSending);
+  },
+
+  getDataForSending: function() {
+    var dataForSending = [];
+    var climateData = this.getClimateControlData();
+    var climateEnable = climateData.climateEnable;
+    if(climateEnable) {
+      for(var key in climateData) {
+        if(typeof climateData[key] == 'object') {
+          dataForSending.push(key + ".*");
+          continue;
+        }
+        dataForSending.push(key);
+      }
+    } else {
+      dataForSending.push('climateEnable');
+    }
+    return dataForSending;
+  },
+
+  changeClimateEnableButtonText: function() {
+    var enable = this.climateControlData.climateEnable;
+    var buttonText = enable ? 'Climate ON' : 'Climate OFF';
+    this.set('climateEnableButtonText', buttonText);
+  }.observes('this.climateControlData.climateEnable'),
+
   toggleAcMaxEnable: function() {
     this.toggleProperty('climateControlData.acMaxEnable');
     this.onAcMaxEnableChanged(true);
@@ -502,18 +543,22 @@ SDL.ClimateControlModel = Em.Object.create({
     }
   },
 
+  setClimateEnable: function(climateEnable) {
+    this.set('climateControlData.climateEnable', climateEnable);
+  },
+
   setFanSpeed: function(speed) {
     this.set('climateControlData.fanSpeed', speed);
   },
 
   setCurrentTemp: function(temp) {
     this.set('climateControlData.currentTemp',
-      SDL.ClimateController.extractTemperatureFromStruct(temp));
+    SDL.ClimateController.extractTemperatureFromStruct(temp));
   },
 
   setDesiredTemp: function(temp) {
     this.set('climateControlData.desiredTemp',
-      SDL.ClimateController.extractTemperatureFromStruct(temp));
+    SDL.ClimateController.extractTemperatureFromStruct(temp));
   },
 
   setTemperatureUnitCelsiusEnable: function(tempUnit) {
@@ -564,6 +609,28 @@ SDL.ClimateControlModel = Em.Object.create({
 
   setHeatedMirrorsEnable: function(state) {
     this.set('climateControlData.heatedMirrorsEnable', state);
+  },
+  
+  /**
+   * @description Function to generate climate capabilities
+   * @param {Object} element 
+   */
+  generateClimateCapabilities: function(element) {
+    var capabilities = this.getClimateControlCapabilities()[0];
+    if(element) {
+      var moduleInfo = {
+        'allowMultipleAccess': true,
+        'moduleId': this.UUID,
+        'serviceArea': SDL.deepCopy(element),
+        'location': SDL.deepCopy(element),
+      };
+
+      moduleInfo.location['colspan'] = 1;
+      moduleInfo.location['rowspan'] = 1;
+      moduleInfo.location['levelspan'] = 1;
+      capabilities['moduleInfo'] = moduleInfo;
+    }
+    SDL.remoteControlCapabilities.remoteControlCapability['climateControlCapabilities'].push(capabilities);
   }
 }
 );

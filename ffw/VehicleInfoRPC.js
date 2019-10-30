@@ -48,18 +48,33 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
     /**
      * access to basic RPC functionality
      */
-    client: FFW.RPCClient.create(
-      {
-        componentName: 'VehicleInfo'
-      }
-    ),
+    client: FFW.RPCClient,
+    componentName: "VehicleInfo",
     /**
      * connect to RPC bus
      */
     connect: function() {
-      this.client.connect(this, 100); // Magic number is unique identifier for
-      // component
+      this.client.connect(this.componentName, this);
     },
+
+    /**
+     * @function sendMessage
+     * @param {Em.Object} JSONMessage
+     * @desc sending message to SDL
+     */
+    sendMessage: function(JSONMessage){
+      this.client.send(JSONMessage, this.componentName);
+    },
+
+    /**
+     * @function subscribeToNotification
+     * @param {Em.Object} notification
+     * @desc subscribe to notifications from SDL
+     */
+    subscribeToNotification: function(notification){
+      this.client.subscribeToNotification(notification, this.componentName);
+    },
+
     /**
      * disconnect from RPC bus
      */
@@ -67,6 +82,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
       this.onRPCUnregistered();
       this.client.disconnect();
     },
+
     /**
      * Client is registered - we can send request starting from this point of
      * time
@@ -154,7 +170,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
                 'method': 'VehicleInfo.DiagnosticMessage'
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           case 'VehicleInfo.SubscribeVehicleData':
@@ -185,7 +201,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
                 'method': 'VehicleInfo.IsReady'
               }
             };
-            this.client.send(JSONMessage);
+            this.sendMessage(JSONMessage);
             break;
           }
           default:
@@ -222,7 +238,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
             }
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -248,7 +264,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
             'method': method
           }
         };
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -261,18 +277,17 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
      */
     sendVISubscribeVehicleDataResult: function(resultCode, id, method, data) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'result': data
-        };
-        JSONMessage.result.code = resultCode;
-        JSONMessage.result.method = method;
-        this.client.send(JSONMessage);
-      }
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'result': data
+      };
+
+      JSONMessage.result.code = resultCode;
+      JSONMessage.result.method = method;
+      this.sendMessage(JSONMessage);
     },
     /**
      * Send error response from onRPCRequest
@@ -299,7 +314,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
           }
         };
         JSONMessage.error.data.method = method;
-        this.client.send(JSONMessage);
+        this.sendMessage(JSONMessage);
       }
     },
     /**
@@ -322,7 +337,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
       };
       JSONMessage.result.code = resultCode;
       JSONMessage.result.method = method;
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * Notifies if data was changed
@@ -337,7 +352,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
         'method': 'VehicleInfo.OnVehicleData',
         'params': params
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * GetVehicleType Response
@@ -356,7 +371,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
           'vehicleType': vehicleType
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * ReadDID Response
@@ -382,7 +397,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
           'didResult': didResult
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     },
     /**
      * GetDTCs Response
@@ -407,7 +422,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
           'dtc': dtc
         }
       };
-      this.client.send(JSONMessage);
+      this.sendMessage(JSONMessage);
     }
   }
 );

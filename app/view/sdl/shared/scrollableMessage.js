@@ -68,6 +68,11 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
           SDL.SDLModel.data.resultCode.SUCCESS, this.messageRequestId
       );
       SDL.SDLController.onSystemContextChange();
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        app.activeWindows.forEach(widget => {
+          SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+        })
+      })
     },
     activate: function(appName, params, messageRequestId) {
       if (appName) {
@@ -79,6 +84,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         this.set('captionText.content', appName);
         this.softButtons.addItems(params.softButtons, params.appID);
         this.set('active', true);
+        this.set('cancelID', params.cancelID);
         clearTimeout(this.timer);
         this.timeout = params.timeout;
         this.timer = setTimeout(

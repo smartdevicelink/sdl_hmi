@@ -89,6 +89,11 @@ SDL.SliderView = SDL.SDLAbstractView.create(
         );
       }
       SDL.SDLController.onSystemContextChange();
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        app.activeWindows.forEach(widget => {
+          SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+        })
+      })
     },
     activate: function(text, timeout) {
       if (text) {
@@ -186,6 +191,7 @@ SDL.SliderView = SDL.SDLAbstractView.create(
     loadData: function(message) {
       var data = message.params;
       this.set('sliderRequestId', message.id);
+      this.set('cancelID', data.cancelID)
       this.set('headerLabel.content', data.sliderHeader);
       this.get('adjustControl.sliderValue').set('range', data.numTicks);
       this.get('adjustControl.sliderValue').set('value', data.position);

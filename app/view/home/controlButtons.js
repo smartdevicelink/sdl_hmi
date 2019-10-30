@@ -52,11 +52,81 @@ SDL.ControlButtons = Em.ContainerView.create({
     'appTTSVRLanguagesLabel',
     'appUILang',
     'appTTSVRLang',
-    'phoneCall',
     'keyboard',
     'imageMode',
-    'imageModeLabel'
+    'imageModeLabel',
+    'RCInfo',
+    'vehicleEmulation'
   ],
+  vehicleEmulation: Em.View.create(
+    {
+      elementId: 'warning_vehicle_emulation_btn',
+      classNameBindings: [
+        'isReady: visible_display', 'pressed:pressed'
+      ],
+      classNames: [
+        'vehicle_emulation_btn',
+        'ffw-button'
+      ],
+      template: Ember.Handlebars.compile('<span>Vehicle</span>'),
+      appLoaded: function() {
+        var self = this;
+        setTimeout(
+          function() {
+            self.set('isReady', true);
+          }, 2000
+        );
+      }.observes('SDL.appReady'),
+      actionDown: function(event) {
+        this.set('pressed', true);
+      },
+      actionUp: function(event) {
+        this.set('pressed', false);
+        SDL.VehicleEmulationView.set('hide', !SDL.VehicleEmulationView.hide);
+        if (SDL.VehicleEmulationView.hide) {
+          SDL.VehicleModuleCoverageView.set('hide', true);
+          FLAGS.set('VehicleEmulationType', FLAGS.lastVehicleEmulationtype);
+          SDL.RCModulesController.populateModels();
+        }
+      }
+    }
+  ),
+
+  RCInfo: Em.ContainerView.extend({
+    elementId: 'RCInfo',
+    classNames: 'RCInfo',
+    classNameBindings: ['this.show:show'],
+    show: false,
+    childViews: [
+      'RCModules',
+      'RCModulesLabel'
+    ],
+    
+    RCModulesLabel: SDL.Label.extend({
+        elementId: 'RCModulesLabel',
+        classNames: 'RCModulesLabel',
+        content: 'Selected seat:'
+      }
+    ),
+
+    RCModules: Em.Select.extend({
+
+        elementId: 'RCModule',
+
+        classNames: 'RCModulesSelect',
+
+        show: function(event) {
+          this._parentView.set('show', this.content.length);
+        }.observes('this.content'),
+
+        change: function(event) {
+          SDL.RCModulesController.changeCurrentModule(this.selection);
+        }
+
+      }
+    ),
+  }),
+
   imageModeLabel: SDL.Label.extend({
     elementId: 'imageModeLabel',
     classNames: 'imageModeLabel',
@@ -124,35 +194,7 @@ getCurrentDisplayModeClass: function() {
         }
       }
     ),
-
-  /**
-   * Button to initiate phone call emulation on HMI
-   */
-  phoneCall: SDL.Button.extend({
-        elementId: 'phone_call_button',
-
-        classNames: ['phone_call_button', 'button'],
-
-        expand: false,
-
-        classNameBindings: ['this.expand:expand'],
-
-        mouseEnter: function() {
-          this.set('expand', true);
-        },
-
-        mouseLeave: function() {
-          this.set('expand', false);
-        },
-
-        action: 'phoneCall',
-
-        target: 'SDL.SettingsController',
-
-        text: 'Incoming call!'
-      }
-    ),
-
+    
   /*
    * Label with name of UILanguages select
    */
@@ -356,7 +398,7 @@ getCurrentDisplayModeClass: function() {
 
           classNames: 'sdlGPLabel',
 
-          content: 'HELP_PROMPT: TIMEOUT_PROMPT: AUTOCOMPLETE_TEXT: POLICY_GetURLS:'
+          content: 'HELP_PROMPT: TIMEOUT_PROMPT: AUTOCOMPLETE_TEXT: POLICY_URLS:'
         }
       ),
 
@@ -449,22 +491,21 @@ getCurrentDisplayModeClass: function() {
 
           classNames: 'sdlGPData',
 
-          contentBinding: 'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteText',
+          contentBinding: 'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList',
 
           propertiesData: function() {
+              var str = '';
+              if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties 
+                && SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList) {
+                  for (var i = 0; i < SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList.length; i++) {
+                      str += SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList[i]
+                          + ' ';
+                  }
+              }
 
-            //                        var str = '';
-            //                        if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.timeoutPrompt) {
-            //                            var i = 0;
-            //                            for (i = 0; i < SDL.SDLController.model.globalProperties.timeoutPrompt.length; i++) {
-            //                                str += SDL.SDLController.model.globalProperties.timeoutPrompt[i].text
-            //                                    + ' ';
-            //                            }
-            //                        }
-            //
-            //                        return str;
+              return str;
           }.property(
-            'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteText.@each'
+            'SDL.SDLController.model.globalProperties.keyboardProperties.autoCompleteList.@each'
           )
         }
       )
@@ -496,7 +537,11 @@ getCurrentDisplayModeClass: function() {
 
           classNames: 'driverDistractionControlCheckBox',
 
-          checkedBinding: 'SDL.SDLModel.data.driverDistractionState'
+          checkedBinding: 'SDL.SDLModel.data.driverDistractionState',
+
+          click: function(event) {
+            SDL.SDLController.selectDriverDistraction(event.currentTarget.checked);
+          }
 
         }
       )
