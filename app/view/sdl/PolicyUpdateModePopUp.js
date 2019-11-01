@@ -48,7 +48,6 @@ SDL.PolicyUpdateModePopUp = Em.ContainerView.create({
     },
     onModemPTUClicked: function (event) {
       SDL.PolicyUpdateModePopUp.set('PTUFilePathInput.active', true);
-      SDL.PolicyUpdateModePopUp.set('PTUFilePathInput.disabled', false);
     },
     onMobilePTUClicked: function (event) {
       SDL.PolicyUpdateModePopUp.set('PTUFilePathInput.disabled', true);
