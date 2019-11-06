@@ -340,7 +340,7 @@ getCurrentDisplayModeClass: function() {
   PolicyUpdateMode: SDL.Button.create({
     elementId: 'policyUpdateMode',
     classNames: 'policyUpdateMode',
-    text: 'Policy Update Mode',
+    text: 'PTU Mode',
     action: function() {
       SDL.PolicyUpdateModePopUp.toggleActivity();
     },
