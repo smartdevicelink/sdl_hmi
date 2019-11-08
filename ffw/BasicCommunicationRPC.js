@@ -58,6 +58,8 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLConsentNeededSubscribeRequestID: -1,
       onResumeAudioSourceSubscribeRequestID: -1,
       onServiceUpdateNotificationSubscribeRequestID: -1,
+      onSystemCapabilityUpdatedNotificationSubscribeRequestID: -1,
+      onAppServiceDataNotificationSubscribeRequestID: -1,
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
       onAppPermissionChangedUnsubscribeRequestID: -1,
@@ -69,6 +71,8 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLConsentNeededUnsubscribeRequestID: -1,
       onResumeAudioSourceUnsubscribeRequestID: -1,
       onServiceUpdateNotificationUnsubscribeRequestID: -1,
+      onSystemCapabilityUpdatedNotificationUnsubscribeRequestID: -1,
+      onAppServiceDataNotificationUnsubscribeRequestID: -1,
       // const
       onStatusUpdateNotification: 'SDL.OnStatusUpdate',
       onAppPermissionChangedNotification: 'SDL.OnAppPermissionChanged',
@@ -82,6 +86,8 @@ FFW.BasicCommunication = FFW.RPCObserver
       onResumeAudioSourceNotification: 'BasicCommunication.OnResumeAudioSource',
       componentName: "BasicCommunication",
       onServiceUpdateNotification: 'BasicCommunication.OnServiceUpdate',
+      onSystemCapabilityUpdatedNotification: 'BasicCommunication.OnSystemCapabilityUpdated',
+      onAppServiceDataNotification: 'AppService.OnAppServiceData',
 
       /**
        * connect to RPC bus
@@ -145,6 +151,10 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onResumeAudioSourceNotification);
         this.onServiceUpdateNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onServiceUpdateNotification);
+        this.onSystemCapabilityUpdatedNotificationSubscribeRequestID = this
+          .subscribeToNotification(this.onSystemCapabilityUpdatedNotification);
+        this.onAppServiceDataNotificationSubscribeRequestID = this
+          .subscribeToNotification(this.onAppServiceDataNotification);
         setTimeout(function() {
           FFW.BasicCommunication.OnSystemTimeReady();
         }, 500);
@@ -180,6 +190,10 @@ FFW.BasicCommunication = FFW.RPCObserver
           .unsubscribeFromNotification(this.onResumeAudioSourceNotification);
         this.onServiceUpdateNotificationUnsubscribeRequestID = this.client
           .unsubscribeFromNotification(this.onServiceUpdateNotification);
+        this.onSystemCapabilityUpdatedNotificationUnsubscribeRequestID = this.client
+          .unsubscribeFromNotification(this.onSystemCapabilityUpdatedNotification);
+        this.onAppServiceDataNotificationUnsubscribeRequestID = this.client
+          .unsubscribeFromNotification(this.onAppServiceDataNotification);
       },
       /**
        * Client disconnected.
