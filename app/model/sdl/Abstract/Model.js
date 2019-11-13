@@ -246,24 +246,27 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      if (SDL.SDLController.model.appInfo.trackIcon &&
-        SDL.SDLController.model.appInfo.trackIcon.indexOf(params.fileName) !=
-        -1 &&
-        params.fileName.length ==
-        SDL.SDLController.model.appInfo.trackIcon.length) {
-        SDL.SDLController.model.appInfo.set('trackIcon',
-          SDL.SDLModel.data.defaultListOfIcons.trackIcon
-        );
-      }
 
-      if (SDL.SDLController.model.appInfo.mainImage &&
-        SDL.SDLController.model.appInfo.mainImage.indexOf(params.fileName) !=
-        -1 &&
-        params.fileName.length ==
-        SDL.SDLController.model.appInfo.mainImage.length) {
-        SDL.SDLController.model.appInfo.set('mainImage',
-          SDL.SDLModel.data.defaultListOfIcons.trackIcon
-        );
+      if (SDL.SDLController.model) {
+        if (SDL.SDLController.model.appInfo.trackIcon &&
+          SDL.SDLController.model.appInfo.trackIcon.indexOf(params.fileName) !=
+          -1 &&
+          params.fileName.length ==
+          SDL.SDLController.model.appInfo.trackIcon.length) {
+          SDL.SDLController.model.appInfo.set('trackIcon',
+            SDL.SDLModel.data.defaultListOfIcons.trackIcon
+          );
+        }
+
+        if (SDL.SDLController.model.appInfo.mainImage &&
+          SDL.SDLController.model.appInfo.mainImage.indexOf(params.fileName) !=
+          -1 &&
+          params.fileName.length ==
+          SDL.SDLController.model.appInfo.mainImage.length) {
+          SDL.SDLController.model.appInfo.set('mainImage',
+            SDL.SDLModel.data.defaultListOfIcons.trackIcon
+          );
+        }
       }
 
       var len = SDL.SDLController.getApplicationModel(params.appID
@@ -305,8 +308,10 @@ SDL.SDLModel = Em.Object.extend({
           }
         }
 
-        if (params.appID == SDL.SDLController.model.appID) {
-          SDL.sdlView.innerMenu.refreshItems();
+        if (SDL.SDLController.model) {
+          if (params.appID == SDL.SDLController.model.appID) {
+            SDL.sdlView.innerMenu.refreshItems();
+          }
         }
       }
 
