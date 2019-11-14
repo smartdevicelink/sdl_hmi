@@ -877,16 +877,41 @@ SDL.SDLController = Em.Object.extend(
     },
 
     /**
-     * Language change counter
+     * UI language change counter
      */
-    languageChangeCount: 0,
-    canNotifyOnLanguageChange: function() {
-      if (this.languageChangeCount < 1) {
-        this.languageChangeCount += 1;
-        return true;
-      } else {
-        this.languageChangeCount = 0;
-        return false;
+    uiLangChangeCount: 0,
+    /**
+     * VR/TTS language change counter
+     */
+    vrLangChangeCount: 0,
+
+    /**
+     * Method to define how much times langChange was called.
+     * It is known bug in Ember: if observer subscribed to view field
+     * item-changed event is sent twice.
+     * We need only one notification per time
+     */
+    canNotifyOnLanguageChange: function(langType) {
+      switch (langType) {
+        case "UI":
+          if (this.uiLangChangeCount < 1) {
+            this.uiLangChangeCount += 1;
+            return true;
+          } else {
+            this.uiLangChangeCount = 0;
+            return false;
+          }
+        break;
+        
+        case "VR":
+          if (this.vrLangChangeCount < 1) {
+            this.vrLangChangeCount += 1;
+            return true;
+          } else {
+            this.vrLangChangeCount = 0;
+            return false;
+          }
+        break;
       }
     },
     /**
@@ -894,7 +919,7 @@ SDL.SDLController = Em.Object.extend(
      * SDLCore to UIRPC
      */
     onLanguageChangeUI: function() {
-      if (!this.canNotifyOnLanguageChange()) {
+      if (!this.canNotifyOnLanguageChange("UI")) {
         return;
       }
       FFW.UI.OnLanguageChange(SDL.SDLModel.data.hmiUILanguage);
@@ -905,6 +930,9 @@ SDL.SDLController = Em.Object.extend(
      * from SDLCore to UIRPC
      */
     onLanguageChangeTTSVR: function() {
+      if (!this.canNotifyOnLanguageChange("VR")) {
+        return;
+      }
       FFW.TTS.OnLanguageChange(SDL.SDLModel.data.hmiTTSVRLanguage);
       FFW.VR.OnLanguageChange(SDL.SDLModel.data.hmiTTSVRLanguage);
     }.observes('SDL.SDLModel.data.hmiTTSVRLanguage'),
