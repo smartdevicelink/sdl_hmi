@@ -875,15 +875,30 @@ SDL.SDLController = Em.Object.extend(
       );
       FFW.UI.performAudioPassThruRequestID = -1;
     },
+
+    /**
+     * Language change counter
+     */
+    languageChangeCount: 0,
+    canNotifyOnLanguageChange: function() {
+      if (this.languageChangeCount < 1) {
+        this.languageChangeCount += 1;
+        return true;
+      } else {
+        this.languageChangeCount = 0;
+        return false;
+      }
+    },
     /**
      * Method to set language for UI component with parameters sent from
      * SDLCore to UIRPC
      */
     onLanguageChangeUI: function() {
+      if (!this.canNotifyOnLanguageChange()) {
+        return;
+      }
       FFW.UI.OnLanguageChange(SDL.SDLModel.data.hmiUILanguage);
-      FFW.BasicCommunication.OnSystemInfoChanged(
-        SDL.SDLModel.data.hmiUILanguage
-      );
+      FFW.BasicCommunication.OnSystemInfoChanged(SDL.SDLModel.data.hmiUILanguage);
     }.observes('SDL.SDLModel.data.hmiUILanguage'),
     /**
      * Method to set language for TTS and VR components with parameters sent
