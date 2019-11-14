@@ -248,21 +248,21 @@ SDL.SDLModel = Em.Object.extend({
 
 
       if (SDL.SDLController.model) {
-        if (SDL.SDLController.model.appInfo.trackIcon &&
-          SDL.SDLController.model.appInfo.trackIcon.indexOf(params.fileName) !=
-          -1 &&
-          params.fileName.length ==
-          SDL.SDLController.model.appInfo.trackIcon.length) {
+        var appInfoValid = (SDL.SDLController.model.appInfo.trackIcon != null);
+        var paramFileNameValid = (SDL.SDLController.model.appInfo.trackIcon.indexOf(params.fileName) != -1);
+        var fileNameLengthValid = (params.fileName.length == SDL.SDLController.model.appInfo.trackIcon.length);
+
+        if (appInfoValid && paramFileNameValid && fileNameLengthValid) {
           SDL.SDLController.model.appInfo.set('trackIcon',
             SDL.SDLModel.data.defaultListOfIcons.trackIcon
           );
         }
 
-        if (SDL.SDLController.model.appInfo.mainImage &&
-          SDL.SDLController.model.appInfo.mainImage.indexOf(params.fileName) !=
-          -1 &&
-          params.fileName.length ==
-          SDL.SDLController.model.appInfo.mainImage.length) {
+        appInfoValid = (SDL.SDLController.model.appInfo.mainImage != null);
+        paramFileNameValid = (SDL.SDLController.model.appInfo.mainImage.indexOf(params.fileName) != -1)
+        fileNameLengthValid = (params.fileName.length == SDL.SDLController.model.appInfo.mainImage.length);
+
+        if (appInfoValid && paramFileNameValid && fileNameLengthValid) {
           SDL.SDLController.model.appInfo.set('mainImage',
             SDL.SDLModel.data.defaultListOfIcons.trackIcon
           );
