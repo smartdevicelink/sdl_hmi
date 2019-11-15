@@ -875,67 +875,22 @@ SDL.SDLController = Em.Object.extend(
       );
       FFW.UI.performAudioPassThruRequestID = -1;
     },
-
-    /**
-     * UI language change counter
-     */
-    uiLangChangeCount: 0,
-    /**
-     * VR/TTS language change counter
-     */
-    vrLangChangeCount: 0,
-
-    /**
-     * Method to define how much times langChange was called.
-     * It is known bug in Ember: if observer subscribed to view field
-     * item-changed event is sent twice.
-     * We need only one notification per time
-     */
-    canNotifyOnLanguageChange: function(langType) {
-      switch (langType) {
-        case "UI":
-          if (this.uiLangChangeCount < 1) {
-            this.uiLangChangeCount += 1;
-            return true;
-          } else {
-            this.uiLangChangeCount = 0;
-            return false;
-          }
-        break;
-        
-        case "VR":
-          if (this.vrLangChangeCount < 1) {
-            this.vrLangChangeCount += 1;
-            return true;
-          } else {
-            this.vrLangChangeCount = 0;
-            return false;
-          }
-        break;
-      }
-    },
     /**
      * Method to set language for UI component with parameters sent from
      * SDLCore to UIRPC
      */
-    onLanguageChangeUI: function() {
-      if (!this.canNotifyOnLanguageChange("UI")) {
-        return;
-      }
-      FFW.UI.OnLanguageChange(SDL.SDLModel.data.hmiUILanguage);
-      FFW.BasicCommunication.OnSystemInfoChanged(SDL.SDLModel.data.hmiUILanguage);
-    }.observes('SDL.SDLModel.data.hmiUILanguage'),
+    onLanguageChangeUI: function(newLanguage) {
+      FFW.UI.OnLanguageChange(newLanguage);
+      FFW.BasicCommunication.OnSystemInfoChanged(newLanguage);
+    },
     /**
      * Method to set language for TTS and VR components with parameters sent
      * from SDLCore to UIRPC
      */
-    onLanguageChangeTTSVR: function() {
-      if (!this.canNotifyOnLanguageChange("VR")) {
-        return;
-      }
-      FFW.TTS.OnLanguageChange(SDL.SDLModel.data.hmiTTSVRLanguage);
-      FFW.VR.OnLanguageChange(SDL.SDLModel.data.hmiTTSVRLanguage);
-    }.observes('SDL.SDLModel.data.hmiTTSVRLanguage'),
+    onLanguageChangeTTSVR: function(newLanguage) {
+      FFW.TTS.OnLanguageChange(newLanguage);
+      FFW.VR.OnLanguageChange(newLanguage);
+    },
     /**
      * Register application
      *
