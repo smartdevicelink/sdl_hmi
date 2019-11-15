@@ -248,21 +248,26 @@ SDL.SDLModel = Em.Object.extend({
 
 
       if (SDL.SDLController.model) {
-        var appInfoValid = (SDL.SDLController.model.appInfo.trackIcon != null);
-        var paramFileNameValid = (SDL.SDLController.model.appInfo.trackIcon.indexOf(params.fileName) != -1);
-        var fileNameLengthValid = (params.fileName.length == SDL.SDLController.model.appInfo.trackIcon.length);
+        var getFileName = function(complexFileName) {
+          var dateTimeSeparator = "?m=";
+          var modTimeIndex = complexFileName.indexOf(dateTimeSeparator);
+          if (modTimeIndex != -1) {
+            return complexFileName.substring(0, modTimeIndex);
+          }
+          return "";
+        };
 
-        if (appInfoValid && paramFileNameValid && fileNameLengthValid) {
+        var icon = getFileName(SDL.SDLController.model.appInfo.trackIcon);
+        var fileNameLengthValid = (params.fileName.length == icon.length);
+        if (fileNameLengthValid) {
           SDL.SDLController.model.appInfo.set('trackIcon',
             SDL.SDLModel.data.defaultListOfIcons.trackIcon
           );
         }
 
-        appInfoValid = (SDL.SDLController.model.appInfo.mainImage != null);
-        paramFileNameValid = (SDL.SDLController.model.appInfo.mainImage.indexOf(params.fileName) != -1)
-        fileNameLengthValid = (params.fileName.length == SDL.SDLController.model.appInfo.mainImage.length);
-
-        if (appInfoValid && paramFileNameValid && fileNameLengthValid) {
+        var image = getFileName(SDL.SDLController.model.appInfo.mainImage);
+        fileNameLengthValid = (params.fileName.length == image.length);
+        if (fileNameLengthValid) {
           SDL.SDLController.model.appInfo.set('mainImage',
             SDL.SDLModel.data.defaultListOfIcons.trackIcon
           );
