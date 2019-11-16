@@ -254,23 +254,33 @@ SDL.SDLModel = Em.Object.extend({
           if (modTimeIndex != -1) {
             return complexFileName.substring(0, modTimeIndex);
           }
-          return "";
+          return complexFileName;
         };
 
-        var icon = getFileName(SDL.SDLController.model.appInfo.trackIcon);
-        var fileNameLengthValid = (params.fileName.length == icon.length);
-        if (fileNameLengthValid) {
-          SDL.SDLController.model.appInfo.set('trackIcon',
-            SDL.SDLModel.data.defaultListOfIcons.trackIcon
-          );
+        var icon = SDL.SDLController.model.appInfo.trackIcon;
+        if (icon != null) {
+          icon = getFileName(icon);
+          var paramFileNameValid = (icon.indexOf(params.fileName) != -1);
+          var fileNameLengthValid = (params.fileName.length == icon.length);
+
+          if (paramFileNameValid && fileNameLengthValid) {
+            SDL.SDLController.model.appInfo.set('trackIcon',
+              SDL.SDLModel.data.defaultListOfIcons.trackIcon
+            );
+          }
         }
 
-        var image = getFileName(SDL.SDLController.model.appInfo.mainImage);
-        fileNameLengthValid = (params.fileName.length == image.length);
-        if (fileNameLengthValid) {
-          SDL.SDLController.model.appInfo.set('mainImage',
-            SDL.SDLModel.data.defaultListOfIcons.trackIcon
-          );
+        var image = (SDL.SDLController.model.appInfo.mainImage);
+        if (image != null) {
+          image = getFileName(image);
+          var paramFileNameValid = (image.indexOf(params.fileName) != -1);
+          var fileNameLengthValid = (params.fileName.length == image.length);
+
+          if (paramFileNameValid && fileNameLengthValid) {
+            SDL.SDLController.model.appInfo.set('mainImage',
+              SDL.SDLModel.data.defaultListOfIcons.trackIcon
+            );
+          }
         }
       }
 
