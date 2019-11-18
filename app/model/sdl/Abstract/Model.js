@@ -246,24 +246,42 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      if (SDL.SDLController.model.appInfo.trackIcon &&
-        SDL.SDLController.model.appInfo.trackIcon.indexOf(params.fileName) !=
-        -1 &&
-        params.fileName.length ==
-        SDL.SDLController.model.appInfo.trackIcon.length) {
-        SDL.SDLController.model.appInfo.set('trackIcon',
-          SDL.SDLModel.data.defaultListOfIcons.trackIcon
-        );
-      }
 
-      if (SDL.SDLController.model.appInfo.mainImage &&
-        SDL.SDLController.model.appInfo.mainImage.indexOf(params.fileName) !=
-        -1 &&
-        params.fileName.length ==
-        SDL.SDLController.model.appInfo.mainImage.length) {
-        SDL.SDLController.model.appInfo.set('mainImage',
-          SDL.SDLModel.data.defaultListOfIcons.trackIcon
-        );
+      if (SDL.SDLController.model) {
+        var getFileName = function(complexFileName) {
+          var dateTimeSeparator = "?m=";
+          var modTimeIndex = complexFileName.indexOf(dateTimeSeparator);
+          if (modTimeIndex != -1) {
+            return complexFileName.substring(0, modTimeIndex);
+          }
+          return complexFileName;
+        };
+
+        var icon = SDL.SDLController.model.appInfo.trackIcon;
+        if (icon != null) {
+          icon = getFileName(icon);
+          var paramFileNameValid = (icon.indexOf(params.fileName) != -1);
+          var fileNameLengthValid = (params.fileName.length == icon.length);
+
+          if (paramFileNameValid && fileNameLengthValid) {
+            SDL.SDLController.model.appInfo.set('trackIcon',
+              SDL.SDLModel.data.defaultListOfIcons.trackIcon
+            );
+          }
+        }
+
+        var image = (SDL.SDLController.model.appInfo.mainImage);
+        if (image != null) {
+          image = getFileName(image);
+          var paramFileNameValid = (image.indexOf(params.fileName) != -1);
+          var fileNameLengthValid = (params.fileName.length == image.length);
+
+          if (paramFileNameValid && fileNameLengthValid) {
+            SDL.SDLController.model.appInfo.set('mainImage',
+              SDL.SDLModel.data.defaultListOfIcons.trackIcon
+            );
+          }
+        }
       }
 
       var len = SDL.SDLController.getApplicationModel(params.appID
@@ -305,8 +323,10 @@ SDL.SDLModel = Em.Object.extend({
           }
         }
 
-        if (params.appID == SDL.SDLController.model.appID) {
-          SDL.sdlView.innerMenu.refreshItems();
+        if (SDL.SDLController.model) {
+          if (params.appID == SDL.SDLController.model.appID) {
+            SDL.sdlView.innerMenu.refreshItems();
+          }
         }
       }
 
