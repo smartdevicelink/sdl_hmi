@@ -879,20 +879,18 @@ SDL.SDLController = Em.Object.extend(
      * Method to set language for UI component with parameters sent from
      * SDLCore to UIRPC
      */
-    onLanguageChangeUI: function() {
-      FFW.UI.OnLanguageChange(SDL.SDLModel.data.hmiUILanguage);
-      FFW.BasicCommunication.OnSystemInfoChanged(
-        SDL.SDLModel.data.hmiUILanguage
-      );
-    }.observes('SDL.SDLModel.data.hmiUILanguage'),
+    onLanguageChangeUI: function(newLanguage) {
+      FFW.UI.OnLanguageChange(newLanguage);
+      FFW.BasicCommunication.OnSystemInfoChanged(newLanguage);
+    },
     /**
      * Method to set language for TTS and VR components with parameters sent
      * from SDLCore to UIRPC
      */
-    onLanguageChangeTTSVR: function() {
-      FFW.TTS.OnLanguageChange(SDL.SDLModel.data.hmiTTSVRLanguage);
-      FFW.VR.OnLanguageChange(SDL.SDLModel.data.hmiTTSVRLanguage);
-    }.observes('SDL.SDLModel.data.hmiTTSVRLanguage'),
+    onLanguageChangeTTSVR: function(newLanguage) {
+      FFW.TTS.OnLanguageChange(newLanguage);
+      FFW.VR.OnLanguageChange(newLanguage);
+    },
     /**
      * Register application
      *

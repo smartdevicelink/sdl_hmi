@@ -284,7 +284,11 @@ getCurrentDisplayModeClass: function() {
 
     contentBinding: 'SDL.SDLModel.data.sdlLanguagesList',
 
-    valueBinding: 'SDL.SDLModel.data.hmiUILanguage'
+    valueBinding: 'SDL.SDLModel.data.hmiUILanguage',
+
+    change: function() {
+      SDL.SDLController.onLanguageChangeUI(this.selection);
+    }
   }
 ),
 
@@ -300,7 +304,11 @@ getCurrentDisplayModeClass: function() {
 
     contentBinding: 'SDL.SDLModel.data.sdlLanguagesList',
 
-    valueBinding: 'SDL.SDLModel.data.hmiTTSVRLanguage'
+    valueBinding: 'SDL.SDLModel.data.hmiTTSVRLanguage',
+
+    change: function() {
+      SDL.SDLController.onLanguageChangeTTSVR(this.selection);
+    }
   }
 ),
 
