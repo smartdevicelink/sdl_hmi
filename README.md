@@ -1,6 +1,6 @@
 # SDL HMI
 
-HTML5 based utility to see how the SDL works. It connects via WebSocket to [SDLCore](https://github.com/LuxoftSDL/sdl_core)
+HTML5 based utility to see how the SDL works. It connects via WebSocket to [SDLCore](https://github.com/smartdevicelink/sdl_core)
 
 # Getting Started
 A quick guide to installing, configuring, and running HMI.
