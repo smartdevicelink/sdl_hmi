@@ -804,14 +804,16 @@ SDL.SDLModel = Em.Object.extend({
     	this.setAppIconByAppId(params.appID, params.icon);
     }
 
-    if (app != undefined && app.initialized == false) {
-      if (app.isMedia != params.isMediaApplication) { // If current not initialized model does not matches the registered application type
-        this.convertModel(params);                    // then model should be changed
+    if (app != undefined && !app.initialized) {
+      if (app.isMedia != params.isMediaApplication || app.webEngineApp) {
+        // If current not initialized model does not matches the registered application type then model should be changed
+        this.convertModel(params);
       } else {
         app.disabledToActivate = params.greyOut;
       }
+
       return;
-    } else if (app != undefined && app.initialized == true) {
+    } else if (app != undefined && app.initialized) {
       console.log(
         'Application with appID ' + params.appID + ' already registered!'
       );

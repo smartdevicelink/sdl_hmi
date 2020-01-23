@@ -53,13 +53,6 @@ SDL.AppsStoreView = Em.ContainerView.create({
       }
     ),
 
-    addNewAppLabel: SDL.Label.extend({
-        elementId: 'addNewAppLabel',
-        classNames: 'addNewAppLabel',
-        content: 'Load app manifest from files:'
-      }
-    ),
-
     getAppsPropertiesButton: SDL.Button.create({
         elementId: 'get_apps_properties_button',
         classNames: 'get_apps_properties btn',

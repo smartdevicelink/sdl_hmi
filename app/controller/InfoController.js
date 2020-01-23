@@ -38,11 +38,11 @@ SDL.InfoController = Em.Object.create(
 
     defaultAppProperties: {
       "nicknames": [
-        "DefaultNickname"
+        "Hello JS"
       ],
-      "policyAppID": "12345",
+      "policyAppID": "hello-js",
       "enabled": true,
-      "transportType": "server",
+      "transportType": "ws",
       "hybridAppPreference": "BOTH"
     },
 

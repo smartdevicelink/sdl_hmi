@@ -288,6 +288,10 @@ SDL.RController = SDL.SDLController.extend(
      * @param {Object} applicationType
      */
     registerApplication: function(params, applicationType) {
+      const isWebEngineApp =
+        params.deviceInfo.hasOwnProperty("transportType") &&
+        params.deviceInfo.transportType == "WEBENGINE_WEBSOCKET";
+
       if (applicationType === undefined || applicationType === null) {
         SDL.SDLModel.data.get('registeredApps').pushObject(
           this.applicationModels[0].create(
@@ -302,7 +306,9 @@ SDL.RController = SDL.SDLController.extend(
               disabledToActivate: params.greyOut ? true : false,
               displayLayout: "DEFAULT",
               dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
-              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme
+              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
+              policyAppID: params.policyAppID,
+              webEngineApp: isWebEngineApp
             }
           )
         );
@@ -321,7 +327,9 @@ SDL.RController = SDL.SDLController.extend(
               disabledToActivate: params.greyOut ? true : false,
               displayLayout: "DEFAULT",
               dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
-              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme
+              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
+              policyAppID: params.policyAppID,
+              webEngineApp: isWebEngineApp
             }
           )
         );
@@ -338,7 +346,9 @@ SDL.RController = SDL.SDLController.extend(
               disabledToActivate: params.greyOut ? true : false,
               displayLayout: "DEFAULT",
               dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
-              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme
+              nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
+              policyAppID: params.policyAppID,
+              webEngineApp: isWebEngineApp
             }
           )
         );

@@ -87,14 +87,17 @@ SDL.InfoAppsView = Em.ContainerView.create({
             text: apps[i].appName + ' - ' + apps[i].deviceName,
             appName: apps[i].appName,
             appID: apps[i].appID,
-            policyAppID: apps[i].policyAppID,
             classNames: 'list-item button',
-            classNameBindings: [ 'webEngineApp:webEngineApp' ],
+            classNameBindings: [
+              'webEngineAppPending:webEngineAppPending',
+              'webEngineAppRegistered:webEngineAppRegistered'
+            ],
             iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
             '.appIcon',
             disabled: disabledToActivate,
             templateName: iconTemplateName,
-            webEngineApp: apps[i].webEngineApp
+            webEngineAppPending: apps[i].webEngineApp && !apps[i].initialized,
+            webEngineAppRegistered: apps[i].webEngineApp && apps[i].initialized,
           })
         );
       }
