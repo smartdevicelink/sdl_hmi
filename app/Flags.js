@@ -76,8 +76,8 @@ FLAGS = Em.Object.create(
     lastVehicleEmulationtype: 'vehicle_2x3',
 
     /**
-     * Specified PTU flow from HMI side
+     * Flag to enable PTU flow over in-vehicle modem
      */
-    PolicyUpdateMode: "PTUWithMobile"
+    PTUWithModemEnabled: false
   }
 );

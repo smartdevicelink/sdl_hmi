@@ -258,7 +258,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                           }
                           if(key == 7) {
                             SDL.SDLModel.data.set('policyURLs', data[key].default);
-                            if(FLAGS.PolicyUpdateMode === 'PTUWithMobile') {
+                            if(!FLAGS.PTUWithModemEnabled) {
                               if (data[key].default.length) {
                                 data[key].default.forEach(url => {
                                   SDL.SettingsController.OnSystemRequestHandler(url);
@@ -266,13 +266,13 @@ FFW.BasicCommunication = FFW.RPCObserver
                               } else {
                                 this.OnSystemRequest('PROPRIETARY');
                               }
-                            } else if(FLAGS.PolicyUpdateMode === 'PTUWithVehicleModem') {
+                            } else {
                               that = this;
                               let filePath = SDL.PolicyUpdateModePopUp.PTUFilePathInput.value;
                               setTimeout(function() {
                                 that.OnReceivedPolicyUpdate(filePath);
                               }, 1000);
-                            } 
+                            }
                             if (FLAGS.ExternalPolicies === true) {
                               SDL.SettingsController.policyUpdateRetry();
                             }

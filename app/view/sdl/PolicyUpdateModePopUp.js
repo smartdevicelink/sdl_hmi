@@ -55,16 +55,16 @@ SDL.PolicyUpdateModePopUp = Em.ContainerView.create({
     modemPolicyUpdate: SDL.RadioButton.extend({
         Id: 'modemPolicyUpdateModeRadiobtn',
         name: 'radio',
-        value: 'PTUWithVehicleModem',
-        selectionBinding: 'FLAGS.PolicyUpdateMode',
+        value: true,
+        selectionBinding: 'FLAGS.PTUWithModemEnabled',
         text: 'Policy table udpdate using in-vehicle modem',
         clickCallbackBinding: 'this.parentView.onModemPTUClicked'
     }),
     mobilePolicyUpdate: SDL.RadioButton.extend({
         Id: 'mobilePolicyUpdateModeRadiobtn',
         name: 'radio',
-        value: 'PTUWithMobile',
-        selectionBinding: 'FLAGS.PolicyUpdateMode',
+        value: false,
+        selectionBinding: 'FLAGS.PTUWithModemEnabled',
         text: 'Policy table udpdate using mobile device',
         clickCallbackBinding: 'this.parentView.onMobilePTUClicked'
     }),
