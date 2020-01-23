@@ -114,23 +114,42 @@ SDL.CodeEditor = Em.ContainerView.extend(
       this.editor.editor.getSession().setValue(this.content);
     },
     /**
-     * Method to save users changes in current opened editor
+     * Internal method to save users changes in current opened editor
      */
-    save: function() {
+    saveInternal: function(valueToSave) {
       if (this.callback) {
         try {
-          JSON.parse(this.editor.editor.getSession().getValue());
+          JSON.parse(valueToSave);
         } catch (e) {
           if (this.invalidJsonCallback) {
             this.invalidJsonCallback();
-          }          
+          }
           return;
         }
-        this.callback(
-          this.editor.editor.getSession().getValue()
-        );
+        this.callback(valueToSave);
       }
+
       this.deactivate();
+    },
+    /**
+     * Method to save users changes in current opened editor
+     */
+    save: function() {
+      this.saveInternal(this.editor.editor.getSession().getValue());
+    },
+    /**
+     * Method to save users changes in current opened editor considering commented lines
+     */
+    saveWithComments: function() {
+      var raw_str = this.editor.editor.getSession().getValue();
+      var raw_str_array = raw_str.split(/\r?\n/);
+      var raw_str_array_filtered = [];
+      raw_str_array.forEach(item => {
+        if (!item.trimStart().startsWith('//')) {
+          raw_str_array_filtered.push(item);
+        }
+      });
+      this.saveInternal(raw_str_array_filtered.join('\r\n'));
     },
     /**
      * Method to delete current opened editor data
