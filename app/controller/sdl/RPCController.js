@@ -315,6 +315,29 @@ SDL.RPCController = Em.Object.create(
           };
           return this.resultStruct;
         },
+
+        /**
+         * Validate method for response GetAppProperties
+         *
+         * @param {Object}
+         *            params
+         */
+        GetAppProperties: function(params) {
+          return {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+        },
+        /**
+         * Validate method for response SetAppProperties
+         *
+         * @param {Object}
+         *            params
+         */
+        SetAppProperties: function(params) {
+          return {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+        },
         /**
          * Validate method for request ActivateApp
          *

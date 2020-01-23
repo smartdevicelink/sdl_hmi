@@ -59,6 +59,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onResumeAudioSourceSubscribeRequestID: -1,
       onServiceUpdateNotificationSubscribeRequestID: -1,
       onSystemCapabilityUpdatedNotificationSubscribeRequestID: -1,
+      onAppPropertiesChangeNotificationSubscriveRequestID: -1,
       onAppServiceDataNotificationSubscribeRequestID: -1,
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
@@ -87,6 +88,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       componentName: "BasicCommunication",
       onServiceUpdateNotification: 'BasicCommunication.OnServiceUpdate',
       onSystemCapabilityUpdatedNotification: 'BasicCommunication.OnSystemCapabilityUpdated',
+      onAppPropertiesChangeNotification: 'BasicCommunication.OnAppPropertiesChange',
       onAppServiceDataNotification: 'AppService.OnAppServiceData',
 
       /**
@@ -153,6 +155,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onServiceUpdateNotification);
         this.onSystemCapabilityUpdatedNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onSystemCapabilityUpdatedNotification);
+        this.onAppPropertiesChangeNotificationSubscriveRequestID = this
+          .subscribeToNotification(this.onAppPropertiesChangeNotification);
         this.onAppServiceDataNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onAppServiceDataNotification);
         setTimeout(function() {
@@ -365,6 +369,14 @@ FFW.BasicCommunication = FFW.RPCObserver
           Em.Logger.log('SDL.GetStatusUpdate: Response from SDL!');
           SDL.PopUp.create().appendTo('body').popupActivate(response.result);
         }
+        if (response.result.method == 'BasicCommunication.GetAppProperties') {
+          Em.Logger.log('BasicCommunication.GetAppProperties: Response from SDL!');
+          SDL.InfoController.onGetAppProperties(response.result.code, response.result.properties);
+        }
+        if (response.result.method == 'BasicCommunication.SetAppProperties') {
+          Em.Logger.log('BasicCommunication.SetAppProperties: Response from SDL!');
+          SDL.InfoController.onSetAppProperties(response.result.code);
+        }
       },
       /**
        * handle RPC erros here
@@ -372,7 +384,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onRPCError: function(response) {
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCError');
         this._super();
-        if(!response.result) return ;
+        if(!response.error.data) return ;
 
         if (response.error.data.method === 'SDL.ActivateApp') {
           var appID = SDL.SDLModel.data.activateAppRequestsList[response.id].appID,
@@ -391,6 +403,16 @@ FFW.BasicCommunication = FFW.RPCObserver
             );
             return;
           }
+        }
+
+        if (response.error.data.method == 'BasicCommunication.GetAppProperties') {
+          Em.Logger.log('BasicCommunication.GetAppProperties: Response from SDL!');
+          SDL.InfoController.onGetAppProperties(response.error.code, null);
+        }
+
+        if (response.error.data.method == 'BasicCommunication.SetAppProperties') {
+          Em.Logger.log('BasicCommunication.SetAppProperties: Response from SDL!');
+          SDL.InfoController.onSetAppProperties(response.error.code);
         }
       },
       /**
@@ -510,6 +532,9 @@ FFW.BasicCommunication = FFW.RPCObserver
         }
         if (notification.method == this.onPutFileNotification) {
           SDL.SDLModel.onPutFile(notification.params);
+        }
+        if (notification.method == this.onAppPropertiesChangeNotification) {
+          SDL.InfoController.onAppPropertiesNotification(notification.params.properties);
         }
       },
       /**
@@ -730,6 +755,47 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.sendMessage(JSONMessage);
       },
+
+      /**
+       * Sends request to get actual app properties
+       */
+      GetAppProperties: function(policyAppID) {
+        var itemIndex = this.client.generateId();
+        Em.Logger.log('BasicCommunication.GetAppProperties: Request from HMI!');
+
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': itemIndex,
+          'method': 'BasicCommunication.GetAppProperties',
+          'params': {}
+        };
+
+        if (policyAppID) {
+          JSONMessage.params.policyAppID = policyAppID;
+        }
+
+        this.sendMessage(JSONMessage);
+      },
+
+      /**
+       * Sends request to set actual app properties
+       */
+      SetAppProperties: function(properties) {
+        var itemIndex = this.client.generateId();
+        Em.Logger.log('BasicCommunication.SetAppProperties: Request from HMI!');
+
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': itemIndex,
+          'method': 'BasicCommunication.SetAppProperties',
+          'params': {
+            'properties': properties
+          }
+        };
+
+        this.sendMessage(JSONMessage);
+      },
+
       /**
        * Send request if application was activated
        *
