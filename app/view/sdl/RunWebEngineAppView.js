@@ -54,22 +54,22 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ],
 
       /**
-       * Property indicates the activity state of RunWebEngineAppView
+       * @description Property indicates the activity state of RunWebEngineAppView
        */
       active: false,
 
       /**
-       * Policy app id to launch
+       * @description Policy app id to launch
        */
       policyAppIdToLaunch: 0,
 
       /**
-       * Title text to display
+       * @description Title text to display
        */
       titleText: 'Run WebEngine App',
 
       /**
-       * Title of RunWebEngineAppView
+       * @description Title of RunWebEngineAppView
        */
       runWebEngineAppLabel: SDL.Label.extend(
         {
@@ -80,7 +80,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ),
 
       /**
-       * Path to HTML page to execute label
+       * @description Path to HTML page to execute label
        */
       runWebEngineHTMLPathLabel: SDL.Label.extend(
         {
@@ -91,7 +91,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ),
 
       /**
-       * Path to HTML page to execute input
+       * @description Path to HTML page to execute input
        */
       runWebEngineHTMLPathInput: Ember.TextField.extend(
         {
@@ -104,7 +104,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ),
 
       /**
-       * SDL host param label
+       * @description SDL host param label
        */
       runWebEngineSDLHostLabel: SDL.Label.extend(
         {
@@ -115,18 +115,18 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ),
 
       /**
-       * SDL host param input
+       * @description SDL host param input
        */
       runWebEngineSDLHostInput: Ember.TextField.extend(
         {
             elementId: 'runWebEngineSDLHostInput',
             classNames: 'runWebEngineSDLHostInput',
-            value: 'localhost'
+            value: FLAGS.webEngineConfiguration.host
         }
       ),
 
       /**
-       * SDL port param label
+       * @description SDL port param label
        */
       runWebEngineSDLPortLabel: SDL.Label.extend(
         {
@@ -137,18 +137,18 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ),
 
       /**
-       * SDL port param input
+       * @description SDL port param input
        */
       runWebEngineSDLPortInput: Ember.TextField.extend(
         {
             elementId: 'runWebEngineSDLPortInput',
             classNames: 'runWebEngineSDLPortInput',
-            value: '2020'
+            value: FLAGS.webEngineConfiguration.port
         }
       ),
 
       /**
-       * SDL transport role param label
+       * @description SDL transport role param label
        */
       runWebEngineSDLTransportLabel: SDL.Label.extend(
         {
@@ -159,7 +159,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ),
 
       /**
-       * SDL transport role param selection box
+       * @description SDL transport role param selection box
        */
       runWebEngineSDLTransportSelect: Em.Select.extend(
         {
@@ -173,12 +173,12 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
             'tcp-server',
             'tcp-client'
           ],
-          selection: 'ws-client'
+          selection: FLAGS.webEngineConfiguration.transport
         }
       ),
 
       /**
-       * Button to cancel web application activation process
+       * @description Button to cancel web application activation process
        */
       runWebEngineCancelButton: SDL.Button.extend(
         {
@@ -192,7 +192,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ),
 
       /**
-       * Button to launch web application with specified params
+       * @description Button to launch web application with specified params
        */
       runWebEngineLaunchButton: SDL.Button.extend(
         {
@@ -214,7 +214,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ),
 
       /**
-       * Trigger function that activates and deactivates tbtClientStateView
+       * @description Trigger function that activates and deactivates tbtClientStateView
        */
       toggleActivity: function() {
         this.toggleProperty('active');

@@ -78,6 +78,15 @@ FLAGS = Em.Object.create(
     /**
      * Flag to enable PTU flow over in-vehicle modem
      */
-    PTUWithModemEnabled: false
+    PTUWithModemEnabled: false,
+
+    /**
+     * Web engine configuration structure
+     */
+    webEngineConfiguration: {
+      'host': 'localhost',
+      'port': '2020',
+      'transport': 'ws-client'
+    }
   }
 );

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Ford Motor Company All rights reserved.
+ * Copyright (c) 2020, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -118,12 +118,11 @@ SDL.WebAppSettingsView = Em.ContainerView.create({
         text: 'Set',
         templateName: 'text',
         action: function() {
-          var old_properties = SDL.deepCopy(SDL.WebAppSettingsView.tempAppSettings);
           SDL.WebAppSettingsView.appPropertiesEditor.set('callback',
             function(new_properties_str) {
               var new_properties = JSON.parse(new_properties_str);
               SDL.WebAppSettingsView.tempAppSettings = SDL.deepCopy(new_properties);
-              SDL.InfoController.setAppProperties(old_properties, new_properties);
+              SDL.InfoController.setAppProperties(new_properties);
           });
 
           SDL.WebAppSettingsView.appPropertiesEditor.saveWithComments();

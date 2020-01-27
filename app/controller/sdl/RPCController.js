@@ -317,10 +317,9 @@ SDL.RPCController = Em.Object.create(
         },
 
         /**
-         * Validate method for response GetAppProperties
-         *
-         * @param {Object}
-         *            params
+         * @description Validate method for response GetAppProperties
+         * @param {Object} params
+         * @returns structure containing validation results
          */
         GetAppProperties: function(params) {
           return {
@@ -329,9 +328,8 @@ SDL.RPCController = Em.Object.create(
         },
         /**
          * Validate method for response SetAppProperties
-         *
-         * @param {Object}
-         *            params
+         * @param {Object} params
+         * @returns structure containing validation results
          */
         SetAppProperties: function(params) {
           return {

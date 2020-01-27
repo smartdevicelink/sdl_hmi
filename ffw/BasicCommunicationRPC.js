@@ -757,7 +757,8 @@ FFW.BasicCommunication = FFW.RPCObserver
       },
 
       /**
-       * Sends request to get actual app properties
+       * @description Sends request to get actual app properties
+       * @param {Number} policyAppID
        */
       GetAppProperties: function(policyAppID) {
         var itemIndex = this.client.generateId();
@@ -778,7 +779,8 @@ FFW.BasicCommunication = FFW.RPCObserver
       },
 
       /**
-       * Sends request to set actual app properties
+       * @description Sends request to set actual app properties
+       * @param {Object} properties
        */
       SetAppProperties: function(properties) {
         var itemIndex = this.client.generateId();

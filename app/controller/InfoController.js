@@ -36,6 +36,9 @@ SDL.InfoController = Em.Object.create(
     activeState: 'info.apps',
     hiddenLeftMenu: false,
 
+    /**
+     * @description Default app properties for editor
+     */
     defaultAppProperties: {
       "nicknames": [
         "Hello JS"
@@ -46,6 +49,9 @@ SDL.InfoController = Em.Object.create(
       "hybridAppPreference": "BOTH"
     },
 
+    /**
+     * @description The list of installed web applications properties
+     */
     availableApps: [],
 
     /**
@@ -53,9 +59,18 @@ SDL.InfoController = Em.Object.create(
      */
     pendingNewSettings: null,
 
+    /**
+     * @description Changes current state according to incoming event
+     * @param {Object} event
+     */
     onState: function(event) {
       SDL.States.goToStates('info.' + event.goToState);
     },
+
+    /**
+     * @description Changes current child state according to incoming event
+     * @param {Object} event
+     */
     onChildState: function(event) {
       SDL.States.goToStates(
         SDL.States.currentState.get('path') + '.' +
@@ -63,63 +78,9 @@ SDL.InfoController = Em.Object.create(
       );
     },
 
-    loadManifestFile(input, index) {
-      var reader = new FileReader();
-      var that = this;
-
-      reader.onload = function() {
-        var file_content = reader.result;
-        var json_content;
-
-        try {
-          json_content = JSON.parse(file_content);
-          SDL.InfoController.addNewApplication(json_content);
-        }
-        catch (err) {
-          SDL.PopUp.create().appendTo('body').popupActivate(
-            "Unable to load manifest file #" + index + ": " + err.message
-          );
-        }
-
-        if (index < input.files.length - 1) {
-          that.loadManifestFile(input, index + 1);
-        } else {
-          input.value = null;
-        }
-      };
-
-      reader.readAsText(input.files[index]);
-    },
-
-    onManifestFilesUploaded: function(event) {
-      var input = event.target;
-      if (input.files.length > 0) {
-        this.loadManifestFile(input, 0);
-      }
-    },
-
-    addNewApplication: function(new_app_json) {
-      if (!new_app_json.hasOwnProperty('policyAppID')) {
-        SDL.PopUp.create().appendTo('body').popupActivate(
-          "App definition does not contain policyAppID value!"
-        );
-        return;
-      }
-
-      for (available_app of this.availableApps) {
-        if (new_app_json['policyAppID'] == available_app['policyAppID']) {
-          SDL.PopUp.create().appendTo('body').popupActivate(
-            "Application with such policyAppID is already loaded!"
-          );
-          return;
-        }
-      }
-
-      new_app_json['enabled'] = false;
-      this.availableApps.push(new_app_json);
-      this.refreshAvailableAppsList();
-    },
-
+    /**
+     * @description Refreshes the content of list of installed web apps
+     */
     refreshAvailableAppsList: function() {
       var available_apps_view = SDL.AppsStoreView.availableAppsView;
       available_apps_view.get('availableAppsList.list').removeAllChildren();
@@ -143,29 +104,52 @@ SDL.InfoController = Em.Object.create(
       }
     },
 
+    /**
+     * @description Opens selected web application properties editor
+     * @param {Object} event
+     */
     showAppProperties: function(event) {
       SDL.WebAppSettingsView.tempAppSettings = event.appData;
       SDL.States.goToStates('info.web_app_settings');
     },
 
+    /**
+     * @description Opens properties editor with default settings
+     */
     setNewAppProperties: function() {
       SDL.WebAppSettingsView.tempAppSettings = SDL.deepCopy(this.defaultAppProperties);
       SDL.States.goToStates('info.web_app_settings');
     },
 
+    /**
+     * @description Sends GetAppProperties request to SDL for selected web app
+     * @param {Object} properties
+     */
     getAppProperties: function(properties) {
       FFW.BasicCommunication.GetAppProperties(properties.policyAppID);
     },
 
+    /**
+     * @description Sends GetAppProperties request to SDL for all web apps
+     */
     getAvailableAppsProperties: function() {
       FFW.BasicCommunication.GetAppProperties(null);
     },
 
-    setAppProperties: function(old_properties, new_properties) {
+    /**
+     * @description Sends SetAppProperties request to SDL for edited web app
+     * @param {Object} new_properties
+     */
+    setAppProperties: function(new_properties) {
       this.set('pendingNewSettings', new_properties);
       FFW.BasicCommunication.SetAppProperties(new_properties);
     },
 
+    /**
+     * @description Callback function to run on getting GetAppProperties response
+     * @param {Number} result_code
+     * @param {Object} properties
+     */
     onGetAppProperties: function(result_code, properties) {
       if (result_code == SDL.SDLModel.data.resultCode.SUCCESS && properties) {
         var current_properties = SDL.deepCopy(SDL.WebAppSettingsView.tempAppSettings);
@@ -180,6 +164,10 @@ SDL.InfoController = Em.Object.create(
       }
     },
 
+    /**
+     * @description Callback function to run on getting OnAppProperties notification
+     * @param {Object} new_properties
+     */
     onAppPropertiesNotification: function(new_properties) {
       this.updateAppProperties(new_properties);
 
@@ -201,6 +189,10 @@ SDL.InfoController = Em.Object.create(
       this.set('pendingNewSettings', null);
     },
 
+    /**
+     * @description Callback function to run on getting SetAppProperties response
+     * @param {Number} result_code
+     */
     onSetAppProperties: function(result_code) {
       if (!this.pendingNewSettings) {
         return;
@@ -215,6 +207,10 @@ SDL.InfoController = Em.Object.create(
       this.set('pendingNewSettings', null);
     },
 
+    /**
+     * @description Deletes web app properties from the list
+     * @param {Object} properties
+     */
     deleteAppProperties: function(properties) {
       SDL.States.goToStates('info.apps_store');
       for (var i = 0; i < this.availableApps.length; ++i) {
@@ -226,6 +222,10 @@ SDL.InfoController = Em.Object.create(
       }
     },
 
+    /**
+     * @description Updates web app properties in the list
+     * @param {Object} new_properties
+     */
     updateAppProperties: function(new_properties) {
       var properties_index = -1;
       for (var i = 0; i < this.availableApps.length; ++i) {
@@ -252,11 +252,15 @@ SDL.InfoController = Em.Object.create(
       this.refreshAvailableAppsList();
     },
 
+    /**
+     * @description Starts web app with specified set of properties
+     * @param {Object} properties
+     */
     runAppWithProperties: function(properties) {
       var policyAppID = properties['policyAppID'];
 
       var popup = SDL.PopUp.create().appendTo('body').popupActivate(
-        'Waiting for web application ' + policyAppID + ' to be registered...', null, true
+        `Waiting for web application ${policyAppID} to be registered...`, null, true
       );
 
       SDL.SDLModel.set('pendingActivationAppID', policyAppID);
@@ -271,7 +275,7 @@ SDL.InfoController = Em.Object.create(
     },
 
     /**
-     * Switching on Application
+     * @description Switching on Application
      */
     turnOnSDL: function() {
 

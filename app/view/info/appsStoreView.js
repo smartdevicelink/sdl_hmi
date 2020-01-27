@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Ford Motor Company All rights reserved.
+ * Copyright (c) 2020, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -46,6 +46,9 @@ SDL.AppsStoreView = Em.ContainerView.create({
         'setAppPropertiesButton'
     ],
 
+    /**
+     * @description Applications Store header label
+     */
     appsStoreLabel: SDL.Label.extend({
         elementId: 'appsStoreLabel',
         classNames: 'appsStoreLabel',
@@ -53,6 +56,9 @@ SDL.AppsStoreView = Em.ContainerView.create({
       }
     ),
 
+    /**
+     * @description Get all web apps properties button
+     */
     getAppsPropertiesButton: SDL.Button.create({
         elementId: 'get_apps_properties_button',
         classNames: 'get_apps_properties btn',
@@ -64,6 +70,9 @@ SDL.AppsStoreView = Em.ContainerView.create({
       }
     ),
 
+    /**
+     * @description Set default web app properties button
+     */
     setAppPropertiesButton: SDL.Button.create({
       elementId: 'set_app_properties_button',
       classNames: 'set_app_properties btn',
@@ -74,6 +83,9 @@ SDL.AppsStoreView = Em.ContainerView.create({
       }
     }),
 
+    /**
+     * @description Available apps container
+     */
     availableAppsView: Em.ContainerView.extend({
       childViews: [
         'availableAppsLabel',
@@ -83,12 +95,18 @@ SDL.AppsStoreView = Em.ContainerView.create({
       elementId: 'availableAppsView',
       classNames: 'availableAppsView',
 
+      /**
+       * @description Available web apps label
+       */
       availableAppsLabel: SDL.Label.extend({
         elementId: 'availableAppsLabel',
         classNames: 'availableAppsLabel',
         content: 'Available applications'
       }),
 
+      /**
+       * @description Available web apps list
+       */
       availableAppsList: SDL.List.extend({
         elementId: 'availableAppsList',
         itemsOnPage: 5,
