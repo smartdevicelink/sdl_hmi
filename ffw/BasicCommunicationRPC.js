@@ -267,11 +267,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                                 this.OnSystemRequest('PROPRIETARY');
                               }
                             } else {
-                              that = this;
-                              let filePath = SDL.PolicyUpdateModePopUp.PTUFilePathInput.value;
-                              setTimeout(function() {
-                                that.OnReceivedPolicyUpdate(filePath);
-                              }, 1000);
+                              SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
                             }
                             if (FLAGS.ExternalPolicies === true) {
                               SDL.SettingsController.policyUpdateRetry();

@@ -403,6 +403,144 @@ SDL.SettingsController = Em.Object.create(
         };
       }
     },
+
+    downloadPTSFromFile: function(file_name) {
+      return new Promise( (resolve, reject) => {
+        let client = FFW.RPCSimpleClient;
+
+        let pts_receive_timer = setTimeout(function() {
+          Em.Logger.log('PTU: Timeout for getting PTS expired');
+          client.unsubscribeFromEvent('GetPTFileContentResponse');
+          reject();
+        }, 10000);
+
+        let pts_received_callback = function(params) {
+          Em.Logger.log('PTU: Downloading PTS has finished');
+          clearTimeout(pts_receive_timer);
+          client.unsubscribeFromEvent('GetPTFileContentResponse');
+
+          if (params.success == false) {
+            Em.Logger.log('PTU: Downloading PTS was not successful');
+            reject();
+          }
+
+          Em.Logger.log('PTU: PTS downloaded successfully');
+          resolve(params['content']);
+        }
+
+        let message = {
+          method: 'GetPTFileContentRequest',
+          params: {
+            fileName: file_name
+          }
+        };
+
+        client.connect();
+        client.subscribeOnEvent('GetPTFileContentResponse', pts_received_callback);
+        client.send(message);
+      });
+    },
+
+    sendPTSToEndpoint: function(url_str, pts_data) {
+      return new Promise( (resolve, reject) => {
+        Em.Logger.log(`PTU: Sending POST request to endpoint: ${url_str}`);
+
+        $.ajax({
+          url: url_str,
+          type: "POST",
+          contentType: 'application/json; charset=utf-8',
+          data: pts_data,
+          dataType: 'json',
+          success: (response) => {
+            Em.Logger.log('PTU: Received PTU response from endpoint');
+
+            const ptu_content = JSON.stringify(response.data[0]);
+            resolve(ptu_content);
+          },
+          error: (err) => {
+            Em.Logger.log('PTU: Request to endpoint has failed');
+            reject();
+          }
+        });
+      });
+    },
+
+    savePTUToFile: function(file_name, ptu_data) {
+      return new Promise( (resolve, reject) => {
+        Em.Logger.log(`PTU: Saving PTU to file: ${file_name}`);
+
+        let client = FFW.RPCSimpleClient;
+
+        let ptu_save_timer = setTimeout(function() {
+          Em.Logger.log('PTU: Timeout for saving PTU expired');
+          client.unsubscribeFromEvent('SavePTUToFileResponse');
+          reject();
+        }, 10000);
+
+        let ptu_saved_callback = function(params) {
+          Em.Logger.log('PTU: PTU has been saved!');
+          clearTimeout(ptu_save_timer);
+          client.unsubscribeFromEvent('SavePTUToFileResponse');
+
+          if (params.success == false) {
+            Em.Logger.log('PTU: PTU save was not successful');
+            reject();
+          }
+
+          Em.Logger.log('PTU: PTU saved successfully');
+          resolve();
+        }
+
+        let message = {
+          method: 'SavePTUToFileRequest',
+          params: {
+            fileName: file_name,
+            data: ptu_data
+          }
+        };
+
+        client.subscribeOnEvent('SavePTUToFileResponse', ptu_saved_callback);
+        client.send(message);
+      });
+    },
+
+    requestPTUFromEndpoint: function(pts_file_name, urls){
+      var that = this;
+
+      let ptu_failed_callback = function() {
+        Em.Logger.log('PTU: Downloading PTS content has failed');
+        FFW.RPCSimpleClient.disconnect();
+
+        FLAGS.set('PTUWithModemEnabled', false); // switch back to PTU via mobile
+
+        if (urls.length > 0) {
+          urls.forEach(url => {
+            SDL.SettingsController.OnSystemRequestHandler(url);
+          })
+        } else {
+          FFW.BasicCommunication.OnSystemRequest('PROPRIETARY');
+        }
+      };
+
+      that.downloadPTSFromFile(pts_file_name)
+        .then( function(pts_content) {
+          if (urls.length > 0) {
+            that.sendPTSToEndpoint(urls[0], pts_content)
+                .then( function(ptu_content) {
+                  const output_file = SDL.PolicyUpdateModePopUp.PTUFilePathInput.value;
+                  that.savePTUToFile(output_file, ptu_content)
+                    .then( function() {
+                      FFW.RPCSimpleClient.disconnect();
+                      FFW.BasicCommunication.OnReceivedPolicyUpdate(output_file);
+                    },
+                    ptu_failed_callback)
+                },
+                ptu_failed_callback)
+          }
+        },
+        ptu_failed_callback);
+    },
+
     turnOnPoliciesSettings: function(){
       if(!SDL.States.settings.policies.active){
         SDL.States.goToStates('settings.policies');
