@@ -27,6 +27,7 @@ FFW.RPCSimpleClient = Em.Object.create({
 
     socket:null,
     sendData: [],
+    listenersMap: {},
     init:function(){
     },
     connect:function(){
@@ -42,6 +43,12 @@ FFW.RPCSimpleClient = Em.Object.create({
         self.onWSMessage(evt);
       };
     },
+    disconnect:function(){
+      if (this.socket) {
+        this.socket.close();
+        this.set('socket', null);
+      }
+    },
     triggerMessageSend: function() {
       var self = this;
       setTimeout(
@@ -52,38 +59,42 @@ FFW.RPCSimpleClient = Em.Object.create({
     },
     send:function(data){
       this.sendData.push(data);
-
-      if(!this.socket) {
-        this.connect();
-        return;
-      }
       this.triggerMessageSend();
     },
+    subscribeOnEvent(event_name, callback) {
+      this.listenersMap[event_name] = callback;
+    },
+    unsubscribeFromEvent(event_name) {
+      if (event_name in this.listenersMap) {
+        delete this.listenersMap[event_name];
+      }
+    },
     onSend: function(){
-      var msg = this.sendData.pop();
+      var msg = JSON.stringify(this.sendData.pop());
       Em.Logger.log('Message to be sent: ' + msg);
 
       if (this.socket && this.socket.readyState == this.socket.OPEN){
         this.socket.send(msg);
       }
+
       if (this.sendData.length > 0) {
         this.triggerMessageSend();
-      } else {
-        this.socket.close();
       }
     },
     onWSMessage: function(evt) {
       Em.Logger.log('Message received: ' + evt.data);
+      let event = JSON.parse(evt.data);
+      let event_name = event.method;
+      if (event_name in this.listenersMap) {
+        let params = event.params;
+        this.listenersMap[event_name](params);
+      }
     },
     onWSOpen: function(evt) {
       Em.Logger.log('RPCSimpleCLient.onWSOpen');
-      if (this.sendData.length > 0) {
-        this.triggerMessageSend();
-      }
     },
     onWSClose: function(evt) {
       Em.Logger.log('RPCSimpleClient: Connection is closed');
-      this.set('socket', null);
     }
   }
 );
