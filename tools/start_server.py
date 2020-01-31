@@ -31,6 +31,7 @@ from threading import Thread
 from time import sleep
 import os
 import signal
+import json
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -43,17 +44,103 @@ def client_left(client, server):
 
 # Called when a client sends a message
 def message_received(client, server, message):
-	print("Client(%d) said: %s\r" % (client['id'], message))
-	
+	print("Received message from client(%d): %s\r" % (client['id'], message))
+
+	parsed_message = None
+
+	try:
+		parsed_message = json.loads(message)
+	except ValueError as err:
+		print("-->Invalid JSON received: %s\r" % (err))
+		return
+
+	if not "method" in parsed_message:
+		print("-->Received message does not contain mandatory field \"method\"\r")
+		return
+
+	response_message = handle_message(parsed_message["method"], parsed_message["params"])
+
+	if response_message is not None:
+		print("-->Sending response message to client %d: %s\r" % (client['id'], response_message))
+		server.send_message(client, response_message)
+
+def handle_message(method, params):
+	print("-->Processing method %s\r" % (method))
+
+	method_mapping = get_method_mapping()
+
+	if method in method_mapping:
+		return method_mapping[method](params)
+	else:
+		print("-->Method handler for %s was not found! Message ignored\r" % (method))
+		return None
+
+def handle_low_voltage_message(params):
+	print("-->Handle low voltage message\r")
+
 	# The value is taken from the file src/appMain/smartDeviceLink.ini
 	# Offset from SIGRTMIN
 	offset = {'LOW_VOLTAGE': 1, 'WAKE_UP': 2, 'IGNITION_OFF': 3}
 
+	signal_param = params["signal"]
 	signal_value = signal.Signals['SIGRTMIN'].value
-	signal_value += offset[message]
+	signal_value += offset[signal_param]
 
 	cmd_command = 'ps -ef | grep smartDeviceLinkCore | grep -v grep | awk \'{print $2}\' | xargs kill -' + str(signal_value)
 	os.system(cmd_command)
+
+	response_msg = {
+		"method": "LowVoltageSignalResponse",
+		"params": {
+			"success": True
+		}
+	}
+
+	return json.dumps(response_msg)
+
+def handle_get_pt_file_content_message(params):
+	print("-->Handle get PTS content message\r")
+
+	file_name = params["fileName"]
+	file_content = None
+
+	with open(file_name) as json_file:
+		file_content = json.load(json_file)
+
+	response_msg = {
+		"method": "GetPTFileContentResponse",
+		"params": {
+			"content": json.dumps(file_content),
+			"success": True
+		}
+	}
+
+	return json.dumps(response_msg)
+
+def handle_save_PTU_to_file_message(params):
+	print("-->Handle save PTU content message\r")
+
+	file_name = params["fileName"]
+	content = json.loads(params["data"])
+
+	with open(file_name, 'w') as json_file:
+		json.dump(content, json_file)
+
+	response_msg = {
+		"method": "SavePTUToFileResponse",
+		"params": {
+			"success": True
+		}
+	}
+
+	return json.dumps(response_msg)
+
+def get_method_mapping():
+	return {
+		"LowVoltageSignalRequest": handle_low_voltage_message,
+		"GetPTFileContentRequest": handle_get_pt_file_content_message,
+		"SavePTUToFileRequest": handle_save_PTU_to_file_message
+	}
 
 def getch():
         import sys, tty, termios
