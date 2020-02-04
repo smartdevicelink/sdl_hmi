@@ -404,6 +404,11 @@ SDL.SettingsController = Em.Object.create(
       }
     },
 
+    /**
+     * @description Downloads PTS content through the backend
+     * @param {String} file_name
+     * @returns promise for downloading the PTS content
+     */
     downloadPTSFromFile: function(file_name) {
       return new Promise( (resolve, reject) => {
         let client = FFW.RPCSimpleClient;
@@ -441,6 +446,12 @@ SDL.SettingsController = Em.Object.create(
       });
     },
 
+    /**
+     * @description Sends PTS to specified endpoint URL
+     * @param {String} url_str
+     * @param {String} pts_data
+     * @returns promise for sending PTS to endpoint
+     */
     sendPTSToEndpoint: function(url_str, pts_data) {
       return new Promise( (resolve, reject) => {
         Em.Logger.log(`PTU: Sending POST request to endpoint: ${url_str}`);
@@ -465,6 +476,12 @@ SDL.SettingsController = Em.Object.create(
       });
     },
 
+    /**
+     * @description Saves PTU content to specified file
+     * @param {String}
+     * @param {String}
+     * @returns promise for saving PTU content
+     */
     savePTUToFile: function(file_name, ptu_data) {
       return new Promise( (resolve, reject) => {
         Em.Logger.log(`PTU: Saving PTU to file: ${file_name}`);
@@ -504,6 +521,27 @@ SDL.SettingsController = Em.Object.create(
       });
     },
 
+    /**
+     * @description Generates new file path for updated PT
+     * @returns generated file path
+     */
+    generatePTUFilePath: function() {
+      let path = document.location.pathname;
+      let index = path.lastIndexOf('/');
+      if (index >= 0) {
+        path = path.slice(0, index);
+      }
+
+      let current_date = new Date();
+      return `${path}/IVSU/PTU_${current_date.getFullYear()}${current_date.getMonth()+1}${current_date.getDate()}_` +
+             `${current_date.getHours()}${current_date.getMinutes()}${current_date.getSeconds()}.json`;
+    },
+
+    /**
+     * @description Peforms PTU sequence using provided PTS and url
+     * @param {String}
+     * @param {Array}
+     */
     requestPTUFromEndpoint: function(pts_file_name, urls){
       var that = this;
 
@@ -516,7 +554,7 @@ SDL.SettingsController = Em.Object.create(
         if (urls.length > 0) {
           urls.forEach(url => {
             SDL.SettingsController.OnSystemRequestHandler(url);
-          })
+          });
         } else {
           FFW.BasicCommunication.OnSystemRequest('PROPRIETARY');
         }
@@ -527,7 +565,7 @@ SDL.SettingsController = Em.Object.create(
           if (urls.length > 0) {
             that.sendPTSToEndpoint(urls[0], pts_content)
                 .then( function(ptu_content) {
-                  const output_file = SDL.PolicyUpdateModePopUp.PTUFilePathInput.value;
+                  const output_file = that.generatePTUFilePath();
                   that.savePTUToFile(output_file, ptu_content)
                     .then( function() {
                       FFW.RPCSimpleClient.disconnect();

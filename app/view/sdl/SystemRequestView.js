@@ -49,6 +49,8 @@ SDL.SystemRequest = Em.ContainerView.create(
       'requestSubTypeInput',
       'appIDSelect',
       'appIDSelectTitle',
+      'ptuModeCheckbox',
+      'ptuModeLabel',
       'sendButton',
       'fileNameLabel',
       'fileNameInput'
@@ -157,6 +159,26 @@ SDL.SystemRequest = Em.ContainerView.create(
           return list;
         }.property('SDL.SDLModel.data.registeredApps.@each'),
         valueBinding: 'SDL.SDLVehicleInfoModel.prndlSelectState'
+      }
+    ),
+    /**
+     * Checkbox for switching PTU mode
+     */
+    ptuModeCheckbox: Em.Checkbox.extend(
+      {
+        elementId: 'ptuModeCheckbox',
+        classNames: 'ptuModeCheckbox',
+        checkedBinding: 'FLAGS.PTUWithModemEnabled'
+      }
+    ),
+    /**
+     * Label for switching PTU mode
+     */
+    ptuModeLabel: SDL.Label.extend(
+      {
+        elementId: 'ptuModeLabel',
+        classNames: 'ptuModeLabel',
+        content: 'PTU using in-vehicle modem'
       }
     ),
     /**

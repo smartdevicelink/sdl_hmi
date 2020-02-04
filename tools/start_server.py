@@ -54,7 +54,7 @@ def message_received(client, server, message):
 		print("-->Invalid JSON received: %s\r" % (err))
 		return
 
-	if not "method" in parsed_message:
+	if "method" not in parsed_message:
 		print("-->Received message does not contain mandatory field \"method\"\r")
 		return
 
