@@ -546,7 +546,7 @@ SDL.SettingsController = Em.Object.create(
       var that = this;
 
       let ptu_failed_callback = function() {
-        Em.Logger.log('PTU: Downloading PTS content has failed');
+        Em.Logger.log('PTU: PTUWithModem failed. Switching to PTUWithMobile');
         FFW.RPCSimpleClient.disconnect();
 
         FLAGS.set('PTUWithModemEnabled', false); // switch back to PTU via mobile
