@@ -272,12 +272,16 @@ FFW.BasicCommunication = FFW.RPCObserver
                           }
                           if(key == 7) {
                             SDL.SDLModel.data.set('policyURLs', data[key].default);
-                            if (data[key].default.length) {
-                              data[key].default.forEach(url => {
-                                SDL.SettingsController.OnSystemRequestHandler(url);
-                              })
+                            if(!FLAGS.PTUWithModemEnabled) {
+                              if (data[key].default.length) {
+                                data[key].default.forEach(url => {
+                                  SDL.SettingsController.OnSystemRequestHandler(url);
+                                })
+                              } else {
+                                this.OnSystemRequest('PROPRIETARY');
+                              }
                             } else {
-                              this.OnSystemRequest('PROPRIETARY');
+                              SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
                             }
                             if (FLAGS.ExternalPolicies === true) {
                               SDL.SettingsController.policyUpdateRetry();

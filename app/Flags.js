@@ -73,6 +73,11 @@ FLAGS = Em.Object.create(
     /**
      * Flag for storing last applied vehicle emulation type
      */
-    lastVehicleEmulationtype: 'vehicle_2x3'
+    lastVehicleEmulationtype: 'vehicle_2x3',
+
+    /**
+     * Flag to enable PTU flow over in-vehicle modem
+     */
+    PTUWithModemEnabled: false
   }
 );

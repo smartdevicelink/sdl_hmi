@@ -865,12 +865,12 @@
 }
 
 #systemRequestView .systemRequestViewTitle {
-    width: 280px;
+    width: 175px;
 }
 
 #systemRequestView .appIDSelectTitle {
-    width: 280px;
-    left: 360px;
+    width: 50px;
+    left: 435px;
 }
 
 #exitAppView .exitAppViewSelect,
@@ -942,12 +942,28 @@
 }
 
 #systemRequestView .systemRequestViewSelect {
-    left: 170px;
+    left: 245px;
+    top: 70px;
+    width: 180px;
 }
 
 #systemRequestView .appIDSelect {
-    top: 125px;
-    left: 490px;
+    top: 70px;
+    left: 515px;
+}
+
+#systemRequestView .ptuModeCheckbox {
+    position: absolute;
+    top: 135px;
+    left: 40px;
+    cursor: pointer;
+}
+
+#systemRequestView .ptuModeLabel {
+    position: absolute;
+    left: 60px;
+    top: 134px;
+    width: 215px;
 }
 
 #exitAppView .exitAppViewSelect option,
