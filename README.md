@@ -15,6 +15,14 @@ In order to simulate UNIX signals used by the LOW_VOLTAGE feature, some addition
 	2. run the HMI normally
 	3. open the `Exit Application` menu, choose a signal from the menu and press `Send signal`
 
+## PTU With vehicle modem
+In order to get policy table updates using the vehicle modem, some additional setup is required
+
+	1. Run `deploy_server.sh`
+	2. Run the HMI normally
+	3. Click  the `System Request` button
+    4. Select the `PTU using in-vehicle modem` checkbox to enable the feature
+
 ## A quick note about dependencies
 All dependencies are installed after the SDL Core is successfully installed.
 
