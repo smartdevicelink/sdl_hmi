@@ -42,7 +42,7 @@ SDL.AppsStoreView = Em.ContainerView.create({
     childViews: [
         'appsStoreLabel',
         'availableAppsView',
-        'getAppsPropertiesButton',
+        'getAppPropertiesButton',
         'setAppPropertiesButton'
     ],
 
@@ -59,7 +59,7 @@ SDL.AppsStoreView = Em.ContainerView.create({
     /**
      * @description Get all web apps properties button
      */
-    getAppsPropertiesButton: SDL.Button.create({
+    getAppPropertiesButton: SDL.Button.create({
         elementId: 'get_apps_properties_button',
         classNames: 'get_apps_properties btn',
         text: 'Get Apps Properties',

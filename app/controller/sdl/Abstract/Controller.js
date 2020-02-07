@@ -406,9 +406,8 @@ SDL.SDLController = Em.Object.extend(
      */
     vehicleDataChange: function() {
       SDL.VehicleInfo.vehicleDataCodeEditor.activate(
-        function(data) {
+        function(parsedData) {
           var params = {};
-          var parsedData = JSON.parse(data);
           for (var i in parsedData) {
             if (undefined === SDL.SDLVehicleInfoModel.vehicleData[i] ||
                 SDL.SDLController.compareObjects(
@@ -439,7 +438,7 @@ SDL.SDLController = Em.Object.extend(
     policyConfigDataChange: function() {
       SDL.PolicyConfigListView.policyConfigCodeEditor.activate(
         function(data) {
-          SDL.SDLModel.data.policyConfigData = JSON.parse(data);
+          SDL.SDLModel.data.policyConfigData = data;
         }
       );
       SDL.PolicyConfigListView.policyConfigCodeEditor.editor.set(
@@ -903,7 +902,7 @@ SDL.SDLController = Em.Object.extend(
       const isDayColorSchemeDefined = "dayColorScheme" in params;
       const isNightColorSchemeDefined = "nightColorScheme" in params;
       const isWebEngineApp =
-        params.deviceInfo.hasOwnProperty("transportType") &&
+        "transportType" in params.deviceInfo &&
         params.deviceInfo.transportType == "WEBENGINE_WEBSOCKET";
 
       if (applicationType === undefined || applicationType === null) {

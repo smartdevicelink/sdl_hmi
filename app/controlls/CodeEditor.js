@@ -119,14 +119,14 @@ SDL.CodeEditor = Em.ContainerView.extend(
     saveInternal: function(valueToSave) {
       if (this.callback) {
         try {
-          JSON.parse(valueToSave);
+          const parsed_json = JSON.parse(valueToSave);
+          this.callback(parsed_json);
         } catch (e) {
           if (this.invalidJsonCallback) {
             this.invalidJsonCallback();
           }
           return;
         }
-        this.callback(valueToSave);
       }
 
       this.deactivate();

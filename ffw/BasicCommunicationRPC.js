@@ -59,7 +59,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onResumeAudioSourceSubscribeRequestID: -1,
       onServiceUpdateNotificationSubscribeRequestID: -1,
       onSystemCapabilityUpdatedNotificationSubscribeRequestID: -1,
-      onAppPropertiesChangeNotificationSubscriveRequestID: -1,
+      onAppPropertiesChangeNotificationSubscribeRequestID: -1,
       onAppServiceDataNotificationSubscribeRequestID: -1,
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
@@ -155,7 +155,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onServiceUpdateNotification);
         this.onSystemCapabilityUpdatedNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onSystemCapabilityUpdatedNotification);
-        this.onAppPropertiesChangeNotificationSubscriveRequestID = this
+        this.onAppPropertiesChangeNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onAppPropertiesChangeNotification);
         this.onAppServiceDataNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onAppServiceDataNotification);
@@ -404,13 +404,11 @@ FFW.BasicCommunication = FFW.RPCObserver
             return;
           }
         }
-
-        if (response.error.data.method == 'BasicCommunication.GetAppProperties') {
+        else if (response.error.data.method === 'BasicCommunication.GetAppProperties') {
           Em.Logger.log('BasicCommunication.GetAppProperties: Response from SDL!');
           SDL.InfoController.onGetAppProperties(response.error.code, null);
         }
-
-        if (response.error.data.method == 'BasicCommunication.SetAppProperties') {
+        else if (response.error.data.method === 'BasicCommunication.SetAppProperties') {
           Em.Logger.log('BasicCommunication.SetAppProperties: Response from SDL!');
           SDL.InfoController.onSetAppProperties(response.error.code);
         }

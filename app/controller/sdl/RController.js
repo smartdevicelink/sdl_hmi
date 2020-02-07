@@ -289,7 +289,7 @@ SDL.RController = SDL.SDLController.extend(
      */
     registerApplication: function(params, applicationType) {
       const isWebEngineApp =
-        params.deviceInfo.hasOwnProperty("transportType") &&
+        "transportType" in params.deviceInfo &&
         params.deviceInfo.transportType == "WEBENGINE_WEBSOCKET";
 
       if (applicationType === undefined || applicationType === null) {

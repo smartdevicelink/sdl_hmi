@@ -350,8 +350,7 @@ SDL.VehicleModuleCoverageController = Em.Object.create({
    * @param {Object} module_infos
    */
   saveModuleSettings: function(module_type, module_infos) {
-    var parsed_settings = JSON.parse(module_infos);
-    this.set('coverageSettings.' + module_type, parsed_settings);
+    this.set('coverageSettings.' + module_type, module_infos);
   },
 
   /**

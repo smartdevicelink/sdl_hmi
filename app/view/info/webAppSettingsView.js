@@ -47,7 +47,10 @@ SDL.WebAppSettingsView = Em.ContainerView.create({
       'setButton'
     ],
 
-    tempAppSettings: {},
+    /**
+     * @description Current application settings displayed by editor
+     */
+    editorAppSettings: {},
 
     /**
      * @description Code editor element
@@ -82,7 +85,7 @@ SDL.WebAppSettingsView = Em.ContainerView.create({
         text: 'Delete',
         templateName: 'text',
         action: function() {
-          SDL.InfoController.deleteAppProperties(SDL.WebAppSettingsView.tempAppSettings);
+          SDL.InfoController.deleteAppProperties(SDL.WebAppSettingsView.editorAppSettings);
         }
       }
     ),
@@ -97,9 +100,8 @@ SDL.WebAppSettingsView = Em.ContainerView.create({
         templateName: 'text',
         action: function() {
           SDL.WebAppSettingsView.appPropertiesEditor.set('callback',
-            function(new_properties_str) {
-              var new_properties = JSON.parse(new_properties_str);
-              SDL.WebAppSettingsView.tempAppSettings = SDL.deepCopy(new_properties);
+            function(new_properties) {
+              SDL.WebAppSettingsView.editorAppSettings = SDL.deepCopy(new_properties);
               SDL.InfoController.getAppProperties(new_properties);
           });
 
@@ -119,9 +121,8 @@ SDL.WebAppSettingsView = Em.ContainerView.create({
         templateName: 'text',
         action: function() {
           SDL.WebAppSettingsView.appPropertiesEditor.set('callback',
-            function(new_properties_str) {
-              var new_properties = JSON.parse(new_properties_str);
-              SDL.WebAppSettingsView.tempAppSettings = SDL.deepCopy(new_properties);
+            function(new_properties) {
+              SDL.WebAppSettingsView.editorAppSettings = SDL.deepCopy(new_properties);
               SDL.InfoController.setAppProperties(new_properties);
           });
 
@@ -136,15 +137,15 @@ SDL.WebAppSettingsView = Em.ContainerView.create({
      * @description Shows current app properties in editor
      */
     showProperties: function() {
-      var settings = JSON.stringify(this.tempAppSettings, null, 2);
+      var settings = JSON.stringify(this.editorAppSettings, null, 2);
       var settings_array = settings.split(/\r?\n/);
       var insert_index = settings_array.length - 1;
 
-      if (!this.tempAppSettings.hasOwnProperty('endpoint')) {
+      if (!this.editorAppSettings.hasOwnProperty('endpoint')) {
         settings_array.splice(insert_index, 0, '  // "endpoint": "endpoint"');
       }
 
-      if (!this.tempAppSettings.hasOwnProperty('authToken')) {
+      if (!this.editorAppSettings.hasOwnProperty('authToken')) {
         settings_array.splice(insert_index, 0, '  // "authToken": "token"');
       }
 

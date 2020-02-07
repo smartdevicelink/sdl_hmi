@@ -55,9 +55,9 @@ SDL.InfoController = Em.Object.create(
     availableApps: [],
 
     /**
-     * @description Edited new settings which should be applied after confirmation from SDL
+     * @description Edited new properties which should be applied for app after successful response from SDL
      */
-    pendingNewSettings: null,
+    editedAppPropertiesToApply: null,
 
     /**
      * @description Changes current state according to incoming event
@@ -109,7 +109,7 @@ SDL.InfoController = Em.Object.create(
      * @param {Object} event
      */
     showAppProperties: function(event) {
-      SDL.WebAppSettingsView.tempAppSettings = event.appData;
+      SDL.WebAppSettingsView.editorAppSettings = event.appData;
       SDL.States.goToStates('info.web_app_settings');
     },
 
@@ -117,7 +117,7 @@ SDL.InfoController = Em.Object.create(
      * @description Opens properties editor with default settings
      */
     setNewAppProperties: function() {
-      SDL.WebAppSettingsView.tempAppSettings = SDL.deepCopy(this.defaultAppProperties);
+      SDL.WebAppSettingsView.editorAppSettings = SDL.deepCopy(this.defaultAppProperties);
       SDL.States.goToStates('info.web_app_settings');
     },
 
@@ -141,7 +141,7 @@ SDL.InfoController = Em.Object.create(
      * @param {Object} new_properties
      */
     setAppProperties: function(new_properties) {
-      this.set('pendingNewSettings', new_properties);
+      this.set('editedAppPropertiesToApply', new_properties);
       FFW.BasicCommunication.SetAppProperties(new_properties);
     },
 
@@ -152,12 +152,12 @@ SDL.InfoController = Em.Object.create(
      */
     onGetAppProperties: function(result_code, properties) {
       if (result_code == SDL.SDLModel.data.resultCode.SUCCESS && properties) {
-        var current_properties = SDL.deepCopy(SDL.WebAppSettingsView.tempAppSettings);
+        var current_policy_app_id = SDL.WebAppSettingsView.editorAppSettings.policyAppID;
 
         for (app_properties of properties) {
-          this.updateAppProperties(app_properties);
-          if (app_properties.policyAppID == current_properties.policyAppID) {
-            SDL.WebAppSettingsView.set('tempAppSettings', app_properties);
+          let updated_properties = this.updateAppProperties(app_properties);
+          if (updated_properties.policyAppID == current_policy_app_id) {
+            SDL.WebAppSettingsView.set('editorAppSettings', updated_properties);
             SDL.WebAppSettingsView.showProperties();
           }
         }
@@ -169,24 +169,24 @@ SDL.InfoController = Em.Object.create(
      * @param {Object} new_properties
      */
     onAppPropertiesNotification: function(new_properties) {
-      this.updateAppProperties(new_properties);
+      let updated_properties = this.updateAppProperties(new_properties);
 
-      var current_properties = SDL.deepCopy(SDL.WebAppSettingsView.tempAppSettings);
-      if (current_properties.policyAppID != new_properties.policyAppID) {
+      var current_policy_app_id = SDL.WebAppSettingsView.editorAppSettings.policyAppID;
+      if (current_policy_app_id != updated_properties.policyAppID) {
         // Don't refresh displayed properties for a different app
         return;
       }
 
       for (properties of this.availableApps) {
-        if (properties.policyAppID == current_properties.policyAppID) {
-          SDL.WebAppSettingsView.set('tempAppSettings', properties);
+        if (properties.policyAppID == current_policy_app_id) {
+          SDL.WebAppSettingsView.set('editorAppSettings', properties);
           SDL.WebAppSettingsView.showProperties();
           break;
         }
       }
 
       // Drop pending properties if notification received during Set request
-      this.set('pendingNewSettings', null);
+      this.set('editedAppPropertiesToApply', null);
     },
 
     /**
@@ -194,17 +194,17 @@ SDL.InfoController = Em.Object.create(
      * @param {Number} result_code
      */
     onSetAppProperties: function(result_code) {
-      if (!this.pendingNewSettings) {
+      if (!this.editedAppPropertiesToApply) {
         return;
       }
 
       if (result_code == SDL.SDLModel.data.resultCode.SUCCESS) {
-        this.updateAppProperties(this.pendingNewSettings);
-        SDL.WebAppSettingsView.set('tempAppSettings', this.pendingNewSettings);
+        let updated_properties = this.updateAppProperties(this.editedAppPropertiesToApply);
+        SDL.WebAppSettingsView.set('editorAppSettings', updated_properties);
         SDL.WebAppSettingsView.showProperties();
       }
 
-      this.set('pendingNewSettings', null);
+      this.set('editedAppPropertiesToApply', null);
     },
 
     /**
@@ -225,6 +225,7 @@ SDL.InfoController = Em.Object.create(
     /**
      * @description Updates web app properties in the list
      * @param {Object} new_properties
+     * @returns {Object} updated app properties
      */
     updateAppProperties: function(new_properties) {
       var properties_index = -1;
@@ -238,18 +239,18 @@ SDL.InfoController = Em.Object.create(
       if (properties_index < 0) {
         this.availableApps.push(new_properties);
         this.refreshAvailableAppsList();
-        return;
+        return new_properties;
       }
 
-      var current_properties = SDL.deepCopy(this.availableApps[properties_index]);
+      var current_properties = this.availableApps[properties_index];
       Object.keys(new_properties).forEach(property => {
         if (new_properties.hasOwnProperty(property)) {
           current_properties[property] = new_properties[property];
         }
       });
 
-      this.availableApps[properties_index] = current_properties;
       this.refreshAvailableAppsList();
+      return current_properties;
     },
 
     /**
