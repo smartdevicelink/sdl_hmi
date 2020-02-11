@@ -272,7 +272,11 @@ SDL.InfoController = Em.Object.create(
       target_url += "&sdl-port=" + properties['port']
       target_url += "&sdl-transport-role=" + properties['role'];
 
-      window.open(target_url, "_blank");
+      const popup_width = screen.width / 3;
+      const popup_height = screen.height / 3;
+      const popup_left = screen.width - popup_width - 5;
+      window.open(target_url, "s", `width=${popup_width}, height=${popup_height}, left=${popup_left}, top=0, resizable=yes, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no`).blur();
+      window.focus();
     },
 
     /**
