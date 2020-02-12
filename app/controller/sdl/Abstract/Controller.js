@@ -1017,6 +1017,11 @@ SDL.SDLController = Em.Object.extend(
       if (appID === SDL.SDLNonMediaModel.currentAppId) {
         SDL.SDLNonMediaModel.set('currentAppId', null);
       }
+      if (app.webEngineApp && app.policyAppID in SDL.SDLModel.webApplicationFramesMap) {
+        let frame = SDL.SDLModel.webApplicationFramesMap[app.policyAppID];
+        document.body.removeChild(frame);
+        delete SDL.SDLModel.webApplicationFramesMap[app.policyAppID];
+      }
     },
     /**
      *

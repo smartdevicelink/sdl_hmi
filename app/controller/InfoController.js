@@ -272,11 +272,23 @@ SDL.InfoController = Em.Object.create(
       target_url += "&sdl-port=" + properties['port']
       target_url += "&sdl-transport-role=" + properties['role'];
 
-      const popup_width = screen.width / 3;
-      const popup_height = screen.height / 3;
-      const popup_left = screen.width - popup_width - 5;
-      window.open(target_url, "s", `width=${popup_width}, height=${popup_height}, left=${popup_left}, top=0, resizable=yes, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=no, copyhistory=no`).blur();
-      window.focus();
+      if (policyAppID in SDL.SDLModel.webApplicationFramesMap) {
+        let frame = SDL.SDLModel.webApplicationFramesMap[policyAppID];
+        document.body.removeChild(frame);
+      }
+
+      const frame_name = `web_app_frame_${policyAppID}`;
+      let web_app_frame =  document.createElement("iframe");
+      web_app_frame.name = frame_name;
+      web_app_frame.id = frame_name;
+      web_app_frame.className = "InvisibleFrame";
+      document.body.appendChild(web_app_frame);
+
+      SDL.SDLModel.webApplicationFramesMap[policyAppID] = web_app_frame;
+
+      setTimeout(function() {
+        frames[frame_name].location.href = target_url;
+      }, 100);
     },
 
     /**

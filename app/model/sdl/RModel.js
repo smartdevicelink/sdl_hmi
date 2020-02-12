@@ -55,6 +55,13 @@ SDL.RModel = SDL.SDLModel.extend({
   pendingActivationPopUp: null,
 
   /**
+   * Map of running web applications and corresponding frames
+   *
+   * @param {Map}
+   */
+  webApplicationFramesMap: {},
+
+  /**
    * Current drivers device flag
    *
    * @param {Object}
