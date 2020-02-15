@@ -60,6 +60,15 @@ SDL.InfoController = Em.Object.create(
     editedAppPropertiesToApply: null,
 
     /**
+     * @description Flag defining whether that a first show of apps store or not
+     */
+    isFirstAppStoreClick: true,
+
+    appPackageDownloadUrlsMap: {},
+
+    appEntryPointsMap: {},
+
+    /**
      * @description Changes current state according to incoming event
      * @param {Object} event
      */
@@ -138,10 +147,37 @@ SDL.InfoController = Em.Object.create(
 
     /**
      * @description Sends SetAppProperties request to SDL for edited web app
+     * @param {Object} old_properties
      * @param {Object} new_properties
      */
-    setAppProperties: function(new_properties) {
+    setAppProperties: function(old_properties, new_properties) {
       this.set('editedAppPropertiesToApply', new_properties);
+
+      if ((!'enabled' in old_properties || old_properties['enabled'] == false) &&
+          new_properties['enabled'] === true) {
+        let that = this;
+        const policyAppID = new_properties['policyAppID'];
+
+        let on_installation_failed = function() {
+          SDL.PopUp.create().appendTo('body').popupActivate(
+            `Can't install ${policyAppID} app from applications store...`, null, false
+          );
+          FFW.RPCSimpleClient.disconnect();
+        };
+
+        that.downloadAppBundle(policyAppID)
+          .then( function(bundle_path) {
+            that.extractEntrypointFromManifest(bundle_path)
+              .then( function(entrypoint) {
+                Em.Logger.log(`App store: app installed successfully`);
+                that.appEntryPointsMap[policyAppID] = bundle_path + entrypoint;
+                FFW.BasicCommunication.SetAppProperties(new_properties);
+                FFW.RPCSimpleClient.disconnect();
+              }, on_installation_failed)
+          }, on_installation_failed);
+          return;
+      }
+
       FFW.BasicCommunication.SetAppProperties(new_properties);
     },
 
@@ -228,6 +264,11 @@ SDL.InfoController = Em.Object.create(
      * @returns {Object} updated app properties
      */
     updateAppProperties: function(new_properties) {
+      if ('package_url' in new_properties) {
+        SDL.InfoController.appPackageDownloadUrlsMap[new_properties.policyAppID] = new_properties['package_url'];
+        delete new_properties['package_url'];
+      }
+
       var properties_index = -1;
       for (var i = 0; i < this.availableApps.length; ++i) {
         if (this.availableApps[i].policyAppID == new_properties.policyAppID) {
@@ -289,6 +330,99 @@ SDL.InfoController = Em.Object.create(
       setTimeout(function() {
         frames[frame_name].location.href = target_url;
       }, 100);
+    },
+
+    onAppsStoreButtonClick: function() {
+      if (this.isFirstAppStoreClick) {
+        let that = this;
+        $.ajax({
+          url: FLAGS.appStoreUrl,
+          type: "GET",
+          success: (response) => {
+            Em.Logger.log('App store: Received available apps list JSON');
+            that.set('isFirstAppStoreClick', false);
+            that.processAppsStoreResponse(response);
+          },
+          error: (err) => {
+            Em.Logger.log('App store: Failed to get available apps list');
+          }
+        });
+      }
+    },
+
+    processAppsStoreResponse: function(response) {
+      if (!Array.isArray(response)) {
+        Em.Logger.log('Wrong data format!');
+        return;
+      }
+
+      response.forEach(property_item => {
+        property_item['enabled'] = false; // apps from store always should be initially disabled
+        SDL.InfoController.updateAppProperties(property_item);
+      });
+    },
+
+    downloadAppBundle: function(policyAppID) {
+      return new Promise( (resolve, reject) => {
+        if (!policyAppID in SDL.InfoController.appPackageDownloadUrlsMap) {
+          Em.Logger.log(`App store: download URL for ${policyAppID} was not found`);
+          reject();
+        }
+
+        let download_url = SDL.InfoController.appPackageDownloadUrlsMap[policyAppID];
+        let output_path = document.location.pathname.replace('index.html', 'web_engine/')
+        let client = FFW.RPCSimpleClient;
+
+        let bundle_receive_timer = setTimeout(function() {
+          Em.Logger.log('App store: Timeout for getting App bundle expired');
+          client.unsubscribeFromEvent('GetAppBundleResponse');
+          reject();
+        }, 10000);
+
+        let bundle_received_callback = function(params) {
+          Em.Logger.log('App store: Bundle downloading has finished');
+          clearTimeout(bundle_receive_timer);
+          client.unsubscribeFromEvent('GetAppBundleResponse');
+
+          if (params.success == false) {
+            Em.Logger.log('App store: Bundle downloading was not successful');
+            reject();
+          }
+
+          Em.Logger.log('App store: Bundle was downloaded successfully');
+          resolve(params['path']);
+        }
+
+        let message = {
+          method: 'GetAppBundleRequest',
+          params: {
+            'appID': policyAppID,
+            'fileName': output_path,
+            'url': download_url
+          }
+        };
+
+        Em.Logger.log(`App store: downloading app bundle for ${policyAppID}`);
+        client.connect();
+        client.subscribeOnEvent('GetAppBundleResponse', bundle_received_callback);
+        client.send(message);
+      });
+    },
+
+    extractEntrypointFromManifest: function(bundle_path) {
+      return new Promise( (resolve, reject) => {
+        const manifest_path = bundle_path + 'manifest.js';
+
+        Em.Logger.log(`App store: importing manifest from ${manifest_path}`);
+        import(manifest_path)
+          .then((content) => {
+            if ('entrypoint' in content) {
+              resolve(content['entrypoint']);
+            }
+
+            reject();
+        });
+      });
     },
 
     /**

@@ -32,6 +32,8 @@ from time import sleep
 import os
 import signal
 import json
+import requests
+import zipfile
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -135,11 +137,46 @@ def handle_save_PTU_to_file_message(params):
 
 	return json.dumps(response_msg)
 
+def handle_get_app_bundle_message(params):
+	print("-->Handle get app bundle message\r")
+
+	policy_app_id = params["appID"]
+	file_path = params["fileName"] + policy_app_id + ".zip"
+	extract_path = params["fileName"] + policy_app_id + "/"
+	url = params["url"]
+
+	print("-->Downloading file: " + url + "\r")
+	response = requests.get(url)
+
+	print("-->Saving to file system: " + file_path + "\r")
+	with open(file_path, 'wb') as f:
+		f.write(response.content)
+
+	print("-->Extracting bundle to: " + extract_path + "\r")
+	with zipfile.ZipFile(file_path, 'r') as zip:
+		zip.extractall(extract_path)
+
+	print("-->Deleting zip file\r")
+	os.remove(file_path)
+
+	print("-->Sending response\r")
+
+	response_msg = {
+		"method": "GetAppBundleResponse",
+		"params": {
+			"success": True,
+			"path": extract_path
+		}
+	}
+
+	return json.dumps(response_msg)
+
 def get_method_mapping():
 	return {
 		"LowVoltageSignalRequest": handle_low_voltage_message,
 		"GetPTFileContentRequest": handle_get_pt_file_content_message,
-		"SavePTUToFileRequest": handle_save_PTU_to_file_message
+		"SavePTUToFileRequest": handle_save_PTU_to_file_message,
+		"GetAppBundleRequest": handle_get_app_bundle_message
 	}
 
 def getch():

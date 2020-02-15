@@ -87,6 +87,11 @@ FLAGS = Em.Object.create(
       'host': 'localhost',
       'port': '2020',
       'transport': 'ws-client'
-    }
+    },
+
+    /**
+     * URL required for getting available applications list from store
+     */
+    appStoreUrl: 'https://sdl-webengine-app-store-example.s3.amazonaws.com/app-directory.json'
   }
 );

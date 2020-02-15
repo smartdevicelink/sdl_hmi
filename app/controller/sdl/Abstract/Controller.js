@@ -1135,6 +1135,7 @@ SDL.SDLController = Em.Object.extend(
      */
     onClickAppsStore: function() {
       SDL.States.goToStates('info.apps_store');
+      SDL.InfoController.onAppsStoreButtonClick();
     },
     /**
      * Send notification if device was choosed

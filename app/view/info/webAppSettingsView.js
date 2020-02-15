@@ -122,8 +122,9 @@ SDL.WebAppSettingsView = Em.ContainerView.create({
         action: function() {
           SDL.WebAppSettingsView.appPropertiesEditor.set('callback',
             function(new_properties) {
+              let old_properties = SDL.deepCopy(SDL.WebAppSettingsView.editorAppSettings);
               SDL.WebAppSettingsView.editorAppSettings = SDL.deepCopy(new_properties);
-              SDL.InfoController.setAppProperties(new_properties);
+              SDL.InfoController.setAppProperties(old_properties, new_properties);
           });
 
           SDL.WebAppSettingsView.appPropertiesEditor.saveWithComments();
@@ -138,18 +139,7 @@ SDL.WebAppSettingsView = Em.ContainerView.create({
      */
     showProperties: function() {
       var settings = JSON.stringify(this.editorAppSettings, null, 2);
-      var settings_array = settings.split(/\r?\n/);
-      var insert_index = settings_array.length - 1;
-
-      if (!this.editorAppSettings.hasOwnProperty('endpoint')) {
-        settings_array.splice(insert_index, 0, '  // "endpoint": "endpoint"');
-      }
-
-      if (!this.editorAppSettings.hasOwnProperty('authToken')) {
-        settings_array.splice(insert_index, 0, '  // "authToken": "token"');
-      }
-
-      this.appPropertiesEditor.set('content', settings_array.join('\r\n'));
+      this.appPropertiesEditor.set('content', settings);
       this.appPropertiesEditor.activate();
     }
   }
