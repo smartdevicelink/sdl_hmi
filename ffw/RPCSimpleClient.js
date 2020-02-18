@@ -70,16 +70,17 @@ FFW.RPCSimpleClient = Em.Object.create({
       }
     },
     onSend: function(){
+      if (this.sendData.length == 0) {
+        return;
+      }
+
       var str_message = JSON.stringify(this.sendData[0]);
       Em.Logger.log('Message to be sent: ' + str_message);
 
       if (this.socket && this.socket.readyState == this.socket.OPEN){
         this.socket.send(str_message);
         this.sendData.pop();
-
-        if (this.sendData.length > 0) {
-          this.triggerMessageSend();
-        }
+        this.triggerMessageSend();
       }
     },
     onWSMessage: function(evt) {
@@ -93,9 +94,7 @@ FFW.RPCSimpleClient = Em.Object.create({
     },
     onWSOpen: function(evt) {
       Em.Logger.log('RPCSimpleCLient.onWSOpen');
-      if (this.sendData.length > 0) {
-        this.triggerMessageSend();
-      }
+      this.triggerMessageSend();
     },
     onWSClose: function(evt) {
       Em.Logger.log('RPCSimpleClient: Connection is closed');
