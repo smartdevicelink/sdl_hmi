@@ -1105,7 +1105,6 @@
 #systemRequestView .requestSubTypeInput,
 #systemRequestView .policyAppIdInput,
 #systemRequestView .fileNameInput,
-#runWebEngineAppView .runWebEngineHTMLPathInput,
 #runWebEngineAppView .runWebEngineSDLHostInput,
 #runWebEngineAppView .runWebEngineSDLPortInput,
 #policies_settings_get_urls .listInput {
@@ -1176,13 +1175,11 @@
     top: 254px;
 }
 
-#runWebEngineAppView .runWebEngineHTMLPathInput {
+#runWebEngineAppView .runWebEngineEntrypointLabel {
     position: absolute;
     left: 150px;
-    top: 70px;
-    width: 495px;
-    font-size: 18px;
-    height: 40px;
+    top: 80px;
+    width: 515px;
 }
 
 #runWebEngineAppView .runWebEngineSDLHostInput {

@@ -64,9 +64,10 @@ SDL.InfoController = Em.Object.create(
      */
     isFirstAppStoreClick: true,
 
+    /**
+     * @description Mapping of bundle download urls for each web application
+     */
     appPackageDownloadUrlsMap: {},
-
-    appEntryPointsMap: {},
 
     /**
      * @description Changes current state according to incoming event
@@ -101,13 +102,17 @@ SDL.InfoController = Em.Object.create(
           app_title = app['nicknames'][0];
         }
 
+        const icon_url = app.hasOwnProperty('icon_url') ? app['icon_url'] : 'images/info/info_leftMenu_apps_ico.png';
+
         available_apps_view.get('availableAppsList.list.childViews').pushObject(
           SDL.Button.create({
             action: 'showAppProperties',
             classNames: 'list-item button',
             target: 'SDL.InfoController',
             text: app_title,
-            appData: app
+            appData: app,
+            templateName: 'rightText',
+            icon: icon_url
           })
         );
       }
@@ -162,18 +167,16 @@ SDL.InfoController = Em.Object.create(
           SDL.PopUp.create().appendTo('body').popupActivate(
             `Can't install ${policyAppID} app from applications store...`, null, false
           );
+          SDL.WebAppSettingsView.editorAppSettings = old_properties;
+          SDL.WebAppSettingsView.showProperties();
           FFW.RPCSimpleClient.disconnect();
         };
 
         that.downloadAppBundle(policyAppID)
-          .then( function(bundle_path) {
-            that.extractEntrypointFromManifest(bundle_path)
-              .then( function(entrypoint) {
-                Em.Logger.log(`App store: app installed successfully`);
-                that.appEntryPointsMap[policyAppID] = bundle_path + entrypoint;
-                FFW.BasicCommunication.SetAppProperties(new_properties);
-                FFW.RPCSimpleClient.disconnect();
-              }, on_installation_failed)
+          .then( function() {
+            Em.Logger.log(`App store: app installed successfully`);
+            FFW.BasicCommunication.SetAppProperties(new_properties);
+            FFW.RPCSimpleClient.disconnect();
           }, on_installation_failed);
           return;
       }
@@ -264,9 +267,8 @@ SDL.InfoController = Em.Object.create(
      * @returns {Object} updated app properties
      */
     updateAppProperties: function(new_properties) {
-      if ('package_url' in new_properties) {
-        SDL.InfoController.appPackageDownloadUrlsMap[new_properties.policyAppID] = new_properties['package_url'];
-        delete new_properties['package_url'];
+      if ('package' in new_properties && 'url' in new_properties.package) {
+        SDL.InfoController.appPackageDownloadUrlsMap[new_properties.policyAppID] = new_properties['package']['url'];
       }
 
       var properties_index = -1;
@@ -332,6 +334,9 @@ SDL.InfoController = Em.Object.create(
       }, 100);
     },
 
+    /**
+     * @description Callback function executed when user clicks App Store button
+     */
     onAppsStoreButtonClick: function() {
       if (this.isFirstAppStoreClick) {
         let that = this;
@@ -340,7 +345,6 @@ SDL.InfoController = Em.Object.create(
           type: "GET",
           success: (response) => {
             Em.Logger.log('App store: Received available apps list JSON');
-            that.set('isFirstAppStoreClick', false);
             that.processAppsStoreResponse(response);
           },
           error: (err) => {
@@ -350,18 +354,37 @@ SDL.InfoController = Em.Object.create(
       }
     },
 
+    /**
+     * @description Processes response receives from App Store server
+     * @param {String} response string containing server response
+     */
     processAppsStoreResponse: function(response) {
-      if (!Array.isArray(response)) {
+      var json_content = JSON.parse(response);
+
+      if (!Array.isArray(json_content)) {
         Em.Logger.log('Wrong data format!');
         return;
       }
 
-      response.forEach(property_item => {
+      SDL.InfoController.set('isFirstAppStoreClick', false);
+
+      json_content.forEach(property_item => {
         property_item['enabled'] = false; // apps from store always should be initially disabled
         SDL.InfoController.updateAppProperties(property_item);
       });
     },
 
+    /**
+     * @description Provides output folder path for a web engine apps
+     */
+    getWebEngineOutputFolder: function() {
+      return document.location.pathname.replace('index.html', 'web_engine/');
+    },
+
+    /**
+     * @description Sends request to backend to download bundle for a speicifed app
+     * @param {String} policyAppID Id of application to download
+     */
     downloadAppBundle: function(policyAppID) {
       return new Promise( (resolve, reject) => {
         if (!policyAppID in SDL.InfoController.appPackageDownloadUrlsMap) {
@@ -370,7 +393,7 @@ SDL.InfoController = Em.Object.create(
         }
 
         let download_url = SDL.InfoController.appPackageDownloadUrlsMap[policyAppID];
-        let output_path = document.location.pathname.replace('index.html', 'web_engine/')
+        let output_path = SDL.InfoController.getWebEngineOutputFolder();
         let client = FFW.RPCSimpleClient;
 
         let bundle_receive_timer = setTimeout(function() {
@@ -390,7 +413,7 @@ SDL.InfoController = Em.Object.create(
           }
 
           Em.Logger.log('App store: Bundle was downloaded successfully');
-          resolve(params['path']);
+          resolve();
         }
 
         let message = {
@@ -409,20 +432,105 @@ SDL.InfoController = Em.Object.create(
       });
     },
 
-    extractEntrypointFromManifest: function(bundle_path) {
+    /**
+     * @description Sends request to backend to read manifest.js for a specified app
+     * @param {String} policyAppID Id of application to read manifest
+     */
+    getWebAppManifestContent: function(policyAppID) {
       return new Promise( (resolve, reject) => {
-        const manifest_path = bundle_path + 'manifest.js';
+        let manifest_path =
+          `${SDL.InfoController.getWebEngineOutputFolder()}${policyAppID}/manifest.js`;
+        let client = FFW.RPCSimpleClient;
 
-        Em.Logger.log(`App store: importing manifest from ${manifest_path}`);
-        import(manifest_path)
-          .then((content) => {
-            if ('entrypoint' in content) {
-              resolve(content['entrypoint']);
-            }
+        let manifest_receive_timer = setTimeout(function() {
+          Em.Logger.log('App store: Timeout for getting manifest expired');
+          client.unsubscribeFromEvent('GetAppManifestResponse');
+          reject();
+        }, 10000);
 
+        let manifest_received_callback = function(params) {
+          Em.Logger.log('App store: Manifest loading has finished');
+          clearTimeout(manifest_receive_timer);
+          client.unsubscribeFromEvent('GetAppManifestResponse');
+
+          if (params.success == false) {
+            Em.Logger.log('App store: Manifest loading was not successful');
             reject();
-        });
+          }
+
+          Em.Logger.log('App store: Manifest was loaded successfully');
+          resolve(params['content']);
+        }
+
+        let message = {
+          method: 'GetAppManifestRequest',
+          params: {
+            'fileName': manifest_path
+          }
+        };
+
+        Em.Logger.log(`App store: Loading manifest for ${policyAppID}`);
+        client.connect();
+        client.subscribeOnEvent('GetAppManifestResponse', manifest_received_callback);
+        client.send(message);
       });
+    },
+
+    /**
+     * @description Extracts entrypoint name from manifest content
+     * @param {String} bundle_manifest stringified content of app manifest
+     */
+    extractEntrypointFromManifest: function(bundle_manifest) {
+      return new Promise( (resolve, reject) => {
+        Em.Logger.log(`App store: parsing manifest content`);
+
+        var bundle_json;
+        try {
+          bundle_json = JSON.parse(bundle_manifest)
+        }
+        catch {
+          Em.Logger.log(`App store: failed to parse JSON content`);
+          reject();
+        }
+
+        Em.Logger.log(`App store: manifest parsed successfully`);
+        if (!'entrypoint' in bundle_json) {
+          Em.Logger.log(`App store: entrypoint is not specified - use default`);
+          resolve("index.html");
+        }
+
+        resolve(bundle_json['entrypoint']);
+      });
+    },
+
+    /**
+     * @description Tries to get entrypoint for a specified app
+     * @param {String} policyAppID Id of application to get entrypoint
+     * @param {Function} callback Function to call once entrypoint information is available
+     */
+    getWebAppEntrypointPath: function(policyAppID, callback) {
+      let that = this;
+
+      let on_extract_failed = function() {
+        SDL.PopUp.create().appendTo('body').popupActivate(
+          `Can't get entrypoint path for ${policyAppID}`, null, false
+        );
+        FFW.RPCSimpleClient.disconnect();
+      };
+
+      that.getWebAppManifestContent(policyAppID)
+        .then( function(manifest_content) {
+          that.extractEntrypointFromManifest(manifest_content)
+            .then( function(entrypoint) {
+              const entrypoint_path =
+                `${that.getWebEngineOutputFolder()}${policyAppID}/${entrypoint}`;
+              Em.Logger.log(`App store: entrypoint for ${policyAppID} is ${entrypoint_path}`);
+              FFW.RPCSimpleClient.disconnect();
+              callback(entrypoint_path);
+              }, on_extract_failed
+            )
+          }, on_extract_failed
+        );
     },
 
     /**

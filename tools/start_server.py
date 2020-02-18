@@ -159,13 +159,35 @@ def handle_get_app_bundle_message(params):
 	print("-->Deleting zip file\r")
 	os.remove(file_path)
 
-	print("-->Sending response\r")
-
+	print("-->Sending the response\r")
 	response_msg = {
 		"method": "GetAppBundleResponse",
 		"params": {
+			"success": True
+		}
+	}
+
+	return json.dumps(response_msg)
+
+def handle_get_app_manifest_message(params):
+	print("-->Handle get app manifest message\r")
+
+	file_path = params['fileName']
+	print("-->Getting manifest file content: " + file_path + "\r")
+
+	json_content = None
+	with open(file_path, 'r') as js_file:
+		file_content = js_file.read()
+		first_bracket = file_content.find("{")
+		last_bracket = file_content.rfind("}")
+		json_content = file_content[first_bracket:last_bracket + 1]
+
+	print("-->Sending the response\r")
+	response_msg = {
+		"method": "GetAppManifestResponse",
+		"params": {
 			"success": True,
-			"path": extract_path
+			"content": json_content
 		}
 	}
 
@@ -176,7 +198,8 @@ def get_method_mapping():
 		"LowVoltageSignalRequest": handle_low_voltage_message,
 		"GetPTFileContentRequest": handle_get_pt_file_content_message,
 		"SavePTUToFileRequest": handle_save_PTU_to_file_message,
-		"GetAppBundleRequest": handle_get_app_bundle_message
+		"GetAppBundleRequest": handle_get_app_bundle_message,
+		"GetAppManifestRequest": handle_get_app_manifest_message
 	}
 
 def getch():

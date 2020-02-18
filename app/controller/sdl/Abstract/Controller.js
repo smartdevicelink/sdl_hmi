@@ -1176,11 +1176,16 @@ SDL.SDLController = Em.Object.extend(
 
         var model = SDL.SDLController.getApplicationModel(element.appID);
         if (model.webEngineApp && !model.initialized) {
-          SDL.RunWebEngineAppView.set('policyAppIdToLaunch', model.policyAppID);
-          SDL.RunWebEngineAppView.set('titleText',
-            'Run WebEngine App - ' + model.appName + ' - ' +  model.policyAppID
-          );
-          SDL.RunWebEngineAppView.toggleActivity();
+          let callback = function(entrypoint) {
+            SDL.RunWebEngineAppView.set('policyAppIdToLaunch', model.policyAppID);
+            SDL.RunWebEngineAppView.set('titleText',
+              'Run WebEngine App - ' + model.appName + ' - ' +  model.policyAppID
+            );
+            SDL.RunWebEngineAppView.set('appEntrypoint', entrypoint);
+            SDL.RunWebEngineAppView.toggleActivity();
+          }
+
+          SDL.InfoController.getWebAppEntrypointPath(model.policyAppID, callback);
         } else {
           FFW.BasicCommunication.ActivateApp(element.appID);
         }

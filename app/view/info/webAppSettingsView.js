@@ -138,7 +138,16 @@ SDL.WebAppSettingsView = Em.ContainerView.create({
      * @description Shows current app properties in editor
      */
     showProperties: function() {
-      var settings = JSON.stringify(this.editorAppSettings, null, 2);
+      var filtered_settings = {};
+      const api_properties = ['nicknames', 'policyAppID', 'enabled', 'authToken', 'transportType', 'hybridAppPreference', 'endpoint'];
+
+      api_properties.forEach( api_property => {
+        if (api_property in this.editorAppSettings) {
+          filtered_settings[api_property] = this.editorAppSettings[api_property];
+        }
+      });
+
+      var settings = JSON.stringify(filtered_settings, null, 2);
       this.appPropertiesEditor.set('content', settings);
       this.appPropertiesEditor.activate();
     }

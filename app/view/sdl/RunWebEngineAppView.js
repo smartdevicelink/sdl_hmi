@@ -42,7 +42,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       childViews: [
         'runWebEngineAppLabel',
         'runWebEngineHTMLPathLabel',
-        'runWebEngineHTMLPathInput',
+        'runWebEngineEntrypointLabel',
         'runWebEngineSDLHostLabel',
         'runWebEngineSDLHostInput',
         'runWebEngineSDLPortLabel',
@@ -62,6 +62,11 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
        * @description Policy app id to launch
        */
       policyAppIdToLaunch: 0,
+
+      /**
+       * @description Entrypoint of web app to be activated
+       */
+      appEntrypoint: "",
 
       /**
        * @description Title text to display
@@ -91,15 +96,13 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       ),
 
       /**
-       * @description Path to HTML page to execute input
+       * @description Entrypoint to HTML page label
        */
-      runWebEngineHTMLPathInput: Ember.TextField.extend(
+      runWebEngineEntrypointLabel: SDL.Label.extend(
         {
-            elementId: 'runWebEngineHTMLPathInput',
-            classNames: 'runWebEngineHTMLPathInput',
-            value: document.location.pathname.replace(
-                'index.html', 'webengine/hello-sdl/index.html'
-            )
+            elementId: 'runWebEngineEntrypointLabel',
+            classNames: 'runWebEngineEntrypointLabel',
+            contentBinding: 'parentView.appEntrypoint'
         }
       ),
 
@@ -202,7 +205,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
           action: function(element) {
             var properties = {
                 'policyAppID': SDL.RunWebEngineAppView.policyAppIdToLaunch,
-                'url' : SDL.RunWebEngineAppView.runWebEngineHTMLPathInput.value,
+                'url' : SDL.RunWebEngineAppView.appEntrypoint,
                 'host': SDL.RunWebEngineAppView.runWebEngineSDLHostInput.value,
                 'port': SDL.RunWebEngineAppView.runWebEngineSDLPortInput.value,
                 'role': SDL.RunWebEngineAppView.runWebEngineSDLTransportSelect.selection
