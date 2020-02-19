@@ -42,7 +42,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       childViews: [
         'runWebEngineAppLabel',
         'runWebEngineHTMLPathLabel',
-        'runWebEngineEntrypointLabel',
+        'runWebEngineEntryPointLabel',
         'runWebEngineSDLHostLabel',
         'runWebEngineSDLHostInput',
         'runWebEngineSDLPortLabel',
@@ -66,7 +66,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       /**
        * @description Entrypoint of web app to be activated
        */
-      appEntrypoint: "",
+      appEntryPoint: "",
 
       /**
        * @description Title text to display
@@ -98,11 +98,11 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
       /**
        * @description Entrypoint to HTML page label
        */
-      runWebEngineEntrypointLabel: SDL.Label.extend(
+      runWebEngineEntryPointLabel: SDL.Label.extend(
         {
-            elementId: 'runWebEngineEntrypointLabel',
-            classNames: 'runWebEngineEntrypointLabel',
-            contentBinding: 'parentView.appEntrypoint'
+            elementId: 'runWebEngineEntryPointLabel',
+            classNames: 'runWebEngineEntryPointLabel',
+            contentBinding: 'parentView.appEntryPoint'
         }
       ),
 
@@ -205,7 +205,7 @@ SDL.RunWebEngineAppView = Em.ContainerView.create(
           action: function(element) {
             var properties = {
                 'policyAppID': SDL.RunWebEngineAppView.policyAppIdToLaunch,
-                'url' : SDL.RunWebEngineAppView.appEntrypoint,
+                'url' : SDL.RunWebEngineAppView.appEntryPoint,
                 'host': SDL.RunWebEngineAppView.runWebEngineSDLHostInput.value,
                 'port': SDL.RunWebEngineAppView.runWebEngineSDLPortInput.value,
                 'role': SDL.RunWebEngineAppView.runWebEngineSDLTransportSelect.selection

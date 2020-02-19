@@ -145,6 +145,9 @@ def handle_get_app_bundle_message(params):
 	extract_path = params["fileName"] + policy_app_id + "/"
 	url = params["url"]
 
+	print("-->Creating subdirectories\r")
+	os.makedirs(extract_path, exist_ok = True)
+
 	print("-->Downloading file: " + url + "\r")
 	response = requests.get(url)
 

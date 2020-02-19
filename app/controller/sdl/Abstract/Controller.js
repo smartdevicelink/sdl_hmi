@@ -1181,11 +1181,11 @@ SDL.SDLController = Em.Object.extend(
             SDL.RunWebEngineAppView.set('titleText',
               'Run WebEngine App - ' + model.appName + ' - ' +  model.policyAppID
             );
-            SDL.RunWebEngineAppView.set('appEntrypoint', entrypoint);
+            SDL.RunWebEngineAppView.set('appEntryPoint', entrypoint);
             SDL.RunWebEngineAppView.toggleActivity();
           }
 
-          SDL.InfoController.getWebAppEntrypointPath(model.policyAppID, callback);
+          SDL.InfoController.getWebAppEntryPointPath(model.policyAppID, callback);
         } else {
           FFW.BasicCommunication.ActivateApp(element.appID);
         }

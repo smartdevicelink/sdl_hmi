@@ -163,9 +163,17 @@ SDL.InfoController = Em.Object.create(
         let that = this;
         const policyAppID = new_properties['policyAppID'];
 
+        let get_app_title = function() {
+          let title = policyAppID;
+          if ('nicknames' in new_properties && new_properties['nicknames'].length > 0) {
+            title = new_properties['nicknames'][0];
+          }
+          return title;
+        };
+
         let on_installation_failed = function() {
           SDL.PopUp.create().appendTo('body').popupActivate(
-            `Can't install ${policyAppID} app from applications store...`, null, false
+            `Can't install "${get_app_title()}" app from applications store...`, null, false
           );
           SDL.WebAppSettingsView.editorAppSettings = old_properties;
           SDL.WebAppSettingsView.showProperties();
@@ -359,7 +367,7 @@ SDL.InfoController = Em.Object.create(
      * @param {String} response string containing server response
      */
     processAppsStoreResponse: function(response) {
-      var json_content = JSON.parse(response);
+      var json_content = response;
 
       if (!Array.isArray(json_content)) {
         Em.Logger.log('Wrong data format!');
@@ -480,7 +488,7 @@ SDL.InfoController = Em.Object.create(
      * @description Extracts entrypoint name from manifest content
      * @param {String} bundle_manifest stringified content of app manifest
      */
-    extractEntrypointFromManifest: function(bundle_manifest) {
+    extractEntryPointFromManifest: function(bundle_manifest) {
       return new Promise( (resolve, reject) => {
         Em.Logger.log(`App store: parsing manifest content`);
 
@@ -508,7 +516,7 @@ SDL.InfoController = Em.Object.create(
      * @param {String} policyAppID Id of application to get entrypoint
      * @param {Function} callback Function to call once entrypoint information is available
      */
-    getWebAppEntrypointPath: function(policyAppID, callback) {
+    getWebAppEntryPointPath: function(policyAppID, callback) {
       let that = this;
 
       let on_extract_failed = function() {
@@ -520,7 +528,7 @@ SDL.InfoController = Em.Object.create(
 
       that.getWebAppManifestContent(policyAppID)
         .then( function(manifest_content) {
-          that.extractEntrypointFromManifest(manifest_content)
+          that.extractEntryPointFromManifest(manifest_content)
             .then( function(entrypoint) {
               const entrypoint_path =
                 `${that.getWebEngineOutputFolder()}${policyAppID}/${entrypoint}`;

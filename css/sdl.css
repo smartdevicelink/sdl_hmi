@@ -1175,11 +1175,12 @@
     top: 254px;
 }
 
-#runWebEngineAppView .runWebEngineEntrypointLabel {
+#runWebEngineAppView .runWebEngineEntryPointLabel {
     position: absolute;
     left: 150px;
     top: 80px;
     width: 515px;
+    word-break: break-all;
 }
 
 #runWebEngineAppView .runWebEngineSDLHostInput {
