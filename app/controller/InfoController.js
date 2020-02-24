@@ -531,7 +531,7 @@ SDL.InfoController = Em.Object.create(
           that.extractEntryPointFromManifest(manifest_content)
             .then( function(entrypoint) {
               const entrypoint_path =
-                `${that.getWebEngineOutputFolder()}${policyAppID}/${entrypoint}`;
+                `http://${FLAGS.webEngineConfiguration.file_server_host}:${FLAGS.webEngineConfiguration.file_server_port}/web_engine/${policyAppID}/${entrypoint}`;
               Em.Logger.log(`App store: entrypoint for ${policyAppID} is ${entrypoint_path}`);
               FFW.RPCSimpleClient.disconnect();
               callback(entrypoint_path);

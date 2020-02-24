@@ -29,11 +29,30 @@
 from websocket_server import WebsocketServer
 from threading import Thread
 from time import sleep
+from http.server import HTTPServer as BaseHTTPServer, SimpleHTTPRequestHandler
+
 import os
 import signal
 import json
 import requests
 import zipfile
+
+WEBSOCKET_PORT = 8081
+FILESERVER_PORT = 8082
+
+class HTTPHandler(SimpleHTTPRequestHandler):
+    """This handler uses server.base_path instead of always using os.getcwd()"""
+    def translate_path(self, path):
+        path = SimpleHTTPRequestHandler.translate_path(self, path)
+        relpath = os.path.relpath(path, os.getcwd())
+        fullpath = os.path.join(self.server.base_path, relpath)
+        return fullpath
+
+class HTTPServer(BaseHTTPServer):
+    """The main server, you pass in base_path which is the path you want to serve requests from"""
+    def __init__(self, base_path, server_address, RequestHandlerClass=HTTPHandler):
+        self.base_path = base_path
+        BaseHTTPServer.__init__(self, server_address, RequestHandlerClass)
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -217,26 +236,37 @@ def getch():
 
         return ch
 
-def startServer(server):
-	print("HMI signals listener was started\r")
+def start_signals_listener(server):
 	server.set_fn_new_client(new_client)
 	server.set_fn_client_left(client_left)
 	server.set_fn_message_received(message_received)
 	server.run_forever()
 
-def keyBoardEvent():
-	global server
-	char = ' '
-	while char != 'q':
-		char = getch()
+def start_file_server(file_server):
+	file_server.serve_forever()
 
-server = WebsocketServer(8081)
-serverThread = Thread(target = startServer, args = (server, ))
-keyBoardThread = Thread(target = keyBoardEvent)
-keyBoardThread.start()
+def signal_handler(sig, frame):
+    print('\rStopping server...')
+
+web_dir = os.path.dirname(os.path.dirname(__file__))
+file_server = HTTPServer(web_dir, ("", FILESERVER_PORT))
+fileServerThread = Thread(target = start_file_server, args = (file_server, ))
+fileServerThread.start()
+print("HTTP file server was started\r")
+
+server = WebsocketServer(WEBSOCKET_PORT)
+serverThread = Thread(target = start_signals_listener, args = (server, ))
 serverThread.start()
+print("HMI signals listener was started\r")
 
-keyBoardThread.join()
-print("Closing server...")
+signal.signal(signal.SIGINT, signal_handler)
+print('Press Ctrl+C to stop server')
+signal.pause()
+
+print("Closing signals listener...")
 server.shutdown()
 server.server_close()
+
+print("Closing HTTP file server...")
+file_server.shutdown()
+file_server.server_close()

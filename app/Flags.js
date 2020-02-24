@@ -86,7 +86,9 @@ FLAGS = Em.Object.create(
     webEngineConfiguration: {
       'host': 'localhost',
       'port': '2020',
-      'transport': 'ws-client'
+      'transport': 'ws-server',
+      'file_server_host': 'localhost',
+      'file_server_port': '8082'
     },
 
     /**
