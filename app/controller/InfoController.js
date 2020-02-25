@@ -60,9 +60,9 @@ SDL.InfoController = Em.Object.create(
     editedAppPropertiesToApply: null,
 
     /**
-     * @description Flag defining whether that a first show of apps store or not
+     * @description Flag defining whether HMI recevied response from App Store server or not
      */
-    isFirstAppStoreClick: true,
+    isAppStoreResponseReceived: false,
 
     /**
      * @description Mapping of bundle download urls for each web application
@@ -102,7 +102,7 @@ SDL.InfoController = Em.Object.create(
           app_title = app['nicknames'][0];
         }
 
-        const icon_url = app.hasOwnProperty('icon_url') ? app['icon_url'] : 'images/info/info_leftMenu_apps_ico.png';
+        const icon_url = ('icon_url' in app) ? app['icon_url'] : 'images/info/info_leftMenu_apps_ico.png';
 
         available_apps_view.get('availableAppsList.list.childViews').pushObject(
           SDL.Button.create({
@@ -346,7 +346,7 @@ SDL.InfoController = Em.Object.create(
      * @description Callback function executed when user clicks App Store button
      */
     onAppsStoreButtonClick: function() {
-      if (this.isFirstAppStoreClick) {
+      if (!this.isAppStoreResponseReceived) {
         let that = this;
         $.ajax({
           url: FLAGS.appStoreUrl,
@@ -363,7 +363,7 @@ SDL.InfoController = Em.Object.create(
     },
 
     /**
-     * @description Processes response receives from App Store server
+     * @description Processes response received from App Store server
      * @param {String} response string containing server response
      */
     processAppsStoreResponse: function(response) {
@@ -374,7 +374,7 @@ SDL.InfoController = Em.Object.create(
         return;
       }
 
-      SDL.InfoController.set('isFirstAppStoreClick', false);
+      SDL.InfoController.set('isAppStoreResponseReceived', true);
 
       json_content.forEach(property_item => {
         property_item['enabled'] = false; // apps from store always should be initially disabled
@@ -383,7 +383,7 @@ SDL.InfoController = Em.Object.create(
     },
 
     /**
-     * @description Provides output folder path for a web engine apps
+     * @description Provides output folder path for web engine apps
      */
     getWebEngineOutputFolder: function() {
       return document.location.pathname.replace('index.html', 'web_engine/');
@@ -502,7 +502,7 @@ SDL.InfoController = Em.Object.create(
         }
 
         Em.Logger.log(`App store: manifest parsed successfully`);
-        if (!'entrypoint' in bundle_json) {
+        if (!('entrypoint' in bundle_json)) {
           Em.Logger.log(`App store: entrypoint is not specified - use default`);
           resolve("index.html");
         }

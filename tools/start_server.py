@@ -246,7 +246,7 @@ def start_file_server(file_server):
 	file_server.serve_forever()
 
 def signal_handler(sig, frame):
-    print('\rStopping server...')
+    print("\rStopping server...")
 
 web_dir = os.path.dirname(os.path.dirname(__file__))
 file_server = HTTPServer(web_dir, ("", FILESERVER_PORT))
@@ -260,7 +260,7 @@ serverThread.start()
 print("HMI signals listener was started\r")
 
 signal.signal(signal.SIGINT, signal_handler)
-print('Press Ctrl+C to stop server')
+print("Press Ctrl+C to stop server")
 signal.pause()
 
 print("Closing signals listener...")
