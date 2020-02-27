@@ -17,6 +17,7 @@ SDL.eng = {
   view_info_apps_vehicle_DeviceLocation: 'Device Location',
   view_info_apps_vehicle_FindNewApplications: 'Find New Apps',
   view_info_apps_vehicle_GetDeviceList: 'Change Devices',
+  view_info_apps_vehicle_ApplicationsStore: 'App Store',
   view_info_calendar_date: 'Jul, 2012',
   view_info_calendar_today: 'Go to Today',
   view_info_calendar_day1: 'SUN',

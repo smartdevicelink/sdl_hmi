@@ -71,23 +71,23 @@ SDL.PopUp = Em.ContainerView.extend(
     buttonOk: SDL.Button.extend(
       {
         classNames: 'button vehicleHealthReport OkButton',
+        classNameBindings: ['parentView.buttons:inactive_state'],
         text: 'Ok',
         action: 'deactivate',
         target: 'parentView',
         buttonAction: true,
-        onDown: false,
-        disabledBinding: 'parentView.buttons'
+        onDown: false
       }
     ),
     buttonCancel: SDL.Button.extend(
       {
         classNames: 'button vehicleHealthReport CancelButton',
+        classNameBindings: ['parentView.buttons:inactive_state'],
         text: 'Cancel',
         action: 'deactivate',
         target: 'parentView',
         buttonAction: false,
-        onDown: false,
-        disabledBinding: 'parentView.buttons'
+        onDown: false
       }
     ),
     message: SDL.Label.extend(

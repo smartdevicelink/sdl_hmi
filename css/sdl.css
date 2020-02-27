@@ -736,7 +736,8 @@
 
 #exitAppView, #tbtClientStateView,
 #VehicleInfo, #systemRequestView,
-#PrimaryDevice, #sendMessageView {
+#PrimaryDevice, #sendMessageView,
+#runWebEngineAppView {
     opacity: 0;
     left: 50px;
     width: 700px;
@@ -772,7 +773,8 @@
 #systemRequestView .systemRequestViewLabel,
 #tbtClientStateView .tbtClientStateLabel,
 #VehicleInfo .vehicleInfoLabel,
-#PrimaryDevice .primaryDeviceLabel {
+#PrimaryDevice .primaryDeviceLabel,
+#runWebEngineAppView .runWebEngineAppLabel {
     top: 10px;
     width: 600px;
     left: 35px;
@@ -792,7 +794,8 @@
 #addWidgetPopUp.active,
 #sendMessageView.active,
 #VehicleInfo.active,
-#PrimaryDevice.active {
+#PrimaryDevice.active,
+#runWebEngineAppView.active {
     opacity: 1;
     display: block;
 }
@@ -811,6 +814,46 @@
     height: 20px;
     padding: 10px;
     background: #535353;
+}
+
+#runWebEngineAppView .runWebEngineHTMLPathLabel {
+    position: absolute;
+    top: 80px;
+    left: 30px;
+}
+
+#runWebEngineAppView .runWebEngineSDLHostLabel {
+    position: absolute;
+    top: 135px;
+    left: 30px;
+}
+
+#runWebEngineAppView .runWebEngineSDLPortLabel {
+    position: absolute;
+    left: 30px;
+    top: 190px;
+}
+
+#runWebEngineAppView .runWebEngineSDLTransportLabel {
+    position: absolute;
+    top: 245px;
+    left: 30px;
+}
+
+#runWebEngineAppView .runWebEngineCancelButton {
+    position: absolute;
+    text-align: center;
+    bottom: 10px;
+    left: 350px;
+    width: 150px;
+}
+
+#runWebEngineAppView .runWebEngineLaunchButton {
+    position: absolute;
+    text-align: center;
+    bottom: 10px;
+    left: 520px;
+    width: 150px;
 }
 
 #exitAppView .signalLabel{
@@ -881,6 +924,7 @@
 #VehicleInfo .speedInput,
 #systemRequestView .appIDSelect,
 #PrimaryDevice .deviceSelect,
+#runWebEngineAppView .runWebEngineSDLTransportSelect,
 #policies_settings_appPermissions .privacyModeSelect,
 #policies_settings_appPermissions .appIDSelect{
     top: 125px;
@@ -890,6 +934,15 @@
     height: 40px;
     color: white;
     background: #393939;
+}
+
+#runWebEngineAppView .runWebEngineSDLTransportSelect {
+    position: absolute;
+    top: 235px;
+    left: 150px;
+    width: 518px;
+    font-size: 32px;
+    padding-left: 10px;
 }
 
 #exitAppView .signalSelect{
@@ -1052,6 +1105,8 @@
 #systemRequestView .requestSubTypeInput,
 #systemRequestView .policyAppIdInput,
 #systemRequestView .fileNameInput,
+#runWebEngineAppView .runWebEngineSDLHostInput,
+#runWebEngineAppView .runWebEngineSDLPortInput,
 #policies_settings_get_urls .listInput {
     width: 265px;
     position: absolute;
@@ -1118,6 +1173,28 @@
 
 #systemRequestView .fileNameInput {
     top: 254px;
+}
+
+#runWebEngineAppView .runWebEngineEntryPointLabel {
+    position: absolute;
+    left: 150px;
+    top: 80px;
+    width: 515px;
+    word-break: break-all;
+}
+
+#runWebEngineAppView .runWebEngineSDLHostInput {
+    position: absolute;
+    top: 125px;
+    left: 150px;
+    width: 495px;
+}
+
+#runWebEngineAppView .runWebEngineSDLPortInput {
+    position: absolute;
+    top: 180px;
+    left: 150px;
+    width: 495px;
 }
 
 #VehicleInfo .onEmergencyEvent,
@@ -1209,7 +1286,7 @@
 }
 
 .PopUp .text {
-    top: 41px;
+    top: 50px;
     left: 5px;
     width: 295px;
     height: 120px;
@@ -1721,6 +1798,21 @@
 #info_apps_list .ffw-button {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+#info_apps_list .webEngineAppPending {
+    color: yellow
+}
+
+#info_apps_list .webEngineAppRegistered {
+    color: green
+}
+
+.InvisibleFrame {
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    visibility: hidden;
 }
 
 #sdl_view_container {

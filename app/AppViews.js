@@ -79,6 +79,7 @@ SDL.AppViews = Em.ContainerView.extend(
       SDL.ExitApp,
       SDL.PrimaryDevice,
       SDL.SystemRequest,
+      SDL.RunWebEngineAppView,
       SDL.SendMessage,
       SDL.AddWidgetPopUp,
       'phoneCall'

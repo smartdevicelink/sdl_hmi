@@ -635,6 +635,15 @@
 	margin: 6px;
 }
 
+#info_apps .appsStore {
+	top: 278px;
+}
+
+#info_apps .appsStore img {
+	width: 38px;
+	margin: 6px;
+}
+
 #info_apps .list {
 	float: right;
 	margin-right: 41px;
@@ -671,4 +680,128 @@
 	border-radius: 2px;
 	top: 269px;
 	left: 303px;
+}
+
+/******************* For Info.AppsStoreView menu*******************/
+#info_apps_store {
+	position: absolute;
+	top: 48px;
+	left: 153px;
+	width: 647px;
+	height: 384px;
+	float: left;
+	z-index: 1001;
+}
+
+#info_apps_store .backButton {
+	top: 59px;
+}
+
+#info_apps_store .block-header-title {
+	top: 67px;
+	left: 73px;
+}
+
+#info_apps_store .appsStoreLabel,
+.sdl-window .caption-text {
+	left: 5px;
+	width: 612px;
+	background: #393939;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 50px;
+	height: 50px;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+#info_apps_store #availableAppsLabel {
+	top: 70px;
+	left: 10px;
+	width: 322px;
+	text-align: center;
+}
+
+#info_apps_store #get_apps_properties_button {
+	position: absolute;
+	top: 100px;
+	left: 345px;
+	width: 250px;
+	height: 30px;
+	line-height: 32px;
+	text-align: center;
+}
+
+#info_apps_store #set_app_properties_button {
+	position: absolute;
+	top: 150px;
+	left: 345px;
+	width: 250px;
+	height: 30px;
+	line-height: 32px;
+	text-align: center;
+}
+
+#availableAppsList {
+	position: absolute;
+	left: 5px;
+	top: 96px;
+}
+
+#availableAppsList .list-item span {
+	margin-left: 60px;
+	margin-top: 4px;
+}
+
+#availableAppsList .list-item {
+	height: 48px !important;
+	border: 1px solid #393939;
+}
+
+#availableAppsList .list-content {
+	width: 279px;
+	border: none !important;
+}
+
+#info_web_app_settings .codeEditor {
+	position: absolute;
+	left: 170px !important;
+	height: 260px !important;
+	top: 90px !important;
+}
+
+#info_web_app_settings .codeEditor .button {
+	display: none;
+}
+
+#info_web_app_settings .editor {
+	top: 5px;
+	left: 5px;
+	width: 589px;
+}
+
+#info_web_app_settings .btn {
+	position: absolute;
+	top: 363px;
+	width: 100px;
+	height: 30px;
+	line-height: 32px;
+	text-align: center;
+	font-weight: bold;
+}
+
+#info_web_app_settings #back_button {
+	left: 175px;
+}
+
+#info_web_app_settings #del_button {
+	left: 290px;
+}
+
+#info_web_app_settings #get_button {
+	left: 405px;
+}
+
+#info_web_app_settings #set_button {
+	left: 520px;
 }

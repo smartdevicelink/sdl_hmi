@@ -78,6 +78,22 @@ FLAGS = Em.Object.create(
     /**
      * Flag to enable PTU flow over in-vehicle modem
      */
-    PTUWithModemEnabled: false
+    PTUWithModemEnabled: false,
+
+    /**
+     * Web engine configuration structure
+     */
+    webEngineConfiguration: {
+      'host': 'localhost',
+      'port': '2020',
+      'transport': 'ws-server',
+      'file_server_host': 'localhost',
+      'file_server_port': '8082'
+    },
+
+    /**
+     * URL required for getting available applications list from store
+     */
+    appStoreUrl: 'https://sdl-webengine-app-store-example.s3.amazonaws.com/app-directory.json'
   }
 );

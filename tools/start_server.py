@@ -29,9 +29,30 @@
 from websocket_server import WebsocketServer
 from threading import Thread
 from time import sleep
+from http.server import HTTPServer as BaseHTTPServer, SimpleHTTPRequestHandler
+
 import os
 import signal
 import json
+import requests
+import zipfile
+
+WEBSOCKET_PORT = 8081
+FILESERVER_PORT = 8082
+
+class HTTPHandler(SimpleHTTPRequestHandler):
+    """This handler uses server.base_path instead of always using os.getcwd()"""
+    def translate_path(self, path):
+        path = SimpleHTTPRequestHandler.translate_path(self, path)
+        relpath = os.path.relpath(path, os.getcwd())
+        fullpath = os.path.join(self.server.base_path, relpath)
+        return fullpath
+
+class HTTPServer(BaseHTTPServer):
+    """The main server, you pass in base_path which is the path you want to serve requests from"""
+    def __init__(self, base_path, server_address, RequestHandlerClass=HTTPHandler):
+        self.base_path = base_path
+        BaseHTTPServer.__init__(self, server_address, RequestHandlerClass)
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -135,11 +156,72 @@ def handle_save_PTU_to_file_message(params):
 
 	return json.dumps(response_msg)
 
+def handle_get_app_bundle_message(params):
+	print("-->Handle get app bundle message\r")
+
+	policy_app_id = params["appID"]
+	file_path = params["fileName"] + policy_app_id + ".zip"
+	extract_path = params["fileName"] + policy_app_id + "/"
+	url = params["url"]
+
+	print("-->Creating subdirectories\r")
+	os.makedirs(extract_path, exist_ok = True)
+
+	print("-->Downloading file: " + url + "\r")
+	response = requests.get(url)
+
+	print("-->Saving to file system: " + file_path + "\r")
+	with open(file_path, 'wb') as f:
+		f.write(response.content)
+
+	print("-->Extracting bundle to: " + extract_path + "\r")
+	with zipfile.ZipFile(file_path, 'r') as zip:
+		zip.extractall(extract_path)
+
+	print("-->Deleting zip file\r")
+	os.remove(file_path)
+
+	print("-->Sending the response\r")
+	response_msg = {
+		"method": "GetAppBundleResponse",
+		"params": {
+			"success": True
+		}
+	}
+
+	return json.dumps(response_msg)
+
+def handle_get_app_manifest_message(params):
+	print("-->Handle get app manifest message\r")
+
+	file_path = params['fileName']
+	print("-->Getting manifest file content: " + file_path + "\r")
+
+	json_content = None
+	with open(file_path, 'r') as js_file:
+		file_content = js_file.read()
+		first_bracket = file_content.find("{")
+		last_bracket = file_content.rfind("}")
+		json_content = file_content[first_bracket:last_bracket + 1]
+
+	print("-->Sending the response\r")
+	response_msg = {
+		"method": "GetAppManifestResponse",
+		"params": {
+			"success": True,
+			"content": json_content
+		}
+	}
+
+	return json.dumps(response_msg)
+
 def get_method_mapping():
 	return {
 		"LowVoltageSignalRequest": handle_low_voltage_message,
 		"GetPTFileContentRequest": handle_get_pt_file_content_message,
-		"SavePTUToFileRequest": handle_save_PTU_to_file_message
+		"SavePTUToFileRequest": handle_save_PTU_to_file_message,
+		"GetAppBundleRequest": handle_get_app_bundle_message,
+		"GetAppManifestRequest": handle_get_app_manifest_message
 	}
 
 def getch():
@@ -154,26 +236,37 @@ def getch():
 
         return ch
 
-def startServer(server):
-	print("HMI signals listener was started\r")
+def start_signals_listener(server):
 	server.set_fn_new_client(new_client)
 	server.set_fn_client_left(client_left)
 	server.set_fn_message_received(message_received)
 	server.run_forever()
 
-def keyBoardEvent():
-	global server
-	char = ' '
-	while char != 'q':
-		char = getch()
+def start_file_server(file_server):
+	file_server.serve_forever()
 
-server = WebsocketServer(8081)
-serverThread = Thread(target = startServer, args = (server, ))
-keyBoardThread = Thread(target = keyBoardEvent)
-keyBoardThread.start()
+def signal_handler(sig, frame):
+    print("\rStopping server...")
+
+web_dir = os.path.dirname(os.path.dirname(__file__))
+file_server = HTTPServer(web_dir, ("", FILESERVER_PORT))
+fileServerThread = Thread(target = start_file_server, args = (file_server, ))
+fileServerThread.start()
+print("HTTP file server was started\r")
+
+server = WebsocketServer(WEBSOCKET_PORT)
+serverThread = Thread(target = start_signals_listener, args = (server, ))
 serverThread.start()
+print("HMI signals listener was started\r")
 
-keyBoardThread.join()
-print("Closing server...")
+signal.signal(signal.SIGINT, signal_handler)
+print("Press Ctrl+C to stop server")
+signal.pause()
+
+print("Closing signals listener...")
 server.shutdown()
 server.server_close()
+
+print("Closing HTTP file server...")
+file_server.shutdown()
+file_server.server_close()

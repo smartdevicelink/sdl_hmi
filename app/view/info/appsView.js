@@ -44,6 +44,7 @@ SDL.InfoAppsView = Em.ContainerView.create({
     'Asist911',
     'findNewApps',
     'getDeviceList',
+    'applicationsStore',
     'listOfApplications'
   ],
 
@@ -87,10 +88,16 @@ SDL.InfoAppsView = Em.ContainerView.create({
             appName: apps[i].appName,
             appID: apps[i].appID,
             classNames: 'list-item button',
+            classNameBindings: [
+              'webEngineAppPending:webEngineAppPending',
+              'webEngineAppRegistered:webEngineAppRegistered'
+            ],
             iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
             '.appIcon',
             disabled: disabledToActivate,
-            templateName: iconTemplateName
+            templateName: iconTemplateName,
+            webEngineAppPending: apps[i].webEngineApp && !apps[i].initialized,
+            webEngineAppRegistered: apps[i].webEngineApp && apps[i].initialized,
           })
         );
       }
@@ -143,6 +150,18 @@ SDL.InfoAppsView = Em.ContainerView.create({
         onDown: false
       }
     ),
+
+  applicationsStore: SDL.Button.extend({
+      icon: 'images/sdl/apps_store.png',
+      textBinding: 'SDL.locale.label.view_info_apps_vehicle_ApplicationsStore',
+      elementId: 'infoAppsAppsStore',
+      classNames: 'button appsStore leftButtons',
+      arrow: true,
+      action: 'onClickAppsStore',
+      target: 'SDL.SDLController',
+      onDown: false
+    }
+  ),
 
   listOfApplications: SDL.List.extend({
 
