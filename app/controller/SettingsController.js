@@ -361,8 +361,7 @@ SDL.SettingsController = Em.Object.create(
         FFW.BasicCommunication.OnSystemRequest(
           'PROPRIETARY',
           SDL.SettingsController.policyUpdateFile,
-          SDL.SDLModel.data.policyURLs[0].url,
-          SDL.SDLModel.data.policyURLs[0].appID
+          SDL.SDLModel.data.policyURLs[0]
         );
       }
       if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
