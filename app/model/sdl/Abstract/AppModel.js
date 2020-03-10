@@ -838,14 +838,13 @@ SDL.ABSAppModel = Em.Object.extend(
           });
           // Merge existing show strings with new show request
           for(var i=0; i<params.showStrings.length; i++) {
-            for (var j=0; j<mergedShowStrings.length; j++) {
-              var newField = params.showStrings[i];
-              var existingField = mergedShowStrings[i];
-              if (newField.fieldName === existingField.fieldName) {
-                mergedShowStrings[i].fieldText = newField.fieldText;
-              } else {
-                mergedShowStrings.push(newField);
-              }
+            var newField = params.showStrings[i];
+            var existingField = mergedShowStrings.find(oldField => oldField.fieldName == newField.fieldName);
+
+            if (existingField) {
+              existingField.fieldText = newField.fieldText;
+            } else {
+              mergedShowStrings.push(newField);
             }
           }
           element.content.showStrings = mergedShowStrings;
