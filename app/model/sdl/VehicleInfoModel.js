@@ -272,7 +272,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         'emergencyEventType': 'NO_EVENT',
         'fuelCutoffStatus': 'NORMAL_OPERATION',
         'rolloverEvent': 'NO_EVENT',
-        'maximumChangeVelocity': 'NO_EVENT',
+        'maximumChangeVelocity': 0,
         'multipleEvents': 'NO_EVENT'
       },
       'clusterModes': {
@@ -308,6 +308,10 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       },
       'tpms': 'TIRES_NOT_TRAINED',
       'cloudAppVehicleID': 'SDLVehicleNo123',
+      'displayResolution': {
+         'width': 800,
+         'height': 480
+      }
       //
       // 'avgFuelEconomy': 0.1,
       // 'batteryVoltage': 12.5,
@@ -318,10 +322,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       // 'genericbinary': '165165650',
       // 'satRadioESN': '165165650',
       // 'rainSensor': 165165650,
-      'displayResolution': {
-         'width': 800,
-         'height': 480
-      }
     },
     /**
      * Method to set selected state of vehicle transmission to vehicleData
@@ -406,22 +406,25 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         total_count: 0
       };
 
+      var code = SDL.SDLModel.data.resultCode.SUCCESS;
       for (var key in subscriptions) {
         statistic.total_count++;
         if (subscriptions[key].resultCode == 'SUCCESS') {
           statistic.success_count++;
         }
-      }
-
-      if (statistic.total_count == statistic.success_count) {
-        return SDL.SDLModel.data.resultCode.SUCCESS;
+        else if (subscriptions[key].resultCode == 'VEHICLE_DATA_NOT_AVAILABLE') {
+          code = SDL.SDLModel.data.resultCode.DATA_NOT_AVAILABLE;
+        }
+        else if (code == SDL.SDLModel.data.resultCode.SUCCESS && subscriptions[key].resultCode == 'DATA_ALREADY_SUBSCRIBED') {
+          code = SDL.SDLModel.data.resultCode.IGNORED;
+        }
       }
 
       if (statistic.success_count > 0) {
         return SDL.SDLModel.data.resultCode.WARNINGS;
       }
 
-      return SDL.SDLModel.data.resultCode.IGNORED;
+      return code;
     },
     /**
      * Function returns response message to VehicleInfoRPC
@@ -539,7 +542,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           key = 'clusterModes';
         }
         if (key != 'appID') {
-          if (this.vehicleData[key]) {
+          if (this.vehicleData[key] != undefined) {
             data[oldKey] = this.vehicleData[key];
           } else {
             if (!result) {
