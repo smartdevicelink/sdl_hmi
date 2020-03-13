@@ -210,7 +210,11 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'fuelRange': [
         {
           'type':'GASOLINE',
-          'range': 400
+          'range': 400,
+          'level': 10,
+          'levelState': 'NORMAL',
+          'capacity': 100,
+          'capacityUnit': 'KILOGRAMS'
         }
       ],
       'odometer': 23,
