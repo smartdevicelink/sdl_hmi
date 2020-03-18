@@ -417,7 +417,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         }
         else if (code == SDL.SDLModel.data.resultCode.SUCCESS && 
             (subscriptions[key].resultCode == 'DATA_ALREADY_SUBSCRIBED' || 
-             subscriptions[key].resultCode == 'DATA_NOT_SUBSCRIBED' ) {
+             subscriptions[key].resultCode == 'DATA_NOT_SUBSCRIBED')) {
           code = SDL.SDLModel.data.resultCode.IGNORED;
         }
       }
