@@ -1651,7 +1651,9 @@ FFW.UI = FFW.RPCObserver.create(
         case SDL.SDLModel.data.resultCode.WARNINGS:
         case SDL.SDLModel.data.resultCode.SUCCESS:
         {
-          SDL.TTSPopUp.DeactivateTTS();
+          if (SDL.TTSPopUp.active) {
+            SDL.TTSPopUp.DeactivateTTS();
+          }
           this.sendUIResult(resultCode, id, 'UI.Alert', info);
           break;
         }
