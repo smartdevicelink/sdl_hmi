@@ -88,8 +88,8 @@ SDL.ConnectionSettingsView = Em.ContainerView.create(
           params: {
             action: 'changeUcsVehicle',
             target: 'SDL.SettingsController',
-            name: 'Disallow vehicle permissions',
-            text: 'Disallow vehicle permissions - ' + SDL.SDLModel.data.externalConsentStatus[1].status,
+            name: 'Allow vehicle permissions',
+            text: 'Allow vehicle permissions - ' + SDL.SDLModel.data.externalConsentStatus[1].status,
           }
         }
       );
