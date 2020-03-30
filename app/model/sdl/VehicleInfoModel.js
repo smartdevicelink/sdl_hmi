@@ -51,7 +51,11 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'THIRD',
       'FOURTH',
       'FIFTH',
-      'SIXTH'
+      'SIXTH',
+      'SEVENTH',
+      'EIGHTH',
+      'NINTH',
+      'TENTH'
     ],
     /**
      * Data changed in Odometr Input in VehicleInfo popUp
@@ -112,6 +116,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'externalTemperature': 'VEHICLEDATA_EXTERNTEMP',
       'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'vin': 'VEHICLEDATA_VIN',
+      'gearStatus': 'VEHICLEDATA_GEARSTATUS',
       'prndl': 'VEHICLEDATA_PRNDL',
       'tirePressure': 'VEHICLEDATA_TIREPRESSURE',
       'odometer': 'VEHICLEDATA_ODOMETER',
@@ -172,7 +177,11 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'externalTemperature': null,
       'vin': '52-452-52-752',
       'turnSignal': 'OFF',
-      'prndl': 'PARK',
+      'gearStatus': {
+        'userSelectedGear': 'DRIVE',
+        'actualGear': 'PARK',
+        'transmissionType': 'AUTOMATIC'
+      },
       'electronicParkBrakeStatus': 'OPEN',
       'tirePressure': {
         'pressureTelltale': 'OFF',
@@ -313,6 +322,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
          'height': 480
       }
       //
+      // 'prndl': 'PARK',
       // 'avgFuelEconomy': 0.1,
       // 'batteryVoltage': 12.5,
       // 'batteryPackVoltage': 12.5,
