@@ -92,7 +92,7 @@ FFW.ExternalPolicies = Em.Object.create({
         this.packResponseReady = true;
         FFW.BasicCommunication.OnSystemRequest(
             this.sysReqParams.type,
-            this.sysReqParams.policyUpdateFile,
+            this.sysReqParams.fileName,
             this.sysReqParams.url,
             this.sysReqParams.appID
         );
@@ -117,12 +117,11 @@ FFW.ExternalPolicies = Em.Object.create({
     pack: function(params) {
         Em.Logger.log("Pack")
         this.sysReqParams = params;
-        this.packClient.send(this.sysReqParams.policyUpdateFile);     
+        this.packClient.send(JSON.stringify(this.sysReqParams));     
     },
-    unpack: function(file) {
-        //var strJSON = JSON.stringify(obj);
+    unpack: function(params) {
         Em.Logger.log("Unpack")
-        this.unpackClient.send(file);
+        this.unpackClient.send(JSON.stringify(params));
     }
 
 });

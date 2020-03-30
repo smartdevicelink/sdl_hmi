@@ -570,7 +570,11 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
             if (FLAGS.ExternalPolicies === true) {
-              FFW.ExternalPolicies.unpack(request.params.fileName);
+              FFW.ExternalPolicies.unpack({
+                requestType: request.params.requestType,
+                requestSubType: request.params.requestSubType,
+                fileName: request.params.fileName
+              });
             } else {
               this.OnReceivedPolicyUpdate(request.params.fileName);
             }

@@ -308,21 +308,6 @@ SDL.SettingsController = Em.Object.create(
         ].isSDLAllowed = result;
       SDL.SettingsController.currentDeviceAllowance = null;
     },
-    OnSystemRequestHandler: function(url) {
-      if(FLAGS.ExternalPolicies === true) {
-        FFW.ExternalPolicies.pack({
-          type: 'PROPRIETARY',
-          policyUpdateFile: SDL.SettingsController.policyUpdateFile,
-          url: url
-        })
-      } else {
-        FFW.BasicCommunication.OnSystemRequest(
-          'PROPRIETARY',
-          SDL.SettingsController.policyUpdateFile,
-          url
-        );
-      }
-    },
     /**
      * Method verify what OnSystemRequest should be sent
      *
@@ -331,8 +316,8 @@ SDL.SettingsController = Em.Object.create(
     OnSystemRequestHandler: function(url) {
       if(FLAGS.ExternalPolicies === true) {
         FFW.ExternalPolicies.pack({
-          type: 'PROPRIETARY',
-          policyUpdateFile: SDL.SettingsController.policyUpdateFile,
+          requestType: 'PROPRIETARY',
+          fileName: SDL.SettingsController.policyUpdateFile,
           url: url
         })
       } else {
