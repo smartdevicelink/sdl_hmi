@@ -68,6 +68,12 @@ SDL.SettingsController = Em.Object.create(
      * disallowed.
      */
     currentDeviceAllowance: null,
+
+    /**
+     * @description Value of CCPU version displayed in user input
+     */
+    editedCcpuVersionValue: "",
+
     onState: function(event) {
       SDL.States.goToStates('settings.' + event.goToState);
     },
@@ -608,6 +614,13 @@ SDL.SettingsController = Em.Object.create(
         this.model.currentSeatModel.goToStates();
         SDL.States.goToStates('settings.seat');
         }
+    },
+
+    /**
+     * @description Saves new CCPU version value from user input
+     */
+    applyNewCcpuVersionValue: function() {
+      SDL.SDLModel.data.ccpuVersion = this.editedCcpuVersionValue;
     },
 
     /**

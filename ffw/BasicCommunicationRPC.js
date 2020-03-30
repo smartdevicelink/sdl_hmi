@@ -687,7 +687,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                                                               // from SDL
                                                               // protocol
                 'method': request.method,
-                'ccpu_version': 'ccpu_version',
+                'ccpu_version': SDL.SDLModel.data.ccpuVersion,
                 'language': SDL.SDLModel.data.hmiUILanguage,
                 'wersCountryCode': 'wersCountryCode'
               }

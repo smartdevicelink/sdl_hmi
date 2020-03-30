@@ -191,6 +191,14 @@ var StateManager = Em.StateManager.extend(
                 }
               }
             ),
+            ccpuEditor: Em.State.create(
+              {
+                enter: function() {
+                  this._super();
+                  SDL.SettingsController.set('editedCcpuVersionValue', SDL.SDLModel.data.ccpuVersion);
+                }
+              }
+            ),
             deviceConfig: Em.State.create(
               {
                 enter: function() {

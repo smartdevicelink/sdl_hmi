@@ -68,6 +68,29 @@
     padding-left: 10px;
 }
 
+#settingsView .in_settings_separate_view .ccpuVersionInput {
+    position: absolute;
+    left: 145px;
+    top: 115px;
+    width: 400px;
+}
+
+#settingsView .in_settings_separate_view .applyButton {
+    position: absolute;
+    left: 585px;
+    top: 115px;
+    width: 75px;
+    text-align: center;
+}
+
+#settingsView .in_settings_separate_view .label.ccpuVersionLabel {
+    position: absolute;
+    top: 110px;
+    left: 10px;
+    background: black;
+    width: 120px;
+}
+
 #settingsView .in_settings_separate_view .sendRequestButton {
     top: 210px;
     left: 130px;
