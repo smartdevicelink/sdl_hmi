@@ -135,7 +135,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'tirePressureValue': 'VEHICLEDATA_TIREPRESSURE_VALUE',
       'tpms': 'VEHICLEDATA_TPMS',
-      'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID'
+      'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID',
+      'stabilityControlsStatus': 'VEHICLEDATA_STABILITYCONTROLSSTATUS'
     },
     /**
      * Stored VehicleInfo Data
@@ -174,6 +175,10 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'turnSignal': 'OFF',
       'prndl': 'PARK',
       'electronicParkBrakeStatus': 'OPEN',
+      'stabilityControlsStatus': {
+        'escSystem': 'OFF',
+        'trailerSwayControl': 'OFF'
+      },
       'tirePressure': {
         'pressureTelltale': 'OFF',
         'leftFront': {
