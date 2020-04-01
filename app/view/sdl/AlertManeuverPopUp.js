@@ -151,18 +151,23 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       }
     },
     AlertManeuverActive: function(message) {
-      //        var self = this;
-      //
-      //        if (message.softButtons) {
-      //            this.addSoftButtons( message.softButtons );
-      //        }
-      //
-      //        this.set( 'activate', true );
-      //
-      //        clearTimeout( this.timer );
-      //        this.timer = setTimeout( function() {
-      //            self.set( 'activate', false );
-      //        }, 5000 );
+      var self = this;
+      var params = message.params;
+      if (params.softButtons) {
+          this.addSoftButtons( params.softButtons );
+      }
+
+      this.set( 'activate', true );
+
+      clearTimeout( this.timer );
+      this.timer = setTimeout( function() {
+          self.set( 'activate', false );
+          FFW.Navigation.sendNavigationResult(
+            SDL.SDLModel.data.resultCode.SUCCESS,
+            message.id,
+            message.method
+          );
+      }, 5000 );
     }
   }
 );
