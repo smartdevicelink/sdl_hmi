@@ -220,7 +220,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
         }
       }
     },
-    AlertActive: function(message, alertRequestId) {
+    AlertActive: function(message, alertRequestId, priority) {
       var self = this;
       this.set('alertRequestId', alertRequestId);
       this.set('cancelID', message.cancelID);
@@ -258,6 +258,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
                                                                         // for
                                                                         // Alert
                                                                         // popUp
+      this.set('priority', priority);
       clearTimeout(this.timer);
       this.timer = setTimeout(
         function() {
