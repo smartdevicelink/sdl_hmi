@@ -500,7 +500,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
         }
         if (notification.method == this.onAppRegisteredNotification) {
-          let appModel = Object.assign(notification.params.application, {"priority": notification.params.priority}); 
+          let appModel = Object.assign(notification.params.application, {"priority": notification.params.priority ? notification.params.priority : 'NONE'}); 
           SDL.SDLModel.onAppRegistered(
             appModel, notification.params.vrSynonyms
           );

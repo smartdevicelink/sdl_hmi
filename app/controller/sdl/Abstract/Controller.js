@@ -920,7 +920,7 @@ SDL.SDLController = Em.Object.extend(
               nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               policyAppID: params.policyAppID,
               webEngineApp: isWebEngineApp,
-              priority: params.priority
+              priority: params.priority ? params.priority : 'NONE'
             }
           )
         );
@@ -940,7 +940,7 @@ SDL.SDLController = Em.Object.extend(
               nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               policyAppID: params.policyAppID,
               webEngineApp: isWebEngineApp,
-              priority: params.priority
+              priority: params.priority ? params.priority : 'NONE'
             }
           )
         );
