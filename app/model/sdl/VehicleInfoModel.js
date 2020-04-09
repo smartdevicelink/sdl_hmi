@@ -406,7 +406,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         total_count: 0
       };
 
-      var code = SDL.SDLModel.data.resultCode.SUCCESS;
+      var code = SDL.SDLModel.data.resultCode.WARNINGS;
       for (var key in subscriptions) {
         statistic.total_count++;
         if (subscriptions[key].resultCode == 'SUCCESS') {
@@ -422,8 +422,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         }
       }
 
-      if (statistic.success_count > 0) {
-        return SDL.SDLModel.data.resultCode.WARNINGS;
+      if (statistic.total_count == statistic.success_count) {
+        code = SDL.SDLModel.data.resultCode.SUCCESS;
       }
 
       return code;
