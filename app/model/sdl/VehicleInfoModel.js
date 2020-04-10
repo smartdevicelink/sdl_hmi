@@ -403,27 +403,37 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
     CalculateSubscriptionsResultCode: function(subscriptions) {
       var statistic = {
         success_count: 0,
-        total_count: 0
+        total_count: 0,
+        not_available: 0,
+        ignore: 0
       };
 
-      var code = SDL.SDLModel.data.resultCode.WARNINGS;
       for (var key in subscriptions) {
         statistic.total_count++;
         if (subscriptions[key].resultCode == 'SUCCESS') {
           statistic.success_count++;
         }
         else if (subscriptions[key].resultCode == 'VEHICLE_DATA_NOT_AVAILABLE') {
-          code = SDL.SDLModel.data.resultCode.DATA_NOT_AVAILABLE;
+          statistic.not_available++;
         }
-        else if (code == SDL.SDLModel.data.resultCode.SUCCESS && 
-            (subscriptions[key].resultCode == 'DATA_ALREADY_SUBSCRIBED' || 
-             subscriptions[key].resultCode == 'DATA_NOT_SUBSCRIBED')) {
-          code = SDL.SDLModel.data.resultCode.IGNORED;
+        else if (subscriptions[key].resultCode == 'DATA_ALREADY_SUBSCRIBED' ||
+             subscriptions[key].resultCode == 'DATA_NOT_SUBSCRIBED') {
+          statistic.ignore++;
         }
       }
 
-      if (statistic.total_count == statistic.success_count) {
+      var code = SDL.SDLModel.data.resultCode.WARNINGS;
+      if (statistic.total_count == 0) {
+        code = SDL.SDLModel.data.resultCode.IGNORED;
+      }
+      else if (statistic.total_count == statistic.success_count) {
         code = SDL.SDLModel.data.resultCode.SUCCESS;
+      }
+      else if (statistic.not_available > 0) {
+        code = SDL.SDLModel.data.resultCode.DATA_NOT_AVAILABLE;
+      }
+      else if (statistic.ignore > 0) {
+        code = SDL.SDLModel.data.resultCode.IGNORED;
       }
 
       return code;
