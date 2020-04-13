@@ -418,15 +418,15 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         }
       }
 
-      var code = SDL.SDLModel.data.resultCode.WARNINGS;
       if (statistic.total_count == 0 || statistic.ignore == statistic.total_count) {
-        code = SDL.SDLModel.data.resultCode.IGNORED;
-      }
-      else if (statistic.total_count == statistic.success_count) {
-        code = SDL.SDLModel.data.resultCode.SUCCESS;
+        return SDL.SDLModel.data.resultCode.IGNORED;
       }
 
-      return code;
+      if (statistic.total_count == statistic.success_count) {
+        return SDL.SDLModel.data.resultCode.SUCCESS;
+      }
+
+      return SDL.SDLModel.data.resultCode.WARNINGS;
     },
     /**
      * Function returns response message to VehicleInfoRPC
