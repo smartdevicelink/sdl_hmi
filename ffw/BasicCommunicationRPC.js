@@ -287,9 +287,6 @@ FFW.BasicCommunication = FFW.RPCObserver
                             } else {
                               SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
                             }
-                            if (FLAGS.ExternalPolicies === true) {
-                              SDL.SettingsController.policyUpdateRetry();
-                            }
                           }
                         }
                       }
@@ -463,7 +460,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               messageCode = 'StatusNeeded';
               if (FLAGS.ExternalPolicies === true && 
                   SDL.SDLModel.data.policyUpdateRetry.isRetry) {
-                SDL.SettingsController.policyUpdateRetry();
+                SDL.SettingsController.policyUpdateRetry('RETRY');
               }
               break;
             }

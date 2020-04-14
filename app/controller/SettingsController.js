@@ -332,9 +332,10 @@ SDL.SettingsController = Em.Object.create(
      * Method responsible for PolicyUpdate retry sequence
      * abort parameter if set to true means that retry sequence if finished
      *
-     * @param {Boolean} abort
+     * @param {String} action
+     * @param {Object} request_params
      */
-    policyUpdateRetry: function(abort) {
+    policyUpdateRetry: function(action, request_params) {
       if(SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress) {
         return;
       }
@@ -343,10 +344,18 @@ SDL.SettingsController = Em.Object.create(
 
       var sendOnSystemRequest = function() {
         SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = false;
+        const default_params = {
+          requestType: 'PROPRIETARY',
+          fileName: SDL.SettingsController.policyUpdateFile,
+          url: SDL.SDLModel.data.policyURLs[0]
+        };
+        const params_to_send = request_params ? request_params : default_params;
+
         FFW.BasicCommunication.OnSystemRequest(
-          'PROPRIETARY',
-          SDL.SettingsController.policyUpdateFile,
-          SDL.SDLModel.data.policyURLs[0]
+          params_to_send.requestType,
+          params_to_send.fileName,
+          params_to_send.url,
+          params_to_send.appID
         );
       }
       if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
@@ -363,7 +372,7 @@ SDL.SettingsController = Em.Object.create(
       if(length == SDL.SDLModel.data.policyUpdateRetry.try) {
         SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
       }
-      if (abort !== 'ABORT' && SDL.SDLModel.data.policyUpdateRetry.isRetry) {           
+      if (action !== 'ABORT' && SDL.SDLModel.data.policyUpdateRetry.isRetry) {           
         
         SDL.SDLModel.data.policyUpdateRetry.oldTimer = 
           SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] * 1000;
