@@ -315,9 +315,10 @@ SDL.SDLModel = Em.Object.extend({
 
       if (app_model.globalProperties.vrHelp) {
         for (var i = 0; i < app_model.globalProperties.vrHelp.length; i++) {
-          if (app_model.globalProperties.vrHelp[i].image.value === params.fileName) {
-            app_model.globalProperties.vrHelp[i].image.value =
-              SDL.SDLModel.data.defaultListOfIcons.command;
+          if (app_model.globalProperties.vrHelp[i].image &&
+              app_model.globalProperties.vrHelp[i].image.value === params.fileName) {
+              app_model.globalProperties.vrHelp[i].image.value =
+                  SDL.SDLModel.data.defaultListOfIcons.command;
           }
         }
       }
