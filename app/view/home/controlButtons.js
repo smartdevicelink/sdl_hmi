@@ -625,14 +625,12 @@ getCurrentDisplayModeClass: function() {
                 elementId: 'OK',
                 classNames: 'OkBtn',
                 time: 0,
-                presetName: 'OK',
+                presetName: 'PLAY_PAUSE',
                 actionDown: function() {
-
                   this._super();
                   SDL.SDLController.onSoftButtonOkActionDown(this.presetName);
                 },
                 actionUp: function() {
-
                   this._super();
                   SDL.SDLController.onSoftButtonOkActionUp(this.presetName);
                 }
