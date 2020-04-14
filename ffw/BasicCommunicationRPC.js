@@ -278,11 +278,9 @@ FFW.BasicCommunication = FFW.RPCObserver
                             SDL.SDLModel.data.set('policyURLs', data[key].default);
                             if(!FLAGS.PTUWithModemEnabled) {
                               if (data[key].default.length) {
-                                data[key].default.forEach(url => {
-                                  SDL.SettingsController.OnSystemRequestHandler(url);
-                                })
+                                SDL.SettingsController.OnSystemRequestHandler(data[key].default[0]);
                               } else {
-                                this.OnSystemRequest('PROPRIETARY');
+                                SDL.SettingsController.OnSystemRequestHandler();
                               }
                             } else {
                               SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
@@ -703,15 +701,20 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.PolicyUpdate') {
             SDL.SettingsController.policyUpdateFile = request.params.file;
-            SDL.SDLModel.data.policyUpdateRetry.timeout
-              = request.params.timeout;
-            SDL.SDLModel.data.policyUpdateRetry.retry = request.params.retry;
-            SDL.SDLModel.data.policyUpdateRetry.try = 0;
-            this.GetPolicyConfigurationData({
-              policyType: 'module_config',
-              property: 'endpoints',
-              nestedProperty: 7 //Service type for policies
-            }); 
+            if (FLAGS.ExternalPolicies === true) {
+              SDL.SDLModel.data.policyUpdateRetry.timeout
+                = request.params.timeout;
+              SDL.SDLModel.data.policyUpdateRetry.retry = request.params.retry;
+              SDL.SDLModel.data.policyUpdateRetry.try = 0;
+              this.GetPolicyConfigurationData({
+                policyType: 'module_config',
+                property: 'endpoints',
+                nestedProperty: 7 //Service type for policies
+              });
+            }
+            else {
+              SDL.SettingsController.OnSystemRequestHandler();
+            }
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
@@ -1434,9 +1437,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           'params': {
             'requestType': type,
             'fileType': 'JSON',
-            'offset': 1000,
-            'length': 10000,
-            'timeout': 500,
+            'timeout': 1000,
             'fileName': fileName
           }
         };
