@@ -88,7 +88,7 @@ SDL.HmiSettingsModel = Em.Object.extend({
       var result = {};
       if(data.displayMode && this.displayMode != data.displayMode) {
         this.set('displayMode',data.displayMode);
-        result.displayMode = data.displayMode;
+        result.displayMode = (data.displayMode == 'AUTO' ? 'DAY' : data.displayMode);
       }
       if(data.temperatureUnit && this.temperatureUnit != data.temperatureUnit) {
         this.set('temperatureUnit',data.temperatureUnit);
