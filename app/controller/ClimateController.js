@@ -46,15 +46,6 @@ SDL.ClimateController = Em.Object.create(
       return (data.unit == 'CELSIUS'
         ? data.value
         : Math.round((data.value - 32) * 5 / 9));
-    },
-    getClimateControlData: function() {
-      var properties = this.model.getDataForSending();
-      var climateControlData = this.model.getClimateControlData();
-      var data = SDL.SDLController.filterObjectProperty(climateControlData, properties);
-      if(!climateControlData.climateEnable) {
-        data['currentTemperature'] = this.model.getClimateControlData().currentTemperature;
-      }
-      return data;
-    },
+    }
   }
 );
