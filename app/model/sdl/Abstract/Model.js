@@ -201,10 +201,9 @@ SDL.SDLModel = Em.Object.extend({
 
     var result = false;
     var app_model = SDL.SDLController.getApplicationModel(params.appID);
+    var is_image_type = ['GRAPHIC_PNG', 'GRAPHIC_BMP', 'GRAPHIC_JPEG'].includes(params.fileType);
 
-    if ((
-      params.fileType === 'GRAPHIC_PNG' || params.fileType === 'GRAPHIC_BMP' ||
-      params.fileType === 'GRAPHIC_JPEG') && app_model) {
+    if (is_image_type && app_model) {
       result = app_model.onImageRemoved(params.fileName);
 
       if (app_model.appIcon.indexOf(params.fileName) != -1 &&
