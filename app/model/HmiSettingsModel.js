@@ -84,11 +84,17 @@ SDL.HmiSettingsModel = Em.Object.extend({
     return capabilities;
   },
 
+  defineAutoTimeValue: function() {
+    var time = new Date().toLocaleTimeString();
+    time = parseInt(time.substring(0, time.indexOf(':')));
+    return (time > 7 && time < 20? 'DAY': 'NIGHT');
+  },
+
   setHmiSettingsData: function(data){
       var result = {};
       if(data.displayMode && this.displayMode != data.displayMode) {
         this.set('displayMode',data.displayMode);
-        result.displayMode = (data.displayMode == 'AUTO' ? 'DAY' : data.displayMode);
+        result.displayMode = (data.displayMode == 'AUTO' ? defineAutoTimeValue() : data.displayMode);
       }
       if(data.temperatureUnit && this.temperatureUnit != data.temperatureUnit) {
         this.set('temperatureUnit',data.temperatureUnit);
@@ -114,9 +120,7 @@ SDL.HmiSettingsModel = Em.Object.extend({
       distanceUnit: this.distanceUnit
     };
     if(result.displayMode == 'AUTO'){
-      var time = new Date().toLocaleTimeString();
-      time = parseInt(time.substring(0, time.indexOf(':')));
-      result.displayMode = (time > 7 && time < 20? 'DAY': 'NIGHT');
+      result.displayMode = defineAutoTimeValue;
     }
     return result;
   },
