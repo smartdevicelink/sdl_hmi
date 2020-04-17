@@ -403,30 +403,30 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
     CalculateSubscriptionsResultCode: function(subscriptions) {
       var statistic = {
         success_count: 0,
-        total_count: 0
+        total_count: 0,
+        ignore: 0
       };
 
-      var code = SDL.SDLModel.data.resultCode.SUCCESS;
       for (var key in subscriptions) {
         statistic.total_count++;
         if (subscriptions[key].resultCode == 'SUCCESS') {
           statistic.success_count++;
         }
-        else if (subscriptions[key].resultCode == 'VEHICLE_DATA_NOT_AVAILABLE') {
-          code = SDL.SDLModel.data.resultCode.DATA_NOT_AVAILABLE;
-        }
-        else if (code == SDL.SDLModel.data.resultCode.SUCCESS && 
-            (subscriptions[key].resultCode == 'DATA_ALREADY_SUBSCRIBED' || 
-             subscriptions[key].resultCode == 'DATA_NOT_SUBSCRIBED')) {
-          code = SDL.SDLModel.data.resultCode.IGNORED;
+        else if (subscriptions[key].resultCode == 'DATA_ALREADY_SUBSCRIBED' ||
+             subscriptions[key].resultCode == 'DATA_NOT_SUBSCRIBED') {
+          statistic.ignore++;
         }
       }
 
-      if (statistic.success_count > 0) {
-        return SDL.SDLModel.data.resultCode.WARNINGS;
+      if (statistic.total_count == 0 || statistic.ignore == statistic.total_count) {
+        return SDL.SDLModel.data.resultCode.IGNORED;
       }
 
-      return code;
+      if (statistic.total_count == statistic.success_count) {
+        return SDL.SDLModel.data.resultCode.SUCCESS;
+      }
+
+      return SDL.SDLModel.data.resultCode.WARNINGS;
     },
     /**
      * Function returns response message to VehicleInfoRPC
