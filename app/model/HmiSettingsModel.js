@@ -86,9 +86,7 @@ SDL.HmiSettingsModel = Em.Object.extend({
 
   defineAutoTimeValue: function() {
     var time = new Date().toLocaleTimeString([], {hour12: false});
-    console.log('TIME = ' + time);
     time = parseInt(time.substring(0, time.indexOf(':')));
-    console.log('TIME AFTER CONVERTION = ' + time.toString())
     return (time > 7 && time < 20? 'DAY': 'NIGHT');
   },
 
