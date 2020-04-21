@@ -115,7 +115,9 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      * @param {Object} params
      */
     addSoftButtons: function(params) {
-      var count = this.get('softbuttons').removeAllChildren();
+      this.get('softbuttons.childViews').removeObjects(
+        this.get('softbuttons.childViews').filterProperty('softButtonID')
+      );
       if (params) {
         var softButtonsClass;
         switch (params.length) {
