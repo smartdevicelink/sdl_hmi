@@ -160,15 +160,35 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
         }
       }
     },
+
+    /**
+     * @desc Defines whether icons paths verified successfully.
+     */
+    iconsAreValid: false,
+
     AlertManeuverActive: function(message) {
       this.get('softbuttons.childViews').removeObjects(
         this.get('softbuttons.childViews').filterProperty('softButtonID')
       );
 
       var params = message.params;
+      var imageList = [];
       if (params.softButtons) {
           this.addSoftButtons( params.softButtons );
+          for(var i = 0; i < params.softButtons.length; i++) {
+            if(params.softButtons[i].image) {
+              imageList.push(params.softButtons[i].image.value);
+            }
+          }
       }
+
+      var callback = function(failed) {
+        if(!failed) {
+          SDL.AlertManeuverPopUp.iconsAreValid = true;
+        }
+      }
+
+      SDL.SDLModel.validateImages(message.id, callback, imageList);
 
       this.set( 'activate', true );
       this.set('endTime', Date.now() + 5000);
@@ -177,13 +197,19 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
 
       var self = this;
       this.timer = setTimeout( function() {
-          self.set( 'activate', false );
-          this.set('endTime', null);
-          FFW.Navigation.sendNavigationResult(
-            SDL.SDLModel.data.resultCode.SUCCESS,
-            message.id,
-            message.method
-          );
+        self.set( 'activate', false );
+        self.set('endTime', null);
+
+        var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+        var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+        FFW.Navigation.sendNavigationResult(
+          SDL.AlertManeuverPopUp.iconsAreValid ? SUCCESS : WARNINGS,
+          message.id,
+          message.method,
+          SDL.AlertManeuverPopUp.iconsAreValid ? null : "Requested image(s) not found"
+        );
+        return;
       }, 5000 );
     }
   }
