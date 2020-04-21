@@ -332,13 +332,14 @@ SDL.SettingsController = Em.Object.create(
      * Method responsible for PolicyUpdate retry sequence
      * abort parameter if set to true means that retry sequence if finished
      *
-     * @param {String} action
      * @param {Object} request_params
      */
-    policyUpdateRetry: function(action, request_params) {
-      if(SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress) {
+    policyUpdateRetry: function(request_params) {
+      if (SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress) {
+        Em.Logger.log('PTU retry: iteration is in progress');
         return;
       }
+
       clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
       SDL.SDLModel.data.policyUpdateRetry.timer = null;
 
@@ -358,7 +359,9 @@ SDL.SettingsController = Em.Object.create(
           params_to_send.appID
         );
       }
-      if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+
+      if (!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+        Em.Logger.log('PTU retry: starting retry sequence');
         SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
         SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
         SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
@@ -368,33 +371,42 @@ SDL.SettingsController = Em.Object.create(
         );
         return;
       }
+
       var length = SDL.SDLModel.data.policyUpdateRetry.retry.length;
-      if(length == SDL.SDLModel.data.policyUpdateRetry.try) {
+      if (length == SDL.SDLModel.data.policyUpdateRetry.try) {
+        Em.Logger.log('PTU retry: retry attempts are over');
         SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
+        return;
       }
-      if (action !== 'ABORT' && SDL.SDLModel.data.policyUpdateRetry.isRetry) {           
-        
-        SDL.SDLModel.data.policyUpdateRetry.oldTimer = 
-          SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] * 1000;
-     
-        SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
-          function() {
-            sendOnSystemRequest();
-          }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
-        );
-        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
-        SDL.SDLModel.data.policyUpdateRetry.try++;
-      } else {
-        SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
-        clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
-        SDL.SDLModel.data.policyUpdateRetry = {
-          timeout: null,
-          retry: [],
-          try: null,
-          timer: null,
-          oldTimer: 0
-        };
-      }
+
+      SDL.SDLModel.data.policyUpdateRetry.oldTimer =
+        SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] * 1000;
+
+      SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
+        function() {
+          sendOnSystemRequest();
+        }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
+      );
+
+      SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
+      SDL.SDLModel.data.policyUpdateRetry.try++;
+      Em.Logger.log(`PTU retry: retry attempt #${SDL.SDLModel.data.policyUpdateRetry.try}`);
+    },
+
+    /**
+     * @description Aborts policy table update retry sequence
+     */
+    policyUpdateAbort: function() {
+      Em.Logger.log('PTU retry: retry sequence was aborted');
+      SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
+      clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
+      SDL.SDLModel.data.policyUpdateRetry = {
+        timeout: null,
+        retry: [],
+        try: null,
+        timer: null,
+        oldTimer: 0
+      };
     },
 
     /**

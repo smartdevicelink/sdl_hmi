@@ -90,7 +90,7 @@ FFW.ExternalPolicies = Em.Object.create({
     onPackMessage: function(evt) {
         Em.Logger.log('ExternalPolicies onWSMessage ' + evt.data);
         this.packResponseReady = true;
-        SDL.SettingsController.policyUpdateRetry('RETRY', this.sysReqParams);
+        SDL.SettingsController.policyUpdateRetry(this.sysReqParams);
 
         this.sysReqParams = {};
     },

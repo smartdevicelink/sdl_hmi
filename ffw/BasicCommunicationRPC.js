@@ -440,7 +440,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               messageCode = 'StatusUpToDate';
               //Update is complete, stop retry sequence
               if (FLAGS.ExternalPolicies === true) {
-                SDL.SettingsController.policyUpdateRetry('ABORT');
+                SDL.SettingsController.policyUpdateAbort();
               }
               SDL.SettingsController.policyUpdateFile = null;
               this.GetPolicyConfigurationData({
@@ -460,7 +460,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               messageCode = 'StatusNeeded';
               if (FLAGS.ExternalPolicies === true && 
                   SDL.SDLModel.data.policyUpdateRetry.isRetry) {
-                SDL.SettingsController.policyUpdateRetry('RETRY');
+                SDL.SettingsController.policyUpdateRetry(null);
               }
               break;
             }
