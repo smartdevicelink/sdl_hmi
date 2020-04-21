@@ -712,6 +712,13 @@ FFW.BasicCommunication = FFW.RPCObserver
                 nestedProperty: 7 //Service type for policies
               });
             }
+            else if (FLAGS.PTUWithModemEnabled) {
+              this.GetPolicyConfigurationData({
+                policyType: 'module_config',
+                property: 'endpoints',
+                nestedProperty: 7 //Service type for policies
+              });
+            }
             else {
               SDL.SettingsController.OnSystemRequestHandler();
             }
