@@ -175,58 +175,6 @@ FFW.Navigation = FFW.RPCObserver.create(
         }
       }
     },
-    isPng:function(params){
-      var returnValue=true;
-      if(params.nextTurnIcon){
-        var image = params.nextTurnIcon.value;
-        var search_offset = image.lastIndexOf('.');
-        str='.png';
-        var isPng=image.includes(str, search_offset);
-        if(!isPng){
-          delete params.nextTurnIcon;
-          returnValue=false;
-        }       
-      }
-      if(params.turnIcon){
-        var image = params.turnIcon.value;
-        var search_offset = image.lastIndexOf('.');
-        str='.png';
-        var isPng=image.includes(str, search_offset);
-        if(!isPng){
-          delete params.turnIcon;
-          returnValue=false;
-        }       
-      }
-      if(params.turnList){
-        var countList=params.turnList.length;
-        for(var i=0;i<countList;i++){
-          if(params.turnList[i].turnIcon){
-          var image=params.turnList[i].turnIcon.value;
-          var search_offset = image.lastIndexOf('.');
-          str='.png';
-          var isPng=image.includes(str, search_offset);
-          if(!isPng){
-            delete params.turnList[i].turnIcon;
-            returnValue=false;
-          }
-          }
-        }
-      }
-      if(params.softButtons){
-        var countButtons=params.softButtons.length;
-        for(var i=0;i<countButtons;i++){
-          var image=params.softButtons[i].image.value;
-          var search_offset = image.lastIndexOf('.');
-          str='.png';
-          var isPng=image.includes(str, search_offset);
-          if(!isPng){
-            delete params.softButtons[i].image;
-            returnValue=false;
-          }
-        }
-      }
-      return returnValue;
-    },
     /**
      * handle RPC requests here
      */
@@ -311,21 +259,8 @@ FFW.Navigation = FFW.RPCObserver.create(
               );
               this.errorResponsePull[request.id] = null;
             } else {
-              var png=this.isPng(request.params);
+              SDL.NavigationController.validateIcons(request);
               SDL.SDLModel.tbtActivate(request.params);
-              if(png){
-              this.sendNavigationResult(
-                SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method
-              );
-            }else{
-              this.sendNavigationResult(
-                SDL.SDLModel.data.resultCode.WARNINGS,
-                request.id,
-                request.method
-              );
-            }
             }
             break;
           }
@@ -352,20 +287,8 @@ FFW.Navigation = FFW.RPCObserver.create(
               this.errorResponsePull[request.id] = null;
               //}
             }
-            var png=this.isPng(request.params);
+            SDL.NavigationController.validateIcons(request);
             SDL.SDLModel.tbtTurnListUpdate(request.params);
-            if(png){
-            this.sendNavigationResult(
-              SDL.SDLModel.data.resultCode.SUCCESS,
-              request.id,
-              request.method
-            );}else{
-              this.sendNavigationResult(
-                SDL.SDLModel.data.resultCode.WARNINGS,
-                request.id,
-                request.method
-              );
-            }
             break;
           }
           case 'Navigation.StartAudioStream':
@@ -561,7 +484,7 @@ FFW.Navigation = FFW.RPCObserver.create(
      * @param {Number} id
      * @param {String} method
      */
-    sendNavigationResult: function(resultCode, id, method) {
+    sendNavigationResult: function(resultCode, id, method, info) {
       if (this.errorResponsePull[id] != null) {
         this.sendError(
           this.errorResponsePull[id].code,
@@ -585,6 +508,11 @@ FFW.Navigation = FFW.RPCObserver.create(
             'method': method
           }
         };
+
+        if(info != null) {
+          JSONMessage.result.info = info;
+        }
+
         this.sendMessage(JSONMessage);
       }
     },
