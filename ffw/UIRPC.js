@@ -318,7 +318,7 @@ FFW.UI = FFW.RPCObserver.create(
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
               var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
-              FFW.Navigation.sendUIResult(
+              FFW.Navigation.sendNavigationResult(
                 failed ? WARNINGS : SUCCESS, 
                 request.id, 
                 request.method, 

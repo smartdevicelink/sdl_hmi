@@ -521,17 +521,26 @@ SDL.ABSAppModel = Em.Object.extend(
         }
         if(request.params.cmdIcon){
           var image = request.params.cmdIcon.value;
-          var search_offset = image.lastIndexOf('.');
-          str='.png';
-          var isPng=image.includes(str, search_offset);
-          if(!isPng){
-          FFW.UI.sendUIResult(
-            SDL.SDLModel.data.resultCode.WARNINGS, request.id,
-            request.method
-          );
+          if(!SDL.NavigationController.isPng(image)) {
+            FFW.UI.sendUIResult(
+              SDL.SDLModel.data.resultCode.WARNINGS, request.id,
+              request.method);
+            return;
+          }
+
+          var callback = function(failed) {
+            var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+            var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+            FFW.UI.sendUIResult(
+              failed ? WARNINGS : SUCCESS, 
+              request.id, 
+              request.method, 
+              failed ? "Requested image(s) not found" : null);
+          }
+          SDL.SDLModel.validateImages(request.id, callback, [image]);
           return;
         }
-      }
         if (request.id >= 0) {
           FFW.UI.sendUIResult(
             SDL.SDLModel.data.resultCode.SUCCESS, request.id,
@@ -602,10 +611,21 @@ SDL.ABSAppModel = Em.Object.extend(
           SDL.SDLController.buttonsSort(parentID, this.appID);
           SDL.OptionsView.commands.refreshItems();
         }
-        FFW.UI.sendUIResult(
-          SDL.SDLModel.data.resultCode.SUCCESS, request.id,
-          request.method
-        );
+        var callback = function(failed) {
+          var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+          var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+          FFW.UI.sendUIResult(
+            failed ? WARNINGS : SUCCESS, 
+            request.id, 
+            request.method, 
+            failed ? "Requested image(s) not found" : null);
+        }
+        var imageList = [];
+        if(request.params.menuIcon) {
+          imageList.push(request.params.menuIcon.value);
+        }
+        SDL.SDLModel.validateImages(request.id, callback, imageList);
       } else {
         FFW.UI.sendError(
           SDL.SDLModel.data.resultCode.REJECTED, request.id,
