@@ -84,6 +84,12 @@ SDL.HmiSettingsModel = Em.Object.extend({
     return capabilities;
   },
 
+  /**
+   * @function defineAutoTimeValue
+   * @description Defines which time value should be sent 
+   * accordingly to current system time.
+   * @return String (DAY or NIGHT)
+   */
   defineAutoTimeValue: function() {
     var time = new Date().toLocaleTimeString([], {hour12: false});
     time = parseInt(time.substring(0, time.indexOf(':')));
