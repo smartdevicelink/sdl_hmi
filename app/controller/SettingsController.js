@@ -535,12 +535,10 @@ SDL.SettingsController = Em.Object.create(
 
         FLAGS.set('PTUWithModemEnabled', false); // switch back to PTU via mobile
 
-        if (urls.length > 0) {
-          urls.forEach(url => {
-            SDL.SettingsController.OnSystemRequestHandler(url);
-          });
+        if (urls.length > 0 && FLAGS.ExternalPolicies === true) {
+          SDL.SettingsController.OnSystemRequestHandler(urls[0]);
         } else {
-          FFW.BasicCommunication.OnSystemRequest('PROPRIETARY');
+          SDL.SettingsController.OnSystemRequestHandler();
         }
       };
 
