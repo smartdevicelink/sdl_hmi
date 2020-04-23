@@ -374,8 +374,14 @@ SDL.SettingsController = Em.Object.create(
 
       var length = SDL.SDLModel.data.policyUpdateRetry.retry.length;
       if (length == SDL.SDLModel.data.policyUpdateRetry.try) {
-        Em.Logger.log('PTU retry: retry attempts are over');
+        Em.Logger.log('PTU retry: retry attempts exceeded. Sending the last system request');
         SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
+        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
+        SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
+          function() {
+            sendOnSystemRequest();
+          }, 1000
+        );
         return;
       }
 
