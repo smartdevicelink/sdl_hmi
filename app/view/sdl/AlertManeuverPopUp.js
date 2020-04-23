@@ -133,15 +133,25 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
             break;
         }
         for (var i = 0; i < params.length; i++) {
+          let get_template_type = function(button_type) {
+            switch (params[i].type) {
+              case "IMAGE":
+                return "icon";
+              case "BOTH":
+                return "rightText";
+            }
+            return "text";
+          }
+
           this.get('softbuttons.childViews').pushObject(
             SDL.Button.create(
               SDL.PresetEventsCustom, {
                 softButtonID: params[i].softButtonID,
-                icon: params[i].image,
+                icon: params[i].image ? params[i].image.value : '',
                 text: params[i].text,
                 classNames: 'list-item softButton ' + softButtonsClass,
                 elementId: 'softButton' + i,
-                templateName: params[i].image ? 'rightIcon' : 'text',
+                templateName: get_template_type(params[i].type),
                 systemAction: params[i].systemAction,
                 appID: params.appID
               }
