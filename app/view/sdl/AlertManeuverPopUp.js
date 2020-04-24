@@ -115,7 +115,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      * @param {Object} params
      */
     addSoftButtons: function(params) {
-      var count = this.get('softbuttons').removeAllChildren();
       if (params) {
         var softButtonsClass;
         switch (params.length) {
@@ -161,7 +160,10 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       }
     },
     AlertManeuverActive: function(message) {
-      var self = this;
+      this.get('softbuttons.childViews').removeObjects(
+        this.get('softbuttons.childViews').filterProperty('softButtonID')
+      );
+
       var params = message.params;
       if (params.softButtons) {
           this.addSoftButtons( params.softButtons );
@@ -170,6 +172,8 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       this.set( 'activate', true );
 
       clearTimeout( this.timer );
+
+      var self = this;
       this.timer = setTimeout( function() {
           self.set( 'activate', false );
           FFW.Navigation.sendNavigationResult(
