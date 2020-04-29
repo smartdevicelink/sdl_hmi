@@ -28,7 +28,11 @@ FFW.ExternalPolicies = Em.Object.create({
 
     packClient: null,
 
+    packClientURL: 'ws://127.0.0.1:8088',
+
     unpackClient: null,
+
+    unpackClientURL: 'ws://127.0.0.1:8089',
 
     packResponseReady: false,
 
@@ -36,15 +40,16 @@ FFW.ExternalPolicies = Em.Object.create({
 
     sysReqParams: {},
 
-    connect: function() {
-        this.packClient = new WebSocket('ws://127.0.0.1:8088');
-        this.unpackClient = new WebSocket('ws://127.0.0.1:8089');
+    createPackClient(){
+        this.packClient = new WebSocket(this.packClientURL);
         var self = this;
         this.packClient.onopen = function(evt) {
             self.onWSOpen(evt, this);
         };
         this.packClient.onclose = function(evt) {
             self.onWSClose(evt);
+            this.packClient = null;
+            setTimeout(() => { self.createPackClient(); }, 5000);
         };
         this.packClient.onmessage = function(evt) {
             self.onPackMessage(evt);
@@ -52,11 +57,18 @@ FFW.ExternalPolicies = Em.Object.create({
         this.packClient.onerror = function(evt) {
             self.onWSError(evt);
         };
+    },
+
+    createUnpackClient(){
+        this.unpackClient = new WebSocket(this.unpackClientURL);
+        var self = this;
         this.unpackClient.onopen = function(evt) {
             self.onWSOpen(evt, this);
         };
         this.unpackClient.onclose = function(evt) {
             self.onWSClose(evt);
+            this.unpackClient = null;
+            setTimeout(() => { self.createUnpackClient(); }, 5000);
         };
         this.unpackClient.onmessage = function(evt) {
             self.onUnpackMessage(evt);
@@ -64,6 +76,11 @@ FFW.ExternalPolicies = Em.Object.create({
         this.unpackClient.onerror = function(evt) {
             self.onWSError(evt);
         };
+    },
+
+    connect: function() {
+        this.createPackClient();
+        this.createUnpackClient();
     },
 
     onWSOpen: function(evt, socket) {
@@ -75,7 +92,7 @@ FFW.ExternalPolicies = Em.Object.create({
         this.packResponseReady = true;
         FFW.BasicCommunication.OnSystemRequest(
             this.sysReqParams.type,
-            this.sysReqParams.policyUpdateFile,
+            this.sysReqParams.fileName,
             this.sysReqParams.url,
             this.sysReqParams.appID
         );
@@ -100,12 +117,11 @@ FFW.ExternalPolicies = Em.Object.create({
     pack: function(params) {
         Em.Logger.log("Pack")
         this.sysReqParams = params;
-        this.packClient.send(this.sysReqParams.policyUpdateFile);     
+        this.packClient.send(JSON.stringify(this.sysReqParams));     
     },
-    unpack: function(file) {
-        //var strJSON = JSON.stringify(obj);
+    unpack: function(params) {
         Em.Logger.log("Unpack")
-        this.unpackClient.send(file);
+        this.unpackClient.send(JSON.stringify(params));
     }
 
 });

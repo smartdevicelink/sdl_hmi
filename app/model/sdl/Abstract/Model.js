@@ -246,24 +246,42 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      if (SDL.SDLController.model.appInfo.trackIcon &&
-        SDL.SDLController.model.appInfo.trackIcon.indexOf(params.fileName) !=
-        -1 &&
-        params.fileName.length ==
-        SDL.SDLController.model.appInfo.trackIcon.length) {
-        SDL.SDLController.model.appInfo.set('trackIcon',
-          SDL.SDLModel.data.defaultListOfIcons.trackIcon
-        );
-      }
 
-      if (SDL.SDLController.model.appInfo.mainImage &&
-        SDL.SDLController.model.appInfo.mainImage.indexOf(params.fileName) !=
-        -1 &&
-        params.fileName.length ==
-        SDL.SDLController.model.appInfo.mainImage.length) {
-        SDL.SDLController.model.appInfo.set('mainImage',
-          SDL.SDLModel.data.defaultListOfIcons.trackIcon
-        );
+      if (SDL.SDLController.model) {
+        var getFileName = function(complexFileName) {
+          var dateTimeSeparator = "?m=";
+          var modTimeIndex = complexFileName.indexOf(dateTimeSeparator);
+          if (modTimeIndex != -1) {
+            return complexFileName.substring(0, modTimeIndex);
+          }
+          return complexFileName;
+        };
+
+        var icon = SDL.SDLController.model.appInfo.trackIcon;
+        if (icon != null) {
+          icon = getFileName(icon);
+          var paramFileNameValid = (icon.indexOf(params.fileName) != -1);
+          var fileNameLengthValid = (params.fileName.length == icon.length);
+
+          if (paramFileNameValid && fileNameLengthValid) {
+            SDL.SDLController.model.appInfo.set('trackIcon',
+              SDL.SDLModel.data.defaultListOfIcons.trackIcon
+            );
+          }
+        }
+
+        var image = (SDL.SDLController.model.appInfo.mainImage);
+        if (image != null) {
+          image = getFileName(image);
+          var paramFileNameValid = (image.indexOf(params.fileName) != -1);
+          var fileNameLengthValid = (params.fileName.length == image.length);
+
+          if (paramFileNameValid && fileNameLengthValid) {
+            SDL.SDLController.model.appInfo.set('mainImage',
+              SDL.SDLModel.data.defaultListOfIcons.trackIcon
+            );
+          }
+        }
       }
 
       var len = SDL.SDLController.getApplicationModel(params.appID
@@ -305,8 +323,10 @@ SDL.SDLModel = Em.Object.extend({
           }
         }
 
-        if (params.appID == SDL.SDLController.model.appID) {
-          SDL.sdlView.innerMenu.refreshItems();
+        if (SDL.SDLController.model) {
+          if (params.appID == SDL.SDLController.model.appID) {
+            SDL.sdlView.innerMenu.refreshItems();
+          }
         }
       }
 
@@ -784,14 +804,16 @@ SDL.SDLModel = Em.Object.extend({
     	this.setAppIconByAppId(params.appID, params.icon);
     }
 
-    if (app != undefined && app.initialized == false) {
-      if (app.isMedia != params.isMediaApplication) { // If current not initialized model does not matches the registered application type
-        this.convertModel(params);                    // then model should be changed
+    if (app != undefined && !app.initialized) {
+      if (app.isMedia != params.isMediaApplication || app.webEngineApp) {
+        // If current not initialized model does not matches the registered application type then model should be changed
+        this.convertModel(params);
       } else {
         app.disabledToActivate = params.greyOut;
       }
+
       return;
-    } else if (app != undefined && app.initialized == true) {
+    } else if (app != undefined && app.initialized) {
       console.log(
         'Application with appID ' + params.appID + ' already registered!'
       );
@@ -1097,10 +1119,22 @@ SDL.SDLModel = Em.Object.extend({
    */
   onUIAlert: function(message, alertRequestId) {
 
+    let appModel = SDL.SDLController.getApplicationModel(message.appID)
+
     if (!SDL.AlertPopUp.active) {
-      SDL.AlertPopUp.AlertActive(message, alertRequestId);
+      SDL.AlertPopUp.AlertActive(message, alertRequestId, appModel.priority);
       return true;
     } else {
+      let currentAlertPriority = SDL.AlertPopUp.priority
+      if (currentAlertPriority && currentAlertPriority in SDL.SDLModel.data.appPriority
+         && appModel.priority in SDL.SDLModel.data.appPriority) {
+          if (SDL.SDLModel.data.appPriority[currentAlertPriority] > SDL.SDLModel.data.appPriority[appModel.priority]) {
+            // Enum is arranged in descending order (EMERGENCY being the highest, NONE being the lowest)
+            SDL.AlertPopUp.deactivate('ABORTED', 'Lower priority than the incoming alert')
+            SDL.AlertPopUp.AlertActive(message, alertRequestId, appModel.priority);
+            return true;
+          }
+      }
       SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
         alertRequestId
       );

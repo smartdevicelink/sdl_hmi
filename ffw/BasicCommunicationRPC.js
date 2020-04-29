@@ -58,6 +58,9 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLConsentNeededSubscribeRequestID: -1,
       onResumeAudioSourceSubscribeRequestID: -1,
       onServiceUpdateNotificationSubscribeRequestID: -1,
+      onSystemCapabilityUpdatedNotificationSubscribeRequestID: -1,
+      onAppPropertiesChangeNotificationSubscribeRequestID: -1,
+      onAppServiceDataNotificationSubscribeRequestID: -1,
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
       onAppPermissionChangedUnsubscribeRequestID: -1,
@@ -69,6 +72,8 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSDLConsentNeededUnsubscribeRequestID: -1,
       onResumeAudioSourceUnsubscribeRequestID: -1,
       onServiceUpdateNotificationUnsubscribeRequestID: -1,
+      onSystemCapabilityUpdatedNotificationUnsubscribeRequestID: -1,
+      onAppServiceDataNotificationUnsubscribeRequestID: -1,
       // const
       onStatusUpdateNotification: 'SDL.OnStatusUpdate',
       onAppPermissionChangedNotification: 'SDL.OnAppPermissionChanged',
@@ -82,6 +87,9 @@ FFW.BasicCommunication = FFW.RPCObserver
       onResumeAudioSourceNotification: 'BasicCommunication.OnResumeAudioSource',
       componentName: "BasicCommunication",
       onServiceUpdateNotification: 'BasicCommunication.OnServiceUpdate',
+      onSystemCapabilityUpdatedNotification: 'BasicCommunication.OnSystemCapabilityUpdated',
+      onAppPropertiesChangeNotification: 'BasicCommunication.OnAppPropertiesChange',
+      onAppServiceDataNotification: 'AppService.OnAppServiceData',
 
       /**
        * connect to RPC bus
@@ -145,6 +153,12 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onResumeAudioSourceNotification);
         this.onServiceUpdateNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onServiceUpdateNotification);
+        this.onSystemCapabilityUpdatedNotificationSubscribeRequestID = this
+          .subscribeToNotification(this.onSystemCapabilityUpdatedNotification);
+        this.onAppPropertiesChangeNotificationSubscribeRequestID = this
+          .subscribeToNotification(this.onAppPropertiesChangeNotification);
+        this.onAppServiceDataNotificationSubscribeRequestID = this
+          .subscribeToNotification(this.onAppServiceDataNotification);
         setTimeout(function() {
           FFW.BasicCommunication.OnSystemTimeReady();
         }, 500);
@@ -180,6 +194,10 @@ FFW.BasicCommunication = FFW.RPCObserver
           .unsubscribeFromNotification(this.onResumeAudioSourceNotification);
         this.onServiceUpdateNotificationUnsubscribeRequestID = this.client
           .unsubscribeFromNotification(this.onServiceUpdateNotification);
+        this.onSystemCapabilityUpdatedNotificationUnsubscribeRequestID = this.client
+          .unsubscribeFromNotification(this.onSystemCapabilityUpdatedNotification);
+        this.onAppServiceDataNotificationUnsubscribeRequestID = this.client
+          .unsubscribeFromNotification(this.onAppServiceDataNotification);
       },
       /**
        * Client disconnected.
@@ -258,12 +276,14 @@ FFW.BasicCommunication = FFW.RPCObserver
                           }
                           if(key == 7) {
                             SDL.SDLModel.data.set('policyURLs', data[key].default);
-                            if (data[key].default.length) {
-                              data[key].default.forEach(url => {
-                                SDL.SettingsController.OnSystemRequestHandler(url);
-                              })
+                            if(!FLAGS.PTUWithModemEnabled) {
+                              if (data[key].default.length) {
+                                SDL.SettingsController.OnSystemRequestHandler(data[key].default[0]);
+                              } else {
+                                SDL.SettingsController.OnSystemRequestHandler();
+                              }
                             } else {
-                              this.OnSystemRequest('PROPRIETARY');
+                              SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
                             }
                             if (FLAGS.ExternalPolicies === true) {
                               SDL.SettingsController.policyUpdateRetry();
@@ -347,6 +367,14 @@ FFW.BasicCommunication = FFW.RPCObserver
           Em.Logger.log('SDL.GetStatusUpdate: Response from SDL!');
           SDL.PopUp.create().appendTo('body').popupActivate(response.result);
         }
+        if (response.result.method == 'BasicCommunication.GetAppProperties') {
+          Em.Logger.log('BasicCommunication.GetAppProperties: Response from SDL!');
+          SDL.InfoController.onGetAppProperties(response.result.code, response.result.properties);
+        }
+        if (response.result.method == 'BasicCommunication.SetAppProperties') {
+          Em.Logger.log('BasicCommunication.SetAppProperties: Response from SDL!');
+          SDL.InfoController.onSetAppProperties(response.result.code);
+        }
       },
       /**
        * handle RPC erros here
@@ -354,7 +382,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onRPCError: function(response) {
         Em.Logger.log('FFW.BasicCommunicationRPC.onRPCError');
         this._super();
-        if(!response.result) return ;
+        if(!response.error.data) return ;
 
         if (response.error.data.method === 'SDL.ActivateApp') {
           var appID = SDL.SDLModel.data.activateAppRequestsList[response.id].appID,
@@ -373,6 +401,14 @@ FFW.BasicCommunication = FFW.RPCObserver
             );
             return;
           }
+        }
+        else if (response.error.data.method === 'BasicCommunication.GetAppProperties') {
+          Em.Logger.log('BasicCommunication.GetAppProperties: Response from SDL!');
+          SDL.InfoController.onGetAppProperties(response.error.code, null);
+        }
+        else if (response.error.data.method === 'BasicCommunication.SetAppProperties') {
+          Em.Logger.log('BasicCommunication.SetAppProperties: Response from SDL!');
+          SDL.InfoController.onSetAppProperties(response.error.code);
         }
       },
       /**
@@ -462,8 +498,11 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
         }
         if (notification.method == this.onAppRegisteredNotification) {
+          let appModel = Object.assign(notification.params.application, {
+            "priority": notification.params.priority ? notification.params.priority : 'NONE'
+          }); 
           SDL.SDLModel.onAppRegistered(
-            notification.params.application, notification.params.vrSynonyms
+            appModel, notification.params.vrSynonyms
           );
           this.OnFindApplications();
           const mainWindowID = 0;
@@ -492,6 +531,9 @@ FFW.BasicCommunication = FFW.RPCObserver
         }
         if (notification.method == this.onPutFileNotification) {
           SDL.SDLModel.onPutFile(notification.params);
+        }
+        if (notification.method == this.onAppPropertiesChangeNotification) {
+          SDL.InfoController.onAppPropertiesNotification(notification.params.properties);
         }
       },
       /**
@@ -529,7 +571,11 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
             if (FLAGS.ExternalPolicies === true) {
-              FFW.ExternalPolicies.unpack(request.params.fileName);
+              FFW.ExternalPolicies.unpack({
+                requestType: request.params.requestType,
+                requestSubType: request.params.requestSubType,
+                fileName: request.params.fileName
+              });
             } else {
               this.OnReceivedPolicyUpdate(request.params.fileName);
             }
@@ -655,15 +701,27 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.PolicyUpdate') {
             SDL.SettingsController.policyUpdateFile = request.params.file;
-            SDL.SDLModel.data.policyUpdateRetry.timeout
-              = request.params.timeout;
-            SDL.SDLModel.data.policyUpdateRetry.retry = request.params.retry;
-            SDL.SDLModel.data.policyUpdateRetry.try = 0;
-            this.GetPolicyConfigurationData({
-              policyType: 'module_config',
-              property: 'endpoints',
-              nestedProperty: 7 //Service type for policies
-            }); 
+            if (FLAGS.ExternalPolicies === true) {
+              SDL.SDLModel.data.policyUpdateRetry.timeout
+                = request.params.timeout;
+              SDL.SDLModel.data.policyUpdateRetry.retry = request.params.retry;
+              SDL.SDLModel.data.policyUpdateRetry.try = 0;
+              this.GetPolicyConfigurationData({
+                policyType: 'module_config',
+                property: 'endpoints',
+                nestedProperty: 7 //Service type for policies
+              });
+            }
+            else if (FLAGS.PTUWithModemEnabled) {
+              this.GetPolicyConfigurationData({
+                policyType: 'module_config',
+                property: 'endpoints',
+                nestedProperty: 7 //Service type for policies
+              });
+            }
+            else {
+              SDL.SettingsController.OnSystemRequestHandler();
+            }
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
@@ -712,6 +770,49 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.sendMessage(JSONMessage);
       },
+
+      /**
+       * @description Sends request to get actual app properties
+       * @param {Number} policyAppID
+       */
+      GetAppProperties: function(policyAppID) {
+        var itemIndex = this.client.generateId();
+        Em.Logger.log('BasicCommunication.GetAppProperties: Request from HMI!');
+
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': itemIndex,
+          'method': 'BasicCommunication.GetAppProperties',
+          'params': {}
+        };
+
+        if (policyAppID) {
+          JSONMessage.params.policyAppID = policyAppID;
+        }
+
+        this.sendMessage(JSONMessage);
+      },
+
+      /**
+       * @description Sends request to set actual app properties
+       * @param {Object} properties
+       */
+      SetAppProperties: function(properties) {
+        var itemIndex = this.client.generateId();
+        Em.Logger.log('BasicCommunication.SetAppProperties: Request from HMI!');
+
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': itemIndex,
+          'method': 'BasicCommunication.SetAppProperties',
+          'params': {
+            'properties': properties
+          }
+        };
+
+        this.sendMessage(JSONMessage);
+      },
+
       /**
        * Send request if application was activated
        *
@@ -1343,9 +1444,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           'params': {
             'requestType': type,
             'fileType': 'JSON',
-            'offset': 1000,
-            'length': 10000,
-            'timeout': 500,
+            'timeout': 1000,
             'fileName': fileName
           }
         };

@@ -73,6 +73,27 @@ FLAGS = Em.Object.create(
     /**
      * Flag for storing last applied vehicle emulation type
      */
-    lastVehicleEmulationtype: 'vehicle_2x3'
+    lastVehicleEmulationtype: 'vehicle_2x3',
+
+    /**
+     * Flag to enable PTU flow over in-vehicle modem
+     */
+    PTUWithModemEnabled: false,
+
+    /**
+     * Web engine configuration structure
+     */
+    webEngineConfiguration: {
+      'host': 'localhost',
+      'port': '2020',
+      'transport': 'ws-server',
+      'file_server_host': 'localhost',
+      'file_server_port': '8082'
+    },
+
+    /**
+     * URL required for getting available applications list from store
+     */
+    appStoreUrl: 'https://sdl-webengine-app-store-example.s3.amazonaws.com/app-directory.json'
   }
 );

@@ -88,7 +88,7 @@ SDL.NavigationController = Em.Object.create(
               SDL.NavigationModel.LocationDetails[itemID]
             );
           } else {
-            SDL.NavigationModel.LocationDetails[itemID] = JSON.parse(data);
+            SDL.NavigationModel.LocationDetails[itemID] = data;
             FFW.Navigation.onWayPointChange(
               [SDL.NavigationModel.LocationDetails[itemID]]
             );

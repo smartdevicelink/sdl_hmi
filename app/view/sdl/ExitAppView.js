@@ -152,7 +152,22 @@ SDL.ExitApp = Em.ContainerView.create(
     classNames: 'button sendSignalButton',
     text: 'Send signal',
     action:function(){
-      FFW.RPCSimpleClient.send(SDL.ExitApp.signalSelect.selection.name);
+      let message = {
+        method: 'LowVoltageSignalRequest',
+        params: {
+          signal: SDL.ExitApp.signalSelect.selection.name
+        }
+      };
+
+      var client = FFW.RPCSimpleClient;
+      client.connect();
+      client.subscribeOnEvent('LowVoltageSignalResponse', function(params) {
+        if (params.success === true) {
+          client.unsubscribeFromEvent('LowVoltageSignalResponse');
+        }
+        client.disconnect();
+      });
+      client.send(message);
     },
     target: 'SDL.SDLController',
     buttonAction: true,

@@ -48,7 +48,9 @@ SDL.InfoView = Em.ContainerView.create(
       SDL.InfoCalendarView,
       SDL.InfoAppsView,
       SDL.InfoNonMedia,
-      SDL.DeviceListView
+      SDL.DeviceListView,
+      SDL.AppsStoreView,
+      SDL.WebAppSettingsView
     ],
     /** Left menu */
     leftMenu: Em.ContainerView.extend(

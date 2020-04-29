@@ -41,6 +41,27 @@ SDL.RModel = SDL.SDLModel.extend({
   controlRequestID: null,
 
   /**
+   * Id of local web application which should be registered
+   *
+   * @param {Number}
+   */
+  pendingActivationAppID: null,
+
+  /**
+   * Pointer to popup window for a pending activation app
+   *
+   * @param {Object}
+   */
+  pendingActivationPopUp: null,
+
+  /**
+   * Map of running web applications and corresponding frames
+   *
+   * @param {Map}
+   */
+  webApplicationFramesMap: {},
+
+  /**
    * Current drivers device flag
    *
    * @param {Object}
@@ -114,15 +135,17 @@ SDL.RModel = SDL.SDLModel.extend({
     var applicationType = null,//Default value - NonMediaModel see SDL.SDLController.applicationModels
       app = SDL.SDLController.getApplicationModel(params.appID);
 
-    if (app != undefined && app.initialized == false) {
+    if (app != undefined && !app.initialized) {
 
-      if (app.isMedia != params.isMediaApplication) { // If current not initialized model doe not matches the registered application type
-        this.convertModel(params);                   // then model should be changed
+      if (app.isMedia != params.isMediaApplication || app.webEngineApp) {
+        // If current not initialized model does not matches the registered application type then model should be changed
+        this.convertModel(params);
       } else {
         app.disabledToActivate = params.greyOut;
       }
+
       return;
-    } else if (app != undefined && app.initialized == true) {
+    } else if (app != undefined && app.initialized) {
       console.log(
         'Application with appID ' + params.appID + ' already registered!'
       );
@@ -183,6 +206,16 @@ SDL.RModel = SDL.SDLModel.extend({
           'type': 'Application'
         };
       this.addCommandVR(message);
+    }
+
+    // Remove popup and reset data if pending activation app is registered
+    if (this.pendingActivationAppID == params.policyAppID) {
+      this.pendingActivationPopUp.deactivate();
+      this.set('pendingActivationPopUp', null);
+      this.set('pendingActivationAppID', null);
+
+      SDL.States.goToStates('info.apps');
+      SDL.SDLController.onActivateSDLApp(params);
     }
   },
 

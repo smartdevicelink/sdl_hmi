@@ -135,6 +135,17 @@ var StateManager = Em.StateManager.extend(
             }
           }
         ),
+        apps_store: Em.State.create(
+          {}
+        ),
+        web_app_settings: Em.State.create(
+          {
+            enter: function() {
+              this._super();
+              SDL.WebAppSettingsView.showProperties();
+            }
+          }
+        ),
         nonMedia: Em.State.create(
           {
             enter: function() {

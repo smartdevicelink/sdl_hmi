@@ -70,10 +70,14 @@ SDL.AlertPopUp = Em.ContainerView.create(
       {
         elementId: 'alertPopUpImage',
         template: Ember.Handlebars.compile(
-          '<img class="alertPopUpImage" onerror="SDL.AlertPopUp.imageUndefined(event)" {{bindAttr src="SDL.AlertPopUp.icon"}}>'
+          '<img class="alertPopUpImage" \
+            onerror="SDL.AlertPopUp.imageUndefined(event)"\
+            onload="SDL.AlertPopUp.imageLoaded(event)"\
+            {{bindAttr src="SDL.AlertPopUp.icon"}}>'
         )
       }
     ),
+
     /**
      * @function imageUndefined
      * @param {Object} event
@@ -84,6 +88,16 @@ SDL.AlertPopUp = Em.ContainerView.create(
       this.message = "Requested image(s) not found";
       this.reason = "WARNINGS"
     },
+
+    /**
+     * @function imageLoaded
+     * @param {Object} event
+     * @description action if an image loaded.
+     */
+    imageLoaded: function(event) {
+      event.target.style.display='block';
+    },
+
     /**
      * Wagning image on Alert PopUp
      */
@@ -220,7 +234,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
         }
       }
     },
-    AlertActive: function(message, alertRequestId) {
+    AlertActive: function(message, alertRequestId, priority) {
       var self = this;
       this.set('alertRequestId', alertRequestId);
       this.set('cancelID', message.cancelID);
@@ -258,6 +272,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
                                                                         // for
                                                                         // Alert
                                                                         // popUp
+      this.set('priority', priority);
       clearTimeout(this.timer);
       this.timer = setTimeout(
         function() {

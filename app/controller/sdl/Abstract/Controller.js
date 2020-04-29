@@ -406,9 +406,8 @@ SDL.SDLController = Em.Object.extend(
      */
     vehicleDataChange: function() {
       SDL.VehicleInfo.vehicleDataCodeEditor.activate(
-        function(data) {
+        function(parsedData) {
           var params = {};
-          var parsedData = JSON.parse(data);
           for (var i in parsedData) {
             if (undefined === SDL.SDLVehicleInfoModel.vehicleData[i] ||
                 SDL.SDLController.compareObjects(
@@ -439,7 +438,7 @@ SDL.SDLController = Em.Object.extend(
     policyConfigDataChange: function() {
       SDL.PolicyConfigListView.policyConfigCodeEditor.activate(
         function(data) {
-          SDL.SDLModel.data.policyConfigData = JSON.parse(data);
+          SDL.SDLModel.data.policyConfigData = data;
         }
       );
       SDL.PolicyConfigListView.policyConfigCodeEditor.editor.set(
@@ -879,20 +878,18 @@ SDL.SDLController = Em.Object.extend(
      * Method to set language for UI component with parameters sent from
      * SDLCore to UIRPC
      */
-    onLanguageChangeUI: function() {
-      FFW.UI.OnLanguageChange(SDL.SDLModel.data.hmiUILanguage);
-      FFW.BasicCommunication.OnSystemInfoChanged(
-        SDL.SDLModel.data.hmiUILanguage
-      );
-    }.observes('SDL.SDLModel.data.hmiUILanguage'),
+    onLanguageChangeUI: function(newLanguage) {
+      FFW.UI.OnLanguageChange(newLanguage);
+      FFW.BasicCommunication.OnSystemInfoChanged(newLanguage);
+    },
     /**
      * Method to set language for TTS and VR components with parameters sent
      * from SDLCore to UIRPC
      */
-    onLanguageChangeTTSVR: function() {
-      FFW.TTS.OnLanguageChange(SDL.SDLModel.data.hmiTTSVRLanguage);
-      FFW.VR.OnLanguageChange(SDL.SDLModel.data.hmiTTSVRLanguage);
-    }.observes('SDL.SDLModel.data.hmiTTSVRLanguage'),
+    onLanguageChangeTTSVR: function(newLanguage) {
+      FFW.TTS.OnLanguageChange(newLanguage);
+      FFW.VR.OnLanguageChange(newLanguage);
+    },
     /**
      * Register application
      *
@@ -902,9 +899,13 @@ SDL.SDLController = Em.Object.extend(
      *            applicationType
      */
     registerApplication: function(params, applicationType) {
+      const isDayColorSchemeDefined = "dayColorScheme" in params;
+      const isNightColorSchemeDefined = "nightColorScheme" in params;
+      const isWebEngineApp =
+        "transportType" in params.deviceInfo &&
+        params.deviceInfo.transportType == "WEBENGINE_WEBSOCKET";
+
       if (applicationType === undefined || applicationType === null) {
-        const isDayColorSchemeDefined = "dayColorScheme" in params;
-        const isNightColorSchemeDefined = "nightColorScheme" in params;
         SDL.SDLModel.data.get('registeredApps').pushObject(
           this.applicationModels[0].create(
             { //Magic number 0 - Default media model for not initialized applications
@@ -916,7 +917,10 @@ SDL.SDLController = Em.Object.extend(
               disabledToActivate: params.greyOut ? true : false,
               displayLayout: "DEFAULT",
               dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
-              nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme
+              nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
+              policyAppID: params.policyAppID,
+              webEngineApp: isWebEngineApp,
+              priority: params.priority ? params.priority : 'NONE'
             }
           )
         );
@@ -933,7 +937,10 @@ SDL.SDLController = Em.Object.extend(
               disabledToActivate: params.greyOut ? true : false,
               displayLayout: "DEFAULT",
               dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
-              nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme
+              nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
+              policyAppID: params.policyAppID,
+              webEngineApp: isWebEngineApp,
+              priority: params.priority ? params.priority : 'NONE'
             }
           )
         );
@@ -1011,6 +1018,11 @@ SDL.SDLController = Em.Object.extend(
       }
       if (appID === SDL.SDLNonMediaModel.currentAppId) {
         SDL.SDLNonMediaModel.set('currentAppId', null);
+      }
+      if (app.webEngineApp && app.policyAppID in SDL.SDLModel.webApplicationFramesMap) {
+        let frame = SDL.SDLModel.webApplicationFramesMap[app.policyAppID];
+        document.body.removeChild(frame);
+        delete SDL.SDLModel.webApplicationFramesMap[app.policyAppID];
       }
     },
     /**
@@ -1121,6 +1133,13 @@ SDL.SDLController = Em.Object.extend(
       SDL.SDLModel.data.set('deviceSearchProgress', true);
     },
     /**
+     * Enter screen of applications store
+     */
+    onClickAppsStore: function() {
+      SDL.States.goToStates('info.apps_store');
+      SDL.InfoController.onAppsStoreButtonClick();
+    },
+    /**
      * Send notification if device was choosed
      *
      * @param element:
@@ -1156,9 +1175,24 @@ SDL.SDLController = Em.Object.extend(
         if (SDL.SDLModel.data.VRActive) {
           SDL.SDLModel.data.toggleProperty('VRActive');
         }
-        FFW.BasicCommunication.ActivateApp(element.appID);
-      } 
-      
+
+        var model = SDL.SDLController.getApplicationModel(element.appID);
+        if (model.webEngineApp && !model.initialized) {
+          let callback = function(entrypoint) {
+            SDL.RunWebEngineAppView.set('policyAppIdToLaunch', model.policyAppID);
+            SDL.RunWebEngineAppView.set('titleText',
+              'Run WebEngine App - ' + model.appName + ' - ' +  model.policyAppID
+            );
+            SDL.RunWebEngineAppView.set('appEntryPoint', entrypoint);
+            SDL.RunWebEngineAppView.toggleActivity();
+          }
+
+          SDL.InfoController.getWebAppEntryPointPath(model.policyAppID, callback);
+        } else {
+          FFW.BasicCommunication.ActivateApp(element.appID);
+        }
+      }
+
       if (reverseFunctionalityEnabled){
         ActivateSDLApp(true);
         return;
