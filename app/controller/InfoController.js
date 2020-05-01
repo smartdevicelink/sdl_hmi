@@ -367,7 +367,12 @@ SDL.InfoController = Em.Object.create(
      * @param {String} response string containing server response
      */
     processAppsStoreResponse: function(response) {
-      var json_content = response;
+      var json_content = [];
+      if (response.data && response.data.applications) {
+        json_content = response.data.applications
+      } else {
+        json_content = response
+      }
 
       if (!Array.isArray(json_content)) {
         Em.Logger.log('Wrong data format!');
