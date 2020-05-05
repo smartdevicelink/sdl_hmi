@@ -202,16 +202,17 @@ FFW.UI = FFW.RPCObserver.create(
                 'secondaryGraphic' in request.params ||
                 'softButtons' in request.params ||
                 'customPresets' in request.params) {
+
+                if (this.errorResponsePull[request.id].type === 'STATIC') {
+                  this.sendError(SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'], 
+                                request.id, 
+                                request.method, 
+                                'Image of STATIC type is not supported on HMI. Request was not processed');
+                  return;
+                }
+
                 this.errorResponsePull[request.id].code =
                   SDL.SDLModel.data.resultCode['WARNINGS'];
-                //} else {
-                //    //If no available data sent error response and stop
-                // process current request
-                // this.sendError(this.errorResponsePull[request.id].code,
-                // request.id, request.method, "Unsupported " +
-                // this.errorResponsePull[request.id].type + " type. Request
-                // was not processed."); this.errorResponsePull[request.id] =
-                // null;  return;
               }
             }
             SDL.TurnByTurnView.deactivate();
