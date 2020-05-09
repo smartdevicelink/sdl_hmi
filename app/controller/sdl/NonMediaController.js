@@ -66,11 +66,29 @@ SDL.NonMediaController = Em.Object.create(
       this.set('currentAppId', applicationModel.appID);
       // set active model
       SDL.SDLController.set('model', applicationModel);
-      // send response
-      // FFW.BasicCommunication.ActivateApp( applicationModel.appID );
+
+      // go to SDL state
+      if (SDL.SDLController.model.appType) {
+        for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
+          if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
+              SDL.SDLController.model.appType[i] == 'PROJECTION') {
+            SDL.InfoController.turnOnSDL();
+            SDL.BaseNavigationView.update();
+            SDL.States.goToStates('navigationApp.baseNavigation');
+            return;
+          }
+          if (SDL.SDLController.model.appType[i] == 'TESTING') {
+            // TODO(WEBENGINE)
+            SDL.InfoController.turnOnSDL();
+            SDL.States.goToStates('webViewApp');
+            return;
+          }
+        }
+      }
+
       // Go to SDL state
       SDL.InfoController.turnOnSDL();
-      //SDL.States.goToStates('info.nonMedia');
+      SDL.States.goToStates('info.nonMedia');
     },
     /**
      * Restore current application to active state

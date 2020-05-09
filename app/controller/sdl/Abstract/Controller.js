@@ -1188,6 +1188,9 @@ SDL.SDLController = Em.Object.extend(
           }
 
           SDL.InfoController.getWebAppEntryPointPath(model.policyAppID, callback);
+        } else if (model.webEngineApp !== true && model.appType.indexOf('TESTING') >= 0) {
+          SDL.PopUp.create().appendTo('body')
+            .popupActivate("Only Web Engine apps with app type WEB_VIEW can be activated!");
         } else {
           FFW.BasicCommunication.ActivateApp(element.appID);
         }

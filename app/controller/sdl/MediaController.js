@@ -76,7 +76,27 @@ SDL.SDLMediaController = Em.Object.create(
       this.set('currentAppId', applicationModel.appID);
       // set active model
       SDL.SDLController.set('model', applicationModel);
+
+      if (SDL.SDLController.model.appType) {
+        for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
+          if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
+              SDL.SDLController.model.appType[i] == 'PROJECTION') {
+            this.model.currentAudioModel.turnOnSDL();
+            SDL.BaseNavigationView.update();
+            SDL.States.goToStates('navigationApp.baseNavigation');
+            return;
+          }
+          if (SDL.SDLController.model.appType[i] == 'TESTING') {
+            // TODO(WEBENGINE)
+            SDL.InfoController.turnOnSDL();
+            SDL.States.goToStates('webViewApp');
+            return;
+          }
+        }
+      }
+
       this.model.currentAudioModel.turnOnSDL();
+      SDL.States.goToStates('media.sdlmedia');
     },
     /**
      * Restore current application to active state

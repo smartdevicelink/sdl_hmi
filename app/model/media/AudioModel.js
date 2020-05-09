@@ -343,21 +343,6 @@ SDL.AudioModel = Em.Object.extend({
       if (SDL.SDLController.model) {
         SDL.SDLController.model.set('active', true);
       }
-      /**
-       * Go to SDL state
-       */
-      if (SDL.SDLController.model.appType) {
-        for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
-          if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
-              SDL.SDLController.model.appType[i] == 'PROJECTION') {
-            SDL.BaseNavigationView.update();
-            SDL.States.goToStates('navigationApp.baseNavigation');
-            return;
-          }
-        }
-      }
-
-      SDL.States.goToStates('media.sdlmedia');
     },
 
     /**

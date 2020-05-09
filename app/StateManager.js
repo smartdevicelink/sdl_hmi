@@ -475,6 +475,27 @@ var StateManager = Em.StateManager.extend(
         }
       }
     ),
+    webViewApp: Em.State.create(
+      {
+        modelBinding: 'SDL.RCModulesController',
+        enter: function() {
+          if (SDL.SDLModel.data.mediaPlayerActive) {
+            SDL.SDLController.onEventChanged('player', false);
+            this.model.currentAudioModel.deactivateCD();
+            this.model.currentAudioModel.deactivateUSB();
+            this.model.currentAudioModel.deactivateRadio();
+          }
+          this.model.currentAudioModel.set('activeState', SDL.States.nextState);
+          this._super();
+        },
+        exit: function() {
+          this._super();
+          SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
+          SDL.SDLModel.data.set('limitedExist', false);
+          SDL.SDLController.deactivateApp();
+        }
+      }
+    ),
     /** Navigation state */
     navigation: Em.State.create(
       {
