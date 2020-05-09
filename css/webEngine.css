@@ -1,0 +1,9 @@
+/* Web Engine related control styles */
+
+#webEngineView {
+    z-index: 2;
+    position: absolute;
+    top: 48px;
+    width: 800px;
+    height: 384px;
+}

@@ -45,6 +45,7 @@ SDL.AppViews = Em.ContainerView.extend(
       SDL.HomeView,
       SDL.MediaView,
       SDL.NavigationAppView,
+      SDL.WebEngineView,
       SDL.InfoView,
       SDL.PhoneView,
       SDL.ClimateView,
