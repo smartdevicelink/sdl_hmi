@@ -30,14 +30,17 @@
  * @filesource app/view/webEngine/webEngineView.js
  * @version 1.0
  */
-SDL.WebEngineView = Em.ContainerView.create(
-    {
-      /** View Id */
+SDL.WebEngineView = Em.ContainerView.create({
       elementId: 'webEngineView',
       classNameBindings: [
         'SDL.States.webViewApp.active:active_state:inactive_state'
       ],
       childViews: [
-      ]
-    }
-  );
+        'TemplateTitleLabel'
+      ],
+
+      TemplateTitleLabel : SDL.Label.extend({
+        elementId: 'template_title_label',
+        contentBinding: 'SDL.SDLController.model.templateConfiguration.template'
+      })
+});

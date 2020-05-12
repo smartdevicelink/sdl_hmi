@@ -325,15 +325,22 @@ SDL.InfoController = Em.Object.create(
 
       if (policyAppID in SDL.SDLModel.webApplicationFramesMap) {
         let frame = SDL.SDLModel.webApplicationFramesMap[policyAppID];
-        document.body.removeChild(frame);
+        const web_engine_view = document.getElementById("webEngineView");
+        if (web_engine_view) {
+          web_engine_view.removeChild(frame);
+        }
       }
 
       const frame_name = `web_app_frame_${policyAppID}`;
       let web_app_frame =  document.createElement("iframe");
       web_app_frame.name = frame_name;
       web_app_frame.id = frame_name;
-      web_app_frame.className = "InvisibleFrame";
-      document.body.appendChild(web_app_frame);
+      web_app_frame.className = "WebEngineFrame";
+
+      const web_engine_view = document.getElementById("webEngineView");
+      if (web_engine_view) {
+        web_engine_view.appendChild(web_app_frame);
+      }
 
       SDL.SDLModel.webApplicationFramesMap[policyAppID] = web_app_frame;
 

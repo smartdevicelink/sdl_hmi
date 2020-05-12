@@ -1808,13 +1808,6 @@
     color: green
 }
 
-.InvisibleFrame {
-    position: absolute;
-    width: 0px;
-    height: 0px;
-    visibility: hidden;
-}
-
 #sdl_view_container {
     z-index: 501;
 }

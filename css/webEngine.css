@@ -7,3 +7,18 @@
     width: 800px;
     height: 384px;
 }
+
+#webEngineView .WebEngineFrame {
+    position: absolute;
+    width: 800px;
+    height: 384px;
+}
+
+#webEngineView #template_title_label {
+    position: absolute;
+    top: 360px;
+    left: 322px;
+    width: 160px;
+    text-align: center;
+    z-index: 2;
+}

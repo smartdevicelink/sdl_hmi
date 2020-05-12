@@ -1021,7 +1021,10 @@ SDL.SDLController = Em.Object.extend(
       }
       if (app.webEngineApp && app.policyAppID in SDL.SDLModel.webApplicationFramesMap) {
         let frame = SDL.SDLModel.webApplicationFramesMap[app.policyAppID];
-        document.body.removeChild(frame);
+        const web_engine_view = document.getElementById("webEngineView");
+        if (web_engine_view) {
+          web_engine_view.removeChild(frame);
+        }
         delete SDL.SDLModel.webApplicationFramesMap[app.policyAppID];
       }
     },
