@@ -1673,5 +1673,25 @@ SDL.templateCapabilities = {
         "presetBankCapabilities": {
             "onScreenPresetsAvailable": false
         }
+    },
+    "WEB_VIEW": {
+        "displayCapabilities": {
+            "displayType": "GEN2_8_DMA",
+            "displayName": "SDL_HMI",
+            "graphicSupported": true,
+            "imageCapabilities": ["DYNAMIC", "STATIC"],
+            "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP", "WEB_VIEW"],
+            "screenParams": {
+                "resolution": {
+                    "resolutionWidth": 800,
+                    "resolutionHeight": 480
+                },
+                "touchEventAvailable": {
+                    "pressAvailable": true,
+                    "multiTouchAvailable": true,
+                    "doublePressAvailable": false
+                }
+            }
+        }
     }
 }

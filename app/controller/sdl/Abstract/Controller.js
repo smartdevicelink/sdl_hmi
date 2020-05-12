@@ -1506,8 +1506,16 @@ SDL.SDLController = Em.Object.extend(
         windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["windowID"] = windowID;
       }
       if(appID) {
+        var appModel = this.getApplicationModel(appID);
+        if (appModel && appModel.appType.indexOf('TESTING') >= 0 && windowType == "MAIN") {
+          delete windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["textFields"];
+          delete windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["imageFields"];
+          windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["templatesAvailable"].push("WEB_VIEW");
+        }
+
         windowCapability["appID"] = appID;
       }
+
       return windowCapability;
     },
     /**

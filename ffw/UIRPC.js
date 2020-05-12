@@ -223,6 +223,7 @@ FFW.UI = FFW.RPCObserver.create(
             let sendCapabilityUpdated = false;
             if("templateConfiguration" in request.params) {
               if (model.templateConfiguration.template !== request.params.templateConfiguration.template) {
+                model.templateConfiguration.template = request.params.templateConfiguration.template;
                 sendCapabilityUpdated = true;
               }
               if ("dayColorScheme" in  request.params.templateConfiguration

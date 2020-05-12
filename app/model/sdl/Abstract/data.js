@@ -1021,7 +1021,7 @@ SDL.SDLModelData = Em.Object.create(
               ],
               "imageTypeSupported": ["STATIC", "DYNAMIC"],
               "numCustomPresetsAvailable": 8,
-              "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
+              "templatesAvailable": ["MEDIA", "NON-MEDIA", "ONSCREEN_PRESETS", "NAV_FULLSCREEN_MAP"],
               "buttonCapabilities": [
                 {
                   "longPressAvailable": true,
