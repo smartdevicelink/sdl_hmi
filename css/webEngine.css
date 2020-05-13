@@ -1,7 +1,6 @@
 /* Web Engine related control styles */
 
 #webEngineView {
-    z-index: 2;
     position: absolute;
     top: 48px;
     width: 800px;
@@ -20,5 +19,22 @@
     left: 322px;
     width: 160px;
     text-align: center;
-    z-index: 2;
+    z-index: 1;
+}
+
+#webEngineView .ExitButton {
+    position: absolute;
+    right: -1px;
+    width: 100px;
+    text-align: center;
+    z-index: 1;
+}
+
+#webEngineView .MenuButton {
+    position: absolute;
+    right: -1px;
+    top: 345px;
+    width: 100px;
+    text-align: center;
+    z-index: 1;
 }

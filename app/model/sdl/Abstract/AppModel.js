@@ -503,7 +503,7 @@ SDL.ABSAppModel = Em.Object.extend(
       var commands = this.get('commandsList.' + parentID);
       // Magic number is limit of 1000 commands added on one menu
       if (commands.length <= 999) {
-        commands[commands.length] = {
+        commands.pushObject({
           commandID: request.params.cmdID,
           name: request.params.menuParams.menuName,
           parent: parentID,
@@ -513,7 +513,7 @@ SDL.ABSAppModel = Em.Object.extend(
           request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
           : null,
           icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
-        };
+        });
         if (SDL.SDLController.getApplicationModel(request.params.appID) &&
           SDL.OptionsView.active) {
           SDL.SDLController.buttonsSort(parentID, this.appID);
