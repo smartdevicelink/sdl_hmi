@@ -1343,6 +1343,8 @@ SDL.SDLController = Em.Object.extend(
      */
     onSystemContextChange: function(appID, windowID) {
       var sysContextValue = this.get('sysContext');
+      SDL.SDLController.setWebEngineFramesActive(sysContextValue == 'MAIN');
+
       if ((
         appID &&
         SDL.SDLController.getApplicationModel(appID) !=
@@ -1563,5 +1565,21 @@ SDL.SDLController = Em.Object.extend(
       }
       return title;
     },
+
+    /**
+     * @function setWebEngineFramesActive
+     * @param {Boolean} isActive
+     * @description set touch events activity for all currently active WEP frames
+     */
+    setWebEngineFramesActive: function(isActive) {
+      var frames = document.getElementsByClassName("WebEngineFrame");
+      for (var i = 0; i < frames.length; ++i) {
+        if (isActive) {
+          frames[i].style.pointerEvents = null;
+        } else {
+          frames[i].style.pointerEvents = "none";
+        }
+      }
+    }
   }
 );
