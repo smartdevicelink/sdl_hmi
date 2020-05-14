@@ -237,16 +237,16 @@ FFW.UI = FFW.RPCObserver.create(
                 request.params.templateConfiguration.nightColorScheme)) {
                   sendCapabilityUpdated = true;
               }
-          }
-            if(appModel.onSDLUIShow(request.params) === SDL.SDLModel.data.resultCode.REJECTED) {
+            }
+
+            var ui_show_result = appModel.onSDLUIShow(request.params);
+            if(ui_show_result === SDL.SDLModel.data.resultCode.REJECTED) {
               this.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method,
                     "Widget is duplicating other window. Rejecting UI.Show request.");
               return;
             }
             SDL.InfoAppsView.showAppList();
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
+            this.sendUIResult(ui_show_result, request.id, request.method);
             if (sendCapabilityUpdated) {
               let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
               FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);

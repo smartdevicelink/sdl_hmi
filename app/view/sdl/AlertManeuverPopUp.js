@@ -51,6 +51,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     content1: 'Title',
     content2: 'Text',
     activate: false,
+    areImagesValid: true,
     timer: null,
     /**
      * Wagning image on Alert Maneuver PopUp
@@ -132,6 +133,12 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
             softButtonsClass = 'four';
             break;
         }
+
+        var is_png_image = function(file_name) {
+          var search_offset = file_name.lastIndexOf('.');
+          return file_name.includes('.png', search_offset);
+        }
+
         for (var i = 0; i < params.length; i++) {
           this.get('softbuttons.childViews').pushObject(
             SDL.Button.create(
@@ -147,12 +154,19 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
               }
             )
           );
+          if (params[i].image==null){
+            continue;
+          }
+          if (!is_png_image(params[i].image.value) && params[i].image.isTemplate) {
+              this.set('areImagesValid',false);
+            }
         }
       }
     },
     AlertManeuverActive: function(message) {
       var self = this;
       var params = message.params;
+      this.set('areImagesValid',true);
       if (params.softButtons) {
           this.addSoftButtons( params.softButtons );
       }
@@ -160,10 +174,12 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       this.set( 'activate', true );
 
       clearTimeout( this.timer );
+      var self = this;
       this.timer = setTimeout( function() {
           self.set( 'activate', false );
+          var resultCode = self.areImagesValid?SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
           FFW.Navigation.sendNavigationResult(
-            SDL.SDLModel.data.resultCode.SUCCESS,
+            resultCode,
             message.id,
             message.method
           );

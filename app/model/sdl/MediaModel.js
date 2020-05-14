@@ -335,6 +335,25 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     if(this.getWidgetModel(params.windowID)) {
       this.widgetShow(params);
     }
+
+   var is_png_image = function(file_name) {
+      var search_offset = file_name.lastIndexOf('.');
+      return file_name.includes('.png', search_offset);
+    };
+
+    if (params.softButtons) {
+      for (var i=0; i < params.softButtons.length; ++i) {
+       var button = params.softButtons[i];
+       if (!button.image) {
+         continue;
+        }
+        var button_image = button.image;
+        if (!is_png_image(button_image.value) && button_image.isTemplate) {
+        return SDL.SDLModel.data.resultCode.WARNINGS;
+        }
+      }
+    }
+    return SDL.SDLModel.data.resultCode.SUCCESS;
   },
 
   mainWindowShow: function(params) {

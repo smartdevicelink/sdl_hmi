@@ -193,6 +193,12 @@ SDL.AlertPopUp = Em.ContainerView.create(
             softButtonsClass = 'four';
             break;
         }
+
+        var is_png_image = function(file_name) {
+          var search_offset = file_name.lastIndexOf('.');
+          return file_name.includes('.png', search_offset);
+        }
+        
         for (var i = 0; i < params.length; i++) {
           this.get('softbuttons.buttons.childViews')
             .pushObject(
@@ -217,6 +223,10 @@ SDL.AlertPopUp = Em.ContainerView.create(
                 }
               )
             );
+
+          if (!is_png_image(params[i].image.value) && params[i].image.isTemplate) {
+               this.reason = "WARNINGS";
+          }
         }
       }
     },

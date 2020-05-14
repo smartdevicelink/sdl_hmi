@@ -48,6 +48,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
     active: false,
     appID: null,
     timer: null,
+    areImagesValid: true,
     timeout: null,
     childViews: [
       'backButton', 'captionText', 'softButtons', 'listOfCommands'
@@ -63,9 +64,13 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
       this.set('active', false);
       this.softButtons.set('page', 0);
       this.timeout = null;
+      var resultCode = this.areImagesValid?SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
+      if(ABORTED) {
+        resultCode =SDL.SDLModel.data.resultCode.ABORTED;
+      }
+
       SDL.SDLController.scrollableMessageResponse(
-        ABORTED ? SDL.SDLModel.data.resultCode['ABORTED'] :
-          SDL.SDLModel.data.resultCode.SUCCESS, this.messageRequestId
+        resultCode, this.messageRequestId
       );
       SDL.SDLController.onSystemContextChange();
       SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -82,6 +87,26 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         }
         this.set('messageRequestId', messageRequestId);
         this.set('captionText.content', appName);
+
+        var is_png_image = function(file_name) {
+          var search_offset = file_name.lastIndexOf('.');
+          return file_name.includes('.png', search_offset);
+        }
+        
+         this.set('areImagesValid',true);
+
+        for (var i=0; i < params.softButtons.length; ++i) {
+          var button = params.softButtons[i];
+          if (!button.image) {
+           continue;
+          }
+          var button_image = button.image;
+
+          if (!is_png_image(button_image.value) && button_image.isTemplate) {
+            this.set('areImagesValid',false);
+          }
+        }
+    
         this.softButtons.addItems(params.softButtons, params.appID);
         this.set('active', true);
         this.set('cancelID', params.cancelID);
