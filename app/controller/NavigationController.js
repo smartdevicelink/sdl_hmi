@@ -64,11 +64,6 @@ SDL.NavigationController = Em.Object.create(
         }
       );
 
-      imageList = [];
-      if(request.params.locationImage) {
-        imageList.push(request.params.locationImage.value);
-      }
-
       var callback = function(failed) {
         var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
         var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
@@ -80,8 +75,16 @@ SDL.NavigationController = Em.Object.create(
           failed ? "Requested image(s) not found" : null
         );
       }
-      SDL.SDLModel.validateImages(request.id, callback, imageList);
+
+      if (!SDL.SDLModel.validateImagesInRequest(request.id, callback, [request.params.locationImage])) {
+        FFW.Navigation.sendNavigationResult(
+          SDL.SDLModel.data.resultCode.WARNINGS,
+          request.id,
+          request.method
+        );
+      }
     },
+
     /**
      * Navigation view List Button action handler
      * Opens selected WayPoint structure
