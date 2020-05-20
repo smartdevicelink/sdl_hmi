@@ -365,7 +365,9 @@ FFW.BasicCommunication = FFW.RPCObserver
         }
         if (response.result.method == 'SDL.GetStatusUpdate') {
           Em.Logger.log('SDL.GetStatusUpdate: Response from SDL!');
-          SDL.PopUp.create().appendTo('body').popupActivate(response.result);
+          SDL.PopUp.create().appendTo('body').popupActivate(
+            "Update Status: " + response.result.status, null, false 
+          );
         }
         if (response.result.method == 'BasicCommunication.GetAppProperties') {
           Em.Logger.log('BasicCommunication.GetAppProperties: Response from SDL!');
