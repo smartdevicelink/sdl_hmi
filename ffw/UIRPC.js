@@ -180,6 +180,7 @@ FFW.UI = FFW.RPCObserver.create(
             // this.errorResponsePull[request.id].type + " type. Request was
             // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
+
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
               SDL.SDLController.onSystemContextChange(request.params.appID);
             }
@@ -245,22 +246,6 @@ FFW.UI = FFW.RPCObserver.create(
             }
             SDL.InfoAppsView.showAppList();
 
-            imageList = [];
-            if(request.params.graphic) {
-              imageList.push(request.params.graphic.value);
-            }
-            if(request.params.secondaryGraphic) {
-              imageList.push(request.params.secondaryGraphic.value);
-            }
-            if(request.params.softButtons) {
-              for(var i = 0; i < request.params.softButtons.length; i++) {
-                var image = request.params.softButtons[i].image;
-                if(image) {
-                  imageList.push(image.value);
-                }
-              }
-            }
-
             var callback = function(failed) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
               var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
@@ -271,7 +256,14 @@ FFW.UI = FFW.RPCObserver.create(
                 request.method, 
                 failed ? "Requested image(s) not found" : null);
             }
-            SDL.SDLModel.validateImages(request.id, callback, imageList);
+
+            if (!SDL.SDLModel.validateImagesInRequest(request.id, callback, 
+                [request.params.graphic, request.params.secondaryGraphic, request.params.softButtons])) {
+                FFW.UI.sendUIResult(
+                  SDL.SDLModel.data.resultCode.WARNINGS, 
+                  request.id, 
+                  request.method);
+            }
 
             if (sendCapabilityUpdated) {
               let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
@@ -1852,7 +1844,7 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {String} manualTextEntry
      */
     interactionResponse: function(requestID, resultCode, commandID,
-      manualTextEntry) {
+      manualTextEntry, additionalInfo) {
       Em.Logger.log('FFW.UI.PerformInteractionResponse');
       if (this.errorResponsePull[requestID] &&
         resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
@@ -1880,7 +1872,9 @@ FFW.UI = FFW.RPCObserver.create(
         this.errorResponsePull[requestID] = null;
         return;
       }
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+
+      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS || 
+          resultCode === SDL.SDLModel.data.resultCode.WARNINGS) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -1895,6 +1889,9 @@ FFW.UI = FFW.RPCObserver.create(
         }
         if (manualTextEntry != null) {
           JSONMessage.result.manualTextEntry = manualTextEntry;
+        }
+        if (additionalInfo != null || additionalInfo != '') {
+          JSONMessage.result.info = additionalInfo;
         }
       } else {
         // send repsonse
