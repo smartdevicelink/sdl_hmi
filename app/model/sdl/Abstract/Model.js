@@ -973,23 +973,22 @@ SDL.SDLModel = Em.Object.extend({
           request.params, messageRequestId
         );
       }
-      if(request.params.softButtons) {
-        var imageList = [];
-        for(var i = 0; i < request.params.softButtons.length; i++) {
-          if(request.params.softButtons[i].image) {
-            imageList.push(request.params.softButtons[i].image.value);
-          }
+      
+      var callback = function(failed) {
+        if(failed) {
+          FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.WARNINGS, 
+            request.id, 
+            request.method,
+            "Requested image(s) not found");
         }
-        var callback = function(failed) {
-          if(failed) {
-            FFW.UI.sendUIResult(
-              SDL.SDLModel.data.resultCode.WARNINGS, 
-              request.id, 
-              request.method, "Requested image(s) not found");
-          }
-        };
-        SDL.SDLModel.validateImages(request.id, callback, imageList);
+      };
+
+      if (!SDL.SDLModel.validateImagesInRequest(request.id, callback, [request.params.softButtons])) {
+        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.WARNINGS, 
+          request.id, 
+          request.method);
       }
+
       return true;
     } else {
       FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id,
@@ -1032,6 +1031,53 @@ SDL.SDLModel = Em.Object.extend({
    * List of images(paths to images) to check.
    */
   imageCheckList: {},
+
+  /**
+   * @description Checks images in request provided inside 'objectsWithImages' param.
+   * @param requestID {Integer} Id of request
+   * @param callback {Function} User defined callback 
+   * @param objectsWithImages {Array} Array of data structures, specific to request,
+   *                                  that contain images.
+   * @return {Boolean} Returns true, if all images have valid extension. 
+   *                   Returns false, if at least 1 image has invalid extension.
+   */
+  validateImagesInRequest: function(requestID, callback, objectsWithImages) {
+    if (!Array.isArray(objectsWithImages) || 
+        (Array.isArray(objectsWithImages) && objectsWithImages.length == 0)) {
+      return false;
+    }
+
+    var imageList = [];
+    var allImagesValid = true;
+
+    var checkExtension = function(img) {
+      if(!img) {
+        return;
+      }
+      if(img.isTemplate && !SDL.NavigationController.isPng(img.value)) {
+        allImagesValid = false;
+        return; 
+      }
+      imageList.push(img.value);
+    }
+
+    objectsWithImages.forEach(objWithImage => {
+      if(Array.isArray(objWithImage)) {
+        objWithImage.forEach(img => {
+          checkExtension(img.image);
+        });
+      } else {
+        checkExtension(objWithImage);
+      }
+    });
+
+    if(!allImagesValid) {
+      return false;
+    }
+
+    this.validateImages(requestID, callback, imageList);
+    return true;
+  },
 
   /**
    * @function validateImages
@@ -1266,38 +1312,33 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.InteractionChoicesView.cancelID = message.params.cancelID;
 
-      if (message.params && message.params.choiceSet != null) {
-        imageList = [];
-        if(message.params.vrHelp) {
-          for(var i = 0; i < message.params.vrHelp.length; i++) {
-            var image = message.params.vrHelp[i].image;
-            if(image) {
-              imageList.push(image.value);
-            }
-          }
-        }
-        if(message.params.choiceSet) {
-          for(var i = 0; i < message.params.choiceSet.length; i++) {
-            var image = message.params.choiceSet[i].image;
-            if(image) {
-              imageList.push(image.value);
-            }
-          }
-        }
-                                                                        
-        var callback = function(failed) {
-          var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
-          var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
-
-          FFW.UI.sendUIResult(
-            failed ? WARNINGS : SUCCESS, 
-            message.id, 
-            message.method, 
-            failed ? "Requested image(s) not found" : null);
-        }
-        SDL.SDLModel.validateImages(message.id, callback, imageList);
-
+      if (message.params && message.params.choiceSet == null) {
+        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, 
+          message.id, 'UI.PerformInteraction');
         return true;
+      }
+      
+      var callback = function(failed) {
+        var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+        var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+        SDL.InteractionChoicesView.imageCheckInfo.resultCode = failed ? WARNINGS : SUCCESS;
+        SDL.InteractionChoicesView.imageCheckInfo.info = failed ? "Requested image(s) not found" : null;
+      }
+
+      var imagesToCheck = [];
+      imagesToCheck.push(message.params.vrHelp);
+      message.params.choiceSet.forEach(choice => {
+        if(choice.image) {
+          imagesToCheck.push(choice.image);
+        }
+        if(choice.secondaryImage) {
+          imagesToCheck.push(choice.secondaryImage);
+        }
+      });
+
+      if (!SDL.SDLModel.validateImagesInRequest(message.id, callback, imagesToCheck)) {
+        SDL.InteractionChoicesView.imageCheckInfo.resultCode = SDL.SDLModel.data.resultCode.WARNINGS;
       }
 
       SDL.SDLController.getApplicationModel(message.params.appID)
