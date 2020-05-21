@@ -152,8 +152,26 @@ SDL.List = Em.ContainerView.extend({
                 classNames: 'list-item',
 
                 classNameBindings: [
-                  'this.voiceOver'
+                  'this.voiceOver',
+                  'dayMode',
+                  'nightMode',
+                  'highLightedMode'
                 ],
+
+                dayMode:false,
+                nightMode:false,
+                highLightedMode:false,
+
+                setMode:function(mode) {
+                  mode = SDL.SDLModel.data.imageModeList.includes(mode) ? mode : SDL.SDLModel.data.imageModeList[0];
+                  this.set('dayMode', mode == SDL.SDLModel.data.imageModeList[0]);
+                  this.set('nightMode', mode == SDL.SDLModel.data.imageModeList[1]);
+                  this.set('highLightedMode', mode == SDL.SDLModel.data.imageModeList[2]);
+                },
+                
+                imageModeDidChange: function() {
+                  this.setMode(SDL.SDLModel.data.imageMode);
+                }.observes('SDL.SDLModel.data.imageMode'),
 
                 // Dynamic property set
                 init: function() {
