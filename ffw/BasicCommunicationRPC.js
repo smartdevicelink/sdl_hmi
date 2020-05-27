@@ -282,11 +282,11 @@ FFW.BasicCommunication = FFW.RPCObserver
                               } else {
                                 SDL.SettingsController.OnSystemRequestHandler();
                               }
+                              if (FLAGS.ExternalPolicies === true) {
+                                SDL.SettingsController.policyUpdateRetry();
+                              }
                             } else {
                               SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
-                            }
-                            if (FLAGS.ExternalPolicies === true) {
-                              SDL.SettingsController.policyUpdateRetry();
                             }
                           }
                         }

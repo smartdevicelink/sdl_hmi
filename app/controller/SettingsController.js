@@ -349,7 +349,7 @@ SDL.SettingsController = Em.Object.create(
           SDL.SDLModel.data.policyURLs[0]
         );
       }
-      if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+      if(abort !== 'ABORT' && !SDL.SDLModel.data.policyUpdateRetry.isRetry) {
         SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
         SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
         SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
