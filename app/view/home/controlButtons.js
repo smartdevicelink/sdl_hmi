@@ -155,6 +155,9 @@ getCurrentDisplayModeClass: function() {
       SDL.InfoAppsView.Asist911.setMode(this.selection);
       SDL.InfoAppsView.vehicleHealthReport.setMode(this.selection);
       SDL.InfoAppsView.getDeviceList.setMode(this.selection);
+      SDL.InfoAppsView.listOfApplications.setMode(this.selection);
+      SDL.InfoAppsView.applicationsStore.setMode(this.selection);
+      SDL.AlertManeuverPopUp.setMode(this.selection);
       SDL.InfoView.leftMenu.items.servicesButton.setMode(this.selection);
       SDL.InfoView.leftMenu.items.appsButton.setMode(this.selection);
       SDL.InfoView.leftMenu.items.calendarButton.setMode(this.selection);

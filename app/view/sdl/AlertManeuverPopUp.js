@@ -110,6 +110,17 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
         templateName: 'text'
       }
     ),
+
+      /** Method setting up display mode for correspond components */
+      setMode: function(mode){
+        var items = this.get('softbuttons.childViews');
+          for (var i = 0; i < items.length; ++i) {
+            var button = items[i];
+            button.setMode(mode);
+        }
+        this.closeButton.setMode(mode);
+      },
+
     /**
      * @desc Function creates Soft Buttons on AlertPoUp
      * @param {Object} params
