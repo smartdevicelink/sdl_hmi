@@ -349,14 +349,8 @@ SDL.SettingsController = Em.Object.create(
           SDL.SDLModel.data.policyURLs[0]
         );
       }
-      if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+      if(abort !== 'ABORT' && !SDL.SDLModel.data.policyUpdateRetry.isRetry) {
         SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
-        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
-        SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
-          function() {
-            sendOnSystemRequest();
-          }, 1000
-        );
         return;
       }
       var length = SDL.SDLModel.data.policyUpdateRetry.retry.length;
@@ -537,6 +531,7 @@ SDL.SettingsController = Em.Object.create(
 
         if (urls.length > 0 && FLAGS.ExternalPolicies === true) {
           SDL.SettingsController.OnSystemRequestHandler(urls[0]);
+          SDL.SettingsController.policyUpdateRetry();
         } else {
           SDL.SettingsController.OnSystemRequestHandler();
         }
