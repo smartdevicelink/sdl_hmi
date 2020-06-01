@@ -237,7 +237,6 @@ SDL.SettingsController = Em.Object.create(
      */
     permissionsFriendlyMessageUpdate: function(message) {
       SDL.SettingsController.simpleParseUserFriendlyMessageData(message);
-      SDL.States.goToStates('settings.policies.appPermissions');
     },
     updateSDL: function() {
       FFW.BasicCommunication.UpdateSDL();
