@@ -221,7 +221,9 @@ SDL.MediaCDPlayer = Em.Object.extend({
         'action': 'PREV'
       };
 
-      FFW.CAN.OnPlayerDetails(params);
+      if(FFW.CAN) {
+        FFW.CAN.OnPlayerDetails(params);
+      }
     },
 
     playTrackPress: function() {
@@ -244,7 +246,9 @@ SDL.MediaCDPlayer = Em.Object.extend({
         'action': self.isPlaying ? 'PLAY' : 'PAUSE'
       };
 
-      FFW.CAN.OnPlayerDetails(params);
+      if(FFW.CAN) {
+        FFW.CAN.OnPlayerDetails(params);
+      }
     },
 
     nextTrackPress: function() {
@@ -267,7 +271,9 @@ SDL.MediaCDPlayer = Em.Object.extend({
         'action': 'NEXT'
       };
 
-      FFW.CAN.OnPlayerDetails(params);
+      if(FFW.CAN) {
+        FFW.CAN.OnPlayerDetails(params);
+      }
     },
 
     shufflePress: function() {
