@@ -274,6 +274,17 @@ SDL.AlertPopUp = Em.ContainerView.create(
                                                                         // popUp
       this.set('priority', priority);
       clearTimeout(this.timer);
+
+      var callback = function(failed) {
+        self.reason = 'WARNINGS';
+        self.message = failed ? "Requested image(s) not found" : null;
+      }
+
+      if(!SDL.SDLModel.validateImagesInRequest(alertRequestId, callback, [message.alertIcon, message.softButtons])) {
+        self.reason = 'WARNINGS';
+        self.message = null;
+      }
+
       this.timer = setTimeout(
         function() {
           self.deactivate(self.reason, self.message);
