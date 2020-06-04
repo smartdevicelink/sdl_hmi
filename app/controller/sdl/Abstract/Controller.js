@@ -179,7 +179,8 @@ SDL.SDLController = Em.Object.extend(
     closeApplication: function(appID) {
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia' ||
-        SDL.States.currentState.getPath('path') === 'navigationApp.baseNavigation') {
+        SDL.States.currentState.getPath('path') === 'navigationApp.baseNavigation' ||
+        SDL.States.currentState.getPath('path') === 'webViewApp') {
         SDL.States.goToStates('info.apps');
       }
     },
