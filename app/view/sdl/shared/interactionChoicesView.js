@@ -160,6 +160,12 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         );
       }
     }.observes('this.input.value'),
+
+    imageCheckInfo: {
+      resultCode: SDL.SDLModel.data.resultCode.SUCCESS,
+      info: ''
+    },
+
     /**
      * Activate window and set caption text
      *
@@ -275,23 +281,24 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           case 'TIMED_OUT':
           {
             SDL.SDLController.interactionChoiseCloseResponse(
-              this.appID, SDL.SDLModel.data.resultCode['TIMED_OUT']
+              this.appID, SDL.SDLModel.data.resultCode['TIMED_OUT'],
+              null, SDL.InteractionChoicesView.imageCheckInfo.info
             );
             break;
           }
           case 'SUCCESS':
           {
             SDL.SDLController.interactionChoiseCloseResponse(
-              this.appID, SDL.SDLModel.data.resultCode.SUCCESS, choiceID,
-              this.input.value
+              this.appID, SDL.InteractionChoicesView.imageCheckInfo.resultCode, 
+              choiceID, this.input.value,SDL.InteractionChoicesView.imageCheckInfo.info
             );
             break;
           }
           case 'WARNINGS':
           {
             SDL.SDLController.interactionChoiseCloseResponse(
-              this.appID, SDL.SDLModel.data.resultCode.WARNINGS, choiceID,
-              this.input.value
+              this.appID, SDL.SDLModel.data.resultCode.WARNINGS, 
+              choiceID, this.input.value, SDL.InteractionChoicesView.imageCheckInfo.info
             );
             break;
           }
