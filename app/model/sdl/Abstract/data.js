@@ -130,6 +130,10 @@ SDL.SDLModelData = Em.Object.create(
      */
     phoneCallActive: false,
     /**
+     * True, if active app is currently changing template
+     */
+    templateChangeInProgress: false,
+    /**
      * FLAG of any app in limited level exists
      */
     limitedExist: false,

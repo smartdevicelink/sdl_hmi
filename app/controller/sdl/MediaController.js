@@ -77,26 +77,42 @@ SDL.SDLMediaController = Em.Object.create(
       // set active model
       SDL.SDLController.set('model', applicationModel);
 
-      if (SDL.SDLController.model.appType) {
-        for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
-          if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
-              SDL.SDLController.model.appType[i] == 'PROJECTION') {
-            this.model.currentAudioModel.turnOnSDL();
-            SDL.BaseNavigationView.update();
-            SDL.States.goToStates('navigationApp.baseNavigation');
-            return;
-          }
-          if (SDL.SDLController.model.appType[i] == 'TESTING') {
-            // TODO(WEBENGINE)
-            SDL.InfoController.turnOnSDL();
-            SDL.States.goToStates('webViewApp');
-            return;
+      let get_template_from_app_type = function() {
+        if (SDL.SDLController.model.appType) {
+          for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
+            if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
+                SDL.SDLController.model.appType[i] == 'PROJECTION') {
+                return 'NAV_FULLSCREEN_MAP';
+              }
+              if (SDL.SDLController.model.appType[i] == 'TESTING') {
+                // TODO(WEBENGINE)
+                return 'WEB_ENGINE';
+              }
           }
         }
-      }
+        return 'MEDIA';
+      };
+
+      const template_name = SDL.SDLController.model.templateConfiguration.template == 'DEFAULT' ?
+                              get_template_from_app_type() :
+                              SDL.SDLController.model.templateConfiguration.template;
 
       this.model.currentAudioModel.turnOnSDL();
-      SDL.States.goToStates('media.sdlmedia');
+      switch (template_name) {
+        case 'NAV_FULLSCREEN_MAP' : {
+          SDL.BaseNavigationView.update();
+          SDL.States.goToStates('navigationApp.baseNavigation');
+          break;
+        }
+        case 'WEB_ENGINE' : {
+          SDL.InfoController.turnOnSDL();
+          SDL.States.goToStates('webViewApp');
+          break;
+        }
+        default: {
+          SDL.States.goToStates('media.sdlmedia');
+        }
+      }
     },
     /**
      * Restore current application to active state

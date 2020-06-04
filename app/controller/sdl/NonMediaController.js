@@ -67,28 +67,41 @@ SDL.NonMediaController = Em.Object.create(
       // set active model
       SDL.SDLController.set('model', applicationModel);
 
-      // go to SDL state
-      if (SDL.SDLController.model.appType) {
-        for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
-          if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
-              SDL.SDLController.model.appType[i] == 'PROJECTION') {
-            SDL.InfoController.turnOnSDL();
-            SDL.BaseNavigationView.update();
-            SDL.States.goToStates('navigationApp.baseNavigation');
-            return;
-          }
-          if (SDL.SDLController.model.appType[i] == 'TESTING') {
-            // TODO(WEBENGINE)
-            SDL.InfoController.turnOnSDL();
-            SDL.States.goToStates('webViewApp');
-            return;
+      let get_template_from_app_type = function() {
+        if (SDL.SDLController.model.appType) {
+          for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
+            if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
+                SDL.SDLController.model.appType[i] == 'PROJECTION') {
+                return 'NAV_FULLSCREEN_MAP';
+              }
+              if (SDL.SDLController.model.appType[i] == 'TESTING') {
+                // TODO(WEBENGINE)
+                return 'WEB_ENGINE';
+              }
           }
         }
-      }
+        return 'NON-MEDIA';
+      };
 
-      // Go to SDL state
+      const template_name = SDL.SDLController.model.templateConfiguration.template == 'DEFAULT' ?
+                              get_template_from_app_type() :
+                              SDL.SDLController.model.templateConfiguration.template;
+
       SDL.InfoController.turnOnSDL();
-      SDL.States.goToStates('info.nonMedia');
+      switch (template_name) {
+        case 'NAV_FULLSCREEN_MAP' : {
+          SDL.BaseNavigationView.update();
+          SDL.States.goToStates('navigationApp.baseNavigation');
+          break;
+        }
+        case 'WEB_ENGINE' : {
+          SDL.States.goToStates('webViewApp');
+          break;
+        }
+        default: {
+          SDL.States.goToStates('info.nonMedia');
+        }
+      }
     },
     /**
      * Restore current application to active state
