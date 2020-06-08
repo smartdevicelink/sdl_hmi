@@ -38,55 +38,22 @@ SDL.WebEngineView = Em.ContainerView.create({
       ],
 
       childViews: [
-        'TemplateTitleLabel',
-        'ExitButton',
-        'MenuButton'
+        'TemplateAppTitleLabel'
       ],
 
       isExitButtonVisible : true,
 
-      TemplateTitleLabel : SDL.Label.extend({
+      TemplateAppTitleLabel : SDL.Label.extend({
         elementId: 'template_title_label',
-        contentBinding: 'SDL.SDLController.model.templateConfiguration.template'
-      }),
-
-      ExitButton: SDL.Button.extend({
-        classNames: 'button ExitButton',
-        classNameBindings: ['parentView.isExitButtonVisible::inactive_state'],
-        text: 'EXIT',
-        commandID: -2,
-        target: 'SDL.SDLController',
-        action: 'onCommand',
-        onDown: false
-      }),
-
-      MenuButton: SDL.Button.extend({
-        classNames: 'button MenuButton',
-        classNameBindings: ['parentView.isExitButtonVisible:inactive_state'],
-        text: 'MENU',
-        target: 'SDL.SDLController',
-        action: 'openCommandsList',
-        onDown: false
-      }),
-
-      trackApplicationCommands: function() {
-        if (SDL.SDLController.model) {
-          let commands = SDL.SDLController.model.get('currentCommandsList');
-          if (commands == null) {
-            commands = [];
+        contentBinding: 'getText',
+        getText: function() {
+          if (SDL.SDLController.model) {
+            return SDL.SDLController.model.appName + ' / ' +
+            SDL.SDLController.model.templateConfiguration.template;
           }
-
-          let is_custom_commands = false;
-          commands.forEach(command => {
-            if (command.commandID >= 0) {
-              is_custom_commands = true;
-            }
-          });
-
-          this.set('isExitButtonVisible', !is_custom_commands);
-        }
-      }.observes(
-        'SDL.SDLController.model.currentSubMenuId',
-        'SDL.SDLController.model.currentCommandsList.@each'
-      )
+        }.property(
+          'SDL.SDLController.model.templateConfiguration.template',
+          'SDL.SDLController.model.appName'
+        )
+      })
 });

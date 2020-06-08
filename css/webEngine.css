@@ -15,26 +15,9 @@
 
 #webEngineView #template_title_label {
     position: absolute;
-    top: 360px;
-    left: 322px;
-    width: 160px;
-    text-align: center;
-    z-index: 1;
-}
-
-#webEngineView .ExitButton {
-    position: absolute;
-    right: -1px;
-    width: 100px;
-    text-align: center;
-    z-index: 1;
-}
-
-#webEngineView .MenuButton {
-    position: absolute;
-    right: -1px;
-    top: 345px;
-    width: 100px;
+    top: 357px;
+    left: 175px;
+    width: 460px;
     text-align: center;
     z-index: 1;
 }
