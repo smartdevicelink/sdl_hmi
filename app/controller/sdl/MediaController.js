@@ -84,8 +84,7 @@ SDL.SDLMediaController = Em.Object.create(
                 SDL.SDLController.model.appType[i] == 'PROJECTION') {
                 return 'NAV_FULLSCREEN_MAP';
               }
-              if (SDL.SDLController.model.appType[i] == 'TESTING') {
-                // TODO(WEBENGINE)
+              if (SDL.SDLController.model.appType[i] == 'WEB_VIEW') {
                 return 'WEB_ENGINE';
               }
           }

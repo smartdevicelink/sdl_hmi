@@ -1192,7 +1192,7 @@ SDL.SDLController = Em.Object.extend(
           }
 
           SDL.InfoController.getWebAppEntryPointPath(model.policyAppID, callback);
-        } else if (model.webEngineApp !== true && model.appType.indexOf('TESTING') >= 0) {
+        } else if (model.webEngineApp !== true && model.appType.indexOf('WEB_VIEW') >= 0) {
           SDL.PopUp.create().appendTo('body')
             .popupActivate("Only Web Engine apps with app type WEB_VIEW can be activated!");
         } else {
@@ -1512,7 +1512,7 @@ SDL.SDLController = Em.Object.extend(
       if(appID) {
         const is_web_view_template = function(model) {
           const template = model.templateConfiguration.template;
-          if (template == "DEFAULT" && model.appType.indexOf('TESTING') >= 0) {
+          if (template == "DEFAULT" && model.appType.indexOf('WEB_VIEW') >= 0) {
             return true;
           }
 
