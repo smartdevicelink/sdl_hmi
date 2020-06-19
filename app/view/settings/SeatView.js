@@ -963,10 +963,23 @@ SDL.SeatView = Em.ContainerView.create({
             content: 'ID'
         }),
 
-        seatModuleUUID: SDL.Label.create({
+        seatModuleUUID: Em.Select.create({
             elementId: 'seatModelCurrent',
             classNames: 'seatModelCurrent',
-            contentBinding: 'SDL.RCModulesController.currentSeatModuleID'
+            change: function() {
+              var desiredUUID = this.selection;
+              var location_name = '';
+              for(var key in SDL.RCModulesController.seatModels) {
+                if(desiredUUID === SDL.RCModulesController.seatModels[key].UUID) {
+                  location_name = SDL.RCModulesController.seatModels[key].ID;
+                  break;
+                }
+              }
+              if(location_name != '') {
+                SDL.RCModulesController.set('currentSeatModel', SDL.RCModulesController.getCoveringModuleModel('SEAT', location_name));
+                SDL.RCModulesController.currentSeatModel.updateView();
+              }
+            }
         })
     }),
 
