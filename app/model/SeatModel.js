@@ -208,6 +208,11 @@ SDL.SeatModel = Em.Object.extend({
             SDL.deepCopy(this.tempSeatControlData));
     },
 
+    updateView: function() {
+      this.set('tempSeatControlData', SDL.deepCopy(this.seatControlData));
+      this.update();
+    },
+  
     goToStates: function() {
         this.update();
     },
