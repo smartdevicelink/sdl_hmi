@@ -354,6 +354,7 @@ SDL.RCModulesController = Em.Object.create({
               break;
             }
             case 'SEAT': {
+              let seatUUIDs = [];
               module_coverage.forEach(module_service_area => {
                 var location_name = SDL.VehicleModuleCoverageController.getLocationName(module_service_area);
                 self.set('seatModels.' + location_name, SDL.SeatModel.create({
@@ -361,7 +362,9 @@ SDL.RCModulesController = Em.Object.create({
                   UUID: this.moduleUUIDMapping[module_type][location_name]}
                 ));
                 self.seatModels[location_name].generateSeatCapabilities(module_service_area);
+                seatUUIDs.push(this.moduleUUIDMapping[module_type][location_name]);
               });
+              SDL.SeatView.id.seatModuleUUID.set('content', seatUUIDs);
               break;
             }
             case 'AUDIO': {
