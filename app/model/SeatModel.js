@@ -236,7 +236,7 @@ SDL.SeatModel = Em.Object.extend({
         }
 
         this.tempSeatControlData.memory = this.seatMemoryAction;
-        this.set('seatControlData', this.tempSeatControlData);
+        this.set('seatControlData', SDL.deepCopy(this.tempSeatControlData));
         var memorySlot = "1";
         this.memory[memorySlot] = SDL.deepCopy(this.tempSeatControlData);
         this.createdMemory = memorySlot;
@@ -290,7 +290,7 @@ SDL.SeatModel = Em.Object.extend({
                     break;
 
                 case 'NONE':
-                    this.set('tempSeatControlData',this.seatControlData);
+                    this.set('tempSeatControlData',SDL.deepCopy(this.seatControlData));
                     break;
             }
         }
