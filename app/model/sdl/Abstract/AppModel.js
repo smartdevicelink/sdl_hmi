@@ -390,6 +390,13 @@ SDL.ABSAppModel = Em.Object.extend(
      * @type {Number}
      */
     currentSubMenuId: 'top',
+
+    /**
+     * Count of submenu depth for DD tracking
+     *
+     * @type {Number}
+     */
+    currentMenuDepth: 0,
     /**
      * Return current submenu name
      *
@@ -583,7 +590,7 @@ SDL.ABSAppModel = Em.Object.extend(
     addSubMenu: function(request) {
 
       // parentID is equal to 'top' cause Top level menu ID
-      var parentID = 'top';
+      var parentID = request.params.menuParams.parentID ? request.params.menuParams.parentID : 'top';
       var commands = this.get('commandsList.' + parentID);
       // Magic number is limit of 1000 commands added on one menu
       if (commands.length <= 999) {
@@ -592,7 +599,7 @@ SDL.ABSAppModel = Em.Object.extend(
           menuID: request.params.menuID,
           name: request.params.menuParams.menuName ?
             request.params.menuParams.menuName : '',
-          parent: 0,
+          parent: request.params.menuParams.parentID ? request.params.menuParams.parentID : 0,
           position: request.params.menuParams.position ?
             request.params.menuParams.position : 0,
           icon: request.params.menuIcon ? request.params.menuIcon.value : null

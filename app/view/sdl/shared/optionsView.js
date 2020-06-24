@@ -94,7 +94,12 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
               len,
               template;
             this.items = [];
-            len = commands.length;
+            if (SDL.SDLModel.data.driverDistractionState) {
+              var ddMaxLength = SDL.systemCapabilities.driverDistractionCapability.menuLength;
+              len = (ddMaxLength > commands.length) ? commands.length : ddMaxLength;
+            } else {
+              len = commands.length;
+            }
             for (i = 0; i < len; i++) {
               if (commands[i].menuID >= 0) {
                 template = 'arrow';
@@ -117,6 +122,19 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                     target: 'SDL.SDLController',
                     action: 'onCommand',
                     onDown: false
+                  }
+                }
+              );
+            }
+            if (commands.length !== len) {
+              this.items.push(
+                {
+                  type: SDL.Button,
+                  params: {
+                    templateName: "text",
+                    text: "Some Menu Items Are Hidden",
+                    onDown: false,
+                    disabled: true
                   }
                 }
               );

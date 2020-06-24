@@ -476,7 +476,9 @@ SDL.RController = SDL.SDLController.extend(
 
         // if subMenu
         // activate driver destruction if necessary
-        if (SDL.SDLModel.data.driverDistractionState) {
+        var allowedDepth = SDL.systemCapabilities.driverDistractionCapability.subMenuDepth-1;
+        var activeDepth = SDL.SDLController.model.get('currentMenuDepth');
+        if (SDL.SDLModel.data.driverDistractionState  && activeDepth >= allowedDepth) {
           SDL.DriverDistraction.activate();
         } else {
           this.onSubMenu(element.menuID);
