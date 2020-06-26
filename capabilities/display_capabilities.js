@@ -38,163 +38,163 @@ SDL.templateCapabilities = {
             "displayName": "SDL_HMI",
             "textFields": [{
                     "name": "mainField1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mainField2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "statusBar",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mediaClock",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mediaTrack",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "templateTitle",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 100,
                     "rows": 1
                 },
                 {
                     "name": "alertText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "alertText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "alertText3",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "scrollableMessageBody",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "initialInteractionText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "navigationText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "navigationText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "ETA",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "totalDistance",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "audioPassThruDisplayText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "audioPassThruDisplayText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "sliderHeader",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "sliderFooter",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "menuName",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "secondaryText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "tertiaryText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "menuTitle",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "locationName",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "locationDescription",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "addressLines",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "phoneNumber",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 }
@@ -473,163 +473,163 @@ SDL.templateCapabilities = {
             "displayName": "SDL_HMI",
             "textFields": [{
                     "name": "mainField1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mainField2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "statusBar",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mediaClock",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mediaTrack",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "templateTitle",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 100,
                     "rows": 1
                 },
                 {
                     "name": "alertText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "alertText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "alertText3",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "scrollableMessageBody",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "initialInteractionText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "navigationText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "navigationText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "ETA",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "totalDistance",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "audioPassThruDisplayText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "audioPassThruDisplayText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "sliderHeader",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "sliderFooter",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "menuName",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "secondaryText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "tertiaryText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "menuTitle",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "locationName",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "locationDescription",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "addressLines",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "phoneNumber",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 }
@@ -903,175 +903,175 @@ SDL.templateCapabilities = {
             "displayName": "SDL_HMI",
             "textFields": [{
                     "name": "mainField1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mainField2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mainField3",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mainField4",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "statusBar",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mediaClock",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mediaTrack",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "templateTitle",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 100,
                     "rows": 1
                 },
                 {
                     "name": "alertText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "alertText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "alertText3",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "scrollableMessageBody",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "initialInteractionText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "navigationText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "navigationText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "ETA",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "totalDistance",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "audioPassThruDisplayText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "audioPassThruDisplayText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "sliderHeader",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "sliderFooter",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "menuName",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "secondaryText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "tertiaryText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "menuTitle",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "locationName",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "locationDescription",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "addressLines",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "phoneNumber",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 }
@@ -1345,175 +1345,175 @@ SDL.templateCapabilities = {
             "displayName": "SDL_HMI",
             "textFields": [{
                     "name": "mainField1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mainField2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mainField3",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mainField4",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "statusBar",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mediaClock",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "mediaTrack",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "templateTitle",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 100,
                     "rows": 1
                 },
                 {
                     "name": "alertText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "alertText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "alertText3",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "scrollableMessageBody",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "initialInteractionText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "navigationText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "navigationText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "ETA",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "totalDistance",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "audioPassThruDisplayText1",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "audioPassThruDisplayText2",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "sliderHeader",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "sliderFooter",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "menuName",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "secondaryText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "tertiaryText",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "menuTitle",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "locationName",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "locationDescription",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "addressLines",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
                 {
                     "name": "phoneNumber",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 }
