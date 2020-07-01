@@ -102,6 +102,8 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
             }
             for (i = 0; i < len; i++) {
               if (commands[i].menuID >= 0) {
+                // Notify mobile to update submenu
+                FFW.UI.OnUpdateSubMenu(SDL.SDLController.model.appID, commands[i].menuID);
                 template = 'arrow';
               }else if(commands[i].isTemplate){
                 template = commands[i].isTemplate ? 

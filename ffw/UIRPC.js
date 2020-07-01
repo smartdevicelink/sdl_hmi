@@ -1963,6 +1963,45 @@ FFW.UI = FFW.RPCObserver.create(
         }
       };
       this.sendMessage(JSONMessage);
+    },
+    /**
+     * Callback for requesting images from mobile application
+     *
+     * @param {integer}
+     *            appID
+     * @param {string}
+     *            fileName
+     */
+    OnUpdateFile: function(appID, fileName) {
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnUpdateFile',
+        'params': {
+          'appID': appID,
+          'fileName': fileName
+        }
+      };
+      this.sendMessage(JSONMessage);
+    },
+        /**
+     * Callback for requesting submenu contents from mobile application
+     *
+     * @param {integer}
+     *            appID
+     * @param {integer}
+     *            menuID
+     */
+    OnUpdateSubMenu: function(appID, menuID) {
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnUpdateSubMenu',
+        'params': {
+          'appID': appID,
+          'menuID': menuID,
+          'updateSubCells': true
+        }
+      };
+      this.sendMessage(JSONMessage);
     }
   }
 );

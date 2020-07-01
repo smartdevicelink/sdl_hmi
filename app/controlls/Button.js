@@ -163,6 +163,27 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
       );
     },
 
+    /**
+     * @function imageUndefined
+     * @param {Object} event
+     * @description action if an image undefined.
+     */
+    imageUndefined: function(event) {
+      event.target.style.display='none';
+      var index = this.icon.lastIndexOf("/");
+      var fileName = this.icon.substring(index+1)
+      FFW.UI.OnUpdateFile(SDL.SDLController.model.appID, fileName)
+    },
+
+    /**
+     * @function imageLoaded
+     * @param {Object} event
+     * @description action if an image loaded.
+     */
+    imageLoaded: function(event) {
+      event.target.style.display='block';
+    },
+
     // component default template
     defaultTemplate: Em.Handlebars.compile(
       '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
@@ -173,27 +194,42 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
       text: Em.Handlebars.compile('<span class="text">{{view.text}}</span>'),
 
       icon: Em.Handlebars.compile(
-        '<img class="ico" {{bindAttr src="view.icon"}} />'
+        '<img class="ico" \
+          onerror="SDL.Button.imageUndefined(event)" \
+          onload="SDL.Button.imageLoaded(event)" \
+          {{bindAttr src="view.icon"}} />'
       ),
 
       rightText: Em.Handlebars.compile(
-        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<img {{bindAttr class="view.icon:ico"}} \
+          onerror="SDL.Button.imageUndefined(event)" \
+          onload="SDL.Button.imageLoaded(event)" \
+          {{bindAttr src="view.icon"}} />' +
         '<span class="right_text">{{view.text}}</span>'
       ),
       rightTextOverLay: Em.Handlebars.compile(
         '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
-        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<img {{bindAttr class="view.icon:ico"}} \
+          onerror="SDL.Button.imageUndefined(event)" \
+          onload="SDL.Button.imageLoaded(event)" \
+          {{bindAttr src="view.icon"}} />' +
         '<span class="right_text">{{view.text}}</span>'
       ),
 
       arrow: Em.Handlebars.compile(
-        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<img {{bindAttr class="view.icon:ico"}} \
+          onerror="SDL.Button.imageUndefined(event)" \
+          onload="SDL.Button.imageLoaded(event)" \
+          {{bindAttr src="view.icon"}} />' +
         '<span>{{view.text}}</span>' +
         '<img class="arrow-ico" src="images/common/arrow_ico.png" />'
       ),
 
       rightIcon: Em.Handlebars.compile(
-        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<img {{bindAttr class="view.icon:ico"}} \
+          onerror="SDL.Button.imageUndefined(event)" \
+          onload="SDL.Button.imageLoaded(event)" \
+          {{bindAttr src="view.icon"}} />' +
         '<span>{{view.text}}</span>' +
         '<img class="right_ico" {{bindAttr src="view.righticon"}} />'
       )
