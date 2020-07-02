@@ -370,6 +370,8 @@ SDL.RController = SDL.SDLController.extend(
           )
         );
       }
+
+      let model = SDL.SDLController.getApplicationModel(params.appID);
       var exitCommand = {
         'id': -10,
         'params': {
@@ -382,9 +384,8 @@ SDL.RController = SDL.SDLController.extend(
          cmdID: -1
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      model.addCommand(exitCommand);
+
       exitCommand = {
         'id': -10,
         'params': {
@@ -397,9 +398,8 @@ SDL.RController = SDL.SDLController.extend(
          cmdID: -2
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      model.addCommand(exitCommand);
+
       exitCommand = {
         'id': -10,
         'params': {
@@ -412,8 +412,24 @@ SDL.RController = SDL.SDLController.extend(
          cmdID: -3
         }
       };
-      let model = SDL.SDLController.getApplicationModel(params.appID);
       model.addCommand(exitCommand);
+
+      if (isWebEngineApp) {
+        exitCommand = {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'RESOURCE_CONSTRAINT\'',
+              'position': 0
+            },
+
+           cmdID: -4
+          }
+        };
+        model.addCommand(exitCommand);
+      }
+
       this.setInitalWindowTemplate(params, model);
     },
 
@@ -476,6 +492,14 @@ SDL.RController = SDL.SDLController.extend(
             FFW.BasicCommunication.ExitApplication(
               SDL.SDLController.model.appID,
               'UNAUTHORIZED_TRANSPORT_REGISTRATION'
+            );
+            break;
+          }
+          case -4:
+          {
+            FFW.BasicCommunication.ExitApplication(
+              SDL.SDLController.model.appID,
+              'RESOURCE_CONSTRAINT'
             );
             break;
           }

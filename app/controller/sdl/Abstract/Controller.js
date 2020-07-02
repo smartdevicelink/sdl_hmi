@@ -92,6 +92,14 @@ SDL.SDLController = Em.Object.extend(
             );
             break;
           }
+          case -4:
+          {
+            FFW.BasicCommunication.ExitApplication(
+              SDL.SDLController.model.appID,
+              'RESOURCE_CONSTRAINT'
+            );
+            break;
+          }
           default:
           {
             console.log('Unknown command with ID: ' + element.commandID);
@@ -946,6 +954,8 @@ SDL.SDLController = Em.Object.extend(
           )
         );
       }
+
+      let model = SDL.SDLController.getApplicationModel(params.appID);
       var exitCommand = {
         'id': -10,
         'params': {
@@ -957,9 +967,8 @@ SDL.SDLController = Em.Object.extend(
           cmdID: -1
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      model.addCommand(exitCommand);
+
       exitCommand = {
         'id': -10,
         'params': {
@@ -971,9 +980,8 @@ SDL.SDLController = Em.Object.extend(
           cmdID: -2
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      model.addCommand(exitCommand);
+
       exitCommand = {
         'id': -10,
         'params': {
@@ -985,9 +993,23 @@ SDL.SDLController = Em.Object.extend(
           cmdID: -3
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      model.addCommand(exitCommand);
+
+      if (isWebEngineApp) {
+        exitCommand = {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'RESOURCE_CONSTRAINT\'',
+              'position': 0
+            },
+            cmdID: -4
+          }
+        };
+        model.addCommand(exitCommand);
+      }
+
     },
     /**
      * Unregister application
