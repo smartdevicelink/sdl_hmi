@@ -85,7 +85,7 @@ SDL.SDLMediaController = Em.Object.create(
                 return 'NAV_FULLSCREEN_MAP';
               }
               if (SDL.SDLController.model.appType[i] == 'WEB_VIEW') {
-                return 'WEB_ENGINE';
+                return 'WEB_VIEW';
               }
           }
         }
@@ -103,7 +103,7 @@ SDL.SDLMediaController = Em.Object.create(
           SDL.States.goToStates('navigationApp.baseNavigation');
           break;
         }
-        case 'WEB_ENGINE' : {
+        case 'WEB_VIEW' : {
           SDL.InfoController.turnOnSDL();
           SDL.States.goToStates('webViewApp');
           break;

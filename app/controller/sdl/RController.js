@@ -249,8 +249,22 @@ SDL.RController = SDL.SDLController.extend(
       const isDayColorSchemeExists = "dayColorScheme" in params ;
       const isNightColorSchemeExists = "nightColorScheme" in params;
 
+      let get_template_from_app_type = function(model) {
+        if (model.appType) {
+          for (var i = 0; i < model.appType.length; i++) {
+            if (model.appType[i] == 'NAVIGATION' || model.appType[i] == 'PROJECTION') {
+              return 'NAV_FULLSCREEN_MAP';
+            }
+            if (model.appType[i] == 'WEB_VIEW') {
+              return 'WEB_VIEW';
+            }
+          }
+        }
+        return model.isMedia ? 'MEDIA' : 'NON-MEDIA';
+      };
+
       let defaultTemplateConfiguration = {
-        "template" : "DEFAULT"
+        "template" : get_template_from_app_type(model)
       };
 
       const defaultColorScheme = {
