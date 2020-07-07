@@ -156,6 +156,9 @@ FFW.UI = FFW.RPCObserver.create(
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.UI.onRPCRequest');
       if (this.validationCheck(request)) {
+        if (request.method === 'UI.Alert') {
+          request.method = 'UI.SubtleAlert'; // debug code 0242
+        }
         switch (request.method) {
           case 'UI.ShowAppMenu':
           {
@@ -189,6 +192,10 @@ FFW.UI = FFW.RPCObserver.create(
               })
             })
             break;
+          }
+          case 'UI.SubtleAlert':
+          {
+            SDL.SDLModel.onUISubtleAlert(request.params, request.id);
           }
           case 'UI.Show':
           {
@@ -374,6 +381,9 @@ FFW.UI = FFW.RPCObserver.create(
             } else if (typeID === 26 && SDL.SliderView.active
                && (targetID === undefined || targetID === SDL.SliderView.cancelID)) {
               SDL.SliderView.deactivate();
+            } else if (typeID === 64 && SDL.SubtleAlertPopUp.active
+              && (targetID === undefined || targetID === SDL.SubtleAlertPopUp.cancelID)) {
+              SDL.SubtleAlertPopUp.deactivate();
             } else {
               this.sendError(SDL.SDLModel.data.resultCode.IGNORED,
                 request.id, request.method,
@@ -1580,8 +1590,10 @@ FFW.UI = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
+     * @param {Object}
+     *            additional parameters to send with error
      */
-    sendError: function(resultCode, id, method, message) {
+    sendError: function(resultCode, id, method, message, params) {
       Em.Logger.log('FFW.' + method + 'Response');
       if (resultCode !== 0) {
 
@@ -1597,6 +1609,11 @@ FFW.UI = FFW.RPCObserver.create(
             }
           }
         };
+
+        if (params) {
+          JSONMessage.error.data = Object.assign(JSONMessage.error.data, params);
+        }
+
         this.sendMessage(JSONMessage);
       }
     },
@@ -1667,6 +1684,42 @@ FFW.UI = FFW.RPCObserver.create(
           this.sendError(
             resultCode, id, 'UI.Alert', 'Another Alert is active.'
           );
+          break;
+        }
+      }
+    },
+    /**
+     * send response from onRPCRequest
+     *
+     * @param {Number}
+     *            resultCode
+     * @param {Number}
+     *            rpc id
+     * @param {String}
+     *            info to send w response
+     * @param {Number}
+     *            tryAgainTime
+     */
+    subtleAlertResponse: function(resultCode, id, info, tryAgainTime) {
+      Em.Logger.log('FFW.UI.SubtleAlertResponse');
+      switch (resultCode) {
+        case SDL.SDLModel.data.resultCode.WARNINGS:
+        case SDL.SDLModel.data.resultCode.SUCCESS:
+        {
+          if (SDL.TTSPopUp.active) {
+            SDL.TTSPopUp.DeactivateTTS();
+          }
+          this.sendUIResult(resultCode, id, 'UI.SubtleAlert', info);
+          break;
+        }
+        case SDL.SDLModel.data.resultCode['ABORTED']:
+        {
+          this.sendError(resultCode, id, 'UI.SubtleAlert', 'SubtleAlert request aborted.');
+          break;
+        }
+        case SDL.SDLModel.data.resultCode.REJECTED:
+        {
+          this.sendError(resultCode, id, 'UI.SubtleAlert', info, { tryAgainTime: tryAgainTime });
           break;
         }
       }

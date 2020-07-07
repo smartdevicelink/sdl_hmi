@@ -1143,6 +1143,40 @@ SDL.SDLModel = Em.Object.extend({
   },
 
   /**
+   * SDL UI SubtleAlert response handler show popup window
+   *
+   * @param {Object}
+   *            message Object with parameters come from SDLCore
+   * @param {Number}
+   *            subtleAlertRequestId Id of current handled request
+   */
+  onUISubtleAlert: function(message, subtleAlertRequestId) {
+
+    // todo collin: what other popups block subtle alert?
+    if (SDL.AlertPopUp.active) {
+      var tryAgainTime = SDL.AlertPopUp.timer._idleStart + SDL.AlertPopUp.timer._idleTimeout - Date.now();
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'an Alert is active',
+        tryAgainTime);
+    } else if (SDL.ScrollableMessage.active) {
+      var tryAgainTime = SDL.ScrollableMessage.timer._idleStart + SDL.ScrollableMessage.timer._idleTimeout - Date.now();
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'a ScrollableMessage is active',
+        tryAgainTime);
+    } else if (SDL.SubtleAlertPopUp.active) {
+      var tryAgainTime = SDL.SubtleAlertPopUp.timer._idleStart + SDL.SubtleAlertPopUp.timer._idleTimeout - Date.now();
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'another SubtleAlert is active',
+        tryAgainTime);
+    } else {
+      SDL.SubtleAlertPopUp.SubtleAlertActive(message, subtleAlertRequestId);
+    }
+  },
+
+  /**
    * SDL UI PerformInteraction response handler show popup window
    *
    * @param {Object}
