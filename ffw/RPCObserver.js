@@ -316,9 +316,7 @@ FFW.RPCObserver = Em.Object.extend(
       if ('choiceSet' in params) {
         for (var i = params.choiceSet.length - 1; i >= 0; i--) {
           if (this.checkImage(params.choiceSet[i])) {
-            if (!('menuName' in params.choiceSet[i]) ||
-              !('secondaryText' in params.choiceSet[i]) ||
-              !('tertiaryText' in params.choiceSet[i])) {
+            if (!('menuName' in params.choiceSet[i])) {
               params.choiceSet.splice(i, 1);
             }
           }

@@ -115,7 +115,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      * @param {Object} params
      */
     addSoftButtons: function(params) {
-      var count = this.get('softbuttons').removeAllChildren();
       if (params) {
         var softButtonsClass;
         switch (params.length) {
@@ -133,15 +132,25 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
             break;
         }
         for (var i = 0; i < params.length; i++) {
+          let get_template_type = function(button_type) {
+            switch (params[i].type) {
+              case "IMAGE":
+                return "icon";
+              case "BOTH":
+                return "rightText";
+            }
+            return "text";
+          }
+
           this.get('softbuttons.childViews').pushObject(
             SDL.Button.create(
               SDL.PresetEventsCustom, {
                 softButtonID: params[i].softButtonID,
-                icon: params[i].image,
+                icon: params[i].image ? params[i].image.value : '',
                 text: params[i].text,
                 classNames: 'list-item softButton ' + softButtonsClass,
                 elementId: 'softButton' + i,
-                templateName: params[i].image ? 'rightIcon' : 'text',
+                templateName: get_template_type(params[i].type),
                 systemAction: params[i].systemAction,
                 appID: params.appID
               }
@@ -151,18 +160,28 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       }
     },
     AlertManeuverActive: function(message) {
-      //        var self = this;
-      //
-      //        if (message.softButtons) {
-      //            this.addSoftButtons( message.softButtons );
-      //        }
-      //
-      //        this.set( 'activate', true );
-      //
-      //        clearTimeout( this.timer );
-      //        this.timer = setTimeout( function() {
-      //            self.set( 'activate', false );
-      //        }, 5000 );
+      this.get('softbuttons.childViews').removeObjects(
+        this.get('softbuttons.childViews').filterProperty('softButtonID')
+      );
+
+      var params = message.params;
+      if (params.softButtons) {
+          this.addSoftButtons( params.softButtons );
+      }
+
+      this.set( 'activate', true );
+
+      clearTimeout( this.timer );
+
+      var self = this;
+      this.timer = setTimeout( function() {
+          self.set( 'activate', false );
+          FFW.Navigation.sendNavigationResult(
+            SDL.SDLModel.data.resultCode.SUCCESS,
+            message.id,
+            message.method
+          );
+      }, 5000 );
     }
   }
 );

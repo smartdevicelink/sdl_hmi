@@ -457,6 +457,17 @@ SDL.SDLModelData = Em.Object.create(
       'GENERIC_ERROR': 22,
       'USER_DISALLOWED': 23
     },
+    /** 
+     * Enum with app priority rankings 
+     */
+    appPriority: {
+      'EMERGENCY': 0,
+      'NAVIGATION': 1,
+      'VOICE_COMMUNICATION': 2,
+      'COMMUNICATION': 3,
+      'NORMAL': 4,
+      'NONE': 5
+    },
     /**
      * Info navigationApp data for ShowConstantTBT request
      *

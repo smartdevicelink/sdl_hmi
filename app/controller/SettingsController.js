@@ -314,21 +314,6 @@ SDL.SettingsController = Em.Object.create(
         ].isSDLAllowed = result;
       SDL.SettingsController.currentDeviceAllowance = null;
     },
-    OnSystemRequestHandler: function(url) {
-      if(FLAGS.ExternalPolicies === true) {
-        FFW.ExternalPolicies.pack({
-          type: 'PROPRIETARY',
-          policyUpdateFile: SDL.SettingsController.policyUpdateFile,
-          url: url
-        })
-      } else {
-        FFW.BasicCommunication.OnSystemRequest(
-          'PROPRIETARY',
-          SDL.SettingsController.policyUpdateFile,
-          url
-        );
-      }
-    },
     /**
      * Method verify what OnSystemRequest should be sent
      *
@@ -337,8 +322,8 @@ SDL.SettingsController = Em.Object.create(
     OnSystemRequestHandler: function(url) {
       if(FLAGS.ExternalPolicies === true) {
         FFW.ExternalPolicies.pack({
-          type: 'PROPRIETARY',
-          policyUpdateFile: SDL.SettingsController.policyUpdateFile,
+          requestType: 'PROPRIETARY',
+          fileName: SDL.SettingsController.policyUpdateFile,
           url: url
         })
       } else {
@@ -370,14 +355,8 @@ SDL.SettingsController = Em.Object.create(
           SDL.SDLModel.data.policyURLs[0]
         );
       }
-      if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+      if(abort !== 'ABORT' && !SDL.SDLModel.data.policyUpdateRetry.isRetry) {
         SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
-        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
-        SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
-          function() {
-            sendOnSystemRequest();
-          }, 1000
-        );
         return;
       }
       var length = SDL.SDLModel.data.policyUpdateRetry.retry.length;
@@ -556,12 +535,11 @@ SDL.SettingsController = Em.Object.create(
 
         FLAGS.set('PTUWithModemEnabled', false); // switch back to PTU via mobile
 
-        if (urls.length > 0) {
-          urls.forEach(url => {
-            SDL.SettingsController.OnSystemRequestHandler(url);
-          });
+        if (urls.length > 0 && FLAGS.ExternalPolicies === true) {
+          SDL.SettingsController.OnSystemRequestHandler(urls[0]);
+          SDL.SettingsController.policyUpdateRetry();
         } else {
-          FFW.BasicCommunication.OnSystemRequest('PROPRIETARY');
+          SDL.SettingsController.OnSystemRequestHandler();
         }
       };
 

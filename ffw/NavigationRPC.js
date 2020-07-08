@@ -293,11 +293,7 @@ FFW.Navigation = FFW.RPCObserver.create(
               return;
               //}
             }
-            this.sendNavigationResult(
-              SDL.SDLModel.data.resultCode.SUCCESS,
-              request.id,
-              request.method
-            );
+            SDL.AlertManeuverPopUp.AlertManeuverActive(request)
             break;
           }
           case 'Navigation.ShowConstantTBT':

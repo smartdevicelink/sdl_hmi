@@ -278,17 +278,15 @@ FFW.BasicCommunication = FFW.RPCObserver
                             SDL.SDLModel.data.set('policyURLs', data[key].default);
                             if(!FLAGS.PTUWithModemEnabled) {
                               if (data[key].default.length) {
-                                data[key].default.forEach(url => {
-                                  SDL.SettingsController.OnSystemRequestHandler(url);
-                                })
+                                SDL.SettingsController.OnSystemRequestHandler(data[key].default[0]);
                               } else {
-                                this.OnSystemRequest('PROPRIETARY');
+                                SDL.SettingsController.OnSystemRequestHandler();
+                              }
+                              if (FLAGS.ExternalPolicies === true) {
+                                SDL.SettingsController.policyUpdateRetry();
                               }
                             } else {
                               SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
-                            }
-                            if (FLAGS.ExternalPolicies === true) {
-                              SDL.SettingsController.policyUpdateRetry();
                             }
                           }
                         }
@@ -367,7 +365,9 @@ FFW.BasicCommunication = FFW.RPCObserver
         }
         if (response.result.method == 'SDL.GetStatusUpdate') {
           Em.Logger.log('SDL.GetStatusUpdate: Response from SDL!');
-          SDL.PopUp.create().appendTo('body').popupActivate(response.result);
+          SDL.PopUp.create().appendTo('body').popupActivate(
+            "Update Status: " + response.result.status, null, false 
+          );
         }
         if (response.result.method == 'BasicCommunication.GetAppProperties') {
           Em.Logger.log('BasicCommunication.GetAppProperties: Response from SDL!');
@@ -500,8 +500,11 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
         }
         if (notification.method == this.onAppRegisteredNotification) {
+          let appModel = Object.assign(notification.params.application, {
+            "priority": notification.params.priority ? notification.params.priority : 'NONE'
+          }); 
           SDL.SDLModel.onAppRegistered(
-            notification.params.application, notification.params.vrSynonyms
+            appModel, notification.params.vrSynonyms
           );
           this.OnFindApplications();
           const mainWindowID = 0;
@@ -570,7 +573,11 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.SystemRequest') {
             if (FLAGS.ExternalPolicies === true) {
-              FFW.ExternalPolicies.unpack(request.params.fileName);
+              FFW.ExternalPolicies.unpack({
+                requestType: request.params.requestType,
+                requestSubType: request.params.requestSubType,
+                fileName: request.params.fileName
+              });
             } else {
               this.OnReceivedPolicyUpdate(request.params.fileName);
             }
@@ -696,15 +703,27 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
           if (request.method == 'BasicCommunication.PolicyUpdate') {
             SDL.SettingsController.policyUpdateFile = request.params.file;
-            SDL.SDLModel.data.policyUpdateRetry.timeout
-              = request.params.timeout;
-            SDL.SDLModel.data.policyUpdateRetry.retry = request.params.retry;
-            SDL.SDLModel.data.policyUpdateRetry.try = 0;
-            this.GetPolicyConfigurationData({
-              policyType: 'module_config',
-              property: 'endpoints',
-              nestedProperty: 7 //Service type for policies
-            }); 
+            if (FLAGS.ExternalPolicies === true) {
+              SDL.SDLModel.data.policyUpdateRetry.timeout
+                = request.params.timeout;
+              SDL.SDLModel.data.policyUpdateRetry.retry = request.params.retry;
+              SDL.SDLModel.data.policyUpdateRetry.try = 0;
+              this.GetPolicyConfigurationData({
+                policyType: 'module_config',
+                property: 'endpoints',
+                nestedProperty: 7 //Service type for policies
+              });
+            }
+            else if (FLAGS.PTUWithModemEnabled) {
+              this.GetPolicyConfigurationData({
+                policyType: 'module_config',
+                property: 'endpoints',
+                nestedProperty: 7 //Service type for policies
+              });
+            }
+            else {
+              SDL.SettingsController.OnSystemRequestHandler();
+            }
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
@@ -1427,9 +1446,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           'params': {
             'requestType': type,
             'fileType': 'JSON',
-            'offset': 1000,
-            'length': 10000,
-            'timeout': 500,
+            'timeout': 1000,
             'fileName': fileName
           }
         };

@@ -1119,10 +1119,22 @@ SDL.SDLModel = Em.Object.extend({
    */
   onUIAlert: function(message, alertRequestId) {
 
+    let appModel = SDL.SDLController.getApplicationModel(message.appID)
+
     if (!SDL.AlertPopUp.active) {
-      SDL.AlertPopUp.AlertActive(message, alertRequestId);
+      SDL.AlertPopUp.AlertActive(message, alertRequestId, appModel.priority);
       return true;
     } else {
+      let currentAlertPriority = SDL.AlertPopUp.priority
+      if (currentAlertPriority && currentAlertPriority in SDL.SDLModel.data.appPriority
+         && appModel.priority in SDL.SDLModel.data.appPriority) {
+          if (SDL.SDLModel.data.appPriority[currentAlertPriority] > SDL.SDLModel.data.appPriority[appModel.priority]) {
+            // Enum is arranged in descending order (EMERGENCY being the highest, NONE being the lowest)
+            SDL.AlertPopUp.deactivate('ABORTED', 'Lower priority than the incoming alert')
+            SDL.AlertPopUp.AlertActive(message, alertRequestId, appModel.priority);
+            return true;
+          }
+      }
       SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
         alertRequestId
       );

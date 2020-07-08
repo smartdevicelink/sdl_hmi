@@ -308,7 +308,8 @@ SDL.RController = SDL.SDLController.extend(
               dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
               nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
               policyAppID: params.policyAppID,
-              webEngineApp: isWebEngineApp
+              webEngineApp: isWebEngineApp,
+              priority: params.priority ? params.priority : 'NONE'
             }
           )
         );
@@ -329,7 +330,8 @@ SDL.RController = SDL.SDLController.extend(
               dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               policyAppID: params.policyAppID,
-              webEngineApp: isWebEngineApp
+              webEngineApp: isWebEngineApp,
+              priority: params.priority ? params.priority : 'NONE'
             }
           )
         );
@@ -348,7 +350,8 @@ SDL.RController = SDL.SDLController.extend(
               dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
               nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
               policyAppID: params.policyAppID,
-              webEngineApp: isWebEngineApp
+              webEngineApp: isWebEngineApp,
+              priority: params.priority ? params.priority : 'NONE'
             }
           )
         );
