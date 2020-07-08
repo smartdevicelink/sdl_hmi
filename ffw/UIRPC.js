@@ -196,6 +196,7 @@ FFW.UI = FFW.RPCObserver.create(
           case 'UI.SubtleAlert':
           {
             SDL.SDLModel.onUISubtleAlert(request.params, request.id);
+            break;
           }
           case 'UI.Show':
           {

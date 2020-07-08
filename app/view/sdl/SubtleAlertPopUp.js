@@ -41,8 +41,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         ],
         childViews: [
             'image',
-            'message1',
-            'message2',
+            'messages',
             'softbuttons'
         ],
         /**
@@ -64,6 +63,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         image: Em.View.extend(
             {
                 elementId: 'subtleAlertPopUpImage',
+                classNames: 'subtleAlertPopUpImageContainer',
                 template: Ember.Handlebars.compile(
                     '<img class="subtleAlertPopUpImage" \
               onerror="SDL.SubtleAlertPopUp.imageUndefined(event)"\
@@ -90,18 +90,27 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         imageLoaded: function (event) {
             event.target.style.display = 'block';
         },
-        message1: SDL.Label.extend(
+        messages: Em.ContainerView.extend(
             {
-                elementId: 'message1',
-                classNames: 'message1',
-                contentBinding: 'parentView.content1'
-            }
-        ),
-        message2: SDL.Label.extend(
-            {
-                elementId: 'message2',
-                classNames: 'message2',
-                contentBinding: 'parentView.content2'
+                childViews: [
+                    'message1',
+                    'message2'
+                ],
+                classNames: 'messages',
+                message1: SDL.Label.extend(
+                    {
+                        elementId: 'message1',
+                        classNames: 'message1',
+                        contentBinding: 'parentView.parentView.content1'
+                    }
+                ),
+                message2: SDL.Label.extend(
+                    {
+                        elementId: 'message2',
+                        classNames: 'message2',
+                        contentBinding: 'parentView.parentView.content2'
+                    }
+                ),
             }
         ),
         /**
@@ -138,6 +147,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 childViews: [
                     'buttons'
                 ],
+                classNames: 'buttons',
                 buttons: Em.ContainerView.extend(
                     {
                         elementId: 'subtleAlertSoftButtons',
@@ -157,10 +167,10 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 var softButtonsClass;
                 switch (params.length) {
                     case 1:
-                        softButtonsClass = 'one';
+                        softButtonsClass = 'oneSubtle';
                         break;
                     case 2:
-                        softButtonsClass = 'two';
+                        softButtonsClass = 'twoSubtle';
                         break;
                 }
                 for (var i = 0; i < params.length; i++) {
@@ -169,7 +179,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                             SDL.Button.create(
                                 SDL.PresetEventsCustom, {
                                 systemAction: params[i].systemAction,
-                                groupName: 'AlertPopUp',
+                                groupName: 'SubtleAlertPopUp',
                                 classNameBindings: ['isHighlighted:isHighlighted',
                                     'getCurrentDisplayModeClass'],
                                 getCurrentDisplayModeClass: function () {
@@ -180,9 +190,9 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                                 softButtonID: params[i].softButtonID,
                                 icon: params[i].image ? params[i].image.value : '',
                                 text: params[i].text,
-                                classNames: 'list-item softButton ' + softButtonsClass,
+                                classNames: 'softButton ' + softButtonsClass,
                                 elementId: 'softButton' + i,
-                                templateName: params[i].image ? params[i].image.isTemplate ? 'rightTextOverLay' : 'rightText' : 'text',
+                                templateName: params[i].image ? params[i].image.isTemplate ? 'subtleOverlay' : 'subtle' : 'text',
                                 appID: appID
                             }
                             )
@@ -215,12 +225,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 }
             }
             this.set('active', true);
-            this.set('timeout', message.duration ? message.duration : 30000); //default
-            // timeout
-            // defined
-            // for
-            // Alert
-            // popUp
+            this.set('timeout', message.duration ? message.duration : 10000);
             clearTimeout(this.timer);
             this.timer = setTimeout(
                 function () {
