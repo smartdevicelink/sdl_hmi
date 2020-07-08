@@ -1501,9 +1501,8 @@
 }
 
 #AlertPopUp .alertSoftButtons {
-    margin-left: 8px;
     top: 120px;
-    width: 386px;
+    width: 400px;
 }
 
 #AlertManeuverPopUp .one, #softButton0.one {
@@ -1511,9 +1510,15 @@
     width: 362px;
 }
 
+#AlertManeuverPopUp #alertManeuverSoftButtons{
+    width: 400px;
+    height: 245px;
+}
+
 #softButton0.two {
     margin-top: 42px;
-    width: 170px;
+    width: 160px;
+    margin-left: 30px;
 }
 
 #softButton1.two {

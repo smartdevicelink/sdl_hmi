@@ -94,8 +94,15 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      */
     softbuttons: Em.ContainerView.extend(
       {
-        elementId: 'alertManeuverSoftButtons',
-        classNames: 'alertManeuverSoftButtons'
+        childViews: [
+          'buttons'
+        ],
+        buttons: Em.ContainerView.extend(
+          {
+            elementId: 'alertManeuverSoftButtons',
+            classNames: 'alertManeuverSoftButtons'
+          }
+        )
       }
     ),
     /**
@@ -142,7 +149,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
             return "text";
           }
 
-          this.get('softbuttons.childViews').pushObject(
+          this.get('softbuttons.buttons.childViews').pushObject(
             SDL.Button.create(
               SDL.PresetEventsCustom, {
                 softButtonID: params[i].softButtonID,
@@ -160,10 +167,9 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       }
     },
     AlertManeuverActive: function(message) {
-      this.get('softbuttons.childViews').removeObjects(
-        this.get('softbuttons.childViews').filterProperty('softButtonID')
-      );
-
+      this.softbuttons.buttons.removeAllChildren();
+      this.softbuttons.buttons.rerender();
+      
       var params = message.params;
       if (params.softButtons) {
           this.addSoftButtons( params.softButtons );
