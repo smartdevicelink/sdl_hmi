@@ -457,11 +457,15 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
      */
     SubscribeVehicleData: function(message) {
       var subscribeVIData = {};
-      VehicleDataResultCode = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeVehicleData');
+      var customResultCode = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeVehicleData');
+      const is_user_allowed_code =
+        customResultCode['SubscribeVehicleData'] == SDL.SDLModel.data.resultCode.SUCCESS ||
+        customResultCode['SubscribeVehicleData'] == SDL.SDLModel.data.resultCode.WARNINGS;
+
       for (var key in message.params){
         subscribeVIData[key] = {
           dataType: this.eVehicleDataType[key],
-          resultCode: VehicleDataResultCode.vehicleDataStruct[key],
+          resultCode: customResultCode.vehicleDataStruct[key],
         }
 
         var vehicleDataType = this.eVehicleDataType.hasOwnProperty(key) ?
@@ -491,14 +495,22 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           continue;
         }
 
-        SDL.SDLModel.subscribedData[key] = true;
+        if (is_user_allowed_code) {
+          SDL.SDLModel.subscribedData[key] = true;
+        }
+
         subscribeVIData[key] = {
           dataType: vehicleDataType,
-          resultCode: 'SUCCESS'
+          resultCode: is_user_allowed_code ? 'SUCCESS' : 'USER_DISALLOWED'
         };
       }
 
       var resultCode = this.CalculateSubscriptionsResultCode(subscribeVIData);
+      if (customResultCode['SubscribeVehicleData'] != SDL.SDLModel.data.resultCode.SUCCESS) {
+        // Custom result code specified by user has a higher priority for response
+        resultCode = customResultCode['SubscribeVehicleData'];
+      }
+
       FFW.VehicleInfo.sendVISubscribeVehicleDataResult(
         resultCode, message.id, message.method, subscribeVIData
       );
