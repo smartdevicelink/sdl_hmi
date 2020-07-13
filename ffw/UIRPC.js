@@ -156,9 +156,6 @@ FFW.UI = FFW.RPCObserver.create(
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.UI.onRPCRequest');
       if (this.validationCheck(request)) {
-        if (request.method === 'UI.Alert') {
-          request.method = 'UI.SubtleAlert'; // debug code 0242
-        }
         switch (request.method) {
           case 'UI.ShowAppMenu':
           {

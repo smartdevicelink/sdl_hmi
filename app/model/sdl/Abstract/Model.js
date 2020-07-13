@@ -1152,25 +1152,26 @@ SDL.SDLModel = Em.Object.extend({
    */
   onUISubtleAlert: function(message, subtleAlertRequestId) {
 
-    // todo collin: what other popups block subtle alert?
     if (SDL.AlertPopUp.active) {
-      var tryAgainTime = SDL.AlertPopUp.timer._idleStart + SDL.AlertPopUp.timer._idleTimeout - Date.now();
       SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
         subtleAlertRequestId,
         'an Alert is active',
-        tryAgainTime);
+        SDL.AlertPopUp.endTime - Date.now());
     } else if (SDL.ScrollableMessage.active) {
-      var tryAgainTime = SDL.ScrollableMessage.timer._idleStart + SDL.ScrollableMessage.timer._idleTimeout - Date.now();
       SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
         subtleAlertRequestId,
         'a ScrollableMessage is active',
-        tryAgainTime);
+        SDL.ScrollableMessage.endTime - Date.now());
+    } else if (SDL.InteractionChoicesView.active) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'a PerformInteraction is active',
+        SDL.InteractionChoicesView.endTime - Date.now());
     } else if (SDL.SubtleAlertPopUp.active) {
-      var tryAgainTime = SDL.SubtleAlertPopUp.timer._idleStart + SDL.SubtleAlertPopUp.timer._idleTimeout - Date.now();
       SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
         subtleAlertRequestId,
         'another SubtleAlert is active',
-        tryAgainTime);
+        SDL.SubtleAlertPopUp.endTime - Date.now());
     } else {
       SDL.SubtleAlertPopUp.SubtleAlertActive(message, subtleAlertRequestId);
     }

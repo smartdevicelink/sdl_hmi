@@ -55,6 +55,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         active: false,
         timer: null,
         timeout: null,
+        endTime: null,
         reason: '',
         message: undefined,
         /**
@@ -119,6 +120,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         deactivate: function (reason, info) {
             this.set('active', false);
             clearTimeout(this.timer);
+            this.set('endTime', null);
             this.set('content1', '');
             this.set('content2', '');
             if ((reason == 'timeout' &&
@@ -212,20 +214,21 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             this.set('icon', message.alertIcon ? message.alertIcon.value : "images/sdl/Warning.png");
             for (var i = 0; i < message.alertStrings.length; i++) {
                 switch (message.alertStrings[i].fieldName) {
-                    case 'alertText1': // subtleAlertText1
-                        {
-                            this.set('content1', message.alertStrings[i].fieldText);
-                            break;
-                        }
-                    case 'alertText2': // subtleAlertText2
-                        {
-                            this.set('content2', message.alertStrings[i].fieldText);
-                            break;
-                        }
+                    case 'subtleAlertText1':
+                    {
+                        this.set('content1', message.alertStrings[i].fieldText);
+                        break;
+                    }
+                    case 'subtleAlertText2':
+                    {
+                        this.set('content2', message.alertStrings[i].fieldText);
+                        break;
+                    }
                 }
             }
             this.set('active', true);
             this.set('timeout', message.duration ? message.duration : 10000);
+            this.set('endTime', Date.now() + this.timeout);
             clearTimeout(this.timer);
             this.timer = setTimeout(
                 function () {
