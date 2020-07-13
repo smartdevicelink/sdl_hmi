@@ -62,10 +62,21 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         /**
          * When Alert is clicked, open the app that sent the alert
          */
-        onClick: function() {
-            this.deactivate();
-            SDL.SDLController.onSubtleAlertPressed(this.appID);
-            SDL.SDLController.onActivateSDLApp({ appID: this.appID });
+        onClick: function(event) {
+            if (document.getElementById('SubtleAlertPopUp').contains(event.target)){
+                var buttonsDiv = document.getElementById('subtleAlertSoftButtons');
+                for (var button of buttonsDiv.childNodes) {
+                    if (button.contains(event.target)) {
+                        return;
+                    }
+                }
+
+                SDL.SubtleAlertPopUp.deactivate();
+                SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
+                SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
+            } else{
+                SDL.SubtleAlertPopUp.deactivate();
+            }
         },
         /**
          * Wagning image on Alert PopUp
@@ -74,9 +85,6 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             {
                 elementId: 'subtleAlertPopUpImage',
                 classNames: 'subtleAlertPopUpImageContainer',
-                click: function() {
-                    SDL.SubtleAlertPopUp.onClick();
-                },
                 template: Ember.Handlebars.compile(
                     '<img class="subtleAlertPopUpImage" \
               onerror="SDL.SubtleAlertPopUp.imageUndefined(event)"\
@@ -123,10 +131,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                         classNames: 'message2',
                         contentBinding: 'parentView.parentView.content2'
                     }
-                ),
-                click: function() {
-                    SDL.SubtleAlertPopUp.onClick();
-                }
+                )
             }
         ),
         /**
@@ -155,6 +160,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                     SDL.SDLModel.data.resultCode.SUCCESS, this.alertRequestId, info
                 );
             }
+            window.removeEventListener('click', this.onClick);
         },
         /**
          * Container for softbuttons
@@ -250,6 +256,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                     self.deactivate(self.reason, self.message);
                 }, this.timeout
             );
+            window.addEventListener('click', this.onClick);
         }
     }
 );
