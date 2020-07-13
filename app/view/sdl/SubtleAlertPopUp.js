@@ -50,6 +50,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
          * @type {Number}
          */
         alertRequestId: null,
+        appID: null,
         content1: '',
         content2: '',
         active: false,
@@ -59,12 +60,23 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         reason: '',
         message: undefined,
         /**
+         * When Alert is clicked, open the app that sent the alert
+         */
+        onClick: function() {
+            this.deactivate();
+            SDL.SDLController.onSubtleAlertPressed(this.appID);
+            SDL.SDLController.onActivateSDLApp({ appID: this.appID });
+        },
+        /**
          * Wagning image on Alert PopUp
          */
         image: Em.View.extend(
             {
                 elementId: 'subtleAlertPopUpImage',
                 classNames: 'subtleAlertPopUpImageContainer',
+                click: function() {
+                    SDL.SubtleAlertPopUp.onClick();
+                },
                 template: Ember.Handlebars.compile(
                     '<img class="subtleAlertPopUpImage" \
               onerror="SDL.SubtleAlertPopUp.imageUndefined(event)"\
@@ -112,6 +124,9 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                         contentBinding: 'parentView.parentView.content2'
                     }
                 ),
+                click: function() {
+                    SDL.SubtleAlertPopUp.onClick();
+                }
             }
         ),
         /**

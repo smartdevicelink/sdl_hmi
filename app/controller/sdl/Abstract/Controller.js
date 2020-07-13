@@ -795,7 +795,7 @@ SDL.SDLController = Em.Object.extend(
       FFW.UI.alertResponse(result, alertRequestID, info);
     },
     /**
-     * Method to sent response for SubtleAlert
+     * Method to send response for SubtleAlert
      *
      * @param {Number}
      *            result code
@@ -808,6 +808,15 @@ SDL.SDLController = Em.Object.extend(
      */
     subtleAlertResponse: function(result, subtleAlertRequestID, info, tryAgainTime) {
       FFW.UI.subtleAlertResponse(result, subtleAlertRequestID, info, tryAgainTime);
+    },
+    /**
+     * Method to send notification when subtle alert is clicked
+     *
+     * @param {Number}
+     *            appID
+     */
+    onSubtleAlertPressed: function(appID) {
+      FFW.UI.onSubtleAlertPressed(appID);
     },
     /**
      * Method to sent notification for Scrollable Message

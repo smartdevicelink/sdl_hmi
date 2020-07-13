@@ -1699,7 +1699,6 @@ FFW.UI = FFW.RPCObserver.create(
      *            tryAgainTime
      */
     subtleAlertResponse: function(resultCode, id, info, tryAgainTime) {
-      Em.Logger.log('FFW.UI.SubtleAlertResponse');
       switch (resultCode) {
         case SDL.SDLModel.data.resultCode.WARNINGS:
         case SDL.SDLModel.data.resultCode.SUCCESS:
@@ -1721,6 +1720,23 @@ FFW.UI = FFW.RPCObserver.create(
           break;
         }
       }
+    },
+    /**
+     * send notification for OnSubtleAlertPressed
+     *
+     * @param {Number}
+     *            appID
+     */
+    onSubtleAlertPressed: function(appID) {
+      Em.Logger.log('FFW.UI.OnSubtleAlertPressed');
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnSubtleAlertPressed',
+        'params': {
+          'appID': appID
+        }
+      };
+      this.sendMessage(JSONMessage);
     },
     /**
      * send response from onRPCRequest
