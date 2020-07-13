@@ -163,21 +163,23 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
       );
     },
 
-    /**
-     * @function imageUndefined
-     * @param {Object} event
-     * @description action if an image undefined.
-     */
-    imageUndefined: function(event) {
-      var $e = $(this);
-      if($e[0].icon && SDL.SDLController.model) {
-        FFW.UI.OnUpdateFile(SDL.SDLController.model.appID, $e[0].icon)
+    didInsertElement: function(){
+      // $(this) wraps the ember view in a jquery object.
+      // `icon` is a view property defined above.
+      if ($(this)[0].icon) {
+        // this.$('img') returns a jquery instance of
+        // the img element inside of the SDL.Button
+        this.$('img').on('error', function(event) {
+          if(SDL.SDLController.model && SDL.SDLController.model.appID) {
+            FFW.UI.OnUpdateFile(SDL.SDLController.model.appID, $(this)[0].icon)
+          }
+        }.bind(this));
       }
-    }.property(),
+    },
 
     // component default template
     defaultTemplate: Em.Handlebars.compile(
-      '<img {{bindAttr class="view.icon:ico"}} {{bindAttr onerror="view.imageUndefined"}} {{bindAttr src="view.icon"}} />' +
+      '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
       '<span>{{view.text}}</span>'
     ),
 
@@ -186,27 +188,23 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
 
       icon: Em.Handlebars.compile(
         '<img class="ico" \
-          {{bindAttr onerror="view.imageUndefined"}} \
           {{bindAttr src="view.icon"}} />'
       ),
 
       rightText: Em.Handlebars.compile(
         '<img {{bindAttr class="view.icon:ico"}} \
-          {{bindAttr onerror="view.imageUndefined"}} \
           {{bindAttr src="view.icon"}} />' +
         '<span class="right_text">{{view.text}}</span>'
       ),
       rightTextOverLay: Em.Handlebars.compile(
         '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
         '<img {{bindAttr class="view.icon:ico"}} \
-          {{bindAttr onerror="view.imageUndefined"}} \
           {{bindAttr src="view.icon"}} />' +
         '<span class="right_text">{{view.text}}</span>'
       ),
 
       arrow: Em.Handlebars.compile(
         '<img {{bindAttr class="view.icon:ico"}} \
-          {{bindAttr onerror="view.imageUndefined"}} \
           {{bindAttr src="view.icon"}} />' +
         '<span>{{view.text}}</span>' +
         '<img class="arrow-ico" src="images/common/arrow_ico.png" />'
@@ -214,7 +212,6 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
 
       rightIcon: Em.Handlebars.compile(
         '<img {{bindAttr class="view.icon:ico"}} \
-          {{bindAttr onerror="view.imageUndefined"}} \
           {{bindAttr src="view.icon"}} />' +
         '<span>{{view.text}}</span>' +
         '<img class="right_ico" {{bindAttr src="view.righticon"}} />'
