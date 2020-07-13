@@ -71,7 +71,8 @@ SDL.RPCControlView = Em.ContainerView.create(
                 classNames: 'list-item button',
                 iconBinding: 'SDL.SDLModel.data.registeredApps.' + appIndex +
                   '.appIcon',
-                disabled: apps[i].disabledToActivate
+                disabled: apps[i].disabledToActivate,
+                templateName: 'rightText'
               }));
           }
         },

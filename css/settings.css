@@ -342,6 +342,10 @@
     width: 80px;
 }
 
+#settingsView .right_text {
+    padding-left: 50px;
+}
+
 #settingsView .in_settings_separate_view .label,
 .in_light_exterior_view .label,
 .in_light_single_view .label,
