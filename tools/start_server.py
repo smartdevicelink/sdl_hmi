@@ -37,6 +37,12 @@ import json
 import requests
 import zipfile
 
+
+import ffmpeg
+import threading
+import pexpect.fdpexpect
+
+
 WEBSOCKET_PORT = 8081
 FILESERVER_PORT = 8082
 
@@ -215,13 +221,34 @@ def handle_get_app_manifest_message(params):
 
 	return json.dumps(response_msg)
 
+
+def handle_start_streaming_adapter(params):
+	print("-->Handle start gstreamer adapter\r")
+	stream_endpoint = "http://localhost:8085"
+	ffmpeg_process = ffmpeg.input(params['url']).output(stream_endpoint, vcodec="vp8", format="webm", listen=1, multiple_requests=1).run_async(pipe_stderr=True) 
+	print("Wait for data from SDL")
+	o = pexpect.fdpexpect.fdspawn(ffmpeg_process.stderr.fileno())
+	o.expect("Input")
+	print("data from SDL available")
+	response_msg = {
+		"method": "StartStreamingAdapter",
+		"params": {
+			"success": True,
+			"stream_endpoint": stream_endpoint
+		}
+	}
+
+	return json.dumps(response_msg)
+
+
 def get_method_mapping():
 	return {
 		"LowVoltageSignalRequest": handle_low_voltage_message,
 		"GetPTFileContentRequest": handle_get_pt_file_content_message,
 		"SavePTUToFileRequest": handle_save_PTU_to_file_message,
 		"GetAppBundleRequest": handle_get_app_bundle_message,
-		"GetAppManifestRequest": handle_get_app_manifest_message
+		"GetAppManifestRequest": handle_get_app_manifest_message,
+		"StartStreamingAdapter": handle_start_streaming_adapter
 	}
 
 def getch():

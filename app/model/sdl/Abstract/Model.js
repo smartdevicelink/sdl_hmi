@@ -663,20 +663,24 @@ SDL.SDLModel = Em.Object.extend({
         null) {
 
         SDL.SDLModel.data.naviVideo = document.getElementById('html5Player');
-        SDL.SDLModel.data.naviVideo.src = SDL.SDLController.getApplicationModel(
+        var sdl_stream = SDL.SDLController.getApplicationModel(
           appID
         ).navigationStream;
 
-        var playPromise = SDL.SDLModel.data.naviVideo.play();
-        if (playPromise !== undefined) {
-          playPromise.then(_ => {
-            console.log('Video playback started OK');
-          })
-          .catch(error => {
-            console.log('Video playback start failed: ' + error);
-            SDL.SDLModel.data.naviVideo = null;
-          });
-        }
+        SDL.InfoController.startStreamingAdapter(sdl_stream).then(function(stream_endpoint) {
+          console.log('Adapter promice callback');
+          SDL.SDLModel.data.naviVideo.src = stream_endpoint
+          var playPromise = SDL.SDLModel.data.naviVideo.play();
+          if (playPromise !== undefined) {
+            playPromise.then(_ => {
+              console.log('Video playback started OK');
+            })
+            .catch(error => {
+              console.log('Video playback start failed: ' + error);
+              SDL.SDLModel.data.naviVideo = null;
+            });
+          }
+        });
       }
     },
 

@@ -546,6 +546,46 @@ SDL.InfoController = Em.Object.create(
         );
     },
 
+    
+    startStreamingAdapter: function(url) {
+      return new Promise( (resolve, reject) => {
+        let client = FFW.RPCSimpleClient;
+
+        let response_timer = setTimeout(function() {
+          Em.Logger.log('startVideoStreamingAdapter timout');
+          client.unsubscribeFromEvent('StartStreamingAdapter');
+          reject();
+        }, 10000);
+
+        let response_callback = function(params) {
+          Em.Logger.log('StreamingAdapter response');
+          clearTimeout(response_timer);
+          client.unsubscribeFromEvent('StartStreamingAdapter');
+
+          if (params.success == false) {
+            Em.Logger.log('StartStreamingAdapter failed');
+            reject();
+          }
+
+          Em.Logger.log('StartStreamingAdapter succesfully started');
+          resolve(params['stream_endpoint']);
+        }
+
+        let message = {
+          method: 'StartStreamingAdapter',
+          params: {
+            'url' : url
+          }
+        };
+
+        Em.Logger.log(`StartStreamingAdapter request`);
+        client.connect();
+        client.subscribeOnEvent('StartStreamingAdapter', response_callback);
+        client.send(message);
+      });
+    },
+
+
     /**
      * @description Switching on Application
      */
