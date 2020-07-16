@@ -599,7 +599,7 @@ SDL.ABSAppModel = Em.Object.extend(
           menuID: request.params.menuID,
           name: request.params.menuParams.menuName ?
             request.params.menuParams.menuName : '',
-          parent: request.params.menuParams.parentID ? request.params.menuParams.parentID : 0,
+          parent: parentID,
           position: request.params.menuParams.position ?
             request.params.menuParams.position : 0,
           icon: request.params.menuIcon ? request.params.menuIcon.value : null
