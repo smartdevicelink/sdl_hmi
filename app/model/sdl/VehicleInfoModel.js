@@ -214,7 +214,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           'level': 10,
           'levelState': 'NORMAL',
           'capacity': 100,
-          'capacityUnit': 'KILOGRAMS'
+          'capacityUnit': 'LITERS'
         }
       ],
       'odometer': 23,
