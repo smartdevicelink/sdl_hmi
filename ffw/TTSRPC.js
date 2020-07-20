@@ -202,14 +202,18 @@ FFW.TTS = FFW.RPCObserver.create(
           // processed."); this.errorResponsePull[request.id] = null;  return;
           // } }
           resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'ttsSetGlobalProperties');
+          let info = null;
           
           if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
             SDL.SDLModel.setProperties(request.params);
+          } else {
+            info = 'Erroneous response is assigned by settings';
           }
           this.sendTTSResult(
             resultCode,
             request.id,
-            request.method
+            request.method,
+            info
           );
           break;
         }
@@ -374,7 +378,7 @@ FFW.TTS = FFW.RPCObserver.create(
      * @param {String}
      *            method
      */
-    sendTTSResult: function(resultCode, id, method) {
+    sendTTSResult: function(resultCode, id, method, info) {
       if (this.errorResponsePull[id]) {
         this.sendError(
           this.errorResponsePull[id].code, id, method,
@@ -397,7 +401,7 @@ FFW.TTS = FFW.RPCObserver.create(
         };
         this.sendMessage(JSONMessage);
       } else {
-        this.sendError(resultCode, id, method, '');
+        this.sendError(resultCode, id, method, info);
       }
     },
     /*

@@ -274,12 +274,16 @@ FFW.UI = FFW.RPCObserver.create(
             // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
           resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiSetGlobalProperties');
+          let info = null;
           
           if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
             SDL.SDLModel.setProperties(request.params);
+          } else {
+            info = 'Erroneous response is assigned by settings';
           }
+
           this.sendUIResult(
-            resultCode, request.id, request.method
+            resultCode, request.id, request.method, info
             );
             break;
           }
@@ -1643,7 +1647,7 @@ FFW.UI = FFW.RPCObserver.create(
         };
         this.sendMessage(JSONMessage);
       } else {
-        this.sendError(resultCode, id, method, '');
+        this.sendError(resultCode, id, method, info);
       }
     },
     /**
