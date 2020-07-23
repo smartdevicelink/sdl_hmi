@@ -1558,13 +1558,22 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.CreateWindow':
           {
-            var app = SDL.SDLController.getApplicationModel(request.params.appID);
-            app.createWindow(request.params);
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
-              let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
-              FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+            const resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiCreateWindow');
+
+            if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+              var app = SDL.SDLController.getApplicationModel(request.params.appID);
+              if (app) {
+                app.createWindow(request.params);
+
+                this.sendUIResult(resultCode, request.id, request.method);
+
+                let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+                FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+              }
+            } else {
+              this.sendUIResult(resultCode, request.id, request.method, 'Erroneous response is assigned by settings');
+            }
+
             break;
           }
           case 'UI.DeleteWindow':

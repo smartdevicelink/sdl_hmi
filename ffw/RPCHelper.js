@@ -381,7 +381,8 @@ FFW.RPCHelper = Em.Object.create(
         uiAddCommand: '',
         AddSubmenu:'',
         uiSetGlobalProperties: '',
-        ttsSetGlobalProperties: ''
+        ttsSetGlobalProperties: '',
+        uiCreateWindow: ''
     },
 
     VehicleDataResultCodes: [],

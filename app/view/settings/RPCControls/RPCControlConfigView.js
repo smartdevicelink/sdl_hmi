@@ -91,7 +91,8 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                 'uiAddComandlabel',
                 'addSubMenulabel',
                 'uisetGlobalPropertieslabel',
-                'ttssetGlobalPropertieslabel'
+                'ttssetGlobalPropertieslabel',
+                'uiCreateWindowLabel'
               ],
               vrAddComandlabel: SDL.Label.extend(
                 {
@@ -127,8 +128,15 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                   classNames: 'ttssetGlobalPropertieslabel',
                   content: 'TTS.SetGlobalProperties'
                 }
-              ),           
+              ),
+              uiCreateWindowLabel: SDL.Label.extend(
+                {
+                  elementId: 'uiCreateWindowLabel',
+                  classNames: 'uiCreateWindowLabel',
+                  content: 'UI.CreateWindow'
                 }
+              )
+            }
               ),
               resultCodeTracker: Em.ContainerView.extend(
                 {
@@ -139,7 +147,8 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                   'uiAddComandSelect',
                   'addSubMenuSelect',
                   'uisetGlobalPropertiesSelect',
-                  'ttssetGlobalPropertiesSelect'
+                  'ttssetGlobalPropertiesSelect',
+                  'uiCreateWindowSelect'
                   ],
                   vrAddComandSelect: Em.Select.extend(
                     {
@@ -180,7 +189,15 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                       contentBinding: 'SDL.SDLModel.data.resultCodes',
                       valueBinding: 'FFW.RPCHelper.rpcStruct.ttsSetGlobalProperties'
                     }
-                  )
+                  ),
+                  uiCreateWindowSelect: Em.Select.extend(
+                    {
+                      elementId: 'uiCreateWindowSelect',
+                      classNames: 'uiCreateWindowSelect',
+                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      valueBinding: 'FFW.RPCHelper.rpcStruct.uiCreateWindow'
+                    }
+                  ),
                 }
               )
     }
