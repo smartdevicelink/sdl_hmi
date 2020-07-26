@@ -32,6 +32,8 @@ FFW.RPCHelper = Em.Object.create(
      */
     appContainer:Em.Object.create({}),
 
+    customResultCodesList: [],
+
     /*
      * init function. Setup helpers initial values
      */ 
@@ -44,6 +46,7 @@ FFW.RPCHelper = Em.Object.create(
       };
       this.set('SubscribeWayPoints', 'SUCCESS');
       this.set('SubscribeVehicleData', 'SUCCESS');
+
       this.VehicleDataResultCodes.push({
         SubscribeVehicleData: 'SUCCESS',
         vehicleDataStruct: this.getSuccessVehicleDataStruct()
@@ -55,6 +58,12 @@ FFW.RPCHelper = Em.Object.create(
      * container with initial data
      */
     addApplication: function(appID) {
+      if (this.customResultCodesList.length == 0) {
+        let codes = SDL.deepCopy(SDL.SDLModel.data.resultCodes);
+        codes.push('DO_NOT_RESPOND');
+        this.set('customResultCodesList', codes);
+      }
+
       if(this.appContainer[appID] === undefined ){
         this.appContainer[appID] = SDL.deepCopy(this.defaultRpcStruct);
       }
@@ -96,7 +105,15 @@ FFW.RPCHelper = Em.Object.create(
         code = this.vehicleDataStruct[method];
       }
 
-      return null != code ? SDL.SDLModel.data.resultCode[code] : 'SUCCESS';
+      if (null === code) {
+        return SDL.SDLModel.data.resultCode.SUCCESS;
+      }
+
+      if ('DO_NOT_RESPOND' == code) {
+        return code;
+      }
+
+      return SDL.SDLModel.data.resultCode[code];
     },
 
     /*
@@ -332,6 +349,11 @@ FFW.RPCHelper = Em.Object.create(
       } else if(length == 1){
         this.set('SubscribeWayPoints', 'SUCCESS');
       }
+
+      if ('DO_NOT_RESPOND' == code) {
+        return code;
+      }
+
       return SDL.SDLModel.data.resultCode[code]
     },
 
@@ -342,8 +364,11 @@ FFW.RPCHelper = Em.Object.create(
       this.updateVehicleDataResultCodes();
 
       nextVehicleDataResultCode = this.VehicleDataResultCodes[0].SubscribeVehicleData;
+      const next_code = 'DO_NOT_RESPOND' == nextVehicleDataResultCode ? 
+        nextVehicleDataResultCode : SDL.SDLModel.data.resultCode[nextVehicleDataResultCode];
+
       code = {
-        SubscribeVehicleData: SDL.SDLModel.data.resultCode[nextVehicleDataResultCode],
+        SubscribeVehicleData: next_code,
         vehicleDataStruct:{}
       };
 

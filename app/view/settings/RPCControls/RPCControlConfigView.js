@@ -154,7 +154,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                     {
                       elementId: 'vrAddComandSelect',
                       classNames: 'vrAddComandSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      contentBinding: 'FFW.RPCHelper.customResultCodesList',
                       valueBinding: 'FFW.RPCHelper.rpcStruct.vrAddCommand'
                     }
                   ),
@@ -162,7 +162,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                     {
                       elementId: 'uiAddComandSelect',
                       classNames: 'uiAddComandSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      contentBinding: 'FFW.RPCHelper.customResultCodesList',
                       valueBinding: 'FFW.RPCHelper.rpcStruct.uiAddCommand'
                     }
                   ),
@@ -170,7 +170,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                     {
                       elementId: 'addSubMenuSelect',
                       classNames: 'addSubMenuSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      contentBinding: 'FFW.RPCHelper.customResultCodesList',
                       valueBinding: 'FFW.RPCHelper.rpcStruct.AddSubmenu'
                     }
                   ),
@@ -178,7 +178,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                     {
                       elementId: 'uisetGlobalPropertiesSelect',
                       classNames: 'uisetGlobalPropertiesSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      contentBinding: 'FFW.RPCHelper.customResultCodesList',
                       valueBinding: 'FFW.RPCHelper.rpcStruct.uiSetGlobalProperties'
                     }
                   ),
@@ -186,7 +186,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                     {
                       elementId: 'ttssetGlobalPropertiesSelect',
                       classNames: 'ttssetGlobalPropertiesSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      contentBinding: 'FFW.RPCHelper.customResultCodesList',
                       valueBinding: 'FFW.RPCHelper.rpcStruct.ttsSetGlobalProperties'
                     }
                   ),
@@ -194,7 +194,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                     {
                       elementId: 'uiCreateWindowSelect',
                       classNames: 'uiCreateWindowSelect',
-                      contentBinding: 'SDL.SDLModel.data.resultCodes',
+                      contentBinding: 'FFW.RPCHelper.customResultCodesList',
                       valueBinding: 'FFW.RPCHelper.rpcStruct.uiCreateWindow'
                     }
                   ),

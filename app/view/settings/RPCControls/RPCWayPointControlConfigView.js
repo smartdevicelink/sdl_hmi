@@ -128,7 +128,7 @@ SDL.RPCWayPointControlConfigView = Em.ContainerView.create({
         {
           elementId: 'subscribeWayPointsSelect',
           classNames: 'subscribeWayPointsSelect',
-          contentBinding: 'SDL.SDLModel.data.resultCodes',
+          contentBinding: 'FFW.RPCHelper.customResultCodesList',
           valueBinding: 'FFW.RPCHelper.SubscribeWayPoints'
         }
     ),  

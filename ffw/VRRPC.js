@@ -146,6 +146,11 @@ FFW.VR = FFW.RPCObserver.create(
             var key = this.checkRequestType(request.params.type);
             result = FFW.RPCHelper.getCustomResultCode(request.params.appID, key);
 
+            if ('DO_NOT_RESPOND' == result) {
+              Em.Logger.log('Do not respond on this request');
+              return;
+            }
+
             if(FFW.RPCHelper.isSuccessResultCode(result)){
               SDL.SDLModel.addCommandVR(request.params);
             }

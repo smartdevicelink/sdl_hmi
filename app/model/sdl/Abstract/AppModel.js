@@ -517,6 +517,11 @@ SDL.ABSAppModel = Em.Object.extend(
       // Magic number is limit of 1000 commands added on one menu
       result = FFW.RPCHelper.getCustomResultCode(this.appID, 'uiAddCommand');
 
+      if ('DO_NOT_RESPOND' == result) {
+        Em.Logger.log('Do not respond on this request');
+        return;
+      }
+
       if (FFW.RPCHelper.isSuccessResultCode(result)) {
     	    if (commands.length <= 999) {
         		commands[commands.length] = {
@@ -607,6 +612,11 @@ SDL.ABSAppModel = Em.Object.extend(
         var commands = this.get('commandsList.' + parentID);
 
         result = FFW.RPCHelper.getCustomResultCode(this.appID, 'AddSubmenu');
+        if ('DO_NOT_RESPOND' == result) {
+          Em.Logger.log('Do not respond on this request');
+          return;
+        }
+
         if(FFW.RPCHelper.isSuccessResultCode(result)) {
     	    // Magic number is limit of 1000 commands added on one menu
     	    if (commands.length <= 999) {

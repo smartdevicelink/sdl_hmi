@@ -202,6 +202,11 @@ FFW.TTS = FFW.RPCObserver.create(
           // processed."); this.errorResponsePull[request.id] = null;  return;
           // } }
           resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'ttsSetGlobalProperties');
+          if ('DO_NOT_RESPOND' == resultCode) {
+            Em.Logger.log('Do not respond on this request');
+            return;
+          }
+
           let info = null;
           
           if(FFW.RPCHelper.isSuccessResultCode(resultCode)){

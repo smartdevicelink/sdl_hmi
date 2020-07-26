@@ -458,6 +458,12 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
     SubscribeVehicleData: function(message) {
       var subscribeVIData = {};
       var customResultCode = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeVehicleData');
+
+      if ('DO_NOT_RESPOND' == customResultCode['SubscribeVehicleData']) {
+        Em.Logger.log('Do not respond on this request');
+        return;
+      }
+
       const is_user_allowed_code =
         customResultCode['SubscribeVehicleData'] == SDL.SDLModel.data.resultCode.SUCCESS ||
         customResultCode['SubscribeVehicleData'] == SDL.SDLModel.data.resultCode.WARNINGS;

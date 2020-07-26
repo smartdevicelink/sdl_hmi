@@ -137,7 +137,7 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
           {
             elementId: 'SubscribevehicleDataSelect',
             classNames: 'select',
-            contentBinding: 'SDL.SDLModel.data.resultCodes',
+            contentBinding: 'FFW.RPCHelper.customResultCodesList',
             valueBinding: 'FFW.RPCHelper.SubscribeVehicleData'
           }),   
       }),
@@ -174,7 +174,7 @@ SDL.RPCVehicleDataControlConfigView = Em.ContainerView.create({
               {
                 elementId: viewsName + 'Select',
                 classNames: 'select',
-                contentBinding: 'SDL.SDLModel.data.vehicleDataResultCode',
+                contentBinding: 'FFW.RPCHelper.customResultCodesList',
                 valueBinding: selectValueBinding
               }),   
           }));

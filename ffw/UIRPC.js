@@ -274,6 +274,11 @@ FFW.UI = FFW.RPCObserver.create(
             // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
           resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiSetGlobalProperties');
+          if ('DO_NOT_RESPOND' == resultCode) {
+            Em.Logger.log('Do not respond on this request');
+            return;
+          }
+
           let info = null;
           
           if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
@@ -1559,6 +1564,10 @@ FFW.UI = FFW.RPCObserver.create(
           case 'UI.CreateWindow':
           {
             const resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiCreateWindow');
+            if ('DO_NOT_RESPOND' == resultCode) {
+              Em.Logger.log('Do not respond on this request');
+              return;
+            }
 
             if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
               var app = SDL.SDLController.getApplicationModel(request.params.appID);
