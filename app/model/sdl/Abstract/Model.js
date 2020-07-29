@@ -111,6 +111,17 @@ SDL.SDLModel = Em.Object.extend({
   },
 
   /**
+   * Method to get current width and height of NavigationView
+   */
+  get_view_width_and_height: function() {
+    var view = document.getElementById('baseNavigation');
+    return { 
+      'width': view.offsetWidth,
+      'height': view.offsetHeight
+    };
+  },
+
+  /**
    * Notification method to send touch event data to SDLCore
    *
    * @param {Object}
@@ -168,17 +179,26 @@ SDL.SDLModel = Em.Object.extend({
           return;
         }
 
+        var active_app_id = SDL.SDLController.model.appID;
+        var app_model = SDL.SDLController.getApplicationModel(active_app_id);
+        if(!app_model) {
+          return;
+        }
+
+        var video_width = app_model.VideoConfigWidth;
+        var video_height = app_model.VideoConfigHeight;
+
+  
+        var view = this.get_view_width_and_height();
+        var marging_left = (view.width - video_width) / 2;
+        const marging_top = 52;
+
+
         events[i] = {};
         events[i].c = [{}];
-
-        events[i].id = event.originalEvent.changedTouches ?
-          event.originalEvent.changedTouches[i].identifier : 0;
-        events[i].c[0].x = event.originalEvent.changedTouches ?
-          event.originalEvent.changedTouches[i].pageX :
-          event.originalEvent.pageX;
-        events[i].c[0].y = event.originalEvent.changedTouches ?
-          event.originalEvent.changedTouches[i].pageY-50 :
-          event.originalEvent.pageY-50;
+        events[i].id = event.originalEvent.changedTouches ? event.originalEvent.changedTouches[i].identifier : 0;
+        events[i].c[0].x = (event.originalEvent.changedTouches ? event.originalEvent.changedTouches[i].pageX : event.originalEvent.pageX) - marging_left;
+        events[i].c[0].y = (event.originalEvent.changedTouches ? event.originalEvent.changedTouches[i].pageY : event.originalEvent.pageY) - marging_top;
         events[i].ts = [parseInt(event.timeStamp)];
 
       }
@@ -663,20 +683,43 @@ SDL.SDLModel = Em.Object.extend({
         null) {
 
         SDL.SDLModel.data.naviVideo = document.getElementById('html5Player');
-        SDL.SDLModel.data.naviVideo.src = SDL.SDLController.getApplicationModel(
+        var sdl_stream = SDL.SDLController.getApplicationModel(
           appID
         ).navigationStream;
+        
+        Em.Logger.log('Set params from VideoConfig');
+        
+        var app_model = SDL.SDLController.getApplicationModel(appID)
+        Em.Logger.log("playVideo app_model", app_model)
+            
 
-        var playPromise = SDL.SDLModel.data.naviVideo.play();
-        if (playPromise !== undefined) {
-          playPromise.then(_ => {
-            console.log('Video playback started OK');
-          })
-          .catch(error => {
-            console.log('Video playback start failed: ' + error);
-            SDL.SDLModel.data.naviVideo = null;
-          });
-        }
+        var width = app_model.VideoConfigWidth
+        var height = app_model.VideoConfigHeight
+        
+        var view = this.get_view_width_and_height();
+
+        var marging_left = ((view.width - width) / 2)
+        var marging_top = 50
+        
+        SDL.SDLModel.data.naviVideo.style.setProperty("width",width + "px")
+        SDL.SDLModel.data.naviVideo.style.setProperty("height",height + "px")
+        SDL.SDLModel.data.naviVideo.style.setProperty("margin-left",marging_left + "px")
+        SDL.SDLModel.data.naviVideo.style.setProperty("margin-top",marging_top + "px")
+        
+        SDL.InfoController.startStreamingAdapter(sdl_stream).then(function(stream_endpoint) {
+          Em.Logger.log('Starting video playback');
+          SDL.SDLModel.data.naviVideo.src = stream_endpoint
+          var playPromise = SDL.SDLModel.data.naviVideo.play();
+          if (playPromise !== undefined) {
+            playPromise.then(_ => {
+              Em.Logger.log('Video playback started OK');
+            })
+            .catch(error => {
+              Em.Logger.log('Video playback start failed: ' + error);
+              SDL.SDLModel.data.naviVideo = null;
+            });
+          }
+        });
       }
     },
 

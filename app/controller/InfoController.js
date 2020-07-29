@@ -547,6 +547,52 @@ SDL.InfoController = Em.Object.create(
     },
 
     /**
+     * @description Start converting streaming from SDL to the HTML5 video
+     * @param {String} url SDL streaming path (pipe or socket)
+     * @return {Promise} promice that resolves streaming URL with HTML5 video  
+     */
+    startStreamingAdapter: function(url) {
+      return new Promise( (resolve, reject) => {
+        let client = FFW.RPCSimpleClient;
+
+        let response_timer = setTimeout(function() {
+          Em.Logger.log('StartStreamingAdapter timeout');
+
+          client.unsubscribeFromEvent('StartStreamingAdapter');
+          reject();
+        }, 10000);
+
+        let response_callback = function(params) {
+          Em.Logger.log('StartStreamingAdapter response');
+
+          clearTimeout(response_timer);
+          client.unsubscribeFromEvent('StartStreamingAdapter');
+
+          if (params.success == false) {
+            Em.Logger.log('StartStreamingAdapter failed');
+            reject();
+          }
+
+          Em.Logger.log('StartStreamingAdapter succesfully started');
+          resolve(params['stream_endpoint']);
+        }
+
+        let message = {
+          method: 'StartStreamingAdapter',
+          params: {
+            'url' : url
+          }
+        };
+
+        Em.Logger.log(`StartStreamingAdapter request`);
+        client.connect();
+        client.subscribeOnEvent('StartStreamingAdapter', response_callback);
+        client.send(message);
+      });
+    },
+
+
+    /**
      * @description Switching on Application
      */
     turnOnSDL: function() {

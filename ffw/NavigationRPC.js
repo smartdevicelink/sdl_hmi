@@ -185,7 +185,7 @@ FFW.Navigation = FFW.RPCObserver.create(
         if(!isPng){
           delete params.nextTurnIcon;
           returnValue=false;
-        }       
+        }
       }
       if(params.turnIcon){
         var image = params.turnIcon.value;
@@ -195,7 +195,7 @@ FFW.Navigation = FFW.RPCObserver.create(
         if(!isPng){
           delete params.turnIcon;
           returnValue=false;
-        }       
+        }
       }
       if(params.turnList){
         var countList=params.turnList.length;
@@ -416,42 +416,17 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.SetVideoConfig':
           {
-            var rejectedParams = [];
-            var video_formats = SDL.systemCapabilities.videoStreamingCapability.supportedFormats;
-            if ('protocol' in request.params.config) {
-              video_formats = video_formats.filter(x => x.protocol === request.params.config.protocol);
-              if (video_formats.length === 0) {
-                Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
-                              + request.params.config.protocol);
-                rejectedParams.push('protocol');
+              var app_model = SDL.SDLController.getApplicationModel(request.params.appID);
+              if(!app_model) {
+                break;
               }
-            }
-            if ('codec' in request.params.config && video_formats.length > 0) {
-              video_formats = video_formats.filter(x => x.codec === request.params.config.codec);
-              if (video_formats.length === 0) {
-                Em.Logger.log('FFW.' + request.method + ' rejects codec: '
-                              + request.params.config.codec);
-                rejectedParams.push('codec');
-              }
-            }
-            if (rejectedParams.length > 0) {
-              var JSONMessage = {
-                'jsonrpc': '2.0',
-                'id': request.id,
-                'result': {
-                  'code': SDL.SDLModel.data.resultCode.REJECTED,
-                  'method': request.method,
-                  'rejectedParams': rejectedParams
-                }
-              };
-              this.sendMessage(JSONMessage);
-            } else {
+              app_model.VideoConfigWidth = request.params.config.width;
+              app_model.VideoConfigHeight = request.params.config.height;
               this.sendNavigationResult(
                 SDL.SDLModel.data.resultCode.SUCCESS,
                 request.id,
                 request.method
               );
-            }
             break;
           }
           case 'Navigation.StartStream':
