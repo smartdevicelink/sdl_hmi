@@ -159,6 +159,41 @@
     left: 175px !important;
 }
 
+#policies_settings_sendVideoStreamingCapsView #videoCapabilitiesCodeEditor {
+    width: 545px !important;
+    height: 270px !important;
+    top: 95px !important;
+}
+
+#policies_settings_sendVideoStreamingCapsView #sendNotificationButton {
+    left: 658px;
+    top: 210px;
+    width: 130px;
+    text-align: center;
+}
+
+#policies_settings_sendVideoStreamingCapsView .in_app_id_container_view .label {
+    left: 658px;
+    top: -178px;
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    background: #393939;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 50px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+}
+
+#policies_settings_sendVideoStreamingCapsView .in_app_id_container_view .appIDSelectView {
+  left: 658px;
+  top: -120px;
+  width: 130px;
+  position: absolute;
+}
+
 #settingsView .backButton .ico {
     margin-top: 13px;
     margin-left: 8px;

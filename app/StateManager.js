@@ -184,6 +184,18 @@ var StateManager = Em.StateManager.extend(
                 }
               }
             ),
+            sendVideoStreamingCapabilities: Em.State.create(
+              {
+                enter: function() {
+                  this._super();
+                  SDL.SettingsController.showVideoStreamingCapabilities();
+                },
+                exit: function() {
+                  SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.reset();
+                  this._super();
+                }
+              }
+            ),
             policyConfig: Em.State.create(
               {
                 enter: function() {
