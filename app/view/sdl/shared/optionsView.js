@@ -57,7 +57,8 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
     deactivate: function() {
       if (SDL.SDLController.model) {
         var currentSubMenuID = SDL.SDLController.model.get('currentSubMenuId');
-        if (currentSubMenuID >= 0  && 
+        if (currentSubMenuID != 'top' &&
+          currentSubMenuID >= 0  && 
           !SDL.SDLController.model.get('subMenuInitFromApp')) {
           var commandsList = SDL.SDLController.model.get('commandsList');
           var findParentID = (commands, menuID) => {
