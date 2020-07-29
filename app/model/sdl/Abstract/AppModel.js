@@ -632,13 +632,20 @@ SDL.ABSAppModel = Em.Object.extend(
      * @param {Number}
      */
     deleteSubMenu: function(menuID) {
-      if (this.commandsList['top'].filterProperty('commandID', menuID)) {
-        this.get('commandsList.top').removeObjects(
-          this.get('commandsList.top').filterProperty('menuID', menuID)
-        );
-        //delete(this.commandsList[menuID]);
+      var commandsList = this.commandsList;
+      for (id in commandsList) {
+        var filteredObjects = commandsList[id].filterProperty('menuID', menuID);
+        if (filteredObjects.length > 0) {
+          commandsList[id].removeObjects(
+            filteredObjects
+          );
+          if (menuID in commandsList) {
+            delete(commandsList[menuID])
+          }
+          return SDL.SDLModel.data.resultCode.SUCCESS;
+        }
       }
-      return SDL.SDLModel.data.resultCode.SUCCESS;
+      return SDL.SDLModel.data.resultCode.INVALID_ID;
     },
     /**
      * SDL UI CreateInteraction response handeler push set of commands to
