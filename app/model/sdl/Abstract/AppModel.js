@@ -403,15 +403,20 @@ SDL.ABSAppModel = Em.Object.extend(
      * @return {String}
      */
     currentSubMenuLabel: function() {
-
-      //Param "top" is Top level menu index
-      var submenu, commands = this.commandsList['top'];
-      for (var i = 0; i < commands.length; i++) {
-        if (commands[i].menuID == this.currentSubMenuId) {
-          submenu = commands[i].name;
+      var commandsList = this.commandsList;
+      var findMenuName = (commands, menuID) => {
+        for (id in commands) {
+          var subMenuCommands = commands[id];
+          for (element of subMenuCommands) {
+            if (element.menuID === menuID) {
+              return element.name;
+            }
+          }
         }
+        return 'Options';
       }
-      return this.get('currentSubMenuId') != 'top' ? submenu : 'Options';
+      return this.get('currentSubMenuId') != 'top' ? 
+        findMenuName(commandsList, this.currentSubMenuId) : 'Options';
     }.property('this.currentSubMenuId'),
     /**
      * Interaction chooses data
