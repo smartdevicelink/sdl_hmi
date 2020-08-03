@@ -573,9 +573,9 @@ FFW.Navigation = FFW.RPCObserver.create(
         this.errorResponsePull[id] = null;
         return;
       }
-      Em.Logger.log('FFW.UI.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS ||resultCode == SDL.SDLModel.data.resultCode.WARNINGS ) {
 
+      Em.Logger.log('FFW.Navigation.' + method + 'Response');
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -586,6 +586,8 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
         };
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method);
       }
     },
     /**

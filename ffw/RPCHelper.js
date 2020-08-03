@@ -32,7 +32,9 @@ FFW.RPCHelper = Em.Object.create(
      */
     appContainer:Em.Object.create({}),
 
-    customResultCodesList: [],
+    customResultCodesList: [
+      'SUCCESS'
+    ],
 
     /*
      * init function. Setup helpers initial values
@@ -58,7 +60,7 @@ FFW.RPCHelper = Em.Object.create(
      * container with initial data
      */
     addApplication: function(appID) {
-      if (this.customResultCodesList.length == 0) {
+      if (this.customResultCodesList.length <= 1) {
         let codes = SDL.deepCopy(SDL.SDLModel.data.resultCodes);
         codes.push('DO_NOT_RESPOND');
         this.set('customResultCodesList', codes);
@@ -341,7 +343,6 @@ FFW.RPCHelper = Em.Object.create(
         this.wayPointResultCodes.shift(); //remove the first element of the array
         
         currentNumber = this.SubscribeWayPointsRequestNumber;
-        this.set('SubscribeWayPointsRequestNumber',0);
         this.set('SubscribeWayPointsRequestNumber', 
                               Math.min(currentNumber, 
                                         this.wayPointResultCodes.length));
