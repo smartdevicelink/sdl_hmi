@@ -464,7 +464,10 @@ SDL.SDLModelData = Em.Object.create(
       'NO_DEVICES_CONNECTED': 20,
       'WARNINGS': 21,
       'GENERIC_ERROR': 22,
-      'USER_DISALLOWED': 23
+      'USER_DISALLOWED': 23,
+      'TRUNCATED_DATA': 24,
+      'SAVED': 25,
+      'READ_ONLY': 26
     },
     /** 
      * Enum with app priority rankings 

@@ -77,8 +77,12 @@ FFW.RPCHelper = Em.Object.create(
      */
     isSuccessResultCode: function(resultCode) {
       return [
-        SDL.SDLModel.data.resultCode.SUCCESS, 
-        SDL.SDLModel.data.resultCode.WARNINGS].includes(resultCode);
+        SDL.SDLModel.data.resultCode.SUCCESS,
+        SDL.SDLModel.data.resultCode.WARNINGS,
+        SDL.SDLModel.data.resultCode.WRONG_LANGUAGE,
+        SDL.SDLModel.data.resultCode.RETRY,
+        SDL.SDLModel.data.resultCode.SAVED
+      ].includes(resultCode);
     },
 
     /*

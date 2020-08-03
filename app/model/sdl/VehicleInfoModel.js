@@ -465,8 +465,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       }
 
       const is_user_allowed_code =
-        customResultCode['SubscribeVehicleData'] == SDL.SDLModel.data.resultCode.SUCCESS ||
-        customResultCode['SubscribeVehicleData'] == SDL.SDLModel.data.resultCode.WARNINGS;
+        FFW.RPCHelper.isSuccessResultCode(customResultCode['SubscribeVehicleData']);
 
       for (var key in message.params){
         subscribeVIData[key] = {
