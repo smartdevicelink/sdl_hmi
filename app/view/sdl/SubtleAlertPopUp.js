@@ -79,7 +79,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             }
         },
         /**
-         * Wagning image on Alert PopUp
+         * Warning image on Alert PopUp
          */
         image: Em.View.extend(
             {
@@ -96,7 +96,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         /**
          * @function imageUndefined
          * @param {Object} event
-         * @description action if an image undefined.
+         * @description action if an image is undefined.
          */
         imageUndefined: function (event) {
             event.target.style.display = 'none';
@@ -106,7 +106,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         /**
          * @function imageLoaded
          * @param {Object} event
-         * @description action if an image loaded.
+         * @description action if an image is loaded.
          */
         imageLoaded: function (event) {
             event.target.style.display = 'block';
