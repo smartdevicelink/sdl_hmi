@@ -711,31 +711,32 @@ SDL.ABSAppModel = Em.Object.extend(
     createWindow: function(windowParam) {
       var content = {};
       if (windowParam.duplicateUpdatesFromWindowID === 0) {
+        var app_info = SDL.SDLController.model ? SDL.SDLController.model.appInfo : null;
+
         var showStringsArray = [];
-        SDL.SDLController.model.appInfo.field1 ? showStringsArray.push({
-          "fieldName": "mainField1",
-          "fieldText": SDL.SDLController.model.appInfo.field1
-        }) : null ;
+        if (app_info) {
+          showStringsArray.push({
+            "fieldName": "mainField1",
+            "fieldText": app_info.field1
+          });
+          showStringsArray.push({
+            "fieldName": "mainField2",
+            "fieldText": SDL.SDLController.model.appInfo.field2
+          });
 
-        SDL.SDLController.model.appInfo.field2 ? showStringsArray.push({
-          "fieldName": "mainField2",
-          "fieldText": SDL.SDLController.model.appInfo.field2
-        }) : null ;
-
-        content["showStrings"] = showStringsArray;    
-        
-        content["softButtons"] = this.get("softButtons").slice(0,4);
-
-        if (SDL.SDLController.model.appInfo.mainImage) {
-          content["graphic"] = {
-            "value" : SDL.SDLController.model.appInfo.mainImage
-          };
-        } else if (SDL.SDLController.model.appInfo.trackIcon) {
-          content["graphic"] = {
-            "value" : SDL.SDLController.model.appInfo.trackIcon
-          };
+          if (app_info.mainImage) {
+            content["graphic"] = {
+              "value" : app_info.mainImage
+            };
+          } else if (app_info.trackIcon) {
+            content["graphic"] = {
+              "value" : app_info.trackIcon
+            };
+          }
         }
 
+        content["showStrings"] = showStringsArray;
+        content["softButtons"] = this.get("softButtons").slice(0,4);
         content["templateConfiguration"] = this.templateConfiguration;
 
         windowParam.content = content;
