@@ -1416,8 +1416,8 @@
 }
 
 #SubtleAlertPopUp .subtleAlertPopUpImage {
-    max-width: 120px;
-    max-height: 120px;
+    max-width: 100px;
+    max-height: 100px;
     margin: auto;
     height: auto;
     width: auto;

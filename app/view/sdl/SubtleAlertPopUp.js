@@ -60,7 +60,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         reason: '',
         message: undefined,
         /**
-         * When Alert is clicked, open the app that sent the alert
+         * When SubtleAlert is clicked, open the app that sent the alert
          */
         onClick: function(event) {
             if (document.getElementById('SubtleAlertPopUp').contains(event.target)){
@@ -79,7 +79,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             }
         },
         /**
-         * Warning image on Alert PopUp
+         * Warning image on Subtle Alert PopUp
          */
         image: Em.View.extend(
             {
@@ -180,7 +180,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             }
         ),
         /**
-         * @desc Function creates Soft Buttons on AlertPoUp
+         * @desc Function creates Soft Buttons on SubtleAlertPopUp
          * @param {Object} params
          */
         addSoftButtons: function (params, appID) {
@@ -230,7 +230,6 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             this.set('reason', 'timeout');
             this.set('message', undefined);
             this.addSoftButtons(message.softButtons, message.appID);
-            this.set('progressIndicator', message.progressIndicator);
             this.set('appID', message.appID);
             this.set('icon', message.alertIcon ? message.alertIcon.value : "images/sdl/Warning.png");
             for (var i = 0; i < message.alertStrings.length; i++) {

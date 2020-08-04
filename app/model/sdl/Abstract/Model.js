@@ -1172,6 +1172,11 @@ SDL.SDLModel = Em.Object.extend({
         subtleAlertRequestId,
         'another SubtleAlert is active',
         SDL.SubtleAlertPopUp.endTime - Date.now());
+    } else if (SDL.AlertManeuverPopUp.activate) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'an AlertManeuver popup is active',
+        SDL.AlertManeuverPopUp.endTime - Date.now());
     } else {
       SDL.SubtleAlertPopUp.SubtleAlertActive(message, subtleAlertRequestId);
     }
