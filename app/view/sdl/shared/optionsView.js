@@ -90,6 +90,7 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
         refreshItems: function() {
           if (SDL.SDLController.model) {
             var commands = SDL.SDLController.model.get('currentCommandsList'),
+              allMenuItems = SDL.SDLController.model.get('commandsList'),
               i,
               len,
               template;
@@ -101,15 +102,16 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
               len = commands.length;
             }
             for (i = 0; i < len; i++) {
-              if (commands[i].menuID >= 0) {
+              var menuID = commands[i].menuID;
+              if (menuID && menuID >= 0 && allMenuItems[menuID].length === 0) {
                 // Notify mobile to update submenu
-                FFW.UI.OnUpdateSubMenu(SDL.SDLController.model.appID, commands[i].menuID);
+                FFW.UI.OnUpdateSubMenu(SDL.SDLController.model.appID, menuID);
                 template = 'arrow';
-              }else if(commands[i].isTemplate){
+              } else if (commands[i].isTemplate){
                 template = commands[i].isTemplate ? 
                 'rightTextOverLay' : 
                 'rightText';
-              }else {
+              } else {
                 template = commands[i].icon ? 'rightText' : 'text';
               }
               this.items.push(
@@ -119,7 +121,7 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                     templateName: template,
                     text: commands[i].name,
                     commandID: commands[i].commandID,
-                    menuID: commands[i].menuID,
+                    menuID: menuID,
                     icon: commands[i].icon,
                     target: 'SDL.SDLController',
                     action: 'onCommand',
