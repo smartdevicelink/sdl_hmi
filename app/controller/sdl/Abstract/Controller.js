@@ -258,7 +258,7 @@ SDL.SDLController = Em.Object.extend(
       if (SDL.SDLModel.data.VRActive) {
         return 'VRSESSION';
       }
-      if (SDL.AlertPopUp.active) {
+      if (SDL.AlertPopUp.active || SDL.SubtleAlertPopUp.active) {
         return 'ALERT';
       }
       if (SDL.SliderView.active ||
@@ -278,6 +278,7 @@ SDL.SDLController = Em.Object.extend(
       'SDL.SDLModel.data.AudioPassThruState',
       'SDL.SDLModel.data.VRActive',
       'SDL.AlertPopUp.active',
+      'SDL.SubtleAlertPopUp.active',
       'SDL.States.info.nonMedia.active',
       'SDL.States.media.sdlmedia.active',
       'SDL.States.navigationApp.baseNavigation.active',

@@ -1151,7 +1151,6 @@ SDL.SDLModel = Em.Object.extend({
    *            subtleAlertRequestId Id of current handled request
    */
   onUISubtleAlert: function(message, subtleAlertRequestId) {
-
     if (SDL.AlertPopUp.active) {
       SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
         subtleAlertRequestId,
@@ -1179,7 +1178,9 @@ SDL.SDLModel = Em.Object.extend({
         SDL.AlertManeuverPopUp.endTime - Date.now());
     } else {
       SDL.SubtleAlertPopUp.SubtleAlertActive(message, subtleAlertRequestId);
+      return true;
     }
+    return false;
   },
 
   /**
