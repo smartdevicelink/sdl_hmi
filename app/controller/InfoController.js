@@ -335,7 +335,8 @@ SDL.InfoController = Em.Object.create(
       let web_app_frame =  document.createElement("iframe");
       web_app_frame.name = frame_name;
       web_app_frame.id = frame_name;
-      web_app_frame.className = "WebEngineFrame";
+      web_app_frame.className = 'WebEngineFrame'; 
+      web_app_frame.hidden = false;
 
       const web_engine_view = document.getElementById("webEngineView");
       if (web_engine_view) {

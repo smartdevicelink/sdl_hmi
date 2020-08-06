@@ -1093,6 +1093,10 @@ SDL.SDLController = Em.Object.extend(
         SDL.PopUp.create().appendTo('body').popupActivate(message);
       }
       SDL.InfoAppsView.showAppList();
+
+      params.applications.forEach(appRecord => {
+        SDL.SDLModel.appIDtoPolicyAppIDMapping[appRecord.appID] = appRecord.policyAppID;
+      });
     },
     /**
      * SDL Driver Distraction ON/OFF switcher
@@ -1632,6 +1636,27 @@ SDL.SDLController = Em.Object.extend(
           frames[i].style.pointerEvents = "none";
         }
       }
-    }
+    },
+
+    /**
+     * @function hideWebApps
+     * @description Makes all web application view disabled
+     */
+    hideWebApps: function() {
+      for(var key in SDL.SDLModel.webApplicationFramesMap) {
+        SDL.SDLModel.webApplicationFramesMap[key].hidden = true;
+      }
+    },
+
+    /**
+     * @function showWebViewApp
+     * @param {Number} appID
+     * @description Activates web view for application specified by appID
+     */
+    showWebViewApp: function(appID) {
+      this.hideWebApps();
+      let policyAppID = SDL.SDLModel.appIDtoPolicyAppIDMapping[appID];
+      SDL.SDLModel.webApplicationFramesMap[policyAppID].hidden = false;
+    },
   }
 );
