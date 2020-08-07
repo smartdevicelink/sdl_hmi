@@ -141,7 +141,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'tirePressureValue': 'VEHICLEDATA_TIREPRESSURE_VALUE',
       'tpms': 'VEHICLEDATA_TPMS',
       'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID',
-      'stabilityControlsStatus': 'VEHICLEDATA_STABILITYCONTROLSSTATUS'
+      'stabilityControlsStatus': 'VEHICLEDATA_STABILITYCONTROLSSTATUS',
+      'windowStatus': 'VEHICLEDATA_WINDOWSTATUS'
     },
     /**
      * Stored VehicleInfo Data
