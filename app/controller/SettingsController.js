@@ -68,6 +68,12 @@ SDL.SettingsController = Em.Object.create(
      * disallowed.
      */
     currentDeviceAllowance: null,
+
+    /**
+     * @description Value of CCPU version displayed in user input
+     */
+    editedCcpuVersionValue: "",
+
     onState: function(event) {
       SDL.States.goToStates('settings.' + event.goToState);
     },
@@ -349,14 +355,8 @@ SDL.SettingsController = Em.Object.create(
           SDL.SDLModel.data.policyURLs[0]
         );
       }
-      if(!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+      if(abort !== 'ABORT' && !SDL.SDLModel.data.policyUpdateRetry.isRetry) {
         SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
-        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
-        SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
-          function() {
-            sendOnSystemRequest();
-          }, 1000
-        );
         return;
       }
       var length = SDL.SDLModel.data.policyUpdateRetry.retry.length;
@@ -537,6 +537,7 @@ SDL.SettingsController = Em.Object.create(
 
         if (urls.length > 0 && FLAGS.ExternalPolicies === true) {
           SDL.SettingsController.OnSystemRequestHandler(urls[0]);
+          SDL.SettingsController.policyUpdateRetry();
         } else {
           SDL.SettingsController.OnSystemRequestHandler();
         }
@@ -591,6 +592,13 @@ SDL.SettingsController = Em.Object.create(
         this.model.currentSeatModel.goToStates();
         SDL.States.goToStates('settings.seat');
         }
+    },
+
+    /**
+     * @description Saves new CCPU version value from user input
+     */
+    applyNewCcpuVersionValue: function() {
+      SDL.SDLModel.data.ccpuVersion = this.editedCcpuVersionValue;
     },
 
     /**
