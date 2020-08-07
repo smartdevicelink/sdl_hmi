@@ -91,7 +91,7 @@ FFW.ExternalPolicies = Em.Object.create({
         Em.Logger.log('ExternalPolicies onWSMessage ' + evt.data);
         this.packResponseReady = true;
         FFW.BasicCommunication.OnSystemRequest(
-            this.sysReqParams.type,
+            this.sysReqParams.requestType,
             this.sysReqParams.fileName,
             this.sysReqParams.url,
             this.sysReqParams.appID

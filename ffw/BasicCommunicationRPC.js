@@ -282,11 +282,11 @@ FFW.BasicCommunication = FFW.RPCObserver
                               } else {
                                 SDL.SettingsController.OnSystemRequestHandler();
                               }
+                              if (FLAGS.ExternalPolicies === true) {
+                                SDL.SettingsController.policyUpdateRetry();
+                              }
                             } else {
                               SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
-                            }
-                            if (FLAGS.ExternalPolicies === true) {
-                              SDL.SettingsController.policyUpdateRetry();
                             }
                           }
                         }
@@ -694,7 +694,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                                                               // from SDL
                                                               // protocol
                 'method': request.method,
-                'ccpu_version': 'ccpu_version',
+                'ccpu_version': SDL.SDLModel.data.ccpuVersion,
                 'language': SDL.SDLModel.data.hmiUILanguage,
                 'wersCountryCode': 'wersCountryCode'
               }
