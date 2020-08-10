@@ -141,6 +141,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'tirePressureValue': 'VEHICLEDATA_TIREPRESSURE_VALUE',
       'tpms': 'VEHICLEDATA_TPMS',
       'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID',
+      'handsOffSteering': 'VEHICLEDATA_HANDSOFFSTEERING',
       'stabilityControlsStatus': 'VEHICLEDATA_STABILITYCONTROLSSTATUS',
       'windowStatus': 'VEHICLEDATA_WINDOWSTATUS'
     },
@@ -331,7 +332,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'displayResolution': {
          'width': 800,
          'height': 480
-      }
+      },
+      'handsOffSteering': false
       //
       // 'avgFuelEconomy': 0.1,
       // 'batteryVoltage': 12.5,
