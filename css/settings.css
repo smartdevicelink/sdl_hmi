@@ -252,6 +252,14 @@
     position: absolute;
 }
 
+.getIVDSelect{
+    top: 55px;
+    left: 55px;
+    width: 407px;
+    height: 18px;
+    position: absolute;
+}
+
 #settingsView .in_settings_separate_view .backButton,
 .in_light_exterior_view .backButton,
 .in_light_single_view .backButton, 
