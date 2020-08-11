@@ -98,6 +98,9 @@ FFW.RPCHelper = Em.Object.create(
         case 'SubscribeVehicleData': {
           return this.getNextVehicleDataResultCode();
         }
+        case 'GetInteriorVehicleData': {
+          return this.getNextGetIVDResultCode();
+        }
       }
 
       var code = null;
@@ -472,6 +475,34 @@ FFW.RPCHelper = Em.Object.create(
       return code;
     },
     
+    /*
+     * Claims next result code for GetIVD RPC
+     */
+    getNextGetIVDResultCode: function(){
+      this.updategetIVDResultCodes();
+
+      length = this.getIVDResultCodes.length;
+
+      code = this.getIVDResultCodes[0];
+      if(length > 1){
+        this.getIVDResultCodes.shift(); //remove the first element of the array
+
+        currentNumber = this.getIVDRequestNumber;
+        this.set('getIVDRequestNumber',
+                              Math.min(currentNumber,
+                                       this.getIVDResultCodes.length));
+        this.updateGetIVDData();
+      } else if(length == 1){
+        this.set('getIVDResult', 'SUCCESS');
+      }
+
+      if ('DO_NOT_RESPOND' == code) {
+        return code;
+      }
+
+      return SDL.SDLModel.data.resultCode[code]
+    },
+
     wayPointResultCodes: ['SUCCESS'],
     SubscribeWayPoints: '',
     SubscribeWayPointsRequestNumber: 1,

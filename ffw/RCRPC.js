@@ -250,11 +250,18 @@ FFW.RC = FFW.RPCObserver.create(
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
 
+            const resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'GetInteriorVehicleData');
+            if ('DO_NOT_RESPOND' == resultCode) {
+              Em.Logger.log('Do not respond on this request');
+              break;
+            }
+
+            if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
             var JSONMessage = {
               'jsonrpc': '2.0',
               'id': request.id,
               'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                  'code': resultCode,
                 'method': request.method,
                 'isSubscribed': request.params.subscribe,
                 'moduleData': {
@@ -265,11 +272,19 @@ FFW.RC = FFW.RPCObserver.create(
             };
 
             var data = SDL.RCModulesController.getInteriorVehicleData(request);
-            if(data) {
+              if (data) {
               var key = Object.keys(data)[0];
               JSONMessage.result.moduleData[key] = data[key];
               this.client.send(JSONMessage);
             }
+
+            break;
+          }
+
+            this.sendError(resultCode,
+                           request.id,
+                           request.method,
+                           'Erroneous response is assigned by settings');
             break;
           }
           case 'RC.GetInteriorVehicleDataConsent':
