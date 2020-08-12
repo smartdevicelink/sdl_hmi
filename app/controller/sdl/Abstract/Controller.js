@@ -681,18 +681,14 @@ SDL.SDLController = Em.Object.extend(
         SDL.AlertPopUp.deactivate();
       } else if (methodName === 'UI.SubtleAlert') {
         SDL.SubtleAlertPopUp.deactivate();
-      }
-      if (methodName == 'UI.PerformAudioPassThru') {
+      } else if (methodName == 'UI.PerformAudioPassThru') {
         SDL.AudioPassThruPopUp.deactivate();
         this.performAudioPassThruResponse(SDL.SDLModel.data.resultCode.SUCCESS);
-      }
-      if (methodName == 'UI.PerformInteraction') {
+      } else if (methodName == 'UI.PerformInteraction') {
         SDL.InteractionChoicesView.deactivate('ABORTED');
-      }
-      if (methodName == 'UI.ScrollableMessage') {
+      } else if (methodName == 'UI.ScrollableMessage') {
         SDL.ScrollableMessage.deactivate(true);
-      }
-      if (methodName == 'UI.Slider') {
+      } else if (methodName == 'UI.Slider') {
         SDL.SliderView.deactivate(true);
       }
       //            if (SDL.VRHelpListView.active) {
