@@ -110,6 +110,7 @@ SDL.SDLController = Em.Object.extend(
         }
       } else {
         FFW.UI.onCommand(element.commandID, this.model.appID);
+        this.model.set('currentSubMenuId', 'top');
         SDL.OptionsView.deactivate();
       }
     },
@@ -219,10 +220,10 @@ SDL.SDLController = Em.Object.extend(
      * StateManager
      */
     deactivateApp: function() {
+      SDL.SDLController.onSubMenu('top');
       if (this.model) {
         SDL.SDLModel.onDeactivateApp(SDL.States.nextState, this.model.appID);
       }
-      SDL.SDLController.onSubMenu('top');
       SDL.SDLController.model.set('tbtActivate', false);
       this.set('model', null);
     },

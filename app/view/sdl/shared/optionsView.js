@@ -56,9 +56,23 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
     // Extend deactivate window
     deactivate: function() {
       if (SDL.SDLController.model) {
-        if (SDL.SDLController.model.get('currentSubMenuId') >= 0  && 
-        !SDL.SDLController.model.get('subMenuInitFromApp')) {
-          SDL.SDLController.onSubMenu('top');
+        var currentSubMenuID = SDL.SDLController.model.get('currentSubMenuId');
+        if (currentSubMenuID != 'top' &&
+          currentSubMenuID >= 0  && 
+          !SDL.SDLController.model.get('subMenuInitFromApp')) {
+          var commandsList = SDL.SDLController.model.get('commandsList');
+          var findParentID = (commands, menuID) => {
+            for (id in commands) {
+              var subMenuCommands = commands[id];
+              for (element of subMenuCommands) {
+                if (element.menuID === menuID) {
+                  return element.parent;
+                }
+              }
+            }
+            return 'top';
+          }
+          SDL.SDLController.onSubMenu(findParentID(commandsList, currentSubMenuID));
         } else {
           SDL.SDLController.onSubMenu('top');
           this._super();

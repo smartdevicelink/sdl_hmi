@@ -485,6 +485,7 @@ SDL.RController = SDL.SDLController.extend(
         }
       } else {
         FFW.UI.onCommand(element.commandID, this.model.appID);
+        this.model.set('currentSubMenuId', 'top');
         SDL.OptionsView.deactivate();
       }
     },

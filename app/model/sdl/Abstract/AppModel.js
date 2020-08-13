@@ -403,15 +403,20 @@ SDL.ABSAppModel = Em.Object.extend(
      * @return {String}
      */
     currentSubMenuLabel: function() {
-
-      //Param "top" is Top level menu index
-      var submenu, commands = this.commandsList['top'];
-      for (var i = 0; i < commands.length; i++) {
-        if (commands[i].menuID == this.currentSubMenuId) {
-          submenu = commands[i].name;
+      var commandsList = this.commandsList;
+      var findMenuName = (commands, menuID) => {
+        for (id in commands) {
+          var subMenuCommands = commands[id];
+          for (element of subMenuCommands) {
+            if (element.menuID === menuID) {
+              return element.name;
+            }
+          }
         }
+        return 'Options';
       }
-      return this.get('currentSubMenuId') != 'top' ? submenu : 'Options';
+      return this.get('currentSubMenuId') != 'top' ? 
+        findMenuName(commandsList, this.currentSubMenuId) : 'Options';
     }.property('this.currentSubMenuId'),
     /**
      * Interaction chooses data
@@ -599,7 +604,11 @@ SDL.ABSAppModel = Em.Object.extend(
           menuID: request.params.menuID,
           name: request.params.menuParams.menuName ?
             request.params.menuParams.menuName : '',
+<<<<<<< HEAD
           parent: request.params.menuParams.parentID ? request.params.menuParams.parentID : 0,
+=======
+          parent: parentID,
+>>>>>>> origin/develop
           position: request.params.menuParams.position ?
             request.params.menuParams.position : 0,
           icon: request.params.menuIcon ? request.params.menuIcon.value : null
@@ -627,13 +636,20 @@ SDL.ABSAppModel = Em.Object.extend(
      * @param {Number}
      */
     deleteSubMenu: function(menuID) {
-      if (this.commandsList['top'].filterProperty('commandID', menuID)) {
-        this.get('commandsList.top').removeObjects(
-          this.get('commandsList.top').filterProperty('menuID', menuID)
-        );
-        //delete(this.commandsList[menuID]);
+      var commandsList = this.commandsList;
+      for (id in commandsList) {
+        var filteredObjects = commandsList[id].filterProperty('menuID', menuID);
+        if (filteredObjects.length > 0) {
+          commandsList[id].removeObjects(
+            filteredObjects
+          );
+          if (menuID in commandsList) {
+            delete(commandsList[menuID])
+          }
+          return SDL.SDLModel.data.resultCode.SUCCESS;
+        }
       }
-      return SDL.SDLModel.data.resultCode.SUCCESS;
+      return SDL.SDLModel.data.resultCode.INVALID_ID;
     },
     /**
      * SDL UI CreateInteraction response handeler push set of commands to
