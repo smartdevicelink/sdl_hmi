@@ -117,9 +117,11 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
             }
             for (i = 0; i < len; i++) {
               var menuID = commands[i].menuID;
-              if (menuID && menuID >= 0 && allMenuItems[menuID].length === 0) {
-                // Notify mobile to update submenu
-                FFW.UI.OnUpdateSubMenu(SDL.SDLController.model.appID, menuID);
+              if (menuID && menuID >= 0) {
+                if (allMenuItems[menuID].length === 0) {
+                  // Notify mobile to update submenu
+                  FFW.UI.OnUpdateSubMenu(SDL.SDLController.model.appID, menuID);
+                }
                 template = 'arrow';
               } else if (commands[i].isTemplate){
                 template = commands[i].isTemplate ? 
