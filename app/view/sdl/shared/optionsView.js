@@ -162,8 +162,7 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
             this.list.refresh();
           }
         }.observes(
-          'SDL.SDLController.model.currentSubMenuId',
-          'SDL.SDLController.model.currentCommandsList.@each'
+          'SDL.SDLController.model.currentSubMenuId'
         )
       }
     )
