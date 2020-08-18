@@ -31,7 +31,7 @@
  * @version 1.0
  */
 
-SDL.systemCapabilities =
+SDL.systemCapabilities = Em.Object.create(
 {
     videoStreamingCapability: {
         preferredResolution: {
@@ -75,63 +75,7 @@ SDL.systemCapabilities =
                 hapticSpatialDataSupported: true,
                 scale: 1,
                 diagonalScreenSize: 8
-            },
-            {
-                preferredResolution:
-                {
-                    resolutionWidth: 320,
-                    resolutionHeight: 200
-                },
-                hapticSpatialDataSupported: false,
-                diagonalScreenSize: 3
-            },
-            {
-                preferredResolution:
-                {
-                    resolutionWidth: 480,
-                    resolutionHeight: 320
-                },
-                hapticSpatialDataSupported: true,
-                diagonalScreenSize: 5
-            },
-            {
-                preferredResolution:
-                {
-                    resolutionWidth: 400,
-                    resolutionHeight: 380
-                },
-                hapticSpatialDataSupported: true,
-                diagonalScreenSize: 4
-            },
-            {
-                preferredResolution:
-                {
-                    resolutionWidth: 800,
-                    resolutionHeight: 240
-                },
-                hapticSpatialDataSupported: true,
-                diagonalScreenSize: 4
-            },
-            {
-                preferredResolution:
-                {
-                    resolutionWidth: 800,
-                    resolutionHeight: 380
-                },
-                hapticSpatialDataSupported: true,
-                scale: 1.5,
-                diagonalScreenSize: 5
-            },
-            {
-                preferredResolution:
-                {
-                    resolutionWidth: 800,
-                    resolutionHeight: 380
-                },
-                hapticSpatialDataSupported: true,
-                scale: 2,
-                diagonalScreenSize: 4
             }
         ]
     }
-}
+});

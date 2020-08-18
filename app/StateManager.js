@@ -171,6 +171,11 @@ var StateManager = Em.StateManager.extend(
           SDL.SettingsController.set(
             'activeState', SDL.States.currentState.get('path')
           );
+          if (SDL.States.settings.policies.sendVideoStreamingCapabilities == SDL.States.currentState) {
+            SDL.SettingsController.set(
+              'activeState', SDL.States.currentState.parentState.get('path')
+            );
+          }
           this._super();
         },
         policies: Em.State.create(

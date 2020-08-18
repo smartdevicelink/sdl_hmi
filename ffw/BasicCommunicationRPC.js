@@ -435,6 +435,21 @@ FFW.BasicCommunication = FFW.RPCObserver
             notification.params.serviceEvent,
             notification.params.reason);
         }
+        if (notification.method == this.OnAppCapabilityUpdatedNotification) {
+          const capabilities_type = notification.params.appCapability.appCapabilityType;
+          if  (capabilities_type == 'VIDEO_STREAMING') {
+            const updated_caps = notification.params.appCapability.videoStreamingCapability;
+            if (updated_caps.preferredResolution) {
+              SDL.systemCapabilities.set('videoStreamingCapability.preferredResolution', updated_caps.preferredResolution);
+            }
+            if (updated_caps.scale) {
+              SDL.systemCapabilities.set('videoStreamingCapability.scale', updated_caps.scale);
+            }
+            if (updated_caps.additionalVideoStreamingCapabilities) {
+              SDL.systemCapabilities.set('videoStreamingCapability.additionalVideoStreamingCapabilities', updated_caps.additionalVideoStreamingCapabilities);
+            }
+          }
+        }
         if (notification.method == this.onFileRemovedNotification) {
           SDL.SDLModel.onFileRemoved(notification.params);
         }
