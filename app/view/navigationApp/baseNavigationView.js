@@ -45,6 +45,7 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       'mainField5',
       'mainField6',
       'templateTitle',
+      'resolutionsList',
       'navSubButtons',
       'optionsBtn'
     ],
@@ -173,6 +174,32 @@ SDL.BaseNavigationView = Em.ContainerView.create(
         contentBinding: 'SDL.SDLController.model.appInfo.title'
       }
     ),
+    resolutionsList: Em.Select.extend({
+      elementId: 'resolutionsList',
+      classNames: 'resolutionsListSelect',
+      contentBinding: 'getResolutionsList',
+      valueBinding: 'getResolutionValue',
+
+      getResolutionsList: function() {
+        return SDL.NavigationController.getVideoStreamingCapabilitiesList();
+      }.property(
+        'SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities.@each'
+      ),
+
+      getResolutionValue: function() {
+        return SDL.NavigationController.stringifyCapabilityItem(
+          SDL.systemCapabilities.videoStreamingCapability
+        );
+      }.property(
+        'SDL.systemCapabilities.videoStreamingCapability.preferredResolution.resolutionWidth',
+        'SDL.systemCapabilities.videoStreamingCapability.preferredResolution.resolutionHeight',
+        'SDL.systemCapabilities.videoStreamingCapability.preferredResolution.scale'
+      ),
+
+      change: function() {
+        SDL.NavigationController.switchVideoStreamingCapability(this.selection);
+      }
+    }),
     navSubButtons: SDL.Button.extend(
       {
         classNames: 'naviSubscribeMenuBtn navButton',

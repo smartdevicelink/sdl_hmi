@@ -154,3 +154,12 @@
     font-size: 32px;
     line-height: 50px !important;
 }
+
+#baseNavigation .resolutionsListSelect {
+    position: absolute;
+    left: 3px;
+    bottom: 55px;
+    color: white;
+    background: #393939;
+    height: 30px;
+}

@@ -407,6 +407,81 @@ SDL.NavigationController = Em.Object.create(
         },
         2000
       );  // Allow time for the initial map display
+    },
+    /**
+     * @description Converts capability item into corresponding string
+     * @param {Object} capability capability to convert
+     * @return formatted string
+     */
+    stringifyCapabilityItem: function(capability) {
+      let str_result = '';
+      if (capability.preferredResolution) {
+        str_result += `${capability.preferredResolution.resolutionWidth}x` +
+                      `${capability.preferredResolution.resolutionHeight}`;
+      }
+
+      if (capability.scale) {
+        str_result += ` Scale: ${capability.scale}`;
+      }
+
+      if (str_result == '') {
+        str_result = 'Undefined resolution';
+      }
+
+      return str_result;
+    },
+
+    /**
+     * @description Provides list of available video streaming capability presets
+     * @return {Array} list of capabilities
+     */
+    getVideoStreamingCapabilitiesList: function() {
+      const capabilities_array = SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities;
+      let list_to_display = [];
+
+      capabilities_array.forEach((capability) => {
+        const stringified = SDL.NavigationController.stringifyCapabilityItem(capability);
+        list_to_display.push(stringified);
+      });
+
+      return list_to_display;
+    },
+
+    /**
+     * @description Makes selected video streaming preset the active one
+     * @param {String} preset_name name of new preset
+     */
+    switchVideoStreamingCapability: function(preset_name) {
+      const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList();
+      const index = preset_list.indexOf(preset_name);
+
+      if (index >= 0) {
+        Em.Logger.log(`Switching video streaming preset to: ${preset_name}`);
+        const capabilities_array = SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities;
+        const capability_to_switch = capabilities_array[index];
+
+        if (capability_to_switch.preferredResolution) {
+          SDL.systemCapabilities.set(
+            'videoStreamingCapability.preferredResolution.resolutionWidth',
+            capability_to_switch.preferredResolution.resolutionWidth
+          );
+          SDL.systemCapabilities.set(
+            'videoStreamingCapability.preferredResolution.resolutionHeight',
+            capability_to_switch.preferredResolution.resolutionHeight
+          );
+        }
+
+        if (capability_to_switch.scale) {
+          SDL.systemCapabilities.set(
+            'videoStreamingCapability.scale', capability_to_switch.scale
+          );
+        } else {
+          delete SDL.systemCapabilities.videoStreamingCapability.scale;
+        }
+
+        SDL.SettingsController.sendVideoStreamingCapabilities();
+        SDL.SettingsController.showVideoStreamingCapabilities();
+      }
     }
   }
 );
