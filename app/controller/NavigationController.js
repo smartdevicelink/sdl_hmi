@@ -439,10 +439,12 @@ SDL.NavigationController = Em.Object.create(
       const capabilities_array = SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities;
       let list_to_display = [];
 
-      capabilities_array.forEach((capability) => {
-        const stringified = SDL.NavigationController.stringifyCapabilityItem(capability);
-        list_to_display.push(stringified);
-      });
+      if (Array.isArray(capabilities_array)) {
+        capabilities_array.forEach((capability) => {
+          const stringified = SDL.NavigationController.stringifyCapabilityItem(capability);
+          list_to_display.push(stringified);
+        });
+      }
 
       return list_to_display;
     },
