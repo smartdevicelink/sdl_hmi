@@ -196,7 +196,7 @@ var StateManager = Em.StateManager.extend(
                   SDL.SettingsController.showVideoStreamingCapabilities();
                 },
                 exit: function() {
-                  SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.reset();
+                  SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.save();
                   this._super();
                 }
               }

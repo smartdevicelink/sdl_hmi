@@ -667,8 +667,14 @@ SDL.SettingsController = Em.Object.create(
 
       let that = this;
       SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.activate(function(data) {
-        SDL.systemCapabilities.set('videoStreamingCapability', data);
-        that.sendVideoStreamingCapabilities();
+        const new_data = JSON.stringify(data);
+        const old_data = JSON.stringify(SDL.systemCapabilities.videoStreamingCapability);
+        if (new_data != old_data) {
+          SDL.systemCapabilities.set('videoStreamingCapability', data);
+          if (SDL.States.nextState != SDL.States.settings.policies.get('path')) {
+            that.sendVideoStreamingCapabilities();
+          }
+        }
       });
     },
 
