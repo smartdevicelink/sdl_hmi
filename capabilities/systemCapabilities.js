@@ -133,5 +133,9 @@ SDL.systemCapabilities = Em.Object.create(
                 diagonalScreenSize: 4
             }
         ]
+    },
+    driverDistractionCapability: {
+        menuLength: 10,
+        subMenuDepth: 2
     }
 });

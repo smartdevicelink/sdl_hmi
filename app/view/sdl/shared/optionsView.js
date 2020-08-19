@@ -56,9 +56,23 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
     // Extend deactivate window
     deactivate: function() {
       if (SDL.SDLController.model) {
-        if (SDL.SDLController.model.get('currentSubMenuId') >= 0  && 
-        !SDL.SDLController.model.get('subMenuInitFromApp')) {
-          SDL.SDLController.onSubMenu('top');
+        var currentSubMenuID = SDL.SDLController.model.get('currentSubMenuId');
+        if (currentSubMenuID != 'top' &&
+          currentSubMenuID >= 0  && 
+          !SDL.SDLController.model.get('subMenuInitFromApp')) {
+          var commandsList = SDL.SDLController.model.get('commandsList');
+          var findParentID = (commands, menuID) => {
+            for (id in commands) {
+              var subMenuCommands = commands[id];
+              for (element of subMenuCommands) {
+                if (element.menuID === menuID) {
+                  return element.parent;
+                }
+              }
+            }
+            return 'top';
+          }
+          SDL.SDLController.onSubMenu(findParentID(commandsList, currentSubMenuID));
         } else {
           SDL.SDLController.onSubMenu('top');
           this._super();
@@ -94,7 +108,12 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
               len,
               template;
             this.items = [];
-            len = commands.length;
+            if (SDL.SDLModel.data.driverDistractionState) {
+              var ddMaxLength = SDL.systemCapabilities.driverDistractionCapability.menuLength;
+              len = (ddMaxLength > commands.length) ? commands.length : ddMaxLength;
+            } else {
+              len = commands.length;
+            }
             for (i = 0; i < len; i++) {
               if (commands[i].menuID >= 0) {
                 template = 'arrow';
@@ -117,6 +136,19 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                     target: 'SDL.SDLController',
                     action: 'onCommand',
                     onDown: false
+                  }
+                }
+              );
+            }
+            if (commands.length !== len) {
+              this.items.push(
+                {
+                  type: SDL.Button,
+                  params: {
+                    templateName: "text",
+                    text: "Some Menu Items Are Hidden",
+                    onDown: false,
+                    disabled: true
                   }
                 }
               );

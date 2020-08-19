@@ -110,6 +110,7 @@ SDL.SDLController = Em.Object.extend(
         }
       } else {
         FFW.UI.onCommand(element.commandID, this.model.appID);
+        this.model.set('currentSubMenuId', 'top');
         SDL.OptionsView.deactivate();
       }
     },
@@ -135,7 +136,12 @@ SDL.SDLController = Em.Object.extend(
      * @param id {Number}
      */
     onSubMenu: function(id) {
-      this.model.set('currentSubMenuId', id);
+      if (id >= 0 && id != 'top') {
+        this.model.set('currentMenuDepth', this.model.currentMenuDepth + 1);
+      } else {
+        this.model.set('currentMenuDepth', 0);
+      }      
+      this.model.set('currentSubMenuId', id);      
     },
     /**
      * Comparison function for sort array of buttons in options list by
@@ -214,10 +220,10 @@ SDL.SDLController = Em.Object.extend(
      * StateManager
      */
     deactivateApp: function() {
+      SDL.SDLController.onSubMenu('top');
       if (this.model) {
         SDL.SDLModel.onDeactivateApp(SDL.States.nextState, this.model.appID);
       }
-      SDL.SDLController.onSubMenu('top');
       SDL.SDLController.model.set('tbtActivate', false);
       this.set('model', null);
     },
@@ -258,7 +264,7 @@ SDL.SDLController = Em.Object.extend(
       if (SDL.SDLModel.data.VRActive) {
         return 'VRSESSION';
       }
-      if (SDL.AlertPopUp.active) {
+      if (SDL.AlertPopUp.active || SDL.SubtleAlertPopUp.active) {
         return 'ALERT';
       }
       if (SDL.SliderView.active ||
@@ -278,6 +284,7 @@ SDL.SDLController = Em.Object.extend(
       'SDL.SDLModel.data.AudioPassThruState',
       'SDL.SDLModel.data.VRActive',
       'SDL.AlertPopUp.active',
+      'SDL.SubtleAlertPopUp.active',
       'SDL.States.info.nonMedia.active',
       'SDL.States.media.sdlmedia.active',
       'SDL.States.navigationApp.baseNavigation.active',
@@ -565,6 +572,11 @@ SDL.SDLController = Em.Object.extend(
           SDL.AlertPopUp.deactivate();
           break;
         }
+        case 'SubtleAlertPopUp':
+        {
+          SDL.SubtleAlertPopUp.deactivate();
+          break;
+        }
         case 'ScrollableMessage':
         {
           SDL.ScrollableMessage.deactivate(true);
@@ -606,6 +618,11 @@ SDL.SDLController = Em.Object.extend(
           this.onActivateSDLApp(element);
           break;
         }
+        case 'SubtleAlertPopUp':
+        {
+          SDL.SubtleAlertPopUp.deactivate();
+          this.onActivateSDLApp(element);
+        }
         case 'ScrollableMessage':
         {
           SDL.ScrollableMessage.deactivate();
@@ -638,6 +655,16 @@ SDL.SDLController = Em.Object.extend(
           this.onResetTimeout(element.appID, 'UI.Alert');
           break;
         }
+        case 'SubtleAlertPopUp':
+        {
+          clearTimeout(SDL.SubtleAlertPopUp.timer);
+          SDL.SubtleAlertPopUp.timer = setTimeout(
+            function() {
+              SDL.SubtleAlertPopUp.deactivate();
+            }, SDL.SubtleAlertPopUp.timeout
+          );
+          this.onResetTimeout(element.appID, 'UI.SubtleAlert');
+        }
         case 'ScrollableMessage':
         {
           clearTimeout(SDL.ScrollableMessage.timer);
@@ -658,18 +685,16 @@ SDL.SDLController = Em.Object.extend(
     closePopUp: function(methodName) {
       if (methodName == 'UI.Alert') {
         SDL.AlertPopUp.deactivate();
-      }
-      if (methodName == 'UI.PerformAudioPassThru') {
+      } else if (methodName === 'UI.SubtleAlert') {
+        SDL.SubtleAlertPopUp.deactivate();
+      } else if (methodName == 'UI.PerformAudioPassThru') {
         SDL.AudioPassThruPopUp.deactivate();
         this.performAudioPassThruResponse(SDL.SDLModel.data.resultCode.SUCCESS);
-      }
-      if (methodName == 'UI.PerformInteraction') {
+      } else if (methodName == 'UI.PerformInteraction') {
         SDL.InteractionChoicesView.deactivate('ABORTED');
-      }
-      if (methodName == 'UI.ScrollableMessage') {
+      } else if (methodName == 'UI.ScrollableMessage') {
         SDL.ScrollableMessage.deactivate(true);
-      }
-      if (methodName == 'UI.Slider') {
+      } else if (methodName == 'UI.Slider') {
         SDL.SliderView.deactivate(true);
       }
       //            if (SDL.VRHelpListView.active) {
@@ -764,13 +789,37 @@ SDL.SDLController = Em.Object.extend(
     /**
      * Method to sent notification for Alert
      *
-     * @param {String}
-     *            result
+     * @param {Number}
+     *            result code
      * @param {Number}
      *            alertRequestID
      */
     alertResponse: function(result, alertRequestID, info) {
       FFW.UI.alertResponse(result, alertRequestID, info);
+    },
+    /**
+     * Method to send response for SubtleAlert
+     *
+     * @param {Number}
+     *            result code
+     * @param {Number}
+     *            subtleAlertRequestID
+     * @param {String}
+     *            info
+     * @param {Number}
+     *            tryAgainTime time in ms until current SubtleAlert finished
+     */
+    subtleAlertResponse: function(result, subtleAlertRequestID, info, tryAgainTime) {
+      FFW.UI.subtleAlertResponse(result, subtleAlertRequestID, info, tryAgainTime);
+    },
+    /**
+     * Method to send notification when subtle alert is clicked
+     *
+     * @param {Number}
+     *            appID
+     */
+    onSubtleAlertPressed: function(appID) {
+      FFW.UI.onSubtleAlertPressed(appID);
     },
     /**
      * Method to sent notification for Scrollable Message

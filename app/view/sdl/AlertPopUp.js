@@ -60,6 +60,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
     active: false,
     timer: null,
     timeout: null,
+    endTime: null,
     progressIndicator: false,
     reason: '',
     message: undefined,
@@ -141,6 +142,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
     deactivate: function(reason, info) {
       this.set('active', false);
       clearTimeout(this.timer);
+      this.set('endTime', null);
       this.set('content1', '');
       this.set('content2', '');
       this.set('content3', '');
@@ -272,6 +274,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
                                                                         // for
                                                                         // Alert
                                                                         // popUp
+      this.set('endTime', Date.now() + this.timeout);
       this.set('priority', priority);
       clearTimeout(this.timer);
       this.timer = setTimeout(
