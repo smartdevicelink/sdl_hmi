@@ -90,6 +90,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                 'vrAddComandlabel',
                 'uiAddComandlabel',
                 'addSubMenulabel',
+                'createInteractionChoiceSetlabel',
                 'uisetGlobalPropertieslabel',
                 'ttssetGlobalPropertieslabel',
                 'uiCreateWindowLabel'
@@ -113,6 +114,13 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                   elementId: 'addSubMenulabel',
                   classNames: 'addSubMenulabel',
                   content: 'AddSubMenu'
+                }
+              ),
+              createInteractionChoiceSetlabel: SDL.Label.extend(
+                {
+                  elementId: 'createInteractionChoiceSetlabel',
+                  classNames: 'createInteractionChoiceSetlabel',
+                  content: 'CreateInteractionChoiceSet'
                 }
               ),
               uisetGlobalPropertieslabel: SDL.Label.extend(
@@ -146,6 +154,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                   'vrAddComandSelect',
                   'uiAddComandSelect',
                   'addSubMenuSelect',
+                  'createInteractionChoiceSetSelect',
                   'uisetGlobalPropertiesSelect',
                   'ttssetGlobalPropertiesSelect',
                   'uiCreateWindowSelect'
@@ -172,6 +181,14 @@ SDL.RPCControlConfigView = Em.ContainerView.create(
                       classNames: 'addSubMenuSelect',
                       contentBinding: 'FFW.RPCHelper.customResultCodesList',
                       valueBinding: 'FFW.RPCHelper.rpcStruct.AddSubmenu'
+                    }
+                  ),
+                  createInteractionChoiceSetSelect: Em.Select.extend(
+                    {
+                      elementId: 'createInteractionChoiceSetSelect',
+                      classNames: 'createInteractionChoiceSetSelect',
+                      contentBinding: 'FFW.RPCHelper.customResultCodesList',
+                      valueBinding: 'FFW.RPCHelper.rpcStruct.createInteractionChoiceSet'
                     }
                   ),
                   uisetGlobalPropertiesSelect: Em.Select.extend(

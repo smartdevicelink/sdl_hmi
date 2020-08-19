@@ -125,18 +125,23 @@
     top: 110px;
 }
 
- .uisetGlobalProperties{
-       top: 135px;
+.createInteractionChoiceSetlabel {
+    top: 135px;
+    font-size: 84%;
 }
 
- .ttssetGlobalPropertieslabel{
+.uisetGlobalProperties {
     top: 160px;
+}
+
+.ttssetGlobalPropertieslabel {
+    position: absolute;
+    top: 185px;
     font-size: 85%;
 }
 
 .uiCreateWindowLabel {
-    position: absolute;
-    top: 185px;
+    top: 210px;
 }
 
  .subscribeWayPoints{
@@ -214,19 +219,24 @@
     position: absolute;
 }
 
- .uisetGlobalPropertiesSelect{
+.createInteractionChoiceSetSelect {
     top: 135px;
     position: absolute;
 }
 
-.ttssetGlobalPropertiesSelect{
+.uisetGlobalPropertiesSelect {
     top: 160px;
     position: absolute;
 }
 
-.uiCreateWindowSelect {
-    position: absolute;
+.ttssetGlobalPropertiesSelect {
     top: 185px;
+    position: absolute;
+}
+
+.uiCreateWindowSelect {
+    top: 210px;
+    position: absolute;
 }
 
  .subscribeWayPointsSelect{

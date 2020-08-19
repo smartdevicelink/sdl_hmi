@@ -92,10 +92,6 @@ FFW.RPCHelper = Em.Object.create(
      */
     getCustomResultCode: function(appID, method) {
       switch (method) {
-        case 'createInteractionChoiceSet': {
-          method = 'vrAddCommand';
-          break;  
-        }
         case 'SubscribeWayPoints': {
           return this.getNextWayPointResultCode();
         }
@@ -409,6 +405,7 @@ FFW.RPCHelper = Em.Object.create(
     rpcStruct: {
         vrAddCommand:'',
         uiAddCommand: '',
+        createInteractionChoiceSet: '',
         AddSubmenu:'',
         uiSetGlobalProperties: '',
         ttsSetGlobalProperties: '',
