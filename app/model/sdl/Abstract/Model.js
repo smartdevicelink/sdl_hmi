@@ -707,18 +707,23 @@ SDL.SDLModel = Em.Object.extend({
         SDL.SDLModel.data.naviVideo.style.setProperty("margin-top",marging_top + "px")
         
         SDL.InfoController.startStreamingAdapter(sdl_stream).then(function(stream_endpoint) {
-          Em.Logger.log('Starting video playback');
-          SDL.SDLModel.data.naviVideo.src = stream_endpoint
-          var playPromise = SDL.SDLModel.data.naviVideo.play();
-          if (playPromise !== undefined) {
-            playPromise.then(_ => {
-              Em.Logger.log('Video playback started OK');
-            })
-            .catch(error => {
-              Em.Logger.log('Video playback start failed: ' + error);
-              SDL.SDLModel.data.naviVideo = null;
-            });
+          if (SDL.SDLModel && SDL.SDLModel.data.naviVideo) {
+            Em.Logger.log('Starting video playback');
+            SDL.SDLModel.data.naviVideo.src = stream_endpoint
+            var playPromise = SDL.SDLModel.data.naviVideo.play();
+            if (playPromise !== undefined) {
+              playPromise.then(_ => {
+                Em.Logger.log('Video playback started OK');
+              })
+              .catch(error => {
+                Em.Logger.log('Video playback start failed: ' + error);
+                SDL.SDLModel.data.naviVideo = null;
+              });
+            }
+            return;
           }
+
+          Em.Logger.error('Navi video player is not initialized');
         });
       }
     },
