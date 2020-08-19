@@ -38,7 +38,7 @@ SDL.systemCapabilities = Em.Object.create(
             resolutionWidth: 800,
             resolutionHeight: 380
         },
-        maxBitrate: 20000,
+        maxBitrate: 400000,
         supportedFormats: [
             {
                 protocol:  "RAW",

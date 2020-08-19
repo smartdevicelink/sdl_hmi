@@ -26,7 +26,18 @@ A quick guide to installing, configuring, and running HMI.
 
 	1. run `deploy_server.sh`
 	2. run SmartDeviceLinkCore
-	2. run chromium-browser [root_of_cloned_sdl_hmi_repo/index.html]
+	3. run chromium-browser [root_of_cloned_sdl_hmi_repo/index.html]
+
+Note that all these 3 steps are foreground processes and block terminal window, so you should use separate terminal windows for all of them. 
+
+## deploy_server.sh responsibility
+
+External python server is required for :
+ - simulating Low voltage signals
+ - transferring video data from sdl_core to HMI in browser
+ - Simulating Policy table update using in-vehicle modem 
+
+If deploy_server.sh will not be started this functionality won't work.
 
 ## Simulating signals for LOW_VOLTAGE feature
 	* Open the `Exit Application` menu, choose a signal from the menu and press `Send signal`
