@@ -461,9 +461,10 @@ SDL.NavigationController = Em.Object.create(
         Em.Logger.log(`Switching video streaming preset to: ${preset_name}`);
         this.model.set('resolutionIndex', index);
         const capability_to_switch = this.model.resolutionsList[index];
-        let capabilities_to_send = SDL.deepCopy(SDL.systemCapabilities.videoStreamingCapability);
+        let capabilities_to_send = {};
 
         if (capability_to_switch.preferredResolution) {
+          capabilities_to_send.preferredResolution = {};
           capabilities_to_send.preferredResolution.resolutionWidth =
             capability_to_switch.preferredResolution.resolutionWidth;
           capabilities_to_send.preferredResolution.resolutionHeight =
@@ -472,8 +473,6 @@ SDL.NavigationController = Em.Object.create(
 
         if (capability_to_switch.scale) {
           capabilities_to_send.scale = capability_to_switch.scale;
-        } else {
-          delete capabilities_to_send.scale;
         }
 
         const json_to_send = {
