@@ -38,7 +38,9 @@ SDL.RPCGetIVDControlConfigView = Em.ContainerView.create({
       'previousButton',
       'nextButton',
       'counterLabel',
-      'getIVDSelect'
+      'getIVDSelect',
+      'subscribedLabel',
+      'getIVDSubscribed'
     ],
 
     backButton: SDL.Button.extend(
@@ -73,7 +75,7 @@ SDL.RPCGetIVDControlConfigView = Em.ContainerView.create({
           'removeButton'
         ],
         isDisabled: function() {
-          return FFW.RPCHelper.getIVDResultCodes.length == 1;
+          return FFW.RPCHelper.getIVDResultStruct.length == 1;
         }.property(
           'FFW.RPCHelper.getIVDRequestNumber'
         ),
@@ -110,7 +112,7 @@ SDL.RPCGetIVDControlConfigView = Em.ContainerView.create({
         ],
         isDisabled: function() {
           return FFW.RPCHelper.getIVDRequestNumber ==
-                                      FFW.RPCHelper.getIVDResultCodes.length;
+                                      FFW.RPCHelper.getIVDResultStruct.length;
         }.property(
           'FFW.RPCHelper.getIVDRequestNumber'
         ),
@@ -137,5 +139,22 @@ SDL.RPCGetIVDControlConfigView = Em.ContainerView.create({
           contentBinding: 'FFW.RPCHelper.customResultCodesList',
           valueBinding: 'FFW.RPCHelper.getIVDResult'
         }
+    ),
+
+    subscribedLabel: SDL.Label.extend(
+      {
+        elementId: 'subscribedLabel',
+        classNames: 'subscribedLabel',
+        content: 'isSubscribed emulation:'
+      }
+    ),
+
+    getIVDSubscribed: Em.Select.extend(
+      {
+        elementId: 'getIVDSubscribed',
+        classNames: 'getIVDSubscribed',
+        contentBinding: 'FFW.RPCHelper.subscribeDataValues',
+        valueBinding: 'FFW.RPCHelper.getIVDSubscribed'
+      }
     )
 });

@@ -32,8 +32,20 @@ FFW.RPCHelper = Em.Object.create(
      */
     appContainer:Em.Object.create({}),
 
+    /*
+     * List of result codes to customize
+     */
     customResultCodesList: [
       'SUCCESS'
+    ],
+
+    /*
+     * List of data subscription values
+     */
+    subscribeDataValues: [
+      'USE_EXISTING',
+      'FALSE',
+      'TRUE'
     ],
 
     /*
@@ -188,7 +200,8 @@ FFW.RPCHelper = Em.Object.create(
      */
     updategetIVDResultCodes: function(){
       index = this.getIVDRequestNumber - 1;
-      this.getIVDResultCodes[index] = this.getIVDResult;
+      this.getIVDResultStruct[index].code = this.getIVDResult;
+      this.getIVDResultStruct[index].subscribed = this.getIVDSubscribed;
     },
 
     /*
@@ -204,7 +217,8 @@ FFW.RPCHelper = Em.Object.create(
      */
     updateGetIVDData: function(){
       index = this.getIVDRequestNumber - 1;
-      this.set('getIVDResult', this.getIVDResultCodes[index]);
+      this.set('getIVDResult', this.getIVDResultStruct[index].code);
+      this.set('getIVDSubscribed', this.getIVDResultStruct[index].subscribed);
     },
 
     /*
@@ -287,9 +301,14 @@ FFW.RPCHelper = Em.Object.create(
     newGetIVDResponse: function(){
       this.updategetIVDResultCodes();
 
-      this.getIVDResultCodes.push('SUCCESS');
-      this.set('getIVDResult', 'SUCCESS');
+      this.getIVDResultStruct.push({
+          code: 'SUCCESS',
+          subscribed: FFW.RPCHelper.subscribeDataValues[0]
+        }
+      );
+
       this.set('getIVDRequestNumber', this.getIVDRequestNumber + 1);
+      this.updateGetIVDData();
     },
 
     /*
@@ -340,9 +359,9 @@ FFW.RPCHelper = Em.Object.create(
       this.updategetIVDResultCodes();
 
       index = this.getIVDRequestNumber - 1;
-      length = this.getIVDResultCodes.length;
+      length = this.getIVDResultStruct.length;
 
-      this.getIVDResultCodes.splice(index, 1);
+      this.getIVDResultStruct.splice(index, 1);
 
       currentNumber = this.getIVDRequestNumber;
 
@@ -350,7 +369,7 @@ FFW.RPCHelper = Em.Object.create(
       // on the next set
       this.set('getIVDRequestNumber', 0);
       this.set('getIVDRequestNumber', Math.min(currentNumber,
-                                      this.getIVDResultCodes.length));
+                                      this.getIVDResultStruct.length));
 
       this.updateGetIVDData();
     },
@@ -405,7 +424,7 @@ FFW.RPCHelper = Em.Object.create(
      * Format string with IVD set to display on label
      */
     getIVDResponseStatus: function() {
-      return this.getIVDRequestNumber + '/' + this.getIVDResultCodes.length;
+      return this.getIVDRequestNumber + '/' + this.getIVDResultStruct.length;
     }.property(
       'FFW.RPCHelper.getIVDRequestNumber'
     ),
@@ -481,34 +500,42 @@ FFW.RPCHelper = Em.Object.create(
     getNextGetIVDResultCode: function(){
       this.updategetIVDResultCodes();
 
-      length = this.getIVDResultCodes.length;
+      length = this.getIVDResultStruct.length;
 
-      code = this.getIVDResultCodes[0];
+      result = this.getIVDResultStruct[0];
       if(length > 1){
-        this.getIVDResultCodes.shift(); //remove the first element of the array
+        this.getIVDResultStruct.shift(); //remove the first element of the array
 
         currentNumber = this.getIVDRequestNumber;
         this.set('getIVDRequestNumber',
                               Math.min(currentNumber,
-                                       this.getIVDResultCodes.length));
+                                       this.getIVDResultStruct.length));
         this.updateGetIVDData();
-      } else if(length == 1){
+      } else if (length == 1){
         this.set('getIVDResult', 'SUCCESS');
+        this.set('getIVDSubscribed', FFW.RPCHelper.subscribeDataValues[0]);
       }
 
-      if ('DO_NOT_RESPOND' == code) {
-        return code;
+      if ('DO_NOT_RESPOND' == result.code) {
+        return result;
       }
 
-      return SDL.SDLModel.data.resultCode[code]
+      result.code = SDL.SDLModel.data.resultCode[result.code];
+      return result;
     },
 
     wayPointResultCodes: ['SUCCESS'],
     SubscribeWayPoints: '',
     SubscribeWayPointsRequestNumber: 1,
 
-    getIVDResultCodes: ['SUCCESS'],
+    getIVDResultStruct: [
+      {
+        code: 'SUCCESS',
+        subscribed: 'USE_EXISTING'
+      }
+    ],
     getIVDResult: '',
+    getIVDSubscribed: '',
     getIVDRequestNumber: 1,
 
     defaultRpcStruct: {},

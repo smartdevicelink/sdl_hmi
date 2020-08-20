@@ -260,6 +260,20 @@
     position: absolute;
 }
 
+.subscribedLabel {
+    position: absolute;
+    top: 90px;
+    left: 55px;
+    width: 190px;
+}
+
+.getIVDSubscribed{
+    position: absolute;
+    top: 115px;
+    left: 55px;
+    width: 170px;
+}
+
 #settingsView .in_settings_separate_view .backButton,
 .in_light_exterior_view .backButton,
 .in_light_single_view .backButton, 
