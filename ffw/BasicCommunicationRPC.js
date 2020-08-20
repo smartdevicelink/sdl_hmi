@@ -439,14 +439,15 @@ FFW.BasicCommunication = FFW.RPCObserver
           const capabilities_type = notification.params.appCapability.appCapabilityType;
           if  (capabilities_type == 'VIDEO_STREAMING') {
             const updated_caps = notification.params.appCapability.videoStreamingCapability;
-            if (updated_caps.preferredResolution) {
-              SDL.systemCapabilities.set('videoStreamingCapability.preferredResolution', updated_caps.preferredResolution);
-            }
-            if (updated_caps.scale) {
-              SDL.systemCapabilities.set('videoStreamingCapability.scale', updated_caps.scale);
-            }
             if (updated_caps.additionalVideoStreamingCapabilities) {
-              SDL.systemCapabilities.set('videoStreamingCapability.additionalVideoStreamingCapabilities', updated_caps.additionalVideoStreamingCapabilities);
+              if (SDL.NavigationModel.resolutionIndex > updated_caps.additionalVideoStreamingCapabilities.length - 1) {
+                SDL.NavigationModel.set('resolutionIndex',
+                  updated_caps.additionalVideoStreamingCapabilities.length - 1
+                );
+              }
+              SDL.NavigationModel.set('resolutionsList',
+                updated_caps.additionalVideoStreamingCapabilities
+              );
             }
           }
         }
