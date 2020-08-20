@@ -1164,7 +1164,11 @@ SDL.SDLModelData = Em.Object.create(
                 "upDownAvailable": true,
                 "imageSupported": true,
                 "textSupported": true
-              }]
+              }],
+              "dynamicUpdateCapabilities": {
+                "supportedDynamicImageFieldNames": ["subMenuIcon", "menuIcon"],
+                "supportsDynamicSubMenus": true
+              }
             }]
           }],
         }
