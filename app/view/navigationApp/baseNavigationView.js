@@ -49,6 +49,12 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       'navSubButtons',
       'optionsBtn'
     ],
+    appLoaded: function() {
+      SDL.NavigationModel.set(
+        'resolutionsList',
+        SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities
+      );
+    }.observes('SDL.appReady'),
     update: function() {
       var naviParams = SDL.SDLModel.data.constantTBTParams;
       if (naviParams) {
@@ -183,17 +189,19 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       getResolutionsList: function() {
         return SDL.NavigationController.getVideoStreamingCapabilitiesList();
       }.property(
-        'SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities.@each'
+        'SDL.NavigationModel.resolutionsList.@each'
       ),
 
       getResolutionValue: function() {
-        return SDL.NavigationController.stringifyCapabilityItem(
-          SDL.systemCapabilities.videoStreamingCapability
-        );
+        if (SDL.NavigationModel.resolutionIndex < SDL.NavigationModel.resolutionsList.length - 1) {
+          return SDL.NavigationController.stringifyCapabilityItem(
+            SDL.NavigationModel.resolutionsList[SDL.NavigationModel.resolutionIndex]
+          );
+        }
+        return '';
       }.property(
-        'SDL.systemCapabilities.videoStreamingCapability.preferredResolution.resolutionWidth',
-        'SDL.systemCapabilities.videoStreamingCapability.preferredResolution.resolutionHeight',
-        'SDL.systemCapabilities.videoStreamingCapability.preferredResolution.scale'
+        'SDL.NavigationModel.resolutionsList.@each',
+        'SDL.NavigationModel.resolutionIndex',
       ),
 
       change: function() {

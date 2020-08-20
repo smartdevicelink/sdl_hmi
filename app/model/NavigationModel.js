@@ -40,6 +40,16 @@ SDL.NavigationModel = Em.Object.create({
   appReqPull: [],
 
   /**
+   * List of resolutions to display on navi view
+   */
+  resolutionsList: [],
+
+  /**
+   * Index of selected resolution on navi view
+   */
+  resolutionIndex: 0,
+
+  /**
    * Start navigation point
    */
   startLoc: '98 Walker St, New York, NY 10013, USA',

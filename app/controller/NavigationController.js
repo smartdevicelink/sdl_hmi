@@ -436,7 +436,7 @@ SDL.NavigationController = Em.Object.create(
      * @return {Array} list of capabilities
      */
     getVideoStreamingCapabilitiesList: function() {
-      const capabilities_array = SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities;
+      const capabilities_array = SDL.NavigationModel.resolutionsList;
       let list_to_display = [];
 
       if (Array.isArray(capabilities_array)) {
@@ -459,30 +459,31 @@ SDL.NavigationController = Em.Object.create(
 
       if (index >= 0) {
         Em.Logger.log(`Switching video streaming preset to: ${preset_name}`);
-        const capabilities_array = SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities;
-        const capability_to_switch = capabilities_array[index];
+        this.model.set('resolutionIndex', index);
+        const capability_to_switch = this.model.resolutionsList[index];
+        let capabilities_to_send = SDL.deepCopy(SDL.systemCapabilities.videoStreamingCapability);
 
         if (capability_to_switch.preferredResolution) {
-          SDL.systemCapabilities.set(
-            'videoStreamingCapability.preferredResolution.resolutionWidth',
-            capability_to_switch.preferredResolution.resolutionWidth
-          );
-          SDL.systemCapabilities.set(
-            'videoStreamingCapability.preferredResolution.resolutionHeight',
-            capability_to_switch.preferredResolution.resolutionHeight
-          );
+          capabilities_to_send.preferredResolution.resolutionWidth =
+            capability_to_switch.preferredResolution.resolutionWidth;
+          capabilities_to_send.preferredResolution.resolutionHeight =
+            capability_to_switch.preferredResolution.resolutionHeight;
         }
 
         if (capability_to_switch.scale) {
-          SDL.systemCapabilities.set(
-            'videoStreamingCapability.scale', capability_to_switch.scale
-          );
+          capabilities_to_send.scale = capability_to_switch.scale;
         } else {
-          delete SDL.systemCapabilities.videoStreamingCapability.scale;
+          delete capabilities_to_send.scale;
         }
 
-        SDL.SettingsController.sendVideoStreamingCapabilities();
-        SDL.SettingsController.showVideoStreamingCapabilities();
+        const json_to_send = {
+          'systemCapability' : {
+            'systemCapabilityType': 'VIDEO_STREAMING',
+            'videoStreamingCapability': capabilities_to_send
+          },
+          'appID': parseInt(SDL.SDLController.model.appID)
+        };
+        FFW.BasicCommunication.OnSystemCapabilityUpdated(json_to_send);
       }
     }
   }
