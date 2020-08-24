@@ -70,6 +70,7 @@ SDL.AppViews = Em.ContainerView.extend(
       SDL.BottomControls,
       SDL.TTSPopUp,
       SDL.AlertPopUp,
+      SDL.SubtleAlertPopUp,
       SDL.ServiceUpdatePopUp,
       SDL.AlertManeuverPopUp,
       SDL.AudioPassThruPopUp,
