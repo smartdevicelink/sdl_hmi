@@ -130,6 +130,10 @@ SDL.SDLModelData = Em.Object.create(
      */
     phoneCallActive: false,
     /**
+     * True, if active app is currently changing template
+     */
+    templateChangeInProgress: false,
+    /**
      * FLAG of any app in limited level exists
      */
     limitedExist: false,
@@ -1026,7 +1030,7 @@ SDL.SDLModelData = Em.Object.create(
               ],
               "imageTypeSupported": ["STATIC", "DYNAMIC"],
               "numCustomPresetsAvailable": 8,
-              "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
+              "templatesAvailable": ["MEDIA", "NON-MEDIA", "DEFAULT", "NAV_FULLSCREEN_MAP", 'WEB_VIEW'],
               "buttonCapabilities": [
                 {
                   "longPressAvailable": true,
