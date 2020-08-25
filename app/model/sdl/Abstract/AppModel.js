@@ -606,6 +606,15 @@ SDL.ABSAppModel = Em.Object.extend(
      * @param {Object}
      */
     addSubMenu: function(request) {
+      // Check for duplicate submenu
+      if (request.params.menuID in this.commandsList) {
+        FFW.UI.sendError(
+          SDL.SDLModel.data.resultCode.INVALID_ID, request.id,
+          request.method,
+          'Submenu ID already exists'
+        );
+        return;
+      }
 
         // parentID is equal to 'top' cause Top level menu ID
         var parentID = 'top';

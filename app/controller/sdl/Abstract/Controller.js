@@ -93,6 +93,14 @@ SDL.SDLController = Em.Object.extend(
             );
             break;
           }
+          case -4:
+          {
+            FFW.BasicCommunication.ExitApplication(
+              SDL.SDLController.model.appID,
+              'RESOURCE_CONSTRAINT'
+            );
+            break;
+          }
           default:
           {
             console.log('Unknown command with ID: ' + element.commandID);
@@ -186,7 +194,8 @@ SDL.SDLController = Em.Object.extend(
     closeApplication: function(appID) {
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia' ||
-        SDL.States.currentState.getPath('path') === 'navigationApp.baseNavigation') {
+        SDL.States.currentState.getPath('path') === 'navigationApp.baseNavigation' ||
+        SDL.States.currentState.getPath('path') === 'webViewApp') {
         SDL.States.goToStates('info.apps');
       }
     },
@@ -265,7 +274,7 @@ SDL.SDLController = Em.Object.extend(
       if (SDL.SDLModel.data.VRActive) {
         return 'VRSESSION';
       }
-      if (SDL.AlertPopUp.active) {
+      if (SDL.AlertPopUp.active || SDL.SubtleAlertPopUp.active) {
         return 'ALERT';
       }
       if (SDL.SliderView.active ||
@@ -285,6 +294,7 @@ SDL.SDLController = Em.Object.extend(
       'SDL.SDLModel.data.AudioPassThruState',
       'SDL.SDLModel.data.VRActive',
       'SDL.AlertPopUp.active',
+      'SDL.SubtleAlertPopUp.active',
       'SDL.States.info.nonMedia.active',
       'SDL.States.media.sdlmedia.active',
       'SDL.States.navigationApp.baseNavigation.active',
@@ -572,6 +582,11 @@ SDL.SDLController = Em.Object.extend(
           SDL.AlertPopUp.deactivate();
           break;
         }
+        case 'SubtleAlertPopUp':
+        {
+          SDL.SubtleAlertPopUp.deactivate();
+          break;
+        }
         case 'ScrollableMessage':
         {
           SDL.ScrollableMessage.deactivate(true);
@@ -613,6 +628,11 @@ SDL.SDLController = Em.Object.extend(
           this.onActivateSDLApp(element);
           break;
         }
+        case 'SubtleAlertPopUp':
+        {
+          SDL.SubtleAlertPopUp.deactivate();
+          this.onActivateSDLApp(element);
+        }
         case 'ScrollableMessage':
         {
           SDL.ScrollableMessage.deactivate();
@@ -645,6 +665,16 @@ SDL.SDLController = Em.Object.extend(
           this.onResetTimeout(element.appID, 'UI.Alert');
           break;
         }
+        case 'SubtleAlertPopUp':
+        {
+          clearTimeout(SDL.SubtleAlertPopUp.timer);
+          SDL.SubtleAlertPopUp.timer = setTimeout(
+            function() {
+              SDL.SubtleAlertPopUp.deactivate();
+            }, SDL.SubtleAlertPopUp.timeout
+          );
+          this.onResetTimeout(element.appID, 'UI.SubtleAlert');
+        }
         case 'ScrollableMessage':
         {
           clearTimeout(SDL.ScrollableMessage.timer);
@@ -665,18 +695,16 @@ SDL.SDLController = Em.Object.extend(
     closePopUp: function(methodName) {
       if (methodName == 'UI.Alert') {
         SDL.AlertPopUp.deactivate();
-      }
-      if (methodName == 'UI.PerformAudioPassThru') {
+      } else if (methodName === 'UI.SubtleAlert') {
+        SDL.SubtleAlertPopUp.deactivate();
+      } else if (methodName == 'UI.PerformAudioPassThru') {
         SDL.AudioPassThruPopUp.deactivate();
         this.performAudioPassThruResponse(SDL.SDLModel.data.resultCode.SUCCESS);
-      }
-      if (methodName == 'UI.PerformInteraction') {
+      } else if (methodName == 'UI.PerformInteraction') {
         SDL.InteractionChoicesView.deactivate('ABORTED');
-      }
-      if (methodName == 'UI.ScrollableMessage') {
+      } else if (methodName == 'UI.ScrollableMessage') {
         SDL.ScrollableMessage.deactivate(true);
-      }
-      if (methodName == 'UI.Slider') {
+      } else if (methodName == 'UI.Slider') {
         SDL.SliderView.deactivate(true);
       }
       //            if (SDL.VRHelpListView.active) {
@@ -771,13 +799,37 @@ SDL.SDLController = Em.Object.extend(
     /**
      * Method to sent notification for Alert
      *
-     * @param {String}
-     *            result
+     * @param {Number}
+     *            result code
      * @param {Number}
      *            alertRequestID
      */
     alertResponse: function(result, alertRequestID, info) {
       FFW.UI.alertResponse(result, alertRequestID, info);
+    },
+    /**
+     * Method to send response for SubtleAlert
+     *
+     * @param {Number}
+     *            result code
+     * @param {Number}
+     *            subtleAlertRequestID
+     * @param {String}
+     *            info
+     * @param {Number}
+     *            tryAgainTime time in ms until current SubtleAlert finished
+     */
+    subtleAlertResponse: function(result, subtleAlertRequestID, info, tryAgainTime) {
+      FFW.UI.subtleAlertResponse(result, subtleAlertRequestID, info, tryAgainTime);
+    },
+    /**
+     * Method to send notification when subtle alert is clicked
+     *
+     * @param {Number}
+     *            appID
+     */
+    onSubtleAlertPressed: function(appID) {
+      FFW.UI.onSubtleAlertPressed(appID);
     },
     /**
      * Method to sent notification for Scrollable Message
@@ -952,6 +1004,8 @@ SDL.SDLController = Em.Object.extend(
           )
         );
       }
+
+      let model = SDL.SDLController.getApplicationModel(params.appID);
       var exitCommand = {
         'id': -10,
         'params': {
@@ -963,9 +1017,8 @@ SDL.SDLController = Em.Object.extend(
           cmdID: -1
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      model.addCommand(exitCommand);
+
       exitCommand = {
         'id': -10,
         'params': {
@@ -977,9 +1030,8 @@ SDL.SDLController = Em.Object.extend(
           cmdID: -2
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      model.addCommand(exitCommand);
+
       exitCommand = {
         'id': -10,
         'params': {
@@ -991,9 +1043,23 @@ SDL.SDLController = Em.Object.extend(
           cmdID: -3
         }
       };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
+      model.addCommand(exitCommand);
+
+      if (isWebEngineApp) {
+        exitCommand = {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'RESOURCE_CONSTRAINT\'',
+              'position': 0
+            },
+            cmdID: -4
+          }
+        };
+        model.addCommand(exitCommand);
+      }
+
     },
     /**
      * Unregister application
@@ -1028,7 +1094,10 @@ SDL.SDLController = Em.Object.extend(
       }
       if (app.webEngineApp && app.policyAppID in SDL.SDLModel.webApplicationFramesMap) {
         let frame = SDL.SDLModel.webApplicationFramesMap[app.policyAppID];
-        document.body.removeChild(frame);
+        const web_engine_view = document.getElementById("webEngineView");
+        if (web_engine_view) {
+          web_engine_view.removeChild(frame);
+        }
         delete SDL.SDLModel.webApplicationFramesMap[app.policyAppID];
       }
     },
@@ -1074,6 +1143,10 @@ SDL.SDLController = Em.Object.extend(
         SDL.PopUp.create().appendTo('body').popupActivate(message);
       }
       SDL.InfoAppsView.showAppList();
+
+      params.applications.forEach(appRecord => {
+        SDL.SDLModel.appIDtoPolicyAppIDMapping[appRecord.appID] = appRecord.policyAppID;
+      });
     },
     /**
      * SDL Driver Distraction ON/OFF switcher
@@ -1195,6 +1268,9 @@ SDL.SDLController = Em.Object.extend(
           }
 
           SDL.InfoController.getWebAppEntryPointPath(model.policyAppID, callback);
+        } else if (model.webEngineApp !== true && model.appType.indexOf('WEB_VIEW') >= 0) {
+          SDL.PopUp.create().appendTo('body')
+            .popupActivate("Only Web Engine apps with app type WEB_VIEW can be activated!");
         } else {
           FFW.BasicCommunication.ActivateApp(element.appID);
         }
@@ -1344,6 +1420,8 @@ SDL.SDLController = Em.Object.extend(
      */
     onSystemContextChange: function(appID, windowID) {
       var sysContextValue = this.get('sysContext');
+      SDL.SDLController.setWebEngineFramesActive(sysContextValue == 'MAIN');
+
       if ((
         appID &&
         SDL.SDLController.getApplicationModel(appID) !=
@@ -1502,13 +1580,50 @@ SDL.SDLController = Em.Object.extend(
     getDefaultCapabilities: function (windowID, appID) {
       let windowType = (windowID === undefined || windowID === 0) ? "MAIN" : "WIDGET";
 
-      let windowCapability = SDL.SDLModelData.defaultWindowCapability[windowType];
+      let windowCapability = SDL.deepCopy(SDL.SDLModelData.defaultWindowCapability[windowType]);
       if(windowType === "WIDGET") {
         windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["windowID"] = windowID;
       }
+
       if(appID) {
+        const is_web_view_template = function(model) {
+          const template = model.templateConfiguration.template;
+          if (template == "DEFAULT" && model.appType.indexOf('WEB_VIEW') >= 0) {
+            return true;
+          }
+
+          return template == "WEB_VIEW";
+        }
+
+        var appModel = this.getApplicationModel(appID);
+        if (appModel && is_web_view_template(appModel) && windowType == "MAIN") {
+          let text_fields = windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["textFields"];
+          const text_fields_to_exclude = [
+            'mainField1', 'mainField2', 'mainField3', 'mainField4',
+            'mediaClock', 'mediaTrack'
+          ];
+          for (var i = text_fields.length - 1; i >= 0; i--) {
+            if (text_fields_to_exclude.includes(text_fields[i].name)) {
+              text_fields.splice(i, 1);
+            }
+          }
+
+          let image_fields = windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["imageFields"];
+          const image_fields_to_exclude = [
+            'softButtonImage', 'menuIcon', 'graphic', 'secondaryGraphic'
+          ];
+          for (var i = image_fields.length - 1; i >= 0; i--) {
+            if (image_fields_to_exclude.includes(image_fields[i].name)) {
+              image_fields.splice(i, 1);
+            }
+          }
+
+          delete windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["softButtonCapabilities"];
+        }
+
         windowCapability["appID"] = appID;
       }
+
       return windowCapability;
     },
     /**
@@ -1555,6 +1670,43 @@ SDL.SDLController = Em.Object.extend(
         title = title + key + ': \n' + JSON.stringify(titleData[key]) + '\n\n';
       }
       return title;
+    },
+
+    /**
+     * @function setWebEngineFramesActive
+     * @param {Boolean} isActive
+     * @description set touch events activity for all currently active WEP frames
+     */
+    setWebEngineFramesActive: function(isActive) {
+      var frames = document.getElementsByClassName("WebEngineFrame");
+      for (var i = 0; i < frames.length; ++i) {
+        if (isActive) {
+          frames[i].style.pointerEvents = null;
+        } else {
+          frames[i].style.pointerEvents = "none";
+        }
+      }
+    },
+
+    /**
+     * @function hideWebApps
+     * @description Makes all web application view disabled
+     */
+    hideWebApps: function() {
+      for(var key in SDL.SDLModel.webApplicationFramesMap) {
+        SDL.SDLModel.webApplicationFramesMap[key].hidden = true;
+      }
+    },
+
+    /**
+     * @function showWebViewApp
+     * @param {Number} appID
+     * @description Activates web view for application specified by appID
+     */
+    showWebViewApp: function(appID) {
+      this.hideWebApps();
+      let policyAppID = SDL.SDLModel.appIDtoPolicyAppIDMapping[appID];
+      SDL.SDLModel.webApplicationFramesMap[policyAppID].hidden = false;
     },
   }
 );
