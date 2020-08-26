@@ -745,7 +745,9 @@ SDL.ABSAppModel = Em.Object.extend(
         }
 
         content["showStrings"] = showStringsArray;
-        content["softButtons"] = this.get("softButtons").slice(0,4);
+        content["softButtons"] = windowParam.type == 'WIDGET' ?
+                                 this.get("softButtons").slice(0,4) :
+                                 this.get("softButtons");
         content["templateConfiguration"] = this.templateConfiguration;
 
         windowParam.content = content;
