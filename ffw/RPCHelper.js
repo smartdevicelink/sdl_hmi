@@ -510,6 +510,7 @@ FFW.RPCHelper = Em.Object.create(
         this.set('getIVDRequestNumber',
                               Math.min(currentNumber,
                                        this.getIVDResultStruct.length));
+        this.set('getIVDRequestNumber', this.getIVDRequestNumber - 1);
         this.updateGetIVDData();
       } else if (length == 1){
         this.set('getIVDResult', 'SUCCESS');
