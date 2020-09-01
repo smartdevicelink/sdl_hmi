@@ -287,7 +287,7 @@ FFW.RC = FFW.RPCObserver.create(
               };
 
               var data = SDL.RCModulesController.getInteriorVehicleData(request);
-                if (data) {
+              if (data) {
                 var key = Object.keys(data)[0];
                 JSONMessage.result.moduleData[key] = data[key];
                 this.client.send(JSONMessage);
