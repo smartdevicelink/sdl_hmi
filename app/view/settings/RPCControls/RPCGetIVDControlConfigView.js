@@ -38,6 +38,7 @@ SDL.RPCGetIVDControlConfigView = Em.ContainerView.create({
       'previousButton',
       'nextButton',
       'counterLabel',
+      'customResultCodeLabel',
       'getIVDSelect',
       'subscribedLabel',
       'getIVDSubscribed'
@@ -131,6 +132,14 @@ SDL.RPCGetIVDControlConfigView = Em.ContainerView.create({
           contentBinding: 'FFW.RPCHelper.getIVDResponseStatus'
         }
     ),
+
+    customResultCodeLabel: SDL.Label.extend(
+      {
+        elementId: 'customResultCodeLabel',
+        classNames: 'customResultCodeLabel',
+        content: 'Custom result code:'
+      }
+    ), 
 
     getIVDSelect: Em.Select.extend(
         {

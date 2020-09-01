@@ -252,8 +252,16 @@
     position: absolute;
 }
 
+.customResultCodeLabel{
+    top: 60px;
+    left: 55px;
+    width: 407px;
+    height: 18px;
+    position: absolute;
+}
+
 .getIVDSelect{
-    top: 55px;
+    top: 80px;
     left: 55px;
     width: 407px;
     height: 18px;
@@ -262,14 +270,14 @@
 
 .subscribedLabel {
     position: absolute;
-    top: 90px;
+    top: 110px;
     left: 55px;
     width: 190px;
 }
 
 .getIVDSubscribed{
     position: absolute;
-    top: 115px;
+    top: 135px;
     left: 55px;
     width: 170px;
 }
