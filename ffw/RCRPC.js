@@ -276,15 +276,19 @@ FFW.RC = FFW.RPCObserver.create(
                 'jsonrpc': '2.0',
                 'id': request.id,
                 'result': {
-                    'code': resultStruct.code,
-                    'method': request.method,
-                    'isSubscribed': calculate_subscribed_value(resultStruct.subscribed),
-                    'moduleData': {
-                      'moduleType': request.params.moduleType,
-                      'moduleId': request.params.moduleId
-                    }
+                  'code': resultStruct.code,
+                  'method': request.method,
+                  'moduleData': {
+                    'moduleType': request.params.moduleType,
+                    'moduleId': request.params.moduleId
+                  }
                 }
               };
+
+              var subscribed_value = calculate_subscribed_value(resultStruct.subscribed);
+              if(subscribed_value) {
+                JSONMessage.result["isSubscribed"] = subscribed_value;
+              }
 
               var data = SDL.RCModulesController.getInteriorVehicleData(request);
               if (data) {
