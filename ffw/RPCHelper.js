@@ -507,10 +507,8 @@ FFW.RPCHelper = Em.Object.create(
         this.getIVDResultStruct.shift(); //remove the first element of the array
 
         currentNumber = this.getIVDRequestNumber;
-        this.set('getIVDRequestNumber',
-                              Math.min(currentNumber,
-                                       this.getIVDResultStruct.length));
-        this.set('getIVDRequestNumber', this.getIVDRequestNumber - 1);
+        length = this.getIVDResultStruct.length;
+        this.set('getIVDRequestNumber', Math.min(currentNumber, length));
         this.updateGetIVDData();
       } else if (length == 1){
         this.set('getIVDResult', 'SUCCESS');
