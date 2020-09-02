@@ -490,6 +490,24 @@ var StateManager = Em.StateManager.extend(
         }
       }
     ),
+    webViewApp: Em.State.create(
+      {
+        modelBinding: 'SDL.RCModulesController',
+        enter: function() {
+          this._super();
+          SDL.SDLController.onEventChanged('player', false);
+          SDL.SDLController.onEventChanged(this.name, true);
+          SDL.SDLController.showWebViewApp(SDL.SDLController.model.appID);
+        },
+        exit: function() {
+          this._super();
+          SDL.SDLController.onEventChanged(this.name, false);
+          SDL.SDLModel.data.set('limitedExist', false);
+          SDL.SDLController.hideWebApps();
+          SDL.SDLController.deactivateApp();
+        }
+      }
+    ),
     /** Navigation state */
     navigation: Em.State.create(
       {

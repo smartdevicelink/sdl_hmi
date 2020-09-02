@@ -51,6 +51,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     content1: 'Title',
     content2: 'Text',
     activate: false,
+    endTime: null,
     timer: null,
     /**
      * Wagning image on Alert Maneuver PopUp
@@ -170,12 +171,14 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       }
 
       this.set( 'activate', true );
+      this.set('endTime', Date.now() + 5000);
 
       clearTimeout( this.timer );
 
       var self = this;
       this.timer = setTimeout( function() {
           self.set( 'activate', false );
+          this.set('endTime', null);
           FFW.Navigation.sendNavigationResult(
             SDL.SDLModel.data.resultCode.SUCCESS,
             message.id,
