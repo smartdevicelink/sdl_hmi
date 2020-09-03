@@ -510,6 +510,11 @@ FFW.RPCHelper = Em.Object.create(
         length = this.getIVDResultStruct.length;
         this.set('getIVDRequestNumber', Math.min(currentNumber, length));
         this.updateGetIVDData();
+
+        // Manually update counterLabel if currentNumber == length
+        if(currentNumber == length) {
+          SDL.RPCGetIVDControlConfigView.counterLabel.set('content', currentNumber + '/' + length); 
+        }
       } else if (length == 1){
         this.set('getIVDResult', 'SUCCESS');
         this.set('getIVDSubscribed', FFW.RPCHelper.subscribeDataValues[0]);
