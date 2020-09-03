@@ -286,7 +286,7 @@ FFW.RC = FFW.RPCObserver.create(
               };
 
               var subscribed_value = calculate_subscribed_value(resultStruct.subscribed);
-              if(subscribed_value) {
+              if(subscribed_value != null) {
                 JSONMessage.result["isSubscribed"] = subscribed_value;
               }
 
