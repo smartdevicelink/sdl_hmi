@@ -8,6 +8,248 @@
     height: 382px;
     background: black;
     z-index: 5000;
+    border: 1px solid white;
+    border-radius: 10PX;
+}
+
+#settingsView .rpc_settings_separate_view {
+    top: 68px;
+    left:190px;
+    width: 495px;
+    height: 337px;
+    background: black;
+    z-index: 5000;
+    border: 1px solid white;
+    border-radius: 10PX;
+    overflow-y: scroll;
+}
+
+ .appNameLabel{
+    top: 13px;
+    left: 213px;
+    font-size: 200%;
+    text-align: center;
+}
+
+ .backControl {
+    top: 20px;
+    width: 35px;
+    height: 27px;
+    border: 1px solid #333;
+    border-radius: 2px;
+    left: 10px;
+}
+
+ .saveButton,
+ .newButton {
+    left: 55px;
+    border: 1px solid #333;
+    border-radius: 2px;
+    top: 20px;
+    width: 60px;
+    height: 27px;
+    text-align: center;
+}
+
+.removeButton{
+    border: 1px solid #333;
+    border-radius: 2px;
+    width: 71px;
+    height: 27px;
+    text-align: center;
+    top: 20px;
+    left: 125px;
+}
+
+.previousButton{
+    border: 1px solid #333;
+    border-radius: 2px;
+    width: 71px;
+    height: 27px;
+    text-align: center;
+    top: 20px;
+    left: 280px;
+}
+
+.nextButton{
+    border: 1px solid #333;
+    border-radius: 2px;
+    width: 60px;
+    height: 27px;
+    text-align: center;
+    left: 360px;
+    top: 20px;
+}
+
+.counterLabel{
+    top: 55px;
+    width: 60px;
+    height: 27px;
+    text-align: center;
+}
+
+.rpc_settings_separate_view .counterLabel{
+    top: 25px;
+    left: 415px;
+    width: 60px;
+    height: 27px;
+    text-align: center;
+}
+
+ .resetButton{
+    left: 125px;
+    border: 1px solid #333;
+    border-radius: 2px;
+    top: 20px;
+    width: 60px;
+    height: 27px;
+    text-align: center;
+    font-size: 75%;
+}
+
+#settingsView .rpc_settings_separate_view
+ .rpcList{ 
+    left: 170px;
+    direction: rtl;
+}
+
+ .vrAddComandlabel{
+    top: 60px;
+}
+
+ .uiAddComandlabel{
+    top: 85px;
+}
+
+ .addSubMenulabel{
+    top: 110px;
+}
+
+.createInteractionChoiceSetlabel {
+    top: 135px;
+    font-size: 84%;
+}
+
+.uisetGlobalProperties {
+    top: 160px;
+}
+
+.ttssetGlobalPropertieslabel {
+    position: absolute;
+    top: 185px;
+    font-size: 85%;
+}
+
+.uiCreateWindowLabel {
+    top: 210px;
+}
+
+ .subscribeWayPoints{
+       top: 185px;
+       left: -140px;
+}
+
+ .vehicleDataGlobal{
+    top: 212px;
+    left: -150px;
+}
+
+ .subscribeVehicleData{
+    top: 260px;
+    left: -140px;
+}
+
+.subscribevehicleData{
+    top: 50px;
+    direction: initial;
+    position: absolute;
+    height: 30px;
+    width: 479px;
+}
+.subscribevehicleData .label{
+    position: absolute;
+    left: 10px; 
+    top: 5px;
+}
+.subscribevehicleData .select{
+    position: absolute;
+    left: 185px;
+    top: 5px;
+}
+
+.subscribevehicleDataParams{
+    position: relative;
+    height: 850px;
+    width: 479px;
+    top: 80px;
+}
+.subscribevehicleDataParams .params{
+    top: 5px;
+    position: relative;
+    height: 30px;
+    width: 450px;
+    left: 26px;
+}
+.subscribevehicleDataParams .params .label{
+    left: 10px;
+}
+.subscribevehicleDataParams .params .select{
+    left: 205px;
+    position: absolute;
+}
+
+#settingsView .rpc_settings_separate_view
+ .resultCodeTracker{ 
+    left: 200px;
+    direction: ltl;
+}
+
+ .vrAddComandSelect{
+    top:60px;
+    position: absolute;
+}
+
+.uiAddComandSelect{
+    top:85px;
+    position: absolute;
+}
+
+ .addSubMenuSelect{
+    top: 110px;
+    position: absolute;
+}
+
+.createInteractionChoiceSetSelect {
+    top: 135px;
+    position: absolute;
+}
+
+.uisetGlobalPropertiesSelect {
+    top: 160px;
+    position: absolute;
+}
+
+.ttssetGlobalPropertiesSelect {
+    top: 185px;
+    position: absolute;
+}
+
+.uiCreateWindowSelect {
+    top: 210px;
+    position: absolute;
+}
+
+ .subscribeWayPointsSelect{
+    top: 55px;
+    left: 55px;
+    width: 407px;
+    height: 18px;
+    position: absolute;
+}
+
+ .vehicleDataGlobalSelect{
+    top: 210px;
+    position: absolute;
 }
 
 #settingsView .in_settings_separate_view .backButton,
@@ -28,7 +270,7 @@
 .in_light_single_view .list,
 .in_light_location_view .list,
 .in_light_interior_view .list {
-    height: 201px;
+    height: 251px;
     width: 700px;
     top: 106px;
     left: 50px;
@@ -118,6 +360,10 @@
     background: black;
     left: 10px;
     width: 80px;
+}
+
+#settingsView .right_text {
+    padding-left: 50px;
 }
 
 #settingsView .in_settings_separate_view .label,
@@ -213,13 +459,13 @@
     z-index: 1001;
     margin-top: 70px;
 }
-
+#settingsView .rpc_settings_list,
 #settingsView .policies_settings_list {
     height: 251px;
     width: 598px;
     left: 10px;
 }
-
+#rpc_settings_list .list-content .ffw-button,
 #policies_settings_list .list-content .ffw-button {
     width: 537px;
     padding-left: 10px;

@@ -294,9 +294,22 @@ FFW.UI = FFW.RPCObserver.create(
             // this.errorResponsePull[request.id].type + " type. Request was
             // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
+          resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiSetGlobalProperties');
+          if ('DO_NOT_RESPOND' == resultCode) {
+            Em.Logger.log('Do not respond on this request');
+            return;
+          }
+
+          let info = null;
+          
+          if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
             SDL.SDLModel.setProperties(request.params);
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+          } else {
+            info = 'Erroneous response is assigned by settings';
+          }
+
+          this.sendUIResult(
+            resultCode, request.id, request.method, info
             );
             break;
           }
@@ -1582,13 +1595,26 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.CreateWindow':
           {
-            var app = SDL.SDLController.getApplicationModel(request.params.appID);
-            app.createWindow(request.params);
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
-              let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
-              FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+            const resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiCreateWindow');
+            if ('DO_NOT_RESPOND' == resultCode) {
+              Em.Logger.log('Do not respond on this request');
+              return;
+            }
+
+            if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+              var app = SDL.SDLController.getApplicationModel(request.params.appID);
+              if (app) {
+                app.createWindow(request.params);
+
+                this.sendUIResult(resultCode, request.id, request.method);
+
+                let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+                FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+              }
+            } else {
+              this.sendUIResult(resultCode, request.id, request.method, 'Erroneous response is assigned by settings');
+            }
+
             break;
           }
           case 'UI.DeleteWindow':
@@ -1653,32 +1679,45 @@ FFW.UI = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
+     * @param {String}
+     *            info
      */
     sendUIResult: function(resultCode, id, method, info) {
-      if (this.errorResponsePull[id]) {
-        this.sendError(
-          this.errorResponsePull[id].code, id, method,
-          'Unsupported ' + this.errorResponsePull[id].type +
-          ' type. Available data in request was processed.'
-        );
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
         this.errorResponsePull[id] = null;
+
+        this.sendUIResult(
+          errorStruct.code,
+          id,
+          method,
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+        );
         return;
       }
-      Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode == SDL.SDLModel.data.resultCode.SUCCESS ||
-          resultCode == SDL.SDLModel.data.resultCode.WARNINGS) {
 
+      Em.Logger.log('FFW.UI.' + method + 'Response');
+      if (is_successful_code) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
           'result': {
             'code': resultCode, // type (enum) from SDL protocol
-            'method': method,
-            'info': info
+            'method': method
           }
         };
+
+        if (info) {
+          JSONMessage.result.info = info;
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     /**

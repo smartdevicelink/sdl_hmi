@@ -173,6 +173,12 @@ var StateManager = Em.StateManager.extend(
           );
           this._super();
         },
+        rpccontrol: Em.State.create({
+            rpcconfig: Em.State.create({}),
+            rpcwaypointconfig: Em.State.create({}),
+            rpcvehicledataconfig: Em.State.create({})
+          }
+       ),
         policies: Em.State.create(
           {
             statisticsInfo: Em.State.create({}),
