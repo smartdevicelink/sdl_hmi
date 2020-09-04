@@ -393,19 +393,41 @@ FFW.RC = FFW.RPCObserver.create(
      *            method
      */
     sendRCResult: function(resultCode, id, method) {
-      Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
+        this.errorResponsePull[id] = null;
 
+        this.sendRCResult(
+          errorStruct.code,
+          id,
+          method,
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+        );
+        return;
+      }
+
+      Em.Logger.log('FFW.RC.' + method + 'Response');
+      if (is_successful_code) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
           'result': {
-            'code': resultCode,
+            'code': resultCode, // type (enum) from SDL protocol
             'method': method
           }
         };
+
+        if (info) {
+          JSONMessage.result.info = info;
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     GetInteriorVehicleDataConsentResponse: function(request, allowed) {

@@ -617,7 +617,7 @@ SDL.ABSAppModel = Em.Object.extend(
       }
 
         // parentID is equal to 'top' cause Top level menu ID
-        var parentID = 'top';
+        var parentID = request.params.menuParams.parentID ? request.params.menuParams.parentID : 'top';
         var commands = this.get('commandsList.' + parentID);
 
         result = FFW.RPCHelper.getCustomResultCode(this.appID, 'AddSubmenu');
@@ -634,7 +634,7 @@ SDL.ABSAppModel = Em.Object.extend(
         		  menuID: request.params.menuID,
         		  name: request.params.menuParams.menuName ?
         		    request.params.menuParams.menuName : '',
-        		  parent: 0,
+        		  parent: parentID,
         		  position: request.params.menuParams.position ?
         		    request.params.menuParams.position : 0,
         		  icon: request.params.menuIcon ? request.params.menuIcon.value : null
@@ -745,7 +745,9 @@ SDL.ABSAppModel = Em.Object.extend(
         }
 
         content["showStrings"] = showStringsArray;
-        content["softButtons"] = this.get("softButtons").slice(0,4);
+        content["softButtons"] = windowParam.type == 'WIDGET' ?
+                                 this.get("softButtons").slice(0,4) :
+                                 this.get("softButtons");
         content["templateConfiguration"] = this.templateConfiguration;
 
         windowParam.content = content;

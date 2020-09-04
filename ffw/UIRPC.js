@@ -1679,28 +1679,42 @@ FFW.UI = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
+     * @param {String}
+     *            info
      */
     sendUIResult: function(resultCode, id, method, info) {
-      if (this.errorResponsePull[id]) {
-        this.sendError(
-          this.errorResponsePull[id].code, id, method,
-          'Unsupported ' + this.errorResponsePull[id].type +
-          ' type. Available data in request was processed.'
-        );
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
         this.errorResponsePull[id] = null;
+
+        this.sendUIResult(
+          errorStruct.code,
+          id,
+          method,
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+        );
         return;
       }
-      Em.Logger.log('FFW.' + method + 'Response');
-      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+
+      Em.Logger.log('FFW.UI.' + method + 'Response');
+      if (is_successful_code) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
           'result': {
             'code': resultCode, // type (enum) from SDL protocol
-            'method': method            
+            'method': method
           }
         };
+
+        if (info) {
+          JSONMessage.result.info = info;
+        }
+
         this.sendMessage(JSONMessage);
       } else {
         this.sendError(resultCode, id, method, info);
