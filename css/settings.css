@@ -252,6 +252,36 @@
     position: absolute;
 }
 
+.customResultCodeLabel{
+    top: 60px;
+    left: 55px;
+    width: 407px;
+    height: 18px;
+    position: absolute;
+}
+
+.getIVDSelect{
+    top: 80px;
+    left: 55px;
+    width: 407px;
+    height: 18px;
+    position: absolute;
+}
+
+.subscribedLabel {
+    position: absolute;
+    top: 110px;
+    left: 55px;
+    width: 190px;
+}
+
+.getIVDSubscribed{
+    position: absolute;
+    top: 135px;
+    left: 55px;
+    width: 170px;
+}
+
 #settingsView .in_settings_separate_view .backButton,
 .in_light_exterior_view .backButton,
 .in_light_single_view .backButton, 

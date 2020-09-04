@@ -32,8 +32,20 @@ FFW.RPCHelper = Em.Object.create(
      */
     appContainer:Em.Object.create({}),
 
+    /*
+     * List of result codes to customize
+     */
     customResultCodesList: [
       'SUCCESS'
+    ],
+
+    /*
+     * List of data subscription values
+     */
+    subscribeDataValues: [
+      'USE_EXISTING',
+      'FALSE',
+      'TRUE'
     ],
 
     /*
@@ -97,6 +109,9 @@ FFW.RPCHelper = Em.Object.create(
         }
         case 'SubscribeVehicleData': {
           return this.getNextVehicleDataResultCode();
+        }
+        case 'GetInteriorVehicleData': {
+          return this.getNextGetIVDResultCode();
         }
       }
 
@@ -181,11 +196,29 @@ FFW.RPCHelper = Em.Object.create(
     },
 
     /*
+     * updategetIVDResultCodes function. Update GetIVD array
+     */
+    updategetIVDResultCodes: function(){
+      index = this.getIVDRequestNumber - 1;
+      this.getIVDResultStruct[index].code = this.getIVDResult;
+      this.getIVDResultStruct[index].subscribed = this.getIVDSubscribed;
+    },
+
+    /*
      * updateSubscribeWayPoints function. Update SubscribeWayPoints parameter
      */
     updateSubscribeWayPoints: function(){
       index = this.SubscribeWayPointsRequestNumber - 1;
       this.set('SubscribeWayPoints', this.wayPointResultCodes[index]);
+    },
+
+    /*
+     * updateGetIVDData function. Update getIVDResult parameter
+     */
+    updateGetIVDData: function(){
+      index = this.getIVDRequestNumber - 1;
+      this.set('getIVDResult', this.getIVDResultStruct[index].code);
+      this.set('getIVDSubscribed', this.getIVDResultStruct[index].subscribed);
     },
 
     /*
@@ -216,6 +249,15 @@ FFW.RPCHelper = Em.Object.create(
     },
 
     /*
+     * previousGetIVDResultCode function. Go to previous GetIVD ResultCode
+     */
+    previousGetIVDResultCode: function(){
+      this.updategetIVDResultCodes();
+      this.set('getIVDRequestNumber', this.getIVDRequestNumber - 1);
+      this.updateGetIVDData();
+    },
+
+    /*
      * nextWayPointResultCode function. Go to next WayPoint ResultCode
      */
     nextWayPointResultCode: function(){
@@ -234,6 +276,15 @@ FFW.RPCHelper = Em.Object.create(
     },
 
     /*
+     * nextGetIVDResultCode function. Go to next WayPoint ResultCode
+     */
+    nextGetIVDResultCode: function(){
+      this.updategetIVDResultCodes();
+      this.set('getIVDRequestNumber', this.getIVDRequestNumber + 1);
+      this.updateGetIVDData();
+    },
+
+    /*
      * Add new response for SubscribeWayPoint RPC in queue
      */
     newWayPointResponse: function(){
@@ -242,6 +293,22 @@ FFW.RPCHelper = Em.Object.create(
       this.wayPointResultCodes.push('SUCCESS');
       this.set('SubscribeWayPoints', 'SUCCESS');
       this.set('SubscribeWayPointsRequestNumber', this.SubscribeWayPointsRequestNumber + 1);
+    },
+
+    /*
+     * Add new response for GetIVD RPC in queue
+     */
+    newGetIVDResponse: function(){
+      this.updategetIVDResultCodes();
+
+      this.getIVDResultStruct.push({
+          code: 'SUCCESS',
+          subscribed: FFW.RPCHelper.subscribeDataValues[0]
+        }
+      );
+
+      this.set('getIVDRequestNumber', this.getIVDRequestNumber + 1);
+      this.updateGetIVDData();
     },
 
     /*
@@ -282,6 +349,29 @@ FFW.RPCHelper = Em.Object.create(
                                       this.VehicleDataResultCodes.length));
 
       this.updateSubscribeVehicleData();
+    },
+
+    /*
+     * removeGetIVDResponse function. remove current VehicleData ResultCode
+     * from array
+     */
+    removeGetIVDResponse: function(){
+      this.updategetIVDResultCodes();
+
+      index = this.getIVDRequestNumber - 1;
+      length = this.getIVDResultStruct.length;
+
+      this.getIVDResultStruct.splice(index, 1);
+
+      currentNumber = this.getIVDRequestNumber;
+
+      // Should be set to 0 first in order to trigger refresh event binding
+      // on the next set
+      this.set('getIVDRequestNumber', 0);
+      this.set('getIVDRequestNumber', Math.min(currentNumber,
+                                      this.getIVDResultStruct.length));
+
+      this.updateGetIVDData();
     },
 
     /*
@@ -328,6 +418,15 @@ FFW.RPCHelper = Em.Object.create(
       return this.VehicleDataRequestNumber + '/' + this.VehicleDataResultCodes.length;
     }.property(
       'FFW.RPCHelper.VehicleDataRequestNumber'
+    ),
+
+    /*
+     * Format string with IVD set to display on label
+     */
+    getIVDResponseStatus: function() {
+      return this.getIVDRequestNumber + '/' + this.getIVDResultStruct.length;
+    }.property(
+      'FFW.RPCHelper.getIVDRequestNumber'
     ),
 
     /*
@@ -395,9 +494,54 @@ FFW.RPCHelper = Em.Object.create(
       return code;
     },
     
+    /*
+     * Claims next result code for GetIVD RPC
+     */
+    getNextGetIVDResultCode: function(){
+      this.updategetIVDResultCodes();
+
+      length = this.getIVDResultStruct.length;
+
+      result = this.getIVDResultStruct[0];
+      if(length > 1){
+        this.getIVDResultStruct.shift(); //remove the first element of the array
+
+        currentNumber = this.getIVDRequestNumber;
+        length = this.getIVDResultStruct.length;
+        this.set('getIVDRequestNumber', Math.min(currentNumber, length));
+        this.updateGetIVDData();
+
+        // Manually update counterLabel and nextButton if currentNumber == length
+        if(currentNumber == length) {
+          SDL.RPCGetIVDControlConfigView.nextButton.set('disabled', true);
+          SDL.RPCGetIVDControlConfigView.counterLabel.set('content', currentNumber + '/' + length); 
+        }
+      } else if (length == 1){
+        this.set('getIVDResult', 'SUCCESS');
+        this.set('getIVDSubscribed', FFW.RPCHelper.subscribeDataValues[0]);
+      }
+
+      if ('DO_NOT_RESPOND' == result.code) {
+        return result;
+      }
+
+      result.code = SDL.SDLModel.data.resultCode[result.code];
+      return result;
+    },
+
     wayPointResultCodes: ['SUCCESS'],
     SubscribeWayPoints: '',
     SubscribeWayPointsRequestNumber: 1,
+
+    getIVDResultStruct: [
+      {
+        code: 'SUCCESS',
+        subscribed: 'USE_EXISTING'
+      }
+    ],
+    getIVDResult: '',
+    getIVDSubscribed: '',
+    getIVDRequestNumber: 1,
 
     defaultRpcStruct: {},
     currentAppID: null,

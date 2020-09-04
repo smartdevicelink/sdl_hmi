@@ -250,26 +250,60 @@ FFW.RC = FFW.RPCObserver.create(
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
 
-            var JSONMessage = {
-              'jsonrpc': '2.0',
-              'id': request.id,
-              'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                'method': request.method,
-                'isSubscribed': request.params.subscribe,
-                'moduleData': {
-                  'moduleType': request.params.moduleType,
-                  'moduleId': request.params.moduleId
-                }
-              }
-            };
-
-            var data = SDL.RCModulesController.getInteriorVehicleData(request);
-            if(data) {
-              var key = Object.keys(data)[0];
-              JSONMessage.result.moduleData[key] = data[key];
-              this.client.send(JSONMessage);
+            const resultStruct = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'GetInteriorVehicleData');
+            if ('DO_NOT_RESPOND' == resultStruct.code) {
+              Em.Logger.log('Do not respond on this request');
+              break;
             }
+
+            if (FFW.RPCHelper.isSuccessResultCode(resultStruct.code)) {
+              let calculate_subscribed_value = function(subscribed) {
+                switch (subscribed) {
+                  case 'USE_EXISTING': {
+                    return request.params.subscribe;
+                  }
+                  case 'FALSE': {
+                    return false;
+                  }
+                  case 'TRUE': {
+                    return true;
+                  }
+                }
+                return null;
+              };
+
+              var JSONMessage = {
+                'jsonrpc': '2.0',
+                'id': request.id,
+                'result': {
+                  'code': resultStruct.code,
+                  'method': request.method,
+                  'moduleData': {
+                    'moduleType': request.params.moduleType,
+                    'moduleId': request.params.moduleId
+                  }
+                }
+              };
+
+              var subscribed_value = calculate_subscribed_value(resultStruct.subscribed);
+              if(subscribed_value != null) {
+                JSONMessage.result["isSubscribed"] = subscribed_value;
+              }
+
+              var data = SDL.RCModulesController.getInteriorVehicleData(request);
+              if (data) {
+                var key = Object.keys(data)[0];
+                JSONMessage.result.moduleData[key] = data[key];
+                this.client.send(JSONMessage);
+              }
+
+              break;
+          }
+
+            this.sendError(resultStruct.code,
+                           request.id,
+                           request.method,
+                           'Erroneous response is assigned by settings');
             break;
           }
           case 'RC.GetInteriorVehicleDataConsent':
