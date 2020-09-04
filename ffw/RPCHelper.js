@@ -511,8 +511,9 @@ FFW.RPCHelper = Em.Object.create(
         this.set('getIVDRequestNumber', Math.min(currentNumber, length));
         this.updateGetIVDData();
 
-        // Manually update counterLabel if currentNumber == length
+        // Manually update counterLabel and nextButton if currentNumber == length
         if(currentNumber == length) {
+          SDL.RPCGetIVDControlConfigView.nextButton.set('disabled', true);
           SDL.RPCGetIVDControlConfigView.counterLabel.set('content', currentNumber + '/' + length); 
         }
       } else if (length == 1){
