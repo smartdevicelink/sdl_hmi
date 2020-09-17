@@ -141,7 +141,8 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                     icon: commands[i].icon,
                     target: 'SDL.SDLController',
                     action: 'onCommand',
-                    onDown: false
+                    onDown: false,
+                    position: commands[i].position
                   }
                 }
               );
@@ -159,6 +160,21 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                 }
               );
             }
+            this.items.sort((a, b) => {
+              if (a.params.position === undefined) {
+                if (b.params.position === undefined) {
+                  //put both at end
+                  return 0;
+                }
+                //put a at end
+                return 1;
+              }
+              if (b.params.position === undefined) {
+                //put b at end
+                return -1;
+              }
+              return a.params.position - b.params.position
+            });
             this.list.refresh();
           }
         }.observes(

@@ -528,8 +528,8 @@ SDL.ABSAppModel = Em.Object.extend(
         		  commandID: request.params.cmdID,
         		  name: request.params.menuParams.menuName,
         		  parent: parentID,
-        		  position: request.params.menuParams.position ?
-        		  request.params.menuParams.position : 0,
+        		  position: request.params.menuParams.position !== undefined ?
+        		  request.params.menuParams.position : 1000,
         		  isTemplate:request.params.cmdIcon ?
         		  request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
         		  : null,
@@ -635,8 +635,8 @@ SDL.ABSAppModel = Em.Object.extend(
         		  name: request.params.menuParams.menuName ?
         		    request.params.menuParams.menuName : '',
         		  parent: parentID,
-        		  position: request.params.menuParams.position ?
-        		    request.params.menuParams.position : 0,
+        		  position: request.params.menuParams.position !== undefined ?
+        		    request.params.menuParams.position : 1000,
         		  icon: request.params.menuIcon ? request.params.menuIcon.value : null
         		};
         		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
