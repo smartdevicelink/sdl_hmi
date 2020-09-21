@@ -1531,8 +1531,6 @@ FFW.UI = FFW.RPCObserver.create(
                 'method': 'UI.GetCapabilities'
               }
             };
-            JSONMessage.result.hmiCapabilities.steeringWheelLocation
-              = FLAGS.steeringWheelLocation;
             this.sendMessage(JSONMessage);
             break;
           }
