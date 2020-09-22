@@ -526,12 +526,15 @@ SDL.ABSAppModel = Em.Object.extend(
     	    if (commands.length <= 999) {
             var position = request.params.menuParams.position !== undefined ?
               request.params.menuParams.position : commands.length;
+            // Add 4 to the position so the items appear after the default
+            // exit options. Default exit options have a request id < 0.
+            if (request.id >= 0 && parentID === 'top') {
+              position = position + 4;
+            }
             var newItem = {
         		  commandID: request.params.cmdID,
         		  name: request.params.menuParams.menuName,
         		  parent: parentID,
-        		  position: request.params.menuParams.position !== undefined ?
-        		  request.params.menuParams.position : 1000,
         		  isTemplate:request.params.cmdIcon ?
         		  request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
         		  : null,
@@ -635,13 +638,17 @@ SDL.ABSAppModel = Em.Object.extend(
             this.commandsList[request.params.menuID] = [];
             var position = request.params.menuParams.position !== undefined ?
               request.params.menuParams.position : commands.length;
+            // Add 4 to the position so the items appear after the default
+            // exit options. Default exit options have a request id < 0.
+            if (request.id >= 0 && parentID === 'top') {
+              position = position + 4;
+            }
+
         		var newItem = {
         		  menuID: request.params.menuID,
         		  name: request.params.menuParams.menuName ?
         		    request.params.menuParams.menuName : '',
         		  parent: parentID,
-        		  position: request.params.menuParams.position !== undefined ?
-        		    request.params.menuParams.position : 1000,
         		  icon: request.params.menuIcon ? request.params.menuIcon.value : null
             };
             // Insert new item at calculated position
