@@ -524,7 +524,9 @@ SDL.ABSAppModel = Em.Object.extend(
       if (FFW.RPCHelper.isSuccessResultCode(result)) {
           // Magic number is limit of 1000 commands added on one menu
     	    if (commands.length <= 999) {
-        		commands[commands.length] = {
+            var position = request.params.menuParams.position !== undefined ?
+              request.params.menuParams.position : commands.length;
+            var newItem = {
         		  commandID: request.params.cmdID,
         		  name: request.params.menuParams.menuName,
         		  parent: parentID,
@@ -534,14 +536,15 @@ SDL.ABSAppModel = Em.Object.extend(
         		  request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
         		  : null,
         		  icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
-        		};
+            };
+            // Insert new item at calculated position
+            commands.splice(position, 0, newItem);
         		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
                     SDL.OptionsView.active) {
                         SDL.SDLController.buttonsSort(parentID, this.appID);
                         SDL.OptionsView.commands.refreshItems();
         		}
 
-    		    console.log(commands.length);
     		    if(request.params.cmdIcon) {
     	            var image = request.params.cmdIcon.value;
     		        var length=image.length;
@@ -629,8 +632,10 @@ SDL.ABSAppModel = Em.Object.extend(
         if(FFW.RPCHelper.isSuccessResultCode(result)) {
     	    // Magic number is limit of 1000 commands added on one menu
     	    if (commands.length <= 999) {
-        		this.commandsList[request.params.menuID] = [];
-        		commands[commands.length] = {
+            this.commandsList[request.params.menuID] = [];
+            var position = request.params.menuParams.position !== undefined ?
+              request.params.menuParams.position : commands.length;
+        		var newItem = {
         		  menuID: request.params.menuID,
         		  name: request.params.menuParams.menuName ?
         		    request.params.menuParams.menuName : '',
@@ -638,7 +643,9 @@ SDL.ABSAppModel = Em.Object.extend(
         		  position: request.params.menuParams.position !== undefined ?
         		    request.params.menuParams.position : 1000,
         		  icon: request.params.menuIcon ? request.params.menuIcon.value : null
-        		};
+            };
+            // Insert new item at calculated position
+            commands.splice(position, 0, newItem);
         		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
         		  SDL.OptionsView.active) {
         		    SDL.SDLController.buttonsSort(parentID, this.appID);
