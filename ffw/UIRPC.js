@@ -1879,8 +1879,6 @@ FFW.UI = FFW.RPCObserver.create(
      */
     onCommand: function(commandID, appID) {
       Em.Logger.log('FFW.UI.onCommand');
-      var allowedDepth = SDL.systemCapabilities.driverDistractionCapability.subMenuDepth-1;
-      var activeDepth = SDL.SDLController.model.get('currentMenuDepth')
       var JSONMessage = {
         'jsonrpc': '2.0',
         'method': 'UI.OnCommand',
@@ -2025,8 +2023,6 @@ FFW.UI = FFW.RPCObserver.create(
      */
     OnSystemContext: function(systemContextValue, appID, windowID) {
       Em.Logger.log('FFW.UI.OnSystemContext');
-      var allowedDepth = SDL.systemCapabilities.driverDistractionCapability.subMenuDepth-1;
-      var activeDepth = SDL.SDLController.model.get('currentMenuDepth')
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
