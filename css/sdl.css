@@ -99,7 +99,7 @@
 }
 
 .softButton .right_text {
-    padding-left: 5px !important;
+    padding-left: 50px;
 }
 
 .sdl-window .back-button {
@@ -1375,6 +1375,27 @@
     display: none;
 }
 
+#SubtleAlertPopUp.SubtleAlertPopUp {
+    opacity: 0;
+    left: 80px;
+    width: 640px;
+    height: 115px;
+    z-index: 5;
+    top: 60px;
+    -webkit-transition: opacity 1s ease-in-out;
+    background-color: black;
+    border: #A6A6A6 solid 2px;
+    border-radius: 6px;
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#SubtleAlertPopUp.SubtleAlertPopUp div {
+    position: static;
+}
+
 #AlertManeuverPopUp .applicationName, #AudioPassThruPopUp .applicationName, #AlertPopUp .applicationName {
     width: 380px;
     left: 10px;
@@ -1394,6 +1415,22 @@
     width: auto;
 }
 
+#SubtleAlertPopUp .subtleAlertPopUpImage {
+    max-width: 100px;
+    max-height: 100px;
+    margin: auto;
+    height: auto;
+    width: auto;
+}
+
+#SubtleAlertPopUp .subtleAlertPopUpImageContainer {
+    width: 20%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+}
+
 #AlertPopUp .progressIndicator {
     width: 50px;
     height: 50px;
@@ -1409,6 +1446,31 @@
     background: url(../images/home/controlButtons/vrImage.png) no-repeat;
     top: 45px;
     left: 25px;
+}
+
+#SubtleAlertPopUp .messages {
+    flex: 7;
+    width: 50%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#SubtleAlertPopUp .message1 {
+    font-size: 36px;
+    line-height: 40px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#SubtleAlertPopUp .message2 {
+    font-size: 23px;
+    line-height: 30px;
+    max-height: 60px;
+    overflow: hidden;
+    word-wrap: normal;
 }
 
 #AudioPassThruPopUp .message1, #AlertPopUp .message1 {
@@ -1452,14 +1514,31 @@
     display: block;
 }
 
+#SubtleAlertPopUp.SubtleAlertActive {
+    opacity: 1;
+    display: flex;
+}
+
 #baseNavigation .softButton, #AlertManeuverPopUp .softButton, #AudioPassThruPopUp .softButton, #AlertPopUp .softButton {
     border: 1px solid #393939;
     border-radius: 3px;
-    height: 42px;
-    line-height: 42px;
+    height: 50px;
+    line-height: 45px;
     text-align: center;
     float: left;
     margin: 10px;
+    position: relative;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#SubtleAlertPopUp .softButton {
+    border: 1px solid #393939;
+    border-radius: 3px;
+    height: 50px;
+    line-height: 45px;
+    text-align: center;
+    float: left;
     position: relative;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -1504,6 +1583,30 @@
     margin-left: 8px;
     top: 120px;
     width: 386px;
+}
+
+#SubtleAlertPopUp .subtleAlertSoftButtons {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#SubtleAlertPopUp .buttons {
+    width: 30%;
+    height: 100%;
+}
+
+#softButton0.oneSubtle {
+    width: 80%;
+}
+
+#softButton0.twoSubtle, #softButton1.twoSubtle {
+    width: 80%;
+    height: 52px;
+    margin: auto;
 }
 
 #AlertManeuverPopUp .one, #softButton0.one {
@@ -1806,13 +1909,6 @@
 
 #info_apps_list .webEngineAppRegistered {
     color: green
-}
-
-.InvisibleFrame {
-    position: absolute;
-    width: 0px;
-    height: 0px;
-    visibility: hidden;
 }
 
 #sdl_view_container {

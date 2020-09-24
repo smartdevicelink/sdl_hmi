@@ -310,11 +310,29 @@ SDL.RCModulesController = Em.Object.create({
         }
 
         var seatLocationNames = [];
+        var windowStatus = [];
+        const rightMostSeatIndex = SDL.VehicleModuleCoverageController.getVehicleMaxIndex(vehicleRepresentation, 'col');
+        const leftMostSeatIndex = 0;
+
         vehicleRepresentation.forEach(seat_location => {
           var location_name =
             SDL.VehicleModuleCoverageController.getLocationName(seat_location);
           seatLocationNames.push(location_name);
+
+          if (vehicleRepresentation[rightMostSeatIndex].col === seat_location.col || 
+              leftMostSeatIndex === seat_location.col) {
+            var location_window_status = {
+              "location": seat_location,
+              "state": {
+                "approximatePosition": 0,
+                "deviation": 0
+              }
+            };
+            windowStatus.push(location_window_status);
+          }
         });
+
+        SDL.SDLVehicleInfoModel.vehicleData.windowStatus = windowStatus;
 
         var self = this;
         var coverageSettings = SDL.VehicleModuleCoverageController.getCoverageSettings();

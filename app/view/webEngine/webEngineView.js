@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Ford Motor Company All rights reserved.
+ * Copyright (c) 2020, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -24,50 +24,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @name SDL.systemCapabilities
- * @desc System capabilities
- * @category Capability
- * @filesource capabilities/systemCapabilities.js
+ * @name SDL.WebEngineView
+ * @desc WebEngine view
+ * @category View
+ * @filesource app/view/webEngine/webEngineView.js
  * @version 1.0
  */
+SDL.WebEngineView = Em.ContainerView.create({
+      elementId: 'webEngineView',
 
-SDL.systemCapabilities = 
-{
-    videoStreamingCapability: {
-        preferredResolution: {
-            resolutionWidth: 800,
-            resolutionHeight: 380
-        },
-        maxBitrate: 2147483647,
-        supportedFormats: [
-            {
-                protocol:  "RAW",
-                codec: "H264"
-            },
-            {
-                protocol:  "RTP",
-                codec: "H264"
-            },
-            {
-                protocol:  "RTSP",
-                codec: "Theora"
-            },
-            {
-                protocol:  "RTMP",
-                codec: "VP8"
-            },
-            {
-                protocol:  "WEBM",
-                codec: "VP9"
-            }
-        ],
-        hapticSpatialDataSupported: true,
-        diagonalScreenSize: 8,
-        pixelPerInch: 96,
-        scale: 1
-    },
-    driverDistractionCapability: {
-        menuLength: 10,
-        subMenuDepth: 2
-    }
-}
+      classNameBindings: [
+        'SDL.States.webViewApp.active:active_state:inactive_state'
+      ],
+
+      childViews: [
+        'TemplateAppTitleLabel'
+      ],
+
+      isExitButtonVisible : true,
+
+      TemplateAppTitleLabel : SDL.Label.extend({
+        elementId: 'template_title_label',
+        contentBinding: 'getText',
+        getText: function() {
+          if (SDL.SDLController.model) {
+            return SDL.SDLController.model.appName + ' / ' +
+            SDL.SDLController.model.templateConfiguration.template;
+          }
+        }.property(
+          'SDL.SDLController.model.templateConfiguration.template',
+          'SDL.SDLController.model.appName'
+        )
+      })
+});

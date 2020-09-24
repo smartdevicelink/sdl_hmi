@@ -62,6 +62,11 @@ SDL.RModel = SDL.SDLModel.extend({
   webApplicationFramesMap: {},
 
   /**
+   * Map of app id and corresponding policy app ids
+   */
+  appIDtoPolicyAppIDMapping: {},
+
+  /**
    * Current drivers device flag
    *
    * @param {Object}
