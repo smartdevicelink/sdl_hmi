@@ -178,7 +178,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       var self = this;
       this.timer = setTimeout( function() {
           self.set( 'activate', false );
-          this.set('endTime', null);
+          self.set('endTime', null);
           FFW.Navigation.sendNavigationResult(
             SDL.SDLModel.data.resultCode.SUCCESS,
             message.id,
