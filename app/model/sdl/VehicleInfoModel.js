@@ -177,7 +177,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'fuelLevel': 0.2E0,
       'fuelLevel_State': 'UNKNOWN',
       'instantFuelConsumption': 2.2E0,
-      'externalTemperature': null,
+      'externalTemperature': 20.5E0,
       'vin': '52-452-52-752',
       'turnSignal': 'OFF',
       'prndl': 'PARK',
@@ -492,14 +492,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           continue;
         }
 
-        if (key === 'externalTemperature') {
-          subscribeVIData[key] = {
-            dataType: vehicleDataType,
-            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
-          };
-          continue;
-        }
-
         if (is_user_allowed_code) {
           SDL.SDLModel.subscribedData[key] = true;
         }
@@ -547,14 +539,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           subscribeVIData[key] = {
             dataType: vehicleDataType,
             resultCode: 'DATA_NOT_SUBSCRIBED'
-          };
-          continue;
-        }
-
-        if (key === 'externalTemperature') {
-          subscribeVIData[key] = {
-            dataType: vehicleDataType,
-            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
           };
           continue;
         }
