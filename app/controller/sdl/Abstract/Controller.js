@@ -177,7 +177,8 @@ SDL.SDLController = Em.Object.extend(
         SDL.SDLModel.data.toggleProperty('VRActive');
       }
       if (element.commandID === -2) { //Magic number if predefined VR command USER_EXIT
-        this.userExitAction(element.appID);
+        var that = this;
+        setTimeout( function() { that.userExitAction(element.appID); }, 50);
       } else {
         FFW.VR.onCommand(element.commandID, element.appID, element.grammarID);
       }
