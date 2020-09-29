@@ -565,6 +565,10 @@ SDL.ABSAppModel = Em.Object.extend(
               SDL.SDLModel.validateImages(request.id, callback, [image]);
               return;
             }
+
+            if (request.id >= 0) {
+              FFW.UI.sendUIResult(result, request.id, request.method);
+            }
     	    } else {
         		FFW.UI.sendError(
         		  result, request.id, request.method,
