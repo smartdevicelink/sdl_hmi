@@ -173,14 +173,6 @@ FFW.TTS = FFW.RPCObserver.create(
               'TTS in progress. Rejected.'
             );
           } else {
-            if (this.requestId) {
-              // playTone does not set TTSPopUp.active
-              FFW.TTS.sendError(
-                SDL.SDLModel.data.resultCode.ABORTED, this.requestId, 'TTS.Speak',
-                'TTS Speak request aborted'
-              );
-            }
-
             this.requestId = request.id;
             SDL.SDLModel.onPrompt(
               request.params.ttsChunks, request.params.appID
