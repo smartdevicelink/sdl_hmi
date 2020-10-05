@@ -370,52 +370,41 @@ SDL.RController = SDL.SDLController.extend(
           )
         );
       }
-
-      let model = SDL.SDLController.getApplicationModel(params.appID);
-      var exitCommand = {
-        'id': -10,
-        'params': {
-          'menuParams': {
-            'parentID': 0,
-            'menuName': 'Exit \'DRIVER_DISTRACTION_VIOLATION\'',
-            'position': 0
-          },
-
-         cmdID: -1
-        }
-      };
-      model.addCommand(exitCommand);
-
-      exitCommand = {
-        'id': -10,
-        'params': {
-          'menuParams': {
-            'parentID': 0,
-            'menuName': 'Exit \'USER_EXIT\'',
-            'position': 0
-          },
-
-         cmdID: -2
-        }
-      };
-      model.addCommand(exitCommand);
-
-      exitCommand = {
-        'id': -10,
-        'params': {
-          'menuParams': {
-            'parentID': 0,
-            'menuName': 'Exit \'UNAUTHORIZED_TRANSPORT_REGISTRATION\'',
-            'position': 0
-          },
-
-         cmdID: -3
-        }
-      };
-      model.addCommand(exitCommand);
-
-      if (isWebEngineApp) {
-        exitCommand = {
+      var exitCommands = [
+        {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'DRIVER_DISTRACTION_VIOLATION\'',
+              'position': 0
+            },
+            cmdID: SDL.SDLModel.data.exitCommandsEnum.DRIVER_DISTRACTION_VIOLATION
+          }
+        },
+        {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'USER_EXIT\'',
+              'position': 0
+            },
+            cmdID: SDL.SDLModel.data.exitCommandsEnum.USER_EXIT
+          }
+        },
+        {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'UNAUTHORIZED_TRANSPORT_REGISTRATION\'',
+              'position': 0
+            },
+            cmdID: SDL.SDLModel.data.exitCommandsEnum.UNAUTHORIZED_TRANSPORT_REGISTRATION
+          }
+        },
+        {
           'id': -10,
           'params': {
             'menuParams': {
@@ -424,11 +413,26 @@ SDL.RController = SDL.SDLController.extend(
               'position': 0
             },
 
-           cmdID: -4
+           cmdID: SDL.SDLModel.data.exitCommandsEnum.RESOURCE_CONSTRAINT
           }
-        };
-        model.addCommand(exitCommand);
-      }
+        },
+        {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'CLOSE_ClOUD_CONNECTION\'',
+              'position': 0
+            },
+            cmdID: SDL.SDLModel.data.exitCommandsEnum.CLOSE_CLOUD_CONNECTION
+          }
+        }
+      ];
+
+      let model = SDL.SDLController.getApplicationModel(params.appID);
+      exitCommands.forEach(command => {
+        model.addCommand(command)
+      });
 
       this.setInitalWindowTemplate(params, model);
     },
@@ -471,7 +475,7 @@ SDL.RController = SDL.SDLController.extend(
     onCommand: function(element) {
       if (element.commandID < 0) {
         switch (element.commandID) {
-          case -1:
+          case SDL.SDLModel.data.exitCommandsEnum.DRIVER_DISTRACTION_VIOLATION:
           {
             FFW.BasicCommunication.ExitApplication(
               SDL.SDLController.model.appID,
@@ -479,7 +483,7 @@ SDL.RController = SDL.SDLController.extend(
             );
             break;
           }
-          case -2:
+          case SDL.SDLModel.data.exitCommandsEnum.USER_EXIT:
           {
             FFW.BasicCommunication.ExitApplication(
               SDL.SDLController.model.appID,
@@ -487,7 +491,7 @@ SDL.RController = SDL.SDLController.extend(
             );
             break;
           }
-          case -3:
+          case SDL.SDLModel.data.exitCommandsEnum.UNAUTHORIZED_TRANSPORT_REGISTRATION:
           {
             FFW.BasicCommunication.ExitApplication(
               SDL.SDLController.model.appID,
@@ -495,11 +499,19 @@ SDL.RController = SDL.SDLController.extend(
             );
             break;
           }
-          case -4:
+          case SDL.SDLModel.data.exitCommandsEnum.RESOURCE_CONSTRAINT:
           {
             FFW.BasicCommunication.ExitApplication(
               SDL.SDLController.model.appID,
               'RESOURCE_CONSTRAINT'
+            );
+            break;
+          }
+          case SDL.SDLModel.data.exitCommandsEnum.CLOSE_CLOUD_CONNECTION:
+          {
+            FFW.BasicCommunication.ExitApplication(
+              SDL.SDLController.model.appID,
+              'CLOSE_CLOUD_CONNECTION'
             );
             break;
           }

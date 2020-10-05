@@ -1527,6 +1527,17 @@ SDL.SDLModelData = Em.Object.create(
           levelspan: 1
         }
       ]
+    },
+
+    /**
+     * Enum for media Player Indicator
+     */
+    exitCommandsEnum: {
+      'DRIVER_DISTRACTION_VIOLATION': -1,
+      'USER_EXIT': -2,
+      'UNAUTHORIZED_TRANSPORT_REGISTRATION': -3,
+      'RESOURCE_CONSTRAINT': -4,
+      'CLOSE_CLOUD_CONNECTION': -5
     }
   }
 );
