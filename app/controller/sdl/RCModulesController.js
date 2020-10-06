@@ -769,7 +769,7 @@ SDL.RCModulesController = Em.Object.create({
             {
                 if (data.params.moduleData.climateControlData) {
                     var currentClimateState =
-                      this.climateModels[location_name].getClimateControlData().climateEnable;
+                      this.climateModels[location_name].generateClimateControlData().climateEnable;
                     var requestedClimateState =
                       data.params.moduleData.climateControlData.climateEnable;
                     if(!currentClimateState) {
