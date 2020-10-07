@@ -179,7 +179,7 @@ button.next-app {
     background: url(../images/common/button.png) repeat;
     border-radius: 3px;
     border: 1px solid #393939;
-} 
+}
 
 button.next-home .ico{
     position: relative;
@@ -289,8 +289,8 @@ button.next-home {
     transform: rotate(90deg);
 }
 
-.WidgetGlider.expand {    
-    opacity: 1;    
+.WidgetGlider.expand {
+    opacity: 1;
 }
 
 #add-window .text1 {
@@ -1560,13 +1560,12 @@ margin-top: 90px;
 
 #vehicle_emulation_view .option_vehicle2x3 {
     position: absolute;
-    top: 110px;
-    right: 260px;
-    width: 322px;
-    height: 154px;
-    transform: rotate(-90deg);
-    background: url(../images/home/vehicle__2x3.jpg) no-repeat;
-    background-size: contain;
+    top: 26px;
+    right: 343px;
+    width: 154px;
+    height: 322px;
+    background: url(../images/home/vehicle__2x3.jpg);
+    background-size: cover;
     border-width: 5px;
     border-style: solid;
     border-color: gray;
@@ -1574,12 +1573,11 @@ margin-top: 90px;
 
 #vehicle_emulation_view .option_vehicle3x3 {
     position: absolute;
-    top: 110px;
-    right: 70px;
-    width: 322px;
-    height: 154px;
-    transform: rotate(90deg);
-    background: url(../images/home/vehicle__3x3.jpg) no-repeat;
+    top: 26px;
+    right: 150px;
+    width: 154px;
+    height: 322px;
+    background: url(../images/home/vehicle__3x3.jpg);
     background-size: cover;
     border-width: 5px;
     border-style: solid;
@@ -2292,7 +2290,7 @@ to {
 .widgetTemplate.btn_with_grp .button.softButton_1 {
     top: 70%;
     left: 47%;
-    
+
 }
 
 .widgetTemplate.btn_with_grp .button.softButton_2 {
