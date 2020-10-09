@@ -529,7 +529,7 @@ SDL.ABSAppModel = Em.Object.extend(
             // Add 4 to the position so the items appear after the default
             // exit options. Default exit options have a request id < 0.
             if (request.id >= 0 && parentID === 'top') {
-              position = position + 4;
+              position += 5; // for exit application commands
             }
             var newItem = {
         		  commandID: request.params.cmdID,
@@ -641,7 +641,7 @@ SDL.ABSAppModel = Em.Object.extend(
             // Add 4 to the position so the items appear after the default
             // exit options. Default exit options have a request id < 0.
             if (request.id >= 0 && parentID === 'top') {
-              position = position + 4;
+              position += 5; // for exit application commands
             }
 
         		var newItem = {
