@@ -342,8 +342,12 @@ SDL.SDLController = Em.Object.extend(
       for (var i = 0; i < SDL.SDLModel.data.registeredComponents.length; i++) {
         if (SDL.SDLModel.data.registeredComponents[i].type == component) {
           SDL.SDLModel.data.set('registeredComponents.' + i + '.state', true);
-          return;
+          break;
         }
+      }
+
+      if (this.areAllComponentsReady()) {
+        FFW.BasicCommunication.onReady();
       }
     },
     /**
@@ -465,19 +469,19 @@ SDL.SDLController = Em.Object.extend(
       );
     },
     /**
-     * Notify SDLCore that HMI is ready and all components are registered
+     * Checks whether HMI is ready and all components are registered
      *
-     * @type {String}
+     * @return {Boolean}
      */
-    componentsReadiness: function(component) {
+    areAllComponentsReady: function() {
       for (var i = 0; i < SDL.SDLModel.data.registeredComponents.length; i++) {
         if (FLAGS[SDL.SDLModel.data.registeredComponents[i].type] !=
           SDL.SDLModel.data.registeredComponents[i].state) {
-          return;
+          return false;
         }
       }
-      FFW.BasicCommunication.onReady();
-    }.observes('SDL.SDLModel.data.registeredComponents.@each.state'),
+      return true;
+    },
     /**
      * Show VrHelpItems popup with necessary params
      * if VRPopUp is active - show data from Global Properties
