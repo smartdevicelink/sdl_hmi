@@ -851,6 +851,24 @@ FFW.UI = FFW.RPCObserver.create(
                       'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
+                    },
+                    {
+                      'name': 'subtleAlertText1',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'subtleAlertText2',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'subtleAlertSoftButtonText',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
                     }
                   ],
                   'imageFields': [
@@ -1000,6 +1018,18 @@ FFW.UI = FFW.RPCObserver.create(
                     },
                     {
                       'name': 'alertIcon',
+                      'imageTypeSupported': [
+                        'GRAPHIC_BMP',
+                        'GRAPHIC_JPEG',
+                        'GRAPHIC_PNG'
+                      ],
+                      'imageResolution': {
+                        'resolutionWidth': 105,
+                        'resolutionHeight': 65
+                      }
+                    },
+                    {
+                      'name': 'subtleAlertIcon',
                       'imageTypeSupported': [
                         'GRAPHIC_BMP',
                         'GRAPHIC_JPEG',
