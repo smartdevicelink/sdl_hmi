@@ -204,6 +204,11 @@ SDL.MediaCDPlayer = Em.Object.extend({
         this.prevTrack();
       }
 
+      if(!FFW.CAN) {
+        Em.Logger.warn("CAN module is not available. Notification won't be sent");
+        return;
+      }
+
       var self = this,
         media = self.data.get('selectedItem');
 
@@ -221,13 +226,16 @@ SDL.MediaCDPlayer = Em.Object.extend({
         'action': 'PREV'
       };
 
-      if(FFW.CAN) {
-        FFW.CAN.OnPlayerDetails(params);
-      }
+      FFW.CAN.OnPlayerDetails(params);
     },
 
     playTrackPress: function() {
       this.play();
+
+      if(!FFW.CAN) {
+        Em.Logger.warn("CAN module is not available. Notification won't be sent");
+        return;
+      }
 
       var self = this,
         media = self.data.get('selectedItem');
@@ -246,13 +254,16 @@ SDL.MediaCDPlayer = Em.Object.extend({
         'action': self.isPlaying ? 'PLAY' : 'PAUSE'
       };
 
-      if(FFW.CAN) {
-        FFW.CAN.OnPlayerDetails(params);
-      }
+      FFW.CAN.OnPlayerDetails(params);
     },
 
     nextTrackPress: function() {
       this.nextTrack();
+
+      if(!FFW.CAN) {
+        Em.Logger.warn("CAN module is not available. Notification won't be sent");
+        return;
+      }
 
       var self = this,
         media = self.data.get('selectedItem');
@@ -271,9 +282,7 @@ SDL.MediaCDPlayer = Em.Object.extend({
         'action': 'NEXT'
       };
 
-      if(FFW.CAN) {
-        FFW.CAN.OnPlayerDetails(params);
-      }
+      FFW.CAN.OnPlayerDetails(params);
     },
 
     shufflePress: function() {
