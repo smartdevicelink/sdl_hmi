@@ -51,6 +51,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     content1: 'Title',
     content2: 'Text',
     activate: false,
+    endTime: null,
     timer: null,
     timeout: 5000,
     alertManeuerRequestId: 0,

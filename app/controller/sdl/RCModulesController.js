@@ -310,11 +310,29 @@ SDL.RCModulesController = Em.Object.create({
         }
 
         var seatLocationNames = [];
+        var windowStatus = [];
+        const rightMostSeatIndex = SDL.VehicleModuleCoverageController.getVehicleMaxIndex(vehicleRepresentation, 'col');
+        const leftMostSeatIndex = 0;
+
         vehicleRepresentation.forEach(seat_location => {
           var location_name =
             SDL.VehicleModuleCoverageController.getLocationName(seat_location);
           seatLocationNames.push(location_name);
+
+          if (vehicleRepresentation[rightMostSeatIndex].col === seat_location.col || 
+              leftMostSeatIndex === seat_location.col) {
+            var location_window_status = {
+              "location": seat_location,
+              "state": {
+                "approximatePosition": 0,
+                "deviation": 0
+              }
+            };
+            windowStatus.push(location_window_status);
+          }
         });
+
+        SDL.SDLVehicleInfoModel.vehicleData.windowStatus = windowStatus;
 
         var self = this;
         var coverageSettings = SDL.VehicleModuleCoverageController.getCoverageSettings();
@@ -354,6 +372,7 @@ SDL.RCModulesController = Em.Object.create({
               break;
             }
             case 'SEAT': {
+              let seatUUIDs = [];
               module_coverage.forEach(module_service_area => {
                 var location_name = SDL.VehicleModuleCoverageController.getLocationName(module_service_area);
                 self.set('seatModels.' + location_name, SDL.SeatModel.create({
@@ -361,7 +380,9 @@ SDL.RCModulesController = Em.Object.create({
                   UUID: this.moduleUUIDMapping[module_type][location_name]}
                 ));
                 self.seatModels[location_name].generateSeatCapabilities(module_service_area);
+                seatUUIDs.push(this.moduleUUIDMapping[module_type][location_name]);
               });
+              SDL.SeatView.id.seatModuleUUID.set('content', seatUUIDs);
               break;
             }
             case 'AUDIO': {
@@ -644,12 +665,13 @@ SDL.RCModulesController = Em.Object.create({
     updateCurrentModels: function(location_name) {
         this.set('currentClimateModel', this.getCoveringModuleModel('CLIMATE', location_name));
         this.set('currentAudioModel', this.getCoveringModuleModel('AUDIO', location_name));
-        this.set('currentSeatModel', this.getCoveringModuleModel('SEAT', location_name));
         this.set('currentRadioModel', this.getCoveringModuleModel('RADIO', location_name));
         this.set('currentHMISettingsModel', this.getCoveringModuleModel('HMI_SETTINGS', location_name));
         this.set('currentLightModel', this.getCoveringModuleModel('LIGHT', location_name));
 
-        this.currentSeatModel.update();
+        SDL.SeatView.id.seatModuleUUID.set('value', this.moduleUUIDMapping['SEAT'][location_name]);
+        SDL.SeatView.id.seatModuleUUID.trigger('change');
+
         this.currentRadioModel.update();
         this.currentAudioModel.update();
         this.currentHMISettingsModel.update();
@@ -751,7 +773,7 @@ SDL.RCModulesController = Em.Object.create({
             {
                 if (data.params.moduleData.climateControlData) {
                     var currentClimateState =
-                      this.climateModels[location_name].getClimateControlData().climateEnable;
+                      this.climateModels[location_name].generateClimateControlData().climateEnable;
                     var requestedClimateState =
                       data.params.moduleData.climateControlData.climateEnable;
                     if(!currentClimateState) {

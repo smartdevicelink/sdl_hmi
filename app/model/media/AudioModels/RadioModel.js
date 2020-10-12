@@ -1192,19 +1192,18 @@ SDL.RadioModel = Em.Object.extend({
         this.setFrequencyInteger(parseInt(data));
       }
       if (this.radioControlStruct.band === 'XM') {
-        this.setFrequencyInteger(parseInt(
-          (function(value){
+        var getBand = function(value, stations){
             var kArray = [], vArray = [];
-            for (key in this.xmStations) {
+            for (key in stations) {
               kArray.push(key);
-              vArray.push(this.xmStations[key]);
+              vArray.push(stations[key]);
             }
 
             var vIndex = vArray.indexOf(value);
 
             return kArray[vIndex];
-          })(data)
-        ));
+        };
+        this.setFrequencyInteger(parseInt(getBand(data,this.xmStations)));
       }
 
       this.updateCurrentFrequencyInfo();

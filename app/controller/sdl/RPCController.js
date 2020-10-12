@@ -73,31 +73,31 @@ SDL.RPCController = Em.Object.create(
     capabilitiesCheck: function(key, value) {
       if (key == 'imageType' && value == 'STATIC') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+          code: SDL.SDLModel.data.resultCode['WARNINGS'],
           type: value
         };
       }
       if (key == 'type' && value == 'PRE_RECORDED') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+          code: SDL.SDLModel.data.resultCode['WARNINGS'],
           type: value
         };
       }
       if (key == 'type' && value == 'SAPI_PHONEMES') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+          code: SDL.SDLModel.data.resultCode['WARNINGS'],
           type: value
         };
       }
       if (key == 'type' && value == 'LHPLUS_PHONEMES') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+          code: SDL.SDLModel.data.resultCode['WARNINGS'],
           type: value
         };
       }
       if (key == 'type' && value == 'SILENCE') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+          code: SDL.SDLModel.data.resultCode['WARNINGS'],
           type: value
         };
       }
@@ -1269,6 +1269,60 @@ SDL.RPCController = Em.Object.create(
             this.resultStruct = {
               'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
               'resultMessage': 'Parameter \'appID\' does not exists!'
+            };
+            return this.resultStruct;
+          }
+          if (typeof params.appID != 'number') {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Wrong type of parameter \'appID\'!'
+            };
+            return this.resultStruct;
+          }
+          this.resultStruct = {
+            'resultCode': SDL.SDLModel.data.resultCode.SUCCESS
+          };
+          return this.resultStruct;
+        },
+        /**
+         * Validate method for request UI.SubtleAlert
+         *
+         * @param {Object}
+         *            params
+         */
+        SubtleAlert: function(params) {
+          if (params == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'params\' does not exist!'
+            };
+            return this.resultStruct;
+          }
+          if (params.alertStrings == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'alertStrings\' does not exist!'
+            };
+            return this.resultStruct;
+          }
+          if (params.alertStrings.length < 0) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Wrong type of parameter \'alertStrings\'!'
+            };
+            return this.resultStruct;
+          }
+          if ('duration' in params && typeof params.duration != 'number') {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Wrong type of parameter \'duration\'!'
+            };
+            return this.resultStruct;
+          }
+          if (params.appID == null) {
+            this.resultStruct = {
+              'resultCode': SDL.SDLModel.data.resultCode.INVALID_DATA,
+              'resultMessage': 'Parameter \'appID\' does not exist!'
             };
             return this.resultStruct;
           }

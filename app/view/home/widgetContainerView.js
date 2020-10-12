@@ -234,7 +234,10 @@ SDL.WidgetContainerView = Em.ContainerView.extend({
 
     if('softButtons' in widgetContent) {
       var length = widgetContent.softButtons.length;
-      parentToPush.setTemplate('BUTTONS_WITH_GRAPHIC');
+      if (length > 0) {
+        parentToPush.setTemplate('BUTTONS_WITH_GRAPHIC');
+      }
+
       for(var i = 0; i < length; ++i) {
         var softButton = SDL.Button.create(SDL.PresetEventsCustom,{
           classNames: ['button', 'softButton', 'softButton_' + (i + 1)],
