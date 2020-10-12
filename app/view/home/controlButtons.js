@@ -626,16 +626,16 @@ getCurrentDisplayModeClass: function() {
                 classNames: 'OkBtn',
                 classNameBindings: 'SDL.States.media.active:media_button',
                 time: 0,
-                presetName: 'PLAY_PAUSE',
+                getPresetName: function() {
+                  return SDL.States.media.active ? 'PLAY_PAUSE' : 'OK';
+                },
                 actionDown: function() {
                   this._super();
-                  const preset_actual_name = SDL.States.media.active ? this.presetName : 'OK';
-                  SDL.SDLController.onSoftButtonOkActionDown(preset_actual_name);
+                  SDL.SDLController.onSoftButtonOkActionDown(this.getPresetName());
                 },
                 actionUp: function() {
                   this._super();
-                  const preset_actual_name = SDL.States.media.active ? this.presetName : 'OK';
-                  SDL.SDLController.onSoftButtonOkActionUp(preset_actual_name);
+                  SDL.SDLController.onSoftButtonOkActionUp(this.getPresetName());
                 }
               }
             )
