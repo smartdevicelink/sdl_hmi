@@ -131,6 +131,12 @@ SDL.BaseNavigationView = Em.ContainerView.create(
         }
       }
     },
+    updateOptionsButton: function() {
+      if (SDL.SDLController.model) {
+        var menuTitle = SDL.SDLController.getApplicationModel(SDL.SDLController.model.appID).globalProperties.menuTitle
+        this.get('optionsBtn').set('text', menuTitle && menuTitle.length ? menuTitle : 'Options')
+      }
+    }.observes('SDL.SDLController.model.globalProperties.menuTitle'),
     mainField1: SDL.Label.extend(
       {
         classNames: 'mainField1 mainField',

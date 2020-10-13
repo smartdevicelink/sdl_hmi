@@ -716,6 +716,11 @@ button.next-home {
     right: 10px;
 }
 
+.arrow-ico-short {
+    position: absolute;
+    right: 0px;
+}
+
 .right_text {
     float: right;
     margin-right: 5px;

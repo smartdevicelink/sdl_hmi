@@ -868,7 +868,7 @@ SDL.SDLModelData = Em.Object.create(
                 {
                   "name": "menuTitle",
                   "characterSet": "UTF_8",
-                  "width": 500,
+                  "width": 10,
                   "rows": 1
                 },
                 {
