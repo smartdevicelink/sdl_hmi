@@ -1070,8 +1070,9 @@ SDL.SDLController = Em.Object.extend(
         }
       ];
 
+      let model = SDL.SDLController.getApplicationModel(params.appID);
       exitCommands.forEach(command => {
-        SDL.SDLController.getApplicationModel(command);
+        model.addCommand(command);
       });
     },
     /**
