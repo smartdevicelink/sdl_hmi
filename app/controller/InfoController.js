@@ -325,15 +325,23 @@ SDL.InfoController = Em.Object.create(
 
       if (policyAppID in SDL.SDLModel.webApplicationFramesMap) {
         let frame = SDL.SDLModel.webApplicationFramesMap[policyAppID];
-        document.body.removeChild(frame);
+        const web_engine_view = document.getElementById("webEngineView");
+        if (web_engine_view) {
+          web_engine_view.removeChild(frame);
+        }
       }
 
       const frame_name = `web_app_frame_${policyAppID}`;
       let web_app_frame =  document.createElement("iframe");
       web_app_frame.name = frame_name;
       web_app_frame.id = frame_name;
-      web_app_frame.className = "InvisibleFrame";
-      document.body.appendChild(web_app_frame);
+      web_app_frame.className = 'WebEngineFrame'; 
+      web_app_frame.hidden = false;
+
+      const web_engine_view = document.getElementById("webEngineView");
+      if (web_engine_view) {
+        web_engine_view.appendChild(web_app_frame);
+      }
 
       SDL.SDLModel.webApplicationFramesMap[policyAppID] = web_app_frame;
 
@@ -558,21 +566,6 @@ SDL.InfoController = Em.Object.create(
       if (SDL.SDLController.model) {
         SDL.SDLController.model.set('active', true);
       }
-      /**
-       * Go to SDL state
-       */
-      if (SDL.SDLController.model.appType) {
-        for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
-          if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
-              SDL.SDLController.model.appType[i] == 'PROJECTION') {
-            SDL.BaseNavigationView.update();
-            SDL.States.goToStates('navigationApp.baseNavigation');
-            return;
-          }
-        }
-      }
-      SDL.States.goToStates('info.nonMedia');
-      //SDL.States.goToStates('media.sdlmedia');
     }
   }
 );

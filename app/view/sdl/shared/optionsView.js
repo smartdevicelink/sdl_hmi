@@ -56,9 +56,23 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
     // Extend deactivate window
     deactivate: function() {
       if (SDL.SDLController.model) {
-        if (SDL.SDLController.model.get('currentSubMenuId') >= 0  && 
-        !SDL.SDLController.model.get('subMenuInitFromApp')) {
-          SDL.SDLController.onSubMenu('top');
+        var currentSubMenuID = SDL.SDLController.model.get('currentSubMenuId');
+        if (currentSubMenuID != 'top' &&
+          currentSubMenuID >= 0  && 
+          !SDL.SDLController.model.get('subMenuInitFromApp')) {
+          var commandsList = SDL.SDLController.model.get('commandsList');
+          var findParentID = (commands, menuID) => {
+            for (id in commands) {
+              var subMenuCommands = commands[id];
+              for (element of subMenuCommands) {
+                if (element.menuID === menuID) {
+                  return element.parent;
+                }
+              }
+            }
+            return 'top';
+          }
+          SDL.SDLController.onSubMenu(findParentID(commandsList, currentSubMenuID));
         } else {
           SDL.SDLController.onSubMenu('top');
           this._super();
@@ -90,19 +104,30 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
         refreshItems: function() {
           if (SDL.SDLController.model) {
             var commands = SDL.SDLController.model.get('currentCommandsList'),
+              allMenuItems = SDL.SDLController.model.get('commandsList'),
               i,
               len,
               template;
             this.items = [];
-            len = commands.length;
+            if (SDL.SDLModel.data.driverDistractionState) {
+              var ddMaxLength = SDL.systemCapabilities.driverDistractionCapability.menuLength;
+              len = (ddMaxLength > commands.length) ? commands.length : ddMaxLength;
+            } else {
+              len = commands.length;
+            }
             for (i = 0; i < len; i++) {
-              if (commands[i].menuID >= 0) {
+              var menuID = commands[i].menuID;
+              if (menuID && menuID >= 0) {
+                if (allMenuItems[menuID].length === 0) {
+                  // Notify mobile to update submenu
+                  FFW.UI.OnUpdateSubMenu(SDL.SDLController.model.appID, menuID);
+                }
                 template = 'arrow';
-              }else if(commands[i].isTemplate){
+              } else if (commands[i].isTemplate){
                 template = commands[i].isTemplate ? 
                 'rightTextOverLay' : 
                 'rightText';
-              }else {
+              } else {
                 template = commands[i].icon ? 'rightText' : 'text';
               }
               this.items.push(
@@ -112,7 +137,7 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                     templateName: template,
                     text: commands[i].name,
                     commandID: commands[i].commandID,
-                    menuID: commands[i].menuID,
+                    menuID: menuID,
                     icon: commands[i].icon,
                     target: 'SDL.SDLController',
                     action: 'onCommand',
@@ -121,11 +146,23 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                 }
               );
             }
+            if (commands.length !== len) {
+              this.items.push(
+                {
+                  type: SDL.Button,
+                  params: {
+                    templateName: "text",
+                    text: "Some Menu Items Are Hidden",
+                    onDown: false,
+                    disabled: true
+                  }
+                }
+              );
+            }
             this.list.refresh();
           }
         }.observes(
-          'SDL.SDLController.model.currentSubMenuId',
-          'SDL.SDLController.model.currentCommandsList.@each'
+          'SDL.SDLController.model.currentSubMenuId'
         )
       }
     )

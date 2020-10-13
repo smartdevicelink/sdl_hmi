@@ -104,6 +104,7 @@ SDL.AddWidgetPopUp = Em.ContainerView.create(
       toggleActivity: function() {
         this.toggleProperty('active');
         this.updateWidgetList();
+        SDL.SDLController.setWebEngineFramesActive(!this.active);
       }
     }
   );

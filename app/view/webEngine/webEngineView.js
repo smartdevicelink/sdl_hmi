@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019, Ford Motor Company All rights reserved.
+ * Copyright (c) 2020, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -24,28 +24,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @name SDL.ClimateController
- * @desc Climate Controller logic
- * @category Controller
- * @filesource app/controller/ClimateController.js
+ * @name SDL.WebEngineView
+ * @desc WebEngine view
+ * @category View
+ * @filesource app/view/webEngine/webEngineView.js
  * @version 1.0
  */
+SDL.WebEngineView = Em.ContainerView.create({
+      elementId: 'webEngineView',
 
-SDL.ClimateController = Em.Object.create(
-  {
-    modelBinding: 'SDL.RCModulesController.currentClimateModel',
-    getTemperatureStruct: function(type, value) {
-      var t = (type == 'CELSIUS' ? value : value * 9 / 5 + 32);
-      var result = {
-        unit: type,
-        value: parseFloat(t.toFixed(1))
-      }
-      return result;
-    },
-    extractTemperatureFromStruct: function(data) {
-      return (data.unit == 'CELSIUS'
-        ? data.value
-        : Math.round((data.value - 32) * 5 / 9));
-    }
-  }
-);
+      classNameBindings: [
+        'SDL.States.webViewApp.active:active_state:inactive_state'
+      ],
+
+      childViews: [
+        'TemplateAppTitleLabel'
+      ],
+
+      isExitButtonVisible : true,
+
+      TemplateAppTitleLabel : SDL.Label.extend({
+        elementId: 'template_title_label',
+        contentBinding: 'getText',
+        getText: function() {
+          if (SDL.SDLController.model) {
+            return SDL.SDLController.model.appName + ' / ' +
+            SDL.SDLController.model.templateConfiguration.template;
+          }
+        }.property(
+          'SDL.SDLController.model.templateConfiguration.template',
+          'SDL.SDLController.model.appName'
+        )
+      })
+});

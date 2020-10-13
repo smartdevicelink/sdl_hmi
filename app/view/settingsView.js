@@ -43,9 +43,14 @@ SDL.SettingsView = Em.ContainerView.create(
       'leftMenu',
       SDL.DeviceStateChangeView,
       SDL.PoliciesView,
+      SDL.RPCControlView,
       SDL.AppPermissionsListView,
       SDL.AppPermissionsView,
       SDL.DeviceConfigView,
+      SDL.RPCControlConfigView,
+      SDL.RPCWayPointControlConfigView,
+      SDL.RPCVehicleDataControlConfigView,
+      SDL.RPCGetIVDControlConfigView,
       SDL.StatisticsInfoView,
       SDL.SystemErrorView,
       SDL.ConnectionSettingsView,
@@ -84,7 +89,8 @@ SDL.SettingsView = Em.ContainerView.create(
               'policies',
               'HMISettings',
               'light',
-              'seat'
+              'seat',
+              'rpcControl'
             ],
             policies: SDL.Button.extend(
               {
@@ -97,6 +103,26 @@ SDL.SettingsView = Em.ContainerView.create(
                 text: 'Policies',
                 icon: 'images/settings/ico_settings.png',
                 action: 'turnOnPoliciesSettings',
+                target: 'SDL.SettingsController'
+              }
+            ),     
+            rpcControl: SDL.Button.extend(
+              {
+                isDisabled: function() {
+                  return !SDL.SDLModel.data.registeredApps.length;
+                }.property(
+                  'SDL.SDLModel.data.registeredApps.length'
+                ),
+                disabledBinding: 'isDisabled',
+                elementId: 'rpcControl_leftMenu',
+                goToState: 'rpccontrol',
+                classNames: 'menu-item lsp1_p',
+                classNameBindings: [
+                  'SDL.States.settings.rpccontrol.active:info_active'
+                ],
+                text: 'RPC Control',
+                icon: 'images/settings/ico_settings.png',
+                action: 'onState',
                 target: 'SDL.SettingsController'
               }
             ),
