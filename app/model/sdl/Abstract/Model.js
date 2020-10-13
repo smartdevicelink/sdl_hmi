@@ -1036,7 +1036,7 @@ SDL.SDLModel = Em.Object.extend({
   /**
    * @function validateImages
    * @description Checks if image exists by path provided in request data 
-   * @param requestID - request id, to which icons belong
+   * @param requestID - request id, to which images belong
    * @param callback - user callback after check
    * @param imageList - list of paths to check 
    */
