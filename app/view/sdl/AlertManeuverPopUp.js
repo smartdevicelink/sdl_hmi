@@ -97,8 +97,15 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      */
     softbuttons: Em.ContainerView.extend(
       {
-        elementId: 'alertManeuverSoftButtons',
-        classNames: 'alertManeuverSoftButtons'
+        childViews: [
+          'buttons'
+        ],
+        buttons: Em.ContainerView.extend(
+          {
+            elementId: 'alertManeuverSoftButtons',
+            classNames: 'alertManeuverSoftButtons'
+          }
+        )
       }
     ),
     /**
@@ -141,7 +148,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
 
       for (var i = 0; i < softButtons.length; i++) {
         let get_template_type = function(button_type) {
-          switch (softButtons[i].type) {
+          switch (button_type) {
             case "IMAGE":
               return "icon";
             case "BOTH":
@@ -150,13 +157,12 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
           return "text";
         }
 
-        this.get('softbuttons.childViews').pushObject(
+        this.get('softbuttons.buttons.childViews').pushObject(
           SDL.Button.create(
             SDL.PresetEventsCustom, {
               softButtonID: softButtons[i].softButtonID,
               icon: softButtons[i].image ? softButtons[i].image.value : '',
               text: softButtons[i].text,
-              groupName: 'AlertManeuverPopUp',
               classNames: 'list-item softButton ' + softButtonsClass,
               elementId: 'softButton' + i,
               templateName: get_template_type(softButtons[i].type),
@@ -167,7 +173,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
         );
       }
     },
-
     /**
      * Deactivate PopUp
      */
@@ -185,9 +190,8 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     },
 
     AlertManeuverActive: function(message) {
-      this.get('softbuttons.childViews').removeObjects(
-        this.get('softbuttons.childViews').filterProperty('softButtonID')
-      );
+      this.softbuttons.buttons.removeAllChildren();
+      this.softbuttons.buttons.rerender();
 
       this.addSoftButtons(message.params);
 
