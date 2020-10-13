@@ -177,7 +177,8 @@ SDL.SDLController = Em.Object.extend(
         SDL.SDLModel.data.toggleProperty('VRActive');
       }
       if (element.commandID === -2) { //Magic number if predefined VR command USER_EXIT
-        this.userExitAction(element.appID);
+        var that = this;
+        setTimeout( function() { that.userExitAction(element.appID); }, 50);
       } else {
         FFW.VR.onCommand(element.commandID, element.appID, element.grammarID);
       }
@@ -341,8 +342,12 @@ SDL.SDLController = Em.Object.extend(
       for (var i = 0; i < SDL.SDLModel.data.registeredComponents.length; i++) {
         if (SDL.SDLModel.data.registeredComponents[i].type == component) {
           SDL.SDLModel.data.set('registeredComponents.' + i + '.state', true);
-          return;
+          break;
         }
+      }
+
+      if (this.areAllComponentsReady()) {
+        FFW.BasicCommunication.onReady();
       }
     },
     /**
@@ -464,19 +469,19 @@ SDL.SDLController = Em.Object.extend(
       );
     },
     /**
-     * Notify SDLCore that HMI is ready and all components are registered
+     * Checks whether HMI is ready and all components are registered
      *
-     * @type {String}
+     * @return {Boolean}
      */
-    componentsReadiness: function(component) {
+    areAllComponentsReady: function() {
       for (var i = 0; i < SDL.SDLModel.data.registeredComponents.length; i++) {
         if (FLAGS[SDL.SDLModel.data.registeredComponents[i].type] !=
           SDL.SDLModel.data.registeredComponents[i].state) {
-          return;
+          return false;
         }
       }
-      FFW.BasicCommunication.onReady();
-    }.observes('SDL.SDLModel.data.registeredComponents.@each.state'),
+      return true;
+    },
     /**
      * Show VrHelpItems popup with necessary params
      * if VRPopUp is active - show data from Global Properties
@@ -582,6 +587,11 @@ SDL.SDLController = Em.Object.extend(
           SDL.AlertPopUp.deactivate();
           break;
         }
+        case 'AlertManeuverPopUp':
+        {
+          SDL.AlertManeuverPopUp.deactivate();
+          break;
+        }
         case 'SubtleAlertPopUp':
         {
           SDL.SubtleAlertPopUp.deactivate();
@@ -628,10 +638,17 @@ SDL.SDLController = Em.Object.extend(
           this.onActivateSDLApp(element);
           break;
         }
+        case 'AlertManeuverPopUp':
+        {
+          SDL.AlertManeuverPopUp.deactivate();
+          this.onActivateSDLApp(element);
+          break;
+        }
         case 'SubtleAlertPopUp':
         {
           SDL.SubtleAlertPopUp.deactivate();
           this.onActivateSDLApp(element);
+          break;
         }
         case 'ScrollableMessage':
         {
@@ -665,6 +682,17 @@ SDL.SDLController = Em.Object.extend(
           this.onResetTimeout(element.appID, 'UI.Alert');
           break;
         }
+        case 'AlertManeuverPopUp':
+        {
+          clearTimeout(SDL.AlertManeuverPopUp.timer);
+          SDL.AlertManeuverPopUp.timer = setTimeout(
+            function() {
+              SDL.AlertManeuverPopUp.deactivate();
+            }, SDL.AlertManeuverPopUp.timeout
+          );
+          this.onResetTimeout(element.appID, 'Navigation.AlertManeuver');
+          break;
+        }
         case 'SubtleAlertPopUp':
         {
           clearTimeout(SDL.SubtleAlertPopUp.timer);
@@ -674,6 +702,7 @@ SDL.SDLController = Em.Object.extend(
             }, SDL.SubtleAlertPopUp.timeout
           );
           this.onResetTimeout(element.appID, 'UI.SubtleAlert');
+          break;
         }
         case 'ScrollableMessage':
         {

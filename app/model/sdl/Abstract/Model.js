@@ -1504,6 +1504,12 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
       SDL.TTSPopUp.ActivateTTS(message, files, appID);
+    } else {
+      FFW.TTS.sendError(
+       SDL.SDLModel.data.resultCode.WARNINGS, this.requestId, 'TTS.Speak',
+       'No TTS Chunks provided in Speak request'
+      );
+      this.requestId = null;
     }
   },
 

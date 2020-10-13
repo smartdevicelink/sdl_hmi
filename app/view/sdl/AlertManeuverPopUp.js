@@ -53,6 +53,12 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     activate: false,
     endTime: null,
     timer: null,
+    timeout: 5000,
+    alertManeuerRequestId: 0,
+    /**
+     * @desc Defines whether icons paths verified successfully.
+     */
+    iconsAreValid: false,
     /**
      * Wagning image on Alert Maneuver PopUp
      */
@@ -95,8 +101,15 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      */
     softbuttons: Em.ContainerView.extend(
       {
-        elementId: 'alertManeuverSoftButtons',
-        classNames: 'alertManeuverSoftButtons'
+        childViews: [
+          'buttons'
+        ],
+        buttons: Em.ContainerView.extend(
+          {
+            elementId: 'alertManeuverSoftButtons',
+            classNames: 'alertManeuverSoftButtons'
+          }
+        )
       }
     ),
     /**
@@ -116,101 +129,102 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      * @param {Object} params
      */
     addSoftButtons: function(params) {
-      if (params) {
-        var softButtonsClass;
-        switch (params.length) {
-          case 1:
-            softButtonsClass = 'one';
-            break;
-          case 2:
-            softButtonsClass = 'two';
-            break;
-          case 3:
-            softButtonsClass = 'three';
-            break;
-          case 4:
-            softButtonsClass = 'four';
-            break;
-        }
-        for (var i = 0; i < params.length; i++) {
-          let get_template_type = function(button_type) {
-            switch (params[i].type) {
-              case "IMAGE":
-                return "icon";
-              case "BOTH":
-                return "rightText";
-            }
-            return "text";
-          }
-
-          this.get('softbuttons.childViews').pushObject(
-            SDL.Button.create(
-              SDL.PresetEventsCustom, {
-                softButtonID: params[i].softButtonID,
-                icon: params[i].image ? params[i].image.value : '',
-                text: params[i].text,
-                classNames: 'list-item softButton ' + softButtonsClass,
-                elementId: 'softButton' + i,
-                templateName: get_template_type(params[i].type),
-                systemAction: params[i].systemAction,
-                appID: params.appID
-              }
-            )
-          );
-        }
+      const softButtons = params.softButtons;
+      if (!softButtons) {
+        return;
       }
-    },
 
-    /**
-     * @desc Defines whether icons paths verified successfully.
-     */
-    iconsAreValid: false,
+      var softButtonsClass;
+      switch (softButtons.length) {
+        case 1:
+          softButtonsClass = 'one';
+          break;
+        case 2:
+          softButtonsClass = 'two';
+          break;
+        case 3:
+          softButtonsClass = 'three';
+          break;
+        case 4:
+          softButtonsClass = 'four';
+          break;
+      }
 
-    AlertManeuverActive: function(message) {
-      this.get('softbuttons.childViews').removeObjects(
-        this.get('softbuttons.childViews').filterProperty('softButtonID')
-      );
-
-      var params = message.params;
       var imageList = [];
-      if (params.softButtons) {
-          this.addSoftButtons( params.softButtons );
-          for(var i = 0; i < params.softButtons.length; i++) {
-            if(params.softButtons[i].image) {
-              imageList.push(params.softButtons[i].image.value);
-            }
+      for (var i = 0; i < softButtons.length; i++) {
+        let get_template_type = function(button_type) {
+          switch (button_type) {
+            case "IMAGE":
+              return "icon";
+            case "BOTH":
+              return "rightText";
           }
+          return "text";
+        }
+
+        if (softButtons[i].image) {
+          imageList.push(softButtons[i].image.value);
+        }
+
+        this.get('softbuttons.buttons.childViews').pushObject(
+          SDL.Button.create(
+            SDL.PresetEventsCustom, {
+              softButtonID: softButtons[i].softButtonID,
+              icon: softButtons[i].image ? softButtons[i].image.value : '',
+              text: softButtons[i].text,
+              classNames: 'list-item softButton ' + softButtonsClass,
+              elementId: 'softButton' + i,
+              templateName: get_template_type(softButtons[i].type),
+              systemAction: softButtons[i].systemAction,
+              appID: params.appID
+            }
+          )
+        );
       }
 
       var callback = function(failed) {
-        if(!failed) {
-          SDL.AlertManeuverPopUp.iconsAreValid = true;
-        }
+        SDL.AlertManeuverPopUp.iconsAreValid = !failed;
       }
 
-      SDL.SDLModel.validateImages(message.id, callback, imageList);
+      SDL.SDLModel.validateImages(params.appID, callback, imageList);
+    },
+    /**
+     * Deactivate PopUp
+     */
+    deactivate: function(message) {
+      if (SDL.TTSPopUp.active) {
+        SDL.TTSPopUp.DeactivateTTS();
+      }
 
-      this.set( 'activate', true );
-      this.set('endTime', Date.now() + 5000);
+      const resultCode = this.iconsAreValid ?
+        SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
+      const info = this.iconsAreValid ?
+        null : "Requested image(s) not found";
+
+      FFW.Navigation.sendNavigationResult(
+        resultCode,
+        this.alertManeuerRequestId,
+        'Navigation.AlertManeuver',
+        info
+      );
+      this.set('activate', false );
+      this.set('alertManeuerRequestId', 0);
+    },
+
+    AlertManeuverActive: function(message) {
+      this.softbuttons.buttons.removeAllChildren();
+      this.softbuttons.buttons.rerender();
+
+      this.set('iconsAreValid', true);
+      this.addSoftButtons(message.params);
+
+      this.set('activate', true );
+      this.set('alertManeuerRequestId', message.id);
 
       clearTimeout( this.timer );
-
-      var self = this;
-      this.timer = setTimeout( function() {
-        self.set( 'activate', false );
-        self.set('endTime', null);
-
-        var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
-        var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
-
-        FFW.Navigation.sendNavigationResult(
-          SDL.AlertManeuverPopUp.iconsAreValid ? SUCCESS : WARNINGS,
-          message.id,
-          message.method,
-          SDL.AlertManeuverPopUp.iconsAreValid ? null : "Requested image(s) not found"
-        );
-        return;
-      }, 5000 );
+      this.timer = setTimeout( () => {
+        this.deactivate(message);
+      }, this.timeout);
     }
   }
 );
