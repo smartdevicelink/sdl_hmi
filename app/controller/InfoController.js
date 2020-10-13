@@ -158,38 +158,51 @@ SDL.InfoController = Em.Object.create(
     setAppProperties: function(old_properties, new_properties) {
       this.set('editedAppPropertiesToApply', new_properties);
 
-      if ((!'enabled' in old_properties || old_properties['enabled'] == false) &&
-          new_properties['enabled'] === true) {
-        let that = this;
-        const policyAppID = new_properties['policyAppID'];
+      let is_app_installation_required = function() {
+        const old_app_id = old_properties['policyAppID'];
+        const new_app_id = new_properties['policyAppID'];
 
-        let get_app_title = function() {
-          let title = policyAppID;
-          if ('nicknames' in new_properties && new_properties['nicknames'].length > 0) {
-            title = new_properties['nicknames'][0];
-          }
-          return title;
-        };
+        const old_enabled_state = ('enabled' in old_properties) ? old_properties['enabled'] : false;
+        const new_enabled_state = ('enabled' in new_properties) ? new_properties['enabled'] : false;
 
-        let on_installation_failed = function() {
-          SDL.PopUp.create().appendTo('body').popupActivate(
-            `Can't install "${get_app_title()}" app from applications store...`, null, false
-          );
-          SDL.WebAppSettingsView.editorAppSettings = old_properties;
-          SDL.WebAppSettingsView.showProperties();
-          FFW.RPCSimpleClient.disconnect();
-        };
+        if (old_app_id != new_app_id) {
+          return new_enabled_state;
+        }
 
-        that.downloadAppBundle(policyAppID)
-          .then( function() {
-            Em.Logger.log(`App store: app installed successfully`);
-            FFW.BasicCommunication.SetAppProperties(new_properties);
-            FFW.RPCSimpleClient.disconnect();
-          }, on_installation_failed);
-          return;
+        return new_enabled_state && !old_enabled_state;
       }
 
-      FFW.BasicCommunication.SetAppProperties(new_properties);
+      if (!is_app_installation_required()) {
+        FFW.BasicCommunication.SetAppProperties(new_properties);
+        return;
+      }
+
+      let that = this;
+      const policyAppID = new_properties['policyAppID'];
+
+      let get_app_title = function() {
+        let title = policyAppID;
+        if ('nicknames' in new_properties && new_properties['nicknames'].length > 0) {
+          title = new_properties['nicknames'][0];
+        }
+        return title;
+      };
+
+      let on_installation_failed = function() {
+        SDL.PopUp.create().appendTo('body').popupActivate(
+          `Can't install "${get_app_title()}" app from applications store...`, null, false
+        );
+        SDL.WebAppSettingsView.editorAppSettings = old_properties;
+        SDL.WebAppSettingsView.showProperties();
+        FFW.RPCSimpleClient.disconnect();
+      };
+
+      that.downloadAppBundle(policyAppID)
+        .then( function() {
+          Em.Logger.log(`App store: app installed successfully`);
+          FFW.BasicCommunication.SetAppProperties(new_properties);
+          FFW.RPCSimpleClient.disconnect();
+        }, on_installation_failed);
     },
 
     /**
@@ -408,9 +421,9 @@ SDL.InfoController = Em.Object.create(
      */
     downloadAppBundle: function(policyAppID) {
       return new Promise( (resolve, reject) => {
-        if (!policyAppID in SDL.InfoController.appPackageDownloadUrlsMap) {
-          Em.Logger.log(`App store: download URL for ${policyAppID} was not found`);
-          reject();
+        if (!(policyAppID in SDL.InfoController.appPackageDownloadUrlsMap)) {
+          Em.Logger.log(`App store: download URL for ${policyAppID} was not found. Assume bundle was installed manually.`);
+          resolve();
         }
 
         let download_url = SDL.InfoController.appPackageDownloadUrlsMap[policyAppID];
