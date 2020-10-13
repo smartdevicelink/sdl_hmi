@@ -587,6 +587,11 @@ SDL.SDLController = Em.Object.extend(
           SDL.AlertPopUp.deactivate();
           break;
         }
+        case 'AlertManeuverPopUp':
+        {
+          SDL.AlertManeuverPopUp.deactivate();
+          break;
+        }
         case 'SubtleAlertPopUp':
         {
           SDL.SubtleAlertPopUp.deactivate();
@@ -633,10 +638,17 @@ SDL.SDLController = Em.Object.extend(
           this.onActivateSDLApp(element);
           break;
         }
+        case 'AlertManeuverPopUp':
+        {
+          SDL.AlertManeuverPopUp.deactivate();
+          this.onActivateSDLApp(element);
+          break;
+        }
         case 'SubtleAlertPopUp':
         {
           SDL.SubtleAlertPopUp.deactivate();
           this.onActivateSDLApp(element);
+          break;
         }
         case 'ScrollableMessage':
         {
@@ -670,6 +682,17 @@ SDL.SDLController = Em.Object.extend(
           this.onResetTimeout(element.appID, 'UI.Alert');
           break;
         }
+        case 'AlertManeuverPopUp':
+        {
+          clearTimeout(SDL.AlertManeuverPopUp.timer);
+          SDL.AlertManeuverPopUp.timer = setTimeout(
+            function() {
+              SDL.AlertManeuverPopUp.deactivate();
+            }, SDL.AlertManeuverPopUp.timeout
+          );
+          this.onResetTimeout(element.appID, 'Navigation.AlertManeuver');
+          break;
+        }
         case 'SubtleAlertPopUp':
         {
           clearTimeout(SDL.SubtleAlertPopUp.timer);
@@ -679,6 +702,7 @@ SDL.SDLController = Em.Object.extend(
             }, SDL.SubtleAlertPopUp.timeout
           );
           this.onResetTimeout(element.appID, 'UI.SubtleAlert');
+          break;
         }
         case 'ScrollableMessage':
         {
