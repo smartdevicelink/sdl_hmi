@@ -221,6 +221,17 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
         '<span>{{view.text}}</span>' +
         '<img class="arrow-ico" src="images/common/arrow_ico.png" />'
       ),
+      arrowShort: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.text}}</span>' +
+        '<img class="arrow-ico-short" src="images/common/arrow_ico.png" />'
+      ),
+      arrowShortOverLay: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.text}}</span>' +
+        '<img class="arrow-ico-short" src="images/common/arrow_ico.png" />'
+      ),
 
       rightIcon: Em.Handlebars.compile(
         '<img {{bindAttr class="view.icon:ico"}} \

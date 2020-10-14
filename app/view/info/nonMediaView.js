@@ -167,6 +167,18 @@ SDL.InfoNonMedia = Em.ContainerView.create(
                 );
               }
             }.observes('SDL.SDLController.model.softButtons.@each'),
+            updateOptionsButton: function() {
+              if (SDL.SDLController.model && SDL.SDLController.model.appID ==
+                SDL.NonMediaController.currentAppId) {
+                var menuTitle = SDL.SDLController.model.globalProperties.menuTitle
+                this.get('content.optionsButton').set('text', menuTitle && menuTitle.length ? menuTitle : 'Options')
+                var menuIcon = SDL.SDLController.model.globalProperties.menuIcon
+                this.get('content.optionsButton').set('icon', menuIcon && menuIcon.value && menuIcon.value.length ? menuIcon.value : null)
+                this.get('content.optionsButton').set('templateName', menuIcon && menuIcon.isTemplate ? 'arrowShortOverLay' : 'arrowShort')
+              }
+            }.observes(
+              'SDL.SDLController.model.globalProperties.menuTitle',
+              'SDL.SDLController.model.globalProperties.menuIcon'),
 
             groupName: 'NonMediaView',
 
@@ -189,7 +201,8 @@ SDL.InfoNonMedia = Em.ContainerView.create(
                   {
                     text: 'Options',
 
-                    templateName: 'arrow',
+                    classNames: 'softButton',
+                    templateName: 'arrowShort',
 
                     action: 'openCommandsList',
                     target: 'SDL.SDLController'

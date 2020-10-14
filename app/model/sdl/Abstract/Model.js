@@ -999,7 +999,10 @@ SDL.SDLModel = Em.Object.extend({
     }
     if (SDL.SDLController.getApplicationModel(params.appID)) {
       for (var i in params) {
-        if (i === 'keyboardProperties') {
+        if (i === "appID") {
+          continue;
+        }
+        else if (i === 'keyboardProperties') {
           mergeKeyboardProperties(params[i]);
         } else {
           SDL.SDLController.getApplicationModel(params.appID).

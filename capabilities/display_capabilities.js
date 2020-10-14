@@ -171,7 +171,7 @@ SDL.templateCapabilities = {
                 {
                     "name": "menuTitle",
                     "characterSet": "UTF_8",
-                    "width": 500,
+                    "width": 10,
                     "rows": 1
                 },
                 {
@@ -618,7 +618,7 @@ SDL.templateCapabilities = {
                 {
                     "name": "menuTitle",
                     "characterSet": "UTF_8",
-                    "width": 500,
+                    "width": 12,
                     "rows": 1
                 },
                 {
@@ -1060,7 +1060,7 @@ SDL.templateCapabilities = {
                 {
                     "name": "menuTitle",
                     "characterSet": "UTF_8",
-                    "width": 500,
+                    "width": 15,
                     "rows": 1
                 },
                 {
