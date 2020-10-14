@@ -1091,7 +1091,7 @@ SDL.SDLController = Em.Object.extend(
           'params': {
             'menuParams': {
               'parentID': 0,
-              'menuName': 'Exit \'CLOSE_ClOUD_CONNECTION\'',
+              'menuName': 'Exit \'CLOSE_CLOUD_CONNECTION\'',
               'position': 0
             },
             cmdID: SDL.SDLModel.data.exitCommandsEnum.CLOSE_CLOUD_CONNECTION
