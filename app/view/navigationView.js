@@ -62,7 +62,8 @@ SDL.NavigationView = Em.ContainerView.create(
                   className: 'button',
                   text: SDL.NavigationModel.LocationDetails[i].locationName,
                   disabled: false,
-                  icon: SDL.NavigationModel.LocationDetails[i].locationImage.value,
+                  icon: SDL.NavigationModel.LocationDetails[i].locationImage 
+                    ? SDL.NavigationModel.LocationDetails[i].locationImage.value : '',
                   templateName: SDL.NavigationModel.LocationDetails[i].locationImage
                     ? '' : 'text',
                   action: 'openWayPoint',
