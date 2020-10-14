@@ -524,24 +524,30 @@ SDL.ABSAppModel = Em.Object.extend(
       if (FFW.RPCHelper.isSuccessResultCode(result)) {
           // Magic number is limit of 1000 commands added on one menu
     	    if (commands.length <= 999) {
-        		commands[commands.length] = {
+            var position = request.params.menuParams.position !== undefined ?
+              request.params.menuParams.position : commands.length;
+            // Add 4 to the position so the items appear after the default
+            // exit options. Default exit options have a request id < 0.
+            if (request.id >= 0 && parentID === 'top') {
+              position += 5; // for exit application commands
+            }
+            var newItem = {
         		  commandID: request.params.cmdID,
         		  name: request.params.menuParams.menuName,
         		  parent: parentID,
-        		  position: request.params.menuParams.position ?
-        		  request.params.menuParams.position : 0,
         		  isTemplate:request.params.cmdIcon ?
         		  request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
         		  : null,
         		  icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
-        		};
+            };
+            // Insert new item at calculated position
+            commands.splice(position, 0, newItem);
         		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
                     SDL.OptionsView.active) {
                         SDL.SDLController.buttonsSort(parentID, this.appID);
                         SDL.OptionsView.commands.refreshItems();
         		}
 
-    		    console.log(commands.length);
     		    if(request.params.cmdIcon) {
     	            var image = request.params.cmdIcon.value;
     		        var length=image.length;
@@ -629,16 +635,24 @@ SDL.ABSAppModel = Em.Object.extend(
         if(FFW.RPCHelper.isSuccessResultCode(result)) {
     	    // Magic number is limit of 1000 commands added on one menu
     	    if (commands.length <= 999) {
-        		this.commandsList[request.params.menuID] = [];
-        		commands[commands.length] = {
+            this.commandsList[request.params.menuID] = [];
+            var position = request.params.menuParams.position !== undefined ?
+              request.params.menuParams.position : commands.length;
+            // Add 4 to the position so the items appear after the default
+            // exit options. Default exit options have a request id < 0.
+            if (request.id >= 0 && parentID === 'top') {
+              position += 5; // for exit application commands
+            }
+
+        		var newItem = {
         		  menuID: request.params.menuID,
         		  name: request.params.menuParams.menuName ?
         		    request.params.menuParams.menuName : '',
         		  parent: parentID,
-        		  position: request.params.menuParams.position ?
-        		    request.params.menuParams.position : 0,
         		  icon: request.params.menuIcon ? request.params.menuIcon.value : null
-        		};
+            };
+            // Insert new item at calculated position
+            commands.splice(position, 0, newItem);
         		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
         		  SDL.OptionsView.active) {
         		    SDL.SDLController.buttonsSort(parentID, this.appID);
