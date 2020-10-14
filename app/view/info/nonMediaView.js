@@ -166,9 +166,7 @@ SDL.InfoNonMedia = Em.ContainerView.create(
                   SDL.SDLController.model.appID
                 );
               }
-            }.observes('SDL.SDLController.model.softButtons.@each', 
-                       'SDL.SDLController.model.globalProperties.menuTitle',
-                       'SDL.SDLController.model.globalProperties.menuIcon'),
+            }.observes('SDL.SDLController.model.softButtons.@each'),
             updateOptionsButton: function() {
               if (SDL.SDLController.model && SDL.SDLController.model.appID ==
                 SDL.NonMediaController.currentAppId) {
