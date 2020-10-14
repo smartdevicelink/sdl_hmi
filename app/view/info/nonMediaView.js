@@ -161,11 +161,6 @@ SDL.InfoNonMedia = Em.ContainerView.create(
 
               if (SDL.SDLController.model && SDL.SDLController.model.appID ==
                 SDL.NonMediaController.currentAppId) {
-                var menuTitle = SDL.SDLController.getApplicationModel(SDL.NonMediaController.currentAppId).globalProperties.menuTitle
-                this.get('content.optionsButton').set('text', menuTitle && menuTitle.length ? menuTitle : 'Options')
-                var menuIcon = SDL.SDLController.getApplicationModel(SDL.NonMediaController.currentAppId).globalProperties.menuIcon
-                this.get('content.optionsButton').set('icon', menuIcon && menuIcon.value && menuIcon.value.length ? menuIcon.value : null)
-                this.get('content.optionsButton').set('templateName', menuIcon && menuIcon.isTemplate ? 'arrowShortOverLay' : 'arrowShort')
                 this.addItems(
                   SDL.SDLController.model.softButtons,
                   SDL.SDLController.model.appID
@@ -174,6 +169,18 @@ SDL.InfoNonMedia = Em.ContainerView.create(
             }.observes('SDL.SDLController.model.softButtons.@each', 
                        'SDL.SDLController.model.globalProperties.menuTitle',
                        'SDL.SDLController.model.globalProperties.menuIcon'),
+            updateOptionsButton: function() {
+              if (SDL.SDLController.model && SDL.SDLController.model.appID ==
+                SDL.NonMediaController.currentAppId) {
+                var menuTitle = SDL.SDLController.model.globalProperties.menuTitle
+                this.get('content.optionsButton').set('text', menuTitle && menuTitle.length ? menuTitle : 'Options')
+                var menuIcon = SDL.SDLController.model.globalProperties.menuIcon
+                this.get('content.optionsButton').set('icon', menuIcon && menuIcon.value && menuIcon.value.length ? menuIcon.value : null)
+                this.get('content.optionsButton').set('templateName', menuIcon && menuIcon.isTemplate ? 'arrowShortOverLay' : 'arrowShort')
+              }
+            }.observes(
+              'SDL.SDLController.model.globalProperties.menuTitle',
+              'SDL.SDLController.model.globalProperties.menuIcon'),
 
             groupName: 'NonMediaView',
 
