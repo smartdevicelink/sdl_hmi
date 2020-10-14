@@ -91,16 +91,15 @@ SDL.HmiSettingsModel = Em.Object.extend({
    * @return String (DAY or NIGHT)
    */
   defineAutoTimeValue: function() {
-    var time = new Date().toLocaleTimeString([], {hour12: false});
-    time = parseInt(time.substring(0, time.indexOf(':')));
-    return (time > 7 && time < 20? 'DAY': 'NIGHT');
+    const time = new Date().getHours();
+    return (time > 7 && time < 20 ? 'DAY': 'NIGHT');
   },
 
   setHmiSettingsData: function(data){
       var result = {};
       if(data.displayMode && this.displayMode != data.displayMode) {
         this.set('displayMode',data.displayMode);
-        result.displayMode = (data.displayMode == 'AUTO' ? this.defineAutoTimeValue() : data.displayMode);
+        result.displayMode = (data.displayMode === 'AUTO' ? this.defineAutoTimeValue() : data.displayMode);
       }
       if(data.temperatureUnit && this.temperatureUnit != data.temperatureUnit) {
         this.set('temperatureUnit',data.temperatureUnit);
