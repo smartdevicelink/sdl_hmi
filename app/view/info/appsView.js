@@ -172,6 +172,16 @@ SDL.InfoAppsView = Em.ContainerView.create({
     /** Items */
     items: new Array()
   }
-)
+),
+
+  /**
+   * @description Callback for display image mode change.
+   */
+  imageModeChanged: function() { 
+    SDL.InfoAppsView.findNewApps.setMode(SDL.SDLModel.data.imageMode);
+    SDL.InfoAppsView.Asist911.setMode(SDL.SDLModel.data.imageMode);
+    SDL.InfoAppsView.vehicleHealthReport.setMode(SDL.SDLModel.data.imageMode);
+    SDL.InfoAppsView.getDeviceList.setMode(SDL.SDLModel.data.imageMode);
+  }.observes('SDL.SDLModel.data.imageMode')
 }
 );

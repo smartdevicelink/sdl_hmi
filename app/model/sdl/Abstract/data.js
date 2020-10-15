@@ -712,6 +712,12 @@ SDL.SDLModelData = Em.Object.create(
       'Night mode',
       'Highlighted mode'
     ],
+    /**
+     * @description Current display mode value 
+     * @type {String}
+     */
+    imageMode:'Highlighted mode', 
+
     windowType: {
       "MAIN": 0,
       "WIDGET": 1

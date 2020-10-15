@@ -1751,5 +1751,17 @@ SDL.SDLController = Em.Object.extend(
       let policyAppID = SDL.SDLModel.appIDtoPolicyAppIDMapping[appID];
       SDL.SDLModel.webApplicationFramesMap[policyAppID].hidden = false;
     },
+
+    /**
+     * @description Callback for display image mode change.
+     */
+    imageModeChanged: function() { 
+      const length = SDL.OptionsView.commands.items.length;
+      for (var i=0; i<length; i++) {
+        SDL.OptionsView.commands.items[i].type.prototype.setMode(SDL.SDLModel.data.imageMode);
+      }
+
+      SDL.OptionsView.commands.refreshItems();
+    }.observes('SDL.SDLModel.data.imageMode')
   }
 );

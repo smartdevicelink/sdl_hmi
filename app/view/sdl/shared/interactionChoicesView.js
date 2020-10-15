@@ -415,6 +415,14 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           self.deactivate('TIMED_OUT');
         }, timeout
       );
-    }
+    },
+
+    /**
+     * @description Callback for display image mode change.
+     */
+    imageModeChanged: function() { 
+      SDL.InteractionChoicesView.set('imageMode',SDL.SDLModel.data.imageMode);
+      SDL.InteractionChoicesView.updateIcons();
+    }.observes('SDL.SDLModel.data.imageMode')
   }
 );
