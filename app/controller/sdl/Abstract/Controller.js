@@ -1554,21 +1554,12 @@ SDL.SDLController = Em.Object.extend(
      * @description Callback for display image mode change.
      */
     imageModeChanged: function() { 
-      if (!SDL.SDLController.model) {
-        return;
-      }
-
-      SDL.SDLController.model.setMode(SDL.SDLModel.data.imageMode);
-      var commands = SDL.SDLController.model.get('currentCommandsList');
       const length = SDL.OptionsView.commands.items.length;
-      for(var i=0;i<length;i++){
+      for (var i=0; i<length; i++) {
         SDL.OptionsView.commands.items[i].type.prototype.setMode(SDL.SDLModel.data.imageMode);
-        if(commands[i].isTemplate){
-          SDL.OptionsView.commands.items[i].type.prototype.setMode(SDL.SDLModel.data.imageMode);
-        }
       }
-      SDL.OptionsView.commands.refreshItems();
 
+      SDL.OptionsView.commands.refreshItems();
     }.observes('SDL.SDLModel.data.imageMode')
   }
 );
