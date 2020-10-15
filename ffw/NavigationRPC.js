@@ -560,22 +560,27 @@ FFW.Navigation = FFW.RPCObserver.create(
      * @param {Number} resultCode
      * @param {Number} id
      * @param {String} method
+     * @param {String} info
      */
-    sendNavigationResult: function(resultCode, id, method) {
-      if (this.errorResponsePull[id] != null) {
-        this.sendError(
-          this.errorResponsePull[id].code,
+    sendNavigationResult: function(resultCode, id, method, info) {
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
+        this.errorResponsePull[id] = null;
+
+        this.sendNavigationResult(
+          errorStruct.code,
           id,
           method,
-          'Unsupported ' + this.errorResponsePull[id].type +
-          ' type. Available data in request was processed.'
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
         );
-        this.errorResponsePull[id] = null;
         return;
       }
-      Em.Logger.log('FFW.UI.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS ||resultCode == SDL.SDLModel.data.resultCode.WARNINGS ) {
 
+      Em.Logger.log('FFW.Navigation.' + method + 'Response');
+      if (is_successful_code) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -585,7 +590,14 @@ FFW.Navigation = FFW.RPCObserver.create(
             'method': method
           }
         };
+
+        if (info) {
+          JSONMessage.result.info = info;
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     /**

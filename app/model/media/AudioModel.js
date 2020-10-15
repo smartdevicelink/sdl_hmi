@@ -343,21 +343,6 @@ SDL.AudioModel = Em.Object.extend({
       if (SDL.SDLController.model) {
         SDL.SDLController.model.set('active', true);
       }
-      /**
-       * Go to SDL state
-       */
-      if (SDL.SDLController.model.appType) {
-        for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
-          if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
-              SDL.SDLController.model.appType[i] == 'PROJECTION') {
-            SDL.BaseNavigationView.update();
-            SDL.States.goToStates('navigationApp.baseNavigation');
-            return;
-          }
-        }
-      }
-
-      SDL.States.goToStates('media.sdlmedia');
     },
 
     /**
@@ -832,12 +817,13 @@ SDL.AudioModel = Em.Object.extend({
           resultNew.volume = data.volume;
         }
         for (var i = 0; i < dataLength; i++) {
+          if (data.equalizerSettings[i].channelId == this.tempEqualizerSettings.channelId) {
+            this.set('tempEqualizerSettings.channelSetting', data.equalizerSettings[i].channelSetting);
+          }
           for (var j = 0; j < currentLength; j++) {
             if (data.equalizerSettings[i].channelId == this.lastRadioControlStruct.equalizerSettings[j].channelId) {
               this.lastRadioControlStruct.equalizerSettings[j].channelSetting = SDL.deepCopy(data.equalizerSettings[i].channelSetting);
-              if (j == this.tempEqualizerSettIndex - 1) {
-                this.set('tempEqualizerSettings.equalizerSettings', data.equalizerSettings[i].equalizerSettings);
-              }
+              break;
             }
           }
         }
@@ -888,12 +874,13 @@ SDL.AudioModel = Em.Object.extend({
           resultNew.volume = data.volume;
         }
         for (var i = 0; i < dataLength; i++) {
+          if (data.equalizerSettings[i].channelId == this.tempEqualizerSettings.channelId) {
+            this.set('tempEqualizerSettings.channelSetting', data.equalizerSettings[i].channelSetting);
+          }
           for (var j = 0; j < currentLength; j++) {
             if (data.equalizerSettings[i].channelId == this.lastRadioControlStruct.equalizerSettings[j].channelId) {
               this.lastRadioControlStruct.equalizerSettings[j].channelSetting = SDL.deepCopy(data.equalizerSettings[i].channelSetting);
-              if (j == this.tempEqualizerSettIndex - 1) {
-                this.set('tempEqualizerSettings.equalizerSettings', data.equalizerSettings[i].equalizerSettings);
-              }
+              break;
             }
           }
         }

@@ -51,7 +51,11 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'THIRD',
       'FOURTH',
       'FIFTH',
-      'SIXTH'
+      'SIXTH',
+      'SEVENTH',
+      'EIGHTH',
+      'NINTH',
+      'TENTH'
     ],
     /**
      * Data changed in Odometr Input in VehicleInfo popUp
@@ -112,6 +116,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'externalTemperature': 'VEHICLEDATA_EXTERNTEMP',
       'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'vin': 'VEHICLEDATA_VIN',
+      'gearStatus': 'VEHICLEDATA_GEARSTATUS',
       'prndl': 'VEHICLEDATA_PRNDL',
       'tirePressure': 'VEHICLEDATA_TIREPRESSURE',
       'odometer': 'VEHICLEDATA_ODOMETER',
@@ -135,7 +140,10 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'tirePressureValue': 'VEHICLEDATA_TIREPRESSURE_VALUE',
       'tpms': 'VEHICLEDATA_TPMS',
-      'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID'
+      'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID',
+      'handsOffSteering': 'VEHICLEDATA_HANDSOFFSTEERING',
+      'stabilityControlsStatus': 'VEHICLEDATA_STABILITYCONTROLSSTATUS',
+      'windowStatus': 'VEHICLEDATA_WINDOWSTATUS'
     },
     /**
      * Stored VehicleInfo Data
@@ -169,11 +177,20 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'fuelLevel': 0.2E0,
       'fuelLevel_State': 'UNKNOWN',
       'instantFuelConsumption': 2.2E0,
-      'externalTemperature': null,
+      'externalTemperature': 20.5E0,
       'vin': '52-452-52-752',
       'turnSignal': 'OFF',
       'prndl': 'PARK',
+      'gearStatus': {
+        'userSelectedGear': 'DRIVE',
+        'actualGear': 'PARK',
+        'transmissionType': 'AUTOMATIC'
+      },
       'electronicParkBrakeStatus': 'OPEN',
+      'stabilityControlsStatus': {
+        'escSystem': 'OFF',
+        'trailerSwayControl': 'OFF'
+      },
       'tirePressure': {
         'pressureTelltale': 'OFF',
         'leftFront': {
@@ -210,7 +227,11 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'fuelRange': [
         {
           'type':'GASOLINE',
-          'range': 400
+          'range': 400,
+          'level': 10,
+          'levelState': 'NORMAL',
+          'capacity': 100,
+          'capacityUnit': 'LITERS'
         }
       ],
       'odometer': 23,
@@ -311,7 +332,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'displayResolution': {
          'width': 800,
          'height': 480
-      }
+      },
+      'handsOffSteering': false
       //
       // 'avgFuelEconomy': 0.1,
       // 'batteryVoltage': 12.5,
@@ -435,9 +457,20 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
      */
     SubscribeVehicleData: function(message) {
       var subscribeVIData = {};
-      for (var key in message.params) {
-        if (key === 'clusterModeStatus') {
-          key = 'clusterModes';
+      var customResultCode = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeVehicleData');
+
+      if ('DO_NOT_RESPOND' == customResultCode['SubscribeVehicleData']) {
+        Em.Logger.log('Do not respond on this request');
+        return;
+      }
+
+      const is_user_allowed_code =
+        FFW.RPCHelper.isSuccessResultCode(customResultCode['SubscribeVehicleData']);
+
+      for (var key in message.params){
+        subscribeVIData[key] = {
+          dataType: this.eVehicleDataType[key],
+          resultCode: customResultCode.vehicleDataStruct[key],
         }
 
         var vehicleDataType = this.eVehicleDataType.hasOwnProperty(key) ?
@@ -459,22 +492,22 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           continue;
         }
 
-        if (key === 'externalTemperature') {
-          subscribeVIData[key] = {
-            dataType: vehicleDataType,
-            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
-          };
-          continue;
+        if (is_user_allowed_code) {
+          SDL.SDLModel.subscribedData[key] = true;
         }
 
-        SDL.SDLModel.subscribedData[key] = true;
         subscribeVIData[key] = {
           dataType: vehicleDataType,
-          resultCode: 'SUCCESS'
+          resultCode: is_user_allowed_code ? 'SUCCESS' : 'USER_DISALLOWED'
         };
       }
 
       var resultCode = this.CalculateSubscriptionsResultCode(subscribeVIData);
+      if (customResultCode['SubscribeVehicleData'] != SDL.SDLModel.data.resultCode.SUCCESS) {
+        // Custom result code specified by user has a higher priority for response
+        resultCode = customResultCode['SubscribeVehicleData'];
+      }
+
       FFW.VehicleInfo.sendVISubscribeVehicleDataResult(
         resultCode, message.id, message.method, subscribeVIData
       );
@@ -506,14 +539,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           subscribeVIData[key] = {
             dataType: vehicleDataType,
             resultCode: 'DATA_NOT_SUBSCRIBED'
-          };
-          continue;
-        }
-
-        if (key === 'externalTemperature') {
-          subscribeVIData[key] = {
-            dataType: vehicleDataType,
-            resultCode: 'VEHICLE_DATA_NOT_AVAILABLE'
           };
           continue;
         }

@@ -249,8 +249,22 @@ SDL.RController = SDL.SDLController.extend(
       const isDayColorSchemeExists = "dayColorScheme" in params ;
       const isNightColorSchemeExists = "nightColorScheme" in params;
 
+      let get_template_from_app_type = function(model) {
+        if (model.appType) {
+          for (var i = 0; i < model.appType.length; i++) {
+            if (model.appType[i] == 'NAVIGATION' || model.appType[i] == 'PROJECTION') {
+              return 'NAV_FULLSCREEN_MAP';
+            }
+            if (model.appType[i] == 'WEB_VIEW') {
+              return 'WEB_VIEW';
+            }
+          }
+        }
+        return model.isMedia ? 'MEDIA' : 'NON-MEDIA';
+      };
+
       let defaultTemplateConfiguration = {
-        "template" : "DEFAULT"
+        "template" : get_template_from_app_type(model)
       };
 
       const defaultColorScheme = {
@@ -356,50 +370,70 @@ SDL.RController = SDL.SDLController.extend(
           )
         );
       }
-      var exitCommand = {
-        'id': -10,
-        'params': {
-          'menuParams': {
-            'parentID': 0,
-            'menuName': 'Exit \'DRIVER_DISTRACTION_VIOLATION\'',
-            'position': 0
-          },
+      var exitCommands = [
+        {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'DRIVER_DISTRACTION_VIOLATION\'',
+              'position': 0
+            },
+            cmdID: SDL.SDLModel.data.exitCommandsEnum.DRIVER_DISTRACTION_VIOLATION
+          }
+        },
+        {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'USER_EXIT\'',
+              'position': 0
+            },
+            cmdID: SDL.SDLModel.data.exitCommandsEnum.USER_EXIT
+          }
+        },
+        {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'UNAUTHORIZED_TRANSPORT_REGISTRATION\'',
+              'position': 0
+            },
+            cmdID: SDL.SDLModel.data.exitCommandsEnum.UNAUTHORIZED_TRANSPORT_REGISTRATION
+          }
+        },
+        {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'RESOURCE_CONSTRAINT\'',
+              'position': 0
+            },
 
-         cmdID: -1
+           cmdID: SDL.SDLModel.data.exitCommandsEnum.RESOURCE_CONSTRAINT
+          }
+        },
+        {
+          'id': -10,
+          'params': {
+            'menuParams': {
+              'parentID': 0,
+              'menuName': 'Exit \'CLOSE_CLOUD_CONNECTION\'',
+              'position': 0
+            },
+            cmdID: SDL.SDLModel.data.exitCommandsEnum.CLOSE_CLOUD_CONNECTION
+          }
         }
-      };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
-      exitCommand = {
-        'id': -10,
-        'params': {
-          'menuParams': {
-            'parentID': 0,
-            'menuName': 'Exit \'USER_EXIT\'',
-            'position': 0
-          },
+      ];
 
-         cmdID: -2
-        }
-      };
-      SDL.SDLController.getApplicationModel(params.appID).addCommand(
-        exitCommand
-      );
-      exitCommand = {
-        'id': -10,
-        'params': {
-          'menuParams': {
-            'parentID': 0,
-            'menuName': 'Exit \'UNAUTHORIZED_TRANSPORT_REGISTRATION\'',
-            'position': 0
-          },
-
-         cmdID: -3
-        }
-      };
       let model = SDL.SDLController.getApplicationModel(params.appID);
-      model.addCommand(exitCommand);
+      exitCommands.forEach(command => {
+        model.addCommand(command)
+      });
+
       this.setInitalWindowTemplate(params, model);
     },
 
@@ -441,7 +475,7 @@ SDL.RController = SDL.SDLController.extend(
     onCommand: function(element) {
       if (element.commandID < 0) {
         switch (element.commandID) {
-          case -1:
+          case SDL.SDLModel.data.exitCommandsEnum.DRIVER_DISTRACTION_VIOLATION:
           {
             FFW.BasicCommunication.ExitApplication(
               SDL.SDLController.model.appID,
@@ -449,7 +483,7 @@ SDL.RController = SDL.SDLController.extend(
             );
             break;
           }
-          case -2:
+          case SDL.SDLModel.data.exitCommandsEnum.USER_EXIT:
           {
             FFW.BasicCommunication.ExitApplication(
               SDL.SDLController.model.appID,
@@ -457,11 +491,27 @@ SDL.RController = SDL.SDLController.extend(
             );
             break;
           }
-          case -3:
+          case SDL.SDLModel.data.exitCommandsEnum.UNAUTHORIZED_TRANSPORT_REGISTRATION:
           {
             FFW.BasicCommunication.ExitApplication(
               SDL.SDLController.model.appID,
               'UNAUTHORIZED_TRANSPORT_REGISTRATION'
+            );
+            break;
+          }
+          case SDL.SDLModel.data.exitCommandsEnum.RESOURCE_CONSTRAINT:
+          {
+            FFW.BasicCommunication.ExitApplication(
+              SDL.SDLController.model.appID,
+              'RESOURCE_CONSTRAINT'
+            );
+            break;
+          }
+          case SDL.SDLModel.data.exitCommandsEnum.CLOSE_CLOUD_CONNECTION:
+          {
+            FFW.BasicCommunication.ExitApplication(
+              SDL.SDLController.model.appID,
+              'CLOSE_CLOUD_CONNECTION'
             );
             break;
           }
@@ -476,13 +526,16 @@ SDL.RController = SDL.SDLController.extend(
 
         // if subMenu
         // activate driver destruction if necessary
-        if (SDL.SDLModel.data.driverDistractionState) {
+        var allowedDepth = SDL.systemCapabilities.driverDistractionCapability.subMenuDepth-1;
+        var activeDepth = SDL.SDLController.model.get('currentMenuDepth');
+        if (SDL.SDLModel.data.driverDistractionState  && activeDepth >= allowedDepth) {
           SDL.DriverDistraction.activate();
         } else {
           this.onSubMenu(element.menuID);
         }
       } else {
         FFW.UI.onCommand(element.commandID, this.model.appID);
+        this.model.set('currentSubMenuId', 'top');
         SDL.OptionsView.deactivate();
       }
     },

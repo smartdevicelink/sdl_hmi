@@ -127,17 +127,43 @@ FFW.VR = FFW.RPCObserver.create(
     /*
      * handle RPC requests here
      */
+    checkRequestType: function(type){
+      switch(type){
+        case 'Command':
+          return 'vrAddCommand';
+        case 'Choice':
+          return 'createInteractionChoiceSet';
+        default: return '';
+      }
+    },
+
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.VR.onRPCRequest');
       if (this.validationCheck(request)) {
         switch (request.method) {
           case 'VR.AddCommand':
           {
-            SDL.SDLModel.addCommandVR(request.params);
+            var key = this.checkRequestType(request.params.type);
+            result = FFW.RPCHelper.getCustomResultCode(request.params.appID, key);
+
+            if ('DO_NOT_RESPOND' == result) {
+              Em.Logger.log('Do not respond on this request');
+              return;
+            }
+
+            let info = null;
+
+            if(FFW.RPCHelper.isSuccessResultCode(result)){
+              SDL.SDLModel.addCommandVR(request.params);
+            } else {
+              info = 'Erroneous response is assigned by settings';
+            }
+
             this.sendVRResult(
-              SDL.SDLModel.data.resultCode.SUCCESS,
+              result,
               request.id,
-              request.method
+              request.method,
+              info
             );
             break;
           }
@@ -361,20 +387,28 @@ FFW.VR = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
+     * @param {String}
+     *            info
      */
-    sendVRResult: function(resultCode, id, method) {
-      if (this.errorResponsePull[id]) {
-        this.sendError(
-          this.errorResponsePull[id].code, id, method,
-          'Unsupported ' + this.errorResponsePull[id].type +
-          ' type. Available data in request was processed.'
-        );
+    sendVRResult: function(resultCode, id, method, info) {
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
         this.errorResponsePull[id] = null;
+
+        this.sendVRResult(
+          errorStruct.code,
+          id,
+          method,
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+        );
         return;
       }
-      Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
+      Em.Logger.log('FFW.VR.' + method + 'Response');
+      if (is_successful_code) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -384,7 +418,14 @@ FFW.VR = FFW.RPCObserver.create(
             'method': method
           }
         };
+
+        if (info) {
+          JSONMessage.result.info = info;
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     /*

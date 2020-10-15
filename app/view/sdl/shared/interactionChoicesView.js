@@ -139,6 +139,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
     ),
     timer: null,
     timeout: null,
+    endTime: null,
     search: false,
     list: false,
     icon: false,
@@ -260,6 +261,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         this.timerUpdate();
       } else {
         clearTimeout(this.timer);
+        this.set('endTime', null);
         this.timer = null;
         this.set('active', false);
         SDL.SDLController.VRMove();
@@ -355,6 +357,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         this.listOfChoices.list.refresh();
       }
       var self = this;
+      this.set('endTime', Date.now() + timeout);
       clearTimeout(this.timer);
       this.timer = setTimeout(
         function() {

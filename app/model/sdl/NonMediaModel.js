@@ -40,9 +40,7 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
     var subscribeVIData = {};
 
     for (var key in SDL.SDLVehicleInfoModel.vehicleData) {
-      if (key != 'externalTemperature') {
-        subscribeVIData[key] = false;
-      }
+      subscribeVIData[key] = false;
     }
 
     this.set('subscribedData', subscribeVIData);
@@ -86,11 +84,13 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
     this.set('initialColorScheme.displayLayout', this.displayLayout);
     this.set('VRCommands', []);
     this.set('tbtActivate', false);
+    this.set('globalProperties', Em.Object.create());
     this.set('globalProperties.helpPrompt', []);
     this.set('globalProperties.timeoutPrompt', []);
     this.set('globalProperties.keyboardProperties', Em.Object.create());
     this.set('globalProperties.keyboardProperties.keyboardLayout', 'QWERTY');
     this.set('globalProperties.keyboardProperties.limitedCharacterList', []);
+    this.set('globalProperties.menuIcon', Em.Object.create());
 
     this.set('inactiveWindows', []);
     this.set('backgroundWindows', []);
@@ -273,6 +273,29 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
   sdlSetMediaClockTimer: function() {
 
     return;
-  }
+  },
+
+  classNameBindings: [
+    'dayMode',
+    'nightMode',
+    'highLightedMode'
+  ],
+
+  dayMode:false,
+  nightMode:false,
+  highLightedMode:false,
+
+    /**
+     * @description Method applies image mode view for model.
+     * @param {Number}
+     */
+  setMode:function(mode){
+    if(this.isTemplate){
+      mode = SDL.SDLModel.data.imageModeList.includes(mode) ? mode : SDL.SDLModel.data.imageModeList[0];
+      this.set('dayMode', mode == SDL.SDLModel.data.imageModeList[0]);
+      this.set('nightMode', mode == SDL.SDLModel.data.imageModeList[1]);
+      this.set('highLightedMode', mode == SDL.SDLModel.data.imageModeList[2]);
+    }
+  },
 }
 );

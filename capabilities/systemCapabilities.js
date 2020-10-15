@@ -65,5 +65,9 @@ SDL.systemCapabilities =
         diagonalScreenSize: 8,
         pixelPerInch: 96,
         scale: 1
+    },
+    driverDistractionCapability: {
+        menuLength: 10,
+        subMenuDepth: 2
     }
 }

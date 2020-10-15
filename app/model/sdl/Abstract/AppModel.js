@@ -390,21 +390,33 @@ SDL.ABSAppModel = Em.Object.extend(
      * @type {Number}
      */
     currentSubMenuId: 'top',
+
+    /**
+     * Count of submenu depth for DD tracking
+     *
+     * @type {Number}
+     */
+    currentMenuDepth: 0,
     /**
      * Return current submenu name
      *
      * @return {String}
      */
     currentSubMenuLabel: function() {
-
-      //Param "top" is Top level menu index
-      var submenu, commands = this.commandsList['top'];
-      for (var i = 0; i < commands.length; i++) {
-        if (commands[i].menuID == this.currentSubMenuId) {
-          submenu = commands[i].name;
+      var commandsList = this.commandsList;
+      var findMenuName = (commands, menuID) => {
+        for (id in commands) {
+          var subMenuCommands = commands[id];
+          for (element of subMenuCommands) {
+            if (element.menuID === menuID) {
+              return element.name;
+            }
+          }
         }
+        return 'Options';
       }
-      return this.get('currentSubMenuId') != 'top' ? submenu : 'Options';
+      return this.get('currentSubMenuId') != 'top' ? 
+        findMenuName(commandsList, this.currentSubMenuId) : 'Options';
     }.property('this.currentSubMenuId'),
     /**
      * Interaction chooses data
@@ -500,49 +512,68 @@ SDL.ABSAppModel = Em.Object.extend(
       if (!this.get('commandsList.' + parentID)) {
         this.commandsList[parentID] = [];
       }
+
       var commands = this.get('commandsList.' + parentID);
-      // Magic number is limit of 1000 commands added on one menu
-      if (commands.length <= 999) {
-        commands[commands.length] = {
-          commandID: request.params.cmdID,
-          name: request.params.menuParams.menuName,
-          parent: parentID,
-          position: request.params.menuParams.position ?
-          request.params.menuParams.position : 0,
-          isTemplate:request.params.cmdIcon ?
-          request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
-          : null,
-          icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
-        };
-        if (SDL.SDLController.getApplicationModel(request.params.appID) &&
-          SDL.OptionsView.active) {
-          SDL.SDLController.buttonsSort(parentID, this.appID);
-          SDL.OptionsView.commands.refreshItems();
-        }
-        if(request.params.cmdIcon){
-          var image = request.params.cmdIcon.value;
-          var search_offset = image.lastIndexOf('.');
-          str='.png';
-          var isPng=image.includes(str, search_offset);
-          if(!isPng){
-          FFW.UI.sendUIResult(
-            SDL.SDLModel.data.resultCode.WARNINGS, request.id,
-            request.method
-          );
-          return;
-        }
+      result = FFW.RPCHelper.getCustomResultCode(this.appID, 'uiAddCommand');
+
+      if ('DO_NOT_RESPOND' == result) {
+        Em.Logger.log('Do not respond on this request');
+        return;
       }
-        if (request.id >= 0) {
-          FFW.UI.sendUIResult(
-            SDL.SDLModel.data.resultCode.SUCCESS, request.id,
-            request.method
-          );
-        }
-      } else {
+
+      if (FFW.RPCHelper.isSuccessResultCode(result)) {
+          // Magic number is limit of 1000 commands added on one menu
+    	    if (commands.length <= 999) {
+            var position = request.params.menuParams.position !== undefined ?
+              request.params.menuParams.position : commands.length;
+            // Add 4 to the position so the items appear after the default
+            // exit options. Default exit options have a request id < 0.
+            if (request.id >= 0 && parentID === 'top') {
+              position += 5; // for exit application commands
+            }
+            var newItem = {
+        		  commandID: request.params.cmdID,
+        		  name: request.params.menuParams.menuName,
+        		  parent: parentID,
+        		  isTemplate:request.params.cmdIcon ?
+        		  request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
+        		  : null,
+        		  icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
+            };
+            // Insert new item at calculated position
+            commands.splice(position, 0, newItem);
+        		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
+                    SDL.OptionsView.active) {
+                        SDL.SDLController.buttonsSort(parentID, this.appID);
+                        SDL.OptionsView.commands.refreshItems();
+        		}
+
+    		    if(request.params.cmdIcon) {
+    	            var image = request.params.cmdIcon.value;
+    		        var length=image.length;
+            		str='.png';
+            		var isPng=image.includes(str,length-5);
+            		if (!isPng) {
+            		    FFW.UI.sendUIResult(
+            		        SDL.SDLModel.data.resultCode.WARNINGS, request.id,
+            		        request.method
+            		    );
+            		    return;
+    		        }
+    	        }
+        		if (request.id >= 0) {
+        		  FFW.UI.sendUIResult(result, request.id, request.method);
+        		}
+    	    } else {
+        		FFW.UI.sendError(
+        		  result, request.id, request.method,
+        		  'Adding more than 1000 item to the top menu or to submenu is not allowed.'
+        		);
+    	    }
+    	} else {
         FFW.UI.sendError(
-          SDL.SDLModel.data.resultCode.REJECTED, request.id,
-          request.method,
-          'Adding more than 1000 item to the top menu or to submenu is not allowed.'
+          result, request.id, request.method,
+          'Erroneous response is assigned by settings'
         );
       }
     },
@@ -581,38 +612,67 @@ SDL.ABSAppModel = Em.Object.extend(
      * @param {Object}
      */
     addSubMenu: function(request) {
-
-      // parentID is equal to 'top' cause Top level menu ID
-      var parentID = 'top';
-      var commands = this.get('commandsList.' + parentID);
-      // Magic number is limit of 1000 commands added on one menu
-      if (commands.length <= 999) {
-        this.commandsList[request.params.menuID] = [];
-        commands[commands.length] = {
-          menuID: request.params.menuID,
-          name: request.params.menuParams.menuName ?
-            request.params.menuParams.menuName : '',
-          parent: 0,
-          position: request.params.menuParams.position ?
-            request.params.menuParams.position : 0,
-          icon: request.params.menuIcon ? request.params.menuIcon.value : null
-        };
-        if (SDL.SDLController.getApplicationModel(request.params.appID) &&
-          SDL.OptionsView.active) {
-          SDL.SDLController.buttonsSort(parentID, this.appID);
-          SDL.OptionsView.commands.refreshItems();
-        }
-        FFW.UI.sendUIResult(
-          SDL.SDLModel.data.resultCode.SUCCESS, request.id,
-          request.method
-        );
-      } else {
+      // Check for duplicate submenu
+      if (request.params.menuID in this.commandsList) {
         FFW.UI.sendError(
-          SDL.SDLModel.data.resultCode.REJECTED, request.id,
+          SDL.SDLModel.data.resultCode.INVALID_ID, request.id,
           request.method,
-          'Adding more than 1000 item to the top menu or to submenu is not allowed.'
+          'Submenu ID already exists'
         );
+        return;
       }
+
+        // parentID is equal to 'top' cause Top level menu ID
+        var parentID = request.params.menuParams.parentID ? request.params.menuParams.parentID : 'top';
+        var commands = this.get('commandsList.' + parentID);
+
+        result = FFW.RPCHelper.getCustomResultCode(this.appID, 'AddSubmenu');
+        if ('DO_NOT_RESPOND' == result) {
+          Em.Logger.log('Do not respond on this request');
+          return;
+        }
+
+        if(FFW.RPCHelper.isSuccessResultCode(result)) {
+    	    // Magic number is limit of 1000 commands added on one menu
+    	    if (commands.length <= 999) {
+            this.commandsList[request.params.menuID] = [];
+            var position = request.params.menuParams.position !== undefined ?
+              request.params.menuParams.position : commands.length;
+            // Add 4 to the position so the items appear after the default
+            // exit options. Default exit options have a request id < 0.
+            if (request.id >= 0 && parentID === 'top') {
+              position += 5; // for exit application commands
+            }
+
+        		var newItem = {
+        		  menuID: request.params.menuID,
+        		  name: request.params.menuParams.menuName ?
+        		    request.params.menuParams.menuName : '',
+        		  parent: parentID,
+        		  icon: request.params.menuIcon ? request.params.menuIcon.value : null
+            };
+            // Insert new item at calculated position
+            commands.splice(position, 0, newItem);
+        		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
+        		  SDL.OptionsView.active) {
+        		    SDL.SDLController.buttonsSort(parentID, this.appID);
+        		    SDL.OptionsView.commands.refreshItems();
+        		}
+        		FFW.UI.sendUIResult(result, request.id, request.method);
+    	    } else {
+        		FFW.UI.sendError(
+        		  SDL.SDLModel.data.resultCode.REJECTED, request.id,
+        		  request.method,
+        		  'Adding more than 1000 item to the top menu or to submenu is not allowed.'
+        		);
+    	    }
+    	} else {
+            FFW.UI.sendError(
+              result, request.id,
+              request.method,
+              'Erroneous response is assigned by settings'
+            );
+        }
     },
     /**
      * Delete submenu and related commands from list
@@ -620,13 +680,20 @@ SDL.ABSAppModel = Em.Object.extend(
      * @param {Number}
      */
     deleteSubMenu: function(menuID) {
-      if (this.commandsList['top'].filterProperty('commandID', menuID)) {
-        this.get('commandsList.top').removeObjects(
-          this.get('commandsList.top').filterProperty('menuID', menuID)
-        );
-        //delete(this.commandsList[menuID]);
+      var commandsList = this.commandsList;
+      for (id in commandsList) {
+        var filteredObjects = commandsList[id].filterProperty('menuID', menuID);
+        if (filteredObjects.length > 0) {
+          commandsList[id].removeObjects(
+            filteredObjects
+          );
+          if (menuID in commandsList) {
+            delete(commandsList[menuID])
+          }
+          return SDL.SDLModel.data.resultCode.SUCCESS;
+        }
       }
-      return SDL.SDLModel.data.resultCode.SUCCESS;
+      return SDL.SDLModel.data.resultCode.INVALID_ID;
     },
     /**
      * SDL UI CreateInteraction response handeler push set of commands to
@@ -667,31 +734,34 @@ SDL.ABSAppModel = Em.Object.extend(
     createWindow: function(windowParam) {
       var content = {};
       if (windowParam.duplicateUpdatesFromWindowID === 0) {
+        var app_info = SDL.SDLController.model ? SDL.SDLController.model.appInfo : null;
+
         var showStringsArray = [];
-        SDL.SDLController.model.appInfo.field1 ? showStringsArray.push({
-          "fieldName": "mainField1",
-          "fieldText": SDL.SDLController.model.appInfo.field1
-        }) : null ;
+        if (app_info) {
+          showStringsArray.push({
+            "fieldName": "mainField1",
+            "fieldText": app_info.field1
+          });
+          showStringsArray.push({
+            "fieldName": "mainField2",
+            "fieldText": SDL.SDLController.model.appInfo.field2
+          });
 
-        SDL.SDLController.model.appInfo.field2 ? showStringsArray.push({
-          "fieldName": "mainField2",
-          "fieldText": SDL.SDLController.model.appInfo.field2
-        }) : null ;
-
-        content["showStrings"] = showStringsArray;    
-        
-        content["softButtons"] = this.get("softButtons").slice(0,4);
-
-        if (SDL.SDLController.model.appInfo.mainImage) {
-          content["graphic"] = {
-            "value" : SDL.SDLController.model.appInfo.mainImage
-          };
-        } else if (SDL.SDLController.model.appInfo.trackIcon) {
-          content["graphic"] = {
-            "value" : SDL.SDLController.model.appInfo.trackIcon
-          };
+          if (app_info.mainImage) {
+            content["graphic"] = {
+              "value" : app_info.mainImage
+            };
+          } else if (app_info.trackIcon) {
+            content["graphic"] = {
+              "value" : app_info.trackIcon
+            };
+          }
         }
 
+        content["showStrings"] = showStringsArray;
+        content["softButtons"] = windowParam.type == 'WIDGET' ?
+                                 this.get("softButtons").slice(0,4) :
+                                 this.get("softButtons");
         content["templateConfiguration"] = this.templateConfiguration;
 
         windowParam.content = content;

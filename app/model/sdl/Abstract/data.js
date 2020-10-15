@@ -33,6 +33,15 @@
 
 SDL.SDLModelData = Em.Object.create(
   {
+    
+    init: function(){
+      this.resultCodes = Object.keys(this.resultCode);
+    },
+
+    /**
+    *  Array of result codes
+    */
+    resultCodes: null,
     /**
     *  List of default app permissions entityes for AppPermissionsView
     */
@@ -129,6 +138,10 @@ SDL.SDLModelData = Em.Object.create(
      * Active state of phone call on HMI for Deactivate app to handle event
      */
     phoneCallActive: false,
+    /**
+     * True, if active app is currently changing template
+     */
+    templateChangeInProgress: false,
     /**
      * FLAG of any app in limited level exists
      */
@@ -455,7 +468,10 @@ SDL.SDLModelData = Em.Object.create(
       'NO_DEVICES_CONNECTED': 20,
       'WARNINGS': 21,
       'GENERIC_ERROR': 22,
-      'USER_DISALLOWED': 23
+      'USER_DISALLOWED': 23,
+      'TRUNCATED_DATA': 24,
+      'SAVED': 25,
+      'READ_ONLY': 26
     },
     /** 
      * Enum with app priority rankings 
@@ -468,6 +484,20 @@ SDL.SDLModelData = Em.Object.create(
       'NORMAL': 4,
       'NONE': 5
     },
+    /**
+     * Array of vehicle data result codes
+     */
+    vehicleDataResultCode: [
+      'SUCCESS',
+      'TRUNCATED_DATA',
+      'DISALLOWED',
+      'USER_DISALLOWED',
+      'INVALID_ID',
+      'VEHICLE_DATA_NOT_AVAILABLE',
+      'DATA_ALREADY_SUBSCRIBED',
+      'DATA_NOT_SUBSCRIBED',
+      'IGNORED'
+    ],
     /**
      * Info navigationApp data for ShowConstantTBT request
      *
@@ -618,6 +648,11 @@ SDL.SDLModelData = Em.Object.create(
      */
     hmiUILanguage: 'EN-US',
     /**
+     * CCPU version value
+     * @type {String}
+     */
+    ccpuVersion: '12345_US',
+    /**
      * Parameter describes if performInteraction session was started on HMI
      * this flag set to true when UI.PerformInteraction request came on HMI
      * and set to false when HMI send response to SDL Core on
@@ -706,163 +741,163 @@ SDL.SDLModelData = Em.Object.create(
               "textFields": [
                 {
                   "name": "mainField1",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "mainField2",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "statusBar",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "mediaClock",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "mediaTrack",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "templateTitle",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 100,
                   "rows": 1
                 },
                 {
                   "name": "alertText1",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "alertText2",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "alertText3",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "scrollableMessageBody",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "initialInteractionText",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "navigationText1",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "navigationText2",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "ETA",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "totalDistance",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "audioPassThruDisplayText1",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "audioPassThruDisplayText2",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "sliderHeader",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "sliderFooter",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "menuName",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "secondaryText",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "tertiaryText",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "menuTitle",
-                  "characterSet": "TYPE2SET",
-                  "width": 500,
+                  "characterSet": "UTF_8",
+                  "width": 10,
                   "rows": 1
                 },
                 {
                   "name": "locationName",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "locationDescription",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "addressLines",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 },
                 {
                   "name": "phoneNumber",
-                  "characterSet": "TYPE2SET",
+                  "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
                 }
@@ -1027,7 +1062,7 @@ SDL.SDLModelData = Em.Object.create(
               ],
               "imageTypeSupported": ["STATIC", "DYNAMIC"],
               "numCustomPresetsAvailable": 8,
-              "templatesAvailable": ["TEXT_WITH_GRAPHIC", "BUTTONS_WITH_GRAPHIC", "GRAPHIC_WITH_TEXT"],
+              "templatesAvailable": ["MEDIA", "NON-MEDIA", "DEFAULT", "NAV_FULLSCREEN_MAP", 'WEB_VIEW'],
               "buttonCapabilities": [
                 {
                   "longPressAvailable": true,
@@ -1165,7 +1200,11 @@ SDL.SDLModelData = Em.Object.create(
                 "upDownAvailable": true,
                 "imageSupported": true,
                 "textSupported": true
-              }]
+              }],
+              "dynamicUpdateCapabilities": {
+                "supportedDynamicImageFieldNames": ["subMenuIcon", "menuIcon"],
+                "supportsDynamicSubMenus": true
+              }
             }]
           }],
         }
@@ -1187,7 +1226,7 @@ SDL.SDLModelData = Em.Object.create(
               "menuLayoutsAvailable": ["LIST"],
               "textFields": [{
                 "name": "mainField1",
-                "characterSet": "TYPE2SET",
+                "characterSet": "UTF_8",
                 "width": 500,
                 "rows": 1
               }],
@@ -1494,6 +1533,17 @@ SDL.SDLModelData = Em.Object.create(
           levelspan: 1
         }
       ]
+    },
+
+    /**
+     * Enum for media Player Indicator
+     */
+    exitCommandsEnum: {
+      'DRIVER_DISTRACTION_VIOLATION': -1,
+      'USER_EXIT': -2,
+      'UNAUTHORIZED_TRANSPORT_REGISTRATION': -3,
+      'RESOURCE_CONSTRAINT': -4,
+      'CLOSE_CLOUD_CONNECTION': -5
     }
   }
 );
