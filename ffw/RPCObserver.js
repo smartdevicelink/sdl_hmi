@@ -152,6 +152,7 @@ FFW.RPCObserver = Em.Object.extend(
             params.cmdIcon.value = params.cmdIcon.value + '?m=' + new Date().getTime();
           }
         }
+        
         if ('menuIcon' in params) {
           if (params.menuIcon.imageType === 'STATIC') {
             delete params.menuIcon;

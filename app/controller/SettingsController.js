@@ -68,8 +68,21 @@ SDL.SettingsController = Em.Object.create(
      * disallowed.
      */
     currentDeviceAllowance: null,
+
+    /**
+     * @description Value of CCPU version displayed in user input
+     */
+    editedCcpuVersionValue: "",
+
     onState: function(event) {
+      if(SDL.States.currentState.name === 'rpcconfig'){
+        FFW.RPCHelper.setCurrentAppID(null);
+      }
       SDL.States.goToStates('settings.' + event.goToState);
+      if('rpccontrol.rpcconfig' === event.goToState){
+        SDL.RPCControlConfigView.set('appNameLabel.content',event.appName);
+        FFW.RPCHelper.updateRpc(event.appID);
+      }
     },
     onChildState: function(event) {
       SDL.States.goToStates(
@@ -586,6 +599,13 @@ SDL.SettingsController = Em.Object.create(
         this.model.currentSeatModel.goToStates();
         SDL.States.goToStates('settings.seat');
         }
+    },
+
+    /**
+     * @description Saves new CCPU version value from user input
+     */
+    applyNewCcpuVersionValue: function() {
+      SDL.SDLModel.data.ccpuVersion = this.editedCcpuVersionValue;
     },
 
     /**

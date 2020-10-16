@@ -66,11 +66,41 @@ SDL.NonMediaController = Em.Object.create(
       this.set('currentAppId', applicationModel.appID);
       // set active model
       SDL.SDLController.set('model', applicationModel);
-      // send response
-      // FFW.BasicCommunication.ActivateApp( applicationModel.appID );
-      // Go to SDL state
+
+      let get_template_from_app_type = function() {
+        if (SDL.SDLController.model.appType) {
+          for (var i = 0; i < SDL.SDLController.model.appType.length; i++) {
+            if (SDL.SDLController.model.appType[i] == 'NAVIGATION' ||
+                SDL.SDLController.model.appType[i] == 'PROJECTION') {
+                return 'NAV_FULLSCREEN_MAP';
+              }
+              if (SDL.SDLController.model.appType[i] == 'WEB_VIEW') {
+                return 'WEB_VIEW';
+              }
+          }
+        }
+        return 'NON-MEDIA';
+      };
+
+      const template_name = SDL.SDLController.model.templateConfiguration.template == 'DEFAULT' ?
+                              get_template_from_app_type() :
+                              SDL.SDLController.model.templateConfiguration.template;
+
       SDL.InfoController.turnOnSDL();
-      //SDL.States.goToStates('info.nonMedia');
+      switch (template_name) {
+        case 'NAV_FULLSCREEN_MAP' : {
+          SDL.BaseNavigationView.update();
+          SDL.States.goToStates('navigationApp.baseNavigation');
+          break;
+        }
+        case 'WEB_VIEW' : {
+          SDL.States.goToStates('webViewApp');
+          break;
+        }
+        default: {
+          SDL.States.goToStates('info.nonMedia');
+        }
+      }
     },
     /**
      * Restore current application to active state

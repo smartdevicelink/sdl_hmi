@@ -142,6 +142,7 @@ getCurrentDisplayModeClass: function() {
     default: return '';
   }
 },
+
 /**
  * HMI element Select with list of supported image mode
  */
@@ -149,40 +150,11 @@ getCurrentDisplayModeClass: function() {
     elementId: 'imageMode',
     classNames: 'imageModeSelect',
     contentBinding: 'SDL.SDLModel.data.imageModeList',
-    selection: 'Highlighted mode',
-    change:function(){
-      SDL.InfoAppsView.findNewApps.setMode(this.selection);
-      SDL.InfoAppsView.Asist911.setMode(this.selection);
-      SDL.InfoAppsView.vehicleHealthReport.setMode(this.selection);
-      SDL.InfoAppsView.getDeviceList.setMode(this.selection);
-      SDL.InfoAppsView.listOfApplications.setMode(this.selection);
-      SDL.InfoAppsView.applicationsStore.setMode(this.selection);
-      SDL.AlertManeuverPopUp.setMode(this.selection);
-      SDL.InfoView.leftMenu.items.servicesButton.setMode(this.selection);
-      SDL.InfoView.leftMenu.items.appsButton.setMode(this.selection);
-      SDL.InfoView.leftMenu.items.calendarButton.setMode(this.selection);
-      SDL.InfoView.leftMenu.items.goToCD.setMode(this.selection);
-      SDL.InfoView.leftMenu.items.travelLinkButton.setMode(this.selection);
-      SDL.InfoView.leftMenu.items.sdlButton.setMode(this.selection);
-      SDL.TurnByTurnView.nextTurnIconImage.setMode(this.selection);
-      SDL.TurnByTurnView.turnIconImage.setMode(this.selection);
-      SDL.InteractionChoicesView.set('imageMode',this.selection);
-      SDL.InteractionChoicesView.updateIcons();
-      if (SDL.SDLController.model) {
-        SDL.SDLController.model.setMode(this.selection);
-        length=SDL.OptionsView.commands.items.length;
-        var commands = SDL.SDLController.model.get('currentCommandsList');
-        for(var i=0;i<length;i++){
-          SDL.OptionsView.commands.items[i].type.prototype.setMode(this.selection);
-          if(commands[i].isTemplate){
-          SDL.OptionsView.commands.items[i].type.prototype.setMode(this.selection);
-          }
-        }
-        SDL.OptionsView.commands.refreshItems();
-      }
-    }
+    valueBinding: 'SDL.SDLModel.data.imageMode',
+    selection: 'Highlighted mode'
   }
 ),
+
 
   keyboard: SDL.Button.extend({
         classNames: ['keyboard', 'button'],
@@ -627,17 +599,20 @@ getCurrentDisplayModeClass: function() {
             OkBtn: SDL.Button.create({
                 elementId: 'OK',
                 classNames: 'OkBtn',
+                classNameBindings: 'SDL.States.media.active:media_button',
                 time: 0,
-                presetName: 'OK',
+                getPresetName: function() {
+                  return SDL.States.media.active ? 'PLAY_PAUSE' : 'OK';
+                },
                 actionDown: function() {
 
                   this._super();
-                  SDL.SDLController.onSoftButtonOkActionDown(this.presetName);
+                  SDL.SDLController.onSoftButtonOkActionDown(this.getPresetName());
                 },
                 actionUp: function() {
 
                   this._super();
-                  SDL.SDLController.onSoftButtonOkActionUp(this.presetName);
+                  SDL.SDLController.onSoftButtonOkActionUp(this.getPresetName());
                 }
               }
             )

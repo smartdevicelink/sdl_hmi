@@ -999,7 +999,10 @@ SDL.SDLModel = Em.Object.extend({
     }
     if (SDL.SDLController.getApplicationModel(params.appID)) {
       for (var i in params) {
-        if (i === 'keyboardProperties') {
+        if (i === "appID") {
+          continue;
+        }
+        else if (i === 'keyboardProperties') {
           mergeKeyboardProperties(params[i]);
         } else {
           SDL.SDLController.getApplicationModel(params.appID).
@@ -1140,6 +1143,47 @@ SDL.SDLModel = Em.Object.extend({
       );
       return false;
     }
+  },
+
+  /**
+   * SDL UI SubtleAlert response handler show popup window
+   *
+   * @param {Object}
+   *            message Object with parameters come from SDLCore
+   * @param {Number}
+   *            subtleAlertRequestId Id of current handled request
+   */
+  onUISubtleAlert: function(message, subtleAlertRequestId) {
+    if (SDL.AlertPopUp.active) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'an Alert is active',
+        SDL.AlertPopUp.endTime - Date.now());
+    } else if (SDL.ScrollableMessage.active) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'a ScrollableMessage is active',
+        SDL.ScrollableMessage.endTime - Date.now());
+    } else if (SDL.InteractionChoicesView.active) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'a PerformInteraction is active',
+        SDL.InteractionChoicesView.endTime - Date.now());
+    } else if (SDL.SubtleAlertPopUp.active) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'another SubtleAlert is active',
+        SDL.SubtleAlertPopUp.endTime - Date.now());
+    } else if (SDL.AlertManeuverPopUp.activate) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'an AlertManeuver popup is active',
+        SDL.AlertManeuverPopUp.endTime - Date.now());
+    } else {
+      SDL.SubtleAlertPopUp.SubtleAlertActive(message, subtleAlertRequestId);
+      return true;
+    }
+    return false;
   },
 
   /**
@@ -1332,6 +1376,12 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
       SDL.TTSPopUp.ActivateTTS(message, files, appID);
+    } else {
+      FFW.TTS.sendError(
+       SDL.SDLModel.data.resultCode.WARNINGS, this.requestId, 'TTS.Speak',
+       'No TTS Chunks provided in Speak request'
+      );
+      this.requestId = null;
     }
   },
 
@@ -1496,7 +1546,9 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.TurnByTurnView.deactivate();
 
-      if (!SDL.SDLModel.data.phoneCallActive && reason == 'GENERAL') {
+      if (!SDL.SDLModel.data.phoneCallActive &&
+          !SDL.SDLModel.data.templateChangeInProgress &&
+          reason == 'GENERAL') {
         FFW.BasicCommunication.OnAppDeactivated(appID);
       }
     }

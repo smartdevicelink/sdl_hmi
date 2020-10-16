@@ -453,13 +453,19 @@
     -webkit-transition: 0.2s;
 }
 
-#OK.pressed {
+#buttonControls .OkBtn.media_button {
+    background: url(../images/home/controlButtons/PlayPauseButton.png) no-repeat;
+    background-position: -55px -55px;
+}
+
+#buttonControls .OkBtn.media_button.pressed {
+    background: url(../images/home/controlButtons/PlayPauseButton_pressed.png) no-repeat;
+    background-position: -55px -55px;
+}
+
+#buttonControls .OkBtn.pressed {
     background: url(../images/home/controlButtons/OkButton_pressed.png) no-repeat;
-    background-position: -55px -55px !important;
-    width: 89px !important;
-    height: 90px !important;
-    left: 55px !important;
-    top: 55px !important;
+    background-position: -55px -55px;
 }
 
 #app_controlButtons {

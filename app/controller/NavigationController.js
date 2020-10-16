@@ -49,7 +49,7 @@ SDL.NavigationController = Em.Object.create(
      * @param {Object} request
      */
     sendLocation: function(request) {
-      this.model.LocationDetails.push(
+      this.model.LocationDetails.pushObject(
         {
           coordinate: {
             latitudeDegrees: request.params.latitudeDegrees,
@@ -128,19 +128,35 @@ SDL.NavigationController = Em.Object.create(
      * @param {Object} request
      */
     subscribeWayPoints: function(request) {
-      if (!this.model.isSubscribedOnWayPoints) {
-        this.model.set('isSubscribedOnWayPoints', true);
-        FFW.Navigation.sendNavigationResult(
-          SDL.SDLModel.data.resultCode.SUCCESS,
-          request.id,
-          request.method
-        );
+      result = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeWayPoints');
+
+      if ('DO_NOT_RESPOND' == result) {
+        Em.Logger.log('Do not respond on this request');
+        return;
+      }
+
+      if(FFW.RPCHelper.isSuccessResultCode(result)){
+        if (!this.model.isSubscribedOnWayPoints) {
+          this.model.set('isSubscribedOnWayPoints', true);
+          FFW.Navigation.sendNavigationResult(
+            result,
+            request.id,
+            request.method
+          );
+        } else {
+          FFW.Navigation.sendError(
+            SDL.SDLModel.data.resultCode.REJECTED,
+            request.id,
+            request.method,
+            'SDL Should not send this request more than once'
+          );
+        }
       } else {
         FFW.Navigation.sendError(
-          SDL.SDLModel.data.resultCode.REJECTED,
+          result,
           request.id,
           request.method,
-          'SDL Should not send this request more than once'
+          'Erroneous response is assigned by settings'
         );
       }
     },

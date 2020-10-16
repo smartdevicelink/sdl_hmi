@@ -196,7 +196,7 @@ SDL.TurnByTurnView = SDL.SDLAbstractView.create(
           if (this._parentView != null && this._parentView.turnIcon) {
             return this._parentView.turnIcon;
           } else {
-            return '';
+            return null;
           } 
         }.property('this.parentView.turnIcon')       
       }
@@ -213,7 +213,7 @@ SDL.TurnByTurnView = SDL.SDLAbstractView.create(
           if (null!=this._parentView && this._parentView.nextTurnIcon) {
             return this._parentView.nextTurnIcon;
           } else {
-            return '';
+            return null;
           } 
         }.property('this.parentView.nextTurnIcon')       
       }
@@ -247,6 +247,14 @@ SDL.TurnByTurnView = SDL.SDLAbstractView.create(
           }
         )
       }
-    )
+    ),
+
+    /**
+     * @description Callback for display image mode change.
+     */
+    imageModeChanged: function() { 
+      SDL.TurnByTurnView.nextTurnIconImage.setMode(SDL.SDLModel.data.imageMode);
+      SDL.TurnByTurnView.turnIconImage.setMode(SDL.SDLModel.data.imageMode);
+    }.observes('SDL.SDLModel.data.imageMode')
   }
 );

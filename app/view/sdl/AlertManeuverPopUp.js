@@ -51,7 +51,10 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     content1: 'Title',
     content2: 'Text',
     activate: false,
+    endTime: null,
     timer: null,
+    timeout: 5000,
+    alertManeuerRequestId: 0,
     /**
      * Wagning image on Alert Maneuver PopUp
      */
@@ -94,8 +97,15 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      */
     softbuttons: Em.ContainerView.extend(
       {
-        elementId: 'alertManeuverSoftButtons',
-        classNames: 'alertManeuverSoftButtons'
+        childViews: [
+          'buttons'
+        ],
+        buttons: Em.ContainerView.extend(
+          {
+            elementId: 'alertManeuverSoftButtons',
+            classNames: 'alertManeuverSoftButtons'
+          }
+        )
       }
     ),
     /**
@@ -126,23 +136,26 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      * @param {Object} params
      */
     addSoftButtons: function(params) {
-      if (params) {
-        var softButtonsClass;
-        switch (params.length) {
-          case 1:
-            softButtonsClass = 'one';
-            break;
-          case 2:
-            softButtonsClass = 'two';
-            break;
-          case 3:
-            softButtonsClass = 'three';
-            break;
-          case 4:
-            softButtonsClass = 'four';
-            break;
-        }
+      const softButtons = params.softButtons;
+      if (!softButtons) {
+        return;
+      }
 
+      var softButtonsClass;
+      switch (softButtons.length) {
+        case 1:
+          softButtonsClass = 'one';
+          break;
+        case 2:
+          softButtonsClass = 'two';
+          break;
+        case 3:
+          softButtonsClass = 'three';
+          break;
+        case 4:
+          softButtonsClass = 'four';
+          break;
+      }
         let getTemplateName = function(image){
             if (image == null){
               return 'text';
@@ -155,7 +168,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
 
         for (var i = 0; i < params.length; i++) {
 
-          this.get('softbuttons.childViews').pushObject(
+          this.get('softbuttons.buttons.childViews').pushObject(
             SDL.Button.create(
               SDL.PresetEventsCustom, {
                 softButtonID: params[i].softButtonID,
@@ -178,31 +191,36 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
             )
           );
         }
+      },
+    /**
+     * Deactivate PopUp
+     */
+    deactivate: function(message) {
+      if (SDL.TTSPopUp.active) {
+        SDL.TTSPopUp.DeactivateTTS();
       }
-    },
-    AlertManeuverActive: function(message) {
-      this.get('softbuttons.childViews').removeObjects(
-        this.get('softbuttons.childViews').filterProperty('softButtonID')
+      FFW.Navigation.sendNavigationResult(
+        SDL.SDLModel.data.resultCode.SUCCESS,
+        this.alertManeuerRequestId,
+        'Navigation.AlertManeuver'
       );
+      this.set('activate', false );
+      this.set('alertManeuerRequestId', 0);
+    },
 
-      var params = message.params;
-      if (params.softButtons) {
-          this.addSoftButtons( params.softButtons );
-      }
+    AlertManeuverActive: function(message) {
+      this.softbuttons.buttons.removeAllChildren();
+      this.softbuttons.buttons.rerender();
 
-      this.set( 'activate', true );
+      this.addSoftButtons(message.params);
+
+      this.set('activate', true );
+      this.set('alertManeuerRequestId', message.id);
 
       clearTimeout( this.timer );
-
-      var self = this;
-      this.timer = setTimeout( function() {
-          self.set( 'activate', false );
-          FFW.Navigation.sendNavigationResult(
-            SDL.SDLModel.data.resultCode.SUCCESS,
-            message.id,
-            message.method
-          );
-      }, 5000 );
+      this.timer = setTimeout( () => {
+        this.deactivate(message);
+      }, this.timeout);
     }
   }
 );
