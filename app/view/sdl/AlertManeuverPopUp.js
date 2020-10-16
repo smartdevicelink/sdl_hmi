@@ -142,8 +142,19 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
             softButtonsClass = 'four';
             break;
         }
+
+        let getTemplateName = function(image){
+            if (image == null){
+              return 'text';
+            }
+            if (image.isTemplate){
+              return 'rightTextOverLay'
+            }
+            return 'rightText';
+          };
+
         for (var i = 0; i < params.length; i++) {
-          
+
           this.get('softbuttons.childViews').pushObject(
             SDL.Button.create(
               SDL.PresetEventsCustom, {
@@ -156,12 +167,11 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
                   'getCurrentDisplayModeClass'],
 
                 getCurrentDisplayModeClass: function() {
-                  return SDL.ControlButtons.getCurrentDisplayModeClass(
-                  SDL.ControlButtons.imageMode.selection);
+                  return SDL.ControlButtons.getCurrentDisplayModeClass();
                 }.property('SDL.ControlButtons.imageMode.selection'),
 
-                isHighlighted: params[i].isHighlighted ? true : false,
-                templateName: params[i].image ? params[i].image.isTemplate ? 'rightTextOverLay' : 'rightText' : 'text',
+                isHighlighted: params[i].isHighlighted,
+                templateName:getTemplateName(params[i].image),
                 systemAction: params[i].systemAction,
                 appID: params.appID
               }
