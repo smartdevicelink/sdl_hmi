@@ -143,11 +143,16 @@ FFW.RPCClient = Em.Object.create(
        if(observerName === "SDL"){
         observerName = "BasicCommunication";
        }
+      }
 
+      if (observerName in this.observerMap) {
        // Verification of unsupported params and remove them from original
        // request Changing filenames with backslash - escape the \ with %5C
        // due to Issue 45051 in chromium
        this.observerMap[observerName].checkImage(jsonObj.params);
+      } else if (observerName != "") {
+        Em.Logger.log(`RPCClient: No observer found for interface "${observerName}"`);
+        return;
       }
 
       // Verification of unsupported params and remove them from original

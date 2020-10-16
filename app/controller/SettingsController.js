@@ -68,8 +68,21 @@ SDL.SettingsController = Em.Object.create(
      * disallowed.
      */
     currentDeviceAllowance: null,
+
+    /**
+     * @description Value of CCPU version displayed in user input
+     */
+    editedCcpuVersionValue: "",
+
     onState: function(event) {
+      if(SDL.States.currentState.name === 'rpcconfig'){
+        FFW.RPCHelper.setCurrentAppID(null);
+      }
       SDL.States.goToStates('settings.' + event.goToState);
+      if('rpccontrol.rpcconfig' === event.goToState){
+        SDL.RPCControlConfigView.set('appNameLabel.content',event.appName);
+        FFW.RPCHelper.updateRpc(event.appID);
+      }
     },
     onChildState: function(event) {
       SDL.States.goToStates(
@@ -363,12 +376,6 @@ SDL.SettingsController = Em.Object.create(
       if (!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
         Em.Logger.log('PTU retry: starting retry sequence');
         SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
-        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
-        SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
-          function() {
-            sendOnSystemRequest();
-          }, 1000
-        );
         return;
       }
 
@@ -562,12 +569,11 @@ SDL.SettingsController = Em.Object.create(
 
         FLAGS.set('PTUWithModemEnabled', false); // switch back to PTU via mobile
 
-        if (urls.length > 0) {
-          urls.forEach(url => {
-            SDL.SettingsController.OnSystemRequestHandler(url);
-          });
+        if (urls.length > 0 && FLAGS.ExternalPolicies === true) {
+          SDL.SettingsController.OnSystemRequestHandler(urls[0]);
+          SDL.SettingsController.policyUpdateRetry();
         } else {
-          FFW.BasicCommunication.OnSystemRequest('PROPRIETARY');
+          SDL.SettingsController.OnSystemRequestHandler();
         }
       };
 
@@ -620,6 +626,13 @@ SDL.SettingsController = Em.Object.create(
         this.model.currentSeatModel.goToStates();
         SDL.States.goToStates('settings.seat');
         }
+    },
+
+    /**
+     * @description Saves new CCPU version value from user input
+     */
+    applyNewCcpuVersionValue: function() {
+      SDL.SDLModel.data.ccpuVersion = this.editedCcpuVersionValue;
     },
 
     /**

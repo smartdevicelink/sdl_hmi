@@ -62,7 +62,8 @@ SDL.NavigationView = Em.ContainerView.create(
                   className: 'button',
                   text: SDL.NavigationModel.LocationDetails[i].locationName,
                   disabled: false,
-                  icon: SDL.NavigationModel.LocationDetails[i].locationImage.value,
+                  icon: SDL.NavigationModel.LocationDetails[i].locationImage 
+                    ? SDL.NavigationModel.LocationDetails[i].locationImage.value : '',
                   templateName: SDL.NavigationModel.LocationDetails[i].locationImage
                     ? '' : 'text',
                   action: 'openWayPoint',
@@ -112,6 +113,14 @@ SDL.NavigationView = Em.ContainerView.create(
         action: 'setRoutes',
         target: 'SDL.NavigationController'
       }
-    )
+    ),
+
+    /**
+     * @description Callback for display image mode change.
+     */
+    imageModeChanged: function() { 
+      SDL.NavigationView.POIButton.setMode(SDL.SDLModel.data.imageMode);
+      SDL.NavigationView.navigate.setMode(SDL.SDLModel.data.imageMode);
+    }.observes('SDL.SDLModel.data.imageMode')
   }
 );

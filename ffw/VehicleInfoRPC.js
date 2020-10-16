@@ -250,21 +250,45 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
+     * @param {String}
+     *            info
      */
-    sendVIResult: function(resultCode, id, method) {
-      Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+    sendVIResult: function(resultCode, id, method, info) {
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
+        this.errorResponsePull[id] = null;
 
+        this.sendVIResult(
+          errorStruct.code,
+          id,
+          method,
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+        );
+        return;
+      }
+
+      Em.Logger.log('FFW.VI.' + method + 'Response');
+      if (is_successful_code) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
           'result': {
-            'code': resultCode,
+            'code': resultCode, // type (enum) from SDL protocol
             'method': method
           }
         };
+
+        if (info) {
+          JSONMessage.result.info = info;
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     /**
@@ -277,17 +301,20 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
      */
     sendVISubscribeVehicleDataResult: function(resultCode, id, method, data) {
       Em.Logger.log('FFW.' + method + 'Response');
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
 
-      // send repsonse
-      var JSONMessage = {
-        'jsonrpc': '2.0',
-        'id': id,
-        'result': data
-      };
-
-      JSONMessage.result.code = resultCode;
-      JSONMessage.result.method = method;
-      this.sendMessage(JSONMessage);
+        // send repsonse
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': id,
+          'result': data,
+        };
+        JSONMessage.result.code = resultCode;
+        JSONMessage.result.method = method;
+        this.sendMessage(JSONMessage);
+      } else {
+        this.sendGetVehicleDataError(resultCode, id, method,'Erroneous response is assigned by settings', data);
+      }
     },
     /**
      * Send error response from onRPCRequest

@@ -201,11 +201,24 @@ FFW.TTS = FFW.RPCObserver.create(
           // this.errorResponsePull[request.id].type + " type. Request was not
           // processed."); this.errorResponsePull[request.id] = null;  return;
           // } }
-          SDL.SDLModel.setProperties(request.params);
+          resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'ttsSetGlobalProperties');
+          if ('DO_NOT_RESPOND' == resultCode) {
+            Em.Logger.log('Do not respond on this request');
+            return;
+          }
+
+          let info = null;
+          
+          if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
+            SDL.SDLModel.setProperties(request.params);
+          } else {
+            info = 'Erroneous response is assigned by settings';
+          }
           this.sendTTSResult(
-            SDL.SDLModel.data.resultCode.SUCCESS,
+            resultCode,
             request.id,
-            request.method
+            request.method,
+            info
           );
           break;
         }
@@ -369,20 +382,28 @@ FFW.TTS = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
+     * @param {String}
+     *            info
      */
-    sendTTSResult: function(resultCode, id, method) {
-      if (this.errorResponsePull[id]) {
-        this.sendError(
-          this.errorResponsePull[id].code, id, method,
-          'Unsupported ' + this.errorResponsePull[id].type +
-          ' type. Available data in request was processed.'
-        );
+    sendTTSResult: function(resultCode, id, method, info) {
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
         this.errorResponsePull[id] = null;
+
+        this.sendTTSResult(
+          errorStruct.code,
+          id,
+          method,
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+        );
         return;
       }
-      Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
 
+      Em.Logger.log('FFW.TTS.' + method + 'Response');
+      if (is_successful_code) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -392,7 +413,14 @@ FFW.TTS = FFW.RPCObserver.create(
             'method': method
           }
         };
+
+        if (info) {
+          JSONMessage.result.info = info;
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     /*
