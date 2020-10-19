@@ -681,18 +681,20 @@ SDL.ABSAppModel = Em.Object.extend(
      */
     deleteSubMenu: function(menuID) {
       var commandsList = this.commandsList;
+
       for (id in commandsList) {
         var filteredObjects = commandsList[id].filterProperty('menuID', menuID);
+
         if (filteredObjects.length > 0) {
-          commandsList[id].removeObjects(
-            filteredObjects
-          );
-          if (menuID in commandsList) {
-            delete(commandsList[menuID])
-          }
-          return SDL.SDLModel.data.resultCode.SUCCESS;
+          commandsList[id].removeObjects(filteredObjects);
         }
       }
+
+      if (menuID in commandsList) {
+        delete(commandsList[menuID])
+        return SDL.SDLModel.data.resultCode.SUCCESS;
+      }
+
       return SDL.SDLModel.data.resultCode.INVALID_ID;
     },
     /**
