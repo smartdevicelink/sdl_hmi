@@ -198,7 +198,7 @@ SDL.RModel = SDL.SDLModel.extend({
         'cmdID': -2,
         'vrCommands': ['USER_EXIT ' + params.appName],
         'appID': params.appID,
-        'type': 'Command'
+        'type': 'Application'
       };
     this.addCommandVR(message);
 
