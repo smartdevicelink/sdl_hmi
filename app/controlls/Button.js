@@ -192,6 +192,11 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
           {{bindAttr src="view.icon"}} />'
       ),
 
+      iconOverlay: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
+        '<img class="ico" {{bindAttr src="view.icon"}} />'
+      ),
+
       subtle: Em.Handlebars.compile(
         '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
         '<span>{{view.text}}</span>'

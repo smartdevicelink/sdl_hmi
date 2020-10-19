@@ -182,6 +182,7 @@ SDL.InfoAppsView = Em.ContainerView.create({
     SDL.InfoAppsView.Asist911.setMode(SDL.SDLModel.data.imageMode);
     SDL.InfoAppsView.vehicleHealthReport.setMode(SDL.SDLModel.data.imageMode);
     SDL.InfoAppsView.getDeviceList.setMode(SDL.SDLModel.data.imageMode);
+    SDL.InfoAppsView.applicationsStore.setMode(SDL.SDLModel.data.imageMode);
   }.observes('SDL.SDLModel.data.imageMode')
 }
 );

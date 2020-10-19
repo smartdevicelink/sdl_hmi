@@ -973,6 +973,23 @@ SDL.SDLModel = Em.Object.extend({
           request.params, messageRequestId
         );
       }
+      if(request.params.softButtons) {
+        var imageList = [];
+        for(var i = 0; i < request.params.softButtons.length; i++) {
+          if(request.params.softButtons[i].image) {
+            imageList.push(request.params.softButtons[i].image.value);
+          }
+        }
+        var callback = function(failed) {
+          if(failed) {
+            FFW.UI.sendUIResult(
+              SDL.SDLModel.data.resultCode.WARNINGS, 
+              request.id, 
+              request.method, "Requested image(s) not found");
+          }
+        };
+        SDL.SDLModel.validateImages(request.id, callback, imageList);
+      }
       return true;
     } else {
       FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id,
@@ -1012,6 +1029,92 @@ SDL.SDLModel = Em.Object.extend({
     } else {
       console.error('CriticalError! No app registered with current appID!');
     }
+  },
+
+  /**
+   * List of images(paths to images) to check.
+   */
+  imageCheckList: {},
+
+  /**
+   * @function validateImages
+   * @description Checks if image exists by path provided in request data 
+   * @param requestID - request id, to which images belong
+   * @param callback - user callback after check
+   * @param imageList - list of paths to check 
+   */
+  validateImages: function(requestID, callback, imageList) {
+    if(imageList == null || imageList.length == 0) {
+      callback(false);
+      return;
+    }
+
+    this.imageCheckList[requestID] = [];
+    const filteredImageList = imageList.filter(function(item, pos) {
+          return imageList.indexOf(item) == pos;
+    });
+
+    filteredImageList.forEach(image => {
+      this.imageCheckList[requestID].push({
+        'path': image,
+        'checkResult': null
+      });
+    });
+
+    for(var i = 0; i < this.imageCheckList[requestID].length; i++) {
+      var image = new Image();
+      image.onload = function() { 
+        for(var i = 0; i < SDL.SDLModel.imageCheckList[requestID].length; i++) {
+          var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
+          var path = SDL.SDLModel.imageCheckList[requestID][i].path;
+          if(path === formattedImgPath) {
+            SDL.SDLModel.imageCheckList[requestID][i].checkResult = true;
+            break;
+          }
+        }
+        SDL.SDLModel.finalizeImageValidation(requestID, callback);
+      };
+      image.onerror = function() { 
+        for(var i = 0; i < SDL.SDLModel.imageCheckList[requestID].length; i++) {
+          var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
+          var path = SDL.SDLModel.imageCheckList[requestID][i].path;
+          if(path === formattedImgPath) {
+            SDL.SDLModel.imageCheckList[requestID][i].checkResult = false;
+            break;
+          }
+        }
+        SDL.SDLModel.finalizeImageValidation(requestID, callback);
+      };
+      image.src = this.imageCheckList[requestID][i].path;
+    }
+  },
+  
+  /**
+   * @function finalizeImageValidation
+   * @description Collects result of images validation. 
+   * If validation is finished - calls user callback function.
+   * @param callback - user callback.
+   */
+  finalizeImageValidation: function(requestID, callback) {
+    var failed = false;
+    var BreakException = {};
+    try {
+      SDL.SDLModel.imageCheckList[requestID].forEach(image => {
+        if (image.checkResult === null) {
+          throw BreakException;
+        }
+        if (!image.checkResult) {
+          failed = true;
+        }
+      });
+    } catch (exception) {
+      if (exception == BreakException) {
+        return;
+      }
+    }
+
+    delete SDL.SDLModel.imageCheckList.requestID;
+    callback(failed);
   },
 
   /**
@@ -1207,9 +1310,37 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.InteractionChoicesView.cancelID = message.params.cancelID;
 
-      if (message.params && message.params.choiceSet == null) {
-        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, 
-          message.id, 'UI.PerformInteraction');
+      if (message.params && message.params.choiceSet != null) {
+        imageList = [];
+        if(message.params.vrHelp) {
+          for(var i = 0; i < message.params.vrHelp.length; i++) {
+            var image = message.params.vrHelp[i].image;
+            if(image) {
+              imageList.push(image.value);
+            }
+          }
+        }
+        if(message.params.choiceSet) {
+          for(var i = 0; i < message.params.choiceSet.length; i++) {
+            var image = message.params.choiceSet[i].image;
+            if(image) {
+              imageList.push(image.value);
+            }
+          }
+        }
+                                                                        
+        var callback = function(failed) {
+          var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+          var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+          FFW.UI.sendUIResult(
+            failed ? WARNINGS : SUCCESS, 
+            message.id, 
+            message.method, 
+            failed ? "Requested image(s) not found" : null);
+        }
+        SDL.SDLModel.validateImages(message.id, callback, imageList);
+
         return true;
       }
 

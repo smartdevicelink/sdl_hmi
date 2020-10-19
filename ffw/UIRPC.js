@@ -266,9 +266,35 @@ FFW.UI = FFW.RPCObserver.create(
               return;
             }
             SDL.InfoAppsView.showAppList();
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
+
+            imageList = [];
+            if(request.params.graphic) {
+              imageList.push(request.params.graphic.value);
+            }
+            if(request.params.secondaryGraphic) {
+              imageList.push(request.params.secondaryGraphic.value);
+            }
+            if(request.params.softButtons) {
+              for(var i = 0; i < request.params.softButtons.length; i++) {
+                var image = request.params.softButtons[i].image;
+                if(image) {
+                  imageList.push(image.value);
+                }
+              }
+            }
+
+            var callback = function(failed) {
+              var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+              var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+              FFW.UI.sendUIResult(
+                failed ? WARNINGS : SUCCESS, 
+                request.id, 
+                request.method, 
+                failed ? "Requested image(s) not found" : null);
+            }
+            SDL.SDLModel.validateImages(request.id, callback, imageList);
+
             if (sendCapabilityUpdated) {
               let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
               FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
@@ -305,6 +331,31 @@ FFW.UI = FFW.RPCObserver.create(
           
           if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
             SDL.SDLModel.setProperties(request.params);
+
+            var imageList = [];
+            if(request.params.menuIcon) {
+              imageList.push(request.params.menuIcon.value);      
+            }
+
+            if(request.params.vrHelp) {
+              for(var i = 0; i < request.params.vrHelp.length; i++) {
+                if(request.params.vrHelp[i].image) {
+                  imageList.push(request.params.vrHelp[i].image.value);      
+                }
+              }
+            }
+
+            var callback = function(failed) {
+              var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+              var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+              FFW.Navigation.sendNavigationResult(
+                failed ? WARNINGS : SUCCESS, 
+                request.id, 
+                request.method, 
+                failed ? "Requested image(s) not found" : null);
+            }
+            SDL.SDLModel.validateImages(request.id, callback, imageList);
           } else {
             info = 'Erroneous response is assigned by settings';
           }
@@ -1703,14 +1754,12 @@ FFW.UI = FFW.RPCObserver.create(
           'id': id,
           'result': {
             'code': resultCode, // type (enum) from SDL protocol
-            'method': method
+            'method': method,
           }
         };
-
-        if (info) {
+        if(info != null) {
           JSONMessage.result.info = info;
         }
-
         this.sendMessage(JSONMessage);
       } else {
         this.sendError(resultCode, id, method, info);
