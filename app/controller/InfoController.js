@@ -423,7 +423,7 @@ SDL.InfoController = Em.Object.create(
       return new Promise( (resolve, reject) => {
         if (!(policyAppID in SDL.InfoController.appPackageDownloadUrlsMap)) {
           Em.Logger.log(`App store: download URL for ${policyAppID} was not found. Assume bundle was installed manually.`);
-          resolve();
+          return resolve();
         }
 
         let download_url = SDL.InfoController.appPackageDownloadUrlsMap[policyAppID];
@@ -443,7 +443,7 @@ SDL.InfoController = Em.Object.create(
 
           if (params.success == false) {
             Em.Logger.log('App store: Bundle downloading was not successful');
-            reject();
+            return reject();
           }
 
           Em.Logger.log('App store: Bundle was downloaded successfully');
@@ -489,7 +489,7 @@ SDL.InfoController = Em.Object.create(
 
           if (params.success == false) {
             Em.Logger.log('App store: Manifest loading was not successful');
-            reject();
+            return reject();
           }
 
           Em.Logger.log('App store: Manifest was loaded successfully');
@@ -524,13 +524,13 @@ SDL.InfoController = Em.Object.create(
         }
         catch {
           Em.Logger.log(`App store: failed to parse JSON content`);
-          reject();
+          return reject();
         }
 
         Em.Logger.log(`App store: manifest parsed successfully`);
         if (!('entrypoint' in bundle_json)) {
           Em.Logger.log(`App store: entrypoint is not specified - use default`);
-          resolve("index.html");
+          return resolve("index.html");
         }
 
         resolve(bundle_json['entrypoint']);

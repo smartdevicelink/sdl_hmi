@@ -417,7 +417,7 @@ SDL.SettingsController = Em.Object.create(
 
           if (params.success == false) {
             Em.Logger.log('PTU: Downloading PTS was not successful');
-            reject();
+            return reject();
           }
 
           Em.Logger.log('PTU: PTS downloaded successfully');
@@ -492,7 +492,7 @@ SDL.SettingsController = Em.Object.create(
 
           if (params.success == false) {
             Em.Logger.log('PTU: PTU save was not successful');
-            reject();
+            return reject();
           }
 
           Em.Logger.log('PTU: PTU saved successfully');
