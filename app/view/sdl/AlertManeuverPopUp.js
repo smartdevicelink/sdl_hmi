@@ -56,6 +56,10 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     timeout: 5000,
     alertManeuerRequestId: 0,
     /**
+     * @desc Defines whether icons paths verified successfully.
+     */
+    iconsAreValid: false,
+    /**
      * Wagning image on Alert Maneuver PopUp
      */
     image: Em.View.extend(
@@ -146,6 +150,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
           break;
       }
 
+      var imageList = [];
       for (var i = 0; i < softButtons.length; i++) {
         let get_template_type = function(button_type) {
           switch (button_type) {
@@ -155,6 +160,10 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
               return "rightText";
           }
           return "text";
+        }
+
+        if (softButtons[i].image) {
+          imageList.push(softButtons[i].image.value);
         }
 
         this.get('softbuttons.buttons.childViews').pushObject(
@@ -172,6 +181,12 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
           )
         );
       }
+
+      var callback = function(failed) {
+        SDL.AlertManeuverPopUp.iconsAreValid = !failed;
+      }
+
+      SDL.SDLModel.validateImages(params.appID, callback, imageList);
     },
     /**
      * Deactivate PopUp
@@ -180,10 +195,17 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       if (SDL.TTSPopUp.active) {
         SDL.TTSPopUp.DeactivateTTS();
       }
+
+      const resultCode = this.iconsAreValid ?
+        SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
+      const info = this.iconsAreValid ?
+        null : "Requested image(s) not found";
+
       FFW.Navigation.sendNavigationResult(
-        SDL.SDLModel.data.resultCode.SUCCESS,
+        resultCode,
         this.alertManeuerRequestId,
-        'Navigation.AlertManeuver'
+        'Navigation.AlertManeuver',
+        info
       );
       this.set('activate', false );
       this.set('alertManeuerRequestId', 0);
@@ -193,6 +215,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       this.softbuttons.buttons.removeAllChildren();
       this.softbuttons.buttons.rerender();
 
+      this.set('iconsAreValid', true);
       this.addSoftButtons(message.params);
 
       this.set('activate', true );
