@@ -513,12 +513,17 @@ SDL.ABSAppModel = Em.Object.extend(
         this.commandsList[parentID] = [];
       }
 
-      var commands = this.get('commandsList.' + parentID);
-      result = FFW.RPCHelper.getCustomResultCode(this.appID, 'uiAddCommand');
+      const is_sdl_request = request.id >= 0;
+      let commands = this.get('commandsList.' + parentID);
+      let result = SDL.SDLModel.data.resultCode.SUCCESS;
 
-      if ('DO_NOT_RESPOND' == result) {
-        Em.Logger.log('Do not respond on this request');
-        return;
+      if (is_sdl_request) {
+        result = FFW.RPCHelper.getCustomResultCode(this.appID, 'uiAddCommand');
+
+        if ('DO_NOT_RESPOND' == result) {
+          Em.Logger.log('Do not respond on this request');
+          return;
+        }
       }
 
       if (FFW.RPCHelper.isSuccessResultCode(result)) {
@@ -572,7 +577,7 @@ SDL.ABSAppModel = Em.Object.extend(
               return;
             }
 
-            if (request.id >= 0) {
+            if (is_sdl_request) {
               FFW.UI.sendUIResult(result, request.id, request.method);
             }
     	    } else {
