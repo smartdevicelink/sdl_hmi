@@ -116,6 +116,16 @@ SDL.List = Em.ContainerView.extend({
     this.items.splice(id, 1);
     this.list.refresh();
   },
+ 
+  /** Method setting up display mode for correspond components */
+  setMode: function(mode){
+   var items = this.list.get('childViews');
+
+   for (var i = 0; i < items.length; ++i) {
+     var button = items[i];
+     button.setMode(mode);
+   }
+ },
 
   /** List components */
   childViews: [

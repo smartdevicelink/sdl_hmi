@@ -605,10 +605,12 @@ getCurrentDisplayModeClass: function() {
                   return SDL.States.media.active ? 'PLAY_PAUSE' : 'OK';
                 },
                 actionDown: function() {
+
                   this._super();
                   SDL.SDLController.onSoftButtonOkActionDown(this.getPresetName());
                 },
                 actionUp: function() {
+
                   this._super();
                   SDL.SDLController.onSoftButtonOkActionUp(this.getPresetName());
                 }

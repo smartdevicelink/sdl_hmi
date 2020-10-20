@@ -124,6 +124,19 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
         templateName: 'text'
       }
     ),
+
+    /**
+     * @description Callback for display image mode change.
+     */
+    imageModeChanged: function() {
+      var items = this.get('softbuttons.buttons.childViews');
+      for (var i = 0; i < items.length; ++i) {
+          var button = items[i];
+          button.setMode(SDL.SDLModel.data.imageMode);
+      }
+      this.closeButton.setMode(SDL.SDLModel.data.imageMode);
+    }.observes('SDL.SDLModel.data.imageMode'),
+
     /**
      * @desc Function creates Soft Buttons on AlertPoUp
      * @param {Object} params
@@ -150,18 +163,24 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
           break;
       }
 
-      var imageList = [];
-      for (var i = 0; i < softButtons.length; i++) {
-        let get_template_type = function(button_type) {
-          switch (button_type) {
-            case "IMAGE":
-              return "icon";
-            case "BOTH":
-              return "rightText";
-          }
-          return "text";
+      let is_template = function(image) {
+        return image != null && image.isTemplate;
+      }
+
+      let get_template_type = function(button_type, image) {
+        switch (button_type) {
+          case "IMAGE":
+            return is_template(image) ? "iconOverlay" : "icon";
+
+          case "BOTH":
+            return is_template(image) ? "rightTextOverLay" : "rightText";
         }
 
+        return "text";
+      }
+
+      var imageList = [];
+      for (var i = 0; i < softButtons.length; i++) {
         if (softButtons[i].image) {
           imageList.push(softButtons[i].image.value);
         }
@@ -174,7 +193,15 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
               text: softButtons[i].text,
               classNames: 'list-item softButton ' + softButtonsClass,
               elementId: 'softButton' + i,
-              templateName: get_template_type(softButtons[i].type),
+              classNameBindings: ['isHighlighted:isHighlighted',
+                  'getCurrentDisplayModeClass'],
+
+              getCurrentDisplayModeClass: function() {
+                return SDL.ControlButtons.getCurrentDisplayModeClass();
+              }.property('SDL.ControlButtons.imageMode.selection'),
+
+              isHighlighted: softButtons[i].isHighlighted,
+              templateName: get_template_type(softButtons[i].type, softButtons[i].image),
               systemAction: softButtons[i].systemAction,
               appID: params.appID
             }
