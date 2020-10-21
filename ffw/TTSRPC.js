@@ -386,7 +386,7 @@ FFW.TTS = FFW.RPCObserver.create(
      *            info
      */
     sendTTSResult: function(resultCode, id, method, info) {
-      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      var is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
       if (is_successful_code && this.errorResponsePull[id] != null) {
         // If request was successful but some error was observed upon validation
         // Then result code assigned by RPCController should be considered instead
@@ -402,6 +402,11 @@ FFW.TTS = FFW.RPCObserver.create(
         return;
       }
 
+      // (&& !params) - params take precedent over info
+      if (info && resultCode === SDL.SDLModel.data.resultCode.WARNINGS) {
+        is_successful_code = false;
+      }
+
       Em.Logger.log('FFW.TTS.' + method + 'Response');
       if (is_successful_code) {
         // send repsonse
@@ -414,9 +419,11 @@ FFW.TTS = FFW.RPCObserver.create(
           }
         };
 
-        if (info) {
-          JSONMessage.result.info = info;
-        }
+
+        // SDL success response schema does not have info param as of 7.0
+        //if (info) {
+          //JSONMessage.result.info = info;
+        //}
 
         this.sendMessage(JSONMessage);
       } else {
