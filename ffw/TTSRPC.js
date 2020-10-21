@@ -419,7 +419,6 @@ FFW.TTS = FFW.RPCObserver.create(
           }
         };
 
-
         // SDL success response schema does not have info param as of 7.0
         //if (info) {
           //JSONMessage.result.info = info;
