@@ -1732,12 +1732,6 @@ FFW.UI = FFW.RPCObserver.create(
     sendUIResult: function(resultCode, id, method, info) {
       var is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
 
-      // if no params also, params take precedent over info
-      if (info
-        && resultCode === SDL.SDLModel.data.resultCode.WARNINGS) {
-          is_successful_code = false;
-      }
-
       if (is_successful_code && this.errorResponsePull[id] != null) {
         // If request was successful but some error was observed upon validation
         // Then result code assigned by RPCController should be considered instead
@@ -1751,6 +1745,11 @@ FFW.UI = FFW.RPCObserver.create(
           `Unsupported ${errorStruct.type} type. Available data in request was processed.`
         );
         return;
+      }
+
+      // (&& !params) - params take precedent over info
+      if (info && resultCode === SDL.SDLModel.data.resultCode.WARNINGS) {
+        is_successful_code = false;
       }
 
       Em.Logger.log('FFW.UI.' + method + 'Response');
