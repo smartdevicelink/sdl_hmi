@@ -1730,7 +1730,7 @@ FFW.UI = FFW.RPCObserver.create(
      *            info
      */
     sendUIResult: function(resultCode, id, method, info) {
-      var is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
       if (is_successful_code && this.errorResponsePull[id] != null) {
         // If request was successful but some error was observed upon validation
         // Then result code assigned by RPCController should be considered instead
@@ -1746,13 +1746,12 @@ FFW.UI = FFW.RPCObserver.create(
         return;
       }
 
-      // (&& !params) - params take precedent over info
-      if (info && resultCode === SDL.SDLModel.data.resultCode.WARNINGS) {
-        is_successful_code = false;
-      }
+      // TODO params take precedent over info:
+      //  is_successful_code && (params || !info);
+      const result_response = is_successful_code && !info;
 
       Em.Logger.log('FFW.UI.' + method + 'Response');
-      if (is_successful_code) {
+      if (result_response) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
