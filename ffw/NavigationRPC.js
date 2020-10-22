@@ -460,22 +460,19 @@ FFW.Navigation = FFW.RPCObserver.create(
      */
     sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
-
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': message,
-            'data': {
-              'method': method
-            }
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'error': {
+          'code': resultCode, // type (enum) from SDL protocol
+          'message': message,
+          'data': {
+            'method': method
           }
-        };
-        this.sendMessage(JSONMessage);
-      }
+        }
+      };
+      this.sendMessage(JSONMessage);
     },
     /**
      * send response from onRPCRequest

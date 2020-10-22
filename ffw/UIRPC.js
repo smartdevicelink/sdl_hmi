@@ -1695,27 +1695,24 @@ FFW.UI = FFW.RPCObserver.create(
      */
     sendError: function(resultCode, id, method, message, params) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode !== 0) {
-
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': message,
-            'data': {
-              'method': method
-            }
+      // send repsonse
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'error': {
+          'code': resultCode, // type (enum) from SDL protocol
+          'message': message,
+          'data': {
+            'method': method
           }
-        };
-
-        if (params) {
-          JSONMessage.error.data = Object.assign(JSONMessage.error.data, params);
         }
+      };
 
-        this.sendMessage(JSONMessage);
+      if (params) {
+        JSONMessage.error.data = Object.assign(JSONMessage.error.data, params);
       }
+
+      this.sendMessage(JSONMessage);
     },
     /**
      * send response from onRPCRequest
