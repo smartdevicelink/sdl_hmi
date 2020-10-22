@@ -224,7 +224,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
      */
     sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
-      // send repsonse
+      // send response
       var JSONMessage = {
         'jsonrpc': '2.0',
         'id': id,
@@ -271,7 +271,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
 
       Em.Logger.log('FFW.VI.' + method + 'Response');
       if (result_response) {
-        // send repsonse
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,

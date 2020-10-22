@@ -944,7 +944,7 @@ FFW.BasicCommunication = FFW.RPCObserver
        */
       sendError: function(resultCode, id, method, message) {
         Em.Logger.log('FFW.' + method + 'Response');
-        // send repsonse
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
@@ -991,7 +991,7 @@ FFW.BasicCommunication = FFW.RPCObserver
 
         Em.Logger.log('FFW.BC.' + method + 'Response');
         if (result_response) {
-          // send repsonse
+          // send response
           var JSONMessage = {
             'jsonrpc': '2.0',
             'id': id,
@@ -1004,7 +1004,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           if (params != null) {
             Object.assign(JSONMessage.result, params);
           }
-  
+
           this.sendMessage(JSONMessage);
         } else {
           this.sendError(resultCode, id, method, info);

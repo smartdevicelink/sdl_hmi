@@ -503,7 +503,7 @@ FFW.Navigation = FFW.RPCObserver.create(
 
       Em.Logger.log('FFW.Navigation.' + method + 'Response');
       if (result_response) {
-        // send repsonse
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
