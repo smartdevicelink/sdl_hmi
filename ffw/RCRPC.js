@@ -389,7 +389,7 @@ FFW.RC = FFW.RPCObserver.create(
      * @param {String}
      *            method
      */
-    sendRCResult: function(resultCode, id, method) {
+    sendRCResult: function(resultCode, id, method, params) {
       const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
       if (is_successful_code && this.errorResponsePull[id] != null) {
         // If request was successful but some error was observed upon validation
@@ -406,9 +406,7 @@ FFW.RC = FFW.RPCObserver.create(
         return;
       }
 
-      // TODO params take precedent over info:
-      //  is_successful_code && (params || !info);
-      const result_response = is_successful_code && !info;
+      const result_response = is_successful_code && (params || !info);
 
       Em.Logger.log('FFW.RC.' + method + 'Response');
       if (result_response) {
@@ -422,10 +420,9 @@ FFW.RC = FFW.RPCObserver.create(
           }
         };
 
-        // SDL success response schema does not have info param as of 7.0
-        //if (info) {
-          //JSONMessage.result.info = info;
-        //}
+        if (params != null) {
+          Object.assign(JSONMessage.result, params);
+        }
 
         this.sendMessage(JSONMessage);
       } else {

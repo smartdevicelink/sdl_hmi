@@ -250,7 +250,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
      * @param {String}
      *            info
      */
-    sendVIResult: function(resultCode, id, method, info) {
+    sendVIResult: function(resultCode, id, method, info, params) {
       const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
       if (is_successful_code && this.errorResponsePull[id] != null) {
         // If request was successful but some error was observed upon validation
@@ -267,9 +267,7 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
         return;
       }
 
-      // TODO params take precedent over info:
-      //  is_successful_code && (params || !info);
-      const result_response = is_successful_code && !info;
+      const result_response = is_successful_code && (params || !info);
 
       Em.Logger.log('FFW.VI.' + method + 'Response');
       if (result_response) {
@@ -283,10 +281,9 @@ FFW.VehicleInfo = FFW.RPCObserver.create(
           }
         };
 
-        // SDL success response schema does not have info param as of 7.0
-        //if (info) {
-          //JSONMessage.result.info = info;
-        //}
+        if (params != null) {
+          Object.assign(JSONMessage.result, params);
+        }
 
         this.sendMessage(JSONMessage);
       } else {

@@ -482,7 +482,7 @@ FFW.Navigation = FFW.RPCObserver.create(
      * @param {String} method
      * @param {String} info
      */
-    sendNavigationResult: function(resultCode, id, method, info) {
+    sendNavigationResult: function(resultCode, id, method, info, params) {
       const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
       if (is_successful_code && this.errorResponsePull[id] != null) {
         // If request was successful but some error was observed upon validation
@@ -499,9 +499,7 @@ FFW.Navigation = FFW.RPCObserver.create(
         return;
       }
 
-      // TODO params take precedent over info:
-      //  is_successful_code && (params || !info);
-      const result_response = is_successful_code && !info;
+      const result_response = is_successful_code && (params || !info);
 
       Em.Logger.log('FFW.Navigation.' + method + 'Response');
       if (result_response) {
@@ -515,10 +513,9 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
         };
 
-        // SDL success response format does not have info param as of 7.0
-        //if(info != null) {
-          //JSONMessage.result.info = info;
-        //}
+        if (params != null) {
+          Object.assign(JSONMessage.result, params);
+        }
 
         this.sendMessage(JSONMessage);
       } else {
