@@ -1690,32 +1690,25 @@ FFW.UI = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
-     * @param {Object}
-     *            additional parameters to send with error
+     * @param {String}
+     *            message
      */
-    sendError: function(resultCode, id, method, message, params) {
+    sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode !== 0) {
-
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': message,
-            'data': {
-              'method': method
-            }
+      // send response
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'error': {
+          'code': resultCode, // type (enum) from SDL protocol
+          'message': message,
+          'data': {
+            'method': method
           }
-        };
-
-        if (params) {
-          JSONMessage.error.data = Object.assign(JSONMessage.error.data, params);
         }
+      };
 
-        this.sendMessage(JSONMessage);
-      }
+      this.sendMessage(JSONMessage);
     },
     /**
      * send response from onRPCRequest
@@ -1728,8 +1721,10 @@ FFW.UI = FFW.RPCObserver.create(
      *            method
      * @param {String}
      *            info
+     * @param {Object}
+     *            params
      */
-    sendUIResult: function(resultCode, id, method, info) {
+    sendUIResult: function(resultCode, id, method, info, params) {
       const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
       if (is_successful_code && this.errorResponsePull[id] != null) {
         // If request was successful but some error was observed upon validation
@@ -1746,9 +1741,11 @@ FFW.UI = FFW.RPCObserver.create(
         return;
       }
 
+      const result_response = is_successful_code && (params || !info);
+
       Em.Logger.log('FFW.UI.' + method + 'Response');
-      if (is_successful_code) {
-        // send repsonse
+      if (result_response) {
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
@@ -1757,9 +1754,11 @@ FFW.UI = FFW.RPCObserver.create(
             'method': method,
           }
         };
-        if(info != null) {
-          JSONMessage.result.info = info;
+
+        if (params != null) {
+          Object.assign(JSONMessage.result, params);
         }
+
         this.sendMessage(JSONMessage);
       } else {
         this.sendError(resultCode, id, method, info);
@@ -1822,14 +1821,14 @@ FFW.UI = FFW.RPCObserver.create(
           this.sendUIResult(resultCode, id, 'UI.SubtleAlert', info);
           break;
         }
-        case SDL.SDLModel.data.resultCode['ABORTED']:
-        {
-          this.sendError(resultCode, id, 'UI.SubtleAlert', 'SubtleAlert request aborted.');
-          break;
-        }
         case SDL.SDLModel.data.resultCode.REJECTED:
         {
-          this.sendError(resultCode, id, 'UI.SubtleAlert', info, { tryAgainTime: tryAgainTime });
+          this.sendUIResult(resultCode, id, 'UI.SubtleAlert', info, { tryAgainTime: tryAgainTime });
+          break;
+        }
+        case SDL.SDLModel.data.resultCode.ABORTED:
+        {
+          this.sendUIResult(resultCode, id, 'UI.SubtleAlert', 'SubtleAlert request aborted.');
           break;
         }
       }

@@ -365,22 +365,19 @@ FFW.RC = FFW.RPCObserver.create(
      */
     sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
-
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': message,
-            'data': {
-              'method': method
-            }
+      // send response
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'error': {
+          'code': resultCode, // type (enum) from SDL protocol
+          'message': message,
+          'data': {
+            'method': method
           }
-        };
-        this.sendMessage(JSONMessage);
-      }
+        }
+      };
+      this.sendMessage(JSONMessage);
     },
     /**
      * Send response from onRPCRequest
@@ -392,7 +389,7 @@ FFW.RC = FFW.RPCObserver.create(
      * @param {String}
      *            method
      */
-    sendRCResult: function(resultCode, id, method) {
+    sendRCResult: function(resultCode, id, method, params) {
       const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
       if (is_successful_code && this.errorResponsePull[id] != null) {
         // If request was successful but some error was observed upon validation
@@ -409,9 +406,11 @@ FFW.RC = FFW.RPCObserver.create(
         return;
       }
 
+      const result_response = is_successful_code && (params || !info);
+
       Em.Logger.log('FFW.RC.' + method + 'Response');
-      if (is_successful_code) {
-        // send repsonse
+      if (result_response) {
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
@@ -421,8 +420,8 @@ FFW.RC = FFW.RPCObserver.create(
           }
         };
 
-        if (info) {
-          JSONMessage.result.info = info;
+        if (params != null) {
+          Object.assign(JSONMessage.result, params);
         }
 
         this.sendMessage(JSONMessage);
