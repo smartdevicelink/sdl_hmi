@@ -200,48 +200,28 @@ SDL.SDLModel = Em.Object.extend({
   onFileRemoved: function(params) {
 
     var result = false;
+    var app_model = SDL.SDLController.getApplicationModel(params.appID);
+    var is_image_type = ['GRAPHIC_PNG', 'GRAPHIC_BMP', 'GRAPHIC_JPEG'].includes(params.fileType);
 
-    if ((
-      params.fileType === 'GRAPHIC_PNG' || params.fileType === 'GRAPHIC_BMP' ||
-      params.fileType === 'GRAPHIC_JPEG') &&
-      SDL.SDLController.getApplicationModel(params.appID)) {
-      result = SDL.SDLController.getApplicationModel(params.appID).
-                   onImageRemoved(params.fileName);
+    if (is_image_type && app_model) {
+      result = app_model.onImageRemoved(params.fileName);
 
-      if (SDL.SDLController.getApplicationModel(params.appID).appIcon.
-              indexOf(params.fileName) != -1 &&
-        params.fileName.length ==
-        SDL.SDLController.getApplicationModel(params.appID).appIcon.length) {
-        SDL.SDLController.getApplicationModel(params.appID).
-            set('appIcon', SDL.SDLModel.data.defaultListOfIcons.app);
+      if (app_model.appIcon.includes(params.fileName) &&
+        params.fileName.length == app_model.appIcon.length) {
+        app_model.set('appIcon', SDL.SDLModel.data.defaultListOfIcons.app);
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID
-        ).constantTBTParams) {
-
-        if (SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.turnIcon &&
-          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
-              turnIcon.value.indexOf(params.fileName) != -1 &&
-          params.fileName.length == SDL.SDLController.getApplicationModel(
-            params.appID
-          ).constantTBTParams.turnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.turnIcon.value            =
-              SDL.SDLModel.data.defaultListOfIcons.command;
+      if (app_model.constantTBTParams) {
+        if (app_model.constantTBTParams.turnIcon &&
+            app_model.constantTBTParams.turnIcon.value === params.fileName) {
+          app_model.constantTBTParams.turnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
           SDL.TurnByTurnView.activate(params.appID);
         }
 
-        if (SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.nextTurnIcon &&
-          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
-              nextTurnIcon.value.indexOf(params.fileName) != -1 &&
-          params.fileName.length == SDL.SDLController.getApplicationModel(
-            params.appID
-          ).constantTBTParams.nextTurnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.nextTurnIcon.value            =
-              SDL.SDLModel.data.defaultListOfIcons.command;
+        if (app_model.constantTBTParams.nextTurnIcon &&
+            app_model.constantTBTParams.nextTurnIcon.value.indexOf(params.fileName) != -1 &&
+            params.fileName.length == app_model.constantTBTParams.nextTurnIcon.value.length) {
+          app_model.constantTBTParams.nextTurnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
           SDL.TurnByTurnView.activate(params.appID);
         }
       }
@@ -284,42 +264,28 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      var len = SDL.SDLController.getApplicationModel(params.appID
-      ).turnList.length;
+      var len = app_model.turnList.length;
       for (var i = 0; i < len; i++) {
-        if (!SDL.SDLController.getApplicationModel(params.appID
-          ).turnList[i].turnIcon) {
+        if (!app_model.turnList[i].turnIcon) {
           continue;
         }
-        if (SDL.SDLController.getApplicationModel(params.appID
-          ).turnList[i].turnIcon.value.indexOf(params.fileName) != -1 &&
-          params.fileName.length == SDL.SDLController.getApplicationModel(
-            params.appID
-          ).turnList[i].turnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID
-          ).turnList[i].turnIcon.value            =
-              SDL.SDLModel.data.defaultListOfIcons.command;
+        if (app_model.turnList[i].turnIcon.value.indexOf(params.fileName) != -1 &&
+          params.fileName.length == app_model.turnList[i].turnIcon.value.length) {
+          app_model.turnList[i].turnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
         }
       }
 
       SDL.TBTTurnList.updateList(params.appID);
 
-      if (SDL.SDLController.getApplicationModel(params.appID).softButtons) {
-        var len = SDL.SDLController.getApplicationModel(params.appID
-        ).softButtons.length;
+      if (app_model.softButtons) {
+        var len = app_model.softButtons.length;
         for (var i = 0; i < len; i++) {
-          if (!SDL.SDLController.getApplicationModel(params.appID
-            ).softButtons[i].image) {
+          if (!app_model.softButtons[i].image) {
             continue;
           }
-          if (SDL.SDLController.getApplicationModel(params.appID
-            ).softButtons[i].image.value.indexOf(params.fileName) != -1 &&
-            params.fileName.length == SDL.SDLController.getApplicationModel(
-              params.appID
-            ).softButtons[i].image.value.length) {
-            SDL.SDLController.getApplicationModel(params.appID
-            ).softButtons[i].image.value              =
-                SDL.SDLModel.data.defaultListOfIcons.command;
+          if (app_model.softButtons[i].image.value.indexOf(params.fileName) != -1 &&
+            params.fileName.length == app_model.softButtons[i].image.value.length) {
+            app_model.softButtons[i].image.value = SDL.SDLModel.data.defaultListOfIcons.command;
           }
         }
 
@@ -345,15 +311,12 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID
-        ).globalProperties.vrHelp) {
-        for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID
-        ).globalProperties.vrHelp.length; i++) {
-          if (SDL.SDLController.getApplicationModel(params.appID
-            ).globalProperties.vrHelp[i].image.value === params.fileName) {
-            SDL.SDLController.getApplicationModel(params.appID
-            ).globalProperties.vrHelp[i].image.value =
-              SDL.SDLModel.data.defaultListOfIcons.command;
+      if (app_model.globalProperties.vrHelp) {
+        for (var i = 0; i < app_model.globalProperties.vrHelp.length; i++) {
+          if (app_model.globalProperties.vrHelp[i].image &&
+              app_model.globalProperties.vrHelp[i].image.value === params.fileName) {
+              app_model.globalProperties.vrHelp[i].image.value =
+                  SDL.SDLModel.data.defaultListOfIcons.command;
           }
         }
       }
