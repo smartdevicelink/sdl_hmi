@@ -206,15 +206,14 @@ SDL.SDLModel = Em.Object.extend({
     if (is_image_type && app_model) {
       result = app_model.onImageRemoved(params.fileName);
 
-      if (app_model.appIcon.indexOf(params.fileName) != -1 &&
+      if (app_model.appIcon.includes(params.fileName) &&
         params.fileName.length == app_model.appIcon.length) {
         app_model.set('appIcon', SDL.SDLModel.data.defaultListOfIcons.app);
       }
 
       if (app_model.constantTBTParams) {
         if (app_model.constantTBTParams.turnIcon &&
-            app_model.constantTBTParams.turnIcon.value.indexOf(params.fileName) != -1 &&
-          params.fileName.length == app_model.constantTBTParams.turnIcon.value.length) {
+            app_model.constantTBTParams.turnIcon.value === params.fileName) {
           app_model.constantTBTParams.turnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
           SDL.TurnByTurnView.activate(params.appID);
         }
