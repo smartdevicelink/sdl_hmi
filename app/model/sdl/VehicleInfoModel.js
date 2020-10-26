@@ -468,6 +468,10 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         FFW.RPCHelper.isSuccessResultCode(customResultCode['SubscribeVehicleData']);
 
       for (var key in message.params){
+        if (key === 'clusterModeStatus') {
+          key = 'clusterModes';
+        }
+
         subscribeVIData[key] = {
           dataType: this.eVehicleDataType[key],
           resultCode: customResultCode.vehicleDataStruct[key],
