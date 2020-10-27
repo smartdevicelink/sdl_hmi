@@ -139,7 +139,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'abs_State': 'VEHICLEDATA_ABS_STATE',
       'turnSignal': 'VEHICLEDATA_TURNSIGNAL',
       'tirePressureValue': 'VEHICLEDATA_TIREPRESSURE_VALUE',
-      'tpms': 'VEHICLEDATA_TPMS',
       'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID',
       'handsOffSteering': 'VEHICLEDATA_HANDSOFFSTEERING',
       'stabilityControlsStatus': 'VEHICLEDATA_STABILITYCONTROLSSTATUS',
@@ -327,7 +326,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         'frontRecommended': 2.2E0,
         'rearRecommended': 2.2E0
       },
-      'tpms': 'TIRES_NOT_TRAINED',
       'cloudAppVehicleID': 'SDLVehicleNo123',
       'displayResolution': {
          'width': 800,
@@ -468,6 +466,10 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         FFW.RPCHelper.isSuccessResultCode(customResultCode['SubscribeVehicleData']);
 
       for (var key in message.params){
+        if (key === 'clusterModeStatus') {
+          key = 'clusterModes';
+        }
+
         subscribeVIData[key] = {
           dataType: this.eVehicleDataType[key],
           resultCode: customResultCode.vehicleDataStruct[key],
