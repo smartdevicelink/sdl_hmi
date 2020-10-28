@@ -1260,6 +1260,12 @@ SDL.SDLModel = Em.Object.extend({
    */
   uiPerformInteraction: function(message) {
 
+    if (!message.params) {
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.INVALID_DATA, message.id,
+        message.method, 'Empty message was received for UI.PerformInteraction'
+        );
+        return false;
+    }
     if (!SDL.SDLController.getApplicationModel(message.params.appID
       ).activeRequests.uiPerformInteraction) {
       if (message.params && message.params.vrHelpTitle &&
@@ -1273,37 +1279,13 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.InteractionChoicesView.cancelID = message.params.cancelID;
 
-      if (message.params && message.params.choiceSet != null) {
-        imageList = [];
-        if(message.params.vrHelp) {
-          for(var i = 0; i < message.params.vrHelp.length; i++) {
-            var image = message.params.vrHelp[i].image;
-            if(image) {
-              imageList.push(image.value);
-            }
-          }
-        }
-        if(message.params.choiceSet) {
-          for(var i = 0; i < message.params.choiceSet.length; i++) {
-            var image = message.params.choiceSet[i].image;
-            if(image) {
-              imageList.push(image.value);
-            }
-          }
-        }
-                                                                        
-        var callback = function(failed) {
-          var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
-          var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+      // Images are not validated for this request since choiceId cannot be sent back in
+      // the case of a WARNINGS response
 
-          FFW.UI.sendUIResult(
-            failed ? WARNINGS : SUCCESS, 
-            message.id, 
-            message.method, 
-            failed ? "Requested image(s) not found" : null);
-        }
-        SDL.SDLModel.validateImages(message.id, callback, imageList);
-
+      if(message.params.choiceSet == null){
+        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS,
+          message.id, 'UI.PerformInteraction'
+        );
         return true;
       }
 
@@ -1315,7 +1297,6 @@ SDL.SDLModel = Em.Object.extend({
 
       return true;
     } else {
-
       FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
         message.method, 'UI PerformInterection REJECTED on HMI'
       );
