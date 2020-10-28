@@ -216,15 +216,13 @@ FFW.UI = FFW.RPCObserver.create(
                 'customPresets' in request.params) {
 
                 if (this.errorResponsePull[request.id].type === 'STATIC') {
-                  this.sendError(SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'], 
-                                request.id, 
-                                request.method, 
-                                'Image of STATIC type is not supported on HMI. Request was not processed');
-                  return;
+                  this.errorResponsePull[request.id].code =
+                    SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'];
                 }
-
-                this.errorResponsePull[request.id].code =
-                  SDL.SDLModel.data.resultCode['WARNINGS'];
+                else {
+                  this.errorResponsePull[request.id].code =
+                    SDL.SDLModel.data.resultCode['WARNINGS'];
+                }
               }
             }
             SDL.TurnByTurnView.deactivate();
