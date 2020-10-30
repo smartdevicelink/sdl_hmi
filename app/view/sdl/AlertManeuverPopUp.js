@@ -191,6 +191,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
               softButtonID: softButtons[i].softButtonID,
               icon: softButtons[i].image ? softButtons[i].image.value : '',
               text: softButtons[i].text,
+              groupName: 'AlertManeuverPopUp',
               classNames: 'list-item softButton ' + softButtonsClass,
               elementId: 'softButton' + i,
               classNameBindings: ['isHighlighted:isHighlighted',
