@@ -72,8 +72,8 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 }
 
                 SDL.SubtleAlertPopUp.deactivate();
-                SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
                 SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
+                SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
             } else{
                 SDL.SubtleAlertPopUp.deactivate();
             }
