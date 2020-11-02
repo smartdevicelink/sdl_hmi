@@ -936,23 +936,6 @@ SDL.SDLModel = Em.Object.extend({
           request.params, messageRequestId
         );
       }
-      if(request.params.softButtons) {
-        var imageList = [];
-        for(var i = 0; i < request.params.softButtons.length; i++) {
-          if(request.params.softButtons[i].image) {
-            imageList.push(request.params.softButtons[i].image.value);
-          }
-        }
-        var callback = function(failed) {
-          if(failed) {
-            FFW.UI.sendUIResult(
-              SDL.SDLModel.data.resultCode.WARNINGS, 
-              request.id, 
-              request.method, "Requested image(s) not found");
-          }
-        };
-        SDL.SDLModel.validateImages(request.id, callback, imageList);
-      }
       return true;
     } else {
       FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id,

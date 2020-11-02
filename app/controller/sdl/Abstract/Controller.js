@@ -883,15 +883,15 @@ SDL.SDLController = Em.Object.extend(
           messageRequestId,
           'UI.ScrollableMessage'
         );
-      }else if(result == SDL.SDLModel.data.resultCode.WARNINGS) {
+      } else if(result == SDL.SDLModel.data.resultCode.WARNINGS) {
         FFW.UI.sendUIResult(
           result,
           messageRequestId,
-          'UI.ScrollableMessage'
+          'UI.ScrollableMessage',
+          'Requested image(s) not found'
         );
-      }
-      else {
-        FFW.UI.sendError(
+      } else {
+        FFW.UI.sendUIResult(
           result,
           messageRequestId,
           'UI.ScrollableMessage',

@@ -224,6 +224,8 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
         SDL.TTSPopUp.DeactivateTTS();
       }
 
+      clearTimeout(this.timer);
+
       const resultCode = this.iconsAreValid ?
         SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
       const info = this.iconsAreValid ?
