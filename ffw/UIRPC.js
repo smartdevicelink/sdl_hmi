@@ -1769,10 +1769,25 @@ FFW.UI = FFW.RPCObserver.create(
         return;
       }
 
-      const result_response = is_successful_code && (params || !info);
+      let is_successful_response_format = function(is_success) {
+        // Successful response without params, but with not-empty message
+        // should be sent in errorneous format to properly forward info and result code
+        if (is_success && info != null && params == null) {
+          return false;
+        }
+
+        // Error response with not empty params should be sent in regular format
+        // to properly forward result code and params (but sacrifice info)
+        if (!is_success && params != null) {
+          return true;
+        }
+
+        // Otherwise use result code calculated according to regular HMI logic
+        return is_success;
+      };
 
       Em.Logger.log('FFW.UI.' + method + 'Response');
-      if (result_response) {
+      if (is_successful_response_format(is_successful_code)) {
         // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
