@@ -1668,7 +1668,8 @@ FFW.UI = FFW.RPCObserver.create(
           errorStruct.code,
           id,
           method,
-          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`,
+          params
         );
         return;
       }

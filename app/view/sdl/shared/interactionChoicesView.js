@@ -269,7 +269,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         SDL.SDLController.VRMove();
         SDL.Keyboard.deactivate();
 
-        const info = !this.areAllImagesValid ? "Requested image(s) not found" : null;
         if (!this.areAllImagesValid && result == 'SUCCESS') {
           result = 'WARNINGS';
         }
@@ -278,14 +277,16 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           case 'ABORTED':
           {
             SDL.SDLController.interactionChoiseCloseResponse(
-              this.appID, SDL.SDLModel.data.resultCode['ABORTED'], null, null, info
+              this.appID, SDL.SDLModel.data.resultCode['ABORTED'], null, null,
+              "UI.PerformInteraction has been aborted"
             );
             break;
           }
           case 'TIMED_OUT':
           {
             SDL.SDLController.interactionChoiseCloseResponse(
-              this.appID, SDL.SDLModel.data.resultCode['TIMED_OUT'], null, null, info
+              this.appID, SDL.SDLModel.data.resultCode['TIMED_OUT'], null, null,
+              "UI.PerformInteraction has been timed out"
             );
             break;
           }
@@ -293,12 +294,13 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           {
             SDL.SDLController.interactionChoiseCloseResponse(
               this.appID, SDL.SDLModel.data.resultCode.SUCCESS, choiceID,
-              this.input.value, info
+              this.input.value
             );
             break;
           }
           case 'WARNINGS':
           {
+            const info = !this.areAllImagesValid ? "Requested image(s) not found" : null;
             SDL.SDLController.interactionChoiseCloseResponse(
               this.appID, SDL.SDLModel.data.resultCode.WARNINGS, choiceID,
               this.input.value, info
