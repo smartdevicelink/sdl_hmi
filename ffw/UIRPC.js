@@ -1911,26 +1911,31 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {Number} resultCode
      * @param {Number} commandID
      * @param {String} manualTextEntry
+     * @param {String} info
      */
     interactionResponse: function(requestID, resultCode, commandID,
-      manualTextEntry) {
+      manualTextEntry, info) {
       if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+        var params = {
+          'choiceID': commandID
+        };
+        if (manualTextEntry) {
+          params.manualTextEntry = manualTextEntry;
+        } 
+
         this.sendUIResult(
           resultCode,
           requestID,
           'UI.PerformInteraction',
-          null,
-          {
-            'manualTextEntry': manualTextEntry,
-            'choiceID': commandID
-          }
+          info,
+          params
         );
       } else {
         this.sendUIResult(
           resultCode,
           requestID,
           'UI.PerformInteraction',
-          'Perform Interaction error response.'
+          info
         );
       }
     },

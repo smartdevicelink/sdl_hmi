@@ -802,11 +802,15 @@ SDL.SDLController = Em.Object.extend(
      * Method to sent notification ABORTED for PerformInteractionChoise
      */
     interactionChoiseCloseResponse: function(appID, result, choiceID,
-      manualTextEntry) {
+      manualTextEntry, info) {
       FFW.UI.interactionResponse(
         SDL.SDLController.getApplicationModel(
           appID
-        ).activeRequests.uiPerformInteraction, result, choiceID, manualTextEntry
+        ).activeRequests.uiPerformInteraction,
+        result,
+        choiceID,
+        manualTextEntry,
+        info
       );
       SDL.SDLModel.data.set('interactionData.vrHelpTitle', null);
       SDL.SDLModel.data.set('interactionData.vrHelp', null);

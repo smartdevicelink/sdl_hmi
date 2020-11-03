@@ -1041,7 +1041,7 @@ SDL.SDLModel = Em.Object.extend({
         for(var i = 0; i < SDL.SDLModel.imageCheckList[requestID].length; i++) {
           var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
           var path = SDL.SDLModel.imageCheckList[requestID][i].path;
-          if(path === formattedImgPath) {
+          if (formattedImgPath.endsWith(path)) {
             SDL.SDLModel.imageCheckList[requestID][i].checkResult = false;
             break;
           }

@@ -143,6 +143,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
     search: false,
     list: false,
     icon: false,
+    areAllImagesValid: true,
     /**
      * Id of app initiated performInteraction request
      */
@@ -172,6 +173,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         this.set('caption', message.params.initialText.fieldText);
       }
       this.appID = message.params.appID;
+      this.set('areAllImagesValid', true);
       if (message.params.interactionLayout) {
         switch (message.params.interactionLayout) {
           case 'ICON_ONLY' :
@@ -266,18 +268,24 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         this.set('active', false);
         SDL.SDLController.VRMove();
         SDL.Keyboard.deactivate();
+
+        const info = !this.areAllImagesValid ? "Requested image(s) not found" : null;
+        if (!this.areAllImagesValid && result == 'SUCCESS') {
+          result = 'WARNINGS';
+        }
+
         switch (result) {
           case 'ABORTED':
           {
             SDL.SDLController.interactionChoiseCloseResponse(
-              this.appID, SDL.SDLModel.data.resultCode['ABORTED']
+              this.appID, SDL.SDLModel.data.resultCode['ABORTED'], null, null, info
             );
             break;
           }
           case 'TIMED_OUT':
           {
             SDL.SDLController.interactionChoiseCloseResponse(
-              this.appID, SDL.SDLModel.data.resultCode['TIMED_OUT']
+              this.appID, SDL.SDLModel.data.resultCode['TIMED_OUT'], null, null, info
             );
             break;
           }
@@ -285,7 +293,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           {
             SDL.SDLController.interactionChoiseCloseResponse(
               this.appID, SDL.SDLModel.data.resultCode.SUCCESS, choiceID,
-              this.input.value
+              this.input.value, info
             );
             break;
           }
@@ -293,7 +301,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           {
             SDL.SDLController.interactionChoiseCloseResponse(
               this.appID, SDL.SDLModel.data.resultCode.WARNINGS, choiceID,
-              this.input.value
+              this.input.value, info
             );
             break;
           }
@@ -335,6 +343,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
     preformChoices: function(data, timeout) {
       this.set('timeout', timeout);
       if (data) {
+        var imageList = [];
 
         // temp for testing
         for (var i = 0; i < data.length; i++) {
@@ -353,7 +362,22 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
                 }
               }
             );
+
+          if (data[i].image) {
+            imageList.push(data[i].image.value);
+          }
         }
+
+        var model = SDL.SDLController.getApplicationModel(this.appID);
+        if (model){
+          var that = this;
+          var callback = function(failed) {
+            that.set('areAllImagesValid', !failed);
+          };
+
+          SDL.SDLModel.validateImages(model.activeRequests.uiPerformInteraction, callback, imageList);
+        }
+
         this.listOfChoices.list.refresh();
       }
       var self = this;
@@ -379,6 +403,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
     preformChoicesNavigation: function(data, timeout) {
       this.set('timeout', timeout);
       if (data) {
+        var imageList = [];
 
         // temp for testing
         for (var i = 0; i < data.length; i++) {
@@ -401,8 +426,23 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
               }
             )
           );
+
+          if (data[i].image) {
+            imageList.push(data[i].image.value);
+          }
+        }
+
+        var model = SDL.SDLController.getApplicationModel(this.appID);
+        if (model){
+          var that = this;
+          var callback = function(failed) {
+            that.set('areAllImagesValid', !failed);
+          };
+
+          SDL.SDLModel.validateImages(model.activeRequests.uiPerformInteraction, callback, imageList);
         }
       }
+
       var self = this;
       setTimeout(
         function() {
