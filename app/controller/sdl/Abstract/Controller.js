@@ -758,7 +758,7 @@ SDL.SDLController = Em.Object.extend(
      * Method to close AlertMeneuverPopUp view
      */
     closeAlertMeneuverPopUp: function() {
-      SDL.AlertManeuverPopUp.set('activate', false);
+      SDL.AlertManeuverPopUp.deactivate();
     },
     /**
      * Method to open Turn List view from TBT

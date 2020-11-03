@@ -122,8 +122,10 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
         classNames: 'closeButton softButton',
         classNameBindings: [
           'SDL.AlertManeuverPopUp.isCloseButtonVisible::inactive_state'],
-        action: 'closeAlertMeneuverPopUp',
-        target: 'SDL.SDLController',
+        actionUp: function() {
+          this._super();
+          SDL.SDLController.closeAlertMeneuverPopUp();
+        },
         templateName: 'text'
       }
     ),
