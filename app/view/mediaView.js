@@ -42,12 +42,40 @@ SDL.MediaView = Em.ContainerView.create(
       'volumeMenu',
       'optionsMenu',
       SDL.playerView,
-      SDL.sdlView
+      'sdlView'
     ],
     /** Left Menu view component */
     leftMenu: SDL.LeftMenuView,
     /** Volume Menu view component */
     volumeMenu: SDL.VolumeMenuView,
-    optionsMenu: SDL.audioView
+    optionsMenu: SDL.audioView,
+    sdlView: SDL.sdlView,
+
+    /**
+     * @description Callback for display image mode change.
+     */
+    imageModeChanged: function() { 
+      this.leftMenu.radio.setMode(SDL.SDLModel.data.imageMode);
+      this.leftMenu.cdButton.setMode(SDL.SDLModel.data.imageMode);
+      this.leftMenu.usbButton.setMode(SDL.SDLModel.data.imageMode);
+      this.leftMenu.bluetoothButton.setMode(SDL.SDLModel.data.imageMode);
+      this.leftMenu.lineInButton.setMode(SDL.SDLModel.data.imageMode);
+      this.leftMenu.ipodButton.setMode(SDL.SDLModel.data.imageMode);
+      this.leftMenu.sdlButton.setMode(SDL.SDLModel.data.imageMode);
+
+      this.volumeMenu.currentVolume.currentVolume_minus.setMode(SDL.SDLModel.data.imageMode);
+      this.volumeMenu.currentVolume.currentVolume_plus.setMode(SDL.SDLModel.data.imageMode);
+
+      this.optionsMenu.preferencesButton.optionsButton.setMode(SDL.SDLModel.data.imageMode);
+
+      this.sdlView.innerMenu.setMode(SDL.SDLModel.data.imageMode);
+      this.sdlView.controlls.Controls.PrevTrackButton.setMode(SDL.SDLModel.data.imageMode);
+      this.sdlView.controlls.Controls.PlayButton.setMode(SDL.SDLModel.data.imageMode);
+      this.sdlView.controlls.Controls.NextTrackButton.setMode(SDL.SDLModel.data.imageMode);
+
+      this.sdlView.controlls.tuneButtons.wrapper.get('childViews').forEach( (view) => {
+        view.setMode(SDL.SDLModel.data.imageMode);
+      });
+    }.observes('SDL.SDLModel.data.imageMode')
   }
 );
