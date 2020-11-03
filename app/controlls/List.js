@@ -204,6 +204,8 @@ SDL.List = Em.ContainerView.extend({
               }
             );
 
+        element.setMode(SDL.SDLModel.data.imageMode);
+
         // Push element to list
         this.get('childViews').pushObject(element);
       }
