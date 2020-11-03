@@ -55,6 +55,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     timer: null,
     timeout: 5000,
     alertManeuerRequestId: 0,
+    isCloseButtonVisible: true,
     /**
      * @desc Defines whether icons paths verified successfully.
      */
@@ -119,6 +120,8 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       {
         text: 'Close',
         classNames: 'closeButton softButton',
+        classNameBindings: [
+          'SDL.AlertManeuverPopUp.isCloseButtonVisible::inactive_state'],
         action: 'closeAlertMeneuverPopUp',
         target: 'SDL.SDLController',
         templateName: 'text'
@@ -215,6 +218,10 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       }
 
       SDL.SDLModel.validateImages(params.appID, callback, imageList);
+
+      if (softButtons.length > 0) {
+        this.set('isCloseButtonVisible', false);
+      }
     },
     /**
      * Deactivate PopUp
@@ -244,6 +251,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       this.softbuttons.buttons.rerender();
 
       this.set('iconsAreValid', true);
+      this.set('isCloseButtonVisible', true);
       this.addSoftButtons(message.params);
 
       this.set('activate', true );
