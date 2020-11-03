@@ -360,6 +360,18 @@ SDL.ABSAppModel = Em.Object.extend(
     unregisteringInProgress: false,
 
     /**
+     * @type {Array}
+     * @description list of already requested icon file names from SDL
+     */
+    cachedIconFileNamesList: [],
+
+    /**
+     * @type {Array}
+     * @description list of already requested submenu ID updates from SDL
+     */
+    cachedSubmenuIdsList: [],
+
+    /**
      * Setter method for navigation subscription buttons
      *
      * @return none

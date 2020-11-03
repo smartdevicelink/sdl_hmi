@@ -1753,6 +1753,38 @@ SDL.SDLController = Em.Object.extend(
     },
 
     /**
+     * @function onUpdateFile
+     * @param {String} fileName
+     * @description Checks whether provided file was requested from SDL or not
+     * and sends notification if file was not requested yet
+     */
+    onUpdateFile: function(fileName) {
+      if(SDL.SDLController.model && SDL.SDLController.model.appID) {
+        let model = SDL.SDLController.model;
+        if (model.cachedIconFileNamesList.indexOf(fileName) < 0) {
+          model.cachedIconFileNamesList.push(fileName);
+          FFW.UI.OnUpdateFile(model.appID, fileName);
+        }
+      }
+    },
+
+    /**
+     * @function onUpdateSubMenu
+     * @param {Integer} menuID
+     * @description Checks whether provided menuID update was requested from SDL
+     * or not and sends notification if submenu was not updated yet
+     */
+    onUpdateSubMenu: function(menuID) {
+      if(SDL.SDLController.model && SDL.SDLController.model.appID) {
+        let model = SDL.SDLController.model;
+        if (model.cachedSubmenuIdsList.indexOf(menuID) < 0) {
+          model.cachedSubmenuIdsList.push(menuID);
+          FFW.UI.OnUpdateSubMenu(model.appID, menuID);
+        }
+      }
+    },
+
+    /**
      * @description Callback for display image mode change.
      */
     imageModeChanged: function() { 

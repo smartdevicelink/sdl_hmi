@@ -170,10 +170,8 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
         // this.$('img') returns a jquery instance of
         // the img element inside of the SDL.Button
         this.$('img').on('error', function(event) {
-          if(SDL.SDLController.model && SDL.SDLController.model.appID) {
-            var regex = /\?(.*)/g;
-            FFW.UI.OnUpdateFile(SDL.SDLController.model.appID, $(this)[0].icon.replace(regex, ""))
-          }
+          var regex = /\?(.*)/g;
+          SDL.SDLController.onUpdateFile($(this)[0].icon.replace(regex, ""));
         }.bind(this));
       }
     },
