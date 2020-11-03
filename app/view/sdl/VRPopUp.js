@@ -73,8 +73,14 @@ SDL.VRPopUp = Em.ContainerView.create(
           this.get('listOfCommands.list.childViews').pushObject(
             SDL.Button.create(
               {
-                action: isExit ? 'onVRCommand' : 'onActivateSDLApp',
-                target: 'SDL.SDLController',
+                actionUp: function() {
+                  if (this.isExitAction) {
+                    SDL.SDLController.onVRCommand(this);
+                  } else {
+                    SDL.SDLController.onActivateSDLApp(this);
+                  }
+                },
+                isExitAction: isExit,
                 appID: appID,
                 commandID: cmdID,
                 text: vrCommands[i],
@@ -89,8 +95,13 @@ SDL.VRPopUp = Em.ContainerView.create(
           this.get('listOfCommands.list.childViews').pushObject(
             SDL.Button.create(
               {
-                action: type == 'Command' ? 'onVRCommand' : 'VRPerformAction',
-                target: 'SDL.SDLController',
+                actionUp: function() {
+                  if (this.type == 'Command') {
+                    SDL.SDLController.onVRCommand(this);
+                  } else {
+                    SDL.SDLController.VRPerformAction(this);
+                  }
+                },
                 appID: appID,
                 grammarID: grammarID,
                 commandID: cmdID,
@@ -224,9 +235,9 @@ SDL.VRPopUp = Em.ContainerView.create(
             params: {
               //templateName: template,
               text: 'Help',
-              target: 'SDL.SDLController',
-              action: 'vrHelpAction',
-              onDown: false
+              actionUp: function() {
+                SDL.SDLController.vrHelpAction();
+              }
             }
           }
         ]
