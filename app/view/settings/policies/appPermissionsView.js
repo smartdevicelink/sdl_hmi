@@ -73,12 +73,14 @@ SDL.AppPermissionsView = Em.ContainerView.create(
                 }
               );
           }
-          FFW.BasicCommunication.OnAppPermissionConsent(
-            permissions, null, 'GUI', SDL.AppPermissionsView.currentAppId
-          );
+          if (permissions.length > 0) {
+            FFW.BasicCommunication.OnAppPermissionConsent(
+              permissions, null, 'GUI', SDL.AppPermissionsView.currentAppId
+            );
+          }
           SDL.AppPermissionsView.currentAppId = null;
         },
-        goToState: 'policies',
+        goToState: 'policies.appPermissionsList',
         icon: 'images/media/ico_back.png',
         onDown: false
       }
