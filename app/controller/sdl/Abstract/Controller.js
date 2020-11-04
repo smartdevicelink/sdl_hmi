@@ -698,7 +698,7 @@ SDL.SDLController = Em.Object.extend(
               SDL.AlertManeuverPopUp.deactivate();
             }, SDL.AlertManeuverPopUp.timeout
           );
-          this.onResetTimeout(element.appID, 'Navigation.AlertManeuver');
+          FFW.TTS.OnResetTimeout(element.appID, 'Navigation.AlertManeuver');
           break;
         }
         case 'SubtleAlertPopUp':
@@ -758,7 +758,7 @@ SDL.SDLController = Em.Object.extend(
      * Method to close AlertMeneuverPopUp view
      */
     closeAlertMeneuverPopUp: function() {
-      SDL.AlertManeuverPopUp.set('activate', false);
+      SDL.AlertManeuverPopUp.deactivate();
     },
     /**
      * Method to open Turn List view from TBT
