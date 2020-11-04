@@ -343,23 +343,25 @@ FFW.UI = FFW.RPCObserver.create(
               }
             }
 
+            var that = this;
             var callback = function(failed) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
-              var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+              var SUCCESS = resultCode;
 
-              FFW.Navigation.sendNavigationResult(
-                failed ? WARNINGS : SUCCESS, 
-                request.id, 
-                request.method, 
+              that.sendUIResult(
+                failed ? WARNINGS : SUCCESS,
+                request.id,
+                request.method,
                 failed ? "Requested image(s) not found" : null);
             }
             SDL.SDLModel.validateImages(request.id, callback, imageList);
+            break;
           } else {
             info = 'Erroneous response is assigned by settings';
           }
 
-          this.sendUIResult(
-            resultCode, request.id, request.method, info
+            this.sendUIResult(
+              resultCode, request.id, request.method, info
             );
             break;
           }
