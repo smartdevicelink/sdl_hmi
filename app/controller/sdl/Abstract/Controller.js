@@ -1785,6 +1785,21 @@ SDL.SDLController = Em.Object.extend(
     },
 
     /**
+     * @function onDeleteSubMenu
+     * @param {Integer} menuID
+     * @description Removes menuID from application model cache if it was cached before
+     */
+    onDeleteSubMenu: function(menuID) {
+      if (SDL.SDLController.model && SDL.SDLController.model.appID) {
+        let model = SDL.SDLController.model;
+        const index = model.cachedSubmenuIdsList.indexOf(menuID);
+        if (index >= 0) {
+          model.cachedSubmenuIdsList.splice(index, 1);
+        }
+      }
+    },
+
+    /**
      * @description Callback for display image mode change.
      */
     imageModeChanged: function() { 
