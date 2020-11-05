@@ -69,12 +69,14 @@ SDL.VRPopUp = Em.ContainerView.create(
     AddCommand: function(cmdID, vrCommands, appID, type, grammarID) {
       if (type == 'Application') {
         for (var i = 0; i < vrCommands.length; i++) {
+          var isExit = cmdID === -2 && vrCommands[i].startsWith('USER_EXIT ');
           this.get('listOfCommands.list.childViews').pushObject(
             SDL.Button.create(
               {
-                action: 'onActivateSDLApp',
+                action: isExit ? 'onVRCommand' : 'onActivateSDLApp',
                 target: 'SDL.SDLController',
                 appID: appID,
+                commandID: cmdID,
                 text: vrCommands[i],
                 classNames: 'list-item',
                 templateName: 'text'

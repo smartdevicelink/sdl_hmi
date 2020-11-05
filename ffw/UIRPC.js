@@ -190,6 +190,18 @@ FFW.UI = FFW.RPCObserver.create(
             })
             break;
           }
+          case 'UI.SubtleAlert':
+          {
+            if (SDL.SDLModel.onUISubtleAlert(request.params, request.id)) {
+              SDL.SDLController.onSystemContextChange(request.params.appID);
+            }
+            SDL.SDLModel.data.registeredApps.forEach(app => {
+              app.activeWindows.forEach(widget => {
+                SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
+              })
+            })
+            break;
+          }
           case 'UI.Show':
           {
 
@@ -202,16 +214,15 @@ FFW.UI = FFW.RPCObserver.create(
                 'secondaryGraphic' in request.params ||
                 'softButtons' in request.params ||
                 'customPresets' in request.params) {
-                this.errorResponsePull[request.id].code =
-                  SDL.SDLModel.data.resultCode['WARNINGS'];
-                //} else {
-                //    //If no available data sent error response and stop
-                // process current request
-                // this.sendError(this.errorResponsePull[request.id].code,
-                // request.id, request.method, "Unsupported " +
-                // this.errorResponsePull[request.id].type + " type. Request
-                // was not processed."); this.errorResponsePull[request.id] =
-                // null;  return;
+
+                if (this.errorResponsePull[request.id].type === 'STATIC') {
+                  this.errorResponsePull[request.id].code =
+                    SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'];
+                }
+                else {
+                  this.errorResponsePull[request.id].code =
+                    SDL.SDLModel.data.resultCode['WARNINGS'];
+                }
               }
             }
             SDL.TurnByTurnView.deactivate();
@@ -223,6 +234,15 @@ FFW.UI = FFW.RPCObserver.create(
             let sendCapabilityUpdated = false;
             if("templateConfiguration" in request.params) {
               if (model.templateConfiguration.template !== request.params.templateConfiguration.template) {
+                model.templateConfiguration.template = request.params.templateConfiguration.template;
+
+                if (model.active) {
+                  SDL.SDLModel.data.templateChangeInProgress = true;
+                  SDL.States.goToStates('info.apps');
+                  model.turnOnSDL();
+                  SDL.SDLModel.data.templateChangeInProgress = false;
+                }
+
                 sendCapabilityUpdated = true;
               }
               if ("dayColorScheme" in  request.params.templateConfiguration
@@ -244,9 +264,35 @@ FFW.UI = FFW.RPCObserver.create(
               return;
             }
             SDL.InfoAppsView.showAppList();
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
+
+            imageList = [];
+            if(request.params.graphic) {
+              imageList.push(request.params.graphic.value);
+            }
+            if(request.params.secondaryGraphic) {
+              imageList.push(request.params.secondaryGraphic.value);
+            }
+            if(request.params.softButtons) {
+              for(var i = 0; i < request.params.softButtons.length; i++) {
+                var image = request.params.softButtons[i].image;
+                if(image) {
+                  imageList.push(image.value);
+                }
+              }
+            }
+
+            var callback = function(failed) {
+              var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+              var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+              FFW.UI.sendUIResult(
+                failed ? WARNINGS : SUCCESS, 
+                request.id, 
+                request.method, 
+                failed ? "Requested image(s) not found" : null);
+            }
+            SDL.SDLModel.validateImages(request.id, callback, imageList);
+
             if (sendCapabilityUpdated) {
               let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
               FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
@@ -273,9 +319,49 @@ FFW.UI = FFW.RPCObserver.create(
             // this.errorResponsePull[request.id].type + " type. Request was
             // not processed."); this.errorResponsePull[request.id] = null;
             // return; } }
+          resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiSetGlobalProperties');
+          if ('DO_NOT_RESPOND' == resultCode) {
+            Em.Logger.log('Do not respond on this request');
+            return;
+          }
+
+          let info = null;
+          
+          if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
             SDL.SDLModel.setProperties(request.params);
+
+            var imageList = [];
+            if(request.params.menuIcon) {
+              imageList.push(request.params.menuIcon.value);      
+            }
+
+            if(request.params.vrHelp) {
+              for(var i = 0; i < request.params.vrHelp.length; i++) {
+                if(request.params.vrHelp[i].image) {
+                  imageList.push(request.params.vrHelp[i].image.value);      
+                }
+              }
+            }
+
+            var that = this;
+            var callback = function(failed) {
+              var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+              var SUCCESS = resultCode;
+
+              that.sendUIResult(
+                failed ? WARNINGS : SUCCESS,
+                request.id,
+                request.method,
+                failed ? "Requested image(s) not found" : null);
+            }
+            SDL.SDLModel.validateImages(request.id, callback, imageList);
+            break;
+          } else {
+            info = 'Erroneous response is assigned by settings';
+          }
+
             this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+              resultCode, request.id, request.method, info
             );
             break;
           }
@@ -325,21 +411,18 @@ FFW.UI = FFW.RPCObserver.create(
           {
 
             // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("choiceSet" in request.params
-            //    && request.params
-            //    && request.params.interactionLayout != "KEYBOARD") {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
+            if (this.errorResponsePull[request.id] != null) {
+              if (request.params && 'choiceSet' in request.params && request.params.interactionLayout != "KEYBOARD") {
+                if (this.errorResponsePull[request.id].type === 'STATIC') {
+                  this.sendError(SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'], 
+                                request.id, 
+                                request.method, 
+                                'Image of STATIC type is not supported on HMI. Request was not processed');
+                  return;
+                }
+              }
+            }
+
             if (SDL.SDLModel.uiPerformInteraction(request)) {
               SDL.SDLController.onSystemContextChange();
               SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -374,6 +457,9 @@ FFW.UI = FFW.RPCObserver.create(
             } else if (typeID === 26 && SDL.SliderView.active
                && (targetID === undefined || targetID === SDL.SliderView.cancelID)) {
               SDL.SliderView.deactivate();
+            } else if (typeID === 64 && SDL.SubtleAlertPopUp.active
+              && (targetID === undefined || targetID === SDL.SubtleAlertPopUp.cancelID)) {
+              SDL.SubtleAlertPopUp.deactivate();
             } else {
               this.sendError(SDL.SDLModel.data.resultCode.IGNORED,
                 request.id, request.method,
@@ -465,14 +551,14 @@ FFW.UI = FFW.RPCObserver.create(
               case 'MEDIA':
               case 'NON-MEDIA':
               case 'DEFAULT':
-              case 'ONSCREEN_PRESETS':
               case 'NAV_FULLSCREEN_MAP':
+              case 'WEB_VIEW':
               {
                 sendResponseFlag = true;
                 break;
               }
             }
-            var model = SDL.SDLController.getApplicationModel(request.params.appID);
+
             if (sendResponseFlag) {
               Em.Logger.log('FFW.' + request.method + 'Response');
               var displayLayout = request.params.displayLayout;
@@ -514,6 +600,14 @@ FFW.UI = FFW.RPCObserver.create(
               let sendCapabilityUpdated = false;
               if ("displayLayout" in request.params && model.templateConfiguration.template !== request.params.displayLayout) {
                 model.templateConfiguration.template = request.params.displayLayout
+
+                if (model.active) {
+                  SDL.SDLModel.data.templateChangeInProgress = true;
+                  SDL.States.goToStates('info.apps');
+                  model.turnOnSDL();
+                  SDL.SDLModel.data.templateChangeInProgress = false;
+                }
+
                 sendCapabilityUpdated = true;
               }
               if ("dayColorScheme" in request.params
@@ -637,175 +731,193 @@ FFW.UI = FFW.RPCObserver.create(
                   'textFields': [
                     {
                       'name': 'mainField1',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'mainField2',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'mainField3',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'mainField4',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'statusBar',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'mediaClock',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'mediaTrack',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       "name": "templateTitle",
-                      "characterSet": "TYPE2SET",
+                      "characterSet": "UTF_8",
                       "width": 100,
                       "rows": 1
                     },
                     {
                       'name': 'alertText1',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'alertText2',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'alertText3',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'scrollableMessageBody',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'initialInteractionText',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'navigationText1',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'navigationText2',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'ETA',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'totalDistance',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'audioPassThruDisplayText1',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'audioPassThruDisplayText2',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'sliderHeader',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'sliderFooter',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'menuName',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'secondaryText',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'tertiaryText',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'menuTitle',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'locationName',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'locationDescription',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'addressLines',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     },
                     {
                       'name': 'phoneNumber',
-                      'characterSet': 'TYPE2SET',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'subtleAlertText1',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'subtleAlertText2',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'subtleAlertSoftButtonText',
+                      'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
                     }
@@ -966,6 +1078,18 @@ FFW.UI = FFW.RPCObserver.create(
                         'resolutionWidth': 105,
                         'resolutionHeight': 65
                       }
+                    },
+                    {
+                      'name': 'subtleAlertIcon',
+                      'imageTypeSupported': [
+                        'GRAPHIC_BMP',
+                        'GRAPHIC_JPEG',
+                        'GRAPHIC_PNG'
+                      ],
+                      'imageResolution': {
+                        'resolutionWidth': 105,
+                        'resolutionHeight': 65
+                      }
                     }
                   ],
                   'mediaClockFormats': [
@@ -974,7 +1098,7 @@ FFW.UI = FFW.RPCObserver.create(
                   ],
                   'graphicSupported': true,
                   'imageCapabilities': ['DYNAMIC', 'STATIC'],
-                  'templatesAvailable': ['TEMPLATE'],
+                  'templatesAvailable': ["MEDIA", "NON-MEDIA", "DEFAULT", "NAV_FULLSCREEN_MAP", 'WEB_VIEW'],
                   'screenParams': {
                     'resolution': {
                       'resolutionWidth': 800,
@@ -1001,175 +1125,175 @@ FFW.UI = FFW.RPCObserver.create(
                         "textFields": [
                           {
                             'name': 'mainField1',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'mainField2',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'mainField3',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'mainField4',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'statusBar',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'mediaClock',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'mediaTrack',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             "name": "templateTitle",
-                            "characterSet": "TYPE2SET",
+                            "characterSet": "UTF_8",
                             "width": 100,
                             "rows": 1
                           },
                           {
                             'name': 'alertText1',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'alertText2',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'alertText3',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'scrollableMessageBody',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'initialInteractionText',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'navigationText1',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'navigationText2',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'ETA',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'totalDistance',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'audioPassThruDisplayText1',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'audioPassThruDisplayText2',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'sliderHeader',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'sliderFooter',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'menuName',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'secondaryText',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'tertiaryText',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'menuTitle',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'locationName',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'locationDescription',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'addressLines',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           },
                           {
                             'name': 'phoneNumber',
-                            'characterSet': 'TYPE2SET',
+                            'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
                           }
@@ -1463,6 +1587,11 @@ FFW.UI = FFW.RPCObserver.create(
                   'bitsPerSample': '8_BIT',
                   'audioType': 'PCM'
                 }],
+                "pcmStreamCapabilities": {
+                  "samplingRate"  : "16KHZ",
+                  "bitsPerSample" : "16_BIT",
+                  "audioType"	: "PCM"
+                },
                 'hmiZoneCapabilities': 'FRONT',
                 'softButtonCapabilities': [
                   {
@@ -1481,8 +1610,6 @@ FFW.UI = FFW.RPCObserver.create(
                 'method': 'UI.GetCapabilities'
               }
             };
-            JSONMessage.result.hmiCapabilities.steeringWheelLocation
-              = FLAGS.steeringWheelLocation;
             this.sendMessage(JSONMessage);
             break;
           }
@@ -1545,13 +1672,26 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.CreateWindow':
           {
-            var app = SDL.SDLController.getApplicationModel(request.params.appID);
-            app.createWindow(request.params);
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
-              let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
-              FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+            const resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiCreateWindow');
+            if ('DO_NOT_RESPOND' == resultCode) {
+              Em.Logger.log('Do not respond on this request');
+              return;
+            }
+
+            if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+              var app = SDL.SDLController.getApplicationModel(request.params.appID);
+              if (app) {
+                app.createWindow(request.params);
+
+                this.sendUIResult(resultCode, request.id, request.method);
+
+                let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+                FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+              }
+            } else {
+              this.sendUIResult(resultCode, request.id, request.method, 'Erroneous response is assigned by settings');
+            }
+
             break;
           }
           case 'UI.DeleteWindow':
@@ -1580,25 +1720,25 @@ FFW.UI = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
+     * @param {String}
+     *            message
      */
     sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode !== 0) {
-
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': message,
-            'data': {
-              'method': method
-            }
+      // send response
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'error': {
+          'code': resultCode, // type (enum) from SDL protocol
+          'message': message,
+          'data': {
+            'method': method
           }
-        };
-        this.sendMessage(JSONMessage);
-      }
+        }
+      };
+
+      this.sendMessage(JSONMessage);
     },
     /**
      * send response from onRPCRequest
@@ -1609,32 +1749,64 @@ FFW.UI = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
+     * @param {String}
+     *            info
+     * @param {Object}
+     *            params
      */
-    sendUIResult: function(resultCode, id, method, info) {
-      if (this.errorResponsePull[id]) {
-        this.sendError(
-          this.errorResponsePull[id].code, id, method,
-          'Unsupported ' + this.errorResponsePull[id].type +
-          ' type. Available data in request was processed.'
-        );
+    sendUIResult: function(resultCode, id, method, info, params) {
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
         this.errorResponsePull[id] = null;
+
+        this.sendUIResult(
+          errorStruct.code,
+          id,
+          method,
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+        );
         return;
       }
-      Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode == SDL.SDLModel.data.resultCode.SUCCESS ||
-          resultCode == SDL.SDLModel.data.resultCode.WARNINGS) {
 
-        // send repsonse
+      let is_successful_response_format = function(is_success) {
+        // Successful response without params, but with not-empty message
+        // should be sent in errorneous format to properly forward info and result code
+        if (is_success && info != null && params == null) {
+          return false;
+        }
+
+        // Error response with not empty params should be sent in regular format
+        // to properly forward result code and params (but sacrifice info)
+        if (!is_success && params != null) {
+          return true;
+        }
+
+        // Otherwise use result code calculated according to regular HMI logic
+        return is_success;
+      };
+
+      Em.Logger.log('FFW.UI.' + method + 'Response');
+      if (is_successful_response_format(is_successful_code)) {
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
           'result': {
             'code': resultCode, // type (enum) from SDL protocol
             'method': method,
-            'info': info
           }
         };
+
+        if (params != null) {
+          Object.assign(JSONMessage.result, params);
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     /**
@@ -1670,6 +1842,58 @@ FFW.UI = FFW.RPCObserver.create(
           break;
         }
       }
+    },
+    /**
+     * send response from onRPCRequest
+     *
+     * @param {Number}
+     *            resultCode
+     * @param {Number}
+     *            rpc id
+     * @param {String}
+     *            info to send w response
+     * @param {Number}
+     *            tryAgainTime
+     */
+    subtleAlertResponse: function(resultCode, id, info, tryAgainTime) {
+      switch (resultCode) {
+        case SDL.SDLModel.data.resultCode.WARNINGS:
+        case SDL.SDLModel.data.resultCode.SUCCESS:
+        {
+          if (SDL.TTSPopUp.active) {
+            SDL.TTSPopUp.DeactivateTTS();
+          }
+          this.sendUIResult(resultCode, id, 'UI.SubtleAlert', info);
+          break;
+        }
+        case SDL.SDLModel.data.resultCode.REJECTED:
+        {
+          this.sendUIResult(resultCode, id, 'UI.SubtleAlert', info, { tryAgainTime: tryAgainTime });
+          break;
+        }
+        case SDL.SDLModel.data.resultCode.ABORTED:
+        {
+          this.sendUIResult(resultCode, id, 'UI.SubtleAlert', 'SubtleAlert request aborted.');
+          break;
+        }
+      }
+    },
+    /**
+     * send notification for OnSubtleAlertPressed
+     *
+     * @param {Number}
+     *            appID
+     */
+    onSubtleAlertPressed: function(appID) {
+      Em.Logger.log('FFW.UI.OnSubtleAlertPressed');
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnSubtleAlertPressed',
+        'params': {
+          'appID': appID
+        }
+      };
+      this.sendMessage(JSONMessage);
     },
     /**
      * send response from onRPCRequest
@@ -1956,6 +2180,45 @@ FFW.UI = FFW.RPCObserver.create(
         'params': {
           'seekTime': seekTime,
           'appID': appID
+        }
+      };
+      this.sendMessage(JSONMessage);
+    },
+    /**
+     * Callback for requesting images from mobile application
+     *
+     * @param {integer}
+     *            appID
+     * @param {string}
+     *            fileName
+     */
+    OnUpdateFile: function(appID, fileName) {
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnUpdateFile',
+        'params': {
+          'appID': appID,
+          'fileName': fileName
+        }
+      };
+      this.sendMessage(JSONMessage);
+    },
+        /**
+     * Callback for requesting submenu contents from mobile application
+     *
+     * @param {integer}
+     *            appID
+     * @param {integer}
+     *            menuID
+     */
+    OnUpdateSubMenu: function(appID, menuID) {
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnUpdateSubMenu',
+        'params': {
+          'appID': appID,
+          'menuID': menuID,
+          'updateSubCells': true
         }
       };
       this.sendMessage(JSONMessage);

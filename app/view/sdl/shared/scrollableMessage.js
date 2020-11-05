@@ -49,6 +49,8 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
     appID: null,
     timer: null,
     timeout: null,
+    endTime: null,
+    areAllImagesValid: true,
     childViews: [
       'backButton', 'captionText', 'softButtons', 'listOfCommands'
     ],
@@ -60,12 +62,25 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
      */
     deactivate: function(ABORTED) {
       clearTimeout(this.timer);
+      this.set('endTime', null);
       this.set('active', false);
       this.softButtons.set('page', 0);
       this.timeout = null;
+
+      let calculate_result_code = function(areAllImagesValid) {
+        if (ABORTED) {
+          return SDL.SDLModel.data.resultCode.ABORTED;
+        }
+
+        if (!areAllImagesValid) {
+          return SDL.SDLModel.data.resultCode.WARNINGS;
+        }
+
+        return SDL.SDLModel.data.resultCode.SUCCESS;
+      };
+
       SDL.SDLController.scrollableMessageResponse(
-        ABORTED ? SDL.SDLModel.data.resultCode['ABORTED'] :
-          SDL.SDLModel.data.resultCode.SUCCESS, this.messageRequestId
+        calculate_result_code(this.areAllImagesValid), this.messageRequestId
       );
       SDL.SDLController.onSystemContextChange();
       SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -74,24 +89,43 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         })
       })
     },
+
     activate: function(appName, params, messageRequestId) {
       if (appName) {
         var self = this;
         if (params.messageText.fieldName == 'scrollableMessageBody') {
           this.set('listOfCommands.items', params.messageText.fieldText);
         }
+
         this.set('messageRequestId', messageRequestId);
+        this.set('areAllImagesValid', true);
         this.set('captionText.content', appName);
         this.softButtons.addItems(params.softButtons, params.appID);
         this.set('active', true);
         this.set('cancelID', params.cancelID);
         clearTimeout(this.timer);
         this.timeout = params.timeout;
+        this.set('endTime', Date.now() + this.timeout);
         this.timer = setTimeout(
           function() {
             self.deactivate();
           }, params.timeout
         );
+
+        if(params.softButtons) {
+          var imageList = [];
+          for(var i = 0; i < params.softButtons.length; i++) {
+            if(params.softButtons[i].image) {
+              imageList.push(params.softButtons[i].image.value);
+            }
+          }
+          var that = this;
+          var callback = function(failed) {
+            that.set('areAllImagesValid', !failed);
+          };
+
+          SDL.SDLModel.validateImages(messageRequestId, callback, imageList);
+        }
       }
     },
     softButtons: SDL.MenuList.extend(

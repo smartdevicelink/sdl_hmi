@@ -116,6 +116,16 @@ SDL.List = Em.ContainerView.extend({
     this.items.splice(id, 1);
     this.list.refresh();
   },
+ 
+  /** Method setting up display mode for correspond components */
+  setMode: function(mode){
+   var items = this.list.get('childViews');
+
+   for (var i = 0; i < items.length; ++i) {
+     var button = items[i];
+     button.setMode(mode);
+   }
+ },
 
   /** List components */
   childViews: [
@@ -152,8 +162,26 @@ SDL.List = Em.ContainerView.extend({
                 classNames: 'list-item',
 
                 classNameBindings: [
-                  'this.voiceOver'
+                  'this.voiceOver',
+                  'dayMode',
+                  'nightMode',
+                  'highLightedMode'
                 ],
+
+                dayMode:false,
+                nightMode:false,
+                highLightedMode:false,
+
+                setMode:function(mode) {
+                  mode = SDL.SDLModel.data.imageModeList.includes(mode) ? mode : SDL.SDLModel.data.imageModeList[0];
+                  this.set('dayMode', mode == SDL.SDLModel.data.imageModeList[0]);
+                  this.set('nightMode', mode == SDL.SDLModel.data.imageModeList[1]);
+                  this.set('highLightedMode', mode == SDL.SDLModel.data.imageModeList[2]);
+                },
+                
+                imageModeDidChange: function() {
+                  this.setMode(SDL.SDLModel.data.imageMode);
+                }.observes('SDL.SDLModel.data.imageMode'),
 
                 // Dynamic property set
                 init: function() {
@@ -175,6 +203,8 @@ SDL.List = Em.ContainerView.extend({
                 }
               }
             );
+
+        element.setMode(SDL.SDLModel.data.imageMode);
 
         // Push element to list
         this.get('childViews').pushObject(element);

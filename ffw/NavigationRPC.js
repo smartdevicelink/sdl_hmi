@@ -175,58 +175,6 @@ FFW.Navigation = FFW.RPCObserver.create(
         }
       }
     },
-    isPng:function(params){
-      var returnValue=true;
-      if(params.nextTurnIcon){
-        var image = params.nextTurnIcon.value;
-        var search_offset = image.lastIndexOf('.');
-        str='.png';
-        var isPng=image.includes(str, search_offset);
-        if(!isPng){
-          delete params.nextTurnIcon;
-          returnValue=false;
-        }       
-      }
-      if(params.turnIcon){
-        var image = params.turnIcon.value;
-        var search_offset = image.lastIndexOf('.');
-        str='.png';
-        var isPng=image.includes(str, search_offset);
-        if(!isPng){
-          delete params.turnIcon;
-          returnValue=false;
-        }       
-      }
-      if(params.turnList){
-        var countList=params.turnList.length;
-        for(var i=0;i<countList;i++){
-          if(params.turnList[i].turnIcon){
-          var image=params.turnList[i].turnIcon.value;
-          var search_offset = image.lastIndexOf('.');
-          str='.png';
-          var isPng=image.includes(str, search_offset);
-          if(!isPng){
-            delete params.turnList[i].turnIcon;
-            returnValue=false;
-          }
-          }
-        }
-      }
-      if(params.softButtons){
-        var countButtons=params.softButtons.length;
-        for(var i=0;i<countButtons;i++){
-          var image=params.softButtons[i].image.value;
-          var search_offset = image.lastIndexOf('.');
-          str='.png';
-          var isPng=image.includes(str, search_offset);
-          if(!isPng){
-            delete params.softButtons[i].image;
-            returnValue=false;
-          }
-        }
-      }
-      return returnValue;
-    },
     /**
      * handle RPC requests here
      */
@@ -311,21 +259,8 @@ FFW.Navigation = FFW.RPCObserver.create(
               );
               this.errorResponsePull[request.id] = null;
             } else {
-              var png=this.isPng(request.params);
+              SDL.NavigationController.validateIcons(request);
               SDL.SDLModel.tbtActivate(request.params);
-              if(png){
-              this.sendNavigationResult(
-                SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method
-              );
-            }else{
-              this.sendNavigationResult(
-                SDL.SDLModel.data.resultCode.WARNINGS,
-                request.id,
-                request.method
-              );
-            }
             }
             break;
           }
@@ -352,20 +287,8 @@ FFW.Navigation = FFW.RPCObserver.create(
               this.errorResponsePull[request.id] = null;
               //}
             }
-            var png=this.isPng(request.params);
+            SDL.NavigationController.validateIcons(request);
             SDL.SDLModel.tbtTurnListUpdate(request.params);
-            if(png){
-            this.sendNavigationResult(
-              SDL.SDLModel.data.resultCode.SUCCESS,
-              request.id,
-              request.method
-            );}else{
-              this.sendNavigationResult(
-                SDL.SDLModel.data.resultCode.WARNINGS,
-                request.id,
-                request.method
-              );
-            }
             break;
           }
           case 'Navigation.StartAudioStream':
@@ -537,22 +460,19 @@ FFW.Navigation = FFW.RPCObserver.create(
      */
     sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
-
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': message,
-            'data': {
-              'method': method
-            }
+      // send response
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'error': {
+          'code': resultCode, // type (enum) from SDL protocol
+          'message': message,
+          'data': {
+            'method': method
           }
-        };
-        this.sendMessage(JSONMessage);
-      }
+        }
+      };
+      this.sendMessage(JSONMessage);
     },
     /**
      * send response from onRPCRequest
@@ -560,23 +480,45 @@ FFW.Navigation = FFW.RPCObserver.create(
      * @param {Number} resultCode
      * @param {Number} id
      * @param {String} method
+     * @param {String} info
      */
-    sendNavigationResult: function(resultCode, id, method) {
-      if (this.errorResponsePull[id] != null) {
-        this.sendError(
-          this.errorResponsePull[id].code,
+    sendNavigationResult: function(resultCode, id, method, info, params) {
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
+        this.errorResponsePull[id] = null;
+
+        this.sendNavigationResult(
+          errorStruct.code,
           id,
           method,
-          'Unsupported ' + this.errorResponsePull[id].type +
-          ' type. Available data in request was processed.'
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
         );
-        this.errorResponsePull[id] = null;
         return;
       }
-      Em.Logger.log('FFW.UI.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS ||resultCode == SDL.SDLModel.data.resultCode.WARNINGS ) {
 
-        // send repsonse
+      let is_successful_response_format = function(is_success) {
+        // Successful response without params, but with not-empty message
+        // should be sent in errorneous format to properly forward info and result code
+        if (is_success && info != null && params == null) {
+          return false;
+        }
+
+        // Error response with not empty params should be sent in regular format
+        // to properly forward result code and params (but sacrifice info)
+        if (!is_success && params != null) {
+          return true;
+        }
+
+        // Otherwise use result code calculated according to regular HMI logic
+        return is_success;
+      };
+
+      Em.Logger.log('FFW.Navigation.' + method + 'Response');
+      if (is_successful_response_format(is_successful_code)) {
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
@@ -585,7 +527,14 @@ FFW.Navigation = FFW.RPCObserver.create(
             'method': method
           }
         };
+
+        if (params != null) {
+          Object.assign(JSONMessage.result, params);
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     /**

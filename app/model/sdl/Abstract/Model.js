@@ -200,48 +200,28 @@ SDL.SDLModel = Em.Object.extend({
   onFileRemoved: function(params) {
 
     var result = false;
+    var app_model = SDL.SDLController.getApplicationModel(params.appID);
+    var is_image_type = ['GRAPHIC_PNG', 'GRAPHIC_BMP', 'GRAPHIC_JPEG'].includes(params.fileType);
 
-    if ((
-      params.fileType === 'GRAPHIC_PNG' || params.fileType === 'GRAPHIC_BMP' ||
-      params.fileType === 'GRAPHIC_JPEG') &&
-      SDL.SDLController.getApplicationModel(params.appID)) {
-      result = SDL.SDLController.getApplicationModel(params.appID).
-                   onImageRemoved(params.fileName);
+    if (is_image_type && app_model) {
+      result = app_model.onImageRemoved(params.fileName);
 
-      if (SDL.SDLController.getApplicationModel(params.appID).appIcon.
-              indexOf(params.fileName) != -1 &&
-        params.fileName.length ==
-        SDL.SDLController.getApplicationModel(params.appID).appIcon.length) {
-        SDL.SDLController.getApplicationModel(params.appID).
-            set('appIcon', SDL.SDLModel.data.defaultListOfIcons.app);
+      if (app_model.appIcon.includes(params.fileName) &&
+        params.fileName.length == app_model.appIcon.length) {
+        app_model.set('appIcon', SDL.SDLModel.data.defaultListOfIcons.app);
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID
-        ).constantTBTParams) {
-
-        if (SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.turnIcon &&
-          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
-              turnIcon.value.indexOf(params.fileName) != -1 &&
-          params.fileName.length == SDL.SDLController.getApplicationModel(
-            params.appID
-          ).constantTBTParams.turnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.turnIcon.value            =
-              SDL.SDLModel.data.defaultListOfIcons.command;
+      if (app_model.constantTBTParams) {
+        if (app_model.constantTBTParams.turnIcon &&
+            app_model.constantTBTParams.turnIcon.value === params.fileName) {
+          app_model.constantTBTParams.turnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
           SDL.TurnByTurnView.activate(params.appID);
         }
 
-        if (SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.nextTurnIcon &&
-          SDL.SDLController.getApplicationModel(params.appID).constantTBTParams.
-              nextTurnIcon.value.indexOf(params.fileName) != -1 &&
-          params.fileName.length == SDL.SDLController.getApplicationModel(
-            params.appID
-          ).constantTBTParams.nextTurnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID
-          ).constantTBTParams.nextTurnIcon.value            =
-              SDL.SDLModel.data.defaultListOfIcons.command;
+        if (app_model.constantTBTParams.nextTurnIcon &&
+            app_model.constantTBTParams.nextTurnIcon.value.indexOf(params.fileName) != -1 &&
+            params.fileName.length == app_model.constantTBTParams.nextTurnIcon.value.length) {
+          app_model.constantTBTParams.nextTurnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
           SDL.TurnByTurnView.activate(params.appID);
         }
       }
@@ -284,42 +264,28 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      var len = SDL.SDLController.getApplicationModel(params.appID
-      ).turnList.length;
+      var len = app_model.turnList.length;
       for (var i = 0; i < len; i++) {
-        if (!SDL.SDLController.getApplicationModel(params.appID
-          ).turnList[i].turnIcon) {
+        if (!app_model.turnList[i].turnIcon) {
           continue;
         }
-        if (SDL.SDLController.getApplicationModel(params.appID
-          ).turnList[i].turnIcon.value.indexOf(params.fileName) != -1 &&
-          params.fileName.length == SDL.SDLController.getApplicationModel(
-            params.appID
-          ).turnList[i].turnIcon.value.length) {
-          SDL.SDLController.getApplicationModel(params.appID
-          ).turnList[i].turnIcon.value            =
-              SDL.SDLModel.data.defaultListOfIcons.command;
+        if (app_model.turnList[i].turnIcon.value.indexOf(params.fileName) != -1 &&
+          params.fileName.length == app_model.turnList[i].turnIcon.value.length) {
+          app_model.turnList[i].turnIcon.value = SDL.SDLModel.data.defaultListOfIcons.command;
         }
       }
 
       SDL.TBTTurnList.updateList(params.appID);
 
-      if (SDL.SDLController.getApplicationModel(params.appID).softButtons) {
-        var len = SDL.SDLController.getApplicationModel(params.appID
-        ).softButtons.length;
+      if (app_model.softButtons) {
+        var len = app_model.softButtons.length;
         for (var i = 0; i < len; i++) {
-          if (!SDL.SDLController.getApplicationModel(params.appID
-            ).softButtons[i].image) {
+          if (!app_model.softButtons[i].image) {
             continue;
           }
-          if (SDL.SDLController.getApplicationModel(params.appID
-            ).softButtons[i].image.value.indexOf(params.fileName) != -1 &&
-            params.fileName.length == SDL.SDLController.getApplicationModel(
-              params.appID
-            ).softButtons[i].image.value.length) {
-            SDL.SDLController.getApplicationModel(params.appID
-            ).softButtons[i].image.value              =
-                SDL.SDLModel.data.defaultListOfIcons.command;
+          if (app_model.softButtons[i].image.value.indexOf(params.fileName) != -1 &&
+            params.fileName.length == app_model.softButtons[i].image.value.length) {
+            app_model.softButtons[i].image.value = SDL.SDLModel.data.defaultListOfIcons.command;
           }
         }
 
@@ -345,15 +311,12 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      if (SDL.SDLController.getApplicationModel(params.appID
-        ).globalProperties.vrHelp) {
-        for (var i = 0; i < SDL.SDLController.getApplicationModel(params.appID
-        ).globalProperties.vrHelp.length; i++) {
-          if (SDL.SDLController.getApplicationModel(params.appID
-            ).globalProperties.vrHelp[i].image.value === params.fileName) {
-            SDL.SDLController.getApplicationModel(params.appID
-            ).globalProperties.vrHelp[i].image.value =
-              SDL.SDLModel.data.defaultListOfIcons.command;
+      if (app_model.globalProperties.vrHelp) {
+        for (var i = 0; i < app_model.globalProperties.vrHelp.length; i++) {
+          if (app_model.globalProperties.vrHelp[i].image &&
+              app_model.globalProperties.vrHelp[i].image.value === params.fileName) {
+              app_model.globalProperties.vrHelp[i].image.value =
+                  SDL.SDLModel.data.defaultListOfIcons.command;
           }
         }
       }
@@ -999,7 +962,10 @@ SDL.SDLModel = Em.Object.extend({
     }
     if (SDL.SDLController.getApplicationModel(params.appID)) {
       for (var i in params) {
-        if (i === 'keyboardProperties') {
+        if (i === "appID") {
+          continue;
+        }
+        else if (i === 'keyboardProperties') {
           mergeKeyboardProperties(params[i]);
         } else {
           SDL.SDLController.getApplicationModel(params.appID).
@@ -1009,6 +975,92 @@ SDL.SDLModel = Em.Object.extend({
     } else {
       console.error('CriticalError! No app registered with current appID!');
     }
+  },
+
+  /**
+   * List of images(paths to images) to check.
+   */
+  imageCheckList: {},
+
+  /**
+   * @function validateImages
+   * @description Checks if image exists by path provided in request data 
+   * @param requestID - request id, to which images belong
+   * @param callback - user callback after check
+   * @param imageList - list of paths to check 
+   */
+  validateImages: function(requestID, callback, imageList) {
+    if(imageList == null || imageList.length == 0) {
+      callback(false);
+      return;
+    }
+
+    this.imageCheckList[requestID] = [];
+    const filteredImageList = imageList.filter(function(item, pos) {
+          return imageList.indexOf(item) == pos;
+    });
+
+    filteredImageList.forEach(image => {
+      this.imageCheckList[requestID].push({
+        'path': image,
+        'checkResult': null
+      });
+    });
+
+    for(var i = 0; i < this.imageCheckList[requestID].length; i++) {
+      var image = new Image();
+      image.onload = function() { 
+        for(var i = 0; i < SDL.SDLModel.imageCheckList[requestID].length; i++) {
+          var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
+          var path = SDL.SDLModel.imageCheckList[requestID][i].path;
+          if(path === formattedImgPath) {
+            SDL.SDLModel.imageCheckList[requestID][i].checkResult = true;
+            break;
+          }
+        }
+        SDL.SDLModel.finalizeImageValidation(requestID, callback);
+      };
+      image.onerror = function() { 
+        for(var i = 0; i < SDL.SDLModel.imageCheckList[requestID].length; i++) {
+          var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
+          var path = SDL.SDLModel.imageCheckList[requestID][i].path;
+          if(path === formattedImgPath) {
+            SDL.SDLModel.imageCheckList[requestID][i].checkResult = false;
+            break;
+          }
+        }
+        SDL.SDLModel.finalizeImageValidation(requestID, callback);
+      };
+      image.src = this.imageCheckList[requestID][i].path;
+    }
+  },
+  
+  /**
+   * @function finalizeImageValidation
+   * @description Collects result of images validation. 
+   * If validation is finished - calls user callback function.
+   * @param callback - user callback.
+   */
+  finalizeImageValidation: function(requestID, callback) {
+    var failed = false;
+    var BreakException = {};
+    try {
+      SDL.SDLModel.imageCheckList[requestID].forEach(image => {
+        if (image.checkResult === null) {
+          throw BreakException;
+        }
+        if (!image.checkResult) {
+          failed = true;
+        }
+      });
+    } catch (exception) {
+      if (exception == BreakException) {
+        return;
+      }
+    }
+
+    delete SDL.SDLModel.imageCheckList.requestID;
+    callback(failed);
   },
 
   /**
@@ -1143,6 +1195,47 @@ SDL.SDLModel = Em.Object.extend({
   },
 
   /**
+   * SDL UI SubtleAlert response handler show popup window
+   *
+   * @param {Object}
+   *            message Object with parameters come from SDLCore
+   * @param {Number}
+   *            subtleAlertRequestId Id of current handled request
+   */
+  onUISubtleAlert: function(message, subtleAlertRequestId) {
+    if (SDL.AlertPopUp.active) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'an Alert is active',
+        SDL.AlertPopUp.endTime - Date.now());
+    } else if (SDL.ScrollableMessage.active) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'a ScrollableMessage is active',
+        SDL.ScrollableMessage.endTime - Date.now());
+    } else if (SDL.InteractionChoicesView.active) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'a PerformInteraction is active',
+        SDL.InteractionChoicesView.endTime - Date.now());
+    } else if (SDL.SubtleAlertPopUp.active) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'another SubtleAlert is active',
+        SDL.SubtleAlertPopUp.endTime - Date.now());
+    } else if (SDL.AlertManeuverPopUp.activate) {
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
+        subtleAlertRequestId,
+        'an AlertManeuver popup is active',
+        SDL.AlertManeuverPopUp.endTime - Date.now());
+    } else {
+      SDL.SubtleAlertPopUp.SubtleAlertActive(message, subtleAlertRequestId);
+      return true;
+    }
+    return false;
+  },
+
+  /**
    * SDL UI PerformInteraction response handler show popup window
    *
    * @param {Object}
@@ -1150,6 +1243,12 @@ SDL.SDLModel = Em.Object.extend({
    */
   uiPerformInteraction: function(message) {
 
+    if (!message.params) {
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.INVALID_DATA, message.id,
+        message.method, 'Empty message was received for UI.PerformInteraction'
+        );
+        return false;
+    }
     if (!SDL.SDLController.getApplicationModel(message.params.appID
       ).activeRequests.uiPerformInteraction) {
       if (message.params && message.params.vrHelpTitle &&
@@ -1163,9 +1262,13 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.InteractionChoicesView.cancelID = message.params.cancelID;
 
-      if (message.params && message.params.choiceSet == null) {
-        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, 
-          message.id, 'UI.PerformInteraction');
+      // Images are not validated for this request since choiceId cannot be sent back in
+      // the case of a WARNINGS response
+
+      if(message.params.choiceSet == null){
+        FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS,
+          message.id, 'UI.PerformInteraction'
+        );
         return true;
       }
 
@@ -1177,7 +1280,6 @@ SDL.SDLModel = Em.Object.extend({
 
       return true;
     } else {
-
       FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
         message.method, 'UI PerformInterection REJECTED on HMI'
       );
@@ -1332,6 +1434,12 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
       SDL.TTSPopUp.ActivateTTS(message, files, appID);
+    } else {
+      FFW.TTS.sendError(
+       SDL.SDLModel.data.resultCode.WARNINGS, this.requestId, 'TTS.Speak',
+       'No TTS Chunks provided in Speak request'
+      );
+      this.requestId = null;
     }
   },
 
@@ -1496,7 +1604,9 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.TurnByTurnView.deactivate();
 
-      if (!SDL.SDLModel.data.phoneCallActive && reason == 'GENERAL') {
+      if (!SDL.SDLModel.data.phoneCallActive &&
+          !SDL.SDLModel.data.templateChangeInProgress &&
+          reason == 'GENERAL') {
         FFW.BasicCommunication.OnAppDeactivated(appID);
       }
     }

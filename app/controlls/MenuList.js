@@ -83,6 +83,16 @@ SDL.MenuList = Em.ContainerView.extend({
     );
   },
 
+  /** Method setting up display mode for correspond components */
+  setMode: function(mode){
+    var items = this.get('content.childViews');
+
+    for (var i = 0; i < items.length; ++i) {
+      var button = items[i];
+      button.setMode(mode);
+    }
+  },
+
   classNames: [
     'ffw_list_menu'
   ],

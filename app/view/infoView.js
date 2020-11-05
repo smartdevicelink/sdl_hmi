@@ -176,7 +176,19 @@ SDL.InfoView = Em.ContainerView.create(
                 icon: 'images/media/ico_cd.png',
                 target: 'SDL.RCModulesController.currentAudioModel'
               }
-            )
+            ),
+
+            /**
+             * @description Callback for display image mode change.
+             */
+            imageModeChanged: function() { 
+              SDL.InfoView.leftMenu.items.servicesButton.setMode(SDL.SDLModel.data.imageMode);
+              SDL.InfoView.leftMenu.items.appsButton.setMode(SDL.SDLModel.data.imageMode);
+              SDL.InfoView.leftMenu.items.calendarButton.setMode(SDL.SDLModel.data.imageMode);
+              SDL.InfoView.leftMenu.items.goToCD.setMode(SDL.SDLModel.data.imageMode);
+              SDL.InfoView.leftMenu.items.travelLinkButton.setMode(SDL.SDLModel.data.imageMode);
+              SDL.InfoView.leftMenu.items.sdlButton.setMode(SDL.SDLModel.data.imageMode);
+            }.observes('SDL.SDLModel.data.imageMode')
           }
         )
       }

@@ -73,12 +73,14 @@ SDL.AppPermissionsView = Em.ContainerView.create(
                 }
               );
           }
-          FFW.BasicCommunication.OnAppPermissionConsent(
-            permissions, null, 'GUI', SDL.AppPermissionsView.currentAppId
-          );
+          if (permissions.length > 0) {
+            FFW.BasicCommunication.OnAppPermissionConsent(
+              permissions, null, 'GUI', SDL.AppPermissionsView.currentAppId
+            );
+          }
           SDL.AppPermissionsView.currentAppId = null;
         },
-        goToState: 'policies',
+        goToState: 'policies.appPermissionsList',
         icon: 'images/media/ico_back.png',
         onDown: false
       }
@@ -90,6 +92,9 @@ SDL.AppPermissionsView = Em.ContainerView.create(
       SDL.AppPermissionsView.currentAppId = appID;
       this.appList.items = [];
       for (var i = 0; i < message.length; i++) {
+        if (!message[i].name) {
+          continue;
+        }
         var text = ' - Undefined';
         text = (message[i].allowed === true) ? ' - Allowed' : ' - Not allowed';
         this.appList.items.push({

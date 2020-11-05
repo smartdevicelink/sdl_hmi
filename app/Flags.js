@@ -54,7 +54,6 @@ FLAGS = Em.Object.create(
     Navigation: null,
     CAN: null,
     RC: null,
-    steeringWheelLocation: 'LEFT',
     /**
      * 0 - G
      * 1 - R

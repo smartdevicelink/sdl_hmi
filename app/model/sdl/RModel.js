@@ -62,6 +62,11 @@ SDL.RModel = SDL.SDLModel.extend({
   webApplicationFramesMap: {},
 
   /**
+   * Map of app id and corresponding policy app ids
+   */
+  appIDtoPolicyAppIDMapping: {},
+
+  /**
    * Current drivers device flag
    *
    * @param {Object}
@@ -193,7 +198,7 @@ SDL.RModel = SDL.SDLModel.extend({
         'cmdID': -2,
         'vrCommands': ['USER_EXIT ' + params.appName],
         'appID': params.appID,
-        'type': 'Command'
+        'type': 'Application'
       };
     this.addCommandVR(message);
 

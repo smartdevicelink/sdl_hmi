@@ -250,26 +250,60 @@ FFW.RC = FFW.RPCObserver.create(
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
 
-            var JSONMessage = {
-              'jsonrpc': '2.0',
-              'id': request.id,
-              'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                'method': request.method,
-                'isSubscribed': request.params.subscribe,
-                'moduleData': {
-                  'moduleType': request.params.moduleType,
-                  'moduleId': request.params.moduleId
-                }
-              }
-            };
-
-            var data = SDL.RCModulesController.getInteriorVehicleData(request);
-            if(data) {
-              var key = Object.keys(data)[0];
-              JSONMessage.result.moduleData[key] = data[key];
-              this.client.send(JSONMessage);
+            const resultStruct = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'GetInteriorVehicleData');
+            if ('DO_NOT_RESPOND' == resultStruct.code) {
+              Em.Logger.log('Do not respond on this request');
+              break;
             }
+
+            if (FFW.RPCHelper.isSuccessResultCode(resultStruct.code)) {
+              let calculate_subscribed_value = function(subscribed) {
+                switch (subscribed) {
+                  case 'USE_EXISTING': {
+                    return request.params.subscribe;
+                  }
+                  case 'FALSE': {
+                    return false;
+                  }
+                  case 'TRUE': {
+                    return true;
+                  }
+                }
+                return null;
+              };
+
+              var JSONMessage = {
+                'jsonrpc': '2.0',
+                'id': request.id,
+                'result': {
+                  'code': resultStruct.code,
+                  'method': request.method,
+                  'moduleData': {
+                    'moduleType': request.params.moduleType,
+                    'moduleId': request.params.moduleId
+                  }
+                }
+              };
+
+              var subscribed_value = calculate_subscribed_value(resultStruct.subscribed);
+              if(subscribed_value != null) {
+                JSONMessage.result["isSubscribed"] = subscribed_value;
+              }
+
+              var data = SDL.RCModulesController.getInteriorVehicleData(request);
+              if (data) {
+                var key = Object.keys(data)[0];
+                JSONMessage.result.moduleData[key] = data[key];
+                this.client.send(JSONMessage);
+              }
+
+              break;
+          }
+
+            this.sendError(resultStruct.code,
+                           request.id,
+                           request.method,
+                           'Erroneous response is assigned by settings');
             break;
           }
           case 'RC.GetInteriorVehicleDataConsent':
@@ -331,22 +365,19 @@ FFW.RC = FFW.RPCObserver.create(
      */
     sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
-
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': message,
-            'data': {
-              'method': method
-            }
+      // send response
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'error': {
+          'code': resultCode, // type (enum) from SDL protocol
+          'message': message,
+          'data': {
+            'method': method
           }
-        };
-        this.sendMessage(JSONMessage);
-      }
+        }
+      };
+      this.sendMessage(JSONMessage);
     },
     /**
      * Send response from onRPCRequest
@@ -358,20 +389,59 @@ FFW.RC = FFW.RPCObserver.create(
      * @param {String}
      *            method
      */
-    sendRCResult: function(resultCode, id, method) {
-      Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+    sendRCResult: function(resultCode, id, method, params) {
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
+        this.errorResponsePull[id] = null;
 
-        // send repsonse
+        this.sendRCResult(
+          errorStruct.code,
+          id,
+          method,
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+        );
+        return;
+      }
+
+      let is_successful_response_format = function(is_success) {
+        // Successful response without params, but with not-empty message
+        // should be sent in errorneous format to properly forward info and result code
+        if (is_success && info != null && params == null) {
+          return false;
+        }
+
+        // Error response with not empty params should be sent in regular format
+        // to properly forward result code and params (but sacrifice info)
+        if (!is_success && params != null) {
+          return true;
+        }
+
+        // Otherwise use result code calculated according to regular HMI logic
+        return is_success;
+      };
+
+      Em.Logger.log('FFW.RC.' + method + 'Response');
+      if (is_successful_response_format(is_successful_code)) {
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
           'result': {
-            'code': resultCode,
+            'code': resultCode, // type (enum) from SDL protocol
             'method': method
           }
         };
+
+        if (params != null) {
+          Object.assign(JSONMessage.result, params);
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     GetInteriorVehicleDataConsentResponse: function(request, allowed) {

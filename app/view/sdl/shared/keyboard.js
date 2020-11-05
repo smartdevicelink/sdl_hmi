@@ -79,7 +79,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
      */
     deactivate: function() {
       this._super();
-      this.searchBar.input.set('value', null);
+      this.searchBar.input.set('value', '');
       this.set('target', null);
     },
     inputChanges: function(element) {

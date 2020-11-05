@@ -54,6 +54,7 @@ SDL.NavigationView = Em.ContainerView.create(
         itemGenerator: function() {
           var items = [];
           for (var i = 0; i < SDL.NavigationModel.LocationDetails.length; i++) {
+            const img = SDL.NavigationModel.LocationDetails[i].locationImage;
             items.push(
               {
                 type: SDL.Button,
@@ -62,9 +63,8 @@ SDL.NavigationView = Em.ContainerView.create(
                   className: 'button',
                   text: SDL.NavigationModel.LocationDetails[i].locationName,
                   disabled: false,
-                  icon: SDL.NavigationModel.LocationDetails[i].locationImage.value,
-                  templateName: SDL.NavigationModel.LocationDetails[i].locationImage
-                    ? '' : 'text',
+                  icon: img ? img.value : '',
+                  templateName: img && img.isTemplate ? 'textOverlay' : '',
                   action: 'openWayPoint',
                   target: 'SDL.NavigationController'
                 }
@@ -112,6 +112,14 @@ SDL.NavigationView = Em.ContainerView.create(
         action: 'setRoutes',
         target: 'SDL.NavigationController'
       }
-    )
+    ),
+
+    /**
+     * @description Callback for display image mode change.
+     */
+    imageModeChanged: function() { 
+      SDL.NavigationView.POIButton.setMode(SDL.SDLModel.data.imageMode);
+      SDL.NavigationView.navigate.setMode(SDL.SDLModel.data.imageMode);
+    }.observes('SDL.SDLModel.data.imageMode')
   }
 );
