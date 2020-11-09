@@ -876,7 +876,7 @@ SDL.SDLController = Em.Object.extend(
      * @param {Number}
      *            messageRequestId
      */
-    scrollableMessageResponse: function(result, messageRequestId) {
+    scrollableMessageResponse: function(result, info, messageRequestId) {
       if (result == SDL.SDLModel.data.resultCode.SUCCESS) {
         FFW.UI.sendUIResult(
           result,
@@ -888,7 +888,7 @@ SDL.SDLController = Em.Object.extend(
           result,
           messageRequestId,
           'UI.ScrollableMessage',
-          'Requested image(s) not found'
+          info
         );
       } else {
         FFW.UI.sendUIResult(

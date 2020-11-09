@@ -74,7 +74,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
           '<img class="alertPopUpImage" \
             onerror="SDL.AlertPopUp.imageUndefined(event)"\
             onload="SDL.AlertPopUp.imageLoaded(event)"\
-            {{bindAttr src="SDL.AlertPopUp.icon"}}>'
+            {{bindAttr src="SDL.AlertPopUp.icon.value"}}>'
         )
       }
     ),
@@ -86,8 +86,6 @@ SDL.AlertPopUp = Em.ContainerView.create(
      */
     imageUndefined: function(event) {
       event.target.style.display='none';
-      this.message = "Requested image(s) not found";
-      this.reason = "WARNINGS"
     },
 
     /**
@@ -193,6 +191,8 @@ SDL.AlertPopUp = Em.ContainerView.create(
     addSoftButtons: function(params, appID) {
       this.softbuttons.buttons.removeAllChildren();
       this.softbuttons.buttons.rerender();
+
+      var imageList = [];
       if (params) {
         var softButtonsClass;
         switch (params.length) {
@@ -209,7 +209,12 @@ SDL.AlertPopUp = Em.ContainerView.create(
             softButtonsClass = 'four';
             break;
         }
+
         for (var i = 0; i < params.length; i++) {
+          if (params[i].image) {
+            imageList.push(params[i].image);
+          }
+
           this.get('softbuttons.buttons.childViews')
             .pushObject(
               SDL.Button.create(
@@ -235,19 +240,31 @@ SDL.AlertPopUp = Em.ContainerView.create(
             );
         }
       }
+
+      imageList.push(this.image);
+
+        var callback = function(failed, info) {
+          if (failed) {
+            SDL.AlertPopUp.reason = 'WARNINGS';
+            SDL.AlertPopUp.message = info;
+          }
+        }
+
+      SDL.SDLModel.validateImages(this.alertRequestId, callback, imageList);
     },
+
     AlertActive: function(message, alertRequestId, priority) {
       var self = this;
       this.set('alertRequestId', alertRequestId);
       this.set('cancelID', message.cancelID);
       this.set('reason', 'timeout');
       this.set('message', undefined);
+      this.set('icon', message.alertIcon ? message.alertIcon : { value: "images/sdl/Warning.png" });
       this.addSoftButtons(message.softButtons, message.appID);
       this.set('progressIndicator', message.progressIndicator);
       this.set(
         'appName', SDL.SDLController.getApplicationModel(message.appID).appName
       );
-      this.set('icon', message.alertIcon ? message.alertIcon.value : "images/sdl/Warning.png");
       for (var i = 0; i < message.alertStrings.length; i++) {
         switch (message.alertStrings[i].fieldName) {
           case 'alertText1':

@@ -984,14 +984,14 @@ SDL.SDLModel = Em.Object.extend({
 
   /**
    * @function validateImages
-   * @description Checks if image exists by path provided in request data 
+   * @description Checks if image exists by path provided in request data
    * @param requestID - request id, to which images belong
    * @param callback - user callback after check
-   * @param imageList - list of paths to check 
+   * @param imageList - list of Image structures to check
    */
   validateImages: function(requestID, callback, imageList) {
     if(imageList == null || imageList.length == 0) {
-      callback(false);
+      callback(false, null);
       return;
     }
 
@@ -1002,19 +1002,40 @@ SDL.SDLModel = Em.Object.extend({
 
     filteredImageList.forEach(image => {
       this.imageCheckList[requestID].push({
-        'path': image,
+        'path': image.value,
+        'isTemplate': image.isTemplate,
         'checkResult': null
       });
     });
 
+    let is_valid_template_extension = function(image) {
+      if (image.isTemplate !== true) {
+        return true;
+      }
+
+      return SDL.NavigationController.isPng(image.path);
+    };
+
     for(var i = 0; i < this.imageCheckList[requestID].length; i++) {
+      if (!is_valid_template_extension(this.imageCheckList[requestID][i])) {
+        SDL.SDLModel.imageCheckList[requestID][i].checkResult = {
+          code: false,
+          info : "Template image extension is not valid"
+        };
+        SDL.SDLModel.finalizeImageValidation(requestID, callback);
+        continue;
+      }
+
       var image = new Image();
       image.onload = function() { 
         for(var i = 0; i < SDL.SDLModel.imageCheckList[requestID].length; i++) {
           var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
           var path = SDL.SDLModel.imageCheckList[requestID][i].path;
           if(path === formattedImgPath) {
-            SDL.SDLModel.imageCheckList[requestID][i].checkResult = true;
+            SDL.SDLModel.imageCheckList[requestID][i].checkResult = {
+              code: true,
+              info : null
+            };
             break;
           }
         }
@@ -1025,7 +1046,10 @@ SDL.SDLModel = Em.Object.extend({
           var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
           var path = SDL.SDLModel.imageCheckList[requestID][i].path;
           if(path === formattedImgPath) {
-            SDL.SDLModel.imageCheckList[requestID][i].checkResult = false;
+            SDL.SDLModel.imageCheckList[requestID][i].checkResult = {
+              code: false,
+              info : "Requested image(s) not found"
+            };
             break;
           }
         }
@@ -1043,14 +1067,16 @@ SDL.SDLModel = Em.Object.extend({
    */
   finalizeImageValidation: function(requestID, callback) {
     var failed = false;
+    var info = null;
     var BreakException = {};
     try {
       SDL.SDLModel.imageCheckList[requestID].forEach(image => {
         if (image.checkResult === null) {
           throw BreakException;
         }
-        if (!image.checkResult) {
+        if (!image.checkResult.code) {
           failed = true;
+          info = image.checkResult.info;
         }
       });
     } catch (exception) {
@@ -1060,7 +1086,7 @@ SDL.SDLModel = Em.Object.extend({
     }
 
     delete SDL.SDLModel.imageCheckList.requestID;
-    callback(failed);
+    callback(failed, info);
   },
 
   /**

@@ -267,21 +267,21 @@ FFW.UI = FFW.RPCObserver.create(
 
             imageList = [];
             if(request.params.graphic) {
-              imageList.push(request.params.graphic.value);
+              imageList.push(request.params.graphic);
             }
             if(request.params.secondaryGraphic) {
-              imageList.push(request.params.secondaryGraphic.value);
+              imageList.push(request.params.secondaryGraphic);
             }
             if(request.params.softButtons) {
               for(var i = 0; i < request.params.softButtons.length; i++) {
                 var image = request.params.softButtons[i].image;
                 if(image) {
-                  imageList.push(image.value);
+                  imageList.push(image);
                 }
               }
             }
 
-            var callback = function(failed) {
+            var callback = function(failed, info) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
               var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
@@ -289,7 +289,7 @@ FFW.UI = FFW.RPCObserver.create(
                 failed ? WARNINGS : SUCCESS, 
                 request.id, 
                 request.method, 
-                failed ? "Requested image(s) not found" : null);
+                info);
             }
             SDL.SDLModel.validateImages(request.id, callback, imageList);
 
@@ -332,19 +332,19 @@ FFW.UI = FFW.RPCObserver.create(
 
             var imageList = [];
             if(request.params.menuIcon) {
-              imageList.push(request.params.menuIcon.value);      
+              imageList.push(request.params.menuIcon);      
             }
 
             if(request.params.vrHelp) {
               for(var i = 0; i < request.params.vrHelp.length; i++) {
                 if(request.params.vrHelp[i].image) {
-                  imageList.push(request.params.vrHelp[i].image.value);      
+                  imageList.push(request.params.vrHelp[i].image);      
                 }
               }
             }
 
             var that = this;
-            var callback = function(failed) {
+            var callback = function(failed, info) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
               var SUCCESS = resultCode;
 
@@ -352,7 +352,7 @@ FFW.UI = FFW.RPCObserver.create(
                 failed ? WARNINGS : SUCCESS,
                 request.id,
                 request.method,
-                failed ? "Requested image(s) not found" : null);
+                info);
             }
             SDL.SDLModel.validateImages(request.id, callback, imageList);
             break;
