@@ -1041,7 +1041,7 @@ SDL.SDLModel = Em.Object.extend({
         for(var i = 0; i < SDL.SDLModel.imageCheckList[requestID].length; i++) {
           var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
           var path = SDL.SDLModel.imageCheckList[requestID][i].path;
-          if (formattedImgPath.endsWith(path)) {
+          if(path === formattedImgPath) {
             SDL.SDLModel.imageCheckList[requestID][i].checkResult = false;
             break;
           }
@@ -1453,10 +1453,12 @@ SDL.SDLModel = Em.Object.extend({
       SDL.TTSPopUp.ActivateTTS(message, files, appID);
     } else {
       FFW.TTS.sendError(
-       SDL.SDLModel.data.resultCode.WARNINGS, this.requestId, 'TTS.Speak',
+       SDL.SDLModel.data.resultCode.WARNINGS,
+       FFW.TTS.requestId,
+       'TTS.Speak',
        'No TTS Chunks provided in Speak request'
       );
-      this.requestId = null;
+      FFW.TTS.requestId = null;
     }
   },
 
