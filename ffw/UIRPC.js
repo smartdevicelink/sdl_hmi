@@ -2024,67 +2024,35 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {Number} resultCode
      * @param {Number} commandID
      * @param {String} manualTextEntry
+     * @param {String} info
      */
     interactionResponse: function(requestID, resultCode, commandID,
-      manualTextEntry) {
+      manualTextEntry, info) {
       Em.Logger.log('FFW.UI.PerformInteractionResponse');
-      if (this.errorResponsePull[requestID] &&
-        resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-
-        var json = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'result': {
-            'code': SDL.SDLModel.data.resultCode.WARNINGS,
-            'method': 'UI.PerformInteraction',
-            'info': 'Unsupported ' + this.errorResponsePull[requestID].type 
-                + ' type. Available data in request was processed.'
-          }
-        }
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+        var params = {
+          'choiceID': commandID
+        };
 
         if (manualTextEntry) {
-          json.result.manualTextEntry = manualTextEntry
+          params.manualTextEntry = manualTextEntry;
         }
 
-        if (commandID) {
-          json.result.choiceID = commandID;
-        }
-
-        this.client.send(json);
-        this.errorResponsePull[requestID] = null;
-        return;
-      }
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'result': {
-            'code': resultCode,
-            'method': 'UI.PerformInteraction'
-          }
-        };
-        if (commandID) {
-          JSONMessage.result.choiceID = commandID;
-        }
-        if (manualTextEntry != null) {
-          JSONMessage.result.manualTextEntry = manualTextEntry;
-        }
+        this.sendUIResult(
+          resultCode,
+          requestID,
+          'UI.PerformInteraction',
+          info,
+          params
+        );
       } else {
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': 'Perform Interaction error response.',
-            'data': {
-              'method': 'UI.PerformInteraction'
-            }
-          }
-        };
+        this.sendUIResult(
+          resultCode,
+          requestID,
+          'UI.PerformInteraction',
+          info
+        );
       }
-      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when DriverDistraction PopUp is visible
