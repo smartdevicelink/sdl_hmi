@@ -167,19 +167,35 @@ FFW.TTS = FFW.RPCObserver.create(
               return;
             }
           }
-          if (SDL.TTSPopUp.active) {
+          let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
+          let rejectCallbacks = [];
+          if (appModel && request.params.speakType) {
+            const speak_type = request.params.speakType;
+            appModel.ttsSpeakListenerCallbacks.forEach((item, index) => {
+              if (speak_type == item.type) {
+                rejectCallbacks.push(item.callback);
+                appModel.ttsSpeakListenerCallbacks.splice(index, 1);
+              }
+            });
+          }
+
+          if (SDL.TTSPopUp.active || rejectCallbacks.length > 0) {
             FFW.TTS.sendError(
               SDL.SDLModel.data.resultCode.REJECTED, request.id, 'TTS.Speak',
               'TTS in progress. Rejected.'
             );
-          } else {
-            this.requestId = request.id;
-            SDL.SDLModel.onPrompt(
-              request.params.ttsChunks, request.params.appID
-            );
-            if (request.params.playTone) {
-              SDL.SDLModel.onPlayTone();
-            }
+            rejectCallbacks.forEach((callback) => {
+              callback();
+            });
+            break;
+          }
+
+          this.requestId = request.id;
+          SDL.SDLModel.onPrompt(
+            request.params.ttsChunks, request.params.appID
+          );
+          if (request.params.playTone) {
+            SDL.SDLModel.onPlayTone();
           }
           break;
         }
