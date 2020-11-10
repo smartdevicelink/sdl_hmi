@@ -241,7 +241,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
         }
       }
 
-      imageList.push(this.image);
+      imageList.push(this.icon);
 
         var callback = function(failed, info) {
           if (failed) {
