@@ -1187,6 +1187,22 @@ SDL.SDLModel = Em.Object.extend({
             return true;
           }
       }
+
+      if (message.alertType == "BOTH") {
+        let callback = () => {
+            Em.Logger.log("Received TTS.Speak for UI.Alert. Sending response");
+            SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
+              alertRequestId
+            );
+        };
+        appModel.ttsSpeakListenerCallbacks.push({
+          'type': 'ALERT',
+          'callback': callback
+        });
+        Em.Logger.log("Waiting for TTS.Speak for UI.Alert");
+        return false;
+      }
+
       SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
         alertRequestId
       );
