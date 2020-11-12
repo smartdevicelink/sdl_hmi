@@ -142,7 +142,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID',
       'handsOffSteering': 'VEHICLEDATA_HANDSOFFSTEERING',
       'stabilityControlsStatus': 'VEHICLEDATA_STABILITYCONTROLSSTATUS',
-      'windowStatus': 'VEHICLEDATA_WINDOWSTATUS'
+      'windowStatus': 'VEHICLEDATA_WINDOWSTATUS',
+      'seatOccupancy': 'VEHICLEDATA_SEATOCCUPANCY'
     },
     /**
      * Stored VehicleInfo Data
@@ -331,6 +332,10 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
          'width': 800,
          'height': 480
       },
+      'seatOccupancy':{
+        'seatsOccupied': [],
+        'seatsBelted': []
+      },     
       'handsOffSteering': false
       //
       // 'avgFuelEconomy': 0.1,
