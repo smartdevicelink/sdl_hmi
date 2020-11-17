@@ -164,22 +164,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.Alert':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if (request.params.alertStrings.length > 0
-            //    || "softButtons" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
               SDL.SDLController.onSystemContextChange(request.params.appID);
             }
@@ -204,27 +188,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.Show':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-
-              //Check if there is any available data to  process the request
-              if (request.params.showStrings.length > 0 ||
-                'graphic' in request.params ||
-                'secondaryGraphic' in request.params ||
-                'softButtons' in request.params ||
-                'customPresets' in request.params) {
-
-                if (this.errorResponsePull[request.id].type === 'STATIC') {
-                  this.errorResponsePull[request.id].code =
-                    SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'];
-                }
-                else {
-                  this.errorResponsePull[request.id].code =
-                    SDL.SDLModel.data.resultCode['WARNINGS'];
-                }
-              }
-            }
             SDL.TurnByTurnView.deactivate();
             let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
             const isWindowIDExist = "windowID" in request.params; 
@@ -301,24 +264,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SetGlobalProperties':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("menuTitle" in request.params
-            //    || "keyboardProperties" in request.params
-            //    || "vrHelp" in request.params
-            //    || "menuIcon" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
           resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiSetGlobalProperties');
           if ('DO_NOT_RESPOND' == resultCode) {
             Em.Logger.log('Do not respond on this request');
@@ -367,22 +312,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.AddCommand':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("cmdIcon" in request.params
-            //    || "menuParams" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             SDL.SDLController.getApplicationModel(request.params.appID)
               .addCommand(request);
             break;
@@ -409,20 +338,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.PerformInteraction':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              if (request.params && 'choiceSet' in request.params && request.params.interactionLayout != "KEYBOARD") {
-                if (this.errorResponsePull[request.id].type === 'STATIC') {
-                  this.sendError(SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'], 
-                                request.id, 
-                                request.method, 
-                                'Image of STATIC type is not supported on HMI. Request was not processed');
-                  return;
-                }
-              }
-            }
-
             if (SDL.SDLModel.uiPerformInteraction(request)) {
               SDL.SDLController.onSystemContextChange();
               SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -638,17 +553,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SetAppIcon':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if (!("syncFileName" in request.params)) {
-            //this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             SDL.SDLModel.onSDLSetAppIcon(
               request.params, request.id, request.method
             );
@@ -1766,7 +1670,8 @@ FFW.UI = FFW.RPCObserver.create(
           errorStruct.code,
           id,
           method,
-          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`,
+          params
         );
         return;
       }
@@ -2028,7 +1933,6 @@ FFW.UI = FFW.RPCObserver.create(
      */
     interactionResponse: function(requestID, resultCode, commandID,
       manualTextEntry, info) {
-      Em.Logger.log('FFW.UI.PerformInteractionResponse');
       if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
         var params = {
           'choiceID': commandID

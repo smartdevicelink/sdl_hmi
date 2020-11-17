@@ -373,15 +373,16 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         }
 
         var model = SDL.SDLController.getApplicationModel(this.appID);
-        if (model){
+        if (model) {
           var that = this;
           var callback = function(failed, info) {
             that.set('areAllImagesValid', !failed);
             that.set('imagesValidationInfo', info);
           };
+
+          SDL.SDLModel.validateImages(model.activeRequests.uiPerformInteraction, callback, imageList);
         }
 
-        SDL.SDLModel.validateImages(model.activeRequests.uiPerformInteraction, callback, imageList);
         this.listOfChoices.list.refresh();
       }
 
@@ -444,9 +445,9 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
             that.set('areAllImagesValid', !failed);
             that.set('imagesValidationInfo', info);
           };
-        }
 
-        SDL.SDLModel.validateImages(model.activeRequests.uiPerformInteraction, callback, imageList);
+          SDL.SDLModel.validateImages(model.activeRequests.uiPerformInteraction, callback, imageList);
+        }
       }
 
       var self = this;

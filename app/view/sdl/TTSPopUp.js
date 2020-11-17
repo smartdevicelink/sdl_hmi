@@ -46,7 +46,6 @@ SDL.TTSPopUp = Em.ContainerView.create(
       'checkBoxLabel',
       'checkBox'
     ],
-    requestId: null,
     content: 'Messaage',
     active: false,
     timer: null,

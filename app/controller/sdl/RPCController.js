@@ -73,7 +73,7 @@ SDL.RPCController = Em.Object.create(
     capabilitiesCheck: function(key, value) {
       if (key == 'imageType' && value == 'STATIC') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['WARNINGS'],
+          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
           type: value
         };
       }
