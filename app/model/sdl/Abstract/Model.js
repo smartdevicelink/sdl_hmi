@@ -1019,7 +1019,7 @@ SDL.SDLModel = Em.Object.extend({
       if (!is_valid_template_extension(checkList[i])) {
         checkList[i].checkResult = {
           code: false,
-          info : "Template image extension is not valid"
+          info: "Template image extension is not valid"
         };
         SDL.SDLModel.finalizeImageValidation(requestID, callback);
         continue;
@@ -1029,7 +1029,7 @@ SDL.SDLModel = Em.Object.extend({
       image.onload = function() {
         checkList[this.checkIndex].checkResult = {
           code: true,
-          info : null
+          info: null
         };
         SDL.SDLModel.finalizeImageValidation(requestID, callback);
       };
@@ -1037,7 +1037,7 @@ SDL.SDLModel = Em.Object.extend({
       image.onerror = function() {
         checkList[this.checkIndex].checkResult = {
           code: false,
-          info : "Requested image(s) not found"
+          info: "Requested image(s) not found"
         };
         SDL.SDLModel.finalizeImageValidation(requestID, callback);
       };
