@@ -318,7 +318,7 @@ FFW.VR = FFW.RPCObserver.create(
           resultCode,
           requestID,
           'VR.PerformInteraction',
-          'Perform Interaction error response.'
+          'VR Perform Interaction error response.'
         );
       }
 

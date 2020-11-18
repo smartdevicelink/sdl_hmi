@@ -144,6 +144,8 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
     list: false,
     icon: false,
     areAllImagesValid: true,
+    imagesValidationInfo: null,
+    /**
     /**
      * Id of app initiated performInteraction request
      */
@@ -174,6 +176,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
       }
       this.appID = message.params.appID;
       this.set('areAllImagesValid', true);
+      this.set('imagesValidationInfo', null);
       if (message.params.interactionLayout) {
         switch (message.params.interactionLayout) {
           case 'ICON_ONLY' :
@@ -277,16 +280,16 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           case 'ABORTED':
           {
             SDL.SDLController.interactionChoiseCloseResponse(
-              this.appID, SDL.SDLModel.data.resultCode['ABORTED'], null, null,
-              "UI.PerformInteraction has been aborted"
+              this.appID, SDL.SDLModel.data.resultCode['ABORTED'],
+              null, null, "UI.PerformInteraction has been aborted"
             );
             break;
           }
           case 'TIMED_OUT':
           {
             SDL.SDLController.interactionChoiseCloseResponse(
-              this.appID, SDL.SDLModel.data.resultCode['TIMED_OUT'], null, null,
-              "UI.PerformInteraction has been timed out"
+              this.appID, SDL.SDLModel.data.resultCode['TIMED_OUT'],
+              null, null, "UI.PerformInteraction has been timed out"
             );
             break;
           }
@@ -300,10 +303,9 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           }
           case 'WARNINGS':
           {
-            const info = !this.areAllImagesValid ? "Requested image(s) not found" : null;
             SDL.SDLController.interactionChoiseCloseResponse(
               this.appID, SDL.SDLModel.data.resultCode.WARNINGS, choiceID,
-              this.input.value, info
+              this.input.value, this.imagesValidationInfo
             );
             break;
           }
@@ -366,15 +368,16 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
             );
 
           if (data[i].image) {
-            imageList.push(data[i].image.value);
+            imageList.push(data[i].image);
           }
         }
 
         var model = SDL.SDLController.getApplicationModel(this.appID);
-        if (model){
+        if (model) {
           var that = this;
-          var callback = function(failed) {
+          var callback = function(failed, info) {
             that.set('areAllImagesValid', !failed);
+            that.set('imagesValidationInfo', info);
           };
 
           SDL.SDLModel.validateImages(model.activeRequests.uiPerformInteraction, callback, imageList);
@@ -382,6 +385,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
 
         this.listOfChoices.list.refresh();
       }
+
       var self = this;
       this.set('endTime', Date.now() + timeout);
       clearTimeout(this.timer);
@@ -430,15 +434,16 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           );
 
           if (data[i].image) {
-            imageList.push(data[i].image.value);
+            imageList.push(data[i].image);
           }
         }
 
         var model = SDL.SDLController.getApplicationModel(this.appID);
         if (model){
           var that = this;
-          var callback = function(failed) {
+          var callback = function(failed, info) {
             that.set('areAllImagesValid', !failed);
+            that.set('imagesValidationInfo', info);
           };
 
           SDL.SDLModel.validateImages(model.activeRequests.uiPerformInteraction, callback, imageList);

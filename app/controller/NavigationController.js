@@ -66,10 +66,10 @@ SDL.NavigationController = Em.Object.create(
 
       imageList = [];
       if(request.params.locationImage) {
-        imageList.push(request.params.locationImage.value);
+        imageList.push(request.params.locationImage);
       }
 
-      var callback = function(failed) {
+      var callback = function(failed, info) {
         var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
         var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
@@ -77,7 +77,7 @@ SDL.NavigationController = Em.Object.create(
           failed ? WARNINGS : SUCCESS,
           request.id,
           request.method,
-          failed ? "Requested image(s) not found" : null
+          info
         );
       }
       SDL.SDLModel.validateImages(request.id, callback, imageList);
@@ -447,7 +447,7 @@ SDL.NavigationController = Em.Object.create(
     isPng: function(imagePath) {
       const img_extension = '.png';
       var search_offset = imagePath.lastIndexOf('.');
-      return imagePath.includes(img_extension, search_offset);
+      return imagePath.toLowerCase().includes(img_extension, search_offset);
     },
 
     /**
@@ -464,13 +464,13 @@ SDL.NavigationController = Em.Object.create(
         var countList=params.turnList.length;
         for(var i = 0; i < countList; i++) {
           if(params.turnList[i].turnIcon) {
-            var iconPath = params.turnList[i].turnIcon.value;
-            if(!this.isPng(iconPath)) {
+            var icon = params.turnList[i].turnIcon;
+            if(!this.isPng(icon.value)) {
               delete params.turnList[i].turnIcon;
               nonPngCounter++;
               continue;
             } 
-            imageList.push(iconPath);
+            imageList.push(icon);
           }
         }
       }
@@ -478,13 +478,13 @@ SDL.NavigationController = Em.Object.create(
         var countButtons=params.softButtons.length;
         for(var i=0;i<countButtons;i++) {
           if(params.softButtons[i].image) {
-            var iconPath = params.softButtons[i].image.value;
-            if(!this.isPng(iconPath)) {
+            var icon = params.softButtons[i].image;
+            if(!this.isPng(icon.value)) {
               delete params.softButtons[i].image;
               nonPngCounter++;
               continue;
             } 
-            imageList.push(iconPath);
+            imageList.push(icon);
           }
         }
       }
@@ -493,7 +493,7 @@ SDL.NavigationController = Em.Object.create(
           delete params.turnIcon;
           nonPngCounter++;
         } else {
-          imageList.push(params.turnIcon.value);
+          imageList.push(params.turnIcon);
         }
       } 
       if(params.nextTurnIcon) {
@@ -501,7 +501,7 @@ SDL.NavigationController = Em.Object.create(
           delete params.nextTurnIcon;
           nonPngCounter++;
         } else {
-          imageList.push(params.nextTurnIcon.value);
+          imageList.push(params.nextTurnIcon);
         }
       }
 
@@ -514,14 +514,14 @@ SDL.NavigationController = Em.Object.create(
         return;
       }
 
-      var callback = function(failed) {
+      var callback = function(failed, info) {
           var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
           var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
           FFW.Navigation.sendNavigationResult(
-            failed ? WARNINGS : SUCCESS, 
-            request.id, 
-            request.method, 
-            failed ? "Requested image(s) not found" : null);
+            failed ? WARNINGS : SUCCESS,
+            request.id,
+            request.method,
+            info);
       }
       SDL.SDLModel.validateImages(request.id, callback, imageList);
     },
