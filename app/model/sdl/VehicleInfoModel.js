@@ -142,7 +142,8 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'cloudAppVehicleID': 'VEHICLEDATA_CLOUDAPPVEHICLEID',
       'handsOffSteering': 'VEHICLEDATA_HANDSOFFSTEERING',
       'stabilityControlsStatus': 'VEHICLEDATA_STABILITYCONTROLSSTATUS',
-      'windowStatus': 'VEHICLEDATA_WINDOWSTATUS'
+      'windowStatus': 'VEHICLEDATA_WINDOWSTATUS',
+      'climateData' : 'VEHICLEDATA_CLIMATEDATA'
     },
     /**
      * Stored VehicleInfo Data
@@ -330,6 +331,17 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'displayResolution': {
          'width': 800,
          'height': 480
+      },
+      'climateData': {
+        'externalTemperature': {
+          'unit': 'FAHRENHEIT',
+          'value' : 70.5
+        },
+        'cabinTemperature': {
+          'unit': 'FAHRENHEIT',
+          'value' : 55.3
+        },
+        'atmosphericPressure': 1013.25
       },
       'handsOffSteering': false
       //
