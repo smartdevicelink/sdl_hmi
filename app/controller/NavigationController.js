@@ -49,7 +49,7 @@ SDL.NavigationController = Em.Object.create(
      * @param {Object} request
      */
     sendLocation: function(request) {
-      this.model.LocationDetails.push(
+      this.model.LocationDetails.pushObject(
         {
           coordinate: {
             latitudeDegrees: request.params.latitudeDegrees,
@@ -63,11 +63,24 @@ SDL.NavigationController = Em.Object.create(
           searchAddress: request.params.address
         }
       );
-      FFW.Navigation.sendNavigationResult(
-        SDL.SDLModel.data.resultCode.SUCCESS,
-        request.id,
-        request.method
-      );
+
+      imageList = [];
+      if(request.params.locationImage) {
+        imageList.push(request.params.locationImage);
+      }
+
+      var callback = function(failed, info) {
+        var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+        var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+        FFW.Navigation.sendNavigationResult(
+          failed ? WARNINGS : SUCCESS,
+          request.id,
+          request.method,
+          info
+        );
+      }
+      SDL.SDLModel.validateImages(request.id, callback, imageList);
     },
     /**
      * Navigation view List Button action handler
@@ -128,19 +141,35 @@ SDL.NavigationController = Em.Object.create(
      * @param {Object} request
      */
     subscribeWayPoints: function(request) {
-      if (!this.model.isSubscribedOnWayPoints) {
-        this.model.set('isSubscribedOnWayPoints', true);
-        FFW.Navigation.sendNavigationResult(
-          SDL.SDLModel.data.resultCode.SUCCESS,
-          request.id,
-          request.method
-        );
+      result = FFW.RPCHelper.getCustomResultCode(null, 'SubscribeWayPoints');
+
+      if ('DO_NOT_RESPOND' == result) {
+        Em.Logger.log('Do not respond on this request');
+        return;
+      }
+
+      if(FFW.RPCHelper.isSuccessResultCode(result)){
+        if (!this.model.isSubscribedOnWayPoints) {
+          this.model.set('isSubscribedOnWayPoints', true);
+          FFW.Navigation.sendNavigationResult(
+            result,
+            request.id,
+            request.method
+          );
+        } else {
+          FFW.Navigation.sendError(
+            SDL.SDLModel.data.resultCode.REJECTED,
+            request.id,
+            request.method,
+            'SDL Should not send this request more than once'
+          );
+        }
       } else {
         FFW.Navigation.sendError(
-          SDL.SDLModel.data.resultCode.REJECTED,
+          result,
           request.id,
           request.method,
-          'SDL Should not send this request more than once'
+          'Erroneous response is assigned by settings'
         );
       }
     },
@@ -484,6 +513,94 @@ SDL.NavigationController = Em.Object.create(
         };
         FFW.BasicCommunication.OnSystemCapabilityUpdated(json_to_send);
       }
+    },
+
+    /**
+     * @desc Verifies if image is an PNG image, 
+     *       accordingly to file extension.
+     * @param imagePath - path to image 
+     * @return {Boolean} true if image is PNG and false otherwise 
+     */
+    isPng: function(imagePath) {
+      const img_extension = '.png';
+      var search_offset = imagePath.lastIndexOf('.');
+      return imagePath.toLowerCase().includes(img_extension, search_offset);
+    },
+
+    /**
+     * @desc Collects images paths from request 
+     *       and calls validation function.
+     * @param request - request data
+     */
+    validateIcons: function(request) {
+      var params = request.params;
+      imageList = [];
+      var nonPngCounter = 0;
+
+      if(params.turnList) {
+        var countList=params.turnList.length;
+        for(var i = 0; i < countList; i++) {
+          if(params.turnList[i].turnIcon) {
+            var icon = params.turnList[i].turnIcon;
+            if(!this.isPng(icon.value)) {
+              delete params.turnList[i].turnIcon;
+              nonPngCounter++;
+              continue;
+            } 
+            imageList.push(icon);
+          }
+        }
+      }
+      if(params.softButtons) {
+        var countButtons=params.softButtons.length;
+        for(var i=0;i<countButtons;i++) {
+          if(params.softButtons[i].image) {
+            var icon = params.softButtons[i].image;
+            if(!this.isPng(icon.value)) {
+              delete params.softButtons[i].image;
+              nonPngCounter++;
+              continue;
+            } 
+            imageList.push(icon);
+          }
+        }
+      }
+      if(params.turnIcon) {
+        if(!this.isPng(params.turnIcon.value)) {
+          delete params.turnIcon;
+          nonPngCounter++;
+        } else {
+          imageList.push(params.turnIcon);
+        }
+      } 
+      if(params.nextTurnIcon) {
+        if(!this.isPng(params.nextTurnIcon.value)) {
+          delete params.nextTurnIcon;
+          nonPngCounter++;
+        } else {
+          imageList.push(params.nextTurnIcon);
+        }
+      }
+
+      if(nonPngCounter > 0) {
+        FFW.Navigation.sendNavigationResult(
+          SDL.SDLModel.data.resultCode.WARNINGS,
+          request.id,
+          request.method,
+        );
+        return;
+      }
+
+      var callback = function(failed, info) {
+          var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+          var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+          FFW.Navigation.sendNavigationResult(
+            failed ? WARNINGS : SUCCESS,
+            request.id,
+            request.method,
+            info);
+      }
+      SDL.SDLModel.validateImages(request.id, callback, imageList);
     }
   }
 );

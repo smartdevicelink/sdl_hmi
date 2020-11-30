@@ -179,8 +179,11 @@ SDL.ClimateControlModel = Em.Object.extend({
     return result;
   },
 
-  getClimateControlData: function() {
-    var result = {
+  /**
+   * @description Generates object containing full climate data properties
+   */
+  generateClimateControlData: function() {
+    return {
       fanSpeed: this.climateControlData.fanSpeed,
       currentTemperature: SDL.ClimateController.getTemperatureStruct(
         this.climateControlData.temperatureUnit,
@@ -203,12 +206,19 @@ SDL.ClimateControlModel = Em.Object.extend({
       heatedMirrorsEnable: this.climateControlData.heatedMirrorsEnable,
       climateEnable: this.climateControlData.climateEnable
     };
+  },
 
-    return result;
+  /**
+   * @description Gets climate data object with filtered properties
+   */
+  getClimateControlData: function() {
+    const climate_data = this.generateClimateControlData();
+    const filter_properties = this.getDataForSending();
+    return SDL.SDLController.filterObjectProperty(climate_data, filter_properties);
   },
 
   setClimateData: function(data) {
-    var before_set = SDL.deepCopy(this.getClimateControlData());
+    var before_set = SDL.deepCopy(this.generateClimateControlData());
 
     if(data.climateEnable != null) {
       this.setClimateEnable(data.climateEnable);
@@ -275,7 +285,7 @@ SDL.ClimateControlModel = Em.Object.extend({
       this.setHeatedMirrorsEnable(data.heatedMirrorsEnable);
     }
 
-    var after_set = SDL.deepCopy(this.getClimateControlData());
+    var after_set = SDL.deepCopy(this.generateClimateControlData());
 
     var properties =
       SDL.SDLController.getChangedProperties(before_set, after_set);
@@ -297,7 +307,7 @@ SDL.ClimateControlModel = Em.Object.extend({
   },
 
   sendClimateChangeNotification: function(properties) {
-    var data = this.getClimateControlData();
+    var data = this.generateClimateControlData();
     data = SDL.SDLController.filterObjectProperty(data, properties);
     if (Object.keys(data).length > 0) {
       FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE',moduleId: this.UUID, climateControlData: data});
@@ -467,7 +477,7 @@ SDL.ClimateControlModel = Em.Object.extend({
 
   getDataForSending: function() {
     var dataForSending = [];
-    var climateData = this.getClimateControlData();
+    var climateData = this.generateClimateControlData();
     var climateEnable = climateData.climateEnable;
     if(climateEnable) {
       for(var key in climateData) {

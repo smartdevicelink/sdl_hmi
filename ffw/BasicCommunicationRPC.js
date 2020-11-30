@@ -526,16 +526,21 @@ FFW.BasicCommunication = FFW.RPCObserver
         if (notification.method == this.onAppRegisteredNotification) {
           let appModel = Object.assign(notification.params.application, {
             "priority": notification.params.priority ? notification.params.priority : 'NONE'
-          }); 
+          });
           SDL.SDLModel.onAppRegistered(
             appModel, notification.params.vrSynonyms
           );
+          FFW.RPCHelper.addApplication(notification.params.application.appID);
           this.OnFindApplications();
           const mainWindowID = 0;
           let capability = SDL.SDLController.getDefaultCapabilities(mainWindowID, notification.params.application.appID);
           FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
         }
         if (notification.method == this.onAppUnregisteredNotification) {
+          if(notification.params.appID === FFW.RPCHelper.get('currentAppID')){
+            SDL.States.goToStates('settings.rpccontrol');
+            SDL.RPCControlView.showAppList();
+          }
           // remove app from list
           SDL.SDLModel.onAppUnregistered(notification.params);
         }
@@ -963,22 +968,19 @@ FFW.BasicCommunication = FFW.RPCObserver
        */
       sendError: function(resultCode, id, method, message) {
         Em.Logger.log('FFW.' + method + 'Response');
-        if (resultCode != SDL.SDLModel.data.resultCode.SUCCESS) {
-
-          // send repsonse
-          var JSONMessage = {
-            'jsonrpc': '2.0',
-            'id': id,
-            'error': {
-              'code': resultCode, // type (enum) from SDL protocol
-              'message': message,
-              'data': {
-                'method': method
-              }
+        // send response
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'id': id,
+          'error': {
+            'code': resultCode, // type (enum) from SDL protocol
+            'message': message,
+            'data': {
+              'method': method
             }
-          };
-          this.sendMessage(JSONMessage);
-        }
+          }
+        };
+        this.sendMessage(JSONMessage);
       },
       /**
        * send response from onRPCRequest
@@ -989,12 +991,46 @@ FFW.BasicCommunication = FFW.RPCObserver
        *            id
        * @param {String}
        *            method
+       * @param {String}
+       *            info
        */
-      sendBCResult: function(resultCode, id, method) {
-        Em.Logger.log('FFW.' + method + 'Response');
-        if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+      sendBCResult: function(resultCode, id, method, info, params) {
+        const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+        if (is_successful_code && this.errorResponsePull[id] != null) {
+          // If request was successful but some error was observed upon validation
+          // Then result code assigned by RPCController should be considered instead
+          const errorStruct = this.errorResponsePull[id];
+          this.errorResponsePull[id] = null;
 
-          // send repsonse
+          this.sendBCResult(
+            errorStruct.code,
+            id,
+            method,
+            `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+          );
+          return;
+        }
+
+        let is_successful_response_format = function(is_success) {
+          // Successful response without params, but with not-empty message
+          // should be sent in errorneous format to properly forward info and result code
+          if (is_success && info != null && params == null) {
+            return false;
+          }
+  
+          // Error response with not empty params should be sent in regular format
+          // to properly forward result code and params (but sacrifice info)
+          if (!is_success && params != null) {
+            return true;
+          }
+  
+          // Otherwise use result code calculated according to regular HMI logic
+          return is_success;
+        };
+
+        Em.Logger.log('FFW.BC.' + method + 'Response');
+        if (is_successful_response_format(is_successful_code)) {
+          // send response
           var JSONMessage = {
             'jsonrpc': '2.0',
             'id': id,
@@ -1003,7 +1039,14 @@ FFW.BasicCommunication = FFW.RPCObserver
               'method': method
             }
           };
+
+          if (params != null) {
+            Object.assign(JSONMessage.result, params);
+          }
+
           this.sendMessage(JSONMessage);
+        } else {
+          this.sendError(resultCode, id, method, info);
         }
       },
       /**

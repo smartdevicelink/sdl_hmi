@@ -40,9 +40,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     var subscribeVIData = {};
 
     for (var key in SDL.SDLVehicleInfoModel.vehicleData) {
-      if (key != 'externalTemperature') {
-        subscribeVIData[key] = false;
-      }
+      subscribeVIData[key] = false;
     }
 
     this.set('subscribedData', subscribeVIData);
@@ -84,11 +82,13 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.set('VRCommands', []);
     this.set('tbtActivate', false);
     this.set('isPlaying', true);
+    this.set('globalProperties', Em.Object.create());
     this.set('globalProperties.helpPrompt', []);
     this.set('globalProperties.timeoutPrompt', []);
     this.set('globalProperties.keyboardProperties', Em.Object.create());
     this.set('globalProperties.keyboardProperties.keyboardLayout', 'QWERTY');
     this.set('globalProperties.keyboardProperties.limitedCharacterList', []);
+    this.set('globalProperties.menuIcon', Em.Object.create());
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);

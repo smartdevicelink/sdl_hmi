@@ -75,7 +75,14 @@ SDL.SettingsController = Em.Object.create(
     editedCcpuVersionValue: "",
 
     onState: function(event) {
+      if(SDL.States.currentState.name === 'rpcconfig'){
+        FFW.RPCHelper.setCurrentAppID(null);
+      }
       SDL.States.goToStates('settings.' + event.goToState);
+      if('rpccontrol.rpcconfig' === event.goToState){
+        SDL.RPCControlConfigView.set('appNameLabel.content',event.appName);
+        FFW.RPCHelper.updateRpc(event.appID);
+      }
     },
     onChildState: function(event) {
       SDL.States.goToStates(
@@ -176,7 +183,7 @@ SDL.SettingsController = Em.Object.create(
      */
     GetListOfPermissions: function(element) {
       FFW.BasicCommunication.GetListOfPermissions(element.appID);
-      SDL.AppPermissionsView.update(SDL.SDLModelData.externalConsentStatus, 0);
+      SDL.AppPermissionsView.update(SDL.SDLModelData.externalConsentStatus, element.appID);
       SDL.States.goToStates('settings.policies.appPermissions');
     },
     /**
@@ -269,6 +276,10 @@ SDL.SettingsController = Em.Object.create(
       );
     },
     simpleParseUserFriendlyMessageData: function(messages, func) {
+      if (!messages) {
+        return;
+      }
+
       var tts = '',
         text = '';
       messages.forEach(
@@ -410,7 +421,7 @@ SDL.SettingsController = Em.Object.create(
 
           if (params.success == false) {
             Em.Logger.log('PTU: Downloading PTS was not successful');
-            reject();
+            return reject();
           }
 
           Em.Logger.log('PTU: PTS downloaded successfully');
@@ -485,7 +496,7 @@ SDL.SettingsController = Em.Object.create(
 
           if (params.success == false) {
             Em.Logger.log('PTU: PTU save was not successful');
-            reject();
+            return reject();
           }
 
           Em.Logger.log('PTU: PTU saved successfully');

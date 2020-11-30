@@ -164,22 +164,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.Alert':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if (request.params.alertStrings.length > 0
-            //    || "softButtons" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
               SDL.SDLController.onSystemContextChange(request.params.appID);
             }
@@ -204,28 +188,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.Show':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-
-              //Check if there is any available data to  process the request
-              if (request.params.showStrings.length > 0 ||
-                'graphic' in request.params ||
-                'secondaryGraphic' in request.params ||
-                'softButtons' in request.params ||
-                'customPresets' in request.params) {
-                this.errorResponsePull[request.id].code =
-                  SDL.SDLModel.data.resultCode['WARNINGS'];
-                //} else {
-                //    //If no available data sent error response and stop
-                // process current request
-                // this.sendError(this.errorResponsePull[request.id].code,
-                // request.id, request.method, "Unsupported " +
-                // this.errorResponsePull[request.id].type + " type. Request
-                // was not processed."); this.errorResponsePull[request.id] =
-                // null;  return;
-              }
-            }
             SDL.TurnByTurnView.deactivate();
             let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
             const isWindowIDExist = "windowID" in request.params; 
@@ -235,6 +197,15 @@ FFW.UI = FFW.RPCObserver.create(
             let sendCapabilityUpdated = false;
             if("templateConfiguration" in request.params) {
               if (model.templateConfiguration.template !== request.params.templateConfiguration.template) {
+                model.templateConfiguration.template = request.params.templateConfiguration.template;
+
+                if (model.active) {
+                  SDL.SDLModel.data.templateChangeInProgress = true;
+                  SDL.States.goToStates('info.apps');
+                  model.turnOnSDL();
+                  SDL.SDLModel.data.templateChangeInProgress = false;
+                }
+
                 sendCapabilityUpdated = true;
               }
               if ("dayColorScheme" in  request.params.templateConfiguration
@@ -256,9 +227,35 @@ FFW.UI = FFW.RPCObserver.create(
               return;
             }
             SDL.InfoAppsView.showAppList();
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
+
+            imageList = [];
+            if(request.params.graphic) {
+              imageList.push(request.params.graphic);
+            }
+            if(request.params.secondaryGraphic) {
+              imageList.push(request.params.secondaryGraphic);
+            }
+            if(request.params.softButtons) {
+              for(var i = 0; i < request.params.softButtons.length; i++) {
+                var image = request.params.softButtons[i].image;
+                if(image) {
+                  imageList.push(image);
+                }
+              }
+            }
+
+            var callback = function(failed, info) {
+              var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+              var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+
+              FFW.UI.sendUIResult(
+                failed ? WARNINGS : SUCCESS, 
+                request.id, 
+                request.method, 
+                info);
+            }
+            SDL.SDLModel.validateImages(request.id, callback, imageList);
+
             if (sendCapabilityUpdated) {
               let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
               FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
@@ -267,48 +264,54 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SetGlobalProperties':
           {
+          resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiSetGlobalProperties');
+          if ('DO_NOT_RESPOND' == resultCode) {
+            Em.Logger.log('Do not respond on this request');
+            return;
+          }
 
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("menuTitle" in request.params
-            //    || "keyboardProperties" in request.params
-            //    || "vrHelp" in request.params
-            //    || "menuIcon" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
+          let info = null;
+          
+          if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
             SDL.SDLModel.setProperties(request.params);
+
+            var imageList = [];
+            if(request.params.menuIcon) {
+              imageList.push(request.params.menuIcon);      
+            }
+
+            if(request.params.vrHelp) {
+              for(var i = 0; i < request.params.vrHelp.length; i++) {
+                if(request.params.vrHelp[i].image) {
+                  imageList.push(request.params.vrHelp[i].image);      
+                }
+              }
+            }
+
+            var that = this;
+            var callback = function(failed, info) {
+              var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+              var SUCCESS = resultCode;
+
+              that.sendUIResult(
+                failed ? WARNINGS : SUCCESS,
+                request.id,
+                request.method,
+                info);
+            }
+            SDL.SDLModel.validateImages(request.id, callback, imageList);
+            break;
+          } else {
+            info = 'Erroneous response is assigned by settings';
+          }
+
             this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
+              resultCode, request.id, request.method, info
             );
             break;
           }
           case 'UI.AddCommand':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("cmdIcon" in request.params
-            //    || "menuParams" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             SDL.SDLController.getApplicationModel(request.params.appID)
               .addCommand(request);
             break;
@@ -335,23 +338,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.PerformInteraction':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("choiceSet" in request.params
-            //    && request.params
-            //    && request.params.interactionLayout != "KEYBOARD") {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             if (SDL.SDLModel.uiPerformInteraction(request)) {
               SDL.SDLController.onSystemContextChange();
               SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -480,14 +466,14 @@ FFW.UI = FFW.RPCObserver.create(
               case 'MEDIA':
               case 'NON-MEDIA':
               case 'DEFAULT':
-              case 'ONSCREEN_PRESETS':
               case 'NAV_FULLSCREEN_MAP':
+              case 'WEB_VIEW':
               {
                 sendResponseFlag = true;
                 break;
               }
             }
-            var model = SDL.SDLController.getApplicationModel(request.params.appID);
+
             if (sendResponseFlag) {
               Em.Logger.log('FFW.' + request.method + 'Response');
               var displayLayout = request.params.displayLayout;
@@ -529,6 +515,14 @@ FFW.UI = FFW.RPCObserver.create(
               let sendCapabilityUpdated = false;
               if ("displayLayout" in request.params && model.templateConfiguration.template !== request.params.displayLayout) {
                 model.templateConfiguration.template = request.params.displayLayout
+
+                if (model.active) {
+                  SDL.SDLModel.data.templateChangeInProgress = true;
+                  SDL.States.goToStates('info.apps');
+                  model.turnOnSDL();
+                  SDL.SDLModel.data.templateChangeInProgress = false;
+                }
+
                 sendCapabilityUpdated = true;
               }
               if ("dayColorScheme" in request.params
@@ -559,17 +553,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SetAppIcon':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if (!("syncFileName" in request.params)) {
-            //this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             SDL.SDLModel.onSDLSetAppIcon(
               request.params, request.id, request.method
             );
@@ -823,6 +806,24 @@ FFW.UI = FFW.RPCObserver.create(
                       'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
+                    },
+                    {
+                      'name': 'subtleAlertText1',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'subtleAlertText2',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'subtleAlertSoftButtonText',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
                     }
                   ],
                   'imageFields': [
@@ -981,6 +982,18 @@ FFW.UI = FFW.RPCObserver.create(
                         'resolutionWidth': 105,
                         'resolutionHeight': 65
                       }
+                    },
+                    {
+                      'name': 'subtleAlertIcon',
+                      'imageTypeSupported': [
+                        'GRAPHIC_BMP',
+                        'GRAPHIC_JPEG',
+                        'GRAPHIC_PNG'
+                      ],
+                      'imageResolution': {
+                        'resolutionWidth': 105,
+                        'resolutionHeight': 65
+                      }
                     }
                   ],
                   'mediaClockFormats': [
@@ -989,7 +1002,7 @@ FFW.UI = FFW.RPCObserver.create(
                   ],
                   'graphicSupported': true,
                   'imageCapabilities': ['DYNAMIC', 'STATIC'],
-                  'templatesAvailable': ['TEMPLATE'],
+                  'templatesAvailable': ["MEDIA", "NON-MEDIA", "DEFAULT", "NAV_FULLSCREEN_MAP", 'WEB_VIEW'],
                   'screenParams': {
                     'resolution': {
                       'resolutionWidth': 800,
@@ -1501,8 +1514,6 @@ FFW.UI = FFW.RPCObserver.create(
                 'method': 'UI.GetCapabilities'
               }
             };
-            JSONMessage.result.hmiCapabilities.steeringWheelLocation
-              = FLAGS.steeringWheelLocation;
             this.sendMessage(JSONMessage);
             break;
           }
@@ -1565,13 +1576,26 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.CreateWindow':
           {
-            var app = SDL.SDLController.getApplicationModel(request.params.appID);
-            app.createWindow(request.params);
-            this.sendUIResult(
-              SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-            );
-              let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
-              FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+            const resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiCreateWindow');
+            if ('DO_NOT_RESPOND' == resultCode) {
+              Em.Logger.log('Do not respond on this request');
+              return;
+            }
+
+            if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+              var app = SDL.SDLController.getApplicationModel(request.params.appID);
+              if (app) {
+                app.createWindow(request.params);
+
+                this.sendUIResult(resultCode, request.id, request.method);
+
+                let capabilites = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+                FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
+              }
+            } else {
+              this.sendUIResult(resultCode, request.id, request.method, 'Erroneous response is assigned by settings');
+            }
+
             break;
           }
           case 'UI.DeleteWindow':
@@ -1600,32 +1624,25 @@ FFW.UI = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
-     * @param {Object}
-     *            additional parameters to send with error
+     * @param {String}
+     *            message
      */
-    sendError: function(resultCode, id, method, message, params) {
+    sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode !== 0) {
-
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': id,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': message,
-            'data': {
-              'method': method
-            }
+      // send response
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'id': id,
+        'error': {
+          'code': resultCode, // type (enum) from SDL protocol
+          'message': message,
+          'data': {
+            'method': method
           }
-        };
-
-        if (params) {
-          JSONMessage.error.data = Object.assign(JSONMessage.error.data, params);
         }
+      };
 
-        this.sendMessage(JSONMessage);
-      }
+      this.sendMessage(JSONMessage);
     },
     /**
      * send response from onRPCRequest
@@ -1636,32 +1653,65 @@ FFW.UI = FFW.RPCObserver.create(
      *            id
      * @param {String}
      *            method
+     * @param {String}
+     *            info
+     * @param {Object}
+     *            params
      */
-    sendUIResult: function(resultCode, id, method, info) {
-      if (this.errorResponsePull[id]) {
-        this.sendError(
-          this.errorResponsePull[id].code, id, method,
-          'Unsupported ' + this.errorResponsePull[id].type +
-          ' type. Available data in request was processed.'
-        );
+    sendUIResult: function(resultCode, id, method, info, params) {
+      const is_successful_code = FFW.RPCHelper.isSuccessResultCode(resultCode);
+      if (is_successful_code && this.errorResponsePull[id] != null) {
+        // If request was successful but some error was observed upon validation
+        // Then result code assigned by RPCController should be considered instead
+        const errorStruct = this.errorResponsePull[id];
         this.errorResponsePull[id] = null;
+
+        this.sendUIResult(
+          errorStruct.code,
+          id,
+          method,
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`,
+          params
+        );
         return;
       }
-      Em.Logger.log('FFW.' + method + 'Response');
-      if (resultCode == SDL.SDLModel.data.resultCode.SUCCESS ||
-          resultCode == SDL.SDLModel.data.resultCode.WARNINGS) {
 
-        // send repsonse
+      let is_successful_response_format = function(is_success) {
+        // Successful response without params, but with not-empty message
+        // should be sent in errorneous format to properly forward info and result code
+        if (is_success && info != null && params == null) {
+          return false;
+        }
+
+        // Error response with not empty params should be sent in regular format
+        // to properly forward result code and params (but sacrifice info)
+        if (!is_success && params != null) {
+          return true;
+        }
+
+        // Otherwise use result code calculated according to regular HMI logic
+        return is_success;
+      };
+
+      Em.Logger.log('FFW.UI.' + method + 'Response');
+      if (is_successful_response_format(is_successful_code)) {
+        // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
           'id': id,
           'result': {
             'code': resultCode, // type (enum) from SDL protocol
             'method': method,
-            'info': info
           }
         };
+
+        if (params != null) {
+          Object.assign(JSONMessage.result, params);
+        }
+
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, info);
       }
     },
     /**
@@ -1721,14 +1771,14 @@ FFW.UI = FFW.RPCObserver.create(
           this.sendUIResult(resultCode, id, 'UI.SubtleAlert', info);
           break;
         }
-        case SDL.SDLModel.data.resultCode['ABORTED']:
-        {
-          this.sendError(resultCode, id, 'UI.SubtleAlert', 'SubtleAlert request aborted.');
-          break;
-        }
         case SDL.SDLModel.data.resultCode.REJECTED:
         {
-          this.sendError(resultCode, id, 'UI.SubtleAlert', info, { tryAgainTime: tryAgainTime });
+          this.sendUIResult(resultCode, id, 'UI.SubtleAlert', info, { tryAgainTime: tryAgainTime });
+          break;
+        }
+        case SDL.SDLModel.data.resultCode.ABORTED:
+        {
+          this.sendUIResult(resultCode, id, 'UI.SubtleAlert', 'SubtleAlert request aborted.');
           break;
         }
       }
@@ -1823,8 +1873,6 @@ FFW.UI = FFW.RPCObserver.create(
      */
     onCommand: function(commandID, appID) {
       Em.Logger.log('FFW.UI.onCommand');
-      var allowedDepth = SDL.systemCapabilities.driverDistractionCapability.subMenuDepth-1;
-      var activeDepth = SDL.SDLController.model.get('currentMenuDepth')
       var JSONMessage = {
         'jsonrpc': '2.0',
         'method': 'UI.OnCommand',
@@ -1881,67 +1929,34 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {Number} resultCode
      * @param {Number} commandID
      * @param {String} manualTextEntry
+     * @param {String} info
      */
     interactionResponse: function(requestID, resultCode, commandID,
-      manualTextEntry) {
-      Em.Logger.log('FFW.UI.PerformInteractionResponse');
-      if (this.errorResponsePull[requestID] &&
-        resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-
-        var json = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'result': {
-            'code': SDL.SDLModel.data.resultCode.WARNINGS,
-            'method': 'UI.PerformInteraction',
-            'info': 'Unsupported ' + this.errorResponsePull[requestID].type 
-                + ' type. Available data in request was processed.'
-          }
-        }
+      manualTextEntry, info) {
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+        var params = {
+          'choiceID': commandID
+        };
 
         if (manualTextEntry) {
-          json.result.manualTextEntry = manualTextEntry
+          params.manualTextEntry = manualTextEntry;
         }
 
-        if (commandID) {
-          json.result.choiceID = commandID;
-        }
-
-        this.client.send(json);
-        this.errorResponsePull[requestID] = null;
-        return;
-      }
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'result': {
-            'code': resultCode,
-            'method': 'UI.PerformInteraction'
-          }
-        };
-        if (commandID) {
-          JSONMessage.result.choiceID = commandID;
-        }
-        if (manualTextEntry != null) {
-          JSONMessage.result.manualTextEntry = manualTextEntry;
-        }
+        this.sendUIResult(
+          resultCode,
+          requestID,
+          'UI.PerformInteraction',
+          info,
+          params
+        );
       } else {
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': 'Perform Interaction error response.',
-            'data': {
-              'method': 'UI.PerformInteraction'
-            }
-          }
-        };
+        this.sendUIResult(
+          resultCode,
+          requestID,
+          'UI.PerformInteraction',
+          info
+        );
       }
-      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when DriverDistraction PopUp is visible
@@ -1969,8 +1984,6 @@ FFW.UI = FFW.RPCObserver.create(
      */
     OnSystemContext: function(systemContextValue, appID, windowID) {
       Em.Logger.log('FFW.UI.OnSystemContext');
-      var allowedDepth = SDL.systemCapabilities.driverDistractionCapability.subMenuDepth-1;
-      var activeDepth = SDL.SDLController.model.get('currentMenuDepth')
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
@@ -2039,6 +2052,45 @@ FFW.UI = FFW.RPCObserver.create(
         'params': {
           'seekTime': seekTime,
           'appID': appID
+        }
+      };
+      this.sendMessage(JSONMessage);
+    },
+    /**
+     * Callback for requesting images from mobile application
+     *
+     * @param {integer}
+     *            appID
+     * @param {string}
+     *            fileName
+     */
+    OnUpdateFile: function(appID, fileName) {
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnUpdateFile',
+        'params': {
+          'appID': appID,
+          'fileName': fileName
+        }
+      };
+      this.sendMessage(JSONMessage);
+    },
+        /**
+     * Callback for requesting submenu contents from mobile application
+     *
+     * @param {integer}
+     *            appID
+     * @param {integer}
+     *            menuID
+     */
+    OnUpdateSubMenu: function(appID, menuID) {
+      var JSONMessage = {
+        'jsonrpc': '2.0',
+        'method': 'UI.OnUpdateSubMenu',
+        'params': {
+          'appID': appID,
+          'menuID': menuID,
+          'updateSubCells': true
         }
       };
       this.sendMessage(JSONMessage);

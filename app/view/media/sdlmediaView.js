@@ -76,7 +76,20 @@ SDL.sdlView = Em.ContainerView
                   SDL.SDLController.model.appID
                 );
               }
-            }.observes('SDL.SDLController.model.softButtons.@each'),
+            }.observes(
+              'SDL.SDLController.model.softButtons.@each'),
+            updateOptionsButton: function() {
+              if (SDL.SDLController.model && SDL.SDLController.model.appID ==
+                SDL.SDLMediaController.currentAppId) {
+                var menuTitle = SDL.SDLController.model.globalProperties.menuTitle
+                this.get('content.optionsButton').set('text', menuTitle && menuTitle.length ? menuTitle : 'Options')
+                var menuIcon = SDL.SDLController.model.globalProperties.menuIcon
+                this.get('content.optionsButton').set('icon', menuIcon && menuIcon.value && menuIcon.value.length ? menuIcon.value : null)
+                this.get('content.optionsButton').set('templateName', menuIcon && menuIcon.isTemplate ? 'arrowShortOverLay' : 'arrowShort')
+              }
+            }.observes(
+              'SDL.SDLController.model.globalProperties.menuTitle',
+              'SDL.SDLController.model.globalProperties.menuIcon'),
             groupName: 'MediaView',
             elementId: 'sdl_view_container_menu',
             content: Em.ContainerView.extend(
@@ -93,7 +106,8 @@ SDL.sdlView = Em.ContainerView
                 optionsButton: SDL.Button.extend(
                   {
                     text: 'Options',
-                    templateName: 'arrow',
+                    classNames: 'softButton',
+                    templateName: 'arrowShort',
                     action: 'openCommandsList',
                     target: 'SDL.SDLController'
                   }

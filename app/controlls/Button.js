@@ -163,6 +163,21 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
       );
     },
 
+    didInsertElement: function(){
+      // $(this) wraps the ember view in a jquery object.
+      // `icon` is a view property defined above.
+      if ($(this)[0].icon) {
+        // this.$('img') returns a jquery instance of
+        // the img element inside of the SDL.Button
+        this.$('img').on('error', function(event) {
+          if(SDL.SDLController.model && SDL.SDLController.model.appID) {
+            var regex = /\?(.*)/g;
+            FFW.UI.OnUpdateFile(SDL.SDLController.model.appID, $(this)[0].icon.replace(regex, ""))
+          }
+        }.bind(this));
+      }
+    },
+
     // component default template
     defaultTemplate: Em.Handlebars.compile(
       '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
@@ -172,7 +187,19 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
     templates: {
       text: Em.Handlebars.compile('<span class="text">{{view.text}}</span>'),
 
+      textOverlay: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico-overlay"}} />' +
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span class="text">{{view.text}}</span>'
+      ),
+
       icon: Em.Handlebars.compile(
+        '<img class="ico" \
+          {{bindAttr src="view.icon"}} />'
+      ),
+
+      iconOverlay: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
         '<img class="ico" {{bindAttr src="view.icon"}} />'
       ),
 
@@ -188,23 +215,38 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
       ),
 
       rightText: Em.Handlebars.compile(
-        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<img {{bindAttr class="view.icon:ico"}} \
+          {{bindAttr src="view.icon"}} />' +
         '<span class="right_text">{{view.text}}</span>'
       ),
       rightTextOverLay: Em.Handlebars.compile(
         '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
-        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<img {{bindAttr class="view.icon:ico"}} \
+          {{bindAttr src="view.icon"}} />' +
         '<span class="right_text">{{view.text}}</span>'
       ),
 
       arrow: Em.Handlebars.compile(
-        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<img {{bindAttr class="view.icon:ico"}} \
+          {{bindAttr src="view.icon"}} />' +
         '<span>{{view.text}}</span>' +
         '<img class="arrow-ico" src="images/common/arrow_ico.png" />'
       ),
+      arrowShort: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.text}}</span>' +
+        '<img class="arrow-ico-short" src="images/common/arrow_ico.png" />'
+      ),
+      arrowShortOverLay: Em.Handlebars.compile(
+        '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
+        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<span>{{view.text}}</span>' +
+        '<img class="arrow-ico-short" src="images/common/arrow_ico.png" />'
+      ),
 
       rightIcon: Em.Handlebars.compile(
-        '<img {{bindAttr class="view.icon:ico"}} {{bindAttr src="view.icon"}} />' +
+        '<img {{bindAttr class="view.icon:ico"}} \
+          {{bindAttr src="view.icon"}} />' +
         '<span>{{view.text}}</span>' +
         '<img class="right_ico" {{bindAttr src="view.righticon"}} />'
       )

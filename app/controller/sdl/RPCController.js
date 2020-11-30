@@ -79,25 +79,25 @@ SDL.RPCController = Em.Object.create(
       }
       if (key == 'type' && value == 'PRE_RECORDED') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+          code: SDL.SDLModel.data.resultCode['WARNINGS'],
           type: value
         };
       }
       if (key == 'type' && value == 'SAPI_PHONEMES') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+          code: SDL.SDLModel.data.resultCode['WARNINGS'],
           type: value
         };
       }
       if (key == 'type' && value == 'LHPLUS_PHONEMES') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+          code: SDL.SDLModel.data.resultCode['WARNINGS'],
           type: value
         };
       }
       if (key == 'type' && value == 'SILENCE') {
         SDL.RPCController.capabilityCheckResult = {
-          code: SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'],
+          code: SDL.SDLModel.data.resultCode['WARNINGS'],
           type: value
         };
       }

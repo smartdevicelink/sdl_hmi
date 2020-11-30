@@ -53,6 +53,17 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     activate: false,
     endTime: null,
     timer: null,
+    timeout: 5000,
+    alertManeuerRequestId: 0,
+    isCloseButtonVisible: true,
+    /**
+     * @desc Defines whether icons paths verified successfully.
+     */
+    iconsAreValid: false,
+    /**
+     * @desc Defines info message if validation is failed
+     */
+    infoMessage: null,
     /**
      * Wagning image on Alert Maneuver PopUp
      */
@@ -95,8 +106,15 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      */
     softbuttons: Em.ContainerView.extend(
       {
-        elementId: 'alertManeuverSoftButtons',
-        classNames: 'alertManeuverSoftButtons'
+        childViews: [
+          'buttons'
+        ],
+        buttons: Em.ContainerView.extend(
+          {
+            elementId: 'alertManeuverSoftButtons',
+            classNames: 'alertManeuverSoftButtons'
+          }
+        )
       }
     ),
     /**
@@ -106,85 +124,151 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       {
         text: 'Close',
         classNames: 'closeButton softButton',
-        action: 'closeAlertMeneuverPopUp',
-        target: 'SDL.SDLController',
+        classNameBindings: [
+          'SDL.AlertManeuverPopUp.isCloseButtonVisible::inactive_state'],
+        actionUp: function() {
+          this._super();
+          SDL.SDLController.closeAlertMeneuverPopUp();
+        },
         templateName: 'text'
       }
     ),
+
+    /**
+     * @description Callback for display image mode change.
+     */
+    imageModeChanged: function() {
+      var items = this.get('softbuttons.buttons.childViews');
+      for (var i = 0; i < items.length; ++i) {
+          var button = items[i];
+          button.setMode(SDL.SDLModel.data.imageMode);
+      }
+      this.closeButton.setMode(SDL.SDLModel.data.imageMode);
+    }.observes('SDL.SDLModel.data.imageMode'),
+
     /**
      * @desc Function creates Soft Buttons on AlertPoUp
      * @param {Object} params
      */
     addSoftButtons: function(params) {
-      if (params) {
-        var softButtonsClass;
-        switch (params.length) {
-          case 1:
-            softButtonsClass = 'one';
-            break;
-          case 2:
-            softButtonsClass = 'two';
-            break;
-          case 3:
-            softButtonsClass = 'three';
-            break;
-          case 4:
-            softButtonsClass = 'four';
-            break;
-        }
-        for (var i = 0; i < params.length; i++) {
-          let get_template_type = function(button_type) {
-            switch (params[i].type) {
-              case "IMAGE":
-                return "icon";
-              case "BOTH":
-                return "rightText";
-            }
-            return "text";
-          }
+      const softButtons = params.softButtons;
+      if (!softButtons) {
+        return;
+      }
 
-          this.get('softbuttons.childViews').pushObject(
-            SDL.Button.create(
-              SDL.PresetEventsCustom, {
-                softButtonID: params[i].softButtonID,
-                icon: params[i].image ? params[i].image.value : '',
-                text: params[i].text,
-                classNames: 'list-item softButton ' + softButtonsClass,
-                elementId: 'softButton' + i,
-                templateName: get_template_type(params[i].type),
-                systemAction: params[i].systemAction,
-                appID: params.appID
-              }
-            )
-          );
+      var softButtonsClass;
+      switch (softButtons.length) {
+        case 1:
+          softButtonsClass = 'one';
+          break;
+        case 2:
+          softButtonsClass = 'two';
+          break;
+        case 3:
+          softButtonsClass = 'three';
+          break;
+        case 4:
+          softButtonsClass = 'four';
+          break;
+      }
+
+      let is_template = function(image) {
+        return image != null && image.isTemplate;
+      }
+
+      let get_template_type = function(button_type, image) {
+        switch (button_type) {
+          case "IMAGE":
+            return is_template(image) ? "iconOverlay" : "icon";
+
+          case "BOTH":
+            return is_template(image) ? "rightTextOverLay" : "rightText";
         }
+
+        return "text";
+      }
+
+      var imageList = [];
+      for (var i = 0; i < softButtons.length; i++) {
+        if (softButtons[i].image) {
+          imageList.push(softButtons[i].image);
+        }
+
+        this.get('softbuttons.buttons.childViews').pushObject(
+          SDL.Button.create(
+            SDL.PresetEventsCustom, {
+              softButtonID: softButtons[i].softButtonID,
+              icon: softButtons[i].image ? softButtons[i].image.value : '',
+              text: softButtons[i].text,
+              groupName: 'AlertManeuverPopUp',
+              classNames: 'list-item softButton ' + softButtonsClass,
+              elementId: 'softButton' + i,
+              classNameBindings: ['isHighlighted:isHighlighted',
+                  'getCurrentDisplayModeClass'],
+
+              getCurrentDisplayModeClass: function() {
+                return SDL.ControlButtons.getCurrentDisplayModeClass();
+              }.property('SDL.ControlButtons.imageMode.selection'),
+
+              isHighlighted: softButtons[i].isHighlighted,
+              templateName: get_template_type(softButtons[i].type, softButtons[i].image),
+              systemAction: softButtons[i].systemAction,
+              appID: params.appID
+            }
+          )
+        );
+      }
+
+      var callback = function(failed, info) {
+        SDL.AlertManeuverPopUp.iconsAreValid = !failed;
+        SDL.AlertManeuverPopUp.infoMessage = info;
+      }
+
+      SDL.SDLModel.validateImages(this.alertManeuerRequestId, callback, imageList);
+
+      if (softButtons.length > 0) {
+        this.set('isCloseButtonVisible', false);
       }
     },
-    AlertManeuverActive: function(message) {
-      this.get('softbuttons.childViews').removeObjects(
-        this.get('softbuttons.childViews').filterProperty('softButtonID')
-      );
-
-      var params = message.params;
-      if (params.softButtons) {
-          this.addSoftButtons( params.softButtons );
+    /**
+     * Deactivate PopUp
+     */
+    deactivate: function(message) {
+      if (SDL.TTSPopUp.active) {
+        SDL.TTSPopUp.DeactivateTTS();
       }
 
-      this.set( 'activate', true );
-      this.set('endTime', Date.now() + 5000);
+      clearTimeout(this.timer);
+
+      const resultCode = this.iconsAreValid ?
+        SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
+
+      FFW.Navigation.sendNavigationResult(
+        resultCode,
+        this.alertManeuerRequestId,
+        'Navigation.AlertManeuver',
+        this.infoMessage
+      );
+      this.set('activate', false );
+      this.set('alertManeuerRequestId', 0);
+    },
+
+    AlertManeuverActive: function(message) {
+      this.softbuttons.buttons.removeAllChildren();
+      this.softbuttons.buttons.rerender();
+
+      this.set('iconsAreValid', true);
+      this.set('infoMessage', null);
+      this.set('isCloseButtonVisible', true);
+      this.set('alertManeuerRequestId', message.id);
+      this.addSoftButtons(message.params);
+
+      this.set('activate', true );
 
       clearTimeout( this.timer );
-
-      var self = this;
-      this.timer = setTimeout( function() {
-          self.set( 'activate', false );
-          this.set('endTime', null);
-          FFW.Navigation.sendNavigationResult(
-            SDL.SDLModel.data.resultCode.SUCCESS,
-            message.id,
-            message.method
-          );
-      }, 5000 );
+      this.timer = setTimeout( () => {
+        this.deactivate(message);
+      }, this.timeout);
     }
   }
 );

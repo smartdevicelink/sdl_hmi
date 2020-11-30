@@ -178,6 +178,13 @@ var StateManager = Em.StateManager.extend(
           }
           this._super();
         },
+        rpccontrol: Em.State.create({
+            rpcconfig: Em.State.create({}),
+            rpcwaypointconfig: Em.State.create({}),
+            rpcvehicledataconfig: Em.State.create({}),
+            rpcgetivdconfig: Em.State.create({})
+          }
+       ),
         policies: Em.State.create(
           {
             statisticsInfo: Em.State.create({}),
@@ -496,6 +503,24 @@ var StateManager = Em.StateManager.extend(
           this._super();
           SDL.SDLModel.data.stateLimited = SDL.SDLController.model.appID;
           SDL.SDLModel.data.set('limitedExist', false);
+          SDL.SDLController.deactivateApp();
+        }
+      }
+    ),
+    webViewApp: Em.State.create(
+      {
+        modelBinding: 'SDL.RCModulesController',
+        enter: function() {
+          this._super();
+          SDL.SDLController.onEventChanged('player', false);
+          SDL.SDLController.onEventChanged(this.name, true);
+          SDL.SDLController.showWebViewApp(SDL.SDLController.model.appID);
+        },
+        exit: function() {
+          this._super();
+          SDL.SDLController.onEventChanged(this.name, false);
+          SDL.SDLModel.data.set('limitedExist', false);
+          SDL.SDLController.hideWebApps();
           SDL.SDLController.deactivateApp();
         }
       }

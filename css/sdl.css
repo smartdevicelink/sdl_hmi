@@ -1580,9 +1580,8 @@
 }
 
 #AlertPopUp .alertSoftButtons {
-    margin-left: 8px;
     top: 120px;
-    width: 386px;
+    width: 400px;
 }
 
 #SubtleAlertPopUp .subtleAlertSoftButtons {
@@ -1614,9 +1613,15 @@
     width: 362px;
 }
 
+#AlertManeuverPopUp #alertManeuverSoftButtons{
+    width: 400px;
+    height: 245px;
+}
+
 #softButton0.two {
     margin-top: 42px;
-    width: 170px;
+    width: 160px;
+    margin-left: 30px;
 }
 
 #softButton1.two {
@@ -1911,27 +1916,20 @@
     color: green
 }
 
-.InvisibleFrame {
-    position: absolute;
-    width: 0px;
-    height: 0px;
-    visibility: hidden;
-}
-
 #sdl_view_container {
     z-index: 501;
 }
 
 #sdl_view_container .title {
-    top: 79px;
-    font-size: 38px;
+    top: 70px;
+    font-size: 35px;
     left: 7px;
     width: 340px;
     height: 44px;
 }
 
 #sdl_view_container .album {
-    top: 123px;
+    top: 107px;
     font-size: 26px;
     left: 10px;
     width: 330px;
@@ -1944,6 +1942,15 @@
     left: 10px;
     width: 330px;
     height: 32px;
+}
+
+#sdl_view_container .track {
+    top: 137px;
+    font-size: 16px;
+    left: 10px;
+    width: 330px;
+    height: 25px;
+    color: #999999;
 }
 
 #sdl_view_container .player_controlls {
