@@ -51,7 +51,7 @@ SDL.NumericLayout = Em.ContainerView.extend({
     ],
 
     num1: SDL.Button.extend({
-          classNames: 'num1 k3',
+          classNames: 'num1 col3 row0',
           text: '1',
           target: 'parentView.parentView',
           action: 'inputChanges'
@@ -59,70 +59,70 @@ SDL.NumericLayout = Em.ContainerView.extend({
     ),
 
     num2: SDL.Button.extend({
-        classNames: 'num2 k4',
+        classNames: 'num2 col4 row0',
         text: '2',
         target: 'parentView.parentView',
         action: 'inputChanges'
     }),
 
     num3: SDL.Button.extend({
-        classNames: 'num3 k5',
+        classNames: 'num3 col5 row0',
         text: '3',
         target: 'parentView.parentView',
         action: 'inputChanges'
     }),
 
     num4: SDL.Button.extend({
-        classNames: 'num4 k6',
+        classNames: 'num4 col3 row1',
         text: '4',
         target: 'parentView.parentView',
         action: 'inputChanges'
     }),
 
     num5: SDL.Button.extend({
-        classNames: 'num5 k13',
+        classNames: 'num5 col4 row1',
         text: '5',
         target: 'parentView.parentView',
         action: 'inputChanges'
     }),
 
     num6: SDL.Button.extend({
-        classNames: 'num6 k14',
+        classNames: 'num6 col5 row1',
         text: '6',
         target: 'parentView.parentView',
         action: 'inputChanges'
     }),
 
     num7: SDL.Button.extend({
-        classNames: 'num7 k15',
+        classNames: 'num7 col3 row2',
         text: '7',
         target: 'parentView.parentView',
         action: 'inputChanges'
     }),
 
     num8: SDL.Button.extend({
-        classNames: 'num8 k16',
+        classNames: 'num8 col4 row2',
         text: '8',
         target: 'parentView.parentView',
         action: 'inputChanges'
     }),
 
     num9: SDL.Button.extend({
-        classNames: 'num9 k24',
+        classNames: 'num9 col5 row2',
         text: '9',
         target: 'parentView.parentView',
         action: 'inputChanges'
     }),
 
     num0: SDL.Button.extend({
-        classNames: 'num0 k25',
+        classNames: 'num0 col4 row3',
         text: '0',
         target: 'parentView.parentView',
         action: 'inputChanges'
     }),
 
     dash: SDL.Button.extend({
-          classNames: 'dash k26',
+          classNames: 'dash col3 row3',
           text: '-',
           target: 'parentView.parentView',
           action: 'inputChanges'
@@ -130,7 +130,7 @@ SDL.NumericLayout = Em.ContainerView.extend({
       ),
 
     ampersand: SDL.Button.extend({
-          classNames: 'ampersand k23',
+          classNames: 'ampersand col5 row3',
           text: '&',
           target: 'parentView.parentView',
           action: 'inputChanges'

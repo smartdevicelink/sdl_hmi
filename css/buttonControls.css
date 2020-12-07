@@ -80,61 +80,17 @@
     top: 58px;
 }
 
-#keyboard_view .controlls {
-    top: 350px;
-    width: 800px;
-    height: 75px;
-}
-
-#keyboard_view .controll {
-    margin: 10px;
-    height: 60px;
-    border: 1px solid #333;
-    text-align: center;
-    line-height: 60px;
-    border-radius: 3px;
-}
-
-#keyboard_view .controlls .leftBtn {
-    width: 130px;
-    left: 0px;
-}
-
-#keyboard_view .controlls .numericBtn {
-    width: 60px;
-    left: 145px;
-}
-
-#keyboard_view .controlls .symbolBtn {
-    width: 60px;
-    left: 220px;
-}
-
-#keyboard_view .controlls .spaceBtn {
-    width: 215px;
-    left: 295px;
-}
-
-#keyboard_view .controlls .caseSwitchBtn {
-    width: 60px;
-    left: 525px;
-}
-
-#keyboard_view .controlls .localisationBtn {
-    width: 60px;
-    left: 600px;
-}
-
-#keyboard_view .controlls .searchBtn {
-    width: 100px;
-    left: 677px;
-}
-
 #keyboard_view .keyboardLayout {
     width: 750px;
-    height: 185px;
-    top: 170px;
+    height: 250px;
+    top: 140px;
     left: 25px;
+}
+
+#keyboard_view .NumericLayout {
+    left: 77px;
+    width: 660px;
+    top: 135px;
 }
 
 #keyboard_view .keyboardLayout.wide {
@@ -143,13 +99,13 @@
 
 #keyboard_view .searchBar {
     top: 58px;
-    width: 666px;
+    width: 680px;
     height: 49px;
     left: 120px;
 }
 
 #keyboard_view input {
-    width: 597px;
+    width: 542px;
     height: 48px;
     border: 1px solid #333;
     border-radius: 2px;
@@ -167,7 +123,7 @@
 }
 
 #keyboard_view .clearBtn {
-    right: 0px;
+    right: 60px;
     top: 0px;
     width: 48px;
     height: 48px;
@@ -176,6 +132,19 @@
     font-size: 32px;
     text-align: center;
     line-height: 50px;
+}
+
+#keyboard_view .searchBtn {
+    right: 5px;
+    top: 0px;
+    width: 48px;
+    height: 43px;
+    border: 1px solid #333;
+    border-radius: 2px;
+    font-size: 32px;
+    text-align: center;
+    line-height: 50px;
+    padding-top: 5px;
 }
 
 #keyboard_view .microphone {
@@ -196,6 +165,62 @@
     font-size: 42px;
     text-align: center;
     line-height: 50px;
+}
+
+#keyboard_view .keyboardLayout .col0 {
+    left: 5px;
+}
+
+#keyboard_view .keyboardLayout .col1 {
+    left: 75px;
+}
+
+#keyboard_view .keyboardLayout .col2 {
+    left: 150px;
+}
+
+#keyboard_view .keyboardLayout .col3 {
+    left: 225px;
+}
+
+#keyboard_view .keyboardLayout .col4 {
+    left: 300px;
+}
+
+#keyboard_view .keyboardLayout .col5 {
+    left: 375px;
+}
+
+#keyboard_view .keyboardLayout .col6 {
+    left: 450px;
+}
+
+#keyboard_view .keyboardLayout .col7 {
+    left: 525px;
+}
+
+#keyboard_view .keyboardLayout .col8 {
+    left: 600px;
+}
+
+#keyboard_view .keyboardLayout .col9 {
+    left: 675px;
+}
+
+#keyboard_view .keyboardLayout .row0 {
+    top: 5px;
+}
+
+#keyboard_view .keyboardLayout .row1 {
+    top: 65px;
+}
+
+#keyboard_view .keyboardLayout .row2 {
+    top: 125px;
+}
+
+#keyboard_view .keyboardLayout .row3 {
+    top: 185px;
 }
 
 #keyboard_view .keyboardLayout .k1 {
