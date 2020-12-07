@@ -42,7 +42,8 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
       'controlls',
       'buttonsAreaQWERTY',
       'buttonsAreaQWERTZ',
-      'buttonsAreaAZERTY'
+      'buttonsAreaAZERTY',
+      'buttonsAreaNumeric'
     ],
     /**
      * Activate keyboard method
@@ -299,6 +300,17 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
           } else {
             return false;
           }
+        }.property(
+          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
+        )
+      }
+    ),
+    buttonsAreaNumeric: SDL.NumericLayout.create(
+      {
+        classNameBindings: 'this.isEnabled::hide',
+        isEnabled: function() {
+          return SDL.SDLController.model &&
+            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == 'NUMERIC';
         }.property(
           'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
         )
