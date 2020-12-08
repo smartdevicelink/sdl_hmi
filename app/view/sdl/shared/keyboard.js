@@ -87,9 +87,28 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         classNames: 'searchBar',
         childViews: [
           'input',
+          'maskBtn',
           'clearBtn',
           'searchBtn'
         ],
+        maskBtn: SDL.Button.extend(
+          {
+            classNames: 'maskBtn',
+            classNameBindings: 'SDL.KeyboardController.showMaskButton::inactive_state',
+            text: 'Mask',
+            action: 'toggleMaskingOption',
+            target: 'SDL.KeyboardController',
+            templateName: 'icon',
+            iconBinding: 'getIcon',
+            getIcon: function() {
+              if (SDL.KeyboardController.maskCharacters) {
+                return 'images/common/unmask.png';
+              } else {
+                return 'images/common/mask.png';
+              }
+            }.property('SDL.KeyboardController.maskCharacters')
+          }
+        ),
         clearBtn: SDL.Button.extend(
           {
             classNames: 'clearBtn',

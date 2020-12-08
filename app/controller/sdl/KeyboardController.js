@@ -160,7 +160,7 @@ SDL.KeyboardController = Em.Object.create({
           }
         }
     }.observes(
-      'SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList.@each'
+        'SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList.@each'
     ),
 
     /**
@@ -178,5 +178,68 @@ SDL.KeyboardController = Em.Object.create({
         return SDL.SDLController.model ?
             SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == layout :
             false;
+    },
+
+    /**
+     * @description Changes input masking if global properties have been
+     * changed by application
+     */
+    maskInputCharacters: function() {
+        if (SDL.SDLController.model == null ||
+            SDL.SDLController.model.globalProperties.keyboardProperties == null) {
+            return;
+        }
+
+        const value = SDL.SDLController.model.globalProperties.keyboardProperties.maskInputCharacters;
+        switch (value) {
+            case 'ENABLE_INPUT_KEY_MASK': {
+                Em.Logger.log('Masking keyboard input characters');
+                this.set('maskCharacters', true);
+                this.set('showMaskButton', false);
+                this.updateInputMasking();
+                break;
+            }
+
+            case 'USER_CHOICE_INPUT_KEY_MASK': {
+                Em.Logger.log('Showing user button for masking');
+                this.set('showMaskButton', true);
+                break;
+            }
+
+            case 'DISABLE_INPUT_KEY_MASK':
+            default: {
+                Em.Logger.log('Unmasking keyboard input characters');
+                this.set('maskCharacters', false);
+                this.set('showMaskButton', false);
+                this.updateInputMasking();
+            }
+        }
+    }.observes(
+        'SDL.SDLController.model.globalProperties.keyboardProperties.maskInputCharacters'
+    ),
+
+    /**
+     * @description Toggles current masking property
+     */
+    toggleMaskingOption: function() {
+        SDL.KeyboardController.toggleProperty('maskCharacters');
+        SDL.KeyboardController.updateInputMasking();
+    },
+
+    /**
+     * @description Updates keyboard input according to current values
+     * of internal controller flags
+     */
+    updateInputMasking: function() {
+        if (SDL.KeyboardController.maskCharacters) {
+            SDL.Keyboard.searchBar.input.type = 'password';
+            FFW.UI.OnKeyboardInput(null, 'INPUT_KEY_MASK_ENABLED');
+        } else {
+            SDL.Keyboard.searchBar.input.type = 'text';
+            FFW.UI.OnKeyboardInput(null, 'INPUT_KEY_MASK_DISABLED');
+        }
+
+        // To apply style updates on UI
+        SDL.Keyboard.searchBar.input.rerender();
     }
 });
