@@ -44,6 +44,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
       'buttonsAreaAZERTY',
       'buttonsAreaNumeric'
     ],
+
     /**
      * Activate keyboard method
      *
@@ -52,27 +53,9 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
     activate: function(element) {
       if (element) {
         this.set('active', true);
-        this.set('target', element);
+        SDL.KeyboardController.set('target', element);
       }
     },
-    backButton: SDL.Button.extend(
-      {
-        classNames: [
-          'back-button'
-        ],
-        action: function() {
-          if (SDL.SDLController.model &&
-            SDL.SDLController.model.activeRequests.uiPerformInteraction &&
-            !SDL.InteractionChoicesView.active) {
-            FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
-            SDL.InteractionChoicesView.deactivate('ABORTED');
-          }
-          SDL.Keyboard.deactivate();
-        },
-        icon: 'images/media/ico_back.png',
-        onDown: false
-      }
-    ),
     /**
      * Extend deactivate method send SUCCESS response on deactivate with current
      * slider value
@@ -80,59 +63,19 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
     deactivate: function() {
       this._super();
       this.searchBar.input.set('value', '');
-      this.set('target', null);
+      SDL.KeyboardController.set('target', null);
     },
-    inputChanges: function(element) {
-      if (SDL.SDLController.model &&
-        SDL.SDLController.model.activeRequests.uiPerformInteraction) {
-        SDL.SDLController.onResetTimeout(
-          SDL.SDLController.model.appID, 'UI.PerformInteraction'
-        );
+
+    backButton: SDL.Button.extend(
+      {
+        classNames: [
+          'back-button'
+        ],
+        action: SDL.KeyboardController.closeKeyboardView,
+        icon: 'images/media/ico_back.png',
+        onDown: false
       }
-      if (this.searchBar.input.value == null) {
-        this.searchBar.input.set('value', '');
-      }
-      switch (element.text) {
-        case 'Space':
-        {
-          this.searchBar.input.set('value', this.searchBar.input.value + ' ');
-          this.target.set('value', this.searchBar.input.value);
-          break;
-        }
-        case 'Search':
-        {
-          if (this.target.value == null) {
-            this.target.set('value', '');
-          }
-          this.target.search();
-          this.deactivate();
-          break;
-        }
-        default:
-        {
-          this.searchBar.input.set(
-            'value', this.searchBar.input.value + element.text
-          );
-          this.target.set('value', this.searchBar.input.value);
-        }
-      }
-    },
-    clearBtn: function(element) {
-      this.searchBar.input.set(
-        'value', this.searchBar.input.value.slice(0, -1)
-      );
-      this.target.set('value', this.searchBar.input.value);
-      if (this.searchBar.input.value == '') {
-        FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
-      }
-      SDL.SDLController.onResetTimeout(
-        SDL.SDLController.model.appID, 'UI.PerformInteraction'
-      );
-    },
-    /**
-     * Tearget element that initiated keyboard
-     */
-    target: null,
+    ),
     microphone: SDL.Button.extend(
       {
         classNames: 'microphone',
@@ -152,7 +95,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
             classNames: 'clearBtn',
             text: 'X',
             action: 'clearBtn',
-            target: 'parentView.parentView'
+            target: 'SDL.KeyboardController'
           }
         ),
         searchBtn: SDL.Button.extend(
@@ -160,7 +103,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
             classNames: 'searchBtn',
             text: 'Search',
             action: 'inputChanges',
-            target: 'parentView.parentView',
+            target: 'SDL.KeyboardController',
             templateName: 'icon',
             icon: 'images/common/search.png'
           }
@@ -170,53 +113,14 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
             elementId: 'keyboardInput',
             classNames: 'keyboardInput',
             valueBinding: 'SDL.SDLModel.data.keyboardInputValue'
-          }
-        )
+          })
       }
-    ),
-    disableButtons: function() {
-      if (SDL.SDLController.model) {
-        if (!SDL.SDLController.model.globalProperties.keyboardProperties) {
-          return;
-        }
-        var list = SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList ?
-          SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList :
-          [];
-        for (var i = 0; i < list.length; i++) {
-          list[i] = list[i].toLowerCase();
-        }
-        if (SDL.SDLController.model && list.length) {
-          for (var i = 0; i < this.buttonsAreaQWERTY._childViews.length; i++) {
-            if (list.indexOf(this.buttonsAreaQWERTY._childViews[i].text) < 0) {
-              this.buttonsAreaQWERTY._childViews[i].set('disabled', true);
-              this.buttonsAreaQWERTZ._childViews[i].set('disabled', true);
-              this.buttonsAreaAZERTY._childViews[i].set('disabled', true);
-            } else {
-              this.buttonsAreaQWERTY._childViews[i].set('disabled', false);
-              this.buttonsAreaQWERTZ._childViews[i].set('disabled', false);
-              this.buttonsAreaAZERTY._childViews[i].set('disabled', false);
-            }
-          }
-        } else if (SDL.SDLController.model && !list.length) {
-          for (var i = 0; i < this.buttonsAreaQWERTY._childViews.length; i++) {
-            this.buttonsAreaQWERTY._childViews[i].set('disabled', false);
-          }
-        }
-      }
-    }.observes(
-      'SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList.@each'
     ),
     buttonsAreaQWERTY: SDL.QWERTYLayout.create(
       {
-        classNameBindings: 'this.pQWERTY::hide',
-        pQWERTY: function() {
-          if (!SDL.SDLController.model || SDL.SDLController.model &&
-            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout ==
-            'QWERTY') {
-            return true;
-          } else {
-            return false;
-          }
+        classNameBindings: 'this.isEnabled::hide',
+        isEnabled: function() {
+          return SDL.KeyboardController.isLayoutActive("QWERTY");
         }.property(
           'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
         )
@@ -224,15 +128,9 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
     ),
     buttonsAreaQWERTZ: SDL.QWERTZLayout.create(
       {
-        classNameBindings: 'this.pQWERTZ::hide',
-        pQWERTZ: function() {
-          if (SDL.SDLController.model &&
-            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout ==
-            'QWERTZ') {
-            return true;
-          } else {
-            return false;
-          }
+        classNameBindings: 'this.isEnabled::hide',
+        isEnabled: function() {
+          return SDL.KeyboardController.isLayoutActive("QWERTZ");
         }.property(
           'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
         )
@@ -240,15 +138,9 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
     ),
     buttonsAreaAZERTY: SDL.AZERTYLayout.create(
       {
-        classNameBindings: 'this.pAZERTY::hide',
-        pAZERTY: function() {
-          if (SDL.SDLController.model &&
-            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout ==
-            'AZERTY') {
-            return true;
-          } else {
-            return false;
-          }
+        classNameBindings: 'this.isEnabled::hide',
+        isEnabled: function() {
+          return SDL.KeyboardController.isLayoutActive("AZERTY");
         }.property(
           'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
         )
@@ -258,9 +150,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
       {
         classNameBindings: 'this.isEnabled::hide',
         isEnabled: function() {
-          return SDL.SDLController.model ?
-            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == 'NUMERIC' :
-            false;
+          return SDL.KeyboardController.isLayoutActive("NUMERIC");
         }.property(
           'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
         )
