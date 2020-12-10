@@ -120,10 +120,11 @@ SDL.KeyboardController = Em.Object.create({
           FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
         }
 
-        if (SDL.SDLController.model) {
-            SDL.SDLController.onResetTimeout(
-                SDL.SDLController.model.appID, 'UI.PerformInteraction'
-            );
+        if (SDL.SDLController.model &&
+          SDL.SDLController.model.activeRequests.uiPerformInteraction) {
+          SDL.SDLController.onResetTimeout(
+            SDL.SDLController.model.appID, 'UI.PerformInteraction'
+          );
         }
     },
 
