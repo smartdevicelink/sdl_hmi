@@ -39,10 +39,10 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
       'backButton',
       'microphone',
       'searchBar',
-      'controlls',
       'buttonsAreaQWERTY',
       'buttonsAreaQWERTZ',
-      'buttonsAreaAZERTY'
+      'buttonsAreaAZERTY',
+      'buttonsAreaNumeric'
     ],
     /**
      * Activate keyboard method
@@ -145,7 +145,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         childViews: [
           'input',
           'clearBtn',
-          'serchIcon'
+          'searchBtn'
         ],
         clearBtn: SDL.Button.extend(
           {
@@ -155,9 +155,14 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
             target: 'parentView.parentView'
           }
         ),
-        serchIcon: Em.View.extend(
+        searchBtn: SDL.Button.extend(
           {
-            classNames: 'serchIcon'
+            classNames: 'searchBtn',
+            text: 'Search',
+            action: 'inputChanges',
+            target: 'parentView.parentView',
+            templateName: 'icon',
+            icon: 'images/common/search.png'
           }
         ),
         input: Ember.TextField.extend(
@@ -165,61 +170,6 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
             elementId: 'keyboardInput',
             classNames: 'keyboardInput',
             valueBinding: 'SDL.SDLModel.data.keyboardInputValue'
-          }
-        )
-      }
-    ),
-    controlls: Em.ContainerView.extend(
-      {
-        classNames: 'controlls',
-        childViews: [
-          'numericBtn',
-          'symbolBtn',
-          'spaceBtn',
-          'caseSwitchBtn',
-          'localisationBtn',
-          'searchBtn'
-        ],
-        numericBtn: SDL.Button.extend(
-          {
-            classNames: 'numericBtn controll',
-            text: '123'
-          }
-        ),
-        symbolBtn: SDL.Button.extend(
-          {
-            classNames: 'symbolBtn controll',
-            text: '!@#'
-          }
-        ),
-        spaceBtn: SDL.Button.extend(
-          {
-            classNames: 'spaceBtn controll',
-            text: 'Space',
-            target: 'parentView.parentView',
-            action: 'inputChanges'
-          }
-        ),
-        caseSwitchBtn: SDL.Button.extend(
-          {
-            classNames: 'caseSwitchBtn controll',
-            text: 'ABC'
-          }
-        ),
-        localisationBtn: SDL.Button.extend(
-          {
-            classNames: 'localisationBtn controll',
-            icon: 'images/info/info_leftMenu_apps_ico.png'
-          }
-        ),
-        searchBtn: SDL.Button.extend(
-          SDL.PresetEvents, {
-            classNames: 'searchBtn controll',
-            text: 'Search',
-            click: function() {
-              this.get('parentView.parentView').inputChanges(this);
-            },
-            presetName: 'SEARCH'
           }
         )
       }
@@ -299,6 +249,18 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
           } else {
             return false;
           }
+        }.property(
+          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
+        )
+      }
+    ),
+    buttonsAreaNumeric: SDL.NumericLayout.create(
+      {
+        classNameBindings: 'this.isEnabled::hide',
+        isEnabled: function() {
+          return SDL.SDLController.model ?
+            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == 'NUMERIC' :
+            false;
         }.property(
           'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
         )
