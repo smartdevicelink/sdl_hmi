@@ -2024,17 +2024,19 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {String}
      *
      */
-    OnKeyboardInput: function(value, event) {
+    OnKeyboardInput: function(data, event) {
       Em.Logger.log('FFW.UI.OnKeyboardInput');
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
         'method': 'UI.OnKeyboardInput',
         'params': {
-          'data': value,
           'event': event
         }
       };
+      if (data) {
+        JSONMessage.params.data = data;
+      }
       this.sendMessage(JSONMessage);
     },
     /**

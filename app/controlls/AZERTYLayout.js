@@ -69,7 +69,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   a: SDL.Button.extend({
         classNames: 'a k0',
         text: 'a',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -77,7 +77,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   z: SDL.Button.extend({
         classNames: 'z k1',
         text: 'z',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -85,7 +85,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   e: SDL.Button.extend({
         classNames: 'e k2',
         text: 'e',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -93,7 +93,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   r: SDL.Button.extend({
         classNames: 'r k3',
         text: 'r',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -101,7 +101,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   t: SDL.Button.extend({
         classNames: 't k4',
         text: 't',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -109,7 +109,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   y: SDL.Button.extend({
         classNames: 'y k5',
         text: 'y',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -117,7 +117,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   u: SDL.Button.extend({
         classNames: 'u k6',
         text: 'u',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -125,7 +125,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   i: SDL.Button.extend({
         classNames: 'i k7',
         text: 'i',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -133,7 +133,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   o: SDL.Button.extend({
         classNames: 'o k8',
         text: 'o',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -141,7 +141,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   p: SDL.Button.extend({
         classNames: 'p k9',
         text: 'p',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -149,7 +149,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   q: SDL.Button.extend({
         classNames: 'q k10',
         text: 'q',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -157,7 +157,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   s: SDL.Button.extend({
         classNames: 's k11',
         text: 's',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -165,7 +165,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   d: SDL.Button.extend({
         classNames: 'd k12',
         text: 'd',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -173,7 +173,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   f: SDL.Button.extend({
         classNames: 'f k13',
         text: 'f',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -181,7 +181,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   g: SDL.Button.extend({
         classNames: 'g k14',
         text: 'g',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -189,7 +189,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   h: SDL.Button.extend({
         classNames: 'h k15',
         text: 'h',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -197,7 +197,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   j: SDL.Button.extend({
         classNames: 'j k16',
         text: 'j',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -205,7 +205,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   k: SDL.Button.extend({
         classNames: 'k k17',
         text: 'k',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -213,7 +213,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   l: SDL.Button.extend({
         classNames: 'l k18',
         text: 'l',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -221,7 +221,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   m: SDL.Button.extend({
         classNames: 'm k19',
         text: 'm',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -229,7 +229,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   w: SDL.Button.extend({
         classNames: 'w k21',
         text: 'w',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -237,7 +237,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   x: SDL.Button.extend({
         classNames: 'x k22',
         text: 'x',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -245,7 +245,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   c: SDL.Button.extend({
         classNames: 'c k23',
         text: 'c',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -253,7 +253,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   v: SDL.Button.extend({
         classNames: 'v k24',
         text: 'v',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -261,7 +261,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   b: SDL.Button.extend({
         classNames: 'b k25',
         text: 'b',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -269,7 +269,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   n: SDL.Button.extend({
         classNames: 'n k26',
         text: 'n',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -277,7 +277,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   dash: SDL.Button.extend({
         classNames: 'dash k27',
         text: '-',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
@@ -285,7 +285,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   ampersand: SDL.Button.extend({
         classNames: 'ampersand k28',
         text: '&',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     )

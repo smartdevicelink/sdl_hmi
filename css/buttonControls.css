@@ -110,7 +110,6 @@
     border: 1px solid #333;
     border-radius: 2px;
     background: rgba(119, 119, 119, 0.42);
-    cursor: pointer;
     font-size: 32px;
     color: #FFF;
     padding-left: 10px;
@@ -132,6 +131,17 @@
     font-size: 32px;
     text-align: center;
     line-height: 50px;
+}
+
+#keyboard_view .maskBtn {
+    right: 115px;
+    top: 0px;
+    width: 48px;
+    height: 40px;
+    text-align: center;
+    line-height: 50px;
+    background: transparent;
+    padding-top: 10px;
 }
 
 #keyboard_view .searchBtn {
