@@ -236,19 +236,32 @@ def handle_start_streaming_adapter(params):
 			}
 		}
 		return json.dumps(response_msg)
+
 	ffmpeg_process = ffmpeg.input(params['url']).output(stream_endpoint, vcodec="vp8", format="webm", listen=1, multiple_requests=1).run_async(pipe_stderr=True) 
 	print("Wait for data from SDL")
 
 	o = pexpect.fdpexpect.fdspawn(ffmpeg_process.stderr.fileno(), logfile=sys.stdout.buffer)
-	o.expect("Input")
-	print("Data from SDL is available")
-	response_msg = {
-		"method": "StartStreamingAdapter",
-		"params": {
-			"success": True,
-			"stream_endpoint": stream_endpoint
+
+	index = o.expect(["Input", pexpect.EOF, pexpect.TIMEOUT])
+
+	response_msg = {}
+	if index == 0:
+		print("Data from SDL is available")
+		response_msg = {
+			"method": "StartStreamingAdapter",
+			"params": {
+				"success": True,
+				"stream_endpoint": stream_endpoint
+			}
 		}
-	}
+	else:
+		print("Expect has been failed")
+		response_msg = {
+			"method": "StartStreamingAdapter",
+			"params": {
+				"success": False
+			}
+		}
 
 	return json.dumps(response_msg)
 
