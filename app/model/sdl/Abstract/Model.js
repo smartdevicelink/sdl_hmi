@@ -687,6 +687,10 @@ SDL.SDLModel = Em.Object.extend({
           }
 
           Em.Logger.error('Navi video player is not initialized');
+        })
+        .catch(error => {
+          Em.Logger.log('Start streaming adapter failed');
+          SDL.SDLModel.data.naviVideo = null;
         });
       }
     },
