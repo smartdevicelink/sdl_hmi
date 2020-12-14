@@ -145,23 +145,29 @@ SDL.KeyboardController = Em.Object.create({
           for (var i = 0; i < list.length; i++) {
             list[i] = list[i].toLowerCase();
           }
-          if (SDL.SDLController.model && list.length) {
-            for (var i = 0; i < SDL.Keyboard.buttonsAreaQWERTY._childViews.length; i++) {
-              if (list.indexOf(SDL.Keyboard.buttonsAreaQWERTY._childViews[i].text) < 0) {
-                SDL.Keyboard.buttonsAreaQWERTY._childViews[i].set('disabled', true);
-                SDL.Keyboard.buttonsAreaQWERTZ._childViews[i].set('disabled', true);
-                SDL.Keyboard.buttonsAreaAZERTY._childViews[i].set('disabled', true);
-              } else {
-                SDL.Keyboard.buttonsAreaQWERTY._childViews[i].set('disabled', false);
-                SDL.Keyboard.buttonsAreaQWERTZ._childViews[i].set('disabled', false);
-                SDL.Keyboard.buttonsAreaAZERTY._childViews[i].set('disabled', false);
+
+          let disable_layout_buttons = (layout, list) => {
+            for (var i = 0; i < layout._childViews.length; ++i) {
+              if (list.length == 0) {
+                layout._childViews[i].set('disabled', false);
+                continue;
               }
+
+              const is_disabled = list.indexOf(layout._childViews[i].text) < 0;
+              layout._childViews[i].set('disabled', is_disabled);
             }
-          } else if (SDL.SDLController.model && !list.length) {
-            for (var i = 0; i < SDL.Keyboard.buttonsAreaQWERTY._childViews.length; i++) {
-              SDL.Keyboard.buttonsAreaQWERTY._childViews[i].set('disabled', false);
-            }
-          }
+          };
+
+          const layouts = [
+            SDL.Keyboard.buttonsAreaQWERTY,
+            SDL.Keyboard.buttonsAreaQWERTZ,
+            SDL.Keyboard.buttonsAreaAZERTY,
+            SDL.Keyboard.buttonsAreaNumeric
+          ];
+
+          layouts.forEach((layout) => {
+            disable_layout_buttons(layout, list);
+          });
         }
     }.observes(
         'SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList.@each'
