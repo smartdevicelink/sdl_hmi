@@ -62,6 +62,8 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
     'v',
     'b',
     'n',
+    'dot',
+    'space',
     'dash',
     'ampersand'
   ],
@@ -274,20 +276,56 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
       }
     ),
 
+  dot: SDL.Button.extend({
+      classNames: 'dash col0 row3',
+      textBinding: 'getText',
+      defaultText: '.',
+      customKeyIndex: 0,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+    }
+  ),
+
+  space: SDL.Button.extend({
+      classNames: 'dash col1 row3',
+      textBinding: 'getText',
+      defaultText: ' ',
+      customKeyIndex: 1,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+    }
+  ),
+
   dash: SDL.Button.extend({
-        classNames: 'dash k27',
-        text: '-',
-        target: 'SDL.KeyboardController',
-        action: 'inputChanges'
-      }
-    ),
+      classNames: 'dash col8 row3',
+      textBinding: 'getText',
+      defaultText: '-',
+      customKeyIndex: 2,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+    }
+  ),
 
   ampersand: SDL.Button.extend({
-        classNames: 'ampersand k28',
-        text: '&',
-        target: 'SDL.KeyboardController',
-        action: 'inputChanges'
-      }
-    )
+      classNames: 'ampersand col9 row3',
+      textBinding: 'getText',
+      defaultText: '&',
+      customKeyIndex: 3,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+    }
+  )
 }
 );

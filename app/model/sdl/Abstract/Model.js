@@ -967,6 +967,7 @@ SDL.SDLModel = Em.Object.extend({
         }
         else if (i === 'keyboardProperties') {
           mergeKeyboardProperties(params[i]);
+          SDL.KeyboardController.disableButtons();
         } else {
           SDL.SDLController.getApplicationModel(params.appID).
               set('globalProperties.' + i, params[i]);

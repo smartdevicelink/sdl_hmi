@@ -123,17 +123,27 @@ SDL.NumericLayout = Em.ContainerView.extend({
 
     dash: SDL.Button.extend({
           classNames: 'dash col3 row3',
-          text: '-',
+          textBinding: 'getText',
+          defaultText: '-',
+          customKeyIndex: 0,
           target: 'SDL.KeyboardController',
-          action: 'inputChanges'
+          action: 'inputChanges',
+          getText: function() {
+            return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+          }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
         }
       ),
 
     ampersand: SDL.Button.extend({
           classNames: 'ampersand col5 row3',
-          text: '&',
+          textBinding: 'getText',
+          defaultText: '&',
+          customKeyIndex: 1,
           target: 'SDL.KeyboardController',
-          action: 'inputChanges'
+          action: 'inputChanges',
+          getText: function() {
+            return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+          }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
         }
       )
   }

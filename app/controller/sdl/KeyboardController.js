@@ -148,13 +148,20 @@ SDL.KeyboardController = Em.Object.create({
 
           let disable_layout_buttons = (layout, list) => {
             for (var i = 0; i < layout._childViews.length; ++i) {
+              let button = layout._childViews[i];
+
               if (list.length == 0) {
-                layout._childViews[i].set('disabled', false);
+                button.set('disabled', false);
                 continue;
               }
 
-              const is_disabled = list.indexOf(layout._childViews[i].text) < 0;
-              layout._childViews[i].set('disabled', is_disabled);
+              let button_text = button.text;
+              if (button.customKeyIndex != null) {
+                button_text = this.getCustomKey(button.customKeyIndex, button.defaultText);
+              }
+
+              const is_disabled = list.indexOf(button_text) < 0;
+              button.set('disabled', is_disabled);
             }
           };
 
@@ -227,6 +234,25 @@ SDL.KeyboardController = Em.Object.create({
     }.observes(
         'SDL.SDLController.model.globalProperties.keyboardProperties.maskInputCharacters'
     ),
+
+    /**
+     * @description Returns customized key for a specified key index
+     * @param {Integer} index index of key
+     * @param {String} defaultKey default key if no customization
+     * @returns customized key according to global properties
+     */
+    getCustomKey: function(index, defaultKey) {
+      if (SDL.SDLController.model == null) {
+        return defaultKey;
+      }
+
+      const keys = SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys;
+      if (keys.length >= index + 1) {
+        return keys[index];
+      }
+
+      return defaultKey;
+    },
 
     /**
      * @description Toggles current masking property
