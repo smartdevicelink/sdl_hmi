@@ -1234,7 +1234,7 @@ SDL.SDLController = Em.Object.extend(
           }
         }
       }
-    }.observes('SDL.SDLModel.data.keyboardInputValue'),
+    },
     /**
      * Get application model
      *

@@ -62,7 +62,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
      */
     deactivate: function() {
       this._super();
-      this.searchBar.input.set('value', '');
+      SDL.SDLModel.set('data.keyboardInputValue', '');
       SDL.KeyboardController.set('target', null);
     },
 

@@ -73,15 +73,14 @@ SDL.KeyboardController = Em.Object.create({
           );
         }
 
-        if (SDL.Keyboard.searchBar.input.value == null) {
-            SDL.Keyboard.searchBar.input.set('value', '');
-        }
-
         switch (element.text) {
           case 'Space':
           {
-            SDL.Keyboard.searchBar.input.set('value', SDL.Keyboard.searchBar.input.value + ' ');
-            this.target.set('value', SDL.Keyboard.searchBar.input.value);
+            SDL.SDLModel.set('data.keyboardInputValue',
+              SDL.SDLModel.data.keyboardInputValue + ' '
+            );
+            this.target.set('value', SDL.SDLModel.data.keyboardInputValue);
+            SDL.SDLController.onKeyboardChanges();
             break;
           }
           case 'Search':
@@ -95,10 +94,11 @@ SDL.KeyboardController = Em.Object.create({
           }
           default:
           {
-            SDL.Keyboard.searchBar.input.set(
-              'value', SDL.Keyboard.searchBar.input.value + element.text
+            SDL.SDLModel.set('data.keyboardInputValue',
+              SDL.SDLModel.data.keyboardInputValue + element.text
             );
-            this.target.set('value', SDL.Keyboard.searchBar.input.value);
+            this.target.set('value', SDL.SDLModel.data.keyboardInputValue);
+            SDL.SDLController.onKeyboardChanges();
           }
         }
     },
@@ -108,16 +108,19 @@ SDL.KeyboardController = Em.Object.create({
      * Sends cancel event if it was the only symbol in the input
      */
     clearBtn: function() {
-        const text = SDL.Keyboard.searchBar.input.value;
+        const text = SDL.SDLModel.data.keyboardInputValue;
         if (text == '') {
             return;
         }
 
         const new_text = text.slice(0, -1);
-        SDL.Keyboard.searchBar.input.set('value', new_text);
+        SDL.SDLModel.set('data.keyboardInputValue', new_text);
         this.target.set('value', new_text);
+
         if (new_text == '') {
           FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
+        } else {
+          SDL.SDLController.onKeyboardChanges();
         }
 
         if (SDL.SDLController.model &&
