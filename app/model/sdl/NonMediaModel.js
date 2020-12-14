@@ -91,6 +91,7 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
     this.set('globalProperties.keyboardProperties.keyboardLayout', 'QWERTY');
     this.set('globalProperties.keyboardProperties.limitedCharacterList', []);
     this.set('globalProperties.keyboardProperties.maskInputCharacters', 'DISABLE_INPUT_KEY_MASK');
+    this.set('globalProperties.keyboardProperties.customizeKeys', []);
     this.set('globalProperties.menuIcon', Em.Object.create());
 
     this.set('inactiveWindows', []);

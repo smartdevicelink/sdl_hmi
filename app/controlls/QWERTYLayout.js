@@ -63,7 +63,8 @@ SDL.QWERTYLayout = Em.ContainerView.extend({
     'n',
     'm',
     'dash',
-    'ampersand'
+    'ampersand',
+    'dot'
   ],
 
   q: SDL.Button.extend({
@@ -274,20 +275,43 @@ SDL.QWERTYLayout = Em.ContainerView.extend({
       }
     ),
 
+  dot: SDL.Button.extend({
+      classNames: 'dot col0 row3',
+      textBinding: 'getText',
+      defaultText: '.',
+      customKeyIndex: 0,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+    }
+  ),
+
   dash: SDL.Button.extend({
-        classNames: 'dash k28',
-        text: '-',
-        target: 'SDL.KeyboardController',
-        action: 'inputChanges'
-      }
-    ),
+      classNames: 'dash col8 row3',
+      textBinding: 'getText',
+      defaultText: '-',
+      customKeyIndex: 1,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+    }
+  ),
 
   ampersand: SDL.Button.extend({
-        classNames: 'ampersand k29',
-        text: '&',
-        target: 'SDL.KeyboardController',
-        action: 'inputChanges'
-      }
-    )
+      classNames: 'ampersand col9 row3',
+      textBinding: 'getText',
+      defaultText: '&',
+      customKeyIndex: 2,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+    }
+  )
 }
 );

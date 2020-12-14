@@ -1243,7 +1243,7 @@ SDL.SDLModelData = Em.Object.create(
                     },
                     {
                       "keyboardLayout": "QWERTZ",
-                      "numConfigurableKeys": 3
+                      "numConfigurableKeys": 0
                     },
                     {
                       "keyboardLayout": "AZERTY",

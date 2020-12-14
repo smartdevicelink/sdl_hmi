@@ -61,9 +61,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     'v',
     'b',
     'n',
-    'm',
-    'dash',
-    'ampersand'
+    'm'
   ],
 
   q: SDL.Button.extend({
@@ -269,22 +267,6 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
   m: SDL.Button.extend({
         classNames: 'm k27',
         text: 'm',
-        target: 'SDL.KeyboardController',
-        action: 'inputChanges'
-      }
-    ),
-
-  dash: SDL.Button.extend({
-        classNames: 'dash k28',
-        text: '-',
-        target: 'SDL.KeyboardController',
-        action: 'inputChanges'
-      }
-    ),
-
-  ampersand: SDL.Button.extend({
-        classNames: 'ampersand k29',
-        text: '&',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
