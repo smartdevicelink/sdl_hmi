@@ -277,7 +277,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
     ),
 
   dot: SDL.Button.extend({
-      classNames: 'dash col0 row3',
+      classNames: 'dot col0 row3',
       textBinding: 'getText',
       defaultText: '.',
       customKeyIndex: 0,
@@ -290,7 +290,7 @@ SDL.AZERTYLayout = Em.ContainerView.extend({
   ),
 
   space: SDL.Button.extend({
-      classNames: 'dash col1 row3',
+      classNames: 'space col1 row3',
       textBinding: 'getText',
       defaultText: ' ',
       customKeyIndex: 1,

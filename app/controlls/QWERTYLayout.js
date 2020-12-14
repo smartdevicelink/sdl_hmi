@@ -276,7 +276,7 @@ SDL.QWERTYLayout = Em.ContainerView.extend({
     ),
 
   dot: SDL.Button.extend({
-      classNames: 'ampersand col0 row3',
+      classNames: 'dot col0 row3',
       textBinding: 'getText',
       defaultText: '.',
       customKeyIndex: 0,
