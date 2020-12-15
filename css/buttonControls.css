@@ -93,10 +93,6 @@
     top: 135px;
 }
 
-#keyboard_view .keyboardLayout.wide {
-    left: 5px !important;
-}
-
 #keyboard_view .searchBar {
     top: 58px;
     width: 680px;
@@ -233,140 +229,16 @@
     top: 185px;
 }
 
-#keyboard_view .keyboardLayout .k1 {
-    left: 75px;
+#keyboard_view .QWERTYLayout .row2 {
+    margin-left: 40px;
 }
 
-#keyboard_view .keyboardLayout .k2 {
-    left: 150px;
+#keyboard_view .QWERTZLayout .row2 {
+    margin-left: 40px;
 }
 
-#keyboard_view .keyboardLayout .k3 {
-    left: 225px;
-}
-
-#keyboard_view .keyboardLayout .k4 {
-    left: 300px;
-}
-
-#keyboard_view .keyboardLayout .k5 {
-    left: 375px;
-}
-
-#keyboard_view .keyboardLayout .k6 {
-    left: 450px;
-}
-
-#keyboard_view .keyboardLayout .k7 {
-    left: 525px;
-}
-
-#keyboard_view .keyboardLayout .k8 {
-    left: 600px;
-}
-
-#keyboard_view .keyboardLayout .k9 {
-    left: 675px;
-}
-
-#keyboard_view .keyboardLayout .k10 {
-    left: 38px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k11 {
-    left: 113px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k12 {
-    left: 188px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k13 {
-    left: 263px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k14 {
-    left: 338px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k15 {
-    left: 413px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k16 {
-    left: 488px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k17 {
-    left: 563px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k18 {
-    left: 638px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k19 {
-    left: 713px;
-    top: 62px;
-}
-
-#keyboard_view .keyboardLayout .k20 {
-    left: 0px;
-    top: 124px;
-}
-
-#keyboard_view .keyboardLayout .k21 {
-    left: 75px;
-    top: 124px;
-}
-
-#keyboard_view .keyboardLayout .k22 {
-    left: 150px;
-    top: 124px;
-}
-
-#keyboard_view .keyboardLayout .k23 {
-    left: 225px;
-    top: 124px;
-}
-
-#keyboard_view .keyboardLayout .k24 {
-    left: 300px;
-    top: 124px;
-}
-
-#keyboard_view .keyboardLayout .k25 {
-    left: 375px;
-    top: 124px;
-}
-
-#keyboard_view .keyboardLayout .k26 {
-    left: 450px;
-    top: 124px;
-}
-
-#keyboard_view .keyboardLayout .k27 {
-    left: 525px;
-    top: 124px;
-}
-
-#keyboard_view .keyboardLayout .k28 {
-    left: 600px;
-    top: 124px;
-}
-
-#keyboard_view .keyboardLayout .k29 {
-    left: 675px;
-    top: 124px;
+#keyboard_view .QWERTZLayout .row3 {
+    margin-left: 40px;
 }
 
 #infoTable.infoTable {
