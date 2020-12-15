@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Ford Motor Company All rights reserved.
+ * Copyright (c) 2020, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -36,6 +36,16 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
   classNames: 'keyboardLayout QWERTZLayout',
 
   childViews: [
+    'num1',
+    'num2',
+    'num3',
+    'num4',
+    'num5',
+    'num6',
+    'num7',
+    'num8',
+    'num9',
+    'num0',
     'q',
     'w',
     'e',
@@ -64,8 +74,79 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     'm'
   ],
 
+  num1: SDL.Button.extend({
+          classNames: 'num1 col0 row0',
+          text: '1',
+          target: 'SDL.KeyboardController',
+          action: 'inputChanges'
+        }
+    ),
+
+  num2: SDL.Button.extend({
+        classNames: 'num2 col1 row0',
+        text: '2',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num3: SDL.Button.extend({
+        classNames: 'num3 col2 row0',
+        text: '3',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num4: SDL.Button.extend({
+        classNames: 'num4 col3 row0',
+        text: '4',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num5: SDL.Button.extend({
+        classNames: 'num5 col4 row0',
+        text: '5',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num6: SDL.Button.extend({
+        classNames: 'num6 col5 row0',
+        text: '6',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num7: SDL.Button.extend({
+        classNames: 'num7 col6 row0',
+        text: '7',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num8: SDL.Button.extend({
+        classNames: 'num8 col7 row0',
+        text: '8',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num9: SDL.Button.extend({
+        classNames: 'num9 col8 row0',
+        text: '9',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num0: SDL.Button.extend({
+        classNames: 'num0 col9 row0',
+        text: '0',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
   q: SDL.Button.extend({
-        classNames: 'q k0',
+        classNames: 'q col0 row1',
         text: 'q',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -73,7 +154,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   w: SDL.Button.extend({
-        classNames: 'w k1',
+        classNames: 'w col1 row1',
         text: 'w',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -81,7 +162,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   e: SDL.Button.extend({
-        classNames: 'e k2',
+        classNames: 'e col2 row1',
         text: 'e',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -89,7 +170,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   r: SDL.Button.extend({
-        classNames: 'r k3',
+        classNames: 'r col3 row1',
         text: 'r',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -97,7 +178,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   t: SDL.Button.extend({
-        classNames: 't k4',
+        classNames: 't col4 row1',
         text: 't',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -105,7 +186,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   z: SDL.Button.extend({
-        classNames: 'z k5',
+        classNames: 'z col5 row1',
         text: 'z',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -113,7 +194,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   u: SDL.Button.extend({
-        classNames: 'u k6',
+        classNames: 'u col6 row1',
         text: 'u',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -121,7 +202,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   i: SDL.Button.extend({
-        classNames: 'i k7',
+        classNames: 'i col7 row1',
         text: 'i',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -129,7 +210,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   o: SDL.Button.extend({
-        classNames: 'o k8',
+        classNames: 'o col8 row1',
         text: 'o',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -137,7 +218,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   p: SDL.Button.extend({
-        classNames: 'p k9',
+        classNames: 'p col9 row1',
         text: 'p',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -145,7 +226,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   a: SDL.Button.extend({
-        classNames: 'a k10',
+        classNames: 'a col0 row2',
         text: 'a',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -153,7 +234,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   s: SDL.Button.extend({
-        classNames: 's k11',
+        classNames: 's col1 row2',
         text: 's',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -161,7 +242,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   d: SDL.Button.extend({
-        classNames: 'd k12',
+        classNames: 'd col2 row2',
         text: 'd',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -169,7 +250,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   f: SDL.Button.extend({
-        classNames: 'f k13',
+        classNames: 'f col3 row2',
         text: 'f',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -177,7 +258,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   g: SDL.Button.extend({
-        classNames: 'g k14',
+        classNames: 'g col4 row2',
         text: 'g',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -185,7 +266,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   h: SDL.Button.extend({
-        classNames: 'h k15',
+        classNames: 'h col5 row2',
         text: 'h',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -193,7 +274,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   j: SDL.Button.extend({
-        classNames: 'j k16',
+        classNames: 'j col6 row2',
         text: 'j',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -201,7 +282,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   k: SDL.Button.extend({
-        classNames: 'k k17',
+        classNames: 'k col7 row2',
         text: 'k',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -209,7 +290,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   l: SDL.Button.extend({
-        classNames: 'l k18',
+        classNames: 'l col8 row2',
         text: 'l',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -217,7 +298,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   y: SDL.Button.extend({
-        classNames: 'y k21',
+        classNames: 'y col1 row3',
         text: 'y',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -225,7 +306,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   x: SDL.Button.extend({
-        classNames: 'x k22',
+        classNames: 'x col2 row3',
         text: 'x',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -233,7 +314,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   c: SDL.Button.extend({
-        classNames: 'c k23',
+        classNames: 'c col3 row3',
         text: 'c',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -241,7 +322,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   v: SDL.Button.extend({
-        classNames: 'v k24',
+        classNames: 'v col4 row3',
         text: 'v',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -249,7 +330,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   b: SDL.Button.extend({
-        classNames: 'b k25',
+        classNames: 'b col5 row3',
         text: 'b',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -257,7 +338,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   n: SDL.Button.extend({
-        classNames: 'n k26',
+        classNames: 'n col6 row3',
         text: 'n',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
@@ -265,7 +346,7 @@ SDL.QWERTZLayout = Em.ContainerView.extend({
     ),
 
   m: SDL.Button.extend({
-        classNames: 'm k27',
+        classNames: 'm col7 row3',
         text: 'm',
         target: 'SDL.KeyboardController',
         action: 'inputChanges'
