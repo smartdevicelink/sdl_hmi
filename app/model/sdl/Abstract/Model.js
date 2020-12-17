@@ -950,31 +950,53 @@ SDL.SDLModel = Em.Object.extend({
    *
    * @param {Object}
    *            message Object with parameters come from SDLCore.
+   * @returns {String} result code
    */
   setProperties: function(params) {
-    function mergeKeyboardProperties(properties) {
-      for (var name in properties) {
-        SDL.SDLController.getApplicationModel(params.appID).
-            set('globalProperties.keyboardProperties.' + name,
-              properties[name]
-            );
-      }
-    }
-    if (SDL.SDLController.getApplicationModel(params.appID)) {
-      for (var i in params) {
-        if (i === "appID") {
-          continue;
-        }
-        else if (i === 'keyboardProperties') {
-          mergeKeyboardProperties(params[i]);
-        } else {
-          SDL.SDLController.getApplicationModel(params.appID).
-              set('globalProperties.' + i, params[i]);
-        }
-      }
-    } else {
+    let model = SDL.SDLController.getApplicationModel(params.appID);
+    if (!model) {
       console.error('CriticalError! No app registered with current appID!');
+      return SDL.SDLModel.data.resultCode.APPLICATION_NOT_REGISTERED;
     }
+
+    let unsupported_custom_keys_found = false;
+
+    function mergeKeyboardProperties(properties) {
+      model.resetKeyboardGlobalProperties(
+        model.get('globalProperties.keyboardProperties.keyboardLayout')
+      );
+
+      for (var name in properties) {
+        if (name === 'customizeKeys') {
+          const unsupported_keys = SDL.KeyboardController.get('unsupportedKeyboardSymbols');
+          unsupported_keys.forEach((key) => {
+            if (properties[name].includes(key)) {
+              unsupported_custom_keys_found = true;
+            }
+          });
+        }
+
+        model.set('globalProperties.keyboardProperties.' + name, properties[name]);
+      }
+    }
+
+    for (var i in params) {
+      if (i === "appID") {
+        continue;
+      }
+      else if (i === 'keyboardProperties') {
+        mergeKeyboardProperties(params[i]);
+        SDL.KeyboardController.disableButtons();
+      } else {
+        model.set('globalProperties.' + i, params[i]);
+      }
+    }
+
+    if (unsupported_custom_keys_found) {
+      return SDL.SDLModel.data.resultCode.WARNINGS;
+    }
+
+    return SDL.SDLModel.data.resultCode.SUCCESS;
   },
 
   /**

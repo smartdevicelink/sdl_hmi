@@ -634,6 +634,9 @@ FFW.BasicCommunication = FFW.RPCObserver
             );
           }
           if (request.method == 'BasicCommunication.ActivateApp') {
+            let model = SDL.SDLController.getApplicationModel(request.params.appID);
+            model.startHmiLevelResumption();
+
             if (!request.params.level || request.params.level == 'FULL') {
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID != request.params.appID) {
@@ -643,14 +646,11 @@ FFW.BasicCommunication = FFW.RPCObserver
                 SDL.SDLModel.data.stateLimited = null;
                 SDL.SDLModel.data.set('limitedExist', false);
               }
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'FULL';
-              SDL.SDLController.getApplicationModel(request.params.appID)
-                .turnOnSDL(request.params.appID);
+              model.level = 'FULL';
+              model.turnOnSDL(request.params.appID);
               SDL.VRPopUp.updateVR();
             } else if (request.params.level === 'LIMITED') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'LIMITED';
+              model.level = 'LIMITED';
               SDL.VRPopUp.updateVR();
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID === request.params.appID) {
@@ -658,8 +658,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               }
               SDL.InfoAppsView.showAppList();
             } else if (request.params.level === 'NONE') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'NONE';
+              model.level = 'NONE';
               SDL.VRPopUp.updateVR();
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID === request.params.appID) {
@@ -667,8 +666,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               }
               SDL.InfoAppsView.showAppList();
             } else if (request.params.level === 'BACKGROUND') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'BACKGROUND';
+              model.level = 'BACKGROUND';
               SDL.VRPopUp.updateVR();
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID === request.params.appID) {
@@ -679,6 +677,8 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
+
+            model.finishHmiLevelResumption();
           }
           if (request.method == 'BasicCommunication.CloseApplication') {
             SDL.SDLController.getApplicationModel(request.params.appID).level
