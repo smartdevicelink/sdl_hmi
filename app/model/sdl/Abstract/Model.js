@@ -963,7 +963,8 @@ SDL.SDLModel = Em.Object.extend({
 
     function mergeKeyboardProperties(properties) {
       model.resetKeyboardGlobalProperties(
-        model.get('globalProperties.keyboardProperties.keyboardLayout')
+        model.get('globalProperties.keyboardProperties.keyboardLayout'),
+        model.get('globalProperties.keyboardProperties.autoCompleteList')
       );
 
       for (var name in properties) {

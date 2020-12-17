@@ -502,6 +502,48 @@ SDL.ABSAppModel = Em.Object.extend(
       this.get('softButtons').pushObjects(buttons);
     },
     /**
+     * @description Set app global properties to default
+     */
+    resetGlobalProperties: function() {
+      this.set('globalProperties', Em.Object.create());
+      this.set('globalProperties.helpPrompt', []);
+      this.set('globalProperties.timeoutPrompt', []);
+      this.set('globalProperties.menuIcon', Em.Object.create());
+      this.resetKeyboardGlobalProperties('QWERTY', []);
+    },
+    /**
+     * @description Set app keyboard global properties to default
+     * @param {String} default_layout keyboard layout by default
+     * @param {Array} default_autocomplete keyboard autocomplete list by default
+     */
+    resetKeyboardGlobalProperties: function(default_layout, default_autocomplete) {
+      this.set('maskInputCharactersUserChoice', false);
+      this.set('globalProperties.keyboardProperties', Em.Object.create());
+      this.set('globalProperties.keyboardProperties.keyboardLayout', default_layout);
+      this.set('globalProperties.keyboardProperties.keypressMode', 'RESEND_CURRENT_ENTRY');
+      this.set('globalProperties.keyboardProperties.maskInputCharacters', 'DISABLE_INPUT_KEY_MASK');
+      this.set('globalProperties.keyboardProperties.customizeKeys', []);
+      this.set('globalProperties.keyboardProperties.limitedCharacterList', []);
+      this.set('globalProperties.keyboardProperties.autoCompleteList', default_autocomplete);
+    },
+    /**
+     * @description Performs actions on HMI level resumption start
+     */
+    startHmiLevelResumption: function() {
+      this.set('isHmiLevelResumption', true);
+    },
+    /**
+     * @description Performs actions on HMI level resumption finish
+     */
+    finishHmiLevelResumption: function() {
+      this.set('isHmiLevelResumption', false);
+
+      if (this.globalProperties.keyboardProperties.maskInputCharacters == 'USER_CHOICE_INPUT_KEY_MASK') {
+        // To trigger notification sending after app is activated and masking button is active
+        SDL.KeyboardController.maskInputCharacters();
+      }
+    },
+    /**
      * Add command to list
      *
      * @param {Object}
