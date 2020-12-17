@@ -137,8 +137,10 @@
     left: 25px;
 }
 
-#keyboard_view .keyboardLayout.wide {
-    left: 5px !important;
+#keyboard_view .NumericLayout {
+    left: 77px;
+    width: 660px;
+    top: 135px;
 }
 
 #keyboard_view .searchBar {

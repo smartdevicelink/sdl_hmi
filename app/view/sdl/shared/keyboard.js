@@ -39,11 +39,12 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
       'backButton',
       'microphone',
       'searchBar',
-      'controlls',
       'buttonsAreaQWERTY',
       'buttonsAreaQWERTZ',
-      'buttonsAreaAZERTY'
+      'buttonsAreaAZERTY',
+      'buttonsAreaNumeric'
     ],
+
     /**
      * Activate keyboard method
      *
@@ -288,17 +289,11 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         )
       }
     ),
-    buttonsAreaAZERTY: SDL.AZERTYLayout.create(
+    buttonsAreaNumeric: SDL.NumericLayout.create(
       {
-        classNameBindings: 'this.pAZERTY::hide',
-        pAZERTY: function() {
-          if (SDL.SDLController.model &&
-            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout ==
-            'AZERTY') {
-            return true;
-          } else {
-            return false;
-          }
+        classNameBindings: 'this.isEnabled::hide',
+        isEnabled: function() {
+          return SDL.KeyboardController.isLayoutActive("NUMERIC");
         }.property(
           'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
         )
