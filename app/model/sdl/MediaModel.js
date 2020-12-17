@@ -196,6 +196,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.pause = null;
     this.appInfo.set('mediaClock', '');
     this.endTime = 0;
+    this.countRate = 1.0;
   },
 
   setDuration: function() {
@@ -282,6 +283,12 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       return SDL.SDLModel.data.resultCode.SUCCESS;
     }
 
+    if (params.countRate) {
+      this.set('countRate', params.countRate);
+    } else {
+      this.set('countRate', 1.0);
+    }
+
     if (params.updateMode == 'PAUSE') {
       this.set('pause', true);
     } else if (params.updateMode == 'RESUME') {
@@ -302,11 +309,6 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
         );
       } else {
         this.set('endTime', 0)
-      }
-      if (params.countRate) {
-        this.set('countRate', params.countRate)
-      } else {
-        this.set('countRate', 1.0)
       }
       this.set('pause', false);
     }
