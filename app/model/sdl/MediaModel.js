@@ -92,6 +92,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
+    this.set("seekStreamingIndicator", {'type': 'TRACK', seekTime: null});
 
     this.set('inactiveWindows', []);
     this.set('backgroundWindows', []);
@@ -272,6 +273,14 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       this.set('pause', false);
     }
 
+    let forwardSeekIndicator = (params.forwardSeekIndicator) ? params.forwardSeekIndicator : {type: "TRACK", seekTime: null};
+    let backSeekIndicator = (params.backSeekIndicator) ? params.backSeekIndicator : {type: "TRACK", seekTime: null};
+
+    if(forwardSeekIndicator.type != backSeekIndicator.type){
+      forwardSeekIndicator = {type: "TRACK", seekTime: null};
+    }
+
+    this.set("seekStreamingIndicator", forwardSeekIndicator);
     return SDL.SDLModel.data.resultCode.SUCCESS;
   },
 
