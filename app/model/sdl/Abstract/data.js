@@ -653,6 +653,11 @@ SDL.SDLModelData = Em.Object.create(
      */
     ccpuVersion: '12345_US',
     /**
+     * Hardware version value
+     * @type {String}
+     */
+    hardwareVersion: '123.456.7890',
+    /**
      * Parameter describes if performInteraction session was started on HMI
      * this flag set to true when UI.PerformInteraction request came on HMI
      * and set to false when HMI send response to SDL Core on

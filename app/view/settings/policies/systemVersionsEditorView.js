@@ -36,12 +36,15 @@ SDL.SystemVersionsEditorView = Em.ContainerView.create(
         'backButton',
         'ccpuVersionLabel',
         'ccpuVersionInput',
+        'hardwareVersionCheckBox',
+        'hardwareVersionLabel',
+        'hardwareVersionInput',
         'applyButton'
       ],
       versionsTitle: SDL.Label.extend(
         {
           classNames: 'label',
-          content: 'Configure CCPU version'
+          content: 'Configure CCPU and hardware versions'
         }
       ),
       backButton: SDL.Button.extend(
@@ -68,6 +71,31 @@ SDL.SystemVersionsEditorView = Em.ContainerView.create(
           classNames: 'ccpuVersionInput dataInput',
           placeholder: '<Type CCPU version here>',
           valueBinding: 'SDL.SettingsController.editedCcpuVersionValue'
+        }
+      ),
+      hardwareVersionCheckBox: Em.Checkbox.extend(
+        {
+            elementId: 'hardwareVersionCheckBox',
+            classNames: 'hardwareVersionCheckBox item',
+            checkedBinding: 'SDL.SettingsController.hardwareVersionEditingEnabled'
+        }
+      ),
+      hardwareVersionLabel: SDL.Label.extend(
+        {
+          classNames: 'hardwareVersionLabel',
+          content: 'Hardware version: '
+        }
+      ),
+      hardwareVersionInput: Ember.TextField.extend(
+        {
+          elementId: 'hardwareVersionInput',
+          classNames: 'hardwareVersionInput dataInput',
+          placeholder: '<Type hardware version here>',
+          valueBinding: 'SDL.SettingsController.editedHardwareVersionValue',
+          disabledBinding: 'isEditingEnabled',
+          isEditingEnabled: function() {
+            return !SDL.SettingsController.hardwareVersionEditingEnabled;
+          }.property('SDL.SettingsController.hardwareVersionEditingEnabled')
         }
       ),
       applyButton: SDL.Button.extend(

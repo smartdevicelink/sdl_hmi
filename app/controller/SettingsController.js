@@ -75,6 +75,16 @@ SDL.SettingsController = Em.Object.create(
     editedCcpuVersionValue: "",
 
     /**
+     * @description Value of hardware version displayed in user input
+     */
+    editedHardwareVersionValue: "",
+
+    /**
+     * @description Flag to enable/disable hardware version text field
+     */
+    hardwareVersionEditingEnabled: true,
+
+    /**
      * @description Map of vehicle type data displayed in user inputs
      */
     editedVehicleType: {},
@@ -611,10 +621,12 @@ SDL.SettingsController = Em.Object.create(
     },
 
     /**
-     * @description Saves new CCPU version value from user input
+     * @description Saves new CCPU and hardware version values from user input
      */
     applyNewVersionValues: function() {
       SDL.SDLModel.data.ccpuVersion = this.editedCcpuVersionValue;
+      SDL.SDLModel.data.hardwareVersion = this.hardwareVersionEditingEnabled ?
+        this.editedHardwareVersionValue : null;
 
       Em.Logger.log("New system version settings have been applied");
     },

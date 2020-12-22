@@ -203,6 +203,12 @@ var StateManager = Em.StateManager.extend(
                 enter: function() {
                   this._super();
                   SDL.SettingsController.set('editedCcpuVersionValue', SDL.SDLModel.data.ccpuVersion);
+                  if (SDL.SDLModel.data.hardwareVersion != null) {
+                    SDL.SettingsController.set('editedHardwareVersionValue', SDL.SDLModel.data.hardwareVersion);
+                    SDL.SettingsController.set('hardwareVersionEditingEnabled', true);
+                  } else {
+                    SDL.SettingsController.set('hardwareVersionEditingEnabled', false);
+                  }
                 }
               }
             ),
