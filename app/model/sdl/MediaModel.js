@@ -82,6 +82,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.set('VRCommands', []);
     this.set('tbtActivate', false);
     this.set('isPlaying', true);
+    this.set("seekStreamingIndicator", {type: 'TRACK', seekTime: null});
     this.set('globalProperties', Em.Object.create());
     this.set('globalProperties.helpPrompt', []);
     this.set('globalProperties.timeoutPrompt', []);
@@ -92,7 +93,6 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
-    this.set("seekStreamingIndicator", {'type': 'TRACK', seekTime: null});
 
     this.set('inactiveWindows', []);
     this.set('backgroundWindows', []);
@@ -115,7 +115,8 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
   isPlaying: false,
   isTemplate:false,
   mode:'',
-  
+  seekStreamingIndicator: {type: 'TRACK', seekTime: null},
+
   /**
    * Flag for model active state currently used for status bar
    *

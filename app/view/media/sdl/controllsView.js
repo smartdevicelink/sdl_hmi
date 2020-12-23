@@ -82,7 +82,21 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               'bc-item-big',
               'prevcd'
             ],
-            icon: 'images/media/ico_prew.png',
+            onIconChange: function() {
+              let icon = "images/media/ico_prew.png"; 
+              for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
+                appID = SDL.SDLModel.data.registeredApps[i].appID;
+                if (appID == SDL.SDLMediaController.currentAppId) { 
+                  icon = (SDL.SDLModel.data.registeredApps[i].seekStreamingIndicator.type === 'TIME') 
+                    ? "images/media/ico_seek_left.png" : icon;                  
+                  break;
+                }
+              }
+              return icon;
+            }.property(
+              'SDL.SDLModel.data.registeredApps.@each.seekStreamingIndicator'
+            ),
+            iconBinding: 'onIconChange',
             presetName: 'SEEKLEFT'
           }
         ),
@@ -129,7 +143,21 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               'nextcd'
             ],
             classNameBindings: 'SDL.SDLController.model.SEEKRIGHT::unsubscribed',
-            icon: 'images/media/ico_next.png',
+            onIconChange: function() {
+              let icon = "images/media/ico_next.png"; 
+              for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
+                appID = SDL.SDLModel.data.registeredApps[i].appID;
+                if (appID == SDL.SDLMediaController.currentAppId) { 
+                  icon = (SDL.SDLModel.data.registeredApps[i].seekStreamingIndicator.type === 'TIME') 
+                    ? "images/media/ico_seek_right.png" : icon;                  
+                  break;
+                }
+              }
+              return icon;
+            }.property(
+              'SDL.SDLModel.data.registeredApps.@each.seekStreamingIndicator'
+            ),
+            iconBinding: 'onIconChange',
             presetName: 'SEEKRIGHT'
           }
         )
