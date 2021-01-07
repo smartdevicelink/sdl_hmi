@@ -536,14 +536,26 @@ SDL.ABSAppModel = Em.Object.extend(
             if (request.id >= 0 && parentID === 'top') {
               position += 5; // for exit application commands
             }
+
             var newItem = {
         		  commandID: request.params.cmdID,
         		  name: request.params.menuParams.menuName,
         		  parent: parentID,
         		  isTemplate:request.params.cmdIcon ?
-        		  request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
-        		  : null,
-        		  icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
+                request.params.cmdIcon.isTemplate ? 
+                request.params.cmdIcon.isTemplate 
+                : null
+        		    : null,
+              icon: request.params.cmdIcon ? 
+                request.params.cmdIcon.value : null,
+              secondaryText: request.params.menuParams.secondaryText ? 
+                request.params.menuParams.secondaryText : null,
+              tertiaryText: request.params.menuParams.tertiaryText ? 
+                request.params.menuParams.tertiaryText : null,
+              secondaryImage: request.params.secondaryImage ? 
+                request.params.secondaryImage.value : null,
+              secondaryTemplate: request.params.secondaryImage ?
+                request.params.secondaryImage.isTemplate : null
             };
             // Insert new item at calculated position
             commands.splice(position, 0, newItem);
@@ -660,7 +672,16 @@ SDL.ABSAppModel = Em.Object.extend(
         		  name: request.params.menuParams.menuName ?
         		    request.params.menuParams.menuName : '',
         		  parent: parentID,
-        		  icon: request.params.menuIcon ? request.params.menuIcon.value : null
+              icon: request.params.menuIcon ? 
+                request.params.menuIcon.value : null,
+              secondaryText: request.params.menuParams.secondaryText ? 
+                request.params.menuParams.secondaryText : null,
+              tertiaryText: request.params.menuParams.tertiaryText ? 
+                request.params.menuParams.tertiaryText : null,
+              secondaryImage: request.params.secondaryImage ? 
+                request.params.secondaryImage.value : null,
+              secondaryTemplate: request.params.secondaryImage ?
+                request.params.secondaryImage.isTemplate : null
             };
             // Insert new item at calculated position
             commands.splice(position, 0, newItem);
