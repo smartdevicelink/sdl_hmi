@@ -360,6 +360,13 @@ SDL.ABSAppModel = Em.Object.extend(
     unregisteringInProgress: false,
 
     /**
+     * @param maskInputCharactersUserChoice
+     * @type {Boolean}
+     * @description flag to store user preferences when mask input button is visible
+     */
+    maskInputCharactersUserChoice: true,
+
+    /**
      * Setter method for navigation subscription buttons
      *
      * @return none
@@ -509,22 +516,27 @@ SDL.ABSAppModel = Em.Object.extend(
       this.set('globalProperties.helpPrompt', []);
       this.set('globalProperties.timeoutPrompt', []);
       this.set('globalProperties.menuIcon', Em.Object.create());
-      this.resetKeyboardGlobalProperties('QWERTY', []);
+      this.set('globalProperties.keyboardProperties', Em.Object.create());
+
+      const default_keyboard = this.getDefaultKeyboardGlobalProperties();
+      for (const property in default_keyboard) {
+        this.set('globalProperties.keyboardProperties.' + property, default_keyboard[property]);
+      }
+
+      this.set('maskInputCharactersUserChoice', true);
     },
     /**
-     * @description Set app keyboard global properties to default
-     * @param {String} default_layout keyboard layout by default
-     * @param {Array} default_autocomplete keyboard autocomplete list by default
+     * @description Gets app default keyboard global properties
      */
-    resetKeyboardGlobalProperties: function(default_layout, default_autocomplete) {
-      this.set('maskInputCharactersUserChoice', false);
-      this.set('globalProperties.keyboardProperties', Em.Object.create());
-      this.set('globalProperties.keyboardProperties.keyboardLayout', default_layout);
-      this.set('globalProperties.keyboardProperties.keypressMode', 'RESEND_CURRENT_ENTRY');
-      this.set('globalProperties.keyboardProperties.maskInputCharacters', 'DISABLE_INPUT_KEY_MASK');
-      this.set('globalProperties.keyboardProperties.customizeKeys', []);
-      this.set('globalProperties.keyboardProperties.limitedCharacterList', []);
-      this.set('globalProperties.keyboardProperties.autoCompleteList', default_autocomplete);
+    getDefaultKeyboardGlobalProperties: function() {
+      return {
+        'keyboardLayout' : 'QWERTY',
+        'keypressMode' : 'RESEND_CURRENT_ENTRY',
+        'maskInputCharacters' : 'DISABLE_INPUT_KEY_MASK',
+        'customizeKeys' : [],
+        'limitedCharacterList' : [],
+        'autoCompleteList' : []
+      };
     },
     /**
      * @description Performs actions on HMI level resumption start
@@ -537,11 +549,7 @@ SDL.ABSAppModel = Em.Object.extend(
      */
     finishHmiLevelResumption: function() {
       this.set('isHmiLevelResumption', false);
-
-      if (this.globalProperties.keyboardProperties.maskInputCharacters == 'USER_CHOICE_INPUT_KEY_MASK') {
-        // To trigger notification sending after app is activated and masking button is active
-        SDL.KeyboardController.maskInputCharacters();
-      }
+      SDL.KeyboardController.sendInputKeyMaskNotification(this.appID);
     },
     /**
      * Add command to list

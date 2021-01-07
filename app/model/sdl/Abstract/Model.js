@@ -962,22 +962,29 @@ SDL.SDLModel = Em.Object.extend({
     let unsupported_custom_keys_found = false;
 
     function mergeKeyboardProperties(properties) {
-      model.resetKeyboardGlobalProperties(
-        model.get('globalProperties.keyboardProperties.keyboardLayout'),
-        model.get('globalProperties.keyboardProperties.autoCompleteList')
-      );
+      let default_properties = model.getDefaultKeyboardGlobalProperties();
+      default_properties.keyboardLayout = model.get('globalProperties.keyboardProperties.keyboardLayout');
+      default_properties.autoCompleteList = model.get('globalProperties.keyboardProperties.autoCompleteList');
 
-      for (var name in properties) {
-        if (name === 'customizeKeys') {
-          const unsupported_keys = SDL.KeyboardController.get('unsupportedKeyboardSymbols');
-          unsupported_keys.forEach((key) => {
-            if (properties[name].includes(key)) {
-              unsupported_custom_keys_found = true;
-            }
-          });
+      for (var name in default_properties) {
+        if (properties.hasOwnProperty(name)) {
+          if (name === 'customizeKeys') {
+            const unsupported_keys = SDL.KeyboardController.get('unsupportedKeyboardSymbols');
+            unsupported_keys.forEach((key) => {
+              if (properties[name].includes(key)) {
+                unsupported_custom_keys_found = true;
+              }
+            });
+          }
+
+          model.set('globalProperties.keyboardProperties.' + name, properties[name]);
+        } else {
+          model.set('globalProperties.keyboardProperties.' + name, default_properties[name]);
         }
 
-        model.set('globalProperties.keyboardProperties.' + name, properties[name]);
+        if (name === 'maskInputCharacters') {
+          SDL.KeyboardController.sendInputKeyMaskNotification(params.appID);
+        }
       }
     }
 
