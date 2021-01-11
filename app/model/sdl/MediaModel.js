@@ -181,7 +181,6 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     if (this.pause === false) {
       this.setDuration()
       this.timer = setInterval(function() {
-
         self.set('currTime', self.currTime + 1);
       }, 1000 / this.countRate
     );
@@ -201,9 +200,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
   setDuration: function() {
 
-    var number, str = '', hrs = 0, min = 0, sec = 0;
+    var position, str = '', hrs = 0, min = 0, sec = 0;
     if (this.countUp) {
-      number = this.startTime + this.currTime;
+      position = this.startTime + this.currTime;
     } else {
       if (this.startTime <= this.currTime) {
         clearInterval(this.timer);
@@ -211,12 +210,12 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
         this.appInfo.set('mediaClock', '00:00:00');
         return;
       }
-      number = this.startTime - this.currTime;
+      position = this.startTime - this.currTime;
     }
 
-    hrs = parseInt(number / 3600), // hours
-      min = parseInt(number / 60) % 60, // minutes
-      sec = number % 60; // seconds
+    hrs = parseInt(position / 3600), // hours
+      min = parseInt(position / 60) % 60, // minutes
+      sec = position % 60; // seconds
 
     str = (
         hrs < 10 ? '0' : '') + hrs + ':';
@@ -227,10 +226,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     if (this.countUp && this.endTime) {
       str += " / "
 
-      number = this.endTime
-      hrs = parseInt(number / 3600), // hours
-        min = parseInt(number / 60) % 60, // minutes
-        sec = number % 60; // seconds
+      position = this.endTime
+      hrs = parseInt(position / 3600), // hours
+        min = parseInt(position / 60) % 60, // minutes
+        sec = position % 60; // seconds
 
       str += (
           hrs < 10 ? '0' : '') + hrs + ':';
@@ -346,8 +345,6 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
    * @param {Object}
    */
   onSDLUIShow: function(params) {
-    clearInterval(this.timer);
-
     let isWidget = (("windowID" in params) && params.windowID !== 0);
     let windowID = isWidget ? params.windowID : 0;
     let that = this;
