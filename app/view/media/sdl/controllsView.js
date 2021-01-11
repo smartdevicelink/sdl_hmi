@@ -87,14 +87,14 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
                 appID = SDL.SDLModel.data.registeredApps[i].appID;
                 if (appID == SDL.SDLMediaController.currentAppId) { 
-                  icon = (SDL.SDLModel.data.registeredApps[i].seekStreamingIndicator.type === 'TIME') 
+                  icon = (SDL.SDLModel.data.registeredApps[i].backSeekIndicator.type === 'TIME') 
                     ? "images/media/ico_seek_left.png" : icon;                  
                   break;
                 }
               }
               return icon;
             }.property(
-              'SDL.SDLModel.data.registeredApps.@each.seekStreamingIndicator'
+              'SDL.SDLModel.data.registeredApps.@each.backSeekIndicator'
             ),
             iconBinding: 'onIconChange',
             presetName: 'SEEKLEFT'
@@ -148,14 +148,14 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
                 appID = SDL.SDLModel.data.registeredApps[i].appID;
                 if (appID == SDL.SDLMediaController.currentAppId) { 
-                  icon = (SDL.SDLModel.data.registeredApps[i].seekStreamingIndicator.type === 'TIME') 
+                  icon = (SDL.SDLModel.data.registeredApps[i].forwardSeekIndicator.type === 'TIME') 
                     ? "images/media/ico_seek_right.png" : icon;                  
                   break;
                 }
               }
               return icon;
             }.property(
-              'SDL.SDLModel.data.registeredApps.@each.seekStreamingIndicator'
+              'SDL.SDLModel.data.registeredApps.@each.forwardSeekIndicator'
             ),
             iconBinding: 'onIconChange',
             presetName: 'SEEKRIGHT'
