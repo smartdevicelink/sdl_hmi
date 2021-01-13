@@ -85,8 +85,8 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
             onIconChange: function() {
               let icon = "images/media/ico_prew.png"; 
               for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
-                appID = SDL.SDLModel.data.registeredApps[i].appID;
-                if (appID == SDL.SDLMediaController.currentAppId) { 
+                if (SDL.SDLMediaController.currentAppId
+                  == SDL.SDLModel.data.registeredApps[i].appID) { 
                   icon = (SDL.SDLModel.data.registeredApps[i].backSeekIndicator.type === 'TIME') 
                     ? "images/media/ico_seek_left.png" : icon;                  
                   break;
@@ -146,8 +146,8 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
             onIconChange: function() {
               let icon = "images/media/ico_next.png"; 
               for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
-                appID = SDL.SDLModel.data.registeredApps[i].appID;
-                if (appID == SDL.SDLMediaController.currentAppId) { 
+                if (SDL.SDLMediaController.currentAppId
+                  == SDL.SDLModel.data.registeredApps[i].appID) { 
                   icon = (SDL.SDLModel.data.registeredApps[i].forwardSeekIndicator.type === 'TIME') 
                     ? "images/media/ico_seek_right.png" : icon;                  
                   break;
