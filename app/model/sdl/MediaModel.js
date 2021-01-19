@@ -276,12 +276,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       this.set('pause', false);
     }
 
-    if (params.forwardSeekIndicator) {
-      this.set("forwardSeekIndicator", params.forwardSeekIndicator)
-    }
-    if (params.backSeekIndicator) {
-      this.set("backSeekIndicator", params.backSeekIndicator)
-    }
+    this.set("forwardSeekIndicator", params.forwardSeekIndicator ? params.forwardSeekIndicator : {type: 'TRACK', seekTime: null})
+    this.set("backSeekIndicator", params.backSeekIndicator ? params.backSeekIndicator : {type: 'TRACK', seekTime: null})
+
     return SDL.SDLModel.data.resultCode.SUCCESS;
   },
 
