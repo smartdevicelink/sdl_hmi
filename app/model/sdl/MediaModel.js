@@ -258,7 +258,13 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.currTime = 0;
     this.startTimer();
   }.observes('this.startTime',
-    'this.endTime',
+    'this.endTime'),
+
+  changeRate: function() {
+
+    clearInterval(this.timer);
+    this.startTimer();
+  }.observes(
     'this.countRate'),
 
   /**
