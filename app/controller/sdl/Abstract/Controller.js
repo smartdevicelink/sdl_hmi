@@ -201,6 +201,9 @@ SDL.SDLController = Em.Object.extend(
      * @param appID {Number}
      */
     closeApplication: function(appID) {
+      if (SDL.States.currentState.getPath('path') === 'media.sdlmedia'){
+        SDL.SDLMediaController.onCloseApplication(appID)
+      }
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia' ||
         SDL.States.currentState.getPath('path') === 'navigationApp.baseNavigation' ||
