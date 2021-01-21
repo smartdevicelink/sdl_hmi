@@ -87,7 +87,7 @@ SDL.PoliciesView = Em.ContainerView.create(
             type: SDL.Button,
             params: {
               action: 'onState',
-              goToState: 'policies.ccpuEditor',
+              goToState: 'policies.versionsEditor',
               text: 'Configure CCPU version',
               target: 'SDL.SettingsController',
               templateName: 'arrow',

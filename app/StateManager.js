@@ -198,7 +198,7 @@ var StateManager = Em.StateManager.extend(
                 }
               }
             ),
-            ccpuEditor: Em.State.create(
+            versionsEditor: Em.State.create(
               {
                 enter: function() {
                   this._super();
