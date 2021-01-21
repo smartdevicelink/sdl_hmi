@@ -206,6 +206,14 @@ var StateManager = Em.StateManager.extend(
                 }
               }
             ),
+            vehicleTypeEditor: Em.State.create(
+              {
+                enter: function() {
+                  this._super();
+                  SDL.SettingsController.updateVehicleTypeValues(SDL.SDLVehicleInfoModel.vehicleType);
+                }
+              }
+            ),
             deviceConfig: Em.State.create(
               {
                 enter: function() {

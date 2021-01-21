@@ -64,6 +64,7 @@ SDL.SettingsView = Em.ContainerView.create(
       SDL.SeatView,
       SDL.PolicyConfigListView,
       SDL.SystemVersionsEditorView,
+      SDL.VehicleTypeEditorView
     ],
     /** Left menu */
     leftMenu: Em.ContainerView.extend(
