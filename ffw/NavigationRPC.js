@@ -281,17 +281,51 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.SetVideoConfig':
           {
-              var app_model = SDL.SDLController.getApplicationModel(request.params.appID);
-              if(!app_model) {
-                break;
+            let rejectedParams = [];
+            const video_formats = SDL.systemCapabilities.videoStreamingCapability.supportedFormats;
+            if ('protocol' in request.params.config) {
+              const filtered_video_formats = video_formats.filter(x => x.protocol === request.params.config.protocol);
+              if (filtered_video_formats.length === 0) {
+                Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
+                              + request.params.config.protocol);
+                rejectedParams.push('protocol');
               }
+            }
+
+            if ('codec' in request.params.config && video_formats.length > 0) {
+              const filtered_video_formats = video_formats.filter(x => x.codec === request.params.config.codec);
+              if (filtered_video_formats.length === 0) {
+                Em.Logger.log('FFW.' + request.method + ' rejects codec: '
+                              + request.params.config.codec);
+                rejectedParams.push('codec');
+              }
+            }
+
+            if (rejectedParams.length > 0) {
+              this.sendNavigationResult(
+                SDL.SDLModel.data.resultCode.REJECTED,
+                request.id,
+                request.method,
+                null,
+                {
+                  'rejectedParams': rejectedParams
+                }
+              );
+
+              break;
+            }
+
+            var app_model = SDL.SDLController.getApplicationModel(request.params.appID);
+            if (app_model) {
               app_model.VideoConfigWidth = request.params.config.width;
               app_model.VideoConfigHeight = request.params.config.height;
-              this.sendNavigationResult(
-                SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method
-              );
+            }
+
+            this.sendNavigationResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
+            );
             break;
           }
           case 'Navigation.StartStream':

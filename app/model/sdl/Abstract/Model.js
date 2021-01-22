@@ -127,9 +127,7 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Object}
    */
   onTouchEvent: function(event) {
-
-    if (event.target.parentElement.className.indexOf('navButton') >= 0 ||
-      event.target.className.indexOf('navButton') >= 0) {
+    if (event.target.id != SDL.BaseNavigationView.elementId) {
       return;
     }
 
