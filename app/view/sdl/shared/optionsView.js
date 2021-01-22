@@ -141,7 +141,7 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                     secondaryText: commands[i].secondaryText,
                     tertiaryText: commands[i].tertiaryText,
                     secondaryIcon: commands[i].secondaryImage,
-                    secondaryTemplate: commands[i].secondaryTemplate 
+                    isSecondaryTemplate: commands[i].isSecondaryTemplate 
                   }
                 }
               );

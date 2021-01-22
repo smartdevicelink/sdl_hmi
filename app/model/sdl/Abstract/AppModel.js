@@ -554,7 +554,7 @@ SDL.ABSAppModel = Em.Object.extend(
                 request.params.menuParams.tertiaryText : null,
               secondaryImage: request.params.secondaryImage ? 
                 request.params.secondaryImage.value : null,
-              secondaryTemplate: request.params.secondaryImage ?
+              isSecondaryTemplate: request.params.secondaryImage ?
                 request.params.secondaryImage.isTemplate : null
             };
             // Insert new item at calculated position
@@ -680,7 +680,7 @@ SDL.ABSAppModel = Em.Object.extend(
                 request.params.menuParams.tertiaryText : null,
               secondaryImage: request.params.secondaryImage ? 
                 request.params.secondaryImage.value : null,
-              secondaryTemplate: request.params.secondaryImage ?
+              isSecondaryTemplate: request.params.secondaryImage ?
                 request.params.secondaryImage.isTemplate : null
             };
             // Insert new item at calculated position

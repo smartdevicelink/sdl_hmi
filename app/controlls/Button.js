@@ -54,7 +54,7 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
     /** Button icon class */
     icon: null,
     secondaryIcon: null,
-    secondaryTemplate: null,
+    isSecondaryTemplate: null,
 
     /** Button rightIcon class */
     righticon: null,
