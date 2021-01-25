@@ -258,7 +258,10 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         'driverDoorAjar': true,
         'passengerDoorAjar': true,
         'rearLeftDoorAjar': true,
-        'rearRightDoorAjar': true
+        'rearRightDoorAjar': true,
+        'doorStatuses': [],
+        'gateStatuses': [],
+        'roofStatuses': []
       },
       'deviceStatus': {
         'voiceRecOn': false,
