@@ -107,7 +107,7 @@ div.glider-slide {
 }
 
 .ffw-button .w-100 {
-    width: 100%;
+    width: 100% !important;
 }
 
 .ffw-button .w-50 {
@@ -116,6 +116,11 @@ div.glider-slide {
 
 .ffw-button .t-small {
     font-size: 15px;
+}
+
+.ffw-button .tertiary-text {
+    text-align: right;
+    margin-right: 10px;
 }
 
 .ffw-button .end-info {

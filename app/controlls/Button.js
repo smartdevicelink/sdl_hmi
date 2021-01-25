@@ -264,8 +264,8 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
             '<span class="w-100 t-small">{{view.secondaryText}}</span>' +
           '</div>' +
           '<div class="end-info">' +
-            '<span class="w-50 t-small">{{view.tertiaryText}}</span>' +
-            '<img {{bindAttr class="view.icon:ico"}} \
+            '<span class="w-50 t-small tertiary-text">{{view.tertiaryText}}</span>' +
+            '<img {{bindAttr class="view.secondaryIcon:ico"}} \
             {{bindAttr src="view.secondaryIcon"}} />' +
           '</div>'+
         '</div>'
@@ -280,8 +280,8 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
             '<span class="w-100 t-small">{{view.secondaryText}}</span>' +
           '</div>' +
           '<div class="end-info">' +
-            '<span class="w-50 t-small">{{view.tertiaryText}}</span>' +
-            '<img {{bindAttr class="view.icon:ico"}} \
+            '<span class="w-50 t-small tertiary-text">{{view.tertiaryText}}</span>' +
+            '<img {{bindAttr class="view.secondaryIcon:ico"}} \
             {{bindAttr src="view.secondaryIcon"}} />' +
             '<img class="arrow-ico relative-r-0" src="images/common/arrow_ico.png" />' +
           '</div>'+
