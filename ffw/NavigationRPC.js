@@ -159,21 +159,16 @@ FFW.Navigation = FFW.RPCObserver.create(
      */
     onRPCNotification: function(notification) {
       Em.Logger.log('FFW.Navigation.onRPCNotification');
+      switch (notification.method) {
+        case 'Navigation.OnAudioDataStreaming':
+        {
+          if (notification.params.available === true) {
+            SDL.SDLModel.startAudioStream();
+          }
+          break;
+        }
+      }
       this._super();
-      if (notification.method == this.onVideoDataStreamingNotification) {
-        if (notification.params.available) {
-          SDL.SDLModel.startStream();
-        } else {
-          SDL.SDLModel.stopStream();
-        }
-      }
-      if (notification.method == this.onAudioDataStreamingNotification) {
-        if (notification.params.available) {
-          SDL.SDLModel.startAudioStream();
-        } else {
-          SDL.SDLModel.stoptAudioStream();
-        }
-      }
     },
     /**
      * handle RPC requests here
@@ -243,6 +238,10 @@ FFW.Navigation = FFW.RPCObserver.create(
             this.startAudioStreamingPopup = SDL.PopUp.create().appendTo('body').popupActivate(
               text, function(result) {
                 if (result) {
+                  SDL.SDLController.getApplicationModel(
+                    request.params.appID
+                  ).navigationAudioStream = request.params.url;
+
                   FFW.Navigation.sendNavigationResult(
                     SDL.SDLModel.data.resultCode.SUCCESS,
                     request.id,
@@ -258,9 +257,6 @@ FFW.Navigation = FFW.RPCObserver.create(
                 }
               }
             );
-            SDL.SDLController.getApplicationModel(
-              request.params.appID
-            ).navigationAudioStream = request.params.url;
             break;
           }
           case 'Navigation.StopAudioStream':
@@ -268,6 +264,8 @@ FFW.Navigation = FFW.RPCObserver.create(
             SDL.SDLController.getApplicationModel(
               request.params.appID
             ).navigationAudioStream = null;
+            SDL.SDLModel.stopAudioStream();
+
             if (this.startAudioStreamingPopup && this.startAudioStreamingPopup.active) {
               this.startAudioStreamingPopup.deactivate();
               this.set('startAudioStreamingPopup', null);
@@ -283,21 +281,23 @@ FFW.Navigation = FFW.RPCObserver.create(
           {
             let rejectedParams = [];
             const video_formats = SDL.systemCapabilities.videoStreamingCapability.supportedFormats;
-            if ('protocol' in request.params.config) {
-              const filtered_video_formats = video_formats.filter(x => x.protocol === request.params.config.protocol);
-              if (filtered_video_formats.length === 0) {
-                Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
-                              + request.params.config.protocol);
-                rejectedParams.push('protocol');
+            if (video_formats) {
+              if ('protocol' in request.params.config) {
+                const filtered_video_formats = video_formats.filter(x => x.protocol === request.params.config.protocol);
+                if (filtered_video_formats.length === 0) {
+                  Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
+                                + request.params.config.protocol);
+                  rejectedParams.push('protocol');
+                }
               }
-            }
 
-            if ('codec' in request.params.config && video_formats.length > 0) {
-              const filtered_video_formats = video_formats.filter(x => x.codec === request.params.config.codec);
-              if (filtered_video_formats.length === 0) {
-                Em.Logger.log('FFW.' + request.method + ' rejects codec: '
-                              + request.params.config.codec);
-                rejectedParams.push('codec');
+              if ('codec' in request.params.config && video_formats.length > 0) {
+                const filtered_video_formats = video_formats.filter(x => x.codec === request.params.config.codec);
+                if (filtered_video_formats.length === 0) {
+                  Em.Logger.log('FFW.' + request.method + ' rejects codec: '
+                                + request.params.config.codec);
+                  rejectedParams.push('codec');
+                }
               }
             }
 
@@ -340,6 +340,7 @@ FFW.Navigation = FFW.RPCObserver.create(
                 if (result) {
                   SDL.SDLController.getApplicationModel(request.params.appID)
                     .set('navigationStream', request.params.url);
+                  SDL.SDLModel.startStream();
                   FFW.Navigation.sendNavigationResult(
                     SDL.SDLModel.data.resultCode.SUCCESS,
                     request.id,
@@ -355,9 +356,6 @@ FFW.Navigation = FFW.RPCObserver.create(
                 }
               }
             );
-            SDL.SDLController.getApplicationModel(
-              request.params.appID
-            ).navigationStream = request.params.url;
 
             break;
           }
@@ -366,6 +364,7 @@ FFW.Navigation = FFW.RPCObserver.create(
             SDL.SDLController.getApplicationModel(
               request.params.appID
             ).navigationStream = null;
+            SDL.SDLModel.stopStream();
             if (this.startVideoStreamingPopup && this.startVideoStreamingPopup.active) {
               this.startVideoStreamingPopup.deactivate();
               this.set('startVideoStreamingPopup', null);

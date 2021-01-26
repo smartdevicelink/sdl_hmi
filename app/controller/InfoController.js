@@ -568,11 +568,12 @@ SDL.InfoController = Em.Object.create(
     },
 
     /**
-     * @description Start converting streaming from SDL to the HTML5 video
+     * @description Start converting streaming from SDL to the HTML5 audio/video
      * @param {String} url SDL streaming path (pipe or socket)
-     * @return {Promise} promice that resolves streaming URL with HTML5 video  
+     * @param {String} type Streaming data type
+     * @return {Promise} promice that resolves streaming URL with HTML5 audio/video
      */
-    startStreamingAdapter: function(url) {
+    startStreamingAdapter: function(url, type) {
       return new Promise( (resolve, reject) => {
         let client = FFW.RPCSimpleClient;
 
@@ -592,6 +593,7 @@ SDL.InfoController = Em.Object.create(
           if (params.success == false) {
             Em.Logger.log('StartStreamingAdapter failed');
             reject();
+            return;
           }
 
           Em.Logger.log('StartStreamingAdapter succesfully started');
@@ -601,7 +603,8 @@ SDL.InfoController = Em.Object.create(
         let message = {
           method: 'StartStreamingAdapter',
           params: {
-            'url' : url
+            'url' : url,
+            'streamingType' : type
           }
         };
 
@@ -612,6 +615,51 @@ SDL.InfoController = Em.Object.create(
       });
     },
 
+    /**
+     * Stops streaming data conversion thread
+     * @param {String} type streaming data type
+     * @return {Promise} promice that resolves stopping of conversion thread
+     */
+    stopStreamingAdapter: function(type) {
+      return new Promise( (resolve, reject) => {
+        let client = FFW.RPCSimpleClient;
+
+        let response_timer = setTimeout(function() {
+          Em.Logger.log('StopStreamingAdapter timeout');
+
+          client.unsubscribeFromEvent('StopStreamingAdapter');
+          reject();
+        }, 10000);
+
+        let response_callback = function(params) {
+          Em.Logger.log('StopStreamingAdapter response');
+
+          clearTimeout(response_timer);
+          client.unsubscribeFromEvent('StopStreamingAdapter');
+
+          if (params.success == false) {
+            Em.Logger.log('StopStreamingAdapter failed');
+            reject();
+            return;
+          }
+
+          Em.Logger.log('StopStreamingAdapter succesfully stopped');
+          resolve();
+        }
+
+        let message = {
+          method: 'StopStreamingAdapter',
+          params: {
+            'streamingType' : type
+          }
+        };
+
+        Em.Logger.log(`StopStreamingAdapter request`);
+        client.connect();
+        client.subscribeOnEvent('StopStreamingAdapter', response_callback);
+        client.send(message);
+      });
+    },
 
     /**
      * @description Switching on Application

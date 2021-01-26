@@ -568,8 +568,8 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Number}
    */
   stopStream: function(appID) {
-
     if (SDL.SDLModel.data.naviVideo) {
+      Em.Logger.log('Stopping video playback');
       SDL.SDLModel.data.naviVideo.pause();
       SDL.SDLModel.data.naviVideo.src = '';
       SDL.SDLModel.data.naviVideo = null;
@@ -579,16 +579,21 @@ SDL.SDLModel = Em.Object.extend({
           templateName: 'video',
           template: Ember.Handlebars.compile('<video id="html5Player"></video>')
         }
-        ),
-        videoChild = null;
+    );
 
     SDL.NavigationAppView.videoView.remove();
     SDL.NavigationAppView.videoView.destroy();
-
-    videoChild = SDL.NavigationAppView.createChildView(createVideoView);
+    var videoChild = SDL.NavigationAppView.createChildView(createVideoView);
 
     SDL.NavigationAppView.get('childViews').pushObject(videoChild);
     SDL.NavigationAppView.set('videoView', videoChild);
+
+    SDL.InfoController.stopStreamingAdapter('video').then(function() {
+      Em.Logger.log('Video playback stopped');
+    })
+    .catch(error => {
+      Em.Logger.log('Stop video streaming adapter failed');
+    });
   },
 
   /**
@@ -610,9 +615,42 @@ SDL.SDLModel = Em.Object.extend({
       }
     }
 
-    SDL.StreamAudio.play(
-      SDL.SDLController.getApplicationModel(appID).navigationAudioStream
-    );
+    // SDL.StreamAudio.play(
+    //   SDL.SDLController.getApplicationModel(appID).navigationAudioStream
+    // );
+
+    if (SDL.SDLController.getApplicationModel(appID).navigationAudioStream !==
+        null) {
+
+        SDL.SDLModel.data.naviVideo = document.getElementById('html5Player');
+        var sdl_stream = SDL.SDLController.getApplicationModel(
+          appID
+        ).navigationAudioStream;
+
+        SDL.InfoController.startStreamingAdapter(sdl_stream, 'audio').then(function(stream_endpoint) {
+          if (SDL.SDLModel && SDL.SDLModel.data.naviVideo) {
+            Em.Logger.log('Starting audio playback');
+            SDL.SDLModel.data.naviVideo.src = stream_endpoint
+            var playPromise = SDL.SDLModel.data.naviVideo.play();
+            if (playPromise !== undefined) {
+              playPromise.then(_ => {
+                Em.Logger.log('Audio playback started OK');
+              })
+              .catch(error => {
+                Em.Logger.log('Audio playback start failed: ' + error);
+                SDL.SDLModel.data.naviVideo = null;
+              });
+            }
+            return;
+          }
+
+          Em.Logger.error('Navi audio player is not initialized');
+        })
+        .catch(error => {
+          Em.Logger.log('Start audio streaming adapter failed');
+          SDL.SDLModel.data.naviVideo = null;
+        });
+      }
   },
 
   /**
@@ -620,7 +658,7 @@ SDL.SDLModel = Em.Object.extend({
    *
    * @param {Number}
    */
-  stoptAudioStream: function() {
+  stopAudioStream: function() {
 
     var appID = null;
 
@@ -633,7 +671,34 @@ SDL.SDLModel = Em.Object.extend({
       }
     }
 
-    SDL.StreamAudio.stop();
+    // SDL.StreamAudio.stop();
+
+    if (SDL.SDLModel.data.naviVideo) {
+      Em.Logger.log('Stopping audio playback');
+      SDL.SDLModel.data.naviVideo.pause();
+      SDL.SDLModel.data.naviVideo.src = '';
+      SDL.SDLModel.data.naviVideo = null;
+    }
+
+    var createVideoView = Ember.View.create({
+          templateName: 'video',
+          template: Ember.Handlebars.compile('<video id="html5Player"></video>')
+        }
+    );
+
+    SDL.NavigationAppView.videoView.remove();
+    SDL.NavigationAppView.videoView.destroy();
+    var videoChild = SDL.NavigationAppView.createChildView(createVideoView);
+
+    SDL.NavigationAppView.get('childViews').pushObject(videoChild);
+    SDL.NavigationAppView.set('videoView', videoChild);
+
+    SDL.InfoController.stopStreamingAdapter('audio').then(function() {
+      Em.Logger.log('Audio streaming playback stopped');
+    })
+    .catch(error => {
+      Em.Logger.log('Stop audio streaming adapter failed');
+    });
   },
 
   /**
@@ -667,7 +732,7 @@ SDL.SDLModel = Em.Object.extend({
         SDL.SDLModel.data.naviVideo.style.setProperty("margin-left",marging_left + "px")
         SDL.SDLModel.data.naviVideo.style.setProperty("margin-top",marging_top + "px")
         
-        SDL.InfoController.startStreamingAdapter(sdl_stream).then(function(stream_endpoint) {
+        SDL.InfoController.startStreamingAdapter(sdl_stream, 'video').then(function(stream_endpoint) {
           if (SDL.SDLModel && SDL.SDLModel.data.naviVideo) {
             Em.Logger.log('Starting video playback');
             SDL.SDLModel.data.naviVideo.src = stream_endpoint

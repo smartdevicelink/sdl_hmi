@@ -62,6 +62,45 @@ class HTTPServer(BaseHTTPServer):
         self.base_path = base_path
         BaseHTTPServer.__init__(self, server_address, RequestHandlerClass)
 
+class StreamingProcessHolder:
+	def waitForInput(stream_process):
+		print("Wait for data from SDL")
+		o = pexpect.fdpexpect.fdspawn(stream_process.stderr.fileno(), logfile=sys.stdout.buffer)
+		return o.expect(["Input", pexpect.EOF, pexpect.TIMEOUT])
+
+	def initStreaming(url, streaming_type, stream_endpoint):
+		print("Init streaming for " + streaming_type)
+		if streaming_type == 'video':
+			StreamingProcessHolder.videoStream = ffmpeg.input(url).output(stream_endpoint, vcodec="vp8", format="webm", listen=1, multiple_requests=1).run_async(pipe_stderr=True)
+			return StreamingProcessHolder.waitForInput(StreamingProcessHolder.videoStream)
+
+		if streaming_type == 'audio':
+			StreamingProcessHolder.audioStream = ffmpeg.input(url, ar='16000', ac='1', f='s16le').output(stream_endpoint, format="wav", listen=1, multiple_requests=1).run_async(pipe_stderr=True)
+			return StreamingProcessHolder.waitForInput(StreamingProcessHolder.audioStream)
+
+	def terminateStreaming(stream_process):
+		if stream_process != None:
+			print("Terminate streaming process...")
+			stream_process.terminate()
+			stream_process.wait()
+			print("Process has been terminated...")
+			return 0
+
+		print("Process is not active")
+		return -1
+
+	def deinitStreaming(streaming_type):
+		print("Deinit streaming for " + streaming_type)
+		if streaming_type == 'video':
+			result = StreamingProcessHolder.terminateStreaming(StreamingProcessHolder.videoStream)
+			StreamingProcessHolder.videoStream = None
+			return result
+
+		if streaming_type == 'audio':
+			result = StreamingProcessHolder.terminateStreaming(StreamingProcessHolder.audioStream)
+			StreamingProcessHolder.audioStream = None
+			return result
+
 # Called for every client connecting (after handshake)
 def new_client(client, server):
 	print("New client connected and was given id %d\r" % client['id'])
@@ -226,7 +265,6 @@ def handle_get_app_manifest_message(params):
 
 def handle_start_streaming_adapter(params):
 	print("-->Handle start ffmpeg adapter\r")
-	stream_endpoint = "{}:{}".format(HTML5_STREAMING_HOST,HTML5_STREAMING_PORT)
 	if 'url' not in params :
 		print("'url' parameter missing")
 		response_msg = {
@@ -237,15 +275,21 @@ def handle_start_streaming_adapter(params):
 		}
 		return json.dumps(response_msg)
 
-	ffmpeg_process = ffmpeg.input(params['url']).output(stream_endpoint, vcodec="vp8", format="webm", listen=1, multiple_requests=1).run_async(pipe_stderr=True) 
-	print("Wait for data from SDL")
+	if 'streamingType' not in params :
+		print("'streamingType' parameter missing")
+		response_msg = {
+			"method": "StartStreamingAdapter",
+			"params": {
+				"success": False,
+			}
+		}
+		return json.dumps(response_msg)
 
-	o = pexpect.fdpexpect.fdspawn(ffmpeg_process.stderr.fileno(), logfile=sys.stdout.buffer)
-
-	index = o.expect(["Input", pexpect.EOF, pexpect.TIMEOUT])
+	stream_endpoint = "{}:{}".format(HTML5_STREAMING_HOST,HTML5_STREAMING_PORT)
+	start_result = StreamingProcessHolder.initStreaming(params['url'], params['streamingType'], stream_endpoint)
 
 	response_msg = {}
-	if index == 0:
+	if start_result == 0:
 		print("Data from SDL is available")
 		response_msg = {
 			"method": "StartStreamingAdapter",
@@ -265,6 +309,38 @@ def handle_start_streaming_adapter(params):
 
 	return json.dumps(response_msg)
 
+def handle_stop_streaming_adapter(params):
+	print("-->Handle stop ffmpeg adapter\r")
+
+	if 'streamingType' not in params :
+		print("'streamingType' parameter missing")
+		response_msg = {
+			"method": "StopStreamingAdapter",
+			"params": {
+				"success": False,
+			}
+		}
+		return json.dumps(response_msg)
+
+	stop_result = StreamingProcessHolder.deinitStreaming(params['streamingType'])
+
+	response_msg = {}
+	if stop_result == 0:
+		response_msg = {
+			"method": "StopStreamingAdapter",
+			"params": {
+				"success": True
+			}
+		}
+	else:
+		response_msg = {
+			"method": "StopStreamingAdapter",
+			"params": {
+				"success": False
+			}
+		}
+
+	return json.dumps(response_msg)
 
 def get_method_mapping():
 	return {
@@ -273,7 +349,8 @@ def get_method_mapping():
 		"SavePTUToFileRequest": handle_save_PTU_to_file_message,
 		"GetAppBundleRequest": handle_get_app_bundle_message,
 		"GetAppManifestRequest": handle_get_app_manifest_message,
-		"StartStreamingAdapter": handle_start_streaming_adapter
+		"StartStreamingAdapter": handle_start_streaming_adapter,
+		"StopStreamingAdapter": handle_stop_streaming_adapter
 	}
 
 def getch():
