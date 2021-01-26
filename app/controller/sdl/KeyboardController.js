@@ -60,10 +60,10 @@ SDL.KeyboardController = Em.Object.create({
         if (SDL.SDLController.model &&
             SDL.SDLController.model.activeRequests.uiPerformInteraction &&
             !SDL.InteractionChoicesView.active) {
-            FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
-            SDL.InteractionChoicesView.deactivate('ABORTED');
-          }
-          SDL.Keyboard.deactivate();
+          FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
+          SDL.InteractionChoicesView.deactivate('ABORTED');
+        }
+        SDL.Keyboard.deactivate();
     },
 
     /**
@@ -137,7 +137,7 @@ SDL.KeyboardController = Em.Object.create({
     },
 
     /**
-     * @description Disables or enables charaters depeding on global properties
+     * @description Disables or enables characters depending on global properties
      */
     disableButtons: function() {
         if (SDL.SDLController.model) {
@@ -197,9 +197,10 @@ SDL.KeyboardController = Em.Object.create({
             return true;
         }
 
-        return SDL.SDLController.model ?
-            SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == layout :
-            false;
+        return SDL.SDLController.model &&
+               SDL.SDLController.model.globalProperties.keyboardProperties ?
+               SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == layout :
+               false;
     },
 
     /**
@@ -324,7 +325,7 @@ SDL.KeyboardController = Em.Object.create({
         if (SDL.KeyboardController.maskCharacters) {
           SDL.Keyboard.searchBar.input.type = 'password';
         } else {
-            SDL.Keyboard.searchBar.input.type = 'text';
+          SDL.Keyboard.searchBar.input.type = 'text';
         }
 
         // To apply style updates on UI
