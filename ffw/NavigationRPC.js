@@ -159,16 +159,15 @@ FFW.Navigation = FFW.RPCObserver.create(
      */
     onRPCNotification: function(notification) {
       Em.Logger.log('FFW.Navigation.onRPCNotification');
-      switch (notification.method) {
-        case 'Navigation.OnAudioDataStreaming':
-        {
-          if (notification.params.available === true) {
-            SDL.SDLModel.startAudioStream();
-          }
-          break;
-        }
-      }
       this._super();
+
+      if (notification.method == this.onVideoDataStreamingNotification) {
+        SDL.SDLModel.onStreamingDataAvailability("video", notification.params.available);
+      }
+
+      if (notification.method == this.onAudioDataStreamingNotification) {
+        SDL.SDLModel.onStreamingDataAvailability("audio", notification.params.available);
+      }
     },
     /**
      * handle RPC requests here
@@ -242,6 +241,8 @@ FFW.Navigation = FFW.RPCObserver.create(
                     request.params.appID
                   ).navigationAudioStream = request.params.url;
 
+                  SDL.SDLModel.onStreamingActivity(request.params.appID, "audio", true);
+
                   FFW.Navigation.sendNavigationResult(
                     SDL.SDLModel.data.resultCode.SUCCESS,
                     request.id,
@@ -264,7 +265,7 @@ FFW.Navigation = FFW.RPCObserver.create(
             SDL.SDLController.getApplicationModel(
               request.params.appID
             ).navigationAudioStream = null;
-            SDL.SDLModel.stopAudioStream();
+            SDL.SDLModel.onStreamingActivity(request.params.appID, "audio", false);
 
             if (this.startAudioStreamingPopup && this.startAudioStreamingPopup.active) {
               this.startAudioStreamingPopup.deactivate();
@@ -340,7 +341,9 @@ FFW.Navigation = FFW.RPCObserver.create(
                 if (result) {
                   SDL.SDLController.getApplicationModel(request.params.appID)
                     .set('navigationStream', request.params.url);
-                  SDL.SDLModel.startStream();
+
+                  SDL.SDLModel.onStreamingActivity(request.params.appID, "video", true);
+
                   FFW.Navigation.sendNavigationResult(
                     SDL.SDLModel.data.resultCode.SUCCESS,
                     request.id,
@@ -364,7 +367,8 @@ FFW.Navigation = FFW.RPCObserver.create(
             SDL.SDLController.getApplicationModel(
               request.params.appID
             ).navigationStream = null;
-            SDL.SDLModel.stopStream();
+            SDL.SDLModel.onStreamingActivity(request.params.appID, "video", false);
+
             if (this.startVideoStreamingPopup && this.startVideoStreamingPopup.active) {
               this.startVideoStreamingPopup.deactivate();
               this.set('startVideoStreamingPopup', null);

@@ -46,7 +46,8 @@ import sys
 WEBSOCKET_PORT = 8081
 FILESERVER_PORT = 8082
 HTML5_STREAMING_HOST = "http://localhost"
-HTML5_STREAMING_PORT = 8085
+HTML5_STREAMING_VIDEO_PORT = 8085
+HTML5_STREAMING_AUDIO_PORT = 8086
 
 class HTTPHandler(SimpleHTTPRequestHandler):
     """This handler uses server.base_path instead of always using os.getcwd()"""
@@ -63,13 +64,24 @@ class HTTPServer(BaseHTTPServer):
         BaseHTTPServer.__init__(self, server_address, RequestHandlerClass)
 
 class StreamingProcessHolder:
+	def getStreamingEndpoint(streaming_type):
+		if streaming_type == 'audio':
+			return "{}:{}".format(HTML5_STREAMING_HOST, HTML5_STREAMING_AUDIO_PORT)
+
+		if streaming_type == 'video':
+			return "{}:{}".format(HTML5_STREAMING_HOST, HTML5_STREAMING_VIDEO_PORT)
+
+		return ""
+
 	def waitForInput(stream_process):
 		print("Wait for data from SDL")
 		o = pexpect.fdpexpect.fdspawn(stream_process.stderr.fileno(), logfile=sys.stdout.buffer)
 		return o.expect(["Input", pexpect.EOF, pexpect.TIMEOUT])
 
-	def initStreaming(url, streaming_type, stream_endpoint):
+	def initStreaming(url, streaming_type):
 		print("Init streaming for " + streaming_type)
+		stream_endpoint = StreamingProcessHolder.getStreamingEndpoint(streaming_type)
+
 		if streaming_type == 'video':
 			StreamingProcessHolder.videoStream = ffmpeg.input(url).output(stream_endpoint, vcodec="vp8", format="webm", listen=1, multiple_requests=1).run_async(pipe_stderr=True)
 			return StreamingProcessHolder.waitForInput(StreamingProcessHolder.videoStream)
@@ -92,14 +104,22 @@ class StreamingProcessHolder:
 	def deinitStreaming(streaming_type):
 		print("Deinit streaming for " + streaming_type)
 		if streaming_type == 'video':
-			result = StreamingProcessHolder.terminateStreaming(StreamingProcessHolder.videoStream)
-			StreamingProcessHolder.videoStream = None
-			return result
+			if hasattr(StreamingProcessHolder, 'videoStream') and StreamingProcessHolder.videoStream != None:
+				result = StreamingProcessHolder.terminateStreaming(StreamingProcessHolder.videoStream)
+				StreamingProcessHolder.videoStream = None
+				return result
+
+			print("Streaming is not active")
+			return -1
 
 		if streaming_type == 'audio':
-			result = StreamingProcessHolder.terminateStreaming(StreamingProcessHolder.audioStream)
-			StreamingProcessHolder.audioStream = None
-			return result
+			if hasattr(StreamingProcessHolder, 'audioStream') and StreamingProcessHolder.audioStream != None:
+				result = StreamingProcessHolder.terminateStreaming(StreamingProcessHolder.audioStream)
+				StreamingProcessHolder.audioStream = None
+				return result
+
+			print("Streaming is not active")
+			return -1
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -285,12 +305,12 @@ def handle_start_streaming_adapter(params):
 		}
 		return json.dumps(response_msg)
 
-	stream_endpoint = "{}:{}".format(HTML5_STREAMING_HOST,HTML5_STREAMING_PORT)
-	start_result = StreamingProcessHolder.initStreaming(params['url'], params['streamingType'], stream_endpoint)
+	start_result = StreamingProcessHolder.initStreaming(params['url'], params['streamingType'])
 
 	response_msg = {}
 	if start_result == 0:
 		print("Data from SDL is available")
+		stream_endpoint = StreamingProcessHolder.getStreamingEndpoint(params['streamingType'])
 		response_msg = {
 			"method": "StartStreamingAdapter",
 			"params": {

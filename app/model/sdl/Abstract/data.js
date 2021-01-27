@@ -169,6 +169,26 @@ SDL.SDLModelData = Em.Object.create(
      */
     naviVideo: null,
     /**
+     * Video streaming is allowed to start
+     * @type {Boolean}
+     */
+    videoStreamingAllowed: false,
+    /**
+     * Audio streaming is allowed to start
+     * @type {Boolean}
+     */
+    audioStreamingAllowed: false,
+    /**
+     * Video streaming data is available
+     * @type {Boolean}
+     */
+    videoStreamingStarted: false,
+    /**
+     * Audio streaming data is available
+     * @type {Boolean}
+     */
+    audioStreamingStarted: false,
+    /**
      * Array of strings came in SDL.GetPolicyConfigurationData response
      *
      * @type {Object}

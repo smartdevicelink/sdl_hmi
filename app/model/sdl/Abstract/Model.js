@@ -509,25 +509,88 @@ SDL.SDLModel = Em.Object.extend({
   },
 
   /**
+   * Callback for tracking a/v streaming data availability
+   * @param {String} type streaming data type
+   * @param {Boolean} is_available data availability
+   */
+  onStreamingDataAvailability: function(type, is_available) {
+    var model = null;
+    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
+      model = SDL.SDLController.model;
+    } else if (SDL.SDLModel.data.stateLimited) {
+      var tmp = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+      if (this.isStreamingSupported(tmp)) {
+        model = tmp;
+      }
+    }
+
+    if (model) {
+      Em.Logger.log("Streaming for " + type + " for " + model.appID + " is available: " + is_available);
+      if ("video" == type) {
+        model.set('videoStreamingAllowed', is_available);
+        if (is_available) {
+          this.startStream(model);
+        }
+      }
+
+      if ("audio" == type) {
+        model.set('audioStreamingAllowed', is_available);
+        if (is_available) {
+          this.startAudioStream(model);
+        }
+      }
+    }
+  },
+
+  /**
+   * Callback for tracking a/v stream activity
+   * @param {Number} appID id of affected application
+   * @param {String} type streaming type
+   * @param {Boolean} is_active streaming activity
+   */
+  onStreamingActivity: function(appID, type, is_active) {
+    var model = SDL.SDLController.getApplicationModel(appID);
+
+    if (model) {
+      Em.Logger.log("Streaming for " + type + " for " + model.appID + " activity changed to " + is_active);
+      if ("video" == type) {
+        model.set('videoStreamingStarted', is_active);
+        if (is_active) {
+          this.startStream(model);
+        } else {
+          this.stopStream();
+        }
+      }
+
+      if ("audio" == type) {
+        model.set('audioStreamingStarted', is_active);
+        if (is_active) {
+          this.startAudioStream(model);
+        } else {
+          this.stopAudioStream();
+        }
+      }
+    }
+  },
+
+  /**
    * Method to start playing video from streaming video source
    * provided by SDLCore
    *
    * @param {Object}
    */
-  startStream: function(request) {
-
-    var appID = null;
-
-    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
-      appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited) {
-      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
-      if (this.isStreamingSupported(model)) {
-        appID = SDL.SDLModel.data.stateLimited;
-      }
+  startStream: function(model) {
+    if (!model.videoStreamingStarted) {
+      Em.Logger.log("Video streaming is not started yet");
+      return;
     }
 
-    SDL.SDLModel.playVideo(appID);
+    if (!model.videoStreamingAllowed) {
+      Em.Logger.log("Video streaming is not allowed yet");
+      return;
+    }
+
+    SDL.SDLModel.playVideo(model.appID);
   },
 
   /**
@@ -602,55 +665,26 @@ SDL.SDLModel = Em.Object.extend({
    *
    * @param {Object}
    */
-  startAudioStream: function() {
-
-    var appID = null;
-
-    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
-      appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited) {
-      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
-      if (this.isStreamingSupported(model)) {
-        appID = SDL.SDLModel.data.stateLimited;
-      }
+  startAudioStream: function(model) {
+    if (!model.audioStreamingStarted) {
+      Em.Logger.log("Audio streaming is not started yet");
+      return;
     }
 
-    // SDL.StreamAudio.play(
-    //   SDL.SDLController.getApplicationModel(appID).navigationAudioStream
-    // );
+    if (!model.audioStreamingAllowed) {
+      Em.Logger.log("Audio streaming is not allowed yet");
+      return;
+    }
 
-    if (SDL.SDLController.getApplicationModel(appID).navigationAudioStream !==
-        null) {
-
-        SDL.SDLModel.data.naviVideo = document.getElementById('html5Player');
-        var sdl_stream = SDL.SDLController.getApplicationModel(
-          appID
-        ).navigationAudioStream;
-
-        SDL.InfoController.startStreamingAdapter(sdl_stream, 'audio').then(function(stream_endpoint) {
-          if (SDL.SDLModel && SDL.SDLModel.data.naviVideo) {
-            Em.Logger.log('Starting audio playback');
-            SDL.SDLModel.data.naviVideo.src = stream_endpoint
-            var playPromise = SDL.SDLModel.data.naviVideo.play();
-            if (playPromise !== undefined) {
-              playPromise.then(_ => {
-                Em.Logger.log('Audio playback started OK');
-              })
-              .catch(error => {
-                Em.Logger.log('Audio playback start failed: ' + error);
-                SDL.SDLModel.data.naviVideo = null;
-              });
-            }
-            return;
-          }
-
-          Em.Logger.error('Navi audio player is not initialized');
-        })
-        .catch(error => {
-          Em.Logger.log('Start audio streaming adapter failed');
-          SDL.SDLModel.data.naviVideo = null;
-        });
-      }
+    if (model != null && model.navigationAudioStream !== null) {
+      SDL.InfoController.startStreamingAdapter(model.navigationAudioStream, 'audio')
+      .then(function(stream_endpoint) {
+        SDL.StreamAudio.play(stream_endpoint);
+      })
+      .catch(error => {
+        Em.Logger.log('Start audio streaming adapter failed');
+      });
+    }
   },
 
   /**
@@ -659,42 +693,10 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Number}
    */
   stopAudioStream: function() {
-
-    var appID = null;
-
-    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
-      appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited) {
-      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
-      if (this.isStreamingSupported(model)) {
-        appID = SDL.SDLModel.data.stateLimited;
-      }
-    }
-
-    // SDL.StreamAudio.stop();
-
-    if (SDL.SDLModel.data.naviVideo) {
-      Em.Logger.log('Stopping audio playback');
-      SDL.SDLModel.data.naviVideo.pause();
-      SDL.SDLModel.data.naviVideo.src = '';
-      SDL.SDLModel.data.naviVideo = null;
-    }
-
-    var createVideoView = Ember.View.create({
-          templateName: 'video',
-          template: Ember.Handlebars.compile('<video id="html5Player"></video>')
-        }
-    );
-
-    SDL.NavigationAppView.videoView.remove();
-    SDL.NavigationAppView.videoView.destroy();
-    var videoChild = SDL.NavigationAppView.createChildView(createVideoView);
-
-    SDL.NavigationAppView.get('childViews').pushObject(videoChild);
-    SDL.NavigationAppView.set('videoView', videoChild);
+    SDL.StreamAudio.stop();
 
     SDL.InfoController.stopStreamingAdapter('audio').then(function() {
-      Em.Logger.log('Audio streaming playback stopped');
+      Em.Logger.log('Audio playback stopped');
     })
     .catch(error => {
       Em.Logger.log('Stop audio streaming adapter failed');
@@ -712,12 +714,11 @@ SDL.SDLModel = Em.Object.extend({
         var sdl_stream = SDL.SDLController.getApplicationModel(
           appID
         ).navigationStream;
-        
+
         Em.Logger.log('Set params from VideoConfig');
-        
+
         var app_model = SDL.SDLController.getApplicationModel(appID)
         Em.Logger.log("playVideo app_model", app_model)
-            
 
         var width = app_model.VideoConfigWidth
         var height = app_model.VideoConfigHeight
