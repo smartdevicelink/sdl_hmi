@@ -1419,6 +1419,9 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
         };
         this.sendMessage(JSONMessage);
+        if (SDL.States.currentState.getPath('path') === 'media.sdlmedia'){
+          SDL.SDLMediaController.onCloseApplication(appID)
+        }
       },
       /**
        * Sent by HMI to SDL to close all registered applications.

@@ -82,6 +82,8 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.set('VRCommands', []);
     this.set('tbtActivate', false);
     this.set('isPlaying', true);
+    this.set("forwardSeekIndicator", {type: 'TRACK', seekTime: null});
+    this.set("backSeekIndicator", {type: 'TRACK', seekTime: null});
     this.set('globalProperties', Em.Object.create());
     this.set('globalProperties.helpPrompt', []);
     this.set('globalProperties.timeoutPrompt', []);
@@ -114,7 +116,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
   isPlaying: false,
   isTemplate:false,
   mode:'',
-  
+  forwardSeekIndicator: {type: 'TRACK', seekTime: null},
+  backSeekIndicator: {type: 'TRACK', seekTime: null},
+
   /**
    * Flag for model active state currently used for status bar
    *
@@ -317,6 +321,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       }
       this.set('pause', false);
     }
+
+    this.set("forwardSeekIndicator", params.forwardSeekIndicator ? params.forwardSeekIndicator : {type: 'TRACK', seekTime: null})
+    this.set("backSeekIndicator", params.backSeekIndicator ? params.backSeekIndicator : {type: 'TRACK', seekTime: null})
 
     return SDL.SDLModel.data.resultCode.SUCCESS;
   },
