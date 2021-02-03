@@ -34,8 +34,8 @@ Note that all these 3 steps are foreground processes and block terminal window, 
 
 External python server is required for :
  - simulating Low voltage signals
- - transferring video data from sdl_core to HMI in browser
- - Simulating Policy table update using in-vehicle modem 
+ - transferring audio/video data from sdl_core to HMI in browser
+ - simulating Policy table update using in-vehicle modem
 
 If deploy_server.sh will not be started this functionality won't work.
 
@@ -46,9 +46,6 @@ If deploy_server.sh will not be started this functionality won't work.
 	* Click  the `System Request` button
     * Select the `PTU using in-vehicle modem` checkbox to enable the feature
 
-## Show navi/projection streaming
- * Configure SDL ini file : `VideoStreamConsumer = pipe`
-  
 ## Note
 SDL HMI utility is only for acquaintance with the SDL project.
 
