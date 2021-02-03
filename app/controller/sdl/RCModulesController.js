@@ -317,6 +317,16 @@ SDL.RCModulesController = Em.Object.create({
           SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.gateStatuses = statuses;
           SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.roofStatuses = statuses;
 
+          var seat_status = {
+            "seatLocation": {
+              "grid": SDL.VehicleModuleCoverageController.createFullCoverage(vehicleRepresentation)[0]
+            },
+            "conditionActive": true
+          };
+          SDL.SDLVehicleInfoModel.vehicleData.seatOccupancy.seatsOccupied = [seat_status];
+          SDL.SDLVehicleInfoModel.vehicleData.seatOccupancy.seatsBelted = [seat_status];
+          SDL.SDLVehicleInfoModel.vehicleData.windowStatus = [];
+
           return;
         }
 
@@ -325,6 +335,7 @@ SDL.RCModulesController = Em.Object.create({
         var doorStatuses = [];
         var gateStatuses = [];
         var roofStatuses = [];
+        var seatStatuses = [];
         const rightMostSeatIndex = SDL.VehicleModuleCoverageController.getVehicleMaxIndex(vehicleRepresentation, 'col');
         const leftMostSeatIndex = 0;
 
@@ -332,6 +343,14 @@ SDL.RCModulesController = Em.Object.create({
           var location_name =
             SDL.VehicleModuleCoverageController.getLocationName(seat_location);
           seatLocationNames.push(location_name);
+
+          var seat_status = {
+            "seatLocation": {
+              "grid": seat_location
+            },
+            "conditionActive": false
+          };
+          seatStatuses.push(seat_status);
 
           if (vehicleRepresentation[rightMostSeatIndex].col === seat_location.col || 
               leftMostSeatIndex === seat_location.col) {
@@ -379,6 +398,13 @@ SDL.RCModulesController = Em.Object.create({
           "status": "CLOSED"
         }];
 
+        if (seatStatuses.length > 0) {
+          // Make condition active for driver seat only
+          seatStatuses[0].conditionActive = true;
+        }
+
+        SDL.SDLVehicleInfoModel.vehicleData.seatOccupancy.seatsOccupied = seatStatuses;
+        SDL.SDLVehicleInfoModel.vehicleData.seatOccupancy.seatsBelted = seatStatuses;       
         SDL.SDLVehicleInfoModel.vehicleData.windowStatus = windowStatus;
         SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.doorStatuses = doorStatuses;
         SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.gateStatuses = gateStatuses;
