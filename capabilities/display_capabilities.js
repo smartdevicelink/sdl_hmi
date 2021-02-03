@@ -175,6 +175,12 @@ SDL.templateCapabilities = {
                     "rows": 1
                 },
                 {
+                    "name": "turnText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
                     "name": "menuTitle",
                     "characterSet": "UTF_8",
                     "width": 10,
@@ -628,6 +634,12 @@ SDL.templateCapabilities = {
                     "rows": 1
                 },
                 {
+                    "name": "turnText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
                     "name": "menuTitle",
                     "characterSet": "UTF_8",
                     "width": 12,
@@ -1071,7 +1083,13 @@ SDL.templateCapabilities = {
                 },
                 {
                     "name": "timeToDestination",
-                    "characterSet": "TYPE2SET",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "turnText",
+                    "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
                 },
