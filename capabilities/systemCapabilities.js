@@ -64,7 +64,8 @@ SDL.systemCapabilities =
         hapticSpatialDataSupported: true,
         diagonalScreenSize: 8,
         pixelPerInch: 96,
-        scale: 1
+        scale: 1,
+        preferredFPS: 20
     },
     driverDistractionCapability: {
         menuLength: 10,
