@@ -872,6 +872,18 @@ FFW.UI = FFW.RPCObserver.create(
                       'rows': 1
                     },
                     {
+                        "name": "timeToDestination",
+                        "characterSet": "UTF_8",
+                        "width": 500,
+                        "rows": 1
+                    },
+                    {
+                        "name": "turnText",
+                        "characterSet": "UTF_8",
+                        "width": 500,
+                        "rows": 1
+                    },
+                    {
                       'name': 'menuTitle',
                       'characterSet': 'UTF_8',
                       'width': 500,
@@ -1264,6 +1276,18 @@ FFW.UI = FFW.RPCObserver.create(
                             'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
+                          },
+                          {
+                              "name": "timeToDestination",
+                              "characterSet": "UTF_8",
+                              "width": 500,
+                              "rows": 1
+                          },
+                          {
+                              "name": "turnText",
+                              "characterSet": "UTF_8",
+                              "width": 500,
+                              "rows": 1
                           },
                           {
                             'name': 'menuTitle',
