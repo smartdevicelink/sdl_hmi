@@ -65,6 +65,7 @@ SDL.systemCapabilities = Em.Object.create(
         diagonalScreenSize: 8,
         pixelPerInch: 96,
         scale: 1,
+        preferredFPS: 20,
         additionalVideoStreamingCapabilities: [
             {
                 preferredResolution:
