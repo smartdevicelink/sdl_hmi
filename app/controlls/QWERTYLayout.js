@@ -365,7 +365,7 @@ SDL.QWERTYLayout = Em.ContainerView.extend({
       action: 'inputChanges',
       getText: function() {
         return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
-      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customKeys.@each')
     }
   ),
 
@@ -378,7 +378,7 @@ SDL.QWERTYLayout = Em.ContainerView.extend({
       action: 'inputChanges',
       getText: function() {
         return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
-      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customKeys.@each')
     }
   ),
 
@@ -391,7 +391,7 @@ SDL.QWERTYLayout = Em.ContainerView.extend({
       action: 'inputChanges',
       getText: function() {
         return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
-      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys.@each')
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customKeys.@each')
     }
   )
 }

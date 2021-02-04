@@ -968,7 +968,7 @@ SDL.SDLModel = Em.Object.extend({
 
       for (var name in default_properties) {
         if (properties.hasOwnProperty(name)) {
-          if (name === 'customizeKeys') {
+          if (name === 'customKeys') {
             const unsupported_keys = SDL.KeyboardController.get('unsupportedKeyboardSymbols');
             unsupported_keys.forEach((key) => {
               if (properties[name].includes(key)) {

@@ -533,7 +533,7 @@ SDL.ABSAppModel = Em.Object.extend(
         'keyboardLayout' : 'QWERTY',
         'keypressMode' : 'RESEND_CURRENT_ENTRY',
         'maskInputCharacters' : 'DISABLE_INPUT_KEY_MASK',
-        'customizeKeys' : [],
+        'customKeys' : [],
         'limitedCharacterList' : [],
         'autoCompleteList' : []
       };

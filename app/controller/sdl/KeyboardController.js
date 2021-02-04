@@ -260,11 +260,11 @@ SDL.KeyboardController = Em.Object.create({
         return defaultKey;
       }
 
-      if (SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys == null) {
+      if (SDL.SDLController.model.globalProperties.keyboardProperties.customKeys == null) {
         return defaultKey;
       }
 
-      const keys = SDL.SDLController.model.globalProperties.keyboardProperties.customizeKeys;
+      const keys = SDL.SDLController.model.globalProperties.keyboardProperties.customKeys;
       if (keys.length >= index + 1) {
         const customSymbol = keys[index];
         if (this.unsupportedKeyboardSymbols.includes(customSymbol)) {
