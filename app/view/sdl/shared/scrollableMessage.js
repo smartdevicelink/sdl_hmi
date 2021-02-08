@@ -50,6 +50,8 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
     timer: null,
     timeout: null,
     endTime: null,
+    areAllImagesValid: true,
+    validationMessage: null,
     childViews: [
       'backButton', 'captionText', 'softButtons', 'listOfCommands'
     ],
@@ -65,9 +67,21 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
       this.set('active', false);
       this.softButtons.set('page', 0);
       this.timeout = null;
+
+      let calculate_result_code = function(areAllImagesValid) {
+        if (ABORTED) {
+          return SDL.SDLModel.data.resultCode.ABORTED;
+        }
+
+        if (!areAllImagesValid) {
+          return SDL.SDLModel.data.resultCode.WARNINGS;
+        }
+
+        return SDL.SDLModel.data.resultCode.SUCCESS;
+      };
+
       SDL.SDLController.scrollableMessageResponse(
-        ABORTED ? SDL.SDLModel.data.resultCode['ABORTED'] :
-          SDL.SDLModel.data.resultCode.SUCCESS, this.messageRequestId
+        calculate_result_code(this.areAllImagesValid), this.validationMessage, this.messageRequestId
       );
       SDL.SDLController.onSystemContextChange();
       SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -76,13 +90,17 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         })
       })
     },
+
     activate: function(appName, params, messageRequestId) {
       if (appName) {
         var self = this;
         if (params.messageText.fieldName == 'scrollableMessageBody') {
           this.set('listOfCommands.items', params.messageText.fieldText);
         }
+
         this.set('messageRequestId', messageRequestId);
+        this.set('areAllImagesValid', true);
+        this.set('validationMessage', null);
         this.set('captionText.content', appName);
         this.softButtons.addItems(params.softButtons, params.appID);
         this.set('active', true);
@@ -95,6 +113,22 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
             self.deactivate();
           }, params.timeout
         );
+
+        if(params.softButtons) {
+          var imageList = [];
+          for(var i = 0; i < params.softButtons.length; i++) {
+            if(params.softButtons[i].image) {
+              imageList.push(params.softButtons[i].image);
+            }
+          }
+          var that = this;
+          var callback = function(failed, info) {
+            that.set('areAllImagesValid', !failed);
+            that.set('validationMessage', info);
+          };
+
+          SDL.SDLModel.validateImages(messageRequestId, callback, imageList);
+        }
       }
     },
     softButtons: SDL.MenuList.extend(

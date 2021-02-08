@@ -55,10 +55,15 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     timer: null,
     timeout: 5000,
     alertManeuerRequestId: 0,
+    isCloseButtonVisible: true,
     /**
      * @desc Defines whether icons paths verified successfully.
      */
     iconsAreValid: false,
+    /**
+     * @desc Defines info message if validation is failed
+     */
+    infoMessage: null,
     /**
      * Wagning image on Alert Maneuver PopUp
      */
@@ -119,8 +124,12 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       {
         text: 'Close',
         classNames: 'closeButton softButton',
-        action: 'closeAlertMeneuverPopUp',
-        target: 'SDL.SDLController',
+        classNameBindings: [
+          'SDL.AlertManeuverPopUp.isCloseButtonVisible::inactive_state'],
+        actionUp: function() {
+          this._super();
+          SDL.SDLController.closeAlertMeneuverPopUp();
+        },
         templateName: 'text'
       }
     ),
@@ -182,7 +191,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       var imageList = [];
       for (var i = 0; i < softButtons.length; i++) {
         if (softButtons[i].image) {
-          imageList.push(softButtons[i].image.value);
+          imageList.push(softButtons[i].image);
         }
 
         this.get('softbuttons.buttons.childViews').pushObject(
@@ -210,11 +219,16 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
         );
       }
 
-      var callback = function(failed) {
+      var callback = function(failed, info) {
         SDL.AlertManeuverPopUp.iconsAreValid = !failed;
+        SDL.AlertManeuverPopUp.infoMessage = info;
       }
 
-      SDL.SDLModel.validateImages(params.appID, callback, imageList);
+      SDL.SDLModel.validateImages(this.alertManeuerRequestId, callback, imageList);
+
+      if (softButtons.length > 0) {
+        this.set('isCloseButtonVisible', false);
+      }
     },
     /**
      * Deactivate PopUp
@@ -224,16 +238,16 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
         SDL.TTSPopUp.DeactivateTTS();
       }
 
+      clearTimeout(this.timer);
+
       const resultCode = this.iconsAreValid ?
         SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
-      const info = this.iconsAreValid ?
-        null : "Requested image(s) not found";
 
       FFW.Navigation.sendNavigationResult(
         resultCode,
         this.alertManeuerRequestId,
         'Navigation.AlertManeuver',
-        info
+        this.infoMessage
       );
       this.set('activate', false );
       this.set('alertManeuerRequestId', 0);
@@ -244,10 +258,12 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       this.softbuttons.buttons.rerender();
 
       this.set('iconsAreValid', true);
+      this.set('infoMessage', null);
+      this.set('isCloseButtonVisible', true);
+      this.set('alertManeuerRequestId', message.id);
       this.addSoftButtons(message.params);
 
       this.set('activate', true );
-      this.set('alertManeuerRequestId', message.id);
 
       clearTimeout( this.timer );
       this.timer = setTimeout( () => {

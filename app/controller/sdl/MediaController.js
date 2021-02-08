@@ -160,6 +160,15 @@ SDL.SDLMediaController = Em.Object.create(
       SDL.SDLModel.data.get('registeredApps').removeObjects(
         SDL.SDLModel.data.get('registeredApps').filterProperty('appID', appID)
       );
+    },
+
+    onCloseApplication: function(appID){
+      for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
+        if (SDL.SDLModel.data.registeredApps[i].get('appID') != appID) { continue; }
+
+        SDL.SDLModel.data.registeredApps[i].set('forwardSeekIndicator', {type: "TRACK", seekTime: null})
+        SDL.SDLModel.data.registeredApps[i].set('backSeekIndicator', {type: "TRACK", seekTime: null})
+      }
     }
   }
 );

@@ -201,6 +201,9 @@ SDL.SDLController = Em.Object.extend(
      * @param appID {Number}
      */
     closeApplication: function(appID) {
+      if (SDL.States.currentState.getPath('path') === 'media.sdlmedia'){
+        SDL.SDLMediaController.onCloseApplication(appID)
+      }
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia' ||
         SDL.States.currentState.getPath('path') === 'navigationApp.baseNavigation' ||
@@ -698,7 +701,7 @@ SDL.SDLController = Em.Object.extend(
               SDL.AlertManeuverPopUp.deactivate();
             }, SDL.AlertManeuverPopUp.timeout
           );
-          this.onResetTimeout(element.appID, 'Navigation.AlertManeuver');
+          FFW.TTS.OnResetTimeout(element.appID, 'Navigation.AlertManeuver');
           break;
         }
         case 'SubtleAlertPopUp':
@@ -758,7 +761,7 @@ SDL.SDLController = Em.Object.extend(
      * Method to close AlertMeneuverPopUp view
      */
     closeAlertMeneuverPopUp: function() {
-      SDL.AlertManeuverPopUp.set('activate', false);
+      SDL.AlertManeuverPopUp.deactivate();
     },
     /**
      * Method to open Turn List view from TBT
@@ -802,11 +805,15 @@ SDL.SDLController = Em.Object.extend(
      * Method to sent notification ABORTED for PerformInteractionChoise
      */
     interactionChoiseCloseResponse: function(appID, result, choiceID,
-      manualTextEntry) {
+      manualTextEntry, info) {
       FFW.UI.interactionResponse(
         SDL.SDLController.getApplicationModel(
           appID
-        ).activeRequests.uiPerformInteraction, result, choiceID, manualTextEntry
+        ).activeRequests.uiPerformInteraction,
+        result,
+        choiceID,
+        manualTextEntry,
+        info
       );
       SDL.SDLModel.data.set('interactionData.vrHelpTitle', null);
       SDL.SDLModel.data.set('interactionData.vrHelp', null);
@@ -876,22 +883,22 @@ SDL.SDLController = Em.Object.extend(
      * @param {Number}
      *            messageRequestId
      */
-    scrollableMessageResponse: function(result, messageRequestId) {
+    scrollableMessageResponse: function(result, info, messageRequestId) {
       if (result == SDL.SDLModel.data.resultCode.SUCCESS) {
         FFW.UI.sendUIResult(
           result,
           messageRequestId,
           'UI.ScrollableMessage'
         );
-      }else if(result == SDL.SDLModel.data.resultCode.WARNINGS) {
+      } else if(result == SDL.SDLModel.data.resultCode.WARNINGS) {
         FFW.UI.sendUIResult(
           result,
           messageRequestId,
-          'UI.ScrollableMessage'
+          'UI.ScrollableMessage',
+          info
         );
-      }
-      else {
-        FFW.UI.sendError(
+      } else {
+        FFW.UI.sendUIResult(
           result,
           messageRequestId,
           'UI.ScrollableMessage',

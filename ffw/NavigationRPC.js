@@ -218,75 +218,17 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.AlertManeuver':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              //
-              ////Check if there is any available data to  process the request
-              //if ("softButtons" in request.params) {
-              //
-              //    this.errorResponsePull[request.id].code =
-              // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-              // available data sent error response and stop process current
-              // request
-              this.sendError(
-                this.errorResponsePull[
-                  request.id].code,
-                request.id,
-                request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type +
-                ' type. Request was not processed.'
-              );
-              this.errorResponsePull[request.id] = null;
-              return;
-              //}
-            }
             SDL.AlertManeuverPopUp.AlertManeuverActive(request)
             break;
           }
           case 'Navigation.ShowConstantTBT':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              this.sendError(
-                this.errorResponsePull[
-                  request.id].code,
-                request.id,
-                request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type +
-                ' type. Request was not processed.'
-              );
-              this.errorResponsePull[request.id] = null;
-            } else {
-              SDL.NavigationController.validateIcons(request);
-              SDL.SDLModel.tbtActivate(request.params);
-            }
+            SDL.NavigationController.validateIcons(request);
+            SDL.SDLModel.tbtActivate(request.params);
             break;
           }
           case 'Navigation.UpdateTurnList':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              //
-              ////Check if there is any available data to  process the request
-              //if ("turnList" in request.params || "softButtons" in
-              // request.params) {  this.errorResponsePull[request.id].code =
-              // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-              // available data sent error response and stop process current
-              // request
-              this.sendError(
-                this.errorResponsePull[
-                  request.id].code,
-                request.id,
-                request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type +
-                ' type. Request was not processed.'
-              );
-              this.errorResponsePull[request.id] = null;
-              //}
-            }
             SDL.NavigationController.validateIcons(request);
             SDL.SDLModel.tbtTurnListUpdate(request.params);
             break;
@@ -428,23 +370,7 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.SendLocation':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              this.sendError(
-                this.errorResponsePull[
-                  request.id].code,
-                request.id,
-                request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type +
-                ' type. Request was not processed.'
-              );
-              this.errorResponsePull[request.id] = null;
-              //this.errorResponsePull[request.id].code =
-              // SDL.SDLModel.data.resultCode["WARNINGS"];
-            } else {
-              SDL.NavigationController.sendLocation(request);
-            }
+            SDL.NavigationController.sendLocation(request);
             break;
           }
         }
@@ -499,10 +425,25 @@ FFW.Navigation = FFW.RPCObserver.create(
         return;
       }
 
-      const result_response = is_successful_code && (params || !info);
+      let is_successful_response_format = function(is_success) {
+        // Successful response without params, but with not-empty message
+        // should be sent in errorneous format to properly forward info and result code
+        if (is_success && info != null && params == null) {
+          return false;
+        }
+
+        // Error response with not empty params should be sent in regular format
+        // to properly forward result code and params (but sacrifice info)
+        if (!is_success && params != null) {
+          return true;
+        }
+
+        // Otherwise use result code calculated according to regular HMI logic
+        return is_success;
+      };
 
       Em.Logger.log('FFW.Navigation.' + method + 'Response');
-      if (result_response) {
+      if (is_successful_response_format(is_successful_code)) {
         // send response
         var JSONMessage = {
           'jsonrpc': '2.0',

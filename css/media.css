@@ -105,7 +105,6 @@
     position: relative;
     height: 50px;
     cursor: pointer;
-    background: url(../images/media/ls-item_bg.png) no-repeat;
 }
 
 .media-ls-item.active_state {
@@ -986,7 +985,6 @@
     height: 98px;
     border-right: 1px solid #393939;
     cursor: pointer;
-    background: url(../images/media/cd-prev-btn.png) no-repeat;
 }
 
 .bc-item-big.prevcd.pressed, .bc-item-big.prevusb.pressed,
@@ -1003,7 +1001,6 @@
     height: 98px;
     border-right: 1px solid #393939;
     cursor: pointer;
-    background: url(../images/media/cd_play_btn.png) no-repeat;
     top: 0px;
     position: absolute;
     left: 156px;
@@ -1058,7 +1055,6 @@
     width: 154px;
     height: 98px;
     cursor: pointer;
-    background: url(../images/media/cd-next-btn.png) no-repeat;
     top: 0px;
     position: absolute;
     left: 314px;

@@ -164,22 +164,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.Alert':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if (request.params.alertStrings.length > 0
-            //    || "softButtons" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
               SDL.SDLController.onSystemContextChange(request.params.appID);
             }
@@ -204,27 +188,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.Show':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-
-              //Check if there is any available data to  process the request
-              if (request.params.showStrings.length > 0 ||
-                'graphic' in request.params ||
-                'secondaryGraphic' in request.params ||
-                'softButtons' in request.params ||
-                'customPresets' in request.params) {
-
-                if (this.errorResponsePull[request.id].type === 'STATIC') {
-                  this.errorResponsePull[request.id].code =
-                    SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'];
-                }
-                else {
-                  this.errorResponsePull[request.id].code =
-                    SDL.SDLModel.data.resultCode['WARNINGS'];
-                }
-              }
-            }
             SDL.TurnByTurnView.deactivate();
             let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
             const isWindowIDExist = "windowID" in request.params; 
@@ -257,7 +220,7 @@ FFW.UI = FFW.RPCObserver.create(
                 request.params.templateConfiguration.nightColorScheme)) {
                   sendCapabilityUpdated = true;
               }
-          }
+            }
             if(appModel.onSDLUIShow(request.params) === SDL.SDLModel.data.resultCode.REJECTED) {
               this.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method,
                     "Widget is duplicating other window. Rejecting UI.Show request.");
@@ -267,21 +230,21 @@ FFW.UI = FFW.RPCObserver.create(
 
             imageList = [];
             if(request.params.graphic) {
-              imageList.push(request.params.graphic.value);
+              imageList.push(request.params.graphic);
             }
             if(request.params.secondaryGraphic) {
-              imageList.push(request.params.secondaryGraphic.value);
+              imageList.push(request.params.secondaryGraphic);
             }
             if(request.params.softButtons) {
               for(var i = 0; i < request.params.softButtons.length; i++) {
                 var image = request.params.softButtons[i].image;
                 if(image) {
-                  imageList.push(image.value);
+                  imageList.push(image);
                 }
               }
             }
 
-            var callback = function(failed) {
+            var callback = function(failed, info) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
               var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
@@ -289,7 +252,7 @@ FFW.UI = FFW.RPCObserver.create(
                 failed ? WARNINGS : SUCCESS, 
                 request.id, 
                 request.method, 
-                failed ? "Requested image(s) not found" : null);
+                info);
             }
             SDL.SDLModel.validateImages(request.id, callback, imageList);
 
@@ -301,24 +264,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SetGlobalProperties':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("menuTitle" in request.params
-            //    || "keyboardProperties" in request.params
-            //    || "vrHelp" in request.params
-            //    || "menuIcon" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
           resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiSetGlobalProperties');
           if ('DO_NOT_RESPOND' == resultCode) {
             Em.Logger.log('Do not respond on this request');
@@ -332,55 +277,41 @@ FFW.UI = FFW.RPCObserver.create(
 
             var imageList = [];
             if(request.params.menuIcon) {
-              imageList.push(request.params.menuIcon.value);      
+              imageList.push(request.params.menuIcon);      
             }
 
             if(request.params.vrHelp) {
               for(var i = 0; i < request.params.vrHelp.length; i++) {
                 if(request.params.vrHelp[i].image) {
-                  imageList.push(request.params.vrHelp[i].image.value);      
+                  imageList.push(request.params.vrHelp[i].image);      
                 }
               }
             }
 
-            var callback = function(failed) {
+            var that = this;
+            var callback = function(failed, info) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
-              var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+              var SUCCESS = resultCode;
 
-              FFW.Navigation.sendNavigationResult(
-                failed ? WARNINGS : SUCCESS, 
-                request.id, 
-                request.method, 
-                failed ? "Requested image(s) not found" : null);
+              that.sendUIResult(
+                failed ? WARNINGS : SUCCESS,
+                request.id,
+                request.method,
+                info);
             }
             SDL.SDLModel.validateImages(request.id, callback, imageList);
+            break;
           } else {
             info = 'Erroneous response is assigned by settings';
           }
 
-          this.sendUIResult(
-            resultCode, request.id, request.method, info
+            this.sendUIResult(
+              resultCode, request.id, request.method, info
             );
             break;
           }
           case 'UI.AddCommand':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("cmdIcon" in request.params
-            //    || "menuParams" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             SDL.SDLController.getApplicationModel(request.params.appID)
               .addCommand(request);
             break;
@@ -407,20 +338,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.PerformInteraction':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              if (request.params && 'choiceSet' in request.params && request.params.interactionLayout != "KEYBOARD") {
-                if (this.errorResponsePull[request.id].type === 'STATIC') {
-                  this.sendError(SDL.SDLModel.data.resultCode['UNSUPPORTED_RESOURCE'], 
-                                request.id, 
-                                request.method, 
-                                'Image of STATIC type is not supported on HMI. Request was not processed');
-                  return;
-                }
-              }
-            }
-
             if (SDL.SDLModel.uiPerformInteraction(request)) {
               SDL.SDLController.onSystemContextChange();
               SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -636,17 +553,6 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SetAppIcon':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if (!("syncFileName" in request.params)) {
-            //this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null;
-            // return; } }
             SDL.SDLModel.onSDLSetAppIcon(
               request.params, request.id, request.method
             );
@@ -1318,6 +1224,24 @@ FFW.UI = FFW.RPCObserver.create(
                             'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1
+                          },
+                          {
+                            'name': 'subtleAlertText1',
+                            'characterSet': 'UTF_8',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'subtleAlertText2',
+                            'characterSet': 'UTF_8',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'subtleAlertSoftButtonText',
+                            'characterSet': 'UTF_8',
+                            'width': 500,
+                            'rows': 1
                           }
                         ],
                         'imageFields': [
@@ -1788,15 +1712,31 @@ FFW.UI = FFW.RPCObserver.create(
           errorStruct.code,
           id,
           method,
-          `Unsupported ${errorStruct.type} type. Available data in request was processed.`
+          `Unsupported ${errorStruct.type} type. Available data in request was processed.`,
+          params
         );
         return;
       }
 
-      const result_response = is_successful_code && (params || !info);
+      let is_successful_response_format = function(is_success) {
+        // Successful response without params, but with not-empty message
+        // should be sent in errorneous format to properly forward info and result code
+        if (is_success && info != null && params == null) {
+          return false;
+        }
+
+        // Error response with not empty params should be sent in regular format
+        // to properly forward result code and params (but sacrifice info)
+        if (!is_success && params != null) {
+          return true;
+        }
+
+        // Otherwise use result code calculated according to regular HMI logic
+        return is_success;
+      };
 
       Em.Logger.log('FFW.UI.' + method + 'Response');
-      if (result_response) {
+      if (is_successful_response_format(is_successful_code)) {
         // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -2031,67 +1971,34 @@ FFW.UI = FFW.RPCObserver.create(
      * @param {Number} resultCode
      * @param {Number} commandID
      * @param {String} manualTextEntry
+     * @param {String} info
      */
     interactionResponse: function(requestID, resultCode, commandID,
-      manualTextEntry) {
-      Em.Logger.log('FFW.UI.PerformInteractionResponse');
-      if (this.errorResponsePull[requestID] &&
-        resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-
-        var json = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'result': {
-            'code': SDL.SDLModel.data.resultCode.WARNINGS,
-            'method': 'UI.PerformInteraction',
-            'info': 'Unsupported ' + this.errorResponsePull[requestID].type 
-                + ' type. Available data in request was processed.'
-          }
-        }
+      manualTextEntry, info) {
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+        var params = {
+          'choiceID': commandID
+        };
 
         if (manualTextEntry) {
-          json.result.manualTextEntry = manualTextEntry
+          params.manualTextEntry = manualTextEntry;
         }
 
-        if (commandID) {
-          json.result.choiceID = commandID;
-        }
-
-        this.client.send(json);
-        this.errorResponsePull[requestID] = null;
-        return;
-      }
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'result': {
-            'code': resultCode,
-            'method': 'UI.PerformInteraction'
-          }
-        };
-        if (commandID) {
-          JSONMessage.result.choiceID = commandID;
-        }
-        if (manualTextEntry != null) {
-          JSONMessage.result.manualTextEntry = manualTextEntry;
-        }
+        this.sendUIResult(
+          resultCode,
+          requestID,
+          'UI.PerformInteraction',
+          info,
+          params
+        );
       } else {
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': 'Perform Interaction error response.',
-            'data': {
-              'method': 'UI.PerformInteraction'
-            }
-          }
-        };
+        this.sendUIResult(
+          resultCode,
+          requestID,
+          'UI.PerformInteraction',
+          info
+        );
       }
-      this.sendMessage(JSONMessage);
     },
     /**
      * send notification when DriverDistraction PopUp is visible

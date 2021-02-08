@@ -555,15 +555,9 @@ SDL.ABSAppModel = Em.Object.extend(
 
     		    if(request.params.cmdIcon) {
 
-              var image = request.params.cmdIcon.value;
-              if(!SDL.NavigationController.isPng(image)) {
-                FFW.UI.sendUIResult(
-                  SDL.SDLModel.data.resultCode.WARNINGS, request.id,
-                  request.method);
-                return;
-              }
+              var image = request.params.cmdIcon;
 
-              var callback = function(failed) {
+              var callback = function(failed, info) {
                 var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
                 var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
@@ -571,8 +565,9 @@ SDL.ABSAppModel = Em.Object.extend(
                   failed ? WARNINGS : SUCCESS, 
                   request.id, 
                   request.method, 
-                  failed ? "Requested image(s) not found" : null);
+                  info);
               }
+
               SDL.SDLModel.validateImages(request.id, callback, [image]);
               return;
             }
@@ -674,7 +669,7 @@ SDL.ABSAppModel = Em.Object.extend(
         		    SDL.SDLController.buttonsSort(parentID, this.appID);
         		    SDL.OptionsView.commands.refreshItems();
         		}
-            var callback = function(failed) {
+            var callback = function(failed, info) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
               var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
@@ -682,11 +677,11 @@ SDL.ABSAppModel = Em.Object.extend(
                 failed ? WARNINGS : SUCCESS, 
                 request.id, 
                 request.method, 
-                failed ? "Requested image(s) not found" : null);
+                info);
             }
             var imageList = [];
             if(request.params.menuIcon) {
-              imageList.push(request.params.menuIcon.value);
+              imageList.push(request.params.menuIcon);
             }
             SDL.SDLModel.validateImages(request.id, callback, imageList);
     	    } else {

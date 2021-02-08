@@ -243,24 +243,6 @@ FFW.VR = FFW.RPCObserver.create(
           }
           case 'VR.PerformInteraction':
           {
-
-            // Verify if there is an unsupported data in request
-            //if (this.errorResponsePull[request.id] != null) {
-            //
-            ////Check if there is any available data to  process the request
-            //if ("helpPrompt" in request.params
-            //    || "initialPrompt" in request.params
-            //    || "timeoutPrompt" in request.params
-            //    || "grammarID" in request.params) {
-            //
-            //    this.errorResponsePull[request.id].code =
-            // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-            // available data sent error response and stop process current
-            // request this.sendError(this.errorResponsePull[request.id].code,
-            // request.id, request.method, "Unsupported " +
-            // this.errorResponsePull[request.id].type + " type. Request was
-            // not processed."); this.errorResponsePull[request.id] = null; 
-            // return; } }
             SDL.SDLModel.vrPerformInteraction(request);
             break;
           }
@@ -321,59 +303,26 @@ FFW.VR = FFW.RPCObserver.create(
      * @param {Number} commandID
      */
     interactionResponse: function(requestID, resultCode, commandID) {
-      Em.Logger.log('FFW.VR.PerformInteractionResponse');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-        if (this.errorResponsePull[requestID]) {
-
-          // send repsonse
-          var JSONMessage = {
-            'jsonrpc': '2.0',
-            'id': requestID,
-            'error': {
-              'code': this.errorResponsePull[requestID].code,
-              'message': 'Unsupported ' +
-              this.errorResponsePull[requestID].type +
-              ' type. Available data in request was processed.',
-              'data': {
-                'method': 'VR.PerformInteraction'
-              }
-            }
-          };
-          if (commandID) {
-            JSONMessage.error.data.choiceID = commandID;
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+        this.sendVRResult(
+          resultCode,
+          requestID,
+          'VR.PerformInteraction',
+          null,
+          {
+            'choiceID': commandID
           }
-          this.sendMessage(JSONMessage);
-          this.errorResponsePull[requestID] = null;
-          return;
-        }
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'result': {
-            'code': resultCode,
-            'method': 'VR.PerformInteraction'
-          }
-        };
-        if (commandID) {
-          JSONMessage.result.choiceID = commandID;
-        }
+        );
       } else {
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': requestID,
-          'error': {
-            'code': resultCode, // type (enum) from SDL protocol
-            'message': 'Perform Interaction error response.',
-            'data': {
-              'method': 'VR.PerformInteraction'
-            }
-          }
-        };
+        this.sendVRResult(
+          resultCode,
+          requestID,
+          'VR.PerformInteraction',
+          'VR Perform Interaction error response.'
+        );
       }
+
       SDL.SDLModel.data.set('performInteractionSession', []);
-      this.sendMessage(JSONMessage);
     },
     /**
      * send response from onRPCRequest
@@ -404,10 +353,25 @@ FFW.VR = FFW.RPCObserver.create(
         return;
       }
 
-      const result_response = is_successful_code && (params || !info);
+      let is_successful_response_format = function(is_success) {
+        // Successful response without params, but with not-empty message
+        // should be sent in errorneous format to properly forward info and result code
+        if (is_success && info != null && params == null) {
+          return false;
+        }
+
+        // Error response with not empty params should be sent in regular format
+        // to properly forward result code and params (but sacrifice info)
+        if (!is_success && params != null) {
+          return true;
+        }
+
+        // Otherwise use result code calculated according to regular HMI logic
+        return is_success;
+      };
 
       Em.Logger.log('FFW.VR.' + method + 'Response');
-      if (result_response) {
+      if (is_successful_response_format(is_successful_code)) {
         // send response
         var JSONMessage = {
           'jsonrpc': '2.0',
