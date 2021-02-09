@@ -18,7 +18,7 @@ Alternatively, you can clone this repository with the --recurse-submodules flag.
  
  * ffmpeg : `sudo apt install ffmpeg`
  * Python3,PIP : `sudo apt install python3, python3-pip`
- * python-ffmpeg : `sudo python3 -m pip install ffmpeg-python`
+ * ffmpeg-python : `sudo python3 -m pip install ffmpeg-python`
  * chromium-browser : `sudo apt install chromium-browser`
 
 ## Start HMI
