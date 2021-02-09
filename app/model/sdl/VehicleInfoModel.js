@@ -143,6 +143,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       'handsOffSteering': 'VEHICLEDATA_HANDSOFFSTEERING',
       'stabilityControlsStatus': 'VEHICLEDATA_STABILITYCONTROLSSTATUS',
       'windowStatus': 'VEHICLEDATA_WINDOWSTATUS',
+      'climateData' : 'VEHICLEDATA_CLIMATEDATA',
       'seatOccupancy': 'VEHICLEDATA_SEATOCCUPANCY'
     },
     /**
@@ -335,10 +336,21 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
          'width': 800,
          'height': 480
       },
-      'seatOccupancy':{
+      'climateData': {
+        'externalTemperature': {
+          'unit': 'FAHRENHEIT',
+          'value' : 70.5
+        },
+        'cabinTemperature': {
+          'unit': 'FAHRENHEIT',
+          'value' : 55.3
+        },
+        'atmosphericPressure': 1013.25
+      },
+      'seatOccupancy': {
         'seatsOccupied': [],
         'seatsBelted': []
-      },     
+      },
       'handsOffSteering': false
       //
       // 'avgFuelEconomy': 0.1,
