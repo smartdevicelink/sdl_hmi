@@ -43,7 +43,6 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       'mainField3',
       'mainField4',
       'mainField5',
-      'mainField6',
       'templateTitle',
       'navSubButtons',
       'optionsBtn'
@@ -71,21 +70,13 @@ SDL.BaseNavigationView = Em.ContainerView.create(
             }
             case 'ETA':
             {
-              this.set('mainField4', naviParams.navigationTexts[i].fieldText);
+              this.set('mainField3', naviParams.navigationTexts[i].fieldText);
               break;
             }
             case 'totalDistance':
             {
               this.set(
-                'mainField5',
-                naviParams.navigationTexts[i].fieldText
-              );
-              break;
-            }
-            case 'navigationText':
-            {
-              this.set(
-                'mainField6',
+                'mainField4',
                 naviParams.navigationTexts[i].fieldText
               );
               break;
@@ -93,7 +84,7 @@ SDL.BaseNavigationView = Em.ContainerView.create(
             case 'timeToDestination':
             {
               this.set(
-                'mainField3',
+                'mainField5',
                 naviParams.navigationTexts[i].fieldText
               );
               break;
@@ -165,12 +156,6 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       {
         classNames: 'mainField5 mainField',
         contentBinding: 'parentView.mainField5'
-      }
-    ),
-    mainField6: SDL.Label.extend(
-      {
-        classNames: 'mainField6 mainField',
-        contentBinding: 'parentView.mainField6'
       }
     ),
     templateTitle: SDL.Label.extend(

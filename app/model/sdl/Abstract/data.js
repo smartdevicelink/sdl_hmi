@@ -522,12 +522,8 @@ SDL.SDLModelData = Em.Object.create(
           'fieldText': 'mainField4'
         },
         {
-          'fieldName': 'navigationText',
-          'fieldText': 'mainField5'
-        },
-        {
           'fieldName': 'timeToDestination',
-          'fieldText': 'mainField6'
+          'fieldText': 'mainField5'
         }
       ],
       'softButtons': [
@@ -870,6 +866,18 @@ SDL.SDLModelData = Em.Object.create(
                   "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
+                },
+                {
+                    "name": "timeToDestination",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "turnText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
                 },
                 {
                   "name": "menuTitle",
