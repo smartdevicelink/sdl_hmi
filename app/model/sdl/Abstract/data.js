@@ -931,6 +931,30 @@ SDL.SDLModelData = Em.Object.create(
                   "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
+                },
+                {
+                  'name': 'menuCommandSecondaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
+                },
+                {
+                  'name': 'menuCommandTertiaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
+                },
+                {
+                  'name': 'menuSubMenuSecondaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
+                },
+                {
+                  'name': 'menuSubMenuTertiaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
                 }
               ],
               'imageFields': [
@@ -1092,6 +1116,30 @@ SDL.SDLModelData = Em.Object.create(
                 },
                 {
                   'name': 'subtleAlertIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 105,
+                    'resolutionHeight': 65
+                  }
+                },
+                {
+                  'name': 'menuCommandSecondaryImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 105,
+                    'resolutionHeight': 65
+                  }
+                },
+                {
+                  'name': 'menuSubMenuSecondaryImage',
                   'imageTypeSupported': [
                     'GRAPHIC_BMP',
                     'GRAPHIC_JPEG',
