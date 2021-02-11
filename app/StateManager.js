@@ -198,11 +198,25 @@ var StateManager = Em.StateManager.extend(
                 }
               }
             ),
-            ccpuEditor: Em.State.create(
+            versionsEditor: Em.State.create(
               {
                 enter: function() {
                   this._super();
                   SDL.SettingsController.set('editedCcpuVersionValue', SDL.SDLModel.data.ccpuVersion);
+                  if (SDL.SDLModel.data.hardwareVersion != null) {
+                    SDL.SettingsController.set('editedHardwareVersionValue', SDL.SDLModel.data.hardwareVersion);
+                    SDL.SettingsController.set('hardwareVersionEditingEnabled', true);
+                  } else {
+                    SDL.SettingsController.set('hardwareVersionEditingEnabled', false);
+                  }
+                }
+              }
+            ),
+            vehicleTypeEditor: Em.State.create(
+              {
+                enter: function() {
+                  this._super();
+                  SDL.SettingsController.updateVehicleTypeValues(SDL.SDLVehicleInfoModel.vehicleType);
                 }
               }
             ),
