@@ -78,11 +78,27 @@ class StreamingProcessHolder:
 		o = pexpect.fdpexpect.fdspawn(stream_process.stderr.fileno(), logfile=sys.stdout.buffer)
 		return o.expect(["Input", pexpect.EOF, pexpect.TIMEOUT])
 
-	def initStreaming(url, streaming_type):
+	def initStreaming(url, streaming_type, config):
 		print("Init streaming for " + streaming_type)
 		stream_endpoint = StreamingProcessHolder.getStreamingEndpoint(streaming_type)
 
 		if streaming_type == 'video':
+			if config != None:
+				app_config = config.get('appConfig')
+				if app_config.get('protocol') == 'RTP':
+					print('\033[33mSDL does not support RTP video in browser\033[0m')
+					if app_config.get('codec') == 'H264':
+						print('\033[1mYou may view your video with gstreamer:\033[0m')
+						print('gst-launch-1.0 souphttpsrc location=' + url + ' ! "application/x-rtp-stream" ! rtpstreamdepay ! "application/x-rtp,media=(string)video,clock-rate=90000,encoding-name=(string)H264" ! rtph264depay ! "video/x-h264, stream-format=(string)avc, alignment=(string)au" ! avdec_h264 ! videoconvert ! ximagesink sync=false')
+					return -1
+
+				if config.get('webmSupport') == False:
+					print('\033[33mYour browser does not support WEBM video\033[0m')
+					if app_config.get('protocol') == 'RAW' and app_config.get('codec') == 'H264':
+						print('\033[1mYou may view your video with gstreamer:\033[0m')
+						print('gst-launch-1.0 souphttpsrc location=' + url + ' ! decodebin ! videoconvert ! xvimagesink sync=false')
+					return -1
+
 			StreamingProcessHolder.videoStream = ffmpeg.input(url).output(stream_endpoint, vcodec="vp8", format="webm", listen=1, multiple_requests=1).run_async(pipe_stderr=True)
 			return StreamingProcessHolder.waitForInput(StreamingProcessHolder.videoStream)
 
@@ -305,11 +321,11 @@ def handle_start_streaming_adapter(params):
 		}
 		return json.dumps(response_msg)
 
-	start_result = StreamingProcessHolder.initStreaming(params['url'], params['streamingType'])
+	start_result = StreamingProcessHolder.initStreaming(params.get('url'), params.get('streamingType'), params.get('config'))
 
 	response_msg = {}
 	if start_result == 0:
-		print("Data from SDL is available")
+		print("Streaming has been successfully started")
 		stream_endpoint = StreamingProcessHolder.getStreamingEndpoint(params['streamingType'])
 		response_msg = {
 			"method": "StartStreamingAdapter",
@@ -319,7 +335,7 @@ def handle_start_streaming_adapter(params):
 			}
 		}
 	else:
-		print("Expect has been failed")
+		print("Unable to start streaming adapter")
 		response_msg = {
 			"method": "StartStreamingAdapter",
 			"params": {

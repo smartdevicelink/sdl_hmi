@@ -318,8 +318,13 @@ FFW.Navigation = FFW.RPCObserver.create(
 
             var app_model = SDL.SDLController.getApplicationModel(request.params.appID);
             if (app_model) {
-              app_model.VideoConfigWidth = request.params.config.width;
-              app_model.VideoConfigHeight = request.params.config.height;
+              let player = document.getElementById('html5Player');
+              const can_play = player && 'probably' === player.canPlayType('video/webm; codecs="vp8"');
+
+              app_model.videoConfig = {
+                appConfig: request.params.config,
+                webmSupport: can_play
+              };
             }
 
             this.sendNavigationResult(

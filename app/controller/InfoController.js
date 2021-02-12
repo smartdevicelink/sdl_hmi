@@ -571,9 +571,10 @@ SDL.InfoController = Em.Object.create(
      * @description Start converting streaming from SDL to the HTML5 audio/video
      * @param {String} url SDL streaming path (pipe or socket)
      * @param {String} type Streaming data type
+     * @param {Object} config Streaming adapter configuration
      * @return {Promise} promice that resolves streaming URL with HTML5 audio/video
      */
-    startStreamingAdapter: function(url, type) {
+    startStreamingAdapter: function(url, type, config) {
       return new Promise( (resolve, reject) => {
         let client = FFW.RPCSimpleClient;
 
@@ -607,6 +608,10 @@ SDL.InfoController = Em.Object.create(
             'streamingType' : type
           }
         };
+
+        if (config) {
+          message.params.config = config;
+        }
 
         Em.Logger.log(`StartStreamingAdapter request`);
         client.connect();

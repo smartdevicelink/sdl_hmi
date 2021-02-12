@@ -698,13 +698,9 @@ SDL.SDLModel = Em.Object.extend({
    * Method to reset navigationApp streaming url from current app model
    */
   playVideo: function(appID) {
-      if (SDL.SDLController.getApplicationModel(appID).navigationStream !==
-        null) {
-
+      var app_model = SDL.SDLController.getApplicationModel(appID);
+      if (app_model && app_model.navigationStream !== null) {
         SDL.SDLModel.data.naviVideo = document.getElementById('html5Player');
-        var sdl_stream = SDL.SDLController.getApplicationModel(
-          appID
-        ).navigationStream;
 
         Em.Logger.log('Set params from VideoConfig');
 
@@ -714,8 +710,11 @@ SDL.SDLModel = Em.Object.extend({
         SDL.SDLModel.data.naviVideo.style.setProperty("width",width + "px");
         SDL.SDLModel.data.naviVideo.style.setProperty("height",height + "px");
         SDL.SDLModel.data.naviVideo.style.setProperty("top",50 + "px");
-        
-        SDL.InfoController.startStreamingAdapter(sdl_stream, 'video').then(function(stream_endpoint) {
+
+        const sdl_stream = app_model.navigationStream;
+        const video_config = app_model.videoConfig;
+
+        SDL.InfoController.startStreamingAdapter(sdl_stream, 'video', video_config).then(function(stream_endpoint) {
           if (SDL.SDLModel && SDL.SDLModel.data.naviVideo) {
             Em.Logger.log('Starting video playback');
             SDL.SDLModel.data.naviVideo.src = stream_endpoint
