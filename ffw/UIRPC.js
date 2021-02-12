@@ -220,7 +220,7 @@ FFW.UI = FFW.RPCObserver.create(
                 request.params.templateConfiguration.nightColorScheme)) {
                   sendCapabilityUpdated = true;
               }
-          }
+            }
             if(appModel.onSDLUIShow(request.params) === SDL.SDLModel.data.resultCode.REJECTED) {
               this.sendError(SDL.SDLModel.data.resultCode.REJECTED, request.id, request.method,
                     "Widget is duplicating other window. Rejecting UI.Show request.");
@@ -778,6 +778,18 @@ FFW.UI = FFW.RPCObserver.create(
                       'rows': 1
                     },
                     {
+                        "name": "timeToDestination",
+                        "characterSet": "UTF_8",
+                        "width": 500,
+                        "rows": 1
+                    },
+                    {
+                        "name": "turnText",
+                        "characterSet": "UTF_8",
+                        "width": 500,
+                        "rows": 1
+                    },
+                    {
                       'name': 'menuTitle',
                       'characterSet': 'UTF_8',
                       'width': 500,
@@ -821,6 +833,30 @@ FFW.UI = FFW.RPCObserver.create(
                     },
                     {
                       'name': 'subtleAlertSoftButtonText',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'menuCommandSecondaryText',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'menuCommandTertiaryText',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'menuSubMenuSecondaryText',
+                      'characterSet': 'UTF_8',
+                      'width': 500,
+                      'rows': 1
+                    },
+                    {
+                      'name': 'menuSubMenuTertiaryText',
                       'characterSet': 'UTF_8',
                       'width': 500,
                       'rows': 1
@@ -985,6 +1021,30 @@ FFW.UI = FFW.RPCObserver.create(
                     },
                     {
                       'name': 'subtleAlertIcon',
+                      'imageTypeSupported': [
+                        'GRAPHIC_BMP',
+                        'GRAPHIC_JPEG',
+                        'GRAPHIC_PNG'
+                      ],
+                      'imageResolution': {
+                        'resolutionWidth': 105,
+                        'resolutionHeight': 65
+                      }
+                    },
+                    {
+                      'name': 'menuCommandSecondaryImage',
+                      'imageTypeSupported': [
+                        'GRAPHIC_BMP',
+                        'GRAPHIC_JPEG',
+                        'GRAPHIC_PNG'
+                      ],
+                      'imageResolution': {
+                        'resolutionWidth': 105,
+                        'resolutionHeight': 65
+                      }
+                    },
+                    {
+                      'name': 'menuSubMenuSecondaryImage',
                       'imageTypeSupported': [
                         'GRAPHIC_BMP',
                         'GRAPHIC_JPEG',
@@ -1172,6 +1232,18 @@ FFW.UI = FFW.RPCObserver.create(
                             'rows': 1
                           },
                           {
+                              "name": "timeToDestination",
+                              "characterSet": "UTF_8",
+                              "width": 500,
+                              "rows": 1
+                          },
+                          {
+                              "name": "turnText",
+                              "characterSet": "UTF_8",
+                              "width": 500,
+                              "rows": 1
+                          },
+                          {
                             'name': 'menuTitle',
                             'characterSet': 'UTF_8',
                             'width': 500,
@@ -1197,6 +1269,24 @@ FFW.UI = FFW.RPCObserver.create(
                           },
                           {
                             'name': 'phoneNumber',
+                            'characterSet': 'UTF_8',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'subtleAlertText1',
+                            'characterSet': 'UTF_8',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'subtleAlertText2',
+                            'characterSet': 'UTF_8',
+                            'width': 500,
+                            'rows': 1
+                          },
+                          {
+                            'name': 'subtleAlertSoftButtonText',
                             'characterSet': 'UTF_8',
                             'width': 500,
                             'rows': 1

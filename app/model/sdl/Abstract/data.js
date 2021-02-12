@@ -542,12 +542,8 @@ SDL.SDLModelData = Em.Object.create(
           'fieldText': 'mainField4'
         },
         {
-          'fieldName': 'navigationText',
-          'fieldText': 'mainField5'
-        },
-        {
           'fieldName': 'timeToDestination',
-          'fieldText': 'mainField6'
+          'fieldText': 'mainField5'
         }
       ],
       'softButtons': [
@@ -672,6 +668,11 @@ SDL.SDLModelData = Em.Object.create(
      * @type {String}
      */
     ccpuVersion: '12345_US',
+    /**
+     * Hardware version value
+     * @type {String}
+     */
+    hardwareVersion: '123.456.7890',
     /**
      * Parameter describes if performInteraction session was started on HMI
      * this flag set to true when UI.PerformInteraction request came on HMI
@@ -892,6 +893,18 @@ SDL.SDLModelData = Em.Object.create(
                   "rows": 1
                 },
                 {
+                    "name": "timeToDestination",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "turnText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
                   "name": "menuTitle",
                   "characterSet": "UTF_8",
                   "width": 10,
@@ -938,6 +951,30 @@ SDL.SDLModelData = Em.Object.create(
                   "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
+                },
+                {
+                  'name': 'menuCommandSecondaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
+                },
+                {
+                  'name': 'menuCommandTertiaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
+                },
+                {
+                  'name': 'menuSubMenuSecondaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
+                },
+                {
+                  'name': 'menuSubMenuTertiaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
                 }
               ],
               'imageFields': [
@@ -1099,6 +1136,30 @@ SDL.SDLModelData = Em.Object.create(
                 },
                 {
                   'name': 'subtleAlertIcon',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 105,
+                    'resolutionHeight': 65
+                  }
+                },
+                {
+                  'name': 'menuCommandSecondaryImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 105,
+                    'resolutionHeight': 65
+                  }
+                },
+                {
+                  'name': 'menuSubMenuSecondaryImage',
                   'imageTypeSupported': [
                     'GRAPHIC_BMP',
                     'GRAPHIC_JPEG',

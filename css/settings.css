@@ -342,17 +342,117 @@
 
 #settingsView .in_settings_separate_view .ccpuVersionInput {
     position: absolute;
-    left: 145px;
+    left: 190px;
     top: 115px;
-    width: 400px;
+    width: 450px;
 }
 
-#settingsView .in_settings_separate_view .applyButton {
+#settingsView .in_settings_separate_view .label.vehicleBaseLabel {
     position: absolute;
-    left: 585px;
+    left: 35px;
+    background: black;
+    width: 120px;
+}
+
+#settingsView .in_settings_separate_view .vehicleBaseInput {
+    position: absolute;
+    left: 120px;
+    width: 609px;
+}
+
+#settingsView .in_settings_separate_view .vehicleBaseInput:disabled {
+    color: gray;
+}
+
+#settingsView .in_settings_separate_view .vehicleBaseCheckBox {
+    position: absolute;
+    left: 25px;
+    z-index: 2;
+}
+
+#settingsView .in_settings_separate_view .label.vehicleMakeLabel {
+    top: 110px;
+}
+
+#settingsView .in_settings_separate_view .vehicleMakeInput {
     top: 115px;
-    width: 75px;
+}
+
+#settingsView .in_settings_separate_view .vehicleMakeCheckBox {
+    top: 127px;
+}
+
+
+#settingsView .in_settings_separate_view .label.vehicleModelLabel {
+    top: 170px;
+}
+
+#settingsView .in_settings_separate_view .vehicleModelInput {
+    top: 175px;
+}
+
+#settingsView .in_settings_separate_view .vehicleModelCheckBox {
+    top: 187px;
+}
+
+
+#settingsView .in_settings_separate_view .label.vehicleYearLabel {
+    top: 230px;
+}
+
+#settingsView .in_settings_separate_view .vehicleYearInput {
+    top: 235px;
+}
+
+#settingsView .in_settings_separate_view .vehicleYearCheckBox {
+    top: 247px;
+}
+
+
+#settingsView .in_settings_separate_view .label.vehicleTrimLabel {
+    top: 290px;
+}
+
+#settingsView .in_settings_separate_view .vehicleTrimInput {
+    top: 295px;
+}
+
+#settingsView .in_settings_separate_view .vehicleTrimCheckBox {
+    top: 307px;
+}
+
+#settingsView .in_settings_separate_view .hardwareVersionInput {
+    position: absolute;
+    left: 190px;
+    top: 190px;
+    width: 450px;
+}
+
+#settingsView .in_settings_separate_view .hardwareVersionInput:disabled {
+    color: gray;
+}
+
+#settingsView .in_settings_separate_view .hardwareVersionCheckBox {
+    position: absolute;
+    left: 25px;
+    top: 203px;
+    z-index: 2;
+}
+
+#settingsView .in_settings_separate_view .systemVersionsApplyButton {
+    position: absolute;
+    top: 250px;
+    left: 190px;
+    width: 125px;
     text-align: center;
+}
+
+#settingsView .in_settings_separate_view .vehicleTypeApplyButton {
+    position: absolute;
+    top: 338px;
+    width: 125px;
+    text-align: center;
+    right: 6px;
 }
 
 #settingsView .in_settings_separate_view .label.ccpuVersionLabel {
@@ -361,6 +461,14 @@
     left: 10px;
     background: black;
     width: 120px;
+}
+
+#settingsView .in_settings_separate_view .label.hardwareVersionLabel {
+    position: absolute;
+    top: 185px;
+    left: 30px;
+    background: black;
+    width: 150px;
 }
 
 #settingsView .in_settings_separate_view .sendRequestButton {

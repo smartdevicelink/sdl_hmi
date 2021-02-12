@@ -728,6 +728,9 @@ FFW.BasicCommunication = FFW.RPCObserver
                 'wersCountryCode': 'wersCountryCode'
               }
             };
+            if (SDL.SDLModel.data.hardwareVersion != null) {
+              JSONMessage.result.systemHardwareVersion = SDL.SDLModel.data.hardwareVersion;
+            }
             this.sendMessage(JSONMessage);
           }
           if (request.method == 'BasicCommunication.PolicyUpdate') {

@@ -24,24 +24,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-SDL.CcpuEditorView = Em.ContainerView.create(
+SDL.SystemVersionsEditorView = Em.ContainerView.create(
     {
-      elementId: 'policies_settings_ccpu_editor_view',
+      elementId: 'policies_settings_system_versions_editor_view',
       classNames: 'in_settings_separate_view',
       classNameBindings: [
-        'SDL.States.settings.policies.ccpuEditor.active:active_state:inactive_state'
+        'SDL.States.settings.policies.versionsEditor.active:active_state:inactive_state'
       ],
       childViews: [
-        'ccpuTitle',
+        'versionsTitle',
         'backButton',
         'ccpuVersionLabel',
         'ccpuVersionInput',
+        'hardwareVersionCheckBox',
+        'hardwareVersionLabel',
+        'hardwareVersionInput',
         'applyButton'
       ],
-      ccpuTitle: SDL.Label.extend(
+      versionsTitle: SDL.Label.extend(
         {
           classNames: 'label',
-          content: 'Configure CCPU version'
+          content: 'Configure CCPU and hardware versions'
         }
       ),
       backButton: SDL.Button.extend(
@@ -70,12 +73,37 @@ SDL.CcpuEditorView = Em.ContainerView.create(
           valueBinding: 'SDL.SettingsController.editedCcpuVersionValue'
         }
       ),
+      hardwareVersionCheckBox: Em.Checkbox.extend(
+        {
+            elementId: 'hardwareVersionCheckBox',
+            classNames: 'hardwareVersionCheckBox item',
+            checkedBinding: 'SDL.SettingsController.hardwareVersionEditingEnabled'
+        }
+      ),
+      hardwareVersionLabel: SDL.Label.extend(
+        {
+          classNames: 'hardwareVersionLabel',
+          content: 'Hardware version: '
+        }
+      ),
+      hardwareVersionInput: Ember.TextField.extend(
+        {
+          elementId: 'hardwareVersionInput',
+          classNames: 'hardwareVersionInput dataInput',
+          placeholder: '<Type hardware version here>',
+          valueBinding: 'SDL.SettingsController.editedHardwareVersionValue',
+          disabledBinding: 'isEditingEnabled',
+          isEditingEnabled: function() {
+            return !SDL.SettingsController.hardwareVersionEditingEnabled;
+          }.property('SDL.SettingsController.hardwareVersionEditingEnabled')
+        }
+      ),
       applyButton: SDL.Button.extend(
         {
-          elementId: 'applyButton',
-          classNames: 'applyButton button',
+          elementId: 'systemVersionsApplyButton',
+          classNames: 'systemVersionsApplyButton button',
           text: 'Apply',
-          action: 'applyNewCcpuVersionValue',
+          action: 'applyNewVersionValues',
           target: 'SDL.SettingsController',
           onDown: false
         }
