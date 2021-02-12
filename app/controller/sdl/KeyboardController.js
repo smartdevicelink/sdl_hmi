@@ -282,10 +282,6 @@ SDL.KeyboardController = Em.Object.create({
      */
     toggleMaskingOption: function() {
       SDL.KeyboardController.toggleProperty('maskCharacters');
-      SDL.SDLController.model.set('maskInputCharactersUserChoice', SDL.KeyboardController.maskCharacters);
-      if (SDL.SDLController.model) {
-        SDL.KeyboardController.sendInputKeyMaskNotification(SDL.SDLController.model.appID);
-      }
       SDL.KeyboardController.updateInputMasking();
     },
 
@@ -321,6 +317,10 @@ SDL.KeyboardController = Em.Object.create({
      * of internal controller flags
      */
     updateInputMasking: function() {
+      if (SDL.SDLController.model) {
+        SDL.SDLController.model.set('maskInputCharactersUserChoice', SDL.KeyboardController.maskCharacters);
+        SDL.KeyboardController.sendInputKeyMaskNotification(SDL.SDLController.model.appID);
+      }
       if (SDL.Keyboard) {
         if (SDL.KeyboardController.maskCharacters) {
           SDL.Keyboard.searchBar.input.type = 'password';
