@@ -708,7 +708,56 @@ SDL.SettingsController = Em.Object.create(
       };
       FFW.BasicCommunication.GetPolicyConfigurationData(policyConfigurationData);
     },
-    
+
+    sendVideoStreamingCapabilities: function() {
+      // Trigger 'change' event to force overwriting 'selection' field 
+      // with current value of selected appID. Otherwise it will be null.
+      SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.trigger('change');
+      var systemCapability = {
+        'systemCapability' : {
+          'systemCapabilityType': 'VIDEO_STREAMING',
+          'videoStreamingCapability': SDL.systemCapabilities.videoStreamingCapability
+        },
+        'appID': parseInt(SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.selection)
+      };
+      FFW.BasicCommunication.OnSystemCapabilityUpdated(systemCapability);
+    },
+
+    saveVideoStreamingCapabilities: function() {
+      SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.save();
+      this.showVideoStreamingCapabilities();
+    },
+
+    onRegisteredAppsListUpdated: function() {
+      if(!SDL.SendVideoStreamingCapsView) {
+        return;
+      }
+
+      let appIDsArray = [];
+      for(var i = 0; i < SDL.SDLModel.data.registeredApps.length; ++i) {
+        appIDsArray.push(SDL.SDLModel.data.registeredApps[i].appID);
+      };
+
+      SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.set('content', appIDsArray);
+    }.observes('SDL.SDLModel.data.registeredApps.@each'),
+
+    showVideoStreamingCapabilities: function() {
+      let capabilities = SDL.systemCapabilities.videoStreamingCapability;
+      SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.set('content', JSON.stringify(capabilities, null, 2));
+
+      let that = this;
+      SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.activate(function(data) {
+        const new_data = JSON.stringify(data);
+        const old_data = JSON.stringify(SDL.systemCapabilities.videoStreamingCapability);
+        if (new_data != old_data) {
+          SDL.systemCapabilities.set('videoStreamingCapability', data);
+          if (SDL.States.nextState != SDL.States.settings.policies.get('path')) {
+            that.sendVideoStreamingCapabilities();
+          }
+        }
+      });
+    },
+
     /**
      * @function changeGetSystemTimeResultCode
      * @description Change result code of GetSystemTime response to SDL

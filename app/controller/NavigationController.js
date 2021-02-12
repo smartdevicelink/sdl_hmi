@@ -437,6 +437,83 @@ SDL.NavigationController = Em.Object.create(
         2000
       );  // Allow time for the initial map display
     },
+    /**
+     * @description Converts capability item into corresponding string
+     * @param {Object} capability capability to convert
+     * @return formatted string
+     */
+    stringifyCapabilityItem: function(capability) {
+      let str_result = '';
+      if (capability.preferredResolution) {
+        str_result += `${capability.preferredResolution.resolutionWidth}x` +
+                      `${capability.preferredResolution.resolutionHeight}`;
+      }
+
+      if (capability.scale) {
+        str_result += ` Scale: ${capability.scale}`;
+      }
+
+      if (str_result == '') {
+        str_result = 'Undefined resolution';
+      }
+
+      return str_result;
+    },
+
+    /**
+     * @description Provides list of available video streaming capability presets
+     * @return {Array} list of capabilities
+     */
+    getVideoStreamingCapabilitiesList: function() {
+      const capabilities_array = SDL.NavigationModel.resolutionsList;
+      let list_to_display = [];
+
+      if (Array.isArray(capabilities_array)) {
+        capabilities_array.forEach((capability) => {
+          const stringified = SDL.NavigationController.stringifyCapabilityItem(capability);
+          list_to_display.push(stringified);
+        });
+      }
+
+      return list_to_display;
+    },
+
+    /**
+     * @description Makes selected video streaming preset the active one
+     * @param {String} preset_name name of new preset
+     */
+    switchVideoStreamingCapability: function(preset_name) {
+      const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList();
+      const index = preset_list.indexOf(preset_name);
+
+      if (index >= 0) {
+        Em.Logger.log(`Switching video streaming preset to: ${preset_name}`);
+        this.model.set('resolutionIndex', index);
+        const capability_to_switch = this.model.resolutionsList[index];
+        let capabilities_to_send = {};
+
+        if (capability_to_switch.preferredResolution) {
+          capabilities_to_send.preferredResolution = {};
+          capabilities_to_send.preferredResolution.resolutionWidth =
+            capability_to_switch.preferredResolution.resolutionWidth;
+          capabilities_to_send.preferredResolution.resolutionHeight =
+            capability_to_switch.preferredResolution.resolutionHeight;
+        }
+
+        if (capability_to_switch.scale) {
+          capabilities_to_send.scale = capability_to_switch.scale;
+        }
+
+        const json_to_send = {
+          'systemCapability' : {
+            'systemCapabilityType': 'VIDEO_STREAMING',
+            'videoStreamingCapability': capabilities_to_send
+          },
+          'appID': parseInt(SDL.SDLController.model.appID)
+        };
+        FFW.BasicCommunication.OnSystemCapabilityUpdated(json_to_send);
+      }
+    },
 
     /**
      * @desc Verifies if image is an PNG image, 
@@ -524,6 +601,6 @@ SDL.NavigationController = Em.Object.create(
             info);
       }
       SDL.SDLModel.validateImages(request.id, callback, imageList);
-    },
+    }
   }
 );

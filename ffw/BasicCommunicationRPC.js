@@ -61,6 +61,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSystemCapabilityUpdatedNotificationSubscribeRequestID: -1,
       onAppPropertiesChangeNotificationSubscribeRequestID: -1,
       onAppServiceDataNotificationSubscribeRequestID: -1,
+      onAppCapabilityUpdatedSubscribeRequestID: -1,
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
       onAppPermissionChangedUnsubscribeRequestID: -1,
@@ -74,6 +75,8 @@ FFW.BasicCommunication = FFW.RPCObserver
       onServiceUpdateNotificationUnsubscribeRequestID: -1,
       onSystemCapabilityUpdatedNotificationUnsubscribeRequestID: -1,
       onAppServiceDataNotificationUnsubscribeRequestID: -1,
+      onAppCapabilityUpdatedUnsubscribeRequestID: -1,
+
       // const
       onStatusUpdateNotification: 'SDL.OnStatusUpdate',
       onAppPermissionChangedNotification: 'SDL.OnAppPermissionChanged',
@@ -90,6 +93,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSystemCapabilityUpdatedNotification: 'BasicCommunication.OnSystemCapabilityUpdated',
       onAppPropertiesChangeNotification: 'BasicCommunication.OnAppPropertiesChange',
       onAppServiceDataNotification: 'AppService.OnAppServiceData',
+      OnAppCapabilityUpdatedNotification : 'BasicCommunication.OnAppCapabilityUpdated',
 
       /**
        * connect to RPC bus
@@ -159,6 +163,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onAppPropertiesChangeNotification);
         this.onAppServiceDataNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onAppServiceDataNotification);
+        this.onAppServiceDataNotificationSubscribeRequestID = this
+          .subscribeToNotification(this.OnAppCapabilityUpdatedNotification);
         setTimeout(function() {
           FFW.BasicCommunication.OnSystemTimeReady();
         }, 500);
@@ -198,6 +204,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .unsubscribeFromNotification(this.onSystemCapabilityUpdatedNotification);
         this.onAppServiceDataNotificationUnsubscribeRequestID = this.client
           .unsubscribeFromNotification(this.onAppServiceDataNotification);
+        this.onAppCapabilityUpdatedUnsubscribeRequestID = this.client
+          .unsubscribeFromNotification(this.OnAppCapabilityUpdatedNotification);
       },
       /**
        * Client disconnected.
@@ -426,6 +434,22 @@ FFW.BasicCommunication = FFW.RPCObserver
           SDL.ServiceUpdatePopUp.activate(notification.params.serviceType,
             notification.params.serviceEvent,
             notification.params.reason);
+        }
+        if (notification.method == this.OnAppCapabilityUpdatedNotification) {
+          const capabilities_type = notification.params.appCapability.appCapabilityType;
+          if  (capabilities_type == 'VIDEO_STREAMING') {
+            const updated_caps = notification.params.appCapability.videoStreamingCapability;
+            if (updated_caps.additionalVideoStreamingCapabilities) {
+              if (SDL.NavigationModel.resolutionIndex > updated_caps.additionalVideoStreamingCapabilities.length - 1) {
+                SDL.NavigationModel.set('resolutionIndex',
+                  updated_caps.additionalVideoStreamingCapabilities.length - 1
+                );
+              }
+              SDL.NavigationModel.set('resolutionsList',
+                updated_caps.additionalVideoStreamingCapabilities
+              );
+            }
+          }
         }
         if (notification.method == this.onFileRemovedNotification) {
           SDL.SDLModel.onFileRemoved(notification.params);

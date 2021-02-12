@@ -224,6 +224,12 @@ SDL.ABSAppModel = Em.Object.extend(
      */
     navigationAudioStream: null,
     /**
+     * Application video configuration parameters
+     *
+     * @type {Object}
+     */
+    videoConfig: null,
+    /**
      * Chosen device name
      *
      * @type {String}
