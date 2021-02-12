@@ -360,6 +360,13 @@ SDL.ABSAppModel = Em.Object.extend(
     unregisteringInProgress: false,
 
     /**
+     * @param maskInputCharactersUserChoice
+     * @type {Boolean}
+     * @description flag to store user preferences when mask input button is visible
+     */
+    maskInputCharactersUserChoice: true,
+
+    /**
      * Setter method for navigation subscription buttons
      *
      * @return none
@@ -500,6 +507,49 @@ SDL.ABSAppModel = Em.Object.extend(
       this.softButtons.splice(0);
       // push new buttons to array
       this.get('softButtons').pushObjects(buttons);
+    },
+    /**
+     * @description Set app global properties to default
+     */
+    resetGlobalProperties: function() {
+      this.set('globalProperties', Em.Object.create());
+      this.set('globalProperties.helpPrompt', []);
+      this.set('globalProperties.timeoutPrompt', []);
+      this.set('globalProperties.menuIcon', Em.Object.create());
+      this.set('globalProperties.keyboardProperties', Em.Object.create());
+
+      const default_keyboard = this.getDefaultKeyboardGlobalProperties();
+      for (const property in default_keyboard) {
+        this.set('globalProperties.keyboardProperties.' + property, default_keyboard[property]);
+      }
+
+      this.set('maskInputCharactersUserChoice', true);
+    },
+    /**
+     * @description Gets app default keyboard global properties
+     */
+    getDefaultKeyboardGlobalProperties: function() {
+      return {
+        'keyboardLayout' : 'QWERTY',
+        'keypressMode' : 'RESEND_CURRENT_ENTRY',
+        'maskInputCharacters' : 'DISABLE_INPUT_KEY_MASK',
+        'customKeys' : [],
+        'limitedCharacterList' : [],
+        'autoCompleteList' : []
+      };
+    },
+    /**
+     * @description Performs actions on HMI level resumption start
+     */
+    startHmiLevelResumption: function() {
+      this.set('isHmiLevelResumption', true);
+    },
+    /**
+     * @description Performs actions on HMI level resumption finish
+     */
+    finishHmiLevelResumption: function() {
+      this.set('isHmiLevelResumption', false);
+      SDL.KeyboardController.sendInputKeyMaskNotification(this.appID);
     },
     /**
      * Add command to list

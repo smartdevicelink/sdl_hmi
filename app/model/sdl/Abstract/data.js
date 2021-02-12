@@ -1292,6 +1292,27 @@ SDL.SDLModelData = Em.Object.create(
                 "imageSupported": true,
                 "textSupported": true
               }],
+              "keyboardCapabilities": {
+                "maskInputCharactersSupported": true,
+                "supportedKeyboards" : [
+                  {
+                    "keyboardLayout": "QWERTY",
+                    "numConfigurableKeys": 3
+                  },
+                  {
+                    "keyboardLayout": "QWERTZ",
+                    "numConfigurableKeys": 0
+                  },
+                  {
+                    "keyboardLayout": "AZERTY",
+                    "numConfigurableKeys": 4
+                  },
+                  {
+                    "keyboardLayout": "NUMERIC",
+                    "numConfigurableKeys": 2
+                  }
+                ]
+              },
               "dynamicUpdateCapabilities": {
                 "supportedDynamicImageFieldNames": ["subMenuIcon", "menuIcon"],
                 "supportsDynamicSubMenus": true

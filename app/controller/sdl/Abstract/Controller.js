@@ -1215,29 +1215,28 @@ SDL.SDLController = Em.Object.extend(
     onKeyboardChanges: function() {
       if (null !== SDL.SDLModel.data.keyboardInputValue) {
         var str = SDL.SDLModel.data.keyboardInputValue;
+
+        let mode = 'RESEND_CURRENT_ENTRY';
         if (SDL.SDLController.model &&
-          SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
-          switch (SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
-            case 'SINGLE_KEYPRESS':
-            {
-              FFW.UI.OnKeyboardInput(str.charAt(str.length - 1), 'KEYPRESS');
-              break;
-            }
-            case 'QUEUE_KEYPRESS':
-            {
-              break;
-            }
-            case 'RESEND_CURRENT_ENTRY':
-            {
-              if (str) {
-                FFW.UI.OnKeyboardInput(str, 'KEYPRESS');
-              }
-              break;
-            }
+            SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
+          mode = SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode;
+        }
+
+        switch (mode) {
+          case 'SINGLE_KEYPRESS': {
+            FFW.UI.OnKeyboardInput(str.charAt(str.length - 1), 'KEYPRESS');
+            break;
+          }
+          case 'QUEUE_KEYPRESS': {
+            break;
+          }
+          case 'RESEND_CURRENT_ENTRY': {
+            FFW.UI.OnKeyboardInput(str, 'KEYPRESS');
+            break;
           }
         }
       }
-    }.observes('SDL.SDLModel.data.keyboardInputValue'),
+    },
     /**
      * Get application model
      *
