@@ -224,6 +224,12 @@ SDL.ABSAppModel = Em.Object.extend(
      */
     navigationAudioStream: null,
     /**
+     * Application video configuration parameters
+     *
+     * @type {Object}
+     */
+    videoConfig: null,
+    /**
      * Chosen device name
      *
      * @type {String}
@@ -372,6 +378,13 @@ SDL.ABSAppModel = Em.Object.extend(
     cachedSubmenuIdsList: [],
 
     /**
+     * @param maskInputCharactersUserChoice
+     * @type {Boolean}
+     * @description flag to store user preferences when mask input button is visible
+     */
+    maskInputCharactersUserChoice: true,
+
+    /**
      * Setter method for navigation subscription buttons
      *
      * @return none
@@ -514,6 +527,49 @@ SDL.ABSAppModel = Em.Object.extend(
       this.get('softButtons').pushObjects(buttons);
     },
     /**
+     * @description Set app global properties to default
+     */
+    resetGlobalProperties: function() {
+      this.set('globalProperties', Em.Object.create());
+      this.set('globalProperties.helpPrompt', []);
+      this.set('globalProperties.timeoutPrompt', []);
+      this.set('globalProperties.menuIcon', Em.Object.create());
+      this.set('globalProperties.keyboardProperties', Em.Object.create());
+
+      const default_keyboard = this.getDefaultKeyboardGlobalProperties();
+      for (const property in default_keyboard) {
+        this.set('globalProperties.keyboardProperties.' + property, default_keyboard[property]);
+      }
+
+      this.set('maskInputCharactersUserChoice', true);
+    },
+    /**
+     * @description Gets app default keyboard global properties
+     */
+    getDefaultKeyboardGlobalProperties: function() {
+      return {
+        'keyboardLayout' : 'QWERTY',
+        'keypressMode' : 'RESEND_CURRENT_ENTRY',
+        'maskInputCharacters' : 'DISABLE_INPUT_KEY_MASK',
+        'customKeys' : [],
+        'limitedCharacterList' : [],
+        'autoCompleteList' : []
+      };
+    },
+    /**
+     * @description Performs actions on HMI level resumption start
+     */
+    startHmiLevelResumption: function() {
+      this.set('isHmiLevelResumption', true);
+    },
+    /**
+     * @description Performs actions on HMI level resumption finish
+     */
+    finishHmiLevelResumption: function() {
+      this.set('isHmiLevelResumption', false);
+      SDL.KeyboardController.sendInputKeyMaskNotification(this.appID);
+    },
+    /**
      * Add command to list
      *
      * @param {Object}
@@ -548,14 +604,26 @@ SDL.ABSAppModel = Em.Object.extend(
             if (request.id >= 0 && parentID === 'top') {
               position += 5; // for exit application commands
             }
+
             var newItem = {
         		  commandID: request.params.cmdID,
         		  name: request.params.menuParams.menuName,
         		  parent: parentID,
         		  isTemplate:request.params.cmdIcon ?
-        		  request.params.cmdIcon.isTemplate ?request.params.cmdIcon.isTemplate : null
-        		  : null,
-        		  icon: request.params.cmdIcon ? request.params.cmdIcon.value : null
+                request.params.cmdIcon.isTemplate ? 
+                request.params.cmdIcon.isTemplate 
+                : null
+        		    : null,
+              icon: request.params.cmdIcon ? 
+                request.params.cmdIcon.value : null,
+              secondaryText: request.params.menuParams.secondaryText ? 
+                request.params.menuParams.secondaryText : null,
+              tertiaryText: request.params.menuParams.tertiaryText ? 
+                request.params.menuParams.tertiaryText : null,
+              secondaryImage: request.params.secondaryImage ? 
+                request.params.secondaryImage.value : null,
+              isSecondaryTemplate: request.params.secondaryImage ?
+                request.params.secondaryImage.isTemplate : null
             };
             // Insert new item at calculated position
             commands.splice(position, 0, newItem);
@@ -567,15 +635,9 @@ SDL.ABSAppModel = Em.Object.extend(
 
     		    if(request.params.cmdIcon) {
 
-              var image = request.params.cmdIcon.value;
-              if(!SDL.NavigationController.isPng(image)) {
-                FFW.UI.sendUIResult(
-                  SDL.SDLModel.data.resultCode.WARNINGS, request.id,
-                  request.method);
-                return;
-              }
+              var image = request.params.cmdIcon;
 
-              var callback = function(failed) {
+              var callback = function(failed, info) {
                 var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
                 var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
@@ -583,8 +645,9 @@ SDL.ABSAppModel = Em.Object.extend(
                   failed ? WARNINGS : SUCCESS, 
                   request.id, 
                   request.method, 
-                  failed ? "Requested image(s) not found" : null);
+                  info);
               }
+
               SDL.SDLModel.validateImages(request.id, callback, [image]);
               return;
             }
@@ -677,7 +740,16 @@ SDL.ABSAppModel = Em.Object.extend(
         		  name: request.params.menuParams.menuName ?
         		    request.params.menuParams.menuName : '',
         		  parent: parentID,
-        		  icon: request.params.menuIcon ? request.params.menuIcon.value : null
+              icon: request.params.menuIcon ? 
+                request.params.menuIcon.value : null,
+              secondaryText: request.params.menuParams.secondaryText ? 
+                request.params.menuParams.secondaryText : null,
+              tertiaryText: request.params.menuParams.tertiaryText ? 
+                request.params.menuParams.tertiaryText : null,
+              secondaryImage: request.params.secondaryImage ? 
+                request.params.secondaryImage.value : null,
+              isSecondaryTemplate: request.params.secondaryImage ?
+                request.params.secondaryImage.isTemplate : null
             };
             // Insert new item at calculated position
             commands.splice(position, 0, newItem);
@@ -686,7 +758,7 @@ SDL.ABSAppModel = Em.Object.extend(
         		    SDL.SDLController.buttonsSort(parentID, this.appID);
         		    SDL.OptionsView.commands.refreshItems();
         		}
-            var callback = function(failed) {
+            var callback = function(failed, info) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
               var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
@@ -694,11 +766,11 @@ SDL.ABSAppModel = Em.Object.extend(
                 failed ? WARNINGS : SUCCESS, 
                 request.id, 
                 request.method, 
-                failed ? "Requested image(s) not found" : null);
+                info);
             }
             var imageList = [];
             if(request.params.menuIcon) {
-              imageList.push(request.params.menuIcon.value);
+              imageList.push(request.params.menuIcon);
             }
             SDL.SDLModel.validateImages(request.id, callback, imageList);
     	    } else {

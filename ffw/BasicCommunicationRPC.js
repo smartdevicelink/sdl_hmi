@@ -61,6 +61,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSystemCapabilityUpdatedNotificationSubscribeRequestID: -1,
       onAppPropertiesChangeNotificationSubscribeRequestID: -1,
       onAppServiceDataNotificationSubscribeRequestID: -1,
+      onAppCapabilityUpdatedSubscribeRequestID: -1,
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
       onAppPermissionChangedUnsubscribeRequestID: -1,
@@ -74,6 +75,8 @@ FFW.BasicCommunication = FFW.RPCObserver
       onServiceUpdateNotificationUnsubscribeRequestID: -1,
       onSystemCapabilityUpdatedNotificationUnsubscribeRequestID: -1,
       onAppServiceDataNotificationUnsubscribeRequestID: -1,
+      onAppCapabilityUpdatedUnsubscribeRequestID: -1,
+
       // const
       onStatusUpdateNotification: 'SDL.OnStatusUpdate',
       onAppPermissionChangedNotification: 'SDL.OnAppPermissionChanged',
@@ -90,6 +93,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSystemCapabilityUpdatedNotification: 'BasicCommunication.OnSystemCapabilityUpdated',
       onAppPropertiesChangeNotification: 'BasicCommunication.OnAppPropertiesChange',
       onAppServiceDataNotification: 'AppService.OnAppServiceData',
+      OnAppCapabilityUpdatedNotification : 'BasicCommunication.OnAppCapabilityUpdated',
 
       /**
        * connect to RPC bus
@@ -159,6 +163,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onAppPropertiesChangeNotification);
         this.onAppServiceDataNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onAppServiceDataNotification);
+        this.onAppServiceDataNotificationSubscribeRequestID = this
+          .subscribeToNotification(this.OnAppCapabilityUpdatedNotification);
         setTimeout(function() {
           FFW.BasicCommunication.OnSystemTimeReady();
         }, 500);
@@ -198,6 +204,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .unsubscribeFromNotification(this.onSystemCapabilityUpdatedNotification);
         this.onAppServiceDataNotificationUnsubscribeRequestID = this.client
           .unsubscribeFromNotification(this.onAppServiceDataNotification);
+        this.onAppCapabilityUpdatedUnsubscribeRequestID = this.client
+          .unsubscribeFromNotification(this.OnAppCapabilityUpdatedNotification);
       },
       /**
        * Client disconnected.
@@ -427,6 +435,22 @@ FFW.BasicCommunication = FFW.RPCObserver
             notification.params.serviceEvent,
             notification.params.reason);
         }
+        if (notification.method == this.OnAppCapabilityUpdatedNotification) {
+          const capabilities_type = notification.params.appCapability.appCapabilityType;
+          if  (capabilities_type == 'VIDEO_STREAMING') {
+            const updated_caps = notification.params.appCapability.videoStreamingCapability;
+            if (updated_caps.additionalVideoStreamingCapabilities) {
+              if (SDL.NavigationModel.resolutionIndex > updated_caps.additionalVideoStreamingCapabilities.length - 1) {
+                SDL.NavigationModel.set('resolutionIndex',
+                  updated_caps.additionalVideoStreamingCapabilities.length - 1
+                );
+              }
+              SDL.NavigationModel.set('resolutionsList',
+                updated_caps.additionalVideoStreamingCapabilities
+              );
+            }
+          }
+        }
         if (notification.method == this.onFileRemovedNotification) {
           SDL.SDLModel.onFileRemoved(notification.params);
         }
@@ -634,6 +658,9 @@ FFW.BasicCommunication = FFW.RPCObserver
             );
           }
           if (request.method == 'BasicCommunication.ActivateApp') {
+            let model = SDL.SDLController.getApplicationModel(request.params.appID);
+            model.startHmiLevelResumption();
+
             if (!request.params.level || request.params.level == 'FULL') {
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID != request.params.appID) {
@@ -643,14 +670,11 @@ FFW.BasicCommunication = FFW.RPCObserver
                 SDL.SDLModel.data.stateLimited = null;
                 SDL.SDLModel.data.set('limitedExist', false);
               }
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'FULL';
-              SDL.SDLController.getApplicationModel(request.params.appID)
-                .turnOnSDL(request.params.appID);
+              model.level = 'FULL';
+              model.turnOnSDL(request.params.appID);
               SDL.VRPopUp.updateVR();
             } else if (request.params.level === 'LIMITED') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'LIMITED';
+              model.level = 'LIMITED';
               SDL.VRPopUp.updateVR();
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID === request.params.appID) {
@@ -658,8 +682,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               }
               SDL.InfoAppsView.showAppList();
             } else if (request.params.level === 'NONE') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'NONE';
+              model.level = 'NONE';
               SDL.VRPopUp.updateVR();
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID === request.params.appID) {
@@ -667,8 +690,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               }
               SDL.InfoAppsView.showAppList();
             } else if (request.params.level === 'BACKGROUND') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'BACKGROUND';
+              model.level = 'BACKGROUND';
               SDL.VRPopUp.updateVR();
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID === request.params.appID) {
@@ -679,6 +701,8 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
+
+            model.finishHmiLevelResumption();
           }
           if (request.method == 'BasicCommunication.CloseApplication') {
             SDL.SDLController.getApplicationModel(request.params.appID).level
@@ -704,6 +728,9 @@ FFW.BasicCommunication = FFW.RPCObserver
                 'wersCountryCode': 'wersCountryCode'
               }
             };
+            if (SDL.SDLModel.data.hardwareVersion != null) {
+              JSONMessage.result.systemHardwareVersion = SDL.SDLModel.data.hardwareVersion;
+            }
             this.sendMessage(JSONMessage);
           }
           if (request.method == 'BasicCommunication.PolicyUpdate') {
@@ -1419,6 +1446,9 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
         };
         this.sendMessage(JSONMessage);
+        if (SDL.States.currentState.getPath('path') === 'media.sdlmedia'){
+          SDL.SDLMediaController.onCloseApplication(appID)
+        }
       },
       /**
        * Sent by HMI to SDL to close all registered applications.

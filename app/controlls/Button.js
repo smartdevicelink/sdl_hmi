@@ -53,12 +53,16 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
     highLightedMode:false,
     /** Button icon class */
     icon: null,
+    secondaryIcon: null,
+    isSecondaryTemplate: null,
 
     /** Button rightIcon class */
     righticon: null,
 
     /** Button text */
     text: null,
+    secondaryText: null,
+    tertiaryText: null,
 
     rightText: null,
 
@@ -247,6 +251,39 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
           {{bindAttr src="view.icon"}} />' +
         '<span>{{view.text}}</span>' +
         '<img class="right_ico" {{bindAttr src="view.righticon"}} />'
+      ),
+
+      extended: Em.Handlebars.compile(
+        '<div class="extended-button">' +
+          '<img {{bindAttr class="view.icon:ico"}} \
+          {{bindAttr src="view.icon"}} />' +
+          '<div class="main-text">' +
+            '<span class="w-100">{{view.text}}</span>' +
+            '<span class="w-100 t-small">{{view.secondaryText}}</span>' +
+          '</div>' +
+          '<div class="end-info">' +
+            '<span class="w-50 t-small tertiary-text">{{view.tertiaryText}}</span>' +
+            '<img {{bindAttr class="view.secondaryIcon:ico"}} \
+            {{bindAttr src="view.secondaryIcon"}} />' +
+          '</div>'+
+        '</div>'
+      ),
+
+      arrowExtended: Em.Handlebars.compile(
+        '<div class="extended-button">' +
+          '<img {{bindAttr class="view.icon:ico"}} \
+          {{bindAttr src="view.icon"}} />' +
+          '<div class="main-text">' +
+            '<span class="w-100">{{view.text}}</span>' +
+            '<span class="w-100 t-small">{{view.secondaryText}}</span>' +
+          '</div>' +
+          '<div class="end-info">' +
+            '<span class="w-50 t-small tertiary-text">{{view.tertiaryText}}</span>' +
+            '<img {{bindAttr class="view.secondaryIcon:ico"}} \
+            {{bindAttr src="view.secondaryIcon"}} />' +
+            '<img class="arrow-ico relative-r-0" src="images/common/arrow_ico.png" />' +
+          '</div>'+
+        '</div>'
       )
     }
   }

@@ -201,6 +201,9 @@ SDL.SDLController = Em.Object.extend(
      * @param appID {Number}
      */
     closeApplication: function(appID) {
+      if (SDL.States.currentState.getPath('path') === 'media.sdlmedia'){
+        SDL.SDLMediaController.onCloseApplication(appID)
+      }
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia' ||
         SDL.States.currentState.getPath('path') === 'navigationApp.baseNavigation' ||
@@ -802,11 +805,15 @@ SDL.SDLController = Em.Object.extend(
      * Method to sent notification ABORTED for PerformInteractionChoise
      */
     interactionChoiseCloseResponse: function(appID, result, choiceID,
-      manualTextEntry) {
+      manualTextEntry, info) {
       FFW.UI.interactionResponse(
         SDL.SDLController.getApplicationModel(
           appID
-        ).activeRequests.uiPerformInteraction, result, choiceID, manualTextEntry
+        ).activeRequests.uiPerformInteraction,
+        result,
+        choiceID,
+        manualTextEntry,
+        info
       );
       SDL.SDLModel.data.set('interactionData.vrHelpTitle', null);
       SDL.SDLModel.data.set('interactionData.vrHelp', null);
@@ -876,7 +883,7 @@ SDL.SDLController = Em.Object.extend(
      * @param {Number}
      *            messageRequestId
      */
-    scrollableMessageResponse: function(result, messageRequestId) {
+    scrollableMessageResponse: function(result, info, messageRequestId) {
       if (result == SDL.SDLModel.data.resultCode.SUCCESS) {
         FFW.UI.sendUIResult(
           result,
@@ -888,7 +895,7 @@ SDL.SDLController = Em.Object.extend(
           result,
           messageRequestId,
           'UI.ScrollableMessage',
-          'Requested image(s) not found'
+          info
         );
       } else {
         FFW.UI.sendUIResult(
@@ -1208,29 +1215,28 @@ SDL.SDLController = Em.Object.extend(
     onKeyboardChanges: function() {
       if (null !== SDL.SDLModel.data.keyboardInputValue) {
         var str = SDL.SDLModel.data.keyboardInputValue;
+
+        let mode = 'RESEND_CURRENT_ENTRY';
         if (SDL.SDLController.model &&
-          SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
-          switch (SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
-            case 'SINGLE_KEYPRESS':
-            {
-              FFW.UI.OnKeyboardInput(str.charAt(str.length - 1), 'KEYPRESS');
-              break;
-            }
-            case 'QUEUE_KEYPRESS':
-            {
-              break;
-            }
-            case 'RESEND_CURRENT_ENTRY':
-            {
-              if (str) {
-                FFW.UI.OnKeyboardInput(str, 'KEYPRESS');
-              }
-              break;
-            }
+            SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
+          mode = SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode;
+        }
+
+        switch (mode) {
+          case 'SINGLE_KEYPRESS': {
+            FFW.UI.OnKeyboardInput(str.charAt(str.length - 1), 'KEYPRESS');
+            break;
+          }
+          case 'QUEUE_KEYPRESS': {
+            break;
+          }
+          case 'RESEND_CURRENT_ENTRY': {
+            FFW.UI.OnKeyboardInput(str, 'KEYPRESS');
+            break;
           }
         }
       }
-    }.observes('SDL.SDLModel.data.keyboardInputValue'),
+    },
     /**
      * Get application model
      *

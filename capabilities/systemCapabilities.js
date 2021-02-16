@@ -31,14 +31,14 @@
  * @version 1.0
  */
 
-SDL.systemCapabilities = 
+SDL.systemCapabilities = Em.Object.create(
 {
     videoStreamingCapability: {
         preferredResolution: {
             resolutionWidth: 800,
             resolutionHeight: 380
         },
-        maxBitrate: 2147483647,
+        maxBitrate: 400000,
         supportedFormats: [
             {
                 protocol:  "RAW",
@@ -64,10 +64,79 @@ SDL.systemCapabilities =
         hapticSpatialDataSupported: true,
         diagonalScreenSize: 8,
         pixelPerInch: 96,
-        scale: 1
+        scale: 1,
+        preferredFPS: 20,
+        additionalVideoStreamingCapabilities: [
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 800,
+                    resolutionHeight: 380
+                },
+                hapticSpatialDataSupported: true,
+                scale: 1,
+                diagonalScreenSize: 8
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 320,
+                    resolutionHeight: 200
+                },
+                hapticSpatialDataSupported: false,
+                diagonalScreenSize: 3
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 480,
+                    resolutionHeight: 320
+                },
+                hapticSpatialDataSupported: true,
+                diagonalScreenSize: 5
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 400,
+                    resolutionHeight: 380
+                },
+                hapticSpatialDataSupported: true,
+                diagonalScreenSize: 4
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 800,
+                    resolutionHeight: 240
+                },
+                hapticSpatialDataSupported: true,
+                diagonalScreenSize: 4
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 800,
+                    resolutionHeight: 380
+                },
+                hapticSpatialDataSupported: true,
+                scale: 1.5,
+                diagonalScreenSize: 5
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 800,
+                    resolutionHeight: 380
+                },
+                hapticSpatialDataSupported: true,
+                scale: 2,
+                diagonalScreenSize: 4
+            }
+        ]
     },
     driverDistractionCapability: {
         menuLength: 10,
         subMenuDepth: 2
     }
-}
+});

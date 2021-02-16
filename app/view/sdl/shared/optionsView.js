@@ -139,13 +139,9 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
             for (i = 0; i < len; i++) {
               var menuID = commands[i].menuID;
               if (menuID && menuID >= 0) {
-                template = 'arrow';
-              } else if (commands[i].isTemplate){
-                template = commands[i].isTemplate ? 
-                'rightTextOverLay' : 
-                'rightText';
+                template = 'arrowExtended';
               } else {
-                template = commands[i].icon ? 'rightText' : 'text';
+                template = 'extended';
               }
               this.items.push(
                 {
@@ -158,7 +154,11 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                     icon: commands[i].icon,
                     target: 'SDL.SDLController',
                     action: 'onCommand',
-                    onDown: false
+                    onDown: false,
+                    secondaryText: commands[i].secondaryText,
+                    tertiaryText: commands[i].tertiaryText,
+                    secondaryIcon: commands[i].secondaryImage,
+                    isSecondaryTemplate: commands[i].isSecondaryTemplate 
                   }
                 }
               );

@@ -66,10 +66,10 @@ SDL.NavigationController = Em.Object.create(
 
       imageList = [];
       if(request.params.locationImage) {
-        imageList.push(request.params.locationImage.value);
+        imageList.push(request.params.locationImage);
       }
 
-      var callback = function(failed) {
+      var callback = function(failed, info) {
         var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
         var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
@@ -77,7 +77,7 @@ SDL.NavigationController = Em.Object.create(
           failed ? WARNINGS : SUCCESS,
           request.id,
           request.method,
-          failed ? "Requested image(s) not found" : null
+          info
         );
       }
       SDL.SDLModel.validateImages(request.id, callback, imageList);
@@ -437,6 +437,83 @@ SDL.NavigationController = Em.Object.create(
         2000
       );  // Allow time for the initial map display
     },
+    /**
+     * @description Converts capability item into corresponding string
+     * @param {Object} capability capability to convert
+     * @return formatted string
+     */
+    stringifyCapabilityItem: function(capability) {
+      let str_result = '';
+      if (capability.preferredResolution) {
+        str_result += `${capability.preferredResolution.resolutionWidth}x` +
+                      `${capability.preferredResolution.resolutionHeight}`;
+      }
+
+      if (capability.scale) {
+        str_result += ` Scale: ${capability.scale}`;
+      }
+
+      if (str_result == '') {
+        str_result = 'Undefined resolution';
+      }
+
+      return str_result;
+    },
+
+    /**
+     * @description Provides list of available video streaming capability presets
+     * @return {Array} list of capabilities
+     */
+    getVideoStreamingCapabilitiesList: function() {
+      const capabilities_array = SDL.NavigationModel.resolutionsList;
+      let list_to_display = [];
+
+      if (Array.isArray(capabilities_array)) {
+        capabilities_array.forEach((capability) => {
+          const stringified = SDL.NavigationController.stringifyCapabilityItem(capability);
+          list_to_display.push(stringified);
+        });
+      }
+
+      return list_to_display;
+    },
+
+    /**
+     * @description Makes selected video streaming preset the active one
+     * @param {String} preset_name name of new preset
+     */
+    switchVideoStreamingCapability: function(preset_name) {
+      const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList();
+      const index = preset_list.indexOf(preset_name);
+
+      if (index >= 0) {
+        Em.Logger.log(`Switching video streaming preset to: ${preset_name}`);
+        this.model.set('resolutionIndex', index);
+        const capability_to_switch = this.model.resolutionsList[index];
+        let capabilities_to_send = {};
+
+        if (capability_to_switch.preferredResolution) {
+          capabilities_to_send.preferredResolution = {};
+          capabilities_to_send.preferredResolution.resolutionWidth =
+            capability_to_switch.preferredResolution.resolutionWidth;
+          capabilities_to_send.preferredResolution.resolutionHeight =
+            capability_to_switch.preferredResolution.resolutionHeight;
+        }
+
+        if (capability_to_switch.scale) {
+          capabilities_to_send.scale = capability_to_switch.scale;
+        }
+
+        const json_to_send = {
+          'systemCapability' : {
+            'systemCapabilityType': 'VIDEO_STREAMING',
+            'videoStreamingCapability': capabilities_to_send
+          },
+          'appID': parseInt(SDL.SDLController.model.appID)
+        };
+        FFW.BasicCommunication.OnSystemCapabilityUpdated(json_to_send);
+      }
+    },
 
     /**
      * @desc Verifies if image is an PNG image, 
@@ -447,7 +524,7 @@ SDL.NavigationController = Em.Object.create(
     isPng: function(imagePath) {
       const img_extension = '.png';
       var search_offset = imagePath.lastIndexOf('.');
-      return imagePath.includes(img_extension, search_offset);
+      return imagePath.toLowerCase().includes(img_extension, search_offset);
     },
 
     /**
@@ -464,13 +541,13 @@ SDL.NavigationController = Em.Object.create(
         var countList=params.turnList.length;
         for(var i = 0; i < countList; i++) {
           if(params.turnList[i].turnIcon) {
-            var iconPath = params.turnList[i].turnIcon.value;
-            if(!this.isPng(iconPath)) {
+            var icon = params.turnList[i].turnIcon;
+            if(!this.isPng(icon.value)) {
               delete params.turnList[i].turnIcon;
               nonPngCounter++;
               continue;
             } 
-            imageList.push(iconPath);
+            imageList.push(icon);
           }
         }
       }
@@ -478,13 +555,13 @@ SDL.NavigationController = Em.Object.create(
         var countButtons=params.softButtons.length;
         for(var i=0;i<countButtons;i++) {
           if(params.softButtons[i].image) {
-            var iconPath = params.softButtons[i].image.value;
-            if(!this.isPng(iconPath)) {
+            var icon = params.softButtons[i].image;
+            if(!this.isPng(icon.value)) {
               delete params.softButtons[i].image;
               nonPngCounter++;
               continue;
             } 
-            imageList.push(iconPath);
+            imageList.push(icon);
           }
         }
       }
@@ -493,7 +570,7 @@ SDL.NavigationController = Em.Object.create(
           delete params.turnIcon;
           nonPngCounter++;
         } else {
-          imageList.push(params.turnIcon.value);
+          imageList.push(params.turnIcon);
         }
       } 
       if(params.nextTurnIcon) {
@@ -501,7 +578,7 @@ SDL.NavigationController = Em.Object.create(
           delete params.nextTurnIcon;
           nonPngCounter++;
         } else {
-          imageList.push(params.nextTurnIcon.value);
+          imageList.push(params.nextTurnIcon);
         }
       }
 
@@ -514,16 +591,16 @@ SDL.NavigationController = Em.Object.create(
         return;
       }
 
-      var callback = function(failed) {
+      var callback = function(failed, info) {
           var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
           var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
           FFW.Navigation.sendNavigationResult(
-            failed ? WARNINGS : SUCCESS, 
-            request.id, 
-            request.method, 
-            failed ? "Requested image(s) not found" : null);
+            failed ? WARNINGS : SUCCESS,
+            request.id,
+            request.method,
+            info);
       }
       SDL.SDLModel.validateImages(request.id, callback, imageList);
-    },
+    }
   }
 );
