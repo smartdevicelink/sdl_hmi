@@ -247,6 +247,16 @@ SDL.InfoController = Em.Object.create(
 
       // Drop pending properties if notification received during Set request
       this.set('editedAppPropertiesToApply', null);
+
+      if (!new_properties.enabled 
+          && new_properties.policyAppID in SDL.SDLModel.webApplicationFramesMap) {
+        let frame = SDL.SDLModel.webApplicationFramesMap[new_properties.policyAppID];
+        const web_engine_view = document.getElementById("webEngineView");
+        if (web_engine_view) {
+          web_engine_view.removeChild(frame);
+        }
+        delete SDL.SDLModel.webApplicationFramesMap[new_properties.policyAppID];
+      }
     },
 
     /**
