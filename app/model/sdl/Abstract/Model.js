@@ -756,15 +756,15 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Object} params
    */
   tbtActivate: function(params) {
-    var text1 = params.navigationTexts.
-                        filterProperty('fieldName', 'navigationText1'
-                        )[0].fieldText;
-    var text2 = params.navigationTexts.
-                        filterProperty('fieldName', 'navigationText2'
-                        )[0].fieldText;
+    var nav1Texts = params.navigationTexts.filterProperty('fieldName', 'navigationText1');
+    var nav2Texts = params.navigationTexts.filterProperty('fieldName', 'navigationText2');
 
-    SDL.NavigationModel.set('startLoc', text1);
-    SDL.NavigationModel.set('endLoc', text2);
+    if (nav1Texts.length) {
+      SDL.NavigationModel.set('startLoc', nav1Texts[0].fieldText);
+    }
+    if (nav2Texts.length) {
+      SDL.NavigationModel.set('endLoc', nav2Texts[0].fieldText);
+    }
 
     SDL.SDLController.getApplicationModel(params.appID).
         set('constantTBTParams', params);
