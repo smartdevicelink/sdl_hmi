@@ -33,31 +33,6 @@
 
 SDL.RController = SDL.SDLController.extend(
   {
-    onEventChanged: function(reason, status) {
-      switch (reason) {
-        case 'phoneCall':
-        {
-          FFW.BasicCommunication.OnPhoneCall(status);
-          break;
-        }
-        case 'emergencyEvent':
-        {
-          FFW.BasicCommunication.OnEmergencyEvent(status);
-          break;
-        }
-        case 'onDeactivateHMI':
-        {
-          FFW.BasicCommunication.OnDeactivateHMI(status);
-          break;
-        }
-        default:
-        {
-          this._super(reason, status);
-          return;
-        }
-      }
-    },
-
    onButtonPressEvent: function(params) {
       var result_struct = {
         resultCode: SDL.SDLModel.data.resultCode.SUCCESS,

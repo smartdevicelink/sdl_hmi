@@ -1387,23 +1387,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         this.sendMessage(JSONMessage);
       },
       /**
-       * Sender: HMI->SDL. When: upon phone-call event started or ended
-       *
-       * @params {Boolean}
-       */
-      OnPhoneCall: function(isActive) {
-        Em.Logger.log('FFW.BasicCommunication.OnPhoneCall');
-        // send request
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'method': 'BasicCommunication.OnPhoneCall',
-          'params': {
-            'isActive': isActive
-          }
-        };
-        this.sendMessage(JSONMessage);
-      },
-      /**
        * Initiated by HMI user. In response optional list of found devices -
        * if not provided, not were found.
        */
@@ -1491,23 +1474,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         this.sendMessage(JSONMessage);
       },
       /**
-       * Notifies if audio state was changed
-       *
-       * @param {Boolean} enabled
-       */
-      OnEmergencyEvent: function(enabled) {
-        Em.Logger.log('FFW.BasicCommunication.OnEmergencyEvent');
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'method': 'BasicCommunication.OnEmergencyEvent',
-          'params': {
-            'enabled': enabled
-          }
-        };
-        this.sendMessage(JSONMessage);
-      },
-      /**
        * Initiated by HMI.
        */
       OnSystemRequest: function(type, fileName, url, appID, subType) {
@@ -1537,23 +1503,6 @@ FFW.BasicCommunication = FFW.RPCObserver
           JSONMessage.params.requestSubType = subType;
         }
 
-        this.sendMessage(JSONMessage);
-      },
-      /**
-       * OnDeactivateHMI notification sender
-       * @param value
-       * @constructor
-       */
-      OnDeactivateHMI: function(value) {
-        Em.Logger.log('FFW.BasicCommunication.OnDeactivateHMI');
-        // send request
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'method': 'BasicCommunication.OnDeactivateHMI',
-          'params': {
-            'isDeactivated': value
-          }
-        };
         this.sendMessage(JSONMessage);
       },
       /**
