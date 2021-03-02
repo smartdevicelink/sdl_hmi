@@ -272,6 +272,17 @@ SDL.SeatModel = Em.Object.extend({
             this.set('seatControlData.' + key, data[key]);
             result.set(key,SDL.deepCopy(data[key]));
         }
+        
+        if (typeof data.massageEnabled === 'boolean') {
+            this.set('massageEnabledData', data.massageEnabled ? 'ON': 'OFF');
+        }
+        if (typeof data.heatingEnabled === 'boolean') {
+            this.set('heatingEnableData', data.heatingEnabled ? 'ON': 'OFF');
+        }
+        if (typeof data.coolingEnabled === 'boolean') {
+            this.set('coolingEnabledData', data.coolingEnabled ? 'ON': 'OFF');
+        }
+
         if (data.memory) {
             switch(data.memory.action){
                 case 'SAVE':
