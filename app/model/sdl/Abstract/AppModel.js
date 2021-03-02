@@ -594,14 +594,14 @@ SDL.ABSAppModel = Em.Object.extend(
             }
 
             var newItem = {
-        		  commandID: request.params.cmdID,
-        		  name: request.params.menuParams.menuName,
-        		  parent: parentID,
-        		  isTemplate:request.params.cmdIcon ?
+              commandID: request.params.cmdID,
+              name: request.params.menuParams.menuName,
+              parent: parentID,
+              isTemplate:request.params.cmdIcon ?
                 request.params.cmdIcon.isTemplate ? 
                 request.params.cmdIcon.isTemplate 
                 : null
-        		    : null,
+                : null,
               icon: request.params.cmdIcon ? 
                 request.params.cmdIcon.value : null,
               secondaryText: request.params.menuParams.secondaryText ? 
@@ -723,11 +723,16 @@ SDL.ABSAppModel = Em.Object.extend(
               position += 5; // for exit application commands
             }
 
-        		var newItem = {
-        		  menuID: request.params.menuID,
-        		  name: request.params.menuParams.menuName ?
-        		    request.params.menuParams.menuName : '',
-        		  parent: parentID,
+            var newItem = {
+              menuID: request.params.menuID,
+              name: request.params.menuParams.menuName ?
+                request.params.menuParams.menuName : '',
+              parent: parentID,
+              isTemplate:request.params.menuIcon ?
+                request.params.menuIcon.isTemplate ? 
+                request.params.menuIcon.isTemplate 
+                : null
+                : null,
               icon: request.params.menuIcon ? 
                 request.params.menuIcon.value : null,
               secondaryText: request.params.menuParams.secondaryText ? 

@@ -135,6 +135,7 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                     commandID: commands[i].commandID,
                     menuID: menuID,
                     icon: commands[i].icon,
+                    isTemplate: commands[i].isTemplate,
                     target: 'SDL.SDLController',
                     action: 'onCommand',
                     onDown: false,
