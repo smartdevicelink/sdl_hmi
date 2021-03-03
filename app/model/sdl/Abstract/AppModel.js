@@ -1127,5 +1127,12 @@ SDL.ABSAppModel = Em.Object.extend(
       this.activeWindows.length = 0;
     },
 
+    /**
+     * contains the app's HapticRect data
+     *
+     * @type Array of Common.HapticRect
+     */
+    hapticRectData: [],
+
   }
 );
