@@ -447,7 +447,8 @@ SDL.SDLController = Em.Object.extend(
                   SDL.SDLVehicleInfoModel.vehicleData[i],
                   parsedData[i]
                 )) {
-              params[i] = parsedData[i];
+              let paramKey = (i === "clusterModes") ? "clusterModeStatus" : i;
+              params[paramKey] = parsedData[i];
             }
           }
           SDL.SDLVehicleInfoModel.vehicleData = parsedData;
