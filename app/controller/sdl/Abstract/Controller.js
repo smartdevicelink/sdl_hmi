@@ -1282,13 +1282,7 @@ SDL.SDLController = Em.Object.extend(
         element.id
       );
       this.turnChangeDeviceViewBack();
-    },
-    /**
-     * Method call's request to get list of applications
-     */
-    findNewApps: function() {
-      FFW.BasicCommunication.OnFindApplications();
-    },
+    },    
     /**
      * Method activates selected registered application
      *
