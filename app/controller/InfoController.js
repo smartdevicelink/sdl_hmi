@@ -231,6 +231,16 @@ SDL.InfoController = Em.Object.create(
     onAppPropertiesNotification: function(new_properties) {
       let updated_properties = this.updateAppProperties(new_properties);
 
+      if (!new_properties.enabled 
+          && new_properties.policyAppID in SDL.SDLModel.webApplicationFramesMap) {
+        let frame = SDL.SDLModel.webApplicationFramesMap[new_properties.policyAppID];
+        const web_engine_view = document.getElementById("webEngineView");
+        if (web_engine_view) {
+          web_engine_view.removeChild(frame);
+        }
+        delete SDL.SDLModel.webApplicationFramesMap[new_properties.policyAppID];
+      }
+
       var current_policy_app_id = SDL.WebAppSettingsView.editorAppSettings.policyAppID;
       if (current_policy_app_id != updated_properties.policyAppID) {
         // Don't refresh displayed properties for a different app
