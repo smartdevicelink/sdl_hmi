@@ -2074,6 +2074,13 @@ FFW.UI = FFW.RPCObserver.create(
      */
     OnSystemContext: function(systemContextValue, appID, windowID) {
       Em.Logger.log('FFW.UI.OnSystemContext');
+
+      if (FLAGS.TOUCH_EVENT_STARTED && systemContextValue != 'MAIN'
+          && appID == SDL.SDLController.model.appID) {
+        FLAGS.TOUCH_EVENT_STARTED = false;
+        FFW.UI.onTouchEvent('CANCEL', [{ id: 0, ts: [parseInt(performance.now())], c: [{ x: 0, y: 0 }] }]);
+      }
+
       // send repsonse
       var JSONMessage = {
         'jsonrpc': '2.0',
