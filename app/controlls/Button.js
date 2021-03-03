@@ -53,6 +53,7 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
     highLightedMode:false,
     /** Button icon class */
     icon: null,
+    isTemplate: null,
     secondaryIcon: null,
     isSecondaryTemplate: null,
 
@@ -257,6 +258,9 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
 
       extended: Em.Handlebars.compile(
         '<div class="extended-button">' +
+          '{{#if view.isTemplate}}' +
+          '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
+          '{{/if}}' +
           '<img {{bindAttr class="view.icon:ico"}} \
           {{bindAttr src="view.icon"}} />' +
           '<div class="main-text">' +
@@ -265,6 +269,9 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
           '</div>' +
           '<div class="end-info">' +
             '<span class="w-50 t-small tertiary-text">{{view.tertiaryText}}</span>' +
+            '{{#if view.isSecondaryTemplate}}' +
+            '<img {{bindAttr class="view.secondaryIcon:ico-overlay"}}  />' +
+            '{{/if}}' +
             '<img {{bindAttr class="view.secondaryIcon:ico"}} \
             {{bindAttr src="view.secondaryIcon"}} />' +
           '</div>'+
@@ -273,6 +280,9 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
 
       arrowExtended: Em.Handlebars.compile(
         '<div class="extended-button">' +
+          '{{#if view.isTemplate}}' +
+          '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
+          '{{/if}}' +
           '<img {{bindAttr class="view.icon:ico"}} \
           {{bindAttr src="view.icon"}} />' +
           '<div class="main-text">' +
@@ -281,8 +291,13 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
           '</div>' +
           '<div class="end-info">' +
             '<span class="w-50 t-small tertiary-text">{{view.tertiaryText}}</span>' +
+            '<div class="relative-r-0">' +
+            '{{#if view.isSecondaryTemplate}}' +
+            '<img {{bindAttr class="view.secondaryIcon:ico-overlay"}}  />' +
+            '{{/if}}' +
             '<img {{bindAttr class="view.secondaryIcon:ico"}} \
             {{bindAttr src="view.secondaryIcon"}} />' +
+            '</div>' +
             '<img class="arrow-ico relative-r-0" src="images/common/arrow_ico.png" />' +
           '</div>'+
         '</div>'
