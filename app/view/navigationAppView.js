@@ -85,7 +85,7 @@ SDL.NavigationAppView = Em.ContainerView.create(
           Object.assign(rect.style, {
             position: 'absolute',
             left: `${h.rect.x}px`,
-            top: `${h.rect.y}px`,
+            top: `${h.rect.y+50}px`,
             width: `${h.rect.width}px`,
             height: `${h.rect.height}px`,
             zIndex: 1002,
