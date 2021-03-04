@@ -271,7 +271,6 @@ SDL.SDLController = Em.Object.extend(
             break;
           }
         } else {
-               //FFW.BasicCommunication.OnAppActivated(SDL.SDLModel.data.registeredApps[0].appID); /* trial */
           if (null != SDL.SDLModel.data.redisplayAppID) {
                FFW.BasicCommunication.OnAppActivated(SDL.SDLModel.data.redisplayAppID);
                SDL.SDLModel.data.redisplayAppID = null;
