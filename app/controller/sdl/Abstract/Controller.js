@@ -260,6 +260,24 @@ SDL.SDLController = Em.Object.extend(
         SDL.SDLModel.data.mediaPlayerActive = status;
       }
       FFW.BasicCommunication.OnEventChanged(eventName, status);
+      
+      if ('PHONE_CALL' == eventName) {
+        if (true == status) {
+          for (var i = SDL.SDLModel.data.registeredApps.length - 1; i >= 0; i--) {
+            if (SDL.SDLController.getApplicationModel(SDL.SDLModel.data.registeredApps[i].appID).level == 'FULL') {
+               SDL.SDLModel.data.redisplayAppID = SDL.SDLModel.data.registeredApps[i].appID;
+               FFW.BasicCommunication.OnAppDeactivated(SDL.SDLModel.data.redisplayAppID);
+            }
+            break;
+          }
+        } else {
+               //FFW.BasicCommunication.OnAppActivated(SDL.SDLModel.data.registeredApps[0].appID); /* trial */
+          if (null != SDL.SDLModel.data.redisplayAppID) {
+               FFW.BasicCommunication.OnAppActivated(SDL.SDLModel.data.redisplayAppID);
+               SDL.SDLModel.data.redisplayAppID = null;
+          }
+        }
+      }
     },
     /**
      * Method clears all applications data and unregister models
