@@ -58,8 +58,7 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
       if (SDL.SDLController.model) {
         var currentSubMenuID = SDL.SDLController.model.get('currentSubMenuId');
         if (currentSubMenuID != 'top' &&
-          currentSubMenuID >= 0  && 
-          !SDL.SDLController.model.get('subMenuInitFromApp')) {
+          currentSubMenuID >= 0) {
           var commandsList = SDL.SDLController.model.get('commandsList');
           var findParentID = (commands, menuID) => {
             for (id in commands) {
@@ -76,7 +75,6 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
         } else {
           SDL.SDLController.onSubMenu('top');
           this._super();
-          SDL.SDLController.model.set('subMenuInitFromApp', false);
         }
       }
       SDL.SDLController.onSystemContextChange();
