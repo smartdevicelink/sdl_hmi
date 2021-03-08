@@ -1767,7 +1767,7 @@ SDL.SDLController = Em.Object.extend(
     onUpdateFile: function(fileName) {
       if(SDL.SDLController.model && SDL.SDLController.model.appID) {
         let model = SDL.SDLController.model;
-        if (model.cachedIconFileNamesList.indexOf(fileName) < 0) {
+        if (!model.cachedIconFileNamesList.includes(fileName)) {
           model.cachedIconFileNamesList.push(fileName);
           FFW.UI.OnUpdateFile(model.appID, fileName);
         }
@@ -1783,7 +1783,7 @@ SDL.SDLController = Em.Object.extend(
     onUpdateSubMenu: function(menuID) {
       if(SDL.SDLController.model && SDL.SDLController.model.appID) {
         let model = SDL.SDLController.model;
-        if (model.cachedSubmenuIdsList.indexOf(menuID) < 0) {
+        if (!model.cachedSubmenuIdsList.includes(menuID)) {
           model.cachedSubmenuIdsList.push(menuID);
           FFW.UI.OnUpdateSubMenu(model.appID, menuID);
         }
