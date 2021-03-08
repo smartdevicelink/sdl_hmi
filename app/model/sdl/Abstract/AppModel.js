@@ -366,6 +366,18 @@ SDL.ABSAppModel = Em.Object.extend(
     unregisteringInProgress: false,
 
     /**
+     * @type {Array}
+     * @description list of already requested icon file names from SDL
+     */
+    cachedIconFileNamesList: [],
+
+    /**
+     * @type {Array}
+     * @description list of already requested submenu ID updates from SDL
+     */
+    cachedSubmenuIdsList: [],
+
+    /**
      * @param maskInputCharactersUserChoice
      * @type {Boolean}
      * @description flag to store user preferences when mask input button is visible
@@ -793,7 +805,9 @@ SDL.ABSAppModel = Em.Object.extend(
       }
 
       if (menuID in commandsList) {
-        delete(commandsList[menuID])
+        delete(commandsList[menuID]);
+        SDL.SDLController.onDeleteSubMenu(menuID);
+        SDL.OptionsView.commands.refreshItems();
         return SDL.SDLModel.data.resultCode.SUCCESS;
       }
 

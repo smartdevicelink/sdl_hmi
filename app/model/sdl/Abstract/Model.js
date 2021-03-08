@@ -215,6 +215,11 @@ SDL.SDLModel = Em.Object.extend({
     if (is_image_type && app_model) {
       result = app_model.onImageRemoved(params.fileName);
 
+      const cached_index = app_model.cachedIconFileNamesList.indexOf(fileName);
+      if (cached_index >= 0) {
+        app_model.cachedIconFileNamesList.splice(cached_index, 1);
+      }
+
       if (app_model.appIcon.includes(params.fileName) &&
         params.fileName.length == app_model.appIcon.length) {
         app_model.set('appIcon', SDL.SDLModel.data.defaultListOfIcons.app);

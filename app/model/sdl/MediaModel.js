@@ -87,6 +87,8 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
+    this.set('cachedIconFileNamesList', []);
+    this.set('cachedSubmenuIdsList', []);
 
     this.set('inactiveWindows', []);
     this.set('backgroundWindows', []);
