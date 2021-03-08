@@ -1004,7 +1004,6 @@ SDL.SDLModel = Em.Object.extend({
   showAppMenu: function(request) {
     SDL.OptionsView.activate();
     if(request.params.menuID !== undefined) {
-      SDL.SDLController.model.set('subMenuInitFromApp', true);
       SDL.SDLController.onSubMenu(request.params.menuID);
     }
     FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
