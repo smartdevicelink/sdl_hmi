@@ -531,7 +531,6 @@ FFW.BasicCommunication = FFW.RPCObserver
             appModel, notification.params.vrSynonyms
           );
           FFW.RPCHelper.addApplication(notification.params.application.appID);
-          this.OnFindApplications();
           const mainWindowID = 0;
           let capability = SDL.SDLController.getDefaultCapabilities(mainWindowID, notification.params.application.appID);
           FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
@@ -1317,23 +1316,6 @@ FFW.BasicCommunication = FFW.RPCObserver
             }
           }
         };
-        this.sendMessage(JSONMessage);
-      },
-      /**
-       * This methos is request to get list of registered apps.
-       */
-      OnFindApplications: function() {
-        Em.Logger.log('FFW.BasicCommunication.OnFindApplications');
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'method': 'BasicCommunication.OnFindApplications'
-        };
-        if (SDL.SDLModel.data.CurrDeviceInfo.name ||
-          SDL.SDLModel.data.CurrDeviceInfo.id) {
-          JSONMessage.params = {
-            'deviceInfo': SDL.SDLModel.data.CurrDeviceInfo
-          };
-        }
         this.sendMessage(JSONMessage);
       },
       /**
