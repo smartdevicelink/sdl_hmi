@@ -124,10 +124,10 @@ div.glider-slide {
 }
 
 .ffw-button .end-info {
-    position: relative;
     display: flex;
     justify-content: flex-end;
     flex-grow: 4;
+    right: 0px;
 }
 
 .ffw-button .relative-r-0 {
