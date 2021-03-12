@@ -215,7 +215,7 @@ SDL.SDLModel = Em.Object.extend({
     if (is_image_type && app_model) {
       result = app_model.onImageRemoved(params.fileName);
 
-      const cached_index = app_model.cachedIconFileNamesList.indexOf(fileName);
+      const cached_index = app_model.cachedIconFileNamesList.indexOf(params.fileName);
       if (cached_index >= 0) {
         app_model.cachedIconFileNamesList.splice(cached_index, 1);
       }
