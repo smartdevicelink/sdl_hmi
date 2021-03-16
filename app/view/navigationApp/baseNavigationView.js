@@ -184,7 +184,7 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       ),
 
       getResolutionValue: function() {
-        if (SDL.NavigationModel.resolutionIndex < SDL.NavigationModel.resolutionsList.length - 1) {
+        if (SDL.NavigationModel.resolutionIndex < SDL.NavigationModel.resolutionsList.length) {
           return SDL.NavigationController.stringifyCapabilityItem(
             SDL.NavigationModel.resolutionsList[SDL.NavigationModel.resolutionIndex]
           );
