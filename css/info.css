@@ -617,17 +617,8 @@
 	top: 122px;
 }
 
-#info_apps .findNewApps {
-	top: 174px;
-}
-
-#info_apps .findNewApps img {
-	margin: 9px;
-	width: 32px;
-}
-
 #info_apps .getDeviceList {
-	top: 226px;
+	top: 174px;
 }
 
 #info_apps .getDeviceList img {
@@ -636,7 +627,7 @@
 }
 
 #info_apps .appsStore {
-	top: 278px;
+	top: 226px;
 }
 
 #info_apps .appsStore img {
