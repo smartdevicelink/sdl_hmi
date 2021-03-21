@@ -440,12 +440,14 @@ FFW.BasicCommunication = FFW.RPCObserver
           if  (capabilities_type == 'VIDEO_STREAMING') {
             const updated_caps = notification.params.appCapability.videoStreamingCapability;
             if (updated_caps.additionalVideoStreamingCapabilities) {
-              if (SDL.NavigationModel.resolutionIndex > updated_caps.additionalVideoStreamingCapabilities.length - 1) {
-                SDL.NavigationModel.set('resolutionIndex',
+              let appModel = SDL.SDLController.getApplicationModel(notification.params.appID);
+
+              if (appModel && appModel.resolutionIndex > updated_caps.additionalVideoStreamingCapabilities.length - 1) {
+                appModel.set('resolutionIndex',
                   updated_caps.additionalVideoStreamingCapabilities.length - 1
                 );
               }
-              SDL.NavigationModel.set('resolutionsList',
+              appModel.set('resolutionsList',
                 updated_caps.additionalVideoStreamingCapabilities
               );
             }

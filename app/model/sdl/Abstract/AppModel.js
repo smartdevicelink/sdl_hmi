@@ -224,6 +224,14 @@ SDL.ABSAppModel = Em.Object.extend(
      */
     navigationAudioStream: null,
     /**
+     * List of resolutions to display on navi view
+     */
+    resolutionsList: [],
+    /**
+     * Index of selected resolution on navi view
+     */
+    resolutionIndex: 0,
+    /**
      * Application video configuration parameters
      *
      * @type {Object}
@@ -537,6 +545,10 @@ SDL.ABSAppModel = Em.Object.extend(
       }
 
       this.set('maskInputCharactersUserChoice', true);
+
+      this.set('resolutionsList',
+        SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities
+      );
     },
     /**
      * @description Gets app default keyboard global properties
