@@ -117,7 +117,9 @@ SDL.SDLMediaController = Em.Object.create(
      * Restore current application to active state
      */
     activateCurrentApp: function() {
-      FFW.BasicCommunication.ActivateApp(this.currentAppId);
+      if (this.currentAppId) {
+        FFW.BasicCommunication.ActivateApp(this.currentAppId);
+      }
     },
     /**
      * Deactivate specific application
