@@ -307,7 +307,7 @@ SDL.SeatModel = Em.Object.extend({
         }
 
        this.update();
-       return  result;
+       return result;
     },
 
     getSeatControlData: function() {
