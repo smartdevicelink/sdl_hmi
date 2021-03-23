@@ -1078,6 +1078,13 @@ SDL.SDLModel = Em.Object.extend({
             });
           }
 
+          if (name === "maskInputCharacters" && 
+            properties[name] === "USER_CHOICE_INPUT_KEY_MASK" && 
+            default_properties[name] !== "USER_CHOICE_INPUT_KEY_MASK") {
+            SDL.KeyboardController.set('maskCharacters', true);
+            SDL.SDLController.model.set('maskInputCharactersUserChoice', true);
+          }
+
           model.set('globalProperties.keyboardProperties.' + name, properties[name]);
         } else {
           model.set('globalProperties.keyboardProperties.' + name, default_properties[name]);
