@@ -242,11 +242,11 @@ SDL.SDLController = Em.Object.extend(
      * StateManager
      */
     deactivateApp: function() {
-      SDL.SDLController.onSubMenu('top');
       if (this.model) {
+        SDL.SDLController.onSubMenu('top');
         SDL.SDLModel.onDeactivateApp(SDL.States.nextState, this.model.appID);
+        SDL.SDLController.model.set('tbtActivate', false);
       }
-      SDL.SDLController.model.set('tbtActivate', false);
       this.set('model', null);
     },
     /**
