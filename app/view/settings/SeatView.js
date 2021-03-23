@@ -83,7 +83,7 @@ SDL.SeatView = Em.ContainerView.create({
                 valueBinding: 'SDL.RCModulesController.currentSeatModel.heatingEnableData',
                 change:function(){
                     SDL.RCModulesController.currentSeatModel.set('tempSeatControlData.heatingEnabled',
-                (SDL.RCModulesController.currentSeatModel.heatingEnableData=='ON')? true:false);
+                (SDL.RCModulesController.currentSeatModel.heatingEnableData=='ON'));
                 }
             })
         }),
@@ -143,7 +143,7 @@ SDL.SeatView = Em.ContainerView.create({
                 valueBinding: 'SDL.RCModulesController.currentSeatModel.coolingEnabledData',
                 change:function(){
                     SDL.RCModulesController.currentSeatModel.set('tempSeatControlData.coolingEnabled',
-                (SDL.RCModulesController.currentSeatModel.coolingEnabledData=='ON')? true:false);
+                (SDL.RCModulesController.currentSeatModel.coolingEnabledData=='ON'));
                 }
             })
         }),
@@ -942,7 +942,7 @@ SDL.SeatView = Em.ContainerView.create({
             valueBinding: 'SDL.RCModulesController.currentSeatModel.massageEnabledData',
             change:function(){
                 SDL.RCModulesController.currentSeatModel.set('tempSeatControlData.massageEnabled',
-            (SDL.RCModulesController.currentSeatModel.massageEnabledData=='ON')? true:false);
+            (SDL.RCModulesController.currentSeatModel.massageEnabledData=='ON'));
             }
         })
     }),    
@@ -1188,4 +1188,3 @@ SDL.SeatView = Em.ContainerView.create({
 
     })
 })
-
