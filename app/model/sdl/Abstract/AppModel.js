@@ -634,29 +634,33 @@ SDL.ABSAppModel = Em.Object.extend(
             };
             // Insert new item at calculated position
             commands.splice(position, 0, newItem);
-        		if (SDL.SDLController.getApplicationModel(request.params.appID) &&
+        	if (SDL.SDLController.getApplicationModel(request.params.appID) &&
                     SDL.OptionsView.active) {
-                        SDL.SDLController.buttonsSort(parentID, this.appID);
-                        SDL.OptionsView.commands.refreshItems();
-        		}
+              SDL.SDLController.buttonsSort(parentID, this.appID);
+              SDL.OptionsView.commands.refreshItems();
+        	}
 
-    		    if(request.params.cmdIcon) {
+            var imageList = [];
+            if (request.params.cmdIcon) {
+              imageList.push(request.params.cmdIcon);
+            }
 
-              var image = request.params.cmdIcon;
+            if (request.params.secondaryImage) {
+              imageList.push(request.params.secondaryImage);
+            }
 
-              var callback = function(failed, info) {
+            if (imageList.length > 0) {
+             var callback = function(failed, info) {
                 var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
                 var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
-
                 FFW.UI.sendUIResult(
                   failed ? WARNINGS : SUCCESS, 
                   request.id, 
                   request.method, 
                   info);
               }
-
-              SDL.SDLModel.validateImages(request.id, callback, [image]);
-              return;
+              SDL.SDLModel.validateImages(request.id, callback, imageList);
+              return; 
             }
 
             if (is_sdl_request) {
