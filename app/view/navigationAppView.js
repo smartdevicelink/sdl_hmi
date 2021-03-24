@@ -90,6 +90,7 @@ SDL.NavigationAppView = Em.ContainerView.create(
             height: `${h.rect.height}px`,
             zIndex: 1002,
             border: '1px solid #ff0000',
+            'pointer-events': 'none',
           });
 
           rects.appendChild(rect);
