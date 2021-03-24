@@ -377,9 +377,7 @@ SDL.SettingsController = Em.Object.create(
      * @description Observer function to track apps avaliable for PTU
      */
     observeAvailableForPtuApps: function() {
-      if (SDL.SDLModel.data.registeredApps.length > 0) {
-        this.runScheduledPtuIteration();
-      }
+      this.runScheduledPtuIteration();
     }.observes('SDL.SDLModel.data.registeredApps.@each'),
     /**
      * @description Runs scheduled PTU iteration if all conditions are met
@@ -387,6 +385,7 @@ SDL.SettingsController = Em.Object.create(
     runScheduledPtuIteration: function() {
       if (SDL.SDLModel.data.registeredApps.length > 0 && this.nextPtuIterationScheduled) {
         Em.Logger.log('Starting of PTU iteration');
+        this.set('nextPtuIterationScheduled', false);
         if (SDL.SDLModel.data.policyURLs.length > 0) {
           this.OnSystemRequestHandler(SDL.SDLModel.data.policyURLs[0]);
         } else {
@@ -395,7 +394,6 @@ SDL.SettingsController = Em.Object.create(
         if (FLAGS.ExternalPolicies === true) {
           this.policyUpdateRetry();
         }
-        this.set('nextPtuIterationScheduled', false);
       }
     },
     /**
