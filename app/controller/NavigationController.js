@@ -465,7 +465,7 @@ SDL.NavigationController = Em.Object.create(
      * @return {Array} list of capabilities
      */
     getVideoStreamingCapabilitiesList: function() {
-      const capabilities_array = SDL.NavigationModel.resolutionsList;
+      const capabilities_array = SDL.SDLController.model ? SDL.SDLController.model.resolutionsList : null;
       let list_to_display = [];
 
       if (Array.isArray(capabilities_array)) {
@@ -488,8 +488,8 @@ SDL.NavigationController = Em.Object.create(
 
       if (index >= 0) {
         Em.Logger.log(`Switching video streaming preset to: ${preset_name}`);
-        this.model.set('resolutionIndex', index);
-        const capability_to_switch = this.model.resolutionsList[index];
+        SDL.SDLController.model.set('resolutionIndex', index);
+        const capability_to_switch = SDL.SDLController.model.resolutionsList[index];
         let capabilities_to_send = {};
 
         if (capability_to_switch.preferredResolution) {

@@ -709,8 +709,8 @@ SDL.SDLModel = Em.Object.extend({
 
         Em.Logger.log('Set params from VideoConfig');
 
-        var width = SDL.NavigationModel.resolutionsList[SDL.NavigationModel.resolutionIndex].preferredResolution.resolutionWidth;
-        var height = SDL.NavigationModel.resolutionsList[SDL.NavigationModel.resolutionIndex].preferredResolution.resolutionHeight;
+        var width = app_model.resolutionsList[app_model.resolutionIndex].preferredResolution.resolutionWidth;
+        var height = app_model.resolutionsList[app_model.resolutionIndex].preferredResolution.resolutionHeight;
 
         SDL.SDLModel.data.naviVideo.style.setProperty("width",width + "px");
         SDL.SDLModel.data.naviVideo.style.setProperty("height",height + "px");
