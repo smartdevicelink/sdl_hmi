@@ -51,7 +51,8 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
      * @param {Object}
      */
     activate: function(element) {
-      if (SDL.SDLController.model?.globalProperties?.keyboardProperties?.maskInputCharacters == 'USER_CHOICE_INPUT_KEY_MASK' && !SDL.KeyboardController.maskCharacters) {
+      if (SDL.SDLController.model?.globalProperties?.keyboardProperties?.maskInputCharacters == 'USER_CHOICE_INPUT_KEY_MASK' 
+          && !SDL.KeyboardController.maskCharacters) {
         SDL.KeyboardController.set('maskCharacters', true);
         SDL.KeyboardController.updateInputMasking();
       }
