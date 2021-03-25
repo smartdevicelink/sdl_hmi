@@ -354,7 +354,7 @@ FFW.RC = FFW.RPCObserver.create(
               'jsonrpc': '2.0',
               'id': request.id,
               'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                'code': resultCode,
                 'method': request.method
               }
             };
