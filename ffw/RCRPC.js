@@ -316,6 +316,22 @@ FFW.RC = FFW.RPCObserver.create(
           {
             Em.Logger.log('FFW.' + request.method + ' Request');
 
+            let resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'rcSetGlobalProperties');
+
+            if ('DO_NOT_RESPOND' == resultCode) {
+              Em.Logger.log('Do not respond on this RC request');
+              return;
+            }
+
+            if(!FFW.RPCHelper.isSuccessResultCode(resultCode)){
+              this.sendError(
+                resultCode,
+                request.id,
+                request.method,
+                'Erroneous response is assigned by settings');
+              return;
+            }
+
             if (request.params.userLocation !== null) {
               var user_location = request.params.userLocation.grid;
               var app = SDL.SDLController.getApplicationModel(request.params.appID);
@@ -338,11 +354,12 @@ FFW.RC = FFW.RPCObserver.create(
               'jsonrpc': '2.0',
               'id': request.id,
               'result': {
-                'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                'code': resultCode,
                 'method': request.method
               }
             };
             this.client.send(JSONMessage);
+            break;
           }
 
           default:

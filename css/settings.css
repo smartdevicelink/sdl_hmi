@@ -137,11 +137,17 @@
 .ttssetGlobalPropertieslabel {
     position: absolute;
     top: 185px;
-    font-size: 85%;
+    font-size: 92%;
+}
+
+.rcsetGlobalPropertieslabel {
+    position: absolute;
+    top: 210px;
+    font-size: 95%;
 }
 
 .uiCreateWindowLabel {
-    top: 210px;
+    top: 235px;
 }
 
  .subscribeWayPoints{
@@ -234,8 +240,13 @@
     position: absolute;
 }
 
-.uiCreateWindowSelect {
+.rcsetGlobalPropertiesSelect {
     top: 210px;
+    position: absolute;
+}
+
+.uiCreateWindowSelect {
+    top: 235px;
     position: absolute;
 }
 
