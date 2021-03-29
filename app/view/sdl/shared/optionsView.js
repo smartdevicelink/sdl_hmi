@@ -65,10 +65,10 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
         SDL.OptionsView.commands.items.length);
 
       let items = SDL.OptionsView.commands.items;
-      let menu_nested_items = SDL.SDLController.model.get('commandsList');
+      let menu_nested_items = SDL.SDLController.model?.get('commandsList') ?? {};
       for (let i = start_index; i < end_index; ++i) {
         const menuID = items[i].params.menuID;
-        if (menuID && menuID >= 0 && menu_nested_items[menuID].length === 0) {
+        if (menuID > 0 && menu_nested_items[menuID]?.length === 0) {
           // Notify mobile to update submenu
           SDL.SDLController.onUpdateSubMenu(menuID);
         }
