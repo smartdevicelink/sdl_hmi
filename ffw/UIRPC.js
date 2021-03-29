@@ -2082,7 +2082,7 @@ FFW.UI = FFW.RPCObserver.create(
       if (FLAGS.TOUCH_EVENT_STARTED && systemContextValue != 'MAIN'
           && appID == SDL.SDLController.model.appID) {
         FLAGS.TOUCH_EVENT_STARTED = false;
-        FFW.UI.onTouchEvent('CANCEL', [{ id: 0, ts: [parseInt(performance.now())], c: [{ x: 0, y: 0 }] }]);
+        FFW.UI.onTouchEvent('CANCEL', [{ id: 0, ts: [parseInt(performance.now())], c: [FLAGS.LAST_TOUCH_POINT] }]);
       }
 
       // send repsonse
