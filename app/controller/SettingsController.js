@@ -374,12 +374,6 @@ SDL.SettingsController = Em.Object.create(
       this.runScheduledPtuIteration();
     },
     /**
-     * @description Observer function to track apps avaliable for PTU
-     */
-    observeAvailableForPtuApps: function() {
-      this.runScheduledPtuIteration();
-    }.observes('SDL.SDLModel.data.registeredApps.@each'),
-    /**
      * @description Runs scheduled PTU iteration if all conditions are met
      */
     runScheduledPtuIteration: function() {
