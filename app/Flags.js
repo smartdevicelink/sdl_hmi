@@ -45,6 +45,7 @@ FLAGS = Em.Object.create(
     PYTHON_SERVER_URL: 'ws://127.0.0.1:8081',
     CAN_WEBSOCKET_URL: 'ws://127.0.0.1:2468',
     TOUCH_EVENT_STARTED: false,
+    LAST_TOUCH_POINT: {},
     BasicCommunication: null,
     UI: null,
     VehicleInfo: null,
