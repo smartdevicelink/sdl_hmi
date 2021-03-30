@@ -172,7 +172,10 @@ FFW.TTS = FFW.RPCObserver.create(
           let info = null;
 
           if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
-            resultCode = SDL.SDLModel.setProperties(request.params);
+            const setResultCode = SDL.SDLModel.setProperties(request.params);
+            if (resultCode == SDL.SDLModel.data.resultCode.SUCCESS){
+              resultCode = setResultCode;
+            }
           } else {
             info = 'Erroneous response is assigned by settings';
           }

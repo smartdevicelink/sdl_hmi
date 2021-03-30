@@ -777,11 +777,15 @@ SDL.ABSAppModel = Em.Object.extend(
             var callback = function(failed, info) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
               var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+              var finalCode = failed ? WARNINGS : SUCCESS;
+              if (result != SUCCESS){
+                finalCode = result;
+              }
 
               FFW.UI.sendUIResult(
-                failed ? WARNINGS : SUCCESS, 
-                request.id, 
-                request.method, 
+                finalCode,
+                request.id,
+                request.method,
                 info);
             }
             var imageList = [];
