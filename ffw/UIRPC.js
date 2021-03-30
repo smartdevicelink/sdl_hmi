@@ -273,7 +273,7 @@ FFW.UI = FFW.RPCObserver.create(
           let info = null;
           
           if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
-            resultCode = SDL.SDLModel.setProperties(request.params);
+            const setResultCode = SDL.SDLModel.setProperties(request.params);
 
             var imageList = [];
             if(request.params.menuIcon) {
@@ -288,17 +288,24 @@ FFW.UI = FFW.RPCObserver.create(
               }
             }
 
-            var that = this;
             var callback = function(failed, info) {
               var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
-              var SUCCESS = resultCode;
+              var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
+              var finalCode = failed ? WARNINGS : SUCCESS;
+              if (finalCode != SUCCESS){
+                finalCode = setResultCode;
+              }
+              if (resultCode != SUCCESS){
+                finalCode = resultCode;
+              }
 
-              that.sendUIResult(
-                failed ? WARNINGS : SUCCESS,
+              FFW.UI.sendUIResult(
+                finalCode,
                 request.id,
                 request.method,
                 info);
             }
+            
             SDL.SDLModel.validateImages(request.id, callback, imageList);
             break;
           } else {
