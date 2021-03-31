@@ -377,7 +377,14 @@ SDL.SettingsController = Em.Object.create(
      * @description Runs scheduled PTU iteration if all conditions are met
      */
     runScheduledPtuIteration: function() {
-      if (SDL.SDLModel.data.registeredApps.length > 0 && this.nextPtuIterationScheduled) {
+      let availableForPtuAppExists = false;
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        if (app.initialized === true) {
+          availableForPtuAppExists = true;
+        }
+      });
+
+      if (availableForPtuAppExists && this.nextPtuIterationScheduled) {
         Em.Logger.log('Starting of PTU iteration');
         this.set('nextPtuIterationScheduled', false);
         if (SDL.SDLModel.data.policyURLs.length > 0) {
