@@ -83,18 +83,15 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               'prevcd'
             ],
             onIconChange: function() {
-              let icon = "images/media/ico_prew.png"; 
-              for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
-                if (SDL.SDLMediaController.currentAppId
-                  == SDL.SDLModel.data.registeredApps[i].appID) { 
-                  icon = (SDL.SDLModel.data.registeredApps[i].backSeekIndicator?.type === 'TIME')
-                    ? "images/media/ico_seek_left.png" : icon;                  
-                  break;
-                }
+              let icon = "images/media/ico_prew.png";
+              if (SDL.SDLController.model && SDL.SDLController.model.backSeekIndicator) {
+                icon = (SDL.SDLController.model.backSeekIndicator?.type === 'TIME')
+                    ? "images/media/ico_seek_left.png"
+                    : icon;
               }
               return icon;
             }.property(
-              'SDL.SDLModel.data.registeredApps.@each.backSeekIndicator'
+              'SDL.SDLController.model.backSeekIndicator'
             ),
             iconBinding: 'onIconChange',
             presetName: 'SEEKLEFT'
@@ -144,18 +141,15 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
             ],
             classNameBindings: 'SDL.SDLController.model.SEEKRIGHT::unsubscribed',
             onIconChange: function() {
-              let icon = "images/media/ico_next.png"; 
-              for (var i = 0; i < SDL.SDLModel.data.registeredApps.length; i++) {
-                if (SDL.SDLMediaController.currentAppId
-                  == SDL.SDLModel.data.registeredApps[i].appID) { 
-                  icon = (SDL.SDLModel.data.registeredApps[i].forwardSeekIndicator?.type === 'TIME')
-                    ? "images/media/ico_seek_right.png" : icon;                  
-                  break;
-                }
+              let icon = "images/media/ico_next.png";
+              if (SDL.SDLController.model && SDL.SDLController.model.forwardSeekIndicator) {
+                icon = (SDL.SDLController.model.forwardSeekIndicator?.type === 'TIME')
+                    ? "images/media/ico_seek_right.png"
+                    : icon;
               }
               return icon;
             }.property(
-              'SDL.SDLModel.data.registeredApps.@each.forwardSeekIndicator'
+              'SDL.SDLController.model.forwardSeekIndicator'
             ),
             iconBinding: 'onIconChange',
             presetName: 'SEEKRIGHT'
