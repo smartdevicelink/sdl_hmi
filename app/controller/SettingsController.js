@@ -89,6 +89,11 @@ SDL.SettingsController = Em.Object.create(
      */
     editedVehicleType: {},
 
+    /**
+     * @description Flag to signal that next PTU iteration has been scheduled
+     */
+    nextPtuIterationScheduled: false,
+
     onState: function(event) {
       if(SDL.States.currentState.name === 'rpcconfig'){
         FFW.RPCHelper.setCurrentAppID(null);
@@ -358,6 +363,38 @@ SDL.SettingsController = Em.Object.create(
           SDL.SettingsController.policyUpdateFile,
           url
         );
+      }
+    },
+    /**
+     * @description Schedules next PTU iteration
+     */
+    scheduleNextPtuIteration: function() {
+      Em.Logger.log('Next PTU iteration has been scheduled');
+      this.set('nextPtuIterationScheduled', true);
+      this.runScheduledPtuIteration();
+    },
+    /**
+     * @description Runs scheduled PTU iteration if all conditions are met
+     */
+    runScheduledPtuIteration: function() {
+      let availableForPtuAppExists = false;
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        if (app.initialized === true) {
+          availableForPtuAppExists = true;
+        }
+      });
+
+      if (availableForPtuAppExists && this.nextPtuIterationScheduled) {
+        Em.Logger.log('Starting of PTU iteration');
+        this.set('nextPtuIterationScheduled', false);
+        if (SDL.SDLModel.data.policyURLs.length > 0) {
+          this.OnSystemRequestHandler(SDL.SDLModel.data.policyURLs[0]);
+        } else {
+          this.OnSystemRequestHandler();
+        }
+        if (FLAGS.ExternalPolicies === true) {
+          this.policyUpdateRetry();
+        }
       }
     },
     /**
