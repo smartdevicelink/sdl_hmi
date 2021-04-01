@@ -1198,6 +1198,7 @@ SDL.SDLController = Em.Object.extend(
       params.applications.forEach(appRecord => {
         SDL.SDLModel.appIDtoPolicyAppIDMapping[appRecord.appID] = appRecord.policyAppID;
       });
+      SDL.SettingsController.runScheduledPtuIteration();
     },
     /**
      * SDL Driver Distraction ON/OFF switcher

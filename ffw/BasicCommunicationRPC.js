@@ -285,14 +285,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                           if(key == 7) {
                             SDL.SDLModel.data.set('policyURLs', data[key].default);
                             if(!FLAGS.PTUWithModemEnabled) {
-                              if (data[key].default.length) {
-                                SDL.SettingsController.OnSystemRequestHandler(data[key].default[0]);
-                              } else {
-                                SDL.SettingsController.OnSystemRequestHandler();
-                              }
-                              if (FLAGS.ExternalPolicies === true) {
-                                SDL.SettingsController.policyUpdateRetry();
-                              }
+                              SDL.SettingsController.scheduleNextPtuIteration();
                             } else {
                               SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
                             }
