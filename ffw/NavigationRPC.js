@@ -325,6 +325,20 @@ FFW.Navigation = FFW.RPCObserver.create(
                 appConfig: request.params.config,
                 webmSupport: can_play
               };
+
+              const preffered = SDL.NavigationController.stringifyCapabilityItem({
+                preferredResolution: {
+                  resolutionWidth:  request.params.config.width,
+                  resolutionHeight: request.params.config.height
+                }
+              });
+              const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList();
+              const index = preset_list.indexOf(preffered);
+
+              if (index >= 0) {
+                Em.Logger.log(`Switching video streaming preset to: ${preffered}`);
+                SDL.NavigationController.model.set('resolutionIndex', index);
+              }
             }
 
             this.sendNavigationResult(
