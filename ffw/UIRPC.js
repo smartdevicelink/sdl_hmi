@@ -271,42 +271,45 @@ FFW.UI = FFW.RPCObserver.create(
           }
 
           let info = null;
-          
-          if(FFW.RPCHelper.isSuccessResultCode(resultCode)){
+
+          if (FFW.RPCHelper.isSuccessResultCode(resultCode)){
             const setResultCode = SDL.SDLModel.setProperties(request.params);
 
-            var imageList = [];
-            if(request.params.menuIcon) {
-              imageList.push(request.params.menuIcon);      
-            }
+            if (setResultCode == SDL.SDLModel.data.resultCode.SUCCESS &&
+                resultCode == SDL.SDLModel.data.resultCode.SUCCESS) {
+                  var callback = function(failed, info) {
+                    var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
+                    var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
-            if(request.params.vrHelp) {
-              for(var i = 0; i < request.params.vrHelp.length; i++) {
-                if(request.params.vrHelp[i].image) {
-                  imageList.push(request.params.vrHelp[i].image);      
-                }
-              }
-            }
+                    FFW.UI.sendUIResult(
+                      failed ? WARNINGS : SUCCESS,
+                      request.id,
+                      request.method,
+                      info);
+                  }
 
-            var callback = function(failed, info) {
-              var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
-              var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
-              var finalCode = failed ? WARNINGS : SUCCESS;
-              if (finalCode != SUCCESS){
-                finalCode = setResultCode;
-              }
-              if (resultCode != SUCCESS){
-                finalCode = resultCode;
-              }
+                  var imageList = [];
+                  if(request.params.menuIcon) {
+                    imageList.push(request.params.menuIcon);
+                  }
 
+                  if(request.params.vrHelp) {
+                    for(var i = 0; i < request.params.vrHelp.length; i++) {
+                      if(request.params.vrHelp[i].image) {
+                        imageList.push(request.params.vrHelp[i].image);
+                      }
+                    }
+                  }
+
+                  SDL.SDLModel.validateImages(request.id, callback, imageList);
+            } else {
               FFW.UI.sendUIResult(
-                finalCode,
+                resultCode != SDL.SDLModel.data.resultCode.SUCCESS ? resultCode : setResultCode,
                 request.id,
                 request.method,
                 info);
             }
-            
-            SDL.SDLModel.validateImages(request.id, callback, imageList);
+
             break;
           } else {
             info = 'Erroneous response is assigned by settings';
