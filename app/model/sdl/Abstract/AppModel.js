@@ -779,16 +779,26 @@ SDL.ABSAppModel = Em.Object.extend(
               var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
               FFW.UI.sendUIResult(
-                failed ? WARNINGS : SUCCESS, 
-                request.id, 
-                request.method, 
+                failed ? WARNINGS : SUCCESS,
+                request.id,
+                request.method,
                 info);
             }
-            var imageList = [];
-            if(request.params.menuIcon) {
-              imageList.push(request.params.menuIcon);
+
+            if (result == SDL.SDLModel.data.resultCode.SUCCESS) {
+              var imageList = [];
+              if (request.params.menuIcon) {
+                imageList.push(request.params.menuIcon);
+              }
+
+              SDL.SDLModel.validateImages(request.id, callback, imageList);
+            } else {
+              FFW.UI.sendUIResult(
+                result,
+                request.id,
+                request.method
+              );
             }
-            SDL.SDLModel.validateImages(request.id, callback, imageList);
     	    } else {
         		FFW.UI.sendError(
         		  SDL.SDLModel.data.resultCode.REJECTED, request.id,
