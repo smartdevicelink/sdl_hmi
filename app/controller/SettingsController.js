@@ -789,6 +789,15 @@ SDL.SettingsController = Em.Object.create(
         if (new_data != old_data) {
           SDL.systemCapabilities.set('videoStreamingCapability', data);
           if (SDL.States.nextState != SDL.States.settings.policies.get('path')) {
+            const preffered = SDL.NavigationController.stringifyCapabilityItem(data);
+            const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList();
+            const index = preset_list.indexOf(preffered);
+
+            if (index >= 0) {
+              Em.Logger.log(`Switching video streaming preset to: ${preffered}`);
+              SDL.NavigationController.model.set('resolutionIndex', index);
+            }
+
             that.sendVideoStreamingCapabilities();
           }
         }
