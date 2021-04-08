@@ -339,7 +339,7 @@ FFW.Navigation = FFW.RPCObserver.create(
                 Em.Logger.log("App Preferred Index: " + index)
                 if (index >= 0 && index !== app_model.resolutionIndex) {
                   Em.Logger.log(`Switching video streaming preset to: ${preferred}`);
-                  SDL.NavigationController.model.set('resolutionIndex', index);
+app_model.set('resolutionIndex', index);
                 } else if (index < 0) {
                   Em.Logger.log("Could not find resolution: " + preferred);
                 } else {
