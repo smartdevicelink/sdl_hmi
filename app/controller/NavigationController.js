@@ -506,6 +506,9 @@ SDL.NavigationController = Em.Object.create(
           capabilities_to_send.scale = capability_to_switch.scale;
         }
 
+        capabilities_to_send.additionalVideoStreamingCapabilities = 
+          SDL.SDLController.model.resolutionsList;
+
         const json_to_send = {
           'systemCapability' : {
             'systemCapabilityType': 'VIDEO_STREAMING',
