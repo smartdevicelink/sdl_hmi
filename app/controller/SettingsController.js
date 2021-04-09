@@ -784,20 +784,22 @@ SDL.SettingsController = Em.Object.create(
 
       let that = this;
       SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.activate(function(data) {
+        // Trigger 'change' event to force overwriting 'selection' field 
+        // with current value of selected appID. Otherwise it will be null.
+        SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.trigger('change');
+
         const new_data = JSON.stringify(data);
         const old_data = JSON.stringify(SDL.systemCapabilities.videoStreamingCapability);
+        SDL.NavigationController.setPreferredResolutionIndex(
+          parseInt(SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.selection),
+          data.preferredResolution.resolutionWidth,
+          data.preferredResolution.resolutionHeight,
+          data.scale
+        );
+
         if (new_data != old_data) {
           SDL.systemCapabilities.set('videoStreamingCapability', data);
           if (SDL.States.nextState != SDL.States.settings.policies.get('path')) {
-            const preffered = SDL.NavigationController.stringifyCapabilityItem(data);
-            const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList();
-            const index = preset_list.indexOf(preffered);
-
-            if (index >= 0) {
-              Em.Logger.log(`Switching video streaming preset to: ${preffered}`);
-              SDL.NavigationController.model.set('resolutionIndex', index);
-            }
-
             that.sendVideoStreamingCapabilities();
           }
         }

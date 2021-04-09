@@ -325,36 +325,13 @@ FFW.Navigation = FFW.RPCObserver.create(
                 appConfig: request.params.config,
                 webmSupport: can_play
               };
-
-              const set_preferred = function(width, height, scale) {
-                const preferred = SDL.NavigationController.stringifyCapabilityItem({
-                  preferredResolution: {
-                    resolutionWidth:  width,
-                    resolutionHeight: height
-                  },
-                  scale: scale
-                });
-                const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList();
-                const index = preset_list.indexOf(preferred);
-                Em.Logger.log("App Preferred Index: " + index)
-                if (index >= 0 && index !== app_model.resolutionIndex) {
-                  Em.Logger.log(`Switching video streaming preset to: ${preferred}`);
-                  app_model.set('resolutionIndex', index);
-                } else if (index < 0) {
-                  Em.Logger.log("Could not find resolution: " + preferred);
-                } else {
-                  Em.Logger.log("Already using resolution: " + preferred);
-                }
-                return index;  
-              }
-              // Scale is not included in setVideoConfig request, use last set scale.
-              const scale = app_model.resolutionsList[app_model.resolutionIndex].scale;
-              var index = set_preferred(request.params.config.width, request.params.config.height, scale);
-              if (index < 0) {
-                // Find preferred without scale in name
-                set_preferred(request.params.config.width, request.params.config.height, undefined);
-              }
             }
+
+            SDL.NavigationController.setPreferredResolutionIndex(
+              request.params.appID,
+              request.params.config.width,
+              request.params.config.height
+            );
 
             this.sendNavigationResult(
               SDL.SDLModel.data.resultCode.SUCCESS,

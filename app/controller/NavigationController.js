@@ -462,10 +462,11 @@ SDL.NavigationController = Em.Object.create(
 
     /**
      * @description Provides list of available video streaming capability presets
+     * @param {Object} model model reference
      * @return {Array} list of capabilities
      */
-    getVideoStreamingCapabilitiesList: function() {
-      const capabilities_array = SDL.SDLController.model ? SDL.SDLController.model.resolutionsList : null;
+    getVideoStreamingCapabilitiesList: function(model) {
+      const capabilities_array = model ? model.resolutionsList : null;
       let list_to_display = [];
 
       if (Array.isArray(capabilities_array)) {
@@ -483,7 +484,8 @@ SDL.NavigationController = Em.Object.create(
      * @param {String} preset_name name of new preset
      */
     switchVideoStreamingCapability: function(preset_name) {
-      const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList();
+      const preset_list =
+        SDL.NavigationController.getVideoStreamingCapabilitiesList(SDL.SDLController.model);
       const index = preset_list.indexOf(preset_name);
 
       if (index >= 0) {
@@ -512,6 +514,60 @@ SDL.NavigationController = Em.Object.create(
           'appID': parseInt(SDL.SDLController.model.appID)
         };
         FFW.BasicCommunication.OnSystemCapabilityUpdated(json_to_send);
+      }
+    },
+
+    /**
+     * @description Sets preferred resolution index for a specified application
+     * @param {Number} appId 
+     * @param {Number} width 
+     * @param {Number} height 
+     */
+    setPreferredResolutionIndex(appId, width, height, scale) {
+      var app_model = SDL.SDLController.getApplicationModel(appId);
+      if (!app_model) {
+        return;
+      }
+
+      const get_preferred = function(width, height, scale) {
+        const preferred = SDL.NavigationController.stringifyCapabilityItem({
+          preferredResolution: {
+            resolutionWidth:  width,
+            resolutionHeight: height
+          },
+          scale: scale
+        });
+
+        const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList(app_model);
+        const index = preset_list.indexOf(preferred);
+
+        Em.Logger.log("App Preferred Index: " + index)
+        if (index >= 0 && index !== app_model.resolutionIndex) {
+          Em.Logger.log(`Switching video streaming preset to: ${preferred}`);
+          return index;
+        }
+        
+        if (index < 0) {
+          Em.Logger.log("Could not find resolution: " + preferred);
+          return -1;
+        }
+        
+        Em.Logger.log("Already using resolution: " + preferred);        
+        return -1;
+      }
+
+      // Scale is not included in setVideoConfig request, use last set scale.
+      const scale_to_search = scale ? scale : app_model.resolutionsList[app_model.resolutionIndex].scale;      
+      var index = get_preferred(width, height, scale_to_search);
+      if (index >= 0) {
+        app_model.set('resolutionIndex', index);
+        return;
+      }
+
+      // Find preferred without scale in name
+      index = get_preferred(width, height, undefined);
+      if (index >= 0) {
+        app_model.set('resolutionIndex', index);
       }
     },
 

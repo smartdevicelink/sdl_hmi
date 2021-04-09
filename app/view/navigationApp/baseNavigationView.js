@@ -172,7 +172,7 @@ SDL.BaseNavigationView = Em.ContainerView.create(
       valueBinding: 'getResolutionValue',
 
       getResolutionsList: function() {
-        return SDL.NavigationController.getVideoStreamingCapabilitiesList();
+        return SDL.NavigationController.getVideoStreamingCapabilitiesList(SDL.SDLController.model);
       }.property(
         'SDL.SDLController.model.resolutionsList.@each'
       ),
