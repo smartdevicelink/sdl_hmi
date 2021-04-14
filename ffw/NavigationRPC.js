@@ -160,19 +160,13 @@ FFW.Navigation = FFW.RPCObserver.create(
     onRPCNotification: function(notification) {
       Em.Logger.log('FFW.Navigation.onRPCNotification');
       this._super();
+
       if (notification.method == this.onVideoDataStreamingNotification) {
-        if (notification.params.available) {
-          SDL.SDLModel.startStream();
-        } else {
-          SDL.SDLModel.stopStream();
-        }
+        SDL.SDLModel.onStreamingDataAvailability("video", notification.params.available);
       }
+
       if (notification.method == this.onAudioDataStreamingNotification) {
-        if (notification.params.available) {
-          SDL.SDLModel.startAudioStream();
-        } else {
-          SDL.SDLModel.stoptAudioStream();
-        }
+        SDL.SDLModel.onStreamingDataAvailability("audio", notification.params.available);
       }
     },
     /**
@@ -218,75 +212,17 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.AlertManeuver':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              //
-              ////Check if there is any available data to  process the request
-              //if ("softButtons" in request.params) {
-              //
-              //    this.errorResponsePull[request.id].code =
-              // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-              // available data sent error response and stop process current
-              // request
-              this.sendError(
-                this.errorResponsePull[
-                  request.id].code,
-                request.id,
-                request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type +
-                ' type. Request was not processed.'
-              );
-              this.errorResponsePull[request.id] = null;
-              return;
-              //}
-            }
             SDL.AlertManeuverPopUp.AlertManeuverActive(request)
             break;
           }
           case 'Navigation.ShowConstantTBT':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              this.sendError(
-                this.errorResponsePull[
-                  request.id].code,
-                request.id,
-                request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type +
-                ' type. Request was not processed.'
-              );
-              this.errorResponsePull[request.id] = null;
-            } else {
-              SDL.NavigationController.validateIcons(request);
-              SDL.SDLModel.tbtActivate(request.params);
-            }
+            SDL.NavigationController.validateIcons(request);
+            SDL.SDLModel.tbtActivate(request.params);
             break;
           }
           case 'Navigation.UpdateTurnList':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              //
-              ////Check if there is any available data to  process the request
-              //if ("turnList" in request.params || "softButtons" in
-              // request.params) {  this.errorResponsePull[request.id].code =
-              // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
-              // available data sent error response and stop process current
-              // request
-              this.sendError(
-                this.errorResponsePull[
-                  request.id].code,
-                request.id,
-                request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type +
-                ' type. Request was not processed.'
-              );
-              this.errorResponsePull[request.id] = null;
-              //}
-            }
             SDL.NavigationController.validateIcons(request);
             SDL.SDLModel.tbtTurnListUpdate(request.params);
             break;
@@ -301,6 +237,12 @@ FFW.Navigation = FFW.RPCObserver.create(
             this.startAudioStreamingPopup = SDL.PopUp.create().appendTo('body').popupActivate(
               text, function(result) {
                 if (result) {
+                  SDL.SDLController.getApplicationModel(
+                    request.params.appID
+                  ).navigationAudioStream = request.params.url;
+
+                  SDL.SDLModel.onStreamingActivity(request.params.appID, "audio", true);
+
                   FFW.Navigation.sendNavigationResult(
                     SDL.SDLModel.data.resultCode.SUCCESS,
                     request.id,
@@ -316,9 +258,6 @@ FFW.Navigation = FFW.RPCObserver.create(
                 }
               }
             );
-            SDL.SDLController.getApplicationModel(
-              request.params.appID
-            ).navigationAudioStream = request.params.url;
             break;
           }
           case 'Navigation.StopAudioStream':
@@ -326,6 +265,8 @@ FFW.Navigation = FFW.RPCObserver.create(
             SDL.SDLController.getApplicationModel(
               request.params.appID
             ).navigationAudioStream = null;
+            SDL.SDLModel.onStreamingActivity(request.params.appID, "audio", false);
+
             if (this.startAudioStreamingPopup && this.startAudioStreamingPopup.active) {
               this.startAudioStreamingPopup.deactivate();
               this.set('startAudioStreamingPopup', null);
@@ -339,42 +280,64 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.SetVideoConfig':
           {
-            var rejectedParams = [];
-            var video_formats = SDL.systemCapabilities.videoStreamingCapability.supportedFormats;
-            if ('protocol' in request.params.config) {
-              video_formats = video_formats.filter(x => x.protocol === request.params.config.protocol);
-              if (video_formats.length === 0) {
-                Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
-                              + request.params.config.protocol);
-                rejectedParams.push('protocol');
+            let rejectedParams = [];
+            const video_formats = SDL.systemCapabilities.videoStreamingCapability.supportedFormats;
+            if (video_formats) {
+              if ('protocol' in request.params.config) {
+                const filtered_video_formats = video_formats.filter(x => x.protocol === request.params.config.protocol);
+                if (filtered_video_formats.length === 0) {
+                  Em.Logger.log('FFW.' + request.method + ' rejects protocol: '
+                                + request.params.config.protocol);
+                  rejectedParams.push('protocol');
+                }
+              }
+
+              if ('codec' in request.params.config && video_formats.length > 0) {
+                const filtered_video_formats = video_formats.filter(x => x.codec === request.params.config.codec);
+                if (filtered_video_formats.length === 0) {
+                  Em.Logger.log('FFW.' + request.method + ' rejects codec: '
+                                + request.params.config.codec);
+                  rejectedParams.push('codec');
+                }
               }
             }
-            if ('codec' in request.params.config && video_formats.length > 0) {
-              video_formats = video_formats.filter(x => x.codec === request.params.config.codec);
-              if (video_formats.length === 0) {
-                Em.Logger.log('FFW.' + request.method + ' rejects codec: '
-                              + request.params.config.codec);
-                rejectedParams.push('codec');
-              }
-            }
+
             if (rejectedParams.length > 0) {
-              var JSONMessage = {
-                'jsonrpc': '2.0',
-                'id': request.id,
-                'result': {
-                  'code': SDL.SDLModel.data.resultCode.REJECTED,
-                  'method': request.method,
+              this.sendNavigationResult(
+                SDL.SDLModel.data.resultCode.REJECTED,
+                request.id,
+                request.method,
+                null,
+                {
                   'rejectedParams': rejectedParams
                 }
-              };
-              this.sendMessage(JSONMessage);
-            } else {
-              this.sendNavigationResult(
-                SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method
               );
+
+              break;
             }
+
+            var app_model = SDL.SDLController.getApplicationModel(request.params.appID);
+            if (app_model) {
+              let player = document.getElementById('html5Player');
+              const can_play = player && 'probably' === player.canPlayType('video/webm; codecs="vp8"');
+
+              app_model.videoConfig = {
+                appConfig: request.params.config,
+                webmSupport: can_play
+              };
+            }
+
+            SDL.NavigationController.setPreferredResolutionIndex(
+              request.params.appID,
+              request.params.config.width,
+              request.params.config.height
+            );
+
+            this.sendNavigationResult(
+              SDL.SDLModel.data.resultCode.SUCCESS,
+              request.id,
+              request.method
+            );
             break;
           }
           case 'Navigation.StartStream':
@@ -389,6 +352,9 @@ FFW.Navigation = FFW.RPCObserver.create(
                 if (result) {
                   SDL.SDLController.getApplicationModel(request.params.appID)
                     .set('navigationStream', request.params.url);
+
+                  SDL.SDLModel.onStreamingActivity(request.params.appID, "video", true);
+
                   FFW.Navigation.sendNavigationResult(
                     SDL.SDLModel.data.resultCode.SUCCESS,
                     request.id,
@@ -404,9 +370,6 @@ FFW.Navigation = FFW.RPCObserver.create(
                 }
               }
             );
-            SDL.SDLController.getApplicationModel(
-              request.params.appID
-            ).navigationStream = request.params.url;
 
             break;
           }
@@ -415,6 +378,8 @@ FFW.Navigation = FFW.RPCObserver.create(
             SDL.SDLController.getApplicationModel(
               request.params.appID
             ).navigationStream = null;
+            SDL.SDLModel.onStreamingActivity(request.params.appID, "video", false);
+
             if (this.startVideoStreamingPopup && this.startVideoStreamingPopup.active) {
               this.startVideoStreamingPopup.deactivate();
               this.set('startVideoStreamingPopup', null);
@@ -428,23 +393,7 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.SendLocation':
           {
-
-            // Verify if there is an unsupported data in request
-            if (this.errorResponsePull[request.id] != null) {
-              this.sendError(
-                this.errorResponsePull[
-                  request.id].code,
-                request.id,
-                request.method,
-                'Unsupported ' + this.errorResponsePull[request.id].type +
-                ' type. Request was not processed.'
-              );
-              this.errorResponsePull[request.id] = null;
-              //this.errorResponsePull[request.id].code =
-              // SDL.SDLModel.data.resultCode["WARNINGS"];
-            } else {
-              SDL.NavigationController.sendLocation(request);
-            }
+            SDL.NavigationController.sendLocation(request);
             break;
           }
         }

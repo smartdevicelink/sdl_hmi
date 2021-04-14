@@ -55,6 +55,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
             '<div class="title textLimit" {{bindAttr style="SDL.SDLController.model.appInfo.alignment"}}>{{SDL.SDLController.model.appInfo.field1}}</div>' +
             '<div class="album textLimit" {{bindAttr style="SDL.SDLController.model.appInfo.alignment"}}>{{SDL.SDLController.model.appInfo.field2}}</div>' +
             '<div class="artist textLimit"{{bindAttr class="SDL.SDLController.model.mediaPreset:hidden"}}>{{SDL.SDLController.model.appInfo.field3}}</div>' +
+            '<div class="track textLimit"{{bindAttr style="SDL.SDLController.model.appInfo.alignment"}}>{{SDL.SDLController.model.appInfo.mediaTrack}}</div>' +
             '<div class="time"{{bindAttr class="SDL.SDLController.model.mediaPreset:timeV2"}}>{{SDL.SDLController.model.appInfo.mediaClock}}</div>' +
             '<img class="cd_logo" onerror="this.style.display=\'none\'" {{bindAttr class="SDL.SDLController.model.mediaPreset:cd_logoV2"}} {{bindAttr class="SDL.SDLController.model.mode"}} {{bindAttr class="SDL.SDLController.model.isTemplate"}}/>' +       
             '<img class="cd_logo" onerror="this.style.display=\'none\'" {{bindAttr src="SDL.SDLController.model.appInfo.trackIcon" class="SDL.SDLController.model.mediaPreset:cd_logoV2"}} />' +       
@@ -81,7 +82,18 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               'bc-item-big',
               'prevcd'
             ],
-            icon: 'images/media/ico_prew.png',
+            onIconChange: function() {
+              let icon = "images/media/ico_prew.png";
+              if (SDL.SDLController.model && SDL.SDLController.model.backSeekIndicator) {
+                icon = (SDL.SDLController.model.backSeekIndicator?.type === 'TIME')
+                    ? "images/media/ico_seek_left.png"
+                    : icon;
+              }
+              return icon;
+            }.property(
+              'SDL.SDLController.model.backSeekIndicator'
+            ),
+            iconBinding: 'onIconChange',
             presetName: 'SEEKLEFT'
           }
         ),
@@ -128,7 +140,18 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               'nextcd'
             ],
             classNameBindings: 'SDL.SDLController.model.SEEKRIGHT::unsubscribed',
-            icon: 'images/media/ico_next.png',
+            onIconChange: function() {
+              let icon = "images/media/ico_next.png";
+              if (SDL.SDLController.model && SDL.SDLController.model.forwardSeekIndicator) {
+                icon = (SDL.SDLController.model.forwardSeekIndicator?.type === 'TIME')
+                    ? "images/media/ico_seek_right.png"
+                    : icon;
+              }
+              return icon;
+            }.property(
+              'SDL.SDLController.model.forwardSeekIndicator'
+            ),
+            iconBinding: 'onIconChange',
             presetName: 'SEEKRIGHT'
           }
         )

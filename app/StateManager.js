@@ -108,7 +108,6 @@ var StateManager = Em.StateManager.extend(
              */
             enter: function() {
               this._super();
-              FFW.BasicCommunication.OnFindApplications();
             }
           }
         ),
@@ -171,6 +170,11 @@ var StateManager = Em.StateManager.extend(
           SDL.SettingsController.set(
             'activeState', SDL.States.currentState.get('path')
           );
+          if (SDL.States.settings.policies.sendVideoStreamingCapabilities == SDL.States.currentState) {
+            SDL.SettingsController.set(
+              'activeState', SDL.States.currentState.parentState.get('path')
+            );
+          }
           this._super();
         },
         rpccontrol: Em.State.create({
@@ -191,6 +195,18 @@ var StateManager = Em.StateManager.extend(
                 }
               }
             ),
+            sendVideoStreamingCapabilities: Em.State.create(
+              {
+                enter: function() {
+                  this._super();
+                  SDL.SettingsController.showVideoStreamingCapabilities();
+                },
+                exit: function() {
+                  SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.save();
+                  this._super();
+                }
+              }
+            ),
             policyConfig: Em.State.create(
               {
                 enter: function() {
@@ -198,11 +214,25 @@ var StateManager = Em.StateManager.extend(
                 }
               }
             ),
-            ccpuEditor: Em.State.create(
+            versionsEditor: Em.State.create(
               {
                 enter: function() {
                   this._super();
                   SDL.SettingsController.set('editedCcpuVersionValue', SDL.SDLModel.data.ccpuVersion);
+                  if (SDL.SDLModel.data.hardwareVersion != null) {
+                    SDL.SettingsController.set('editedHardwareVersionValue', SDL.SDLModel.data.hardwareVersion);
+                    SDL.SettingsController.set('hardwareVersionEditingEnabled', true);
+                  } else {
+                    SDL.SettingsController.set('hardwareVersionEditingEnabled', false);
+                  }
+                }
+              }
+            ),
+            vehicleTypeEditor: Em.State.create(
+              {
+                enter: function() {
+                  this._super();
+                  SDL.SettingsController.updateVehicleTypeValues(SDL.SDLVehicleInfoModel.vehicleType);
                 }
               }
             ),
@@ -472,14 +502,6 @@ var StateManager = Em.StateManager.extend(
           {}
         ),
         enter: function() {
-          if (SDL.SDLModel.data.mediaPlayerActive) {
-            SDL.SDLController.onEventChanged('player', false);
-            this.model.currentAudioModel.deactivateCD();
-            this.model.currentAudioModel.deactivateUSB();
-            this.model.currentAudioModel.deactivateRadio();
-          }
-          this.model.currentAudioModel.set('activeState',
-            SDL.States.nextState);
           this._super();
         },
         exit: function() {

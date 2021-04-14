@@ -82,21 +82,20 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.set('VRCommands', []);
     this.set('tbtActivate', false);
     this.set('isPlaying', true);
-    this.set('globalProperties', Em.Object.create());
-    this.set('globalProperties.helpPrompt', []);
-    this.set('globalProperties.timeoutPrompt', []);
-    this.set('globalProperties.keyboardProperties', Em.Object.create());
-    this.set('globalProperties.keyboardProperties.keyboardLayout', 'QWERTY');
-    this.set('globalProperties.keyboardProperties.limitedCharacterList', []);
-    this.set('globalProperties.menuIcon', Em.Object.create());
+    this.set("forwardSeekIndicator", {type: 'TRACK', seekTime: null});
+    this.set("backSeekIndicator", {type: 'TRACK', seekTime: null});
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
+    this.set('cachedIconFileNamesList', []);
+    this.set('cachedSubmenuIdsList', []);
 
     this.set('inactiveWindows', []);
     this.set('backgroundWindows', []);
     this.set('activeWindows', []);
     this.set('unregisteringInProgress', false);
+
+    this.resetGlobalProperties();
   },
 
   /**
@@ -114,7 +113,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
   isPlaying: false,
   isTemplate:false,
   mode:'',
-  
+  forwardSeekIndicator: {type: 'TRACK', seekTime: null},
+  backSeekIndicator: {type: 'TRACK', seekTime: null},
+
   /**
    * Flag for model active state currently used for status bar
    *
@@ -140,8 +141,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
   countUp: true,
   pause: null,
   maxTimeValue: 68400, // 19 hours
-  duration: 0,
+  startTime: 0,
+  endTime: 0,
   currTime: 0,
+  countRate: 1.0,
 
   /**
    * Method hides sdl activation button and sdl application
@@ -177,10 +180,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     var self = this;
 
     if (this.pause === false) {
+      this.setDuration()
       this.timer = setInterval(function() {
-
         self.set('currTime', self.currTime + 1);
-      }, 1000
+      }, 1000 / this.countRate
     );
     } else {
       clearInterval(this.timer);
@@ -192,26 +195,28 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     clearInterval(this.timer);
     this.pause = null;
     this.appInfo.set('mediaClock', '');
+    this.endTime = 0;
+    this.countRate = 1.0;
   },
 
   setDuration: function() {
 
-    var number, str = '', hrs = 0, min = 0, sec = 0;
+    var position, str = '', hrs = 0, min = 0, sec = 0;
     if (this.countUp) {
-      number = this.duration + this.currTime;
+      position = this.startTime + this.currTime;
     } else {
-      if (this.duration <= this.currTime) {
+      if (this.startTime <= this.currTime) {
         clearInterval(this.timer);
         this.currTime = 0;
         this.appInfo.set('mediaClock', '00:00:00');
         return;
       }
-      number = this.duration - this.currTime;
+      position = this.startTime - this.currTime;
     }
 
-    hrs = parseInt(number / 3600), // hours
-      min = parseInt(number / 60) % 60, // minutes
-      sec = number % 60; // seconds
+    hrs = parseInt(position / 3600), // hours
+      min = parseInt(position / 60) % 60, // minutes
+      sec = position % 60; // seconds
 
     str = (
         hrs < 10 ? '0' : '') + hrs + ':';
@@ -219,21 +224,49 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
         min < 10 ? '0' : '') + min + ':';
     str += (
         sec < 10 ? '0' : '') + sec;
+    if (this.countUp && this.endTime) {
+      str += " / "
+
+      position = this.endTime
+      hrs = parseInt(position / 3600), // hours
+        min = parseInt(position / 60) % 60, // minutes
+        sec = position % 60; // seconds
+
+      str += (
+          hrs < 10 ? '0' : '') + hrs + ':';
+      str += (
+          min < 10 ? '0' : '') + min + ':';
+      str += (
+          sec < 10 ? '0' : '') + sec;
+
+    }
     this.appInfo.set('mediaClock', str);
 
-    if (!this.get('countUp') && this.duration == this.currTime) {
+    if (this.get('countUp') && this.endTime != 0 && this.endTime == (this.startTime + this.currTime)) {
+      clearInterval(this.timer);
+      return;
+    }
+    else if(!this.get('countUp') && this.currTime == (this.startTime - this.endTime)) {
       clearInterval(this.timer);
       return;
     }
 
   }.observes('this.currTime'),
 
-  changeDuration: function() {
+  changeTimer: function() {
 
     clearInterval(this.timer);
-    this.currTime = -1;
+    this.currTime = 0;
     this.startTimer();
-  }.observes('this.duration'),
+  }.observes('this.startTime',
+    'this.endTime'),
+
+  changeRate: function() {
+
+    clearInterval(this.timer);
+    this.startTimer();
+  }.observes(
+    'this.countRate'),
 
   /**
    * SDL Setter for Media Clock Timer
@@ -256,6 +289,12 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       return SDL.SDLModel.data.resultCode.SUCCESS;
     }
 
+    if (params.countRate) {
+      this.set('countRate', params.countRate);
+    } else {
+      this.set('countRate', 1.0);
+    }
+
     if (params.updateMode == 'PAUSE') {
       this.set('pause', true);
     } else if (params.updateMode == 'RESUME') {
@@ -263,14 +302,25 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     } else {
       if (params.startTime) {
         this.set('countUp', params.updateMode == 'COUNTUP' ? true : false);
-        this.set('duration', null);
-        this.set('duration',
+        this.set('startTime', null);
+        this.set('startTime',
           params.startTime.hours * 3600 + params.startTime.minutes * 60 +
           params.startTime.seconds
         );
       }
+      if (params.endTime) {
+        this.set('endTime',
+          params.endTime.hours * 3600 + params.endTime.minutes * 60 +
+          params.endTime.seconds
+        );
+      } else {
+        this.set('endTime', 0)
+      }
       this.set('pause', false);
     }
+
+    this.set("forwardSeekIndicator", params.forwardSeekIndicator ? params.forwardSeekIndicator : {type: 'TRACK', seekTime: null})
+    this.set("backSeekIndicator", params.backSeekIndicator ? params.backSeekIndicator : {type: 'TRACK', seekTime: null})
 
     return SDL.SDLModel.data.resultCode.SUCCESS;
   },
@@ -305,8 +355,6 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
    * @param {Object}
    */
   onSDLUIShow: function(params) {
-    clearInterval(this.timer);
-
     let isWidget = (("windowID" in params) && params.windowID !== 0);
     let windowID = isWidget ? params.windowID : 0;
     let that = this;

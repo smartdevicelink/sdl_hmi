@@ -93,7 +93,8 @@ FFW.RPCHelper = Em.Object.create(
         SDL.SDLModel.data.resultCode.WARNINGS,
         SDL.SDLModel.data.resultCode.WRONG_LANGUAGE,
         SDL.SDLModel.data.resultCode.RETRY,
-        SDL.SDLModel.data.resultCode.SAVED
+        SDL.SDLModel.data.resultCode.SAVED,
+        SDL.SDLModel.data.resultCode.TRUNCATED_DATA
       ].includes(resultCode);
     },
 
@@ -553,6 +554,7 @@ FFW.RPCHelper = Em.Object.create(
         AddSubmenu:'',
         uiSetGlobalProperties: '',
         ttsSetGlobalProperties: '',
+        rcSetGlobalProperties: '',
         uiCreateWindow: ''
     },
 

@@ -306,11 +306,36 @@ SDL.RCModulesController = Em.Object.create({
           SDL.remoteControlCapabilities.remoteControlCapability['buttonCapabilities'] = SDL.defaultButtonCapabilities;
           this.fillModuleSeatLocationContent([]);
           this.fillSeatLocationCapabilities(vehicleRepresentation);
+
+          // Make it a single element arrays if vehicle seats emulation is disabled
+          var statuses = [{
+            "location": SDL.VehicleModuleCoverageController.createFullCoverage(vehicleRepresentation)[0],
+            "status": "CLOSED"
+          }];
+          
+          SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.doorStatuses = statuses;
+          SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.gateStatuses = statuses;
+          SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.roofStatuses = statuses;
+
+          var seat_status = {
+            "seatLocation": {
+              "grid": SDL.VehicleModuleCoverageController.createFullCoverage(vehicleRepresentation)[0]
+            },
+            "conditionActive": true
+          };
+          SDL.SDLVehicleInfoModel.vehicleData.seatOccupancy.seatsOccupied = [seat_status];
+          SDL.SDLVehicleInfoModel.vehicleData.seatOccupancy.seatsBelted = [seat_status];
+          SDL.SDLVehicleInfoModel.vehicleData.windowStatus = [];
+
           return;
         }
 
         var seatLocationNames = [];
         var windowStatus = [];
+        var doorStatuses = [];
+        var gateStatuses = [];
+        var roofStatuses = [];
+        var seatStatuses = [];
         const rightMostSeatIndex = SDL.VehicleModuleCoverageController.getVehicleMaxIndex(vehicleRepresentation, 'col');
         const leftMostSeatIndex = 0;
 
@@ -318,6 +343,14 @@ SDL.RCModulesController = Em.Object.create({
           var location_name =
             SDL.VehicleModuleCoverageController.getLocationName(seat_location);
           seatLocationNames.push(location_name);
+
+          var seat_status = {
+            "seatLocation": {
+              "grid": seat_location
+            },
+            "conditionActive": false
+          };
+          seatStatuses.push(seat_status);
 
           if (vehicleRepresentation[rightMostSeatIndex].col === seat_location.col || 
               leftMostSeatIndex === seat_location.col) {
@@ -329,10 +362,53 @@ SDL.RCModulesController = Em.Object.create({
               }
             };
             windowStatus.push(location_window_status);
+
+            var door_status = {
+              "location": seat_location,
+              "status": "CLOSED"
+            }
+            doorStatuses.push(door_status);
           }
         });
 
+        var col_max_index = SDL.VehicleModuleCoverageController.getVehicleMaxIndex(vehicleRepresentation, 'col');
+        var row_max_index = SDL.VehicleModuleCoverageController.getVehicleMaxIndex(vehicleRepresentation, 'row');
+
+        var gateStatuses = [{
+          "location": {
+            "col": 0,
+            "row": -1,
+            "level": 0,
+            "colspan": SDL.VehicleModuleCoverageController.getVehicleItemValue(vehicleRepresentation[col_max_index], 'col')
+          },
+          "status": "CLOSED"
+        },
+        {
+          "location": {
+            "col": 0,
+            "row": SDL.VehicleModuleCoverageController.getVehicleItemValue(vehicleRepresentation[row_max_index], 'row') + 1,
+            "level": 0,
+            "colspan": SDL.VehicleModuleCoverageController.getVehicleItemValue(vehicleRepresentation[col_max_index], 'col')
+          },
+          "status": "CLOSED"
+        }];
+
+        var roofStatuses = [{
+          "location": SDL.VehicleModuleCoverageController.createFullCoverage(vehicleRepresentation)[0],
+          "status": "CLOSED"
+        }];
+
+        if (seatStatuses.length > 0) {
+          // Make condition active for driver seat only
+          seatStatuses[0].conditionActive = true;
+        }
+
+        SDL.SDLVehicleInfoModel.vehicleData.seatOccupancy.seatsOccupied = seatStatuses;
+        SDL.SDLVehicleInfoModel.vehicleData.seatOccupancy.seatsBelted = seatStatuses;       
         SDL.SDLVehicleInfoModel.vehicleData.windowStatus = windowStatus;
+        SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.doorStatuses = doorStatuses;
+        SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.gateStatuses = gateStatuses;
+        SDL.SDLVehicleInfoModel.vehicleData.bodyInformation.roofStatuses = roofStatuses;
 
         var self = this;
         var coverageSettings = SDL.VehicleModuleCoverageController.getCoverageSettings();

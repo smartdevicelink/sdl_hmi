@@ -111,14 +111,23 @@ SDL.SDLModel = Em.Object.extend({
   },
 
   /**
+   * Method to get current width and height of NavigationView
+   */
+  get_view_width_and_height: function() {
+    var view = document.getElementById('baseNavigation');
+    return { 
+      'width': view.offsetWidth,
+      'height': view.offsetHeight
+    };
+  },
+
+  /**
    * Notification method to send touch event data to SDLCore
    *
    * @param {Object}
    */
   onTouchEvent: function(event) {
-
-    if (event.target.parentElement.className.indexOf('navButton') >= 0 ||
-      event.target.className.indexOf('navButton') >= 0) {
+    if (event.target.id != SDL.BaseNavigationView.elementId) {
       return;
     }
 
@@ -179,6 +188,7 @@ SDL.SDLModel = Em.Object.extend({
         events[i].c[0].y = event.originalEvent.changedTouches ?
           event.originalEvent.changedTouches[i].pageY-50 :
           event.originalEvent.pageY-50;
+        FLAGS.LAST_TOUCH_POINT = events[i].c[0];
         events[i].ts = [parseInt(event.timeStamp)];
 
       }
@@ -205,6 +215,11 @@ SDL.SDLModel = Em.Object.extend({
 
     if (is_image_type && app_model) {
       result = app_model.onImageRemoved(params.fileName);
+
+      const cached_index = app_model.cachedIconFileNamesList.indexOf(params.fileName);
+      if (cached_index >= 0) {
+        app_model.cachedIconFileNamesList.splice(cached_index, 1);
+      }
 
       if (app_model.appIcon.includes(params.fileName) &&
         params.fileName.length == app_model.appIcon.length) {
@@ -491,25 +506,88 @@ SDL.SDLModel = Em.Object.extend({
   },
 
   /**
+   * Callback for tracking a/v streaming data availability
+   * @param {String} type streaming data type
+   * @param {Boolean} is_available data availability
+   */
+  onStreamingDataAvailability: function(type, is_available) {
+    var model = null;
+    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
+      model = SDL.SDLController.model;
+    } else if (SDL.SDLModel.data.stateLimited) {
+      var tmp = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
+      if (this.isStreamingSupported(tmp)) {
+        model = tmp;
+      }
+    }
+
+    if (model) {
+      Em.Logger.log("Streaming for " + type + " for " + model.appID + " is available: " + is_available);
+      if ("video" == type) {
+        model.set('videoStreamingAllowed', is_available);
+        if (is_available) {
+          this.startStream(model);
+        }
+      }
+
+      if ("audio" == type) {
+        model.set('audioStreamingAllowed', is_available);
+        if (is_available) {
+          this.startAudioStream(model);
+        }
+      }
+    }
+  },
+
+  /**
+   * Callback for tracking a/v stream activity
+   * @param {Number} appID id of affected application
+   * @param {String} type streaming type
+   * @param {Boolean} is_active streaming activity
+   */
+  onStreamingActivity: function(appID, type, is_active) {
+    var model = SDL.SDLController.getApplicationModel(appID);
+
+    if (model) {
+      Em.Logger.log("Streaming for " + type + " for " + model.appID + " activity changed to " + is_active);
+      if ("video" == type) {
+        model.set('videoStreamingStarted', is_active);
+        if (is_active) {
+          this.startStream(model);
+        } else {
+          this.stopStream();
+        }
+      }
+
+      if ("audio" == type) {
+        model.set('audioStreamingStarted', is_active);
+        if (is_active) {
+          this.startAudioStream(model);
+        } else {
+          this.stopAudioStream();
+        }
+      }
+    }
+  },
+
+  /**
    * Method to start playing video from streaming video source
    * provided by SDLCore
    *
    * @param {Object}
    */
-  startStream: function(request) {
-
-    var appID = null;
-
-    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
-      appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited) {
-      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
-      if (this.isStreamingSupported(model)) {
-        appID = SDL.SDLModel.data.stateLimited;
-      }
+  startStream: function(model) {
+    if (!model.videoStreamingStarted) {
+      Em.Logger.log("Video streaming is not started yet");
+      return;
     }
 
-    SDL.SDLModel.playVideo(appID);
+    if (!model.videoStreamingAllowed) {
+      Em.Logger.log("Video streaming is not allowed yet");
+      return;
+    }
+
+    SDL.SDLModel.playVideo(model.appID);
   },
 
   /**
@@ -550,8 +628,8 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Number}
    */
   stopStream: function(appID) {
-
     if (SDL.SDLModel.data.naviVideo) {
+      Em.Logger.log('Stopping video playback');
       SDL.SDLModel.data.naviVideo.pause();
       SDL.SDLModel.data.naviVideo.src = '';
       SDL.SDLModel.data.naviVideo = null;
@@ -561,16 +639,21 @@ SDL.SDLModel = Em.Object.extend({
           templateName: 'video',
           template: Ember.Handlebars.compile('<video id="html5Player"></video>')
         }
-        ),
-        videoChild = null;
+    );
 
     SDL.NavigationAppView.videoView.remove();
     SDL.NavigationAppView.videoView.destroy();
-
-    videoChild = SDL.NavigationAppView.createChildView(createVideoView);
+    var videoChild = SDL.NavigationAppView.createChildView(createVideoView);
 
     SDL.NavigationAppView.get('childViews').pushObject(videoChild);
     SDL.NavigationAppView.set('videoView', videoChild);
+
+    SDL.InfoController.stopStreamingAdapter('video').then(function() {
+      Em.Logger.log('Video playback stopped');
+    })
+    .catch(error => {
+      Em.Logger.log('Stop video streaming adapter failed');
+    });
   },
 
   /**
@@ -579,22 +662,26 @@ SDL.SDLModel = Em.Object.extend({
    *
    * @param {Object}
    */
-  startAudioStream: function() {
-
-    var appID = null;
-
-    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
-      appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited) {
-      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
-      if (this.isStreamingSupported(model)) {
-        appID = SDL.SDLModel.data.stateLimited;
-      }
+  startAudioStream: function(model) {
+    if (!model.audioStreamingStarted) {
+      Em.Logger.log("Audio streaming is not started yet");
+      return;
     }
 
-    SDL.StreamAudio.play(
-      SDL.SDLController.getApplicationModel(appID).navigationAudioStream
-    );
+    if (!model.audioStreamingAllowed) {
+      Em.Logger.log("Audio streaming is not allowed yet");
+      return;
+    }
+
+    if (model != null && model.navigationAudioStream !== null) {
+      SDL.InfoController.startStreamingAdapter(model.navigationAudioStream, 'audio')
+      .then(function(stream_endpoint) {
+        SDL.StreamAudio.play(stream_endpoint);
+      })
+      .catch(error => {
+        Em.Logger.log('Start audio streaming adapter failed');
+      });
+    }
   },
 
   /**
@@ -602,44 +689,60 @@ SDL.SDLModel = Em.Object.extend({
    *
    * @param {Number}
    */
-  stoptAudioStream: function() {
-
-    var appID = null;
-
-    if (SDL.SDLController.model && this.isStreamingSupported(SDL.SDLController.model)) {
-      appID = SDL.SDLController.model.appID;
-    } else if (SDL.SDLModel.data.stateLimited) {
-      var model = SDL.SDLController.getApplicationModel(SDL.SDLModel.data.stateLimited);
-      if (this.isStreamingSupported(model)) {
-        appID = SDL.SDLModel.data.stateLimited;
-      }
-    }
-
+  stopAudioStream: function() {
     SDL.StreamAudio.stop();
+
+    SDL.InfoController.stopStreamingAdapter('audio').then(function() {
+      Em.Logger.log('Audio playback stopped');
+    })
+    .catch(error => {
+      Em.Logger.log('Stop audio streaming adapter failed');
+    });
   },
 
   /**
    * Method to reset navigationApp streaming url from current app model
    */
   playVideo: function(appID) {
-      if (SDL.SDLController.getApplicationModel(appID).navigationStream !==
-        null) {
-
+      var app_model = SDL.SDLController.getApplicationModel(appID);
+      if (app_model && app_model.navigationStream !== null) {
         SDL.SDLModel.data.naviVideo = document.getElementById('html5Player');
-        SDL.SDLModel.data.naviVideo.src = SDL.SDLController.getApplicationModel(
-          appID
-        ).navigationStream;
 
-        var playPromise = SDL.SDLModel.data.naviVideo.play();
-        if (playPromise !== undefined) {
-          playPromise.then(_ => {
-            console.log('Video playback started OK');
-          })
-          .catch(error => {
-            console.log('Video playback start failed: ' + error);
-            SDL.SDLModel.data.naviVideo = null;
-          });
-        }
+        Em.Logger.log('Set params from VideoConfig');
+
+        var width = app_model.resolutionsList[app_model.resolutionIndex].preferredResolution.resolutionWidth;
+        var height = app_model.resolutionsList[app_model.resolutionIndex].preferredResolution.resolutionHeight;
+
+        SDL.SDLModel.data.naviVideo.style.setProperty("width",width + "px");
+        SDL.SDLModel.data.naviVideo.style.setProperty("height",height + "px");
+        SDL.SDLModel.data.naviVideo.style.setProperty("top",50 + "px");
+
+        const sdl_stream = app_model.navigationStream;
+        const video_config = app_model.videoConfig;
+
+        SDL.InfoController.startStreamingAdapter(sdl_stream, 'video', video_config).then(function(stream_endpoint) {
+          if (SDL.SDLModel && SDL.SDLModel.data.naviVideo) {
+            Em.Logger.log('Starting video playback');
+            SDL.SDLModel.data.naviVideo.src = stream_endpoint
+            var playPromise = SDL.SDLModel.data.naviVideo.play();
+            if (playPromise !== undefined) {
+              playPromise.then(_ => {
+                Em.Logger.log('Video playback started OK');
+              })
+              .catch(error => {
+                Em.Logger.log('Video playback start failed: ' + error);
+                SDL.SDLModel.data.naviVideo = null;
+              });
+            }
+            return;
+          }
+
+          Em.Logger.error('Navi video player is not initialized');
+        })
+        .catch(error => {
+          Em.Logger.log('Start streaming adapter failed');
+          SDL.SDLModel.data.naviVideo = null;
+        });
       }
     },
 
@@ -659,15 +762,15 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Object} params
    */
   tbtActivate: function(params) {
-    var text1 = params.navigationTexts.
-                        filterProperty('fieldName', 'navigationText1'
-                        )[0].fieldText;
-    var text2 = params.navigationTexts.
-                        filterProperty('fieldName', 'navigationText2'
-                        )[0].fieldText;
+    var nav1Texts = params.navigationTexts.filterProperty('fieldName', 'navigationText1');
+    var nav2Texts = params.navigationTexts.filterProperty('fieldName', 'navigationText2');
 
-    SDL.NavigationModel.set('startLoc', text1);
-    SDL.NavigationModel.set('endLoc', text2);
+    if (nav1Texts.length) {
+      SDL.NavigationModel.set('startLoc', nav1Texts[0].fieldText);
+    }
+    if (nav2Texts.length) {
+      SDL.NavigationModel.set('endLoc', nav2Texts[0].fieldText);
+    }
 
     SDL.SDLController.getApplicationModel(params.appID).
         set('constantTBTParams', params);
@@ -907,7 +1010,6 @@ SDL.SDLModel = Em.Object.extend({
   showAppMenu: function(request) {
     SDL.OptionsView.activate();
     if(request.params.menuID !== undefined) {
-      SDL.SDLController.model.set('subMenuInitFromApp', true);
       SDL.SDLController.onSubMenu(request.params.menuID);
     }
     FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method);
@@ -950,31 +1052,66 @@ SDL.SDLModel = Em.Object.extend({
    *
    * @param {Object}
    *            message Object with parameters come from SDLCore.
+   * @returns {String} result code
    */
   setProperties: function(params) {
-    function mergeKeyboardProperties(properties) {
-      for (var name in properties) {
-        SDL.SDLController.getApplicationModel(params.appID).
-            set('globalProperties.keyboardProperties.' + name,
-              properties[name]
-            );
-      }
-    }
-    if (SDL.SDLController.getApplicationModel(params.appID)) {
-      for (var i in params) {
-        if (i === "appID") {
-          continue;
-        }
-        else if (i === 'keyboardProperties') {
-          mergeKeyboardProperties(params[i]);
-        } else {
-          SDL.SDLController.getApplicationModel(params.appID).
-              set('globalProperties.' + i, params[i]);
-        }
-      }
-    } else {
+    let model = SDL.SDLController.getApplicationModel(params.appID);
+    if (!model) {
       console.error('CriticalError! No app registered with current appID!');
+      return SDL.SDLModel.data.resultCode.APPLICATION_NOT_REGISTERED;
     }
+
+    let unsupported_custom_keys_found = false;
+
+    function mergeKeyboardProperties(properties) {
+      let default_properties = model.getDefaultKeyboardGlobalProperties();
+      default_properties.keyboardLayout = model.get('globalProperties.keyboardProperties.keyboardLayout');
+      default_properties.autoCompleteList = model.get('globalProperties.keyboardProperties.autoCompleteList');
+
+      for (var name in default_properties) {
+        if (properties.hasOwnProperty(name)) {
+          if (name === 'customKeys') {
+            const unsupported_keys = SDL.KeyboardController.get('unsupportedKeyboardSymbols');
+            unsupported_keys.forEach((key) => {
+              if (properties[name].includes(key)) {
+                unsupported_custom_keys_found = true;
+              }
+            });
+          }
+
+          if (name === "maskInputCharacters" && 
+            properties[name] === "USER_CHOICE_INPUT_KEY_MASK" && 
+            default_properties[name] !== "USER_CHOICE_INPUT_KEY_MASK") {
+            SDL.KeyboardController.set('maskCharacters', true);
+            if (SDL.SDLController.model) {
+              SDL.SDLController.model.set('maskInputCharactersUserChoice', true);
+            }
+          }
+
+          model.set('globalProperties.keyboardProperties.' + name, properties[name]);
+        } else {
+          model.set('globalProperties.keyboardProperties.' + name, default_properties[name]);
+        }
+      }
+    }
+
+    for (var i in params) {
+      if (i === "appID") {
+        continue;
+      }
+      else if (i === 'keyboardProperties') {
+        mergeKeyboardProperties(params[i]);
+        SDL.KeyboardController.disableButtons();
+      } else {
+        model.set('globalProperties.' + i, params[i]);
+      }
+    }
+
+    if (unsupported_custom_keys_found) {
+      return SDL.SDLModel.data.resultCode.WARNINGS;
+    }
+
+    return SDL.SDLModel.data.resultCode.SUCCESS;
   },
 
   /**
@@ -984,57 +1121,69 @@ SDL.SDLModel = Em.Object.extend({
 
   /**
    * @function validateImages
-   * @description Checks if image exists by path provided in request data 
+   * @description Checks if image exists by path provided in request data
    * @param requestID - request id, to which images belong
    * @param callback - user callback after check
-   * @param imageList - list of paths to check 
+   * @param imageList - list of Image structures to check
    */
   validateImages: function(requestID, callback, imageList) {
     if(imageList == null || imageList.length == 0) {
-      callback(false);
+      callback(false, null);
       return;
     }
 
     this.imageCheckList[requestID] = [];
-    const filteredImageList = imageList.filter(function(item, pos) {
-          return imageList.indexOf(item) == pos;
-    });
-
-    filteredImageList.forEach(image => {
+    imageList.forEach(image => {
       this.imageCheckList[requestID].push({
-        'path': image,
+        'path': image.value,
+        'isTemplate': image.isTemplate,
         'checkResult': null
       });
     });
 
-    for(var i = 0; i < this.imageCheckList[requestID].length; i++) {
+    let is_valid_template_extension = function(image) {
+      if (image.isTemplate !== true) {
+        return true;
+      }
+
+      return SDL.NavigationController.isPng(image.path);
+    };
+
+    // Retain reference to requestID checklist as this element might be deleted
+    // by finalizeImageValidation() if all images are verified be template extension function
+    let checkList = this.imageCheckList[requestID];
+    for(var i = 0; checkList && i < checkList.length; i++) {
+      if (!is_valid_template_extension(checkList[i])) {
+        checkList[i].checkResult = {
+          code: false,
+          info: "Template image extension is not valid"
+        };
+        SDL.SDLModel.finalizeImageValidation(requestID, callback);
+        continue;
+      }
+
       var image = new Image();
-      image.onload = function() { 
-        for(var i = 0; i < SDL.SDLModel.imageCheckList[requestID].length; i++) {
-          var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
-          var path = SDL.SDLModel.imageCheckList[requestID][i].path;
-          if(path === formattedImgPath) {
-            SDL.SDLModel.imageCheckList[requestID][i].checkResult = true;
-            break;
-          }
-        }
+      image.onload = function() {
+        checkList[this.checkIndex].checkResult = {
+          code: true,
+          info: null
+        };
         SDL.SDLModel.finalizeImageValidation(requestID, callback);
       };
-      image.onerror = function() { 
-        for(var i = 0; i < SDL.SDLModel.imageCheckList[requestID].length; i++) {
-          var formattedImgPath = this.src.substring(this.src.indexOf('://') + '://'.length);
-          var path = SDL.SDLModel.imageCheckList[requestID][i].path;
-          if(path === formattedImgPath) {
-            SDL.SDLModel.imageCheckList[requestID][i].checkResult = false;
-            break;
-          }
-        }
+
+      image.onerror = function() {
+        checkList[this.checkIndex].checkResult = {
+          code: false,
+          info: "Requested image(s) not found"
+        };
         SDL.SDLModel.finalizeImageValidation(requestID, callback);
       };
-      image.src = this.imageCheckList[requestID][i].path;
+
+      image.checkIndex = i;
+      image.src = checkList[i].path;
     }
   },
-  
+
   /**
    * @function finalizeImageValidation
    * @description Collects result of images validation. 
@@ -1043,14 +1192,16 @@ SDL.SDLModel = Em.Object.extend({
    */
   finalizeImageValidation: function(requestID, callback) {
     var failed = false;
+    var info = null;
     var BreakException = {};
     try {
       SDL.SDLModel.imageCheckList[requestID].forEach(image => {
         if (image.checkResult === null) {
           throw BreakException;
         }
-        if (!image.checkResult) {
+        if (!image.checkResult.code) {
           failed = true;
+          info = image.checkResult.info;
         }
       });
     } catch (exception) {
@@ -1059,8 +1210,8 @@ SDL.SDLModel = Em.Object.extend({
       }
     }
 
-    delete SDL.SDLModel.imageCheckList.requestID;
-    callback(failed);
+    delete SDL.SDLModel.imageCheckList[requestID];
+    callback(failed, info);
   },
 
   /**
@@ -1436,10 +1587,12 @@ SDL.SDLModel = Em.Object.extend({
       SDL.TTSPopUp.ActivateTTS(message, files, appID);
     } else {
       FFW.TTS.sendError(
-       SDL.SDLModel.data.resultCode.WARNINGS, this.requestId, 'TTS.Speak',
+       SDL.SDLModel.data.resultCode.WARNINGS,
+       FFW.TTS.requestId,
+       'TTS.Speak',
        'No TTS Chunks provided in Speak request'
       );
-      this.requestId = null;
+      FFW.TTS.requestId = null;
     }
   },
 
@@ -1605,8 +1758,7 @@ SDL.SDLModel = Em.Object.extend({
       SDL.TurnByTurnView.deactivate();
 
       if (!SDL.SDLModel.data.phoneCallActive &&
-          !SDL.SDLModel.data.templateChangeInProgress &&
-          reason == 'GENERAL') {
+          !SDL.SDLModel.data.templateChangeInProgress) {
         FFW.BasicCommunication.OnAppDeactivated(appID);
       }
     }

@@ -87,8 +87,19 @@ SDL.PoliciesView = Em.ContainerView.create(
             type: SDL.Button,
             params: {
               action: 'onState',
-              goToState: 'policies.ccpuEditor',
-              text: 'Configure CCPU version',
+              goToState: 'policies.versionsEditor',
+              text: 'Configure CCPU and hardware versions',
+              target: 'SDL.SettingsController',
+              templateName: 'arrow',
+              onDown: false,
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              action: 'onState',
+              goToState: 'policies.vehicleTypeEditor',
+              text: 'Configure vehicle type parameters',
               target: 'SDL.SettingsController',
               templateName: 'arrow',
               onDown: false,
@@ -152,6 +163,17 @@ SDL.PoliciesView = Em.ContainerView.create(
               click: function() {
                 FFW.BasicCommunication.GetListOfPermissions();
               },
+              onDown: false
+            }
+          },
+          {
+            type: SDL.Button,
+            params: {
+              text: 'Send VIDEO_STREAMING capabilities',
+              action: 'onState',
+              target: 'SDL.SettingsController',
+              goToState: 'policies.sendVideoStreamingCapabilities',
+              templateName: 'arrow',
               onDown: false
             }
           },

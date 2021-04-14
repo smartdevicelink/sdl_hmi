@@ -231,6 +231,16 @@ SDL.InfoController = Em.Object.create(
     onAppPropertiesNotification: function(new_properties) {
       let updated_properties = this.updateAppProperties(new_properties);
 
+      if (!new_properties.enabled 
+          && new_properties.policyAppID in SDL.SDLModel.webApplicationFramesMap) {
+        let frame = SDL.SDLModel.webApplicationFramesMap[new_properties.policyAppID];
+        const web_engine_view = document.getElementById("webEngineView");
+        if (web_engine_view) {
+          web_engine_view.removeChild(frame);
+        }
+        delete SDL.SDLModel.webApplicationFramesMap[new_properties.policyAppID];
+      }
+
       var current_policy_app_id = SDL.WebAppSettingsView.editorAppSettings.policyAppID;
       if (current_policy_app_id != updated_properties.policyAppID) {
         // Don't refresh displayed properties for a different app
@@ -565,6 +575,105 @@ SDL.InfoController = Em.Object.create(
             )
           }, on_extract_failed
         );
+    },
+
+    /**
+     * @description Start converting streaming from SDL to the HTML5 audio/video
+     * @param {String} url SDL streaming path (pipe or socket)
+     * @param {String} type Streaming data type
+     * @param {Object} config Streaming adapter configuration
+     * @return {Promise} promice that resolves streaming URL with HTML5 audio/video
+     */
+    startStreamingAdapter: function(url, type, config) {
+      return new Promise( (resolve, reject) => {
+        let client = FFW.RPCSimpleClient;
+
+        let response_timer = setTimeout(function() {
+          Em.Logger.log('StartStreamingAdapter timeout');
+
+          client.unsubscribeFromEvent('StartStreamingAdapter');
+          reject();
+        }, 10000);
+
+        let response_callback = function(params) {
+          Em.Logger.log('StartStreamingAdapter response');
+
+          clearTimeout(response_timer);
+          client.unsubscribeFromEvent('StartStreamingAdapter');
+
+          if (params.success == false) {
+            Em.Logger.log('StartStreamingAdapter failed');
+            reject();
+            return;
+          }
+
+          Em.Logger.log('StartStreamingAdapter succesfully started');
+          resolve(params['stream_endpoint']);
+        }
+
+        let message = {
+          method: 'StartStreamingAdapter',
+          params: {
+            'url' : url,
+            'streamingType' : type
+          }
+        };
+
+        if (config) {
+          message.params.config = config;
+        }
+
+        Em.Logger.log(`StartStreamingAdapter request`);
+        client.connect();
+        client.subscribeOnEvent('StartStreamingAdapter', response_callback);
+        client.send(message);
+      });
+    },
+
+    /**
+     * Stops streaming data conversion thread
+     * @param {String} type streaming data type
+     * @return {Promise} promice that resolves stopping of conversion thread
+     */
+    stopStreamingAdapter: function(type) {
+      return new Promise( (resolve, reject) => {
+        let client = FFW.RPCSimpleClient;
+
+        let response_timer = setTimeout(function() {
+          Em.Logger.log('StopStreamingAdapter timeout');
+
+          client.unsubscribeFromEvent('StopStreamingAdapter');
+          reject();
+        }, 10000);
+
+        let response_callback = function(params) {
+          Em.Logger.log('StopStreamingAdapter response');
+
+          clearTimeout(response_timer);
+          client.unsubscribeFromEvent('StopStreamingAdapter');
+
+          if (params.success == false) {
+            Em.Logger.log('StopStreamingAdapter failed');
+            reject();
+            return;
+          }
+
+          Em.Logger.log('StopStreamingAdapter succesfully stopped');
+          resolve();
+        }
+
+        let message = {
+          method: 'StopStreamingAdapter',
+          params: {
+            'streamingType' : type
+          }
+        };
+
+        Em.Logger.log(`StopStreamingAdapter request`);
+        client.connect();
+        client.subscribeOnEvent('StopStreamingAdapter', response_callback);
+        client.send(message);
+      });
     },
 
     /**

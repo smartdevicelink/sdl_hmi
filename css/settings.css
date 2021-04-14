@@ -137,11 +137,17 @@
 .ttssetGlobalPropertieslabel {
     position: absolute;
     top: 185px;
-    font-size: 85%;
+    font-size: 92%;
+}
+
+.rcsetGlobalPropertieslabel {
+    position: absolute;
+    top: 210px;
+    font-size: 95%;
 }
 
 .uiCreateWindowLabel {
-    top: 210px;
+    top: 235px;
 }
 
  .subscribeWayPoints{
@@ -234,8 +240,13 @@
     position: absolute;
 }
 
-.uiCreateWindowSelect {
+.rcsetGlobalPropertiesSelect {
     top: 210px;
+    position: absolute;
+}
+
+.uiCreateWindowSelect {
+    top: 235px;
     position: absolute;
 }
 
@@ -342,17 +353,117 @@
 
 #settingsView .in_settings_separate_view .ccpuVersionInput {
     position: absolute;
-    left: 145px;
+    left: 190px;
     top: 115px;
-    width: 400px;
+    width: 450px;
 }
 
-#settingsView .in_settings_separate_view .applyButton {
+#settingsView .in_settings_separate_view .label.vehicleBaseLabel {
     position: absolute;
-    left: 585px;
+    left: 35px;
+    background: black;
+    width: 120px;
+}
+
+#settingsView .in_settings_separate_view .vehicleBaseInput {
+    position: absolute;
+    left: 120px;
+    width: 609px;
+}
+
+#settingsView .in_settings_separate_view .vehicleBaseInput:disabled {
+    color: gray;
+}
+
+#settingsView .in_settings_separate_view .vehicleBaseCheckBox {
+    position: absolute;
+    left: 25px;
+    z-index: 2;
+}
+
+#settingsView .in_settings_separate_view .label.vehicleMakeLabel {
+    top: 110px;
+}
+
+#settingsView .in_settings_separate_view .vehicleMakeInput {
     top: 115px;
-    width: 75px;
+}
+
+#settingsView .in_settings_separate_view .vehicleMakeCheckBox {
+    top: 127px;
+}
+
+
+#settingsView .in_settings_separate_view .label.vehicleModelLabel {
+    top: 170px;
+}
+
+#settingsView .in_settings_separate_view .vehicleModelInput {
+    top: 175px;
+}
+
+#settingsView .in_settings_separate_view .vehicleModelCheckBox {
+    top: 187px;
+}
+
+
+#settingsView .in_settings_separate_view .label.vehicleYearLabel {
+    top: 230px;
+}
+
+#settingsView .in_settings_separate_view .vehicleYearInput {
+    top: 235px;
+}
+
+#settingsView .in_settings_separate_view .vehicleYearCheckBox {
+    top: 247px;
+}
+
+
+#settingsView .in_settings_separate_view .label.vehicleTrimLabel {
+    top: 290px;
+}
+
+#settingsView .in_settings_separate_view .vehicleTrimInput {
+    top: 295px;
+}
+
+#settingsView .in_settings_separate_view .vehicleTrimCheckBox {
+    top: 307px;
+}
+
+#settingsView .in_settings_separate_view .hardwareVersionInput {
+    position: absolute;
+    left: 190px;
+    top: 190px;
+    width: 450px;
+}
+
+#settingsView .in_settings_separate_view .hardwareVersionInput:disabled {
+    color: gray;
+}
+
+#settingsView .in_settings_separate_view .hardwareVersionCheckBox {
+    position: absolute;
+    left: 25px;
+    top: 203px;
+    z-index: 2;
+}
+
+#settingsView .in_settings_separate_view .systemVersionsApplyButton {
+    position: absolute;
+    top: 250px;
+    left: 190px;
+    width: 125px;
     text-align: center;
+}
+
+#settingsView .in_settings_separate_view .vehicleTypeApplyButton {
+    position: absolute;
+    top: 338px;
+    width: 125px;
+    text-align: center;
+    right: 6px;
 }
 
 #settingsView .in_settings_separate_view .label.ccpuVersionLabel {
@@ -361,6 +472,14 @@
     left: 10px;
     background: black;
     width: 120px;
+}
+
+#settingsView .in_settings_separate_view .label.hardwareVersionLabel {
+    position: absolute;
+    top: 185px;
+    left: 30px;
+    background: black;
+    width: 150px;
 }
 
 #settingsView .in_settings_separate_view .sendRequestButton {
@@ -433,6 +552,41 @@
 #policies_settings_appPermissions .privacyModeSelect {
     top: 320px !important;
     left: 175px !important;
+}
+
+#policies_settings_sendVideoStreamingCapsView #videoCapabilitiesCodeEditor {
+    width: 545px !important;
+    height: 270px !important;
+    top: 95px !important;
+}
+
+#policies_settings_sendVideoStreamingCapsView #sendNotificationButton {
+    left: 658px;
+    top: 210px;
+    width: 130px;
+    text-align: center;
+}
+
+#policies_settings_sendVideoStreamingCapsView .in_app_id_container_view .label {
+    left: 658px;
+    top: -178px;
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    background: #393939;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 50px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
+}
+
+#policies_settings_sendVideoStreamingCapsView .in_app_id_container_view .appIDSelectView {
+  left: 658px;
+  top: -120px;
+  width: 130px;
+  position: absolute;
 }
 
 #settingsView .backButton .ico {

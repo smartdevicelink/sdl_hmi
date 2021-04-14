@@ -53,12 +53,17 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
     highLightedMode:false,
     /** Button icon class */
     icon: null,
+    isTemplate: null,
+    secondaryIcon: null,
+    isSecondaryTemplate: null,
 
     /** Button rightIcon class */
     righticon: null,
 
     /** Button text */
     text: null,
+    secondaryText: null,
+    tertiaryText: null,
 
     rightText: null,
 
@@ -170,10 +175,8 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
         // this.$('img') returns a jquery instance of
         // the img element inside of the SDL.Button
         this.$('img').on('error', function(event) {
-          if(SDL.SDLController.model && SDL.SDLController.model.appID) {
-            var regex = /\?(.*)/g;
-            FFW.UI.OnUpdateFile(SDL.SDLController.model.appID, $(this)[0].icon.replace(regex, ""))
-          }
+          var regex = /\?(.*)/g;
+          SDL.SDLController.onUpdateFile($(this)[0].icon.replace(regex, ""));
         }.bind(this));
       }
     },
@@ -249,6 +252,53 @@ SDL.Button = Em.View.extend(Ember.TargetActionSupport,
           {{bindAttr src="view.icon"}} />' +
         '<span>{{view.text}}</span>' +
         '<img class="right_ico" {{bindAttr src="view.righticon"}} />'
+      ),
+
+      extended: Em.Handlebars.compile(
+        '<div class="extended-button">' +
+          '{{#if view.isTemplate}}' +
+          '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
+          '{{/if}}' +
+          '<img {{bindAttr class="view.icon:ico"}} \
+          {{bindAttr src="view.icon"}} />' +
+          '<div class="main-text">' +
+            '<span class="w-100">{{view.text}}</span>' +
+            '<span class="w-100 t-small">{{view.secondaryText}}</span>' +
+          '</div>' +
+          '<div class="end-info">' +
+            '<span class="w-50 t-small tertiary-text">{{view.tertiaryText}}</span>' +
+            '{{#if view.isSecondaryTemplate}}' +
+            '<img {{bindAttr class="view.secondaryIcon:ico-overlay"}}  />' +
+            '{{/if}}' +
+            '<img {{bindAttr class="view.secondaryIcon:ico"}} \
+            {{bindAttr src="view.secondaryIcon"}} />' +
+          '</div>'+
+        '</div>'
+      ),
+
+      arrowExtended: Em.Handlebars.compile(
+        '<div class="extended-button">' +
+          '{{#if view.isTemplate}}' +
+          '<img {{bindAttr class="view.icon:ico-overlay"}}  />' +
+          '{{/if}}' +
+          '<img {{bindAttr class="view.icon:ico"}} \
+          {{bindAttr src="view.icon"}} />' +
+          '<div class="main-text">' +
+            '<span class="w-100">{{view.text}}</span>' +
+            '<span class="w-100 t-small">{{view.secondaryText}}</span>' +
+          '</div>' +
+          '<div class="end-info">' +
+            '<span class="w-50 t-small tertiary-text">{{view.tertiaryText}}</span>' +
+            '<div class="relative-r-0">' +
+            '{{#if view.isSecondaryTemplate}}' +
+            '<img {{bindAttr class="view.secondaryIcon:ico-overlay"}}  />' +
+            '{{/if}}' +
+            '<img {{bindAttr class="view.secondaryIcon:ico"}} \
+            {{bindAttr src="view.secondaryIcon"}} />' +
+            '</div>' +
+            '<img class="arrow-ico relative-r-0" src="images/common/arrow_ico.png" />' +
+          '</div>'+
+        '</div>'
       )
     }
   }

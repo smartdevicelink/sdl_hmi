@@ -74,6 +74,26 @@ SDL.SettingsController = Em.Object.create(
      */
     editedCcpuVersionValue: "",
 
+    /**
+     * @description Value of hardware version displayed in user input
+     */
+    editedHardwareVersionValue: "",
+
+    /**
+     * @description Flag to enable/disable hardware version text field
+     */
+    hardwareVersionEditingEnabled: true,
+
+    /**
+     * @description Map of vehicle type data displayed in user inputs
+     */
+    editedVehicleType: {},
+
+    /**
+     * @description Flag to signal that next PTU iteration has been scheduled
+     */
+    nextPtuIterationScheduled: false,
+
     onState: function(event) {
       if(SDL.States.currentState.name === 'rpcconfig'){
         FFW.RPCHelper.setCurrentAppID(null);
@@ -346,6 +366,38 @@ SDL.SettingsController = Em.Object.create(
       }
     },
     /**
+     * @description Schedules next PTU iteration
+     */
+    scheduleNextPtuIteration: function() {
+      Em.Logger.log('Next PTU iteration has been scheduled');
+      this.set('nextPtuIterationScheduled', true);
+      this.runScheduledPtuIteration();
+    },
+    /**
+     * @description Runs scheduled PTU iteration if all conditions are met
+     */
+    runScheduledPtuIteration: function() {
+      let availableForPtuAppExists = false;
+      SDL.SDLModel.data.registeredApps.forEach(app => {
+        if (app.initialized === true) {
+          availableForPtuAppExists = true;
+        }
+      });
+
+      if (availableForPtuAppExists && this.nextPtuIterationScheduled) {
+        Em.Logger.log('Starting of PTU iteration');
+        this.set('nextPtuIterationScheduled', false);
+        if (SDL.SDLModel.data.policyURLs.length > 0) {
+          this.OnSystemRequestHandler(SDL.SDLModel.data.policyURLs[0]);
+        } else {
+          this.OnSystemRequestHandler();
+        }
+        if (FLAGS.ExternalPolicies === true) {
+          this.policyUpdateRetry();
+        }
+      }
+    },
+    /**
      * Method responsible for PolicyUpdate retry sequence
      * abort parameter if set to true means that retry sequence if finished
      *
@@ -606,10 +658,64 @@ SDL.SettingsController = Em.Object.create(
     },
 
     /**
-     * @description Saves new CCPU version value from user input
+     * @description Saves new CCPU and hardware version values from user input
      */
-    applyNewCcpuVersionValue: function() {
+    applyNewVersionValues: function() {
       SDL.SDLModel.data.ccpuVersion = this.editedCcpuVersionValue;
+      SDL.SDLModel.data.hardwareVersion = this.hardwareVersionEditingEnabled ?
+        this.editedHardwareVersionValue : null;
+
+      Em.Logger.log("New system version settings have been applied");
+    },
+
+    /**
+     * @description Getter for all available vehicle type data and corresponding controls
+     */
+    getVehicleTypeCheckboxes: function() {
+      return [
+        { checkbox: SDL.VehicleTypeEditorView.vehicleMakeCheckBox, property: 'make' },
+        { checkbox: SDL.VehicleTypeEditorView.vehicleModelCheckBox, property: 'model' },
+        { checkbox: SDL.VehicleTypeEditorView.vehicleYearCheckBox, property: 'modelYear' },
+        { checkbox: SDL.VehicleTypeEditorView.vehicleTrimCheckBox, property: 'trim' }
+      ];
+    },
+
+    /**
+     * @description Applies edited by user vehicle data settings to internal data
+     */
+    applyNewVehicleTypeValues: function() {
+      let setNewVehicleTypeValue = (checkbox, property) => {
+        if (checkbox.checked) {
+          SDL.SDLVehicleInfoModel.set('vehicleType.' + property, this.editedVehicleType[property]);
+        } else {
+          SDL.SDLVehicleInfoModel.set('vehicleType.' + property, null);
+        }
+      };
+
+      this.getVehicleTypeCheckboxes().forEach( (item) => {
+        setNewVehicleTypeValue(item.checkbox, item.property);
+      });
+
+      Em.Logger.log("New vehicle type have been applied");
+    },
+
+    /**
+     * @description Updated UI controls and values according to internal data values
+     * @param {Object} new_values internal data values structure
+     */
+    updateVehicleTypeValues: function(new_values) {
+      let setNewVehicleTypeValue = (checkbox, property) => {
+        if (new_values[property] !== null) {
+          this.set('editedVehicleType.' + property, new_values[property]);
+          checkbox.set('checked', true);
+        } else {
+          checkbox.set('checked', false);
+        }
+      };
+
+      this.getVehicleTypeCheckboxes().forEach( (item) => {
+        setNewVehicleTypeValue(item.checkbox, item.property);
+      });
     },
 
     /**
@@ -639,7 +745,67 @@ SDL.SettingsController = Em.Object.create(
       };
       FFW.BasicCommunication.GetPolicyConfigurationData(policyConfigurationData);
     },
-    
+
+    sendVideoStreamingCapabilities: function() {
+      // Trigger 'change' event to force overwriting 'selection' field 
+      // with current value of selected appID. Otherwise it will be null.
+      SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.trigger('change');
+      var systemCapability = {
+        'systemCapability' : {
+          'systemCapabilityType': 'VIDEO_STREAMING',
+          'videoStreamingCapability': SDL.systemCapabilities.videoStreamingCapability
+        },
+        'appID': parseInt(SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.selection)
+      };
+      FFW.BasicCommunication.OnSystemCapabilityUpdated(systemCapability);
+    },
+
+    saveVideoStreamingCapabilities: function() {
+      SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.save();
+      this.showVideoStreamingCapabilities();
+    },
+
+    onRegisteredAppsListUpdated: function() {
+      if(!SDL.SendVideoStreamingCapsView) {
+        return;
+      }
+
+      let appIDsArray = [];
+      for(var i = 0; i < SDL.SDLModel.data.registeredApps.length; ++i) {
+        appIDsArray.push(SDL.SDLModel.data.registeredApps[i].appID);
+      };
+
+      SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.set('content', appIDsArray);
+    }.observes('SDL.SDLModel.data.registeredApps.@each'),
+
+    showVideoStreamingCapabilities: function() {
+      let capabilities = SDL.systemCapabilities.videoStreamingCapability;
+      SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.set('content', JSON.stringify(capabilities, null, 2));
+
+      let that = this;
+      SDL.SendVideoStreamingCapsView.videoCapabilitiesCodeEditor.activate(function(data) {
+        // Trigger 'change' event to force overwriting 'selection' field 
+        // with current value of selected appID. Otherwise it will be null.
+        SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.trigger('change');
+
+        const new_data = JSON.stringify(data);
+        const old_data = JSON.stringify(SDL.systemCapabilities.videoStreamingCapability);
+        SDL.NavigationController.setPreferredResolutionIndex(
+          parseInt(SDL.SendVideoStreamingCapsView.appIDContainerView.appIDSelect.selection),
+          data.preferredResolution.resolutionWidth,
+          data.preferredResolution.resolutionHeight,
+          data.scale
+        );
+
+        if (new_data != old_data) {
+          SDL.systemCapabilities.set('videoStreamingCapability', data);
+          if (SDL.States.nextState != SDL.States.settings.policies.get('path')) {
+            that.sendVideoStreamingCapabilities();
+          }
+        }
+      });
+    },
+
     /**
      * @function changeGetSystemTimeResultCode
      * @description Change result code of GetSystemTime response to SDL

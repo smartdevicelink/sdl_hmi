@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, Ford Motor Company All rights reserved.
+ * Copyright (c) 2020, Ford Motor Company All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met: ·
@@ -36,6 +36,16 @@ SDL.QWERTYLayout = Em.ContainerView.extend({
   classNames: 'keyboardLayout QWERTYLayout',
 
   childViews: [
+    'num1',
+    'num2',
+    'num3',
+    'num4',
+    'num5',
+    'num6',
+    'num7',
+    'num8',
+    'num9',
+    'num0',
     'q',
     'w',
     'e',
@@ -63,231 +73,326 @@ SDL.QWERTYLayout = Em.ContainerView.extend({
     'n',
     'm',
     'dash',
-    'ampersand'
+    'ampersand',
+    'dot'
   ],
 
+  num1: SDL.Button.extend({
+          classNames: 'num1 col0 row0',
+          text: '1',
+          target: 'SDL.KeyboardController',
+          action: 'inputChanges'
+        }
+    ),
+
+  num2: SDL.Button.extend({
+        classNames: 'num2 col1 row0',
+        text: '2',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num3: SDL.Button.extend({
+        classNames: 'num3 col2 row0',
+        text: '3',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num4: SDL.Button.extend({
+        classNames: 'num4 col3 row0',
+        text: '4',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num5: SDL.Button.extend({
+        classNames: 'num5 col4 row0',
+        text: '5',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num6: SDL.Button.extend({
+        classNames: 'num6 col5 row0',
+        text: '6',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num7: SDL.Button.extend({
+        classNames: 'num7 col6 row0',
+        text: '7',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num8: SDL.Button.extend({
+        classNames: 'num8 col7 row0',
+        text: '8',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num9: SDL.Button.extend({
+        classNames: 'num9 col8 row0',
+        text: '9',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
+  num0: SDL.Button.extend({
+        classNames: 'num0 col9 row0',
+        text: '0',
+        target: 'SDL.KeyboardController',
+        action: 'inputChanges'
+    }),
+
   q: SDL.Button.extend({
-        classNames: 'q k0',
+        classNames: 'q col0 row1',
         text: 'q',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   w: SDL.Button.extend({
-        classNames: 'w k1',
+        classNames: 'w col1 row1',
         text: 'w',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   e: SDL.Button.extend({
-        classNames: 'e k2',
+        classNames: 'e col2 row1',
         text: 'e',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   r: SDL.Button.extend({
-        classNames: 'r k3',
+        classNames: 'r col3 row1',
         text: 'r',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   t: SDL.Button.extend({
-        classNames: 't k4',
+        classNames: 't col4 row1',
         text: 't',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   y: SDL.Button.extend({
-        classNames: 'y k5',
+        classNames: 'y col5 row1',
         text: 'y',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   u: SDL.Button.extend({
-        classNames: 'u k6',
+        classNames: 'u col6 row1',
         text: 'u',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   i: SDL.Button.extend({
-        classNames: 'i k7',
+        classNames: 'i col7 row1',
         text: 'i',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   o: SDL.Button.extend({
-        classNames: 'o k8',
+        classNames: 'o col8 row1',
         text: 'o',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   p: SDL.Button.extend({
-        classNames: 'p k9',
+        classNames: 'p col9 row1',
         text: 'p',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   a: SDL.Button.extend({
-        classNames: 'a k10',
+        classNames: 'a col0 row2',
         text: 'a',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   s: SDL.Button.extend({
-        classNames: 's k11',
+        classNames: 's col1 row2',
         text: 's',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   d: SDL.Button.extend({
-        classNames: 'd k12',
+        classNames: 'd col2 row2',
         text: 'd',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   f: SDL.Button.extend({
-        classNames: 'f k13',
+        classNames: 'f col3 row2',
         text: 'f',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   g: SDL.Button.extend({
-        classNames: 'g k14',
+        classNames: 'g col4 row2',
         text: 'g',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   h: SDL.Button.extend({
-        classNames: 'h k15',
+        classNames: 'h col5 row2',
         text: 'h',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   j: SDL.Button.extend({
-        classNames: 'j k16',
+        classNames: 'j col6 row2',
         text: 'j',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   k: SDL.Button.extend({
-        classNames: 'k k17',
+        classNames: 'k col7 row2',
         text: 'k',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   l: SDL.Button.extend({
-        classNames: 'l k18',
+        classNames: 'l col8 row2',
         text: 'l',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   z: SDL.Button.extend({
-        classNames: 'z k21',
+        classNames: 'z col1 row3',
         text: 'z',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   x: SDL.Button.extend({
-        classNames: 'x k22',
+        classNames: 'x col2 row3',
         text: 'x',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   c: SDL.Button.extend({
-        classNames: 'c k23',
+        classNames: 'c col3 row3',
         text: 'c',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   v: SDL.Button.extend({
-        classNames: 'v k24',
+        classNames: 'v col4 row3',
         text: 'v',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   b: SDL.Button.extend({
-        classNames: 'b k25',
+        classNames: 'b col5 row3',
         text: 'b',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   n: SDL.Button.extend({
-        classNames: 'n k26',
+        classNames: 'n col6 row3',
         text: 'n',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
 
   m: SDL.Button.extend({
-        classNames: 'm k27',
+        classNames: 'm col7 row3',
         text: 'm',
-        target: 'parentView.parentView',
+        target: 'SDL.KeyboardController',
         action: 'inputChanges'
       }
     ),
+
+  dot: SDL.Button.extend({
+      classNames: 'dot col0 row3',
+      textBinding: 'getText',
+      defaultText: '.',
+      customKeyIndex: 0,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customKeys.@each')
+    }
+  ),
 
   dash: SDL.Button.extend({
-        classNames: 'dash k28',
-        text: '-',
-        target: 'parentView.parentView',
-        action: 'inputChanges'
-      }
-    ),
+      classNames: 'dash col8 row3',
+      textBinding: 'getText',
+      defaultText: '-',
+      customKeyIndex: 1,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customKeys.@each')
+    }
+  ),
 
   ampersand: SDL.Button.extend({
-        classNames: 'ampersand k29',
-        text: '&',
-        target: 'parentView.parentView',
-        action: 'inputChanges'
-      }
-    )
+      classNames: 'ampersand col9 row3',
+      textBinding: 'getText',
+      defaultText: '&',
+      customKeyIndex: 2,
+      target: 'SDL.KeyboardController',
+      action: 'inputChanges',
+      getText: function() {
+        return SDL.KeyboardController.getCustomKey(this.customKeyIndex, this.defaultText);
+      }.property('SDL.SDLController.model.globalProperties.keyboardProperties.customKeys.@each')
+    }
+  )
 }
 );
