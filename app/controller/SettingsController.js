@@ -219,10 +219,12 @@ SDL.SettingsController = Em.Object.create(
         for (var i = 0; i < message.result.allowedFunctions.length; i++) {
           messageCodes.push(message.result.allowedFunctions[i].name);
         }
-        FFW.BasicCommunication.GetUserFriendlyMessage(
-          SDL.SettingsController.permissionsFriendlyMessageUpdate, appID,
-          messageCodes
-        );
+        if (messageCodes.length > 0) {
+          FFW.BasicCommunication.GetUserFriendlyMessage(
+            SDL.SettingsController.permissionsFriendlyMessageUpdate, appID,
+            messageCodes
+          );
+        }
         SDL.AppPermissionsView.update(message.result.allowedFunctions, appID);
         delete SDL.SDLModel.data.getListOfPermissionsPull[message.id];
       }
