@@ -602,7 +602,9 @@ FFW.BasicCommunication = FFW.RPCObserver
                 fileName: request.params.fileName
               });
             } else {
-              this.OnReceivedPolicyUpdate(request.params.fileName);
+              if (request.params.requestType == 'PROPRIETARY') {
+                this.OnReceivedPolicyUpdate(request.params.fileName);
+              }
             }
 
             if (request.params.requestType == 'OEM_SPECIFIC' &&
