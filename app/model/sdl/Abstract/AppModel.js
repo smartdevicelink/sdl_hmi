@@ -546,9 +546,10 @@ SDL.ABSAppModel = Em.Object.extend(
 
       this.set('maskInputCharactersUserChoice', true);
 
-      this.set('resolutionsList',
-        SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities
-      );
+      var all_resolutions = [JSON.parse(JSON.stringify(SDL.systemCapabilities.videoStreamingCapability))];
+      delete all_resolutions[0].additionalVideoStreamingCapabilities;
+      all_resolutions = all_resolutions.concat(SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities);
+      this.set('resolutionsList', all_resolutions);
     },
     /**
      * @description Gets app default keyboard global properties
