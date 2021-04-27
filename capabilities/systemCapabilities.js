@@ -47,6 +47,10 @@ SDL.systemCapabilities = Em.Object.create(
             {
                 protocol:  "RTP",
                 codec: "H264"
+            },
+            {
+                protocol:  "WEBM",
+                codec: "VP8"
             }
         ],
         hapticSpatialDataSupported: true,
@@ -75,6 +79,10 @@ SDL.systemCapabilities = Em.Object.create(
                     {
                         protocol:  "RTP",
                         codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
                     }
                 ]
             },
@@ -98,6 +106,10 @@ SDL.systemCapabilities = Em.Object.create(
                     {
                         protocol:  "RTP",
                         codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
                     }
                 ]
             },
@@ -121,6 +133,10 @@ SDL.systemCapabilities = Em.Object.create(
                     {
                         protocol:  "RTP",
                         codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
                     }
                 ]
             },
@@ -144,6 +160,10 @@ SDL.systemCapabilities = Em.Object.create(
                     {
                         protocol:  "RTP",
                         codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
                     }
                 ]
             },
@@ -167,6 +187,10 @@ SDL.systemCapabilities = Em.Object.create(
                     {
                         protocol:  "RTP",
                         codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
                     }
                 ]
             },
@@ -190,6 +214,10 @@ SDL.systemCapabilities = Em.Object.create(
                     {
                         protocol:  "RTP",
                         codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
                     }
                 ]
             }
