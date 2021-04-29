@@ -434,12 +434,24 @@ FFW.BasicCommunication = FFW.RPCObserver
             const updated_caps = notification.params.appCapability.videoStreamingCapability;
             if (updated_caps.additionalVideoStreamingCapabilities) {
               let appModel = SDL.SDLController.getApplicationModel(notification.params.appID);
-
-              if (appModel && appModel.resolutionIndex > updated_caps.additionalVideoStreamingCapabilities.length - 1) {
-                appModel.set('resolutionIndex',
-                  updated_caps.additionalVideoStreamingCapabilities.length - 1
-                );
+              if (appModel) {
+                // Order of capabilities is not guaranteed. Find resolution index.
+                var current_res = SDL.NavigationController.stringifyCapabilityItem(appModel.resolutionsList[appModel.resolutionIndex]);
+                var i=0;
+                for (; i<updated_caps.additionalVideoStreamingCapabilities.length; i++) {
+                  const comp_res = SDL.NavigationController.stringifyCapabilityItem(updated_caps.additionalVideoStreamingCapabilities[i])
+                  if (current_res === comp_res) {
+                    appModel.set('resolutionIndex', i)
+                    break;
+                  }
+                }
+                if (i == updated_caps.additionalVideoStreamingCapabilities.length) {
+                  appModel.set('resolutionIndex',
+                    updated_caps.additionalVideoStreamingCapabilities.length - 1
+                  );
+                }
               }
+              
               appModel.set('resolutionsList',
                 updated_caps.additionalVideoStreamingCapabilities
               );

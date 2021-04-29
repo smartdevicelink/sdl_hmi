@@ -491,23 +491,11 @@ SDL.NavigationController = Em.Object.create(
       if (index >= 0) {
         Em.Logger.log(`Switching video streaming preset to: ${preset_name}`);
         SDL.SDLController.model.set('resolutionIndex', index);
-        const capability_to_switch = SDL.SDLController.model.resolutionsList[index];
-        let capabilities_to_send = {};
-
-        if (capability_to_switch.preferredResolution) {
-          capabilities_to_send.preferredResolution = {};
-          capabilities_to_send.preferredResolution.resolutionWidth =
-            capability_to_switch.preferredResolution.resolutionWidth;
-          capabilities_to_send.preferredResolution.resolutionHeight =
-            capability_to_switch.preferredResolution.resolutionHeight;
-        }
-
-        if (capability_to_switch.scale) {
-          capabilities_to_send.scale = capability_to_switch.scale;
-        }
-
-        capabilities_to_send.additionalVideoStreamingCapabilities = 
-          SDL.SDLController.model.resolutionsList;
+        let capabilities_to_send  = JSON.parse(JSON.stringify(SDL.SDLController.model.resolutionsList[index]));
+        let resolutions_list = JSON.parse(JSON.stringify(SDL.SDLController.model.resolutionsList));
+        // Remove new selected resolution from the additional capabilities
+        resolutions_list.splice(index, 1);
+        capabilities_to_send.additionalVideoStreamingCapabilities = resolutions_list;
 
         const json_to_send = {
           'systemCapability' : {
