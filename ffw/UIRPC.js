@@ -1916,8 +1916,7 @@ FFW.UI = FFW.RPCObserver.create(
      */
     sendSliderResult: function(resultCode, sliderRequestID, sliderPosition) {
       Em.Logger.log('FFW.UI.SliderResponse');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
-
+      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS || sliderPosition) {
         // send repsonse
         var JSONMessage = {
           'jsonrpc': '2.0',
@@ -1937,15 +1936,12 @@ FFW.UI = FFW.RPCObserver.create(
           'id': sliderRequestID,
           'error': {
             'code': resultCode, // type (enum) from SDL protocol
-            'message': 'Slider request ABORTED or TIMED OUT.',
+            'message': 'Slider request failed.',
             'data': {
               'method': 'UI.Slider'
             }
           }
         };
-        if (sliderPosition) {
-          JSONMessage.error.data.sliderPosition = sliderPosition;
-        }
       }
       this.sendMessage(JSONMessage);
     },
