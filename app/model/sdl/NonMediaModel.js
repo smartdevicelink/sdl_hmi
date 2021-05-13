@@ -53,7 +53,6 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
           field4: '<field4>',
           title: '',
           mainImage: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
-          image: '',
           customPresets: [
             '<no definition>',
             '<no definition>',

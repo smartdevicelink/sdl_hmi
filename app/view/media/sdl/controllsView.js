@@ -58,7 +58,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
             '<div class="track textLimit"{{bindAttr style="SDL.SDLController.model.appInfo.alignment"}}>{{SDL.SDLController.model.appInfo.mediaTrack}}</div>' +
             '<div class="time"{{bindAttr class="SDL.SDLController.model.mediaPreset:timeV2"}}>{{SDL.SDLController.model.appInfo.mediaClock}}</div>' +
             '<img class="cd_logo" onerror="this.style.display=\'none\'" {{bindAttr class="SDL.SDLController.model.mediaPreset:cd_logoV2"}} {{bindAttr class="SDL.SDLController.model.mode"}} {{bindAttr class="SDL.SDLController.model.isTemplate"}}/>' +       
-            '<img class="cd_logo" onerror="this.style.display=\'none\'" {{bindAttr src="SDL.SDLController.model.appInfo.trackIcon" class="SDL.SDLController.model.mediaPreset:cd_logoV2"}} />' +       
+            '<img class="cd_logo" onerror="this.style.display=\'none\'" {{bindAttr src="SDL.SDLController.model.appInfo.mainImage" class="SDL.SDLController.model.mediaPreset:cd_logoV2"}} />' +       
             '</div>' + '{{/with}}'
           )
       }

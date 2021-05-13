@@ -108,6 +108,10 @@ SDL.SDLMediaController = Em.Object.create(
           SDL.States.goToStates('webViewApp');
           break;
         }
+        case 'NON-MEDIA' : {
+          SDL.States.goToStates('info.nonMedia');
+          break;
+        }
         default: {
           SDL.States.goToStates('media.sdlmedia');
         }

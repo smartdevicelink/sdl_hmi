@@ -197,6 +197,14 @@ FFW.UI = FFW.RPCObserver.create(
             let sendCapabilityUpdated = false;
             if("templateConfiguration" in request.params) {
               if (model.templateConfiguration.template !== request.params.templateConfiguration.template) {
+                if (!SDL.SDLModel.isTemplateSupported(model, request.params.templateConfiguration.template)) {
+                  this.sendError(
+                    SDL.SDLModel.data.resultCode['REJECTED'], request.id,
+                    request.method, 'The requested layout is not supported for this app type'
+                  );
+                  return;
+                }
+
                 model.templateConfiguration.template = request.params.templateConfiguration.template;
 
                 if (model.active) {
@@ -475,93 +483,83 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SetDisplayLayout':
           {
+            let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
+            const isWindowIDExist = "windowID" in request.params; 
+            const isWidgetID = isWindowIDExist && parseInt(request.params.windowID) != 0;
+            const windowID = isWindowIDExist ? parseInt(request.params.windowID) : 0;
+            let model = isWidgetID ? appModel.getWidgetModel(windowID).content : appModel;
             var sendResponseFlag = false;
-            switch (request.params.displayLayout) {
-              case 'MEDIA':
-              case 'NON-MEDIA':
-              case 'DEFAULT':
-              case 'NAV_FULLSCREEN_MAP':
-              case 'WEB_VIEW':
-              {
-                sendResponseFlag = true;
-                break;
-              }
+
+            Em.Logger.log('FFW.' + request.method + 'Response');
+            var displayLayout = request.params.displayLayout;
+
+            if (!SDL.SDLModel.isTemplateSupported(model, request.params.displayLayout)) {
+              this.sendError(
+                SDL.SDLModel.data.resultCode['REJECTED'], request.id,
+                request.method, 'The requested layout is not supported for this app type'
+              );
+              return;
             }
 
-            if (sendResponseFlag) {
-              Em.Logger.log('FFW.' + request.method + 'Response');
-              var displayLayout = request.params.displayLayout;
-              if (displayLayout === "DEFAULT") {
-                for (var i=0; i<model.appType.length; i++) {
-                  if (model.appType[i] === "NAVIGATION") {
-                    displayLayout = NAV_FULLSCREEN_MAP;
-                    break;
-                  }
-                }
-                if (displayLayout != "NAV_FULLSCREEN_MAP") {
-                  if (model.isMedia === true) {
-                    displayLayout = "MEDIA"
-                  } else {
-                    displayLayout = "NON-MEDIA"
-                  }
+            if (displayLayout === "DEFAULT") {
+              for (var i=0; i<model.appType.length; i++) {
+                if (model.appType[i] === "NAVIGATION") {
+                  displayLayout = NAV_FULLSCREEN_MAP;
+                  break;
                 }
               }
-              // send repsonse
-              var JSONMessage = {
-                'jsonrpc': '2.0',
-                'id': request.id,
-                'result': {
-                  'displayCapabilities': SDL.templateCapabilities[displayLayout].displayCapabilities,
-                  'buttonCapabilities': SDL.templateCapabilities[displayLayout].buttonCapabilities,
-                  'softButtonCapabilities': SDL.templateCapabilities[displayLayout].softButtonCapabilities,
-                  'presetBankCapabilities': SDL.templateCapabilities[displayLayout].presetBankCapabilities,
-                  'code': SDL.SDLModel.data.resultCode.SUCCESS,
-                  'method': 'UI.SetDisplayLayout'
+              if (displayLayout != "NAV_FULLSCREEN_MAP") {
+                if (model.isMedia === true) {
+                  displayLayout = "MEDIA"
+                } else {
+                  displayLayout = "NON-MEDIA"
                 }
-              };
-              this.sendMessage(JSONMessage);
+              }
+            }
+            // send repsonse
+            var JSONMessage = {
+              'jsonrpc': '2.0',
+              'id': request.id,
+              'result': {
+                'displayCapabilities': SDL.templateCapabilities[displayLayout].displayCapabilities,
+                'buttonCapabilities': SDL.templateCapabilities[displayLayout].buttonCapabilities,
+                'softButtonCapabilities': SDL.templateCapabilities[displayLayout].softButtonCapabilities,
+                'presetBankCapabilities': SDL.templateCapabilities[displayLayout].presetBankCapabilities,
+                'code': SDL.SDLModel.data.resultCode.SUCCESS,
+                'method': 'UI.SetDisplayLayout'
+              }
+            };
+            this.sendMessage(JSONMessage);
+            let sendCapabilityUpdated = false;
+            if ("displayLayout" in request.params && model.templateConfiguration.template !== request.params.displayLayout) {
+              model.templateConfiguration.template = request.params.displayLayout
 
-              let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
-              const isWindowIDExist = "windowID" in request.params; 
-              const isWidgetID = isWindowIDExist && parseInt(request.params.windowID) != 0;
-              const windowID = isWindowIDExist ? parseInt(request.params.windowID) : 0;
-              let model = isWidgetID ? appModel.getWidgetModel(windowID).content : appModel;
-              let sendCapabilityUpdated = false;
-              if ("displayLayout" in request.params && model.templateConfiguration.template !== request.params.displayLayout) {
-                model.templateConfiguration.template = request.params.displayLayout
+              if (model.active) {
+                SDL.SDLModel.data.templateChangeInProgress = true;
+                SDL.States.goToStates('info.apps');
+                model.turnOnSDL();
+                SDL.SDLModel.data.templateChangeInProgress = false;
+              }
 
-                if (model.active) {
-                  SDL.SDLModel.data.templateChangeInProgress = true;
-                  SDL.States.goToStates('info.apps');
-                  model.turnOnSDL();
-                  SDL.SDLModel.data.templateChangeInProgress = false;
-                }
-
-                sendCapabilityUpdated = true;
-              }
-              if ("dayColorScheme" in request.params
-                  && !SDL.SDLController.isColorSchemesEqual(
-                    model.templateConfiguration.dayColorScheme,
-                    request.params.dayColorScheme)) {
-                model.templateConfiguration.dayColorScheme = request.params.dayColorScheme;
-                sendCapabilityUpdated = true;
-              }
-              if ("nightColorScheme" in request.params
-              && !SDL.SDLController.isColorSchemesEqual(
-                model.templateConfiguration.nightColorScheme,
-                request.params.nightColorScheme)) {
-                model.templateConfiguration.nightColorScheme = request.params.nightColorScheme;
-               sendCapabilityUpdated = true;
-              }
-              if (sendCapabilityUpdated) {
-                let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
-                FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
-              }
-            } else {
-              this.sendError(
-                SDL.SDLModel.data.resultCode['UNSUPPORTED_REQUEST'], request.id,
-                request.method, 'Unsupported display layout!'
-              );
+              sendCapabilityUpdated = true;
+            }
+            if ("dayColorScheme" in request.params
+                && !SDL.SDLController.isColorSchemesEqual(
+                  model.templateConfiguration.dayColorScheme,
+                  request.params.dayColorScheme)) {
+              model.templateConfiguration.dayColorScheme = request.params.dayColorScheme;
+              sendCapabilityUpdated = true;
+            }
+            if ("nightColorScheme" in request.params
+                && !SDL.SDLController.isColorSchemesEqual(
+                  model.templateConfiguration.nightColorScheme,
+                  request.params.nightColorScheme)) {
+              model.templateConfiguration.nightColorScheme = request.params.nightColorScheme;
+              sendCapabilityUpdated = true;
+            }
+            if (sendCapabilityUpdated) {
+              let capability = SDL.SDLController.getDefaultCapabilities(request.params.windowID, request.params.appID);
+              FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
             }
             break;
           }
