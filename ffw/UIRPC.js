@@ -492,14 +492,14 @@ FFW.UI = FFW.RPCObserver.create(
               Em.Logger.log('FFW.' + request.method + 'Response');
               var displayLayout = request.params.displayLayout;
               if (displayLayout === "DEFAULT") {
-                for (var i=0; i<model.appType.length; i++) {
-                  if (model.appType[i] === "NAVIGATION") {
-                    displayLayout = NAV_FULLSCREEN_MAP;
+                for (var i=0; i<SDL.SDLController.model.appType.length; i++) {
+                  if (SDL.SDLController.model.appType[i] === "NAVIGATION") {
+                    displayLayout = this.NAV_FULLSCREEN_MAP;
                     break;
                   }
                 }
                 if (displayLayout != "NAV_FULLSCREEN_MAP") {
-                  if (model.isMedia === true) {
+                  if (SDL.SDLController.model.isMedia === true) {
                     displayLayout = "MEDIA"
                   } else {
                     displayLayout = "NON-MEDIA"
