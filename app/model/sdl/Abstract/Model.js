@@ -618,7 +618,8 @@ SDL.SDLModel = Em.Object.extend({
       }
       case 'NAV_FULLSCREEN_MAP':
       {
-        return model.appType.indexOf('NAVIGATION') >= 0;
+        return model.appType.indexOf('NAVIGATION') >= 0 ||
+               model.appType.indexOf('PROJECTION') >= 0;
       }
       case 'WEB_VIEW':
       {
