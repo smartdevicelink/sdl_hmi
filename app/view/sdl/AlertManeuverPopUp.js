@@ -45,8 +45,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       // 'message1',
       // 'message2',
       // 'message3',
-      'softbuttons',
-      'closeButton'
+      'softbuttons'
     ],
     content1: 'Title',
     content2: 'Text',
@@ -55,7 +54,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     timer: null,
     timeout: 5000,
     alertManeuerRequestId: 0,
-    isCloseButtonVisible: true,
     /**
      * @desc Defines whether icons paths verified successfully.
      */
@@ -143,7 +141,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
           var button = items[i];
           button.setMode(SDL.SDLModel.data.imageMode);
       }
-      this.closeButton.setMode(SDL.SDLModel.data.imageMode);
     }.observes('SDL.SDLModel.data.imageMode'),
 
     /**
@@ -152,7 +149,8 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      */
     addSoftButtons: function(params) {
       const softButtons = params.softButtons;
-      if (!softButtons) {
+      if (!softButtons || softButtons.length == 0) {
+        this.get('softbuttons.buttons.childViews').pushObject(this.closeButton);
         return;
       }
 
@@ -225,10 +223,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       }
 
       SDL.SDLModel.validateImages(this.alertManeuerRequestId, callback, imageList);
-
-      if (softButtons.length > 0) {
-        this.set('isCloseButtonVisible', false);
-      }
     },
     /**
      * Deactivate PopUp
@@ -259,7 +253,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
 
       this.set('iconsAreValid', true);
       this.set('infoMessage', null);
-      this.set('isCloseButtonVisible', true);
       this.set('alertManeuerRequestId', message.id);
       this.addSoftButtons(message.params);
 

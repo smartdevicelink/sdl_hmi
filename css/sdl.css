@@ -1574,9 +1574,9 @@
 
 
 #AlertManeuverPopUp .closeButton {
-    width: 170px;
-    top: 180px;
-    left: 110px;
+    width: 230px;
+    top: 85px;
+    left: 80px;
 }
 
 #AlertPopUp .alertSoftButtons {
