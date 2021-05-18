@@ -861,7 +861,7 @@ SDL.ABSAppModel = Em.Object.extend(
       delete this.interactionChoices[message.interactionChoiceSetID];
     },
     /**
-     * SDL UI Slider response handeler open Slider window with received
+     * SDL UI Slider response handler open Slider window with received
      * parameters
      *
      * @param {Object}
@@ -895,10 +895,6 @@ SDL.ABSAppModel = Em.Object.extend(
           if (app_info.mainImage) {
             content["graphic"] = {
               "value" : app_info.mainImage
-            };
-          } else if (app_info.trackIcon) {
-            content["graphic"] = {
-              "value" : app_info.trackIcon
             };
           }
         }

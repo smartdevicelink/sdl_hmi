@@ -252,19 +252,6 @@ SDL.SDLModel = Em.Object.extend({
           return complexFileName;
         };
 
-        var icon = SDL.SDLController.model.appInfo.trackIcon;
-        if (icon != null) {
-          icon = getFileName(icon);
-          var paramFileNameValid = (icon.indexOf(params.fileName) != -1);
-          var fileNameLengthValid = (params.fileName.length == icon.length);
-
-          if (paramFileNameValid && fileNameLengthValid) {
-            SDL.SDLController.model.appInfo.set('trackIcon',
-              SDL.SDLModel.data.defaultListOfIcons.trackIcon
-            );
-          }
-        }
-
         var image = (SDL.SDLController.model.appInfo.mainImage);
         if (image != null) {
           image = getFileName(image);
@@ -412,13 +399,7 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
 
-      if(SDL.SDLController.model) {      
-        if (SDL.SDLController.model.appInfo.trackIcon &&
-          SDL.SDLController.model.appInfo.trackIcon.indexOf(params.syncFileName) !=
-          -1) {
-          SDL.SDLController.model.appInfo.set('trackIcon', updatedFileName);
-        }
-  
+      if(SDL.SDLController.model) {  
         if (SDL.SDLController.model.appInfo.mainImage &&
           SDL.SDLController.model.appInfo.mainImage.indexOf(params.syncFileName) !=
           -1) {
@@ -614,12 +595,45 @@ SDL.SDLModel = Em.Object.extend({
   /**
    * Function to verify if model supports audio/video streaming
    *
-   * @param type
+   * @param model
    * @returns {boolean}
    */
   isStreamingSupported: function(model) {
     return this.appTypeComparison(model, 'NAVIGATION') ||
            this.appTypeComparison(model, 'PROJECTION');
+  },
+  
+  /**
+   * Function to verify if model supports a given template
+   *
+   * @param model
+   * @param template
+   * @returns {boolean}
+   */
+  isTemplateSupported: function(model, template) {
+    switch (template) {
+      case 'MEDIA':
+      {
+        return model.isMedia === true;
+      }
+      case 'NAV_FULLSCREEN_MAP':
+      {
+        return model.appType.indexOf('NAVIGATION') >= 0 ||
+               model.appType.indexOf('PROJECTION') >= 0;
+      }
+      case 'WEB_VIEW':
+      {
+        return model.appType.indexOf('WEB_VIEW') >= 0;
+      }
+      case 'NON-MEDIA':
+      case 'DEFAULT':
+      {
+        return true;
+      }
+      default: {
+        return false;
+      }
+    }
   },
 
   /**

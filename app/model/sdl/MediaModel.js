@@ -50,9 +50,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
           field1: '<field1>',
           field2: '<field2>',
           field3: '<field3>',
+          field4: '<field4>',
           title: '',
           mediaClock: '<mediaClock>',
-          trackIcon: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
+          mainImage: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
           customPresets: [
             '<no definition>',
             '<no definition>',
@@ -340,7 +341,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.set('statusText', '');
     this.appInfo.set('mediaClock', '');
     this.appInfo.set('mediaTrack', '');
-    this.appInfo.set('trackIcon', 'images/sdl/audio_icon.jpg');
+    this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
     this.updateSoftButtons();
     for (i = 0; i < 10; i++) {
       this.appInfo.set('customPresets.' + i, '');
@@ -454,9 +455,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       var isPng = image.includes(str,search_offset);
       if (isPng) {
         if (params.graphic.value != '') {
-          this.appInfo.set('trackIcon', params.graphic.value);
+          this.appInfo.set('mainImage', params.graphic.value);
         } else {
-          this.appInfo.set('trackIcon', 'images/sdl/audio_icon.jpg');
+          this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
         }
         this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
       }
