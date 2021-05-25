@@ -1599,7 +1599,7 @@ SDL.SDLModel = Em.Object.extend({
         }
       }
       SDL.TTSPopUp.ActivateTTS(message, files, appID);
-    } else {
+    } else if(FFW.TTS.requestId){
       FFW.TTS.sendError(
        SDL.SDLModel.data.resultCode.WARNINGS,
        FFW.TTS.requestId,
