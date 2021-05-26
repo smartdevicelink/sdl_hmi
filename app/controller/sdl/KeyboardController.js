@@ -140,36 +140,36 @@ SDL.KeyboardController = Em.Object.create({
      * @description Disables or enables characters depending on global properties
      */
     disableButtons: function() {
-        if (SDL.SDLController.model) {
-          if (!SDL.SDLController.model.globalProperties.keyboardProperties) {
-            return;
-          }
-          var list = SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList ?
-            SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList :
-            [];
-          for (var i = 0; i < list.length; i++) {
-            list[i] = list[i].toLowerCase();
-          }
+        var list = [];
+        if (SDL.SDLController.model && SDL.SDLController.model.globalProperties.keyboardProperties &&
+            SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList) {
+          list = SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList;
+        }
 
-          let disable_layout_buttons = (layout, list) => {
-            for (var i = 0; i < layout._childViews.length; ++i) {
-              let button = layout._childViews[i];
+        for (var i = 0; i < list.length; i++) {
+          list[i] = list[i].toLowerCase();
+        }
 
-              if (list.length == 0) {
-                button.set('disabled', false);
-                continue;
-              }
+        let disable_layout_buttons = (layout, list) => {
+          for (var i = 0; i < layout._childViews.length; ++i) {
+            let button = layout._childViews[i];
 
-              let button_text = button.text;
-              if (button.customKeyIndex != null) {
-                button_text = this.getCustomKey(button.customKeyIndex, button.defaultText);
-              }
-
-              const is_disabled = list.indexOf(button_text) < 0;
-              button.set('disabled', is_disabled);
+            if (list.length == 0) {
+              button.set('disabled', false);
+              continue;
             }
-          };
 
+            let button_text = button.text;
+            if (button.customKeyIndex != null) {
+              button_text = this.getCustomKey(button.customKeyIndex, button.defaultText);
+            }
+
+            const is_disabled = list.indexOf(button_text) < 0;
+            button.set('disabled', is_disabled);
+          }
+        };
+
+        if (SDL.Keyboard) {
           const layouts = [
             SDL.Keyboard.buttonsAreaQWERTY,
             SDL.Keyboard.buttonsAreaQWERTZ,

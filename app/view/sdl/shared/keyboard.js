@@ -26,7 +26,7 @@
  */
 /**
  * @name SDL.Keyboard
- * @desc Slider visual representation
+ * @desc Keyboard visual representation
  * @category View
  * @filesource app/view/sdl/shared/keyboard.js
  * @version 1.0
