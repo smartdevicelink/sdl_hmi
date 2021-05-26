@@ -832,9 +832,11 @@ SDL.ABSAppModel = Em.Object.extend(
       }
 
       if (menuID in commandsList) {
-        delete(commandsList[menuID]);
-        SDL.SDLController.onDeleteSubMenu(menuID);
-        SDL.OptionsView.commands.refreshItems();
+        if (commandsList[menuID].length == 0) {
+            delete(commandsList[menuID]);
+            SDL.SDLController.onDeleteSubMenu(menuID);
+            SDL.OptionsView.commands.refreshItems()
+        }
         return SDL.SDLModel.data.resultCode.SUCCESS;
       }
 
