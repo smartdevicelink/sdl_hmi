@@ -412,17 +412,10 @@ FFW.UI = FFW.RPCObserver.create(
               if(request.params.enableSeek) {
                 this.OnSeekMediaClockTimer(request.params.startTime, request.params.appID);
               }
-              
-              if(request.params.audioStreamingIndicator) {
-                SDL.SDLController.SetAudioStreamingIndicator(request.params)
-              } 
-              else if (SDL.SDLController.model.mediaPlayerIndicator !== 
-                SDL.SDLModel.data.mediaPlayerIndicatorEnum.PLAY_PAUSE) {                
-                modifiedParams = Object.assign({}, request.params, {
-                  "audioStreamingIndicator": "PLAY_PAUSE"
-                });
-                SDL.SDLController.SetAudioStreamingIndicator(modifiedParams)
-              }
+
+              let indicator = (request.params.audioStreamingIndicator) ? request.params.audioStreamingIndicator
+                                : "PLAY_PAUSE";
+              SDL.SDLController.SetAudioStreamingIndicator(indicator);
 
               this.sendUIResult(resultCode, request.id, request.method);
             } else {
@@ -1671,7 +1664,7 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SetAudioStreamingIndicator':
           {
-            if (SDL.SDLController.SetAudioStreamingIndicator(request.params)) {
+            if (SDL.SDLController.SetAudioStreamingIndicator(request.params.audioStreamingIndicator)) {
               this.sendUIResult(
                 SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
               );

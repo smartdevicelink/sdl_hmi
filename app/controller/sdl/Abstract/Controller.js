@@ -1504,16 +1504,16 @@ SDL.SDLController = Em.Object.extend(
     /**
      * SetAudioStreamingIndicator notification handler
      *
-     * @param {Object} params
+     * @param {Object} audioStreamingIndicator audioStreamingIndicator name
      * @constructor
      * @return {boolean}
      */
-    SetAudioStreamingIndicator: function(params) {
+    SetAudioStreamingIndicator: function(audioStreamingIndicator) {
       if (SDL.SDLController.model) {
         SDL.SDLController.model.set(
           'mediaPlayerIndicator',
           SDL.SDLModel.data.
-            mediaPlayerIndicatorEnum[params.audioStreamingIndicator]
+            mediaPlayerIndicatorEnum[audioStreamingIndicator]
         );
         return true;
       }
