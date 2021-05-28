@@ -412,9 +412,11 @@ FFW.UI = FFW.RPCObserver.create(
               if(request.params.enableSeek) {
                 this.OnSeekMediaClockTimer(request.params.startTime, request.params.appID);
               }
-              if(request.params.audioStreamingIndicator) {
-                SDL.SDLController.SetAudioStreamingIndicator(request.params)
-              }
+
+              let indicator = (request.params.audioStreamingIndicator) ? request.params.audioStreamingIndicator
+                                : "PLAY_PAUSE";
+              SDL.SDLController.SetAudioStreamingIndicator(indicator);
+
               this.sendUIResult(resultCode, request.id, request.method);
             } else {
               this.sendError(
@@ -1658,22 +1660,6 @@ FFW.UI = FFW.RPCObserver.create(
             this.sendUIResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
-            break;
-          }
-          case 'UI.SetAudioStreamingIndicator':
-          {
-            if (SDL.SDLController.SetAudioStreamingIndicator(request.params)) {
-              this.sendUIResult(
-                SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-              );
-            } else {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method,
-                'No application in FULL mode'
-              );
-            }
             break;
           }
           case 'UI.CreateWindow':
