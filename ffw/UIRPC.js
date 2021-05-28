@@ -1662,22 +1662,6 @@ FFW.UI = FFW.RPCObserver.create(
             );
             break;
           }
-          case 'UI.SetAudioStreamingIndicator':
-          {
-            if (SDL.SDLController.SetAudioStreamingIndicator(request.params.audioStreamingIndicator)) {
-              this.sendUIResult(
-                SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
-              );
-            } else {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method,
-                'No application in FULL mode'
-              );
-            }
-            break;
-          }
           case 'UI.CreateWindow':
           {
             const resultCode = FFW.RPCHelper.getCustomResultCode(request.params.appID, 'uiCreateWindow');
