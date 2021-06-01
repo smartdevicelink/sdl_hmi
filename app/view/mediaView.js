@@ -68,6 +68,7 @@ SDL.MediaView = Em.ContainerView.create(
 
       this.optionsMenu.preferencesButton.optionsButton.setMode(SDL.SDLModel.data.imageMode);
 
+      this.sdlView.innerMenu.setMode(SDL.SDLModel.data.imageMode);
       this.sdlView.controlls.Controls.PrevTrackButton.setMode(SDL.SDLModel.data.imageMode);
       this.sdlView.controlls.Controls.PlayButton.setMode(SDL.SDLModel.data.imageMode);
       this.sdlView.controlls.Controls.NextTrackButton.setMode(SDL.SDLModel.data.imageMode);
