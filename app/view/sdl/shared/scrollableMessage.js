@@ -55,6 +55,9 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
     childViews: [
       'backButton', 'captionText', 'softButtons', 'listOfCommands'
     ],
+    imageModeChanged: function() {
+      this.get('softButtons').setMode(SDL.SDLModel.data.imageMode);
+    }.observes('SDL.SDLModel.data.imageMode'),
     /**
      * Deactivate View
      *

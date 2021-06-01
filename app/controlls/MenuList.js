@@ -50,12 +50,7 @@ SDL.MenuList = Em.ContainerView.extend({
                    text: buttons[i].text,
                    icon: buttons[i].image ? buttons[i].image.value : '',
                    groupName: 'AlertPopUp',
-                   classNameBindings: ['isHighlighted:isHighlighted',
-                   'getCurrentDisplayModeClass'],
-                   getCurrentDisplayModeClass: function() {
-                    return SDL.ControlButtons.getCurrentDisplayModeClass(
-                      SDL.ControlButtons.imageMode.selection);
-                  }.property('SDL.ControlButtons.imageMode.selection'),
+                   classNameBindings: ['isHighlighted:isHighlighted'],
                    isHighlighted: buttons[i].isHighlighted ? true : false,
                    softButtonID: buttons[i].softButtonID,
                    systemAction: buttons[i].systemAction,
