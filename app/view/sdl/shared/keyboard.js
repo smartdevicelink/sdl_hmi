@@ -60,6 +60,12 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         this.set('active', true);
         SDL.KeyboardController.set('target', element);
       }
+      if (SDL.InteractionChoicesView.appID) {
+        SDL.KeyboardController.set('appID', SDL.InteractionChoicesView.appID);
+      } else {
+        SDL.KeyboardController.set('appID', null);
+        SDL.KeyboardController.set('appModel', SDL.SDLController.model);
+      }
     },
     /**
      * Extend deactivate method send SUCCESS response on deactivate with current
@@ -68,6 +74,8 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
     deactivate: function() {
       this._super();
       SDL.SDLModel.set('data.keyboardInputValue', '');
+      SDL.KeyboardController.set('appID', null);
+      SDL.KeyboardController.set('appModel', SDL.SDLController.model);
       SDL.KeyboardController.set('target', null);
     },
 
@@ -147,7 +155,9 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         isEnabled: function() {
           return SDL.KeyboardController.isLayoutActive("QWERTY");
         }.property(
-          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
+          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout',
+          'SDL.KeyboardController.appModel.globalProperties.keyboardProperties.keyboardLayout',
+          'SDL.KeyboardController.appID'
         )
       }
     ),
@@ -157,7 +167,9 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         isEnabled: function() {
           return SDL.KeyboardController.isLayoutActive("QWERTZ");
         }.property(
-          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
+          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout',
+          'SDL.KeyboardController.appModel.globalProperties.keyboardProperties.keyboardLayout',
+          'SDL.KeyboardController.appID'
         )
       }
     ),
@@ -167,7 +179,9 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         isEnabled: function() {
           return SDL.KeyboardController.isLayoutActive("AZERTY");
         }.property(
-          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
+          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout',
+          'SDL.KeyboardController.appModel.globalProperties.keyboardProperties.keyboardLayout',
+          'SDL.KeyboardController.appID'
         )
       }
     ),
@@ -177,7 +191,9 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         isEnabled: function() {
           return SDL.KeyboardController.isLayoutActive("NUMERIC");
         }.property(
-          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout'
+          'SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout',
+          'SDL.KeyboardController.appModel.globalProperties.keyboardProperties.keyboardLayout',
+          'SDL.KeyboardController.appID'
         )
       }
     )
