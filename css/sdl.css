@@ -1407,12 +1407,49 @@
 }
 
 #AlertPopUp .alertPopUpImage {
-    max-width: 120px;
     margin: auto;
-    padding-top: 35px;
-    padding-left: 20px;
     height: auto;
     width: auto;
+    position: absolute;
+    max-width: 120px;
+    top: 35px;
+    left: 20px;
+}
+
+#AlertPopUp #alertPopUpImage.is-template.day-mode .ico-overlay {
+    background:url(../images/template/imagetype-pattern-day.png);
+    top: 35px;
+    left: 20px;
+    width: 80px;
+    height: 70px;
+    z-index: 1001;
+    position: absolute;
+    background-repeat: round;
+    opacity: 0.4;
+}
+
+#AlertPopUp #alertPopUpImage.is-template.night-mode .ico-overlay {
+    background:url(../images/template/imagetype-pattern-night.png);
+    top: 35px;
+    left: 20px;
+    width: 80px;
+    height: 70px;
+    z-index: 1001;
+    position: absolute;
+    background-repeat: round;
+    opacity: 0.4;
+}
+
+#AlertPopUp #alertPopUpImage.is-template.high-lighted-mode .ico-overlay {
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    top: 35px;
+    left: 20px;
+    width: 80px;
+    height: 70px;
+    z-index: 1001;
+    position: absolute;
+    background-repeat: round;
+    opacity: 0.4;
 }
 
 #SubtleAlertPopUp .subtleAlertPopUpImage {

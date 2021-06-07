@@ -62,6 +62,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
     timeout: null,
     endTime: null,
     progressIndicator: false,
+    isTemplateAlertIcon: false,
     reason: '',
     message: undefined,
     /**
@@ -70,8 +71,17 @@ SDL.AlertPopUp = Em.ContainerView.create(
     image: Em.View.extend(
       {
         elementId: 'alertPopUpImage',
+        classNameBindings: [
+          'this.parentView.isTemplateAlertIcon:is-template',
+          'getCurrentDisplayModeClass'          
+        ],
+        getCurrentDisplayModeClass: function() {
+          return SDL.ControlButtons.getCurrentDisplayModeClass(
+            SDL.ControlButtons.imageMode.selection);
+        }.property('SDL.ControlButtons.imageMode.selection'),
         template: Ember.Handlebars.compile(
-          '<img class="alertPopUpImage" \
+          '<img {{bindAttr class="SDL.AlertPopUp.isTemplateAlertIcon:ico-overlay"}} /> \
+           <img class="alertPopUpImage" \
             onerror="SDL.AlertPopUp.imageUndefined(event)"\
             onload="SDL.AlertPopUp.imageLoaded(event)"\
             {{bindAttr src="SDL.AlertPopUp.icon.value"}}>'
@@ -103,7 +113,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
     progressIndicatorView: Em.View.extend(
       {
         elementId: 'progressIndicator',
-        classNameBindings: 'this.parentView.progressIndicator:progressIndicator'
+        classNameBindings: 'this.parentView.progressIndicator:progressIndicator:inactive_state'
       }
     ),
     applicationName: SDL.Label.extend(
@@ -260,8 +270,9 @@ SDL.AlertPopUp = Em.ContainerView.create(
       this.set('reason', 'timeout');
       this.set('message', undefined);
       this.set('icon', message.alertIcon ? message.alertIcon : { value: "images/sdl/Warning.png" });
+      this.set('isTemplateAlertIcon', message.alertIcon && message.alertIcon.isTemplate === true)
       this.addSoftButtons(message.softButtons, message.appID);
-      this.set('progressIndicator', message.progressIndicator);
+      this.set('progressIndicator', message.progressIndicator === true);
       this.set(
         'appName', SDL.SDLController.getApplicationModel(message.appID).appName
       );
