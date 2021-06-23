@@ -95,6 +95,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.set('backgroundWindows', []);
     this.set('activeWindows', []);
     this.set('unregisteringInProgress', false);
+    this.set('ttsSpeakListenerCallbacks', []);
 
     this.resetGlobalProperties();
   },

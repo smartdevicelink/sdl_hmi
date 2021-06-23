@@ -90,6 +90,7 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
 
     this.set('commandsList', {'top': []});
     this.set('softButtons', []);
+    this.set('ttsSpeakListenerCallbacks', []);
     this.set('cachedIconFileNamesList', []);
     this.set('cachedSubmenuIdsList', []);
 

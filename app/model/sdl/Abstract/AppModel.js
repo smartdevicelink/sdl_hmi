@@ -374,6 +374,16 @@ SDL.ABSAppModel = Em.Object.extend(
     unregisteringInProgress: false,
 
     /**
+     * @param ttsSpeakListenerCallbacks
+     * @type {Array}
+     * @description parameter to keep track of application requests listening for TTS.Speak
+     * request and execute callback function depending on their internal logic
+     * Each array element is {Object} which should contain `type` of TTS.Speal to wait for
+     * and `callback` which is the function to be called if type matches the search param
+     */
+    ttsSpeakListenerCallbacks: [],
+
+    /**
      * @type {Array}
      * @description list of already requested icon file names from SDL
      */

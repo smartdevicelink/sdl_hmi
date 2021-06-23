@@ -1352,6 +1352,22 @@ SDL.SDLModel = Em.Object.extend({
             return true;
           }
       }
+
+      if (message.alertType == "BOTH") {
+        let callback = () => {
+          Em.Logger.log("Received TTS.Speak for UI.Alert. Sending response");
+          SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
+            alertRequestId
+          );
+        };
+        appModel.ttsSpeakListenerCallbacks.push({
+          'type': 'ALERT',
+          'callback': callback
+        });
+        Em.Logger.log("Waiting for TTS.Speak for UI.Alert");
+        return false;
+      }
+
       SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
         alertRequestId
       );
@@ -1368,36 +1384,51 @@ SDL.SDLModel = Em.Object.extend({
    *            subtleAlertRequestId Id of current handled request
    */
   onUISubtleAlert: function(message, subtleAlertRequestId) {
+    let is_allowed = false;
+    let info = null;
+    let waitTime = 0;
     if (SDL.AlertPopUp.active) {
-      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
-        subtleAlertRequestId,
-        'an Alert is active',
-        SDL.AlertPopUp.endTime - Date.now());
+      info = 'an Alert is active';
+      waitTime = SDL.AlertPopUp.endTime - Date.now();
     } else if (SDL.ScrollableMessage.active) {
-      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
-        subtleAlertRequestId,
-        'a ScrollableMessage is active',
-        SDL.ScrollableMessage.endTime - Date.now());
+      info = 'a ScrollableMessage is active';
+      waitTime = SDL.ScrollableMessage.endTime - Date.now();
     } else if (SDL.InteractionChoicesView.active) {
-      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
-        subtleAlertRequestId,
-        'a PerformInteraction is active',
-        SDL.InteractionChoicesView.endTime - Date.now());
+      info = 'a PerformInteraction is active';
+      waitTime = SDL.InteractionChoicesView.endTime - Date.now();
     } else if (SDL.SubtleAlertPopUp.active) {
-      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
-        subtleAlertRequestId,
-        'another SubtleAlert is active',
-        SDL.SubtleAlertPopUp.endTime - Date.now());
+      info = 'another SubtleAlert is active';
+      waitTime = SDL.SubtleAlertPopUp.endTime - Date.now();
     } else if (SDL.AlertManeuverPopUp.activate) {
-      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED, 
-        subtleAlertRequestId,
-        'an AlertManeuver popup is active',
-        SDL.AlertManeuverPopUp.endTime - Date.now());
+      info = 'an AlertManeuver popup is active';
+      waitTime = SDL.AlertManeuverPopUp.endTime - Date.now();
+    } else {
+      is_allowed = true;
+    }
+
+    if (!is_allowed) {
+      if (message.alertType == "BOTH") {
+        let callback = () => {
+          Em.Logger.log("Received TTS.Speak for UI.SubtleAlert. Sending response");
+          SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED,
+            subtleAlertRequestId, info, waitTime);
+        };
+        let appModel = SDL.SDLController.getApplicationModel(message.appID);
+        appModel.ttsSpeakListenerCallbacks.push({
+          'type': 'SUBTLE_ALERT',
+          'callback': callback
+        });
+        Em.Logger.log("Waiting for TTS.Speak for UI.SubtleAlert");
+        return is_allowed;
+      }
+
+      SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED,
+        subtleAlertRequestId, info, waitTime);
     } else {
       SDL.SubtleAlertPopUp.SubtleAlertActive(message, subtleAlertRequestId);
-      return true;
     }
-    return false;
+
+    return is_allowed;
   },
 
   /**
