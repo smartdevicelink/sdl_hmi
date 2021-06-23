@@ -104,13 +104,9 @@ SDL.StatusMediaView = Em.ContainerView.extend({
       }
     ),
   actionUp: function(event) {
-
     if (SDL.RCModulesController.currentAudioModel.activeState.indexOf('media.sdlmedia') >= 0) {
       SDL.SDLMediaController.activateCurrentApp();
     }
-   else if (SDL.RCModulesController.currentAudioModel.activeState.indexOf('navigationApp.baseNavigation') >= 0) {
-      SDL.SDLMediaController.activateCurrentApp();
-    } 
     else {
       SDL.States.goToStates(SDL.RCModulesController.currentAudioModel.activeState);
     }

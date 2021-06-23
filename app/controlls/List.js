@@ -55,6 +55,11 @@ SDL.List = Em.ContainerView.extend({
   /** Css style of list */
   listScrollingAttributes: '',
 
+  /**
+   * Callback to react on page change events
+   */
+  pageChangeListener: null,
+
   /** Count of items in menu */
   /*
    * listCount: function(){ if( this.items ) { return this.items.length; }
@@ -108,7 +113,19 @@ SDL.List = Em.ContainerView.extend({
       this.get('currentPage') * this.itemsOnPage * (
         -50)) + 'px'
     );
+
+    if (this.pageChangeListener) {
+      this.pageChangeListener(this.currentPage);
+    }
   }.observes('currentPage'),
+
+  /**
+   * Specifies new page listener function
+   * @param {Function} callback
+   */
+  addPageListener: function(callback) {
+    this.set('pageChangeListener', callback);
+  },
 
   /** Method for delete certain item from list */
   deleteItem: function(id) {
@@ -209,6 +226,10 @@ SDL.List = Em.ContainerView.extend({
         // Push element to list
         this.get('childViews').pushObject(element);
       }
+
+      // Page can be changed indirectly after items refresh so trigger
+      // page change event one more time
+      this._parentView.onCurrentPageChange();
     }
   }
 ),

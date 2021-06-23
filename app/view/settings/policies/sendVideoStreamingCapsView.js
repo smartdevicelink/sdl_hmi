@@ -24,26 +24,20 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-SDL.CcpuEditorView = Em.ContainerView.create(
+SDL.SendVideoStreamingCapsView = Em.ContainerView.create(
     {
-      elementId: 'policies_settings_ccpu_editor_view',
+      elementId: 'policies_settings_sendVideoStreamingCapsView',
       classNames: 'in_settings_separate_view',
       classNameBindings: [
-        'SDL.States.settings.policies.ccpuEditor.active:active_state:inactive_state'
+        'SDL.States.settings.policies.sendVideoStreamingCapabilities.active:active_state:inactive_state'
       ],
       childViews: [
-        'ccpuTitle',
         'backButton',
-        'ccpuVersionLabel',
-        'ccpuVersionInput',
-        'applyButton'
+        'label',
+        'videoCapabilitiesCodeEditor',
+        'appIDContainerView',
+        'sendNotificationButton'
       ],
-      ccpuTitle: SDL.Label.extend(
-        {
-          classNames: 'label',
-          content: 'Configure CCPU version'
-        }
-      ),
       backButton: SDL.Button.extend(
         {
           classNames: [
@@ -56,26 +50,42 @@ SDL.CcpuEditorView = Em.ContainerView.create(
           onDown: false
         }
       ),
-      ccpuVersionLabel: SDL.Label.extend(
+      label: SDL.Label.extend(
         {
-          classNames: 'ccpuVersionLabel',
-          content: 'CCPU version: '
+          classNames: 'label',
+          content: 'Configure and send VIDEO_STREAMING capabilities'
         }
       ),
-      ccpuVersionInput: Ember.TextField.extend(
+      videoCapabilitiesCodeEditor: SDL.CodeEditor.extend(
         {
-          elementId: 'ccpuVersionInput',
-          classNames: 'ccpuVersionInput dataInput',
-          placeholder: '<Type CCPU version here>',
-          valueBinding: 'SDL.SettingsController.editedCcpuVersionValue'
+          elementId: 'videoCapabilitiesCodeEditor',
+          codeEditorId: 'videoCapabilitiesCodeEditor'
         }
       ),
-      applyButton: SDL.Button.extend(
+      appIDContainerView: Em.ContainerView.create({
+        elementId: 'appIDContainerView',
+        classNames: 'in_app_id_container_view',
+        childViews: [
+          'appIDLabel',
+          'appIDSelect'
+        ],
+
+        appIDLabel: SDL.Label.create({
+          classNames: 'label',
+          content: 'Application ID'
+        }),
+
+        appIDSelect: Em.Select.extend({
+          elementId: 'appIDSelect',
+          classNames: 'appIDSelectView'
+        }),
+      }),
+      sendNotificationButton: SDL.Button.extend(
         {
-          elementId: 'applyButton',
-          classNames: 'applyButton button',
-          text: 'Apply',
-          action: 'applyNewCcpuVersionValue',
+          elementId: 'sendNotificationButton',
+          classNames: 'sendNotificationButton button',
+          text: 'Send notification',
+          action: 'saveVideoStreamingCapabilities',
           target: 'SDL.SettingsController',
           onDown: false
         }

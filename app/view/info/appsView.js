@@ -42,7 +42,6 @@ SDL.InfoAppsView = Em.ContainerView.create({
   childViews: [
     'vehicleHealthReport',
     'Asist911',
-    'findNewApps',
     'getDeviceList',
     'applicationsStore',
     'listOfApplications'
@@ -126,19 +125,6 @@ SDL.InfoAppsView = Em.ContainerView.create({
       }
     ),
 
-  findNewApps: SDL.Button.extend({
-        goToState: 'settings.system.installApplications',
-        icon: 'images/sdl/new_apps.png',
-        textBinding: 'SDL.locale.label.view_info_apps_vehicle_FindNewApplications',
-        elementId: 'infoAppsFindNewApps',
-        classNames: 'button findNewApps leftButtons',
-        arrow: true,
-        action: 'findNewApps',
-        target: 'SDL.SDLController',
-        onDown: false
-      }
-    ),
-
   getDeviceList: SDL.Button.extend({
         icon: 'images/sdl/devices.png',
         textBinding: 'SDL.locale.label.view_info_apps_vehicle_GetDeviceList',
@@ -177,8 +163,7 @@ SDL.InfoAppsView = Em.ContainerView.create({
   /**
    * @description Callback for display image mode change.
    */
-  imageModeChanged: function() { 
-    SDL.InfoAppsView.findNewApps.setMode(SDL.SDLModel.data.imageMode);
+  imageModeChanged: function() {
     SDL.InfoAppsView.Asist911.setMode(SDL.SDLModel.data.imageMode);
     SDL.InfoAppsView.vehicleHealthReport.setMode(SDL.SDLModel.data.imageMode);
     SDL.InfoAppsView.getDeviceList.setMode(SDL.SDLModel.data.imageMode);

@@ -83,8 +83,7 @@ SDL.SeatView = Em.ContainerView.create({
                 valueBinding: 'SDL.RCModulesController.currentSeatModel.heatingEnableData',
                 change:function(){
                     SDL.RCModulesController.currentSeatModel.set('tempSeatControlData.heatingEnabled',
-                (SDL.RCModulesController.currentSeatModel.heatingEnableData=='OFF')? true:false);
-                SDL.RCModulesController.currentSeatModel.update();
+                (SDL.RCModulesController.currentSeatModel.heatingEnableData=='ON'));
                 }
             })
         }),
@@ -144,8 +143,7 @@ SDL.SeatView = Em.ContainerView.create({
                 valueBinding: 'SDL.RCModulesController.currentSeatModel.coolingEnabledData',
                 change:function(){
                     SDL.RCModulesController.currentSeatModel.set('tempSeatControlData.coolingEnabled',
-                (SDL.RCModulesController.currentSeatModel.coolingEnabledData=='OFF')? true:false);
-                SDL.RCModulesController.currentSeatModel.update();
+                (SDL.RCModulesController.currentSeatModel.coolingEnabledData=='ON'));
                 }
             })
         }),
@@ -944,8 +942,7 @@ SDL.SeatView = Em.ContainerView.create({
             valueBinding: 'SDL.RCModulesController.currentSeatModel.massageEnabledData',
             change:function(){
                 SDL.RCModulesController.currentSeatModel.set('tempSeatControlData.massageEnabled',
-            (SDL.RCModulesController.currentSeatModel.massageEnabledData=='OFF')? true:false);
-            SDL.RCModulesController.currentSeatModel.update();
+            (SDL.RCModulesController.currentSeatModel.massageEnabledData=='ON'));
             }
         })
     }),    
@@ -1016,7 +1013,7 @@ SDL.SeatView = Em.ContainerView.create({
             ],
 
             action: function(){
-                if(SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.length > 2){
+                if(SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.length >= 2){
                     return;
                 }
                 SDL.RCModulesController.currentSeatModel.tempSeatControlData.massageMode.push(SDL.RCModulesController.currentSeatModel.massageModeData);
@@ -1065,7 +1062,7 @@ SDL.SeatView = Em.ContainerView.create({
             }),
 
             zone:  Em.ContainerView.create({
-                elementId: 'zone',
+                elementId: 'massageMode0_zone',
                 classNames: 'in_zone_view',
                 
                 childViews: [
@@ -1088,7 +1085,7 @@ SDL.SeatView = Em.ContainerView.create({
             }),
 
             mode:  Em.ContainerView.create({
-                elementId: 'modeM',
+                elementId: 'massageMode0_modeM',
                 classNames: 'in_mode_view',
 
                 childViews: [
@@ -1143,7 +1140,7 @@ SDL.SeatView = Em.ContainerView.create({
             }),
 
             zone:  Em.ContainerView.create({
-                elementId: 'zone',
+                elementId: 'massageMode1_zone',
                 classNames: 'in_zone_view',
 
                 childViews: [
@@ -1166,7 +1163,7 @@ SDL.SeatView = Em.ContainerView.create({
             }),
 
             mode:  Em.ContainerView.create({
-                elementId: 'modeM',
+                elementId: 'massageMode1_modeM',
                 classNames: 'in_mode_view',
 
                 childViews: [
@@ -1191,4 +1188,3 @@ SDL.SeatView = Em.ContainerView.create({
 
     })
 })
-

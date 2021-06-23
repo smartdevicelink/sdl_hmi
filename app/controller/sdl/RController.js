@@ -33,31 +33,6 @@
 
 SDL.RController = SDL.SDLController.extend(
   {
-    onEventChanged: function(reason, status) {
-      switch (reason) {
-        case 'phoneCall':
-        {
-          FFW.BasicCommunication.OnPhoneCall(status);
-          break;
-        }
-        case 'emergencyEvent':
-        {
-          FFW.BasicCommunication.OnEmergencyEvent(status);
-          break;
-        }
-        case 'onDeactivateHMI':
-        {
-          FFW.BasicCommunication.OnDeactivateHMI(status);
-          break;
-        }
-        default:
-        {
-          this._super(reason, status);
-          return;
-        }
-      }
-    },
-
    onButtonPressEvent: function(params) {
       var result_struct = {
         resultCode: SDL.SDLModel.data.resultCode.SUCCESS,
@@ -318,7 +293,6 @@ SDL.RController = SDL.SDLController.extend(
               appType: params.appType,
               isMedia: 0,
               disabledToActivate: params.greyOut ? true : false,
-              displayLayout: "DEFAULT",
               dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
               nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
               policyAppID: params.policyAppID,
@@ -340,7 +314,6 @@ SDL.RController = SDL.SDLController.extend(
               isMedia: false,
               initialized: true,
               disabledToActivate: params.greyOut ? true : false,
-              displayLayout: "DEFAULT",
               dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               policyAppID: params.policyAppID,
@@ -360,7 +333,6 @@ SDL.RController = SDL.SDLController.extend(
               isMedia: applicationType == 0,
               initialized: true,
               disabledToActivate: params.greyOut ? true : false,
-              displayLayout: "DEFAULT",
               dayColorScheme: "dayColorScheme" in params ? params.dayColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
               nightColorScheme: "nightColorScheme" in params ? params.nightColorScheme : SDL.SDLModelData.defaultTemplateColorScheme,
               policyAppID: params.policyAppID,

@@ -61,6 +61,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSystemCapabilityUpdatedNotificationSubscribeRequestID: -1,
       onAppPropertiesChangeNotificationSubscribeRequestID: -1,
       onAppServiceDataNotificationSubscribeRequestID: -1,
+      onAppCapabilityUpdatedSubscribeRequestID: -1,
       onPutFileUnsubscribeRequestID: -1,
       onStatusUpdateUnsubscribeRequestID: -1,
       onAppPermissionChangedUnsubscribeRequestID: -1,
@@ -74,6 +75,8 @@ FFW.BasicCommunication = FFW.RPCObserver
       onServiceUpdateNotificationUnsubscribeRequestID: -1,
       onSystemCapabilityUpdatedNotificationUnsubscribeRequestID: -1,
       onAppServiceDataNotificationUnsubscribeRequestID: -1,
+      onAppCapabilityUpdatedUnsubscribeRequestID: -1,
+
       // const
       onStatusUpdateNotification: 'SDL.OnStatusUpdate',
       onAppPermissionChangedNotification: 'SDL.OnAppPermissionChanged',
@@ -90,6 +93,7 @@ FFW.BasicCommunication = FFW.RPCObserver
       onSystemCapabilityUpdatedNotification: 'BasicCommunication.OnSystemCapabilityUpdated',
       onAppPropertiesChangeNotification: 'BasicCommunication.OnAppPropertiesChange',
       onAppServiceDataNotification: 'AppService.OnAppServiceData',
+      OnAppCapabilityUpdatedNotification : 'BasicCommunication.OnAppCapabilityUpdated',
 
       /**
        * connect to RPC bus
@@ -159,6 +163,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .subscribeToNotification(this.onAppPropertiesChangeNotification);
         this.onAppServiceDataNotificationSubscribeRequestID = this
           .subscribeToNotification(this.onAppServiceDataNotification);
+        this.onAppServiceDataNotificationSubscribeRequestID = this
+          .subscribeToNotification(this.OnAppCapabilityUpdatedNotification);
         setTimeout(function() {
           FFW.BasicCommunication.OnSystemTimeReady();
         }, 500);
@@ -198,6 +204,8 @@ FFW.BasicCommunication = FFW.RPCObserver
           .unsubscribeFromNotification(this.onSystemCapabilityUpdatedNotification);
         this.onAppServiceDataNotificationUnsubscribeRequestID = this.client
           .unsubscribeFromNotification(this.onAppServiceDataNotification);
+        this.onAppCapabilityUpdatedUnsubscribeRequestID = this.client
+          .unsubscribeFromNotification(this.OnAppCapabilityUpdatedNotification);
       },
       /**
        * Client disconnected.
@@ -277,14 +285,7 @@ FFW.BasicCommunication = FFW.RPCObserver
                           if(key == 7) {
                             SDL.SDLModel.data.set('policyURLs', data[key].default);
                             if(!FLAGS.PTUWithModemEnabled) {
-                              if (data[key].default.length) {
-                                SDL.SettingsController.OnSystemRequestHandler(data[key].default[0]);
-                              } else {
-                                SDL.SettingsController.OnSystemRequestHandler();
-                              }
-                              if (FLAGS.ExternalPolicies === true) {
-                                SDL.SettingsController.policyUpdateRetry();
-                              }
+                              SDL.SettingsController.scheduleNextPtuIteration();
                             } else {
                               SDL.SettingsController.requestPTUFromEndpoint(SDL.SettingsController.policyUpdateFile, data[key].default);
                             }
@@ -427,6 +428,36 @@ FFW.BasicCommunication = FFW.RPCObserver
             notification.params.serviceEvent,
             notification.params.reason);
         }
+        if (notification.method == this.OnAppCapabilityUpdatedNotification) {
+          const capabilities_type = notification.params.appCapability.appCapabilityType;
+          if  (capabilities_type == 'VIDEO_STREAMING') {
+            const updated_caps = notification.params.appCapability.videoStreamingCapability;
+            if (updated_caps.additionalVideoStreamingCapabilities) {
+              let appModel = SDL.SDLController.getApplicationModel(notification.params.appID);
+              if (appModel) {
+                // Order of capabilities is not guaranteed. Find resolution index.
+                var current_res = SDL.NavigationController.stringifyCapabilityItem(appModel.resolutionsList[appModel.resolutionIndex]);
+                var i=0;
+                for (; i<updated_caps.additionalVideoStreamingCapabilities.length; i++) {
+                  const comp_res = SDL.NavigationController.stringifyCapabilityItem(updated_caps.additionalVideoStreamingCapabilities[i])
+                  if (current_res === comp_res) {
+                    appModel.set('resolutionIndex', i)
+                    break;
+                  }
+                }
+                if (i == updated_caps.additionalVideoStreamingCapabilities.length) {
+                  appModel.set('resolutionIndex',
+                    updated_caps.additionalVideoStreamingCapabilities.length - 1
+                  );
+                }
+              }
+              
+              appModel.set('resolutionsList',
+                updated_caps.additionalVideoStreamingCapabilities
+              );
+            }
+          }
+        }
         if (notification.method == this.onFileRemovedNotification) {
           SDL.SDLModel.onFileRemoved(notification.params);
         }
@@ -507,7 +538,6 @@ FFW.BasicCommunication = FFW.RPCObserver
             appModel, notification.params.vrSynonyms
           );
           FFW.RPCHelper.addApplication(notification.params.application.appID);
-          this.OnFindApplications();
           const mainWindowID = 0;
           let capability = SDL.SDLController.getDefaultCapabilities(mainWindowID, notification.params.application.appID);
           FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
@@ -584,7 +614,9 @@ FFW.BasicCommunication = FFW.RPCObserver
                 fileName: request.params.fileName
               });
             } else {
-              this.OnReceivedPolicyUpdate(request.params.fileName);
+              if (request.params.requestType == 'PROPRIETARY') {
+                this.OnReceivedPolicyUpdate(request.params.fileName);
+              }
             }
 
             if (request.params.requestType == 'OEM_SPECIFIC' &&
@@ -634,6 +666,9 @@ FFW.BasicCommunication = FFW.RPCObserver
             );
           }
           if (request.method == 'BasicCommunication.ActivateApp') {
+            let model = SDL.SDLController.getApplicationModel(request.params.appID);
+            model.startHmiLevelResumption();
+
             if (!request.params.level || request.params.level == 'FULL') {
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID != request.params.appID) {
@@ -643,14 +678,11 @@ FFW.BasicCommunication = FFW.RPCObserver
                 SDL.SDLModel.data.stateLimited = null;
                 SDL.SDLModel.data.set('limitedExist', false);
               }
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'FULL';
-              SDL.SDLController.getApplicationModel(request.params.appID)
-                .turnOnSDL(request.params.appID);
+              model.level = 'FULL';
+              model.turnOnSDL(request.params.appID);
               SDL.VRPopUp.updateVR();
             } else if (request.params.level === 'LIMITED') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'LIMITED';
+              model.level = 'LIMITED';
               SDL.VRPopUp.updateVR();
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID === request.params.appID) {
@@ -658,8 +690,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               }
               SDL.InfoAppsView.showAppList();
             } else if (request.params.level === 'NONE') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'NONE';
+              model.level = 'NONE';
               SDL.VRPopUp.updateVR();
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID === request.params.appID) {
@@ -667,8 +698,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               }
               SDL.InfoAppsView.showAppList();
             } else if (request.params.level === 'BACKGROUND') {
-              SDL.SDLController.getApplicationModel(request.params.appID).level
-                = 'BACKGROUND';
+              model.level = 'BACKGROUND';
               SDL.VRPopUp.updateVR();
               if (SDL.SDLController.model &&
                 SDL.SDLController.model.appID === request.params.appID) {
@@ -679,6 +709,8 @@ FFW.BasicCommunication = FFW.RPCObserver
             this.sendBCResult(
               SDL.SDLModel.data.resultCode.SUCCESS, request.id, request.method
             );
+
+            model.finishHmiLevelResumption();
           }
           if (request.method == 'BasicCommunication.CloseApplication') {
             SDL.SDLController.getApplicationModel(request.params.appID).level
@@ -704,6 +736,9 @@ FFW.BasicCommunication = FFW.RPCObserver
                 'wersCountryCode': 'wersCountryCode'
               }
             };
+            if (SDL.SDLModel.data.hardwareVersion != null) {
+              JSONMessage.result.systemHardwareVersion = SDL.SDLModel.data.hardwareVersion;
+            }
             this.sendMessage(JSONMessage);
           }
           if (request.method == 'BasicCommunication.PolicyUpdate') {
@@ -1293,23 +1328,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         this.sendMessage(JSONMessage);
       },
       /**
-       * This methos is request to get list of registered apps.
-       */
-      OnFindApplications: function() {
-        Em.Logger.log('FFW.BasicCommunication.OnFindApplications');
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'method': 'BasicCommunication.OnFindApplications'
-        };
-        if (SDL.SDLModel.data.CurrDeviceInfo.name ||
-          SDL.SDLModel.data.CurrDeviceInfo.id) {
-          JSONMessage.params = {
-            'deviceInfo': SDL.SDLModel.data.CurrDeviceInfo
-          };
-        }
-        this.sendMessage(JSONMessage);
-      },
-      /**
        * Send notification to SDL Core about system errors
        */
       OnSystemError: function(error) {
@@ -1360,23 +1378,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         this.sendMessage(JSONMessage);
       },
       /**
-       * Sender: HMI->SDL. When: upon phone-call event started or ended
-       *
-       * @params {Boolean}
-       */
-      OnPhoneCall: function(isActive) {
-        Em.Logger.log('FFW.BasicCommunication.OnPhoneCall');
-        // send request
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'method': 'BasicCommunication.OnPhoneCall',
-          'params': {
-            'isActive': isActive
-          }
-        };
-        this.sendMessage(JSONMessage);
-      },
-      /**
        * Initiated by HMI user. In response optional list of found devices -
        * if not provided, not were found.
        */
@@ -1419,6 +1420,9 @@ FFW.BasicCommunication = FFW.RPCObserver
           }
         };
         this.sendMessage(JSONMessage);
+        if (SDL.States.currentState.getPath('path') === 'media.sdlmedia'){
+          SDL.SDLMediaController.onCloseApplication(appID)
+        }
       },
       /**
        * Sent by HMI to SDL to close all registered applications.
@@ -1461,23 +1465,6 @@ FFW.BasicCommunication = FFW.RPCObserver
         this.sendMessage(JSONMessage);
       },
       /**
-       * Notifies if audio state was changed
-       *
-       * @param {Boolean} enabled
-       */
-      OnEmergencyEvent: function(enabled) {
-        Em.Logger.log('FFW.BasicCommunication.OnEmergencyEvent');
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'method': 'BasicCommunication.OnEmergencyEvent',
-          'params': {
-            'enabled': enabled
-          }
-        };
-        this.sendMessage(JSONMessage);
-      },
-      /**
        * Initiated by HMI.
        */
       OnSystemRequest: function(type, fileName, url, appID, subType) {
@@ -1507,23 +1494,6 @@ FFW.BasicCommunication = FFW.RPCObserver
           JSONMessage.params.requestSubType = subType;
         }
 
-        this.sendMessage(JSONMessage);
-      },
-      /**
-       * OnDeactivateHMI notification sender
-       * @param value
-       * @constructor
-       */
-      OnDeactivateHMI: function(value) {
-        Em.Logger.log('FFW.BasicCommunication.OnDeactivateHMI');
-        // send request
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'method': 'BasicCommunication.OnDeactivateHMI',
-          'params': {
-            'isDeactivated': value
-          }
-        };
         this.sendMessage(JSONMessage);
       },
       /**

@@ -203,6 +203,8 @@ SDL.SeatModel = Em.Object.extend({
             parseInt(this.tempSeatControlData.headSupportHorizontalPosition);
         this.tempSeatControlData.headSupportVerticalPosition =
             parseInt(this.tempSeatControlData.headSupportVerticalPosition);
+        this.tempSeatControlData.memory.id = 
+            parseInt(this.tempSeatControlData.memory.id);
 
         this.set('tempSeatControlData',
             SDL.deepCopy(this.tempSeatControlData));
@@ -237,7 +239,7 @@ SDL.SeatModel = Em.Object.extend({
 
         this.tempSeatControlData.memory = this.seatMemoryAction;
         this.set('seatControlData', SDL.deepCopy(this.tempSeatControlData));
-        var memorySlot = "1";
+        var memorySlot = 1;
         this.memory[memorySlot] = SDL.deepCopy(this.tempSeatControlData);
         this.createdMemory = memorySlot;
     },
@@ -272,6 +274,17 @@ SDL.SeatModel = Em.Object.extend({
             this.set('seatControlData.' + key, data[key]);
             result.set(key,SDL.deepCopy(data[key]));
         }
+        
+        if (typeof data.massageEnabled === 'boolean') {
+            this.set('massageEnabledData', data.massageEnabled ? 'ON': 'OFF');
+        }
+        if (typeof data.heatingEnabled === 'boolean') {
+            this.set('heatingEnableData', data.heatingEnabled ? 'ON': 'OFF');
+        }
+        if (typeof data.coolingEnabled === 'boolean') {
+            this.set('coolingEnabledData', data.coolingEnabled ? 'ON': 'OFF');
+        }
+
         if (data.memory) {
             switch(data.memory.action){
                 case 'SAVE':
@@ -296,7 +309,7 @@ SDL.SeatModel = Em.Object.extend({
         }
 
        this.update();
-       return  result;
+       return result;
     },
 
     getSeatControlData: function() {
@@ -345,10 +358,11 @@ SDL.SeatModel = Em.Object.extend({
      */
     applyMemory: function() {
         var action = this.tempSeatControlData.memory.action;
+        this.tempSeatControlData.memory.id = parseInt(this.tempSeatControlData.memory.id);
 
         switch(action){
             case 'SAVE':
-                if(this.tempSeatControlData.memory.id>0 &
+                if(this.tempSeatControlData.memory.id>0 &&
                     this.tempSeatControlData.memory.id<=10){
                         
                         var id = this.tempSeatControlData.memory.id;

@@ -97,13 +97,6 @@
     right: 0;
 }
 
-#baseNavigation .mainField6 {
-    bottom: 0;
-    height: 40px;
-    width: 280px;
-    left: 254px;
-}
-
 #baseNavigation .templateTitle {
     top: 0;
     height: 40px;
@@ -153,4 +146,13 @@
     height: 49px !important;
     font-size: 32px;
     line-height: 50px !important;
+}
+
+#baseNavigation .resolutionsListSelect {
+    position: absolute;
+    left: 3px;
+    bottom: 55px;
+    color: white;
+    background: #393939;
+    height: 30px;
 }

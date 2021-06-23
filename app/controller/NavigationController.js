@@ -66,10 +66,10 @@ SDL.NavigationController = Em.Object.create(
 
       imageList = [];
       if(request.params.locationImage) {
-        imageList.push(request.params.locationImage.value);
+        imageList.push(request.params.locationImage);
       }
 
-      var callback = function(failed) {
+      var callback = function(failed, info) {
         var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
         var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
 
@@ -77,7 +77,7 @@ SDL.NavigationController = Em.Object.create(
           failed ? WARNINGS : SUCCESS,
           request.id,
           request.method,
-          failed ? "Requested image(s) not found" : null
+          info
         );
       }
       SDL.SDLModel.validateImages(request.id, callback, imageList);
@@ -437,6 +437,130 @@ SDL.NavigationController = Em.Object.create(
         2000
       );  // Allow time for the initial map display
     },
+    /**
+     * @description Converts capability item into corresponding string
+     * @param {Object} capability capability to convert
+     * @return formatted string
+     */
+    stringifyCapabilityItem: function(capability) {
+      let str_result = '';
+      if (capability.preferredResolution) {
+        str_result += `${capability.preferredResolution.resolutionWidth}x` +
+                      `${capability.preferredResolution.resolutionHeight}`;
+      }
+
+      if (capability.scale) {
+        str_result += ` Scale: ${capability.scale}`;
+      }
+
+      if (str_result == '') {
+        str_result = 'Undefined resolution';
+      }
+
+      return str_result;
+    },
+
+    /**
+     * @description Provides list of available video streaming capability presets
+     * @param {Object} model model reference
+     * @return {Array} list of capabilities
+     */
+    getVideoStreamingCapabilitiesList: function(model) {
+      const capabilities_array = model ? model.resolutionsList : null;
+      let list_to_display = [];
+
+      if (Array.isArray(capabilities_array)) {
+        capabilities_array.forEach((capability) => {
+          const stringified = SDL.NavigationController.stringifyCapabilityItem(capability);
+          list_to_display.push(stringified);
+        });
+      }
+
+      return list_to_display;
+    },
+
+    /**
+     * @description Makes selected video streaming preset the active one
+     * @param {String} preset_name name of new preset
+     */
+    switchVideoStreamingCapability: function(preset_name) {
+      const preset_list =
+        SDL.NavigationController.getVideoStreamingCapabilitiesList(SDL.SDLController.model);
+      const index = preset_list.indexOf(preset_name);
+
+      if (index >= 0) {
+        Em.Logger.log(`Switching video streaming preset to: ${preset_name}`);
+        SDL.SDLController.model.set('resolutionIndex', index);
+        let capabilities_to_send  = JSON.parse(JSON.stringify(SDL.SDLController.model.resolutionsList[index]));
+        let resolutions_list = JSON.parse(JSON.stringify(SDL.SDLController.model.resolutionsList));
+        // Remove new selected resolution from the additional capabilities
+        resolutions_list.splice(index, 1);
+        capabilities_to_send.additionalVideoStreamingCapabilities = resolutions_list;
+
+        const json_to_send = {
+          'systemCapability' : {
+            'systemCapabilityType': 'VIDEO_STREAMING',
+            'videoStreamingCapability': capabilities_to_send
+          },
+          'appID': parseInt(SDL.SDLController.model.appID)
+        };
+        FFW.BasicCommunication.OnSystemCapabilityUpdated(json_to_send);
+      }
+    },
+
+    /**
+     * @description Sets preferred resolution index for a specified application
+     * @param {Number} appId 
+     * @param {Number} width 
+     * @param {Number} height 
+     */
+    setPreferredResolutionIndex(appId, width, height, scale) {
+      var app_model = SDL.SDLController.getApplicationModel(appId);
+      if (!app_model) {
+        return;
+      }
+
+      const get_preferred = function(width, height, scale) {
+        const preferred = SDL.NavigationController.stringifyCapabilityItem({
+          preferredResolution: {
+            resolutionWidth:  width,
+            resolutionHeight: height
+          },
+          scale: scale
+        });
+
+        const preset_list = SDL.NavigationController.getVideoStreamingCapabilitiesList(app_model);
+        const index = preset_list.indexOf(preferred);
+
+        Em.Logger.log("App Preferred Index: " + index)
+        if (index >= 0 && index !== app_model.resolutionIndex) {
+          Em.Logger.log(`Switching video streaming preset to: ${preferred}`);
+          return index;
+        }
+        
+        if (index < 0) {
+          Em.Logger.log("Could not find resolution: " + preferred);
+          return -1;
+        }
+        
+        Em.Logger.log("Already using resolution: " + preferred);        
+        return -1;
+      }
+
+      // Scale is not included in setVideoConfig request, use last set scale.
+      const scale_to_search = scale ? scale : app_model.resolutionsList[app_model.resolutionIndex].scale;      
+      var index = get_preferred(width, height, scale_to_search);
+      if (index >= 0) {
+        app_model.set('resolutionIndex', index);
+        return;
+      }
+
+      // Find preferred without scale in name
+      index = get_preferred(width, height, undefined);
+      if (index >= 0) {
+        app_model.set('resolutionIndex', index);
+      }
+    },
 
     /**
      * @desc Verifies if image is an PNG image, 
@@ -447,7 +571,7 @@ SDL.NavigationController = Em.Object.create(
     isPng: function(imagePath) {
       const img_extension = '.png';
       var search_offset = imagePath.lastIndexOf('.');
-      return imagePath.includes(img_extension, search_offset);
+      return imagePath.toLowerCase().includes(img_extension, search_offset);
     },
 
     /**
@@ -464,13 +588,13 @@ SDL.NavigationController = Em.Object.create(
         var countList=params.turnList.length;
         for(var i = 0; i < countList; i++) {
           if(params.turnList[i].turnIcon) {
-            var iconPath = params.turnList[i].turnIcon.value;
-            if(!this.isPng(iconPath)) {
+            var icon = params.turnList[i].turnIcon;
+            if(!this.isPng(icon.value)) {
               delete params.turnList[i].turnIcon;
               nonPngCounter++;
               continue;
             } 
-            imageList.push(iconPath);
+            imageList.push(icon);
           }
         }
       }
@@ -478,13 +602,13 @@ SDL.NavigationController = Em.Object.create(
         var countButtons=params.softButtons.length;
         for(var i=0;i<countButtons;i++) {
           if(params.softButtons[i].image) {
-            var iconPath = params.softButtons[i].image.value;
-            if(!this.isPng(iconPath)) {
+            var icon = params.softButtons[i].image;
+            if(!this.isPng(icon.value)) {
               delete params.softButtons[i].image;
               nonPngCounter++;
               continue;
             } 
-            imageList.push(iconPath);
+            imageList.push(icon);
           }
         }
       }
@@ -493,7 +617,7 @@ SDL.NavigationController = Em.Object.create(
           delete params.turnIcon;
           nonPngCounter++;
         } else {
-          imageList.push(params.turnIcon.value);
+          imageList.push(params.turnIcon);
         }
       } 
       if(params.nextTurnIcon) {
@@ -501,7 +625,7 @@ SDL.NavigationController = Em.Object.create(
           delete params.nextTurnIcon;
           nonPngCounter++;
         } else {
-          imageList.push(params.nextTurnIcon.value);
+          imageList.push(params.nextTurnIcon);
         }
       }
 
@@ -514,16 +638,16 @@ SDL.NavigationController = Em.Object.create(
         return;
       }
 
-      var callback = function(failed) {
+      var callback = function(failed, info) {
           var WARNINGS = SDL.SDLModel.data.resultCode.WARNINGS;
           var SUCCESS = SDL.SDLModel.data.resultCode.SUCCESS;
           FFW.Navigation.sendNavigationResult(
-            failed ? WARNINGS : SUCCESS, 
-            request.id, 
-            request.method, 
-            failed ? "Requested image(s) not found" : null);
+            failed ? WARNINGS : SUCCESS,
+            request.id,
+            request.method,
+            info);
       }
       SDL.SDLModel.validateImages(request.id, callback, imageList);
-    },
+    }
   }
 );

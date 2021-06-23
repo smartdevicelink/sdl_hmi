@@ -37,8 +37,17 @@ import json
 import requests
 import zipfile
 
+
+import ffmpeg
+import threading
+import pexpect.fdpexpect
+import sys
+
 WEBSOCKET_PORT = 8081
 FILESERVER_PORT = 8082
+HTML5_STREAMING_HOST = "http://localhost"
+HTML5_STREAMING_VIDEO_PORT = 8085
+HTML5_STREAMING_AUDIO_PORT = 8086
 
 class HTTPHandler(SimpleHTTPRequestHandler):
     """This handler uses server.base_path instead of always using os.getcwd()"""
@@ -53,6 +62,80 @@ class HTTPServer(BaseHTTPServer):
     def __init__(self, base_path, server_address, RequestHandlerClass=HTTPHandler):
         self.base_path = base_path
         BaseHTTPServer.__init__(self, server_address, RequestHandlerClass)
+
+class StreamingProcessHolder:
+	def getStreamingEndpoint(streaming_type):
+		if streaming_type == 'audio':
+			return "{}:{}".format(HTML5_STREAMING_HOST, HTML5_STREAMING_AUDIO_PORT)
+
+		if streaming_type == 'video':
+			return "{}:{}".format(HTML5_STREAMING_HOST, HTML5_STREAMING_VIDEO_PORT)
+
+		return ""
+
+	def waitForInput(stream_process):
+		print("Wait for data from SDL")
+		o = pexpect.fdpexpect.fdspawn(stream_process.stderr.fileno(), logfile=sys.stdout.buffer)
+		return o.expect(["Input", pexpect.EOF, pexpect.TIMEOUT])
+
+	def initStreaming(url, streaming_type, config):
+		print("Init streaming for " + streaming_type)
+		stream_endpoint = StreamingProcessHolder.getStreamingEndpoint(streaming_type)
+
+		if streaming_type == 'video':
+			if config != None:
+				app_config = config.get('appConfig')
+				if app_config.get('protocol') == 'RTP':
+					print('\033[33mSDL does not support RTP video in browser\033[0m')
+					if app_config.get('codec') == 'H264':
+						print('\033[1mYou may view your video with gstreamer:\033[0m')
+						print('gst-launch-1.0 souphttpsrc location=' + url + ' ! "application/x-rtp-stream" ! rtpstreamdepay ! "application/x-rtp,media=(string)video,clock-rate=90000,encoding-name=(string)H264" ! rtph264depay ! "video/x-h264, stream-format=(string)avc, alignment=(string)au" ! avdec_h264 ! videoconvert ! ximagesink sync=false')
+					return -1
+
+				if config.get('webmSupport') == False:
+					print('\033[33mYour browser does not support WEBM video\033[0m')
+					if app_config.get('protocol') == 'RAW' and app_config.get('codec') == 'H264':
+						print('\033[1mYou may view your video with gstreamer:\033[0m')
+						print('gst-launch-1.0 souphttpsrc location=' + url + ' ! decodebin ! videoconvert ! xvimagesink sync=false')
+					return -1
+
+			StreamingProcessHolder.videoStream = ffmpeg.input(url).output(stream_endpoint, vcodec="vp8", format="webm", listen=1, multiple_requests=1).run_async(pipe_stderr=True)
+			return StreamingProcessHolder.waitForInput(StreamingProcessHolder.videoStream)
+
+		if streaming_type == 'audio':
+			StreamingProcessHolder.audioStream = ffmpeg.input(url, ar='16000', ac='1', f='s16le').output(stream_endpoint, format="wav", listen=1, multiple_requests=1).run_async(pipe_stderr=True)
+			return StreamingProcessHolder.waitForInput(StreamingProcessHolder.audioStream)
+
+	def terminateStreaming(stream_process):
+		if stream_process != None:
+			print("Terminate streaming process...")
+			stream_process.terminate()
+			stream_process.wait()
+			print("Process has been terminated...")
+			return 0
+
+		print("Process is not active")
+		return -1
+
+	def deinitStreaming(streaming_type):
+		print("Deinit streaming for " + streaming_type)
+		if streaming_type == 'video':
+			if hasattr(StreamingProcessHolder, 'videoStream') and StreamingProcessHolder.videoStream != None:
+				result = StreamingProcessHolder.terminateStreaming(StreamingProcessHolder.videoStream)
+				StreamingProcessHolder.videoStream = None
+				return result
+
+			print("Streaming is not active")
+			return -1
+
+		if streaming_type == 'audio':
+			if hasattr(StreamingProcessHolder, 'audioStream') and StreamingProcessHolder.audioStream != None:
+				result = StreamingProcessHolder.terminateStreaming(StreamingProcessHolder.audioStream)
+				StreamingProcessHolder.audioStream = None
+				return result
+
+			print("Streaming is not active")
+			return -1
 
 # Called for every client connecting (after handshake)
 def new_client(client, server):
@@ -215,13 +298,95 @@ def handle_get_app_manifest_message(params):
 
 	return json.dumps(response_msg)
 
+
+def handle_start_streaming_adapter(params):
+	print("-->Handle start ffmpeg adapter\r")
+	if 'url' not in params :
+		print("'url' parameter missing")
+		response_msg = {
+			"method": "StartStreamingAdapter",
+			"params": {
+				"success": False,
+			}
+		}
+		return json.dumps(response_msg)
+
+	if 'streamingType' not in params :
+		print("'streamingType' parameter missing")
+		response_msg = {
+			"method": "StartStreamingAdapter",
+			"params": {
+				"success": False,
+			}
+		}
+		return json.dumps(response_msg)
+
+	start_result = StreamingProcessHolder.initStreaming(params.get('url'), params.get('streamingType'), params.get('config'))
+
+	response_msg = {}
+	if start_result == 0:
+		print("Streaming has been successfully started")
+		stream_endpoint = StreamingProcessHolder.getStreamingEndpoint(params['streamingType'])
+		response_msg = {
+			"method": "StartStreamingAdapter",
+			"params": {
+				"success": True,
+				"stream_endpoint": stream_endpoint
+			}
+		}
+	else:
+		print("Unable to start streaming adapter")
+		response_msg = {
+			"method": "StartStreamingAdapter",
+			"params": {
+				"success": False
+			}
+		}
+
+	return json.dumps(response_msg)
+
+def handle_stop_streaming_adapter(params):
+	print("-->Handle stop ffmpeg adapter\r")
+
+	if 'streamingType' not in params :
+		print("'streamingType' parameter missing")
+		response_msg = {
+			"method": "StopStreamingAdapter",
+			"params": {
+				"success": False,
+			}
+		}
+		return json.dumps(response_msg)
+
+	stop_result = StreamingProcessHolder.deinitStreaming(params['streamingType'])
+
+	response_msg = {}
+	if stop_result == 0:
+		response_msg = {
+			"method": "StopStreamingAdapter",
+			"params": {
+				"success": True
+			}
+		}
+	else:
+		response_msg = {
+			"method": "StopStreamingAdapter",
+			"params": {
+				"success": False
+			}
+		}
+
+	return json.dumps(response_msg)
+
 def get_method_mapping():
 	return {
 		"LowVoltageSignalRequest": handle_low_voltage_message,
 		"GetPTFileContentRequest": handle_get_pt_file_content_message,
 		"SavePTUToFileRequest": handle_save_PTU_to_file_message,
 		"GetAppBundleRequest": handle_get_app_bundle_message,
-		"GetAppManifestRequest": handle_get_app_manifest_message
+		"GetAppManifestRequest": handle_get_app_manifest_message,
+		"StartStreamingAdapter": handle_start_streaming_adapter,
+		"StopStreamingAdapter": handle_stop_streaming_adapter
 	}
 
 def getch():

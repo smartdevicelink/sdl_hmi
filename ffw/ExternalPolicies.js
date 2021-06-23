@@ -38,6 +38,10 @@ FFW.ExternalPolicies = Em.Object.create({
 
     waitForUnpackResponse: false,
 
+    packMessagesToSend: [],
+
+    unpackMessagesToSend: [],
+
     sysReqParams: {},
 
     createPackClient(){
@@ -45,10 +49,11 @@ FFW.ExternalPolicies = Em.Object.create({
         var self = this;
         this.packClient.onopen = function(evt) {
             self.onWSOpen(evt, this);
+            self.onPackMessageSend();
         };
         this.packClient.onclose = function(evt) {
             self.onWSClose(evt);
-            this.packClient = null;
+            self.packClient = null;
             setTimeout(() => { self.createPackClient(); }, 5000);
         };
         this.packClient.onmessage = function(evt) {
@@ -64,10 +69,11 @@ FFW.ExternalPolicies = Em.Object.create({
         var self = this;
         this.unpackClient.onopen = function(evt) {
             self.onWSOpen(evt, this);
+            self.onUnpackMessageSend();
         };
         this.unpackClient.onclose = function(evt) {
             self.onWSClose(evt);
-            this.unpackClient = null;
+            self.unpackClient = null;
             setTimeout(() => { self.createUnpackClient(); }, 5000);
         };
         this.unpackClient.onmessage = function(evt) {
@@ -87,6 +93,55 @@ FFW.ExternalPolicies = Em.Object.create({
         Em.Logger.log('ExternalPolicies onWSOpen');
     },
 
+    onWSClose: function(evt) {
+        Em.Logger.log('ExternalPolicies onWSClose');
+    },
+
+    onWSError: function(evt) {
+        Em.Logger.log('ExternalPolicies onWSError');
+    },
+
+    pack: function(params) {
+        Em.Logger.log("Pack")
+        this.sysReqParams = params;
+        this.packMessagesToSend.push(this.sysReqParams);
+        this.onPackMessageSend();
+    },
+
+    onPackMessageSend: function() {
+        if (this.packMessagesToSend.length == 0) {
+            return;
+        }
+
+        const str_message = JSON.stringify(this.packMessagesToSend[0]);
+
+        if (this.packClient && this.packClient.readyState == this.packClient.OPEN){
+            this.packClient.send(str_message);
+            this.packMessagesToSend.pop();
+            this.onPackMessageSend();
+        }
+    },
+
+    unpack: function(params) {
+        Em.Logger.log("Unpack")
+        this.unpackMessagesToSend.push(params);
+        this.onUnpackMessageSend();
+    },
+
+    onUnpackMessageSend: function() {
+        if (this.unpackMessagesToSend.length == 0) {
+            return;
+        }
+
+        const str_message = JSON.stringify(this.unpackMessagesToSend[0]);
+
+        if (this.unpackClient && this.unpackClient.readyState == this.unpackClient.OPEN){
+            this.unpackClient.send(str_message);
+            this.unpackMessagesToSend.pop();
+            this.onUnpackMessageSend();
+        }
+    },
+
     onPackMessage: function(evt) {
         Em.Logger.log('ExternalPolicies onWSMessage ' + evt.data);
         this.packResponseReady = true;
@@ -98,30 +153,24 @@ FFW.ExternalPolicies = Em.Object.create({
         );
 
         this.sysReqParams = {};
-
     },
+
     onUnpackMessage: function(evt) {
         Em.Logger.log('ExternalPolicies onWSMessage ' + evt.data);
         this.unpackResponseReady = true;
 
-        FFW.BasicCommunication.OnReceivedPolicyUpdate(evt.data);
-    },
+        let jsonData;
+        try {
+            jsonData = JSON.parse(evt.data)
+        }
+        catch {
+            Em.Logger.log('ExternalPolicies: failed to parse JSON content from WSMessage');
+            return;
+        }
 
-    onWSClose: function(evt) {
-        Em.Logger.log('ExternalPolicies onWSClose');
+        if(jsonData.requestType == 'PROPRIETARY'){
+            FFW.BasicCommunication.OnReceivedPolicyUpdate(jsonData.data);
+        }
     },
-    
-    onWSError: function(evt) {
-        Em.Logger.log('ExternalPolicies onWSError');
-    },
-    pack: function(params) {
-        Em.Logger.log("Pack")
-        this.sysReqParams = params;
-        this.packClient.send(JSON.stringify(this.sysReqParams));     
-    },
-    unpack: function(params) {
-        Em.Logger.log("Unpack")
-        this.unpackClient.send(JSON.stringify(params));
-    }
 
 });

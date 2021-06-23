@@ -50,7 +50,8 @@ SDL.NavigationAppView = Em.ContainerView.create(
     ),
     childViews: [
       'videoView',
-      SDL.BaseNavigationView
+      SDL.BaseNavigationView,
+      'hapticView'
     ],
     actionMove: function(event) {
       SDL.SDLModel.onTouchEvent(event);
@@ -66,6 +67,35 @@ SDL.NavigationAppView = Em.ContainerView.create(
         templateName: 'video',
         template: Ember.Handlebars.compile('<video id="html5Player"></video>')
       }
-    )
+    ),
+    hapticView: Ember.View.create(
+      {
+        templateName: 'haptic',
+        template: Ember.Handlebars.compile('<div id="hapticRects"></div>')
+      }
+    ),
+    refreshHapticItems: function() {
+      if (SDL.SDLController.model) {
+        var rects = document.getElementById('hapticRects');
+        while (rects.firstElementChild) {
+          rects.removeChild(rects.firstElementChild);
+        }
+        SDL.SDLController.model.hapticRectData.forEach(h => {
+          var rect = document.createElement('div');
+          Object.assign(rect.style, {
+            position: 'absolute',
+            left: `${h.rect.x}px`,
+            top: `${h.rect.y+50}px`,
+            width: `${h.rect.width}px`,
+            height: `${h.rect.height}px`,
+            zIndex: 1002,
+            border: '1px solid #ff0000',
+            'pointer-events': 'none',
+          });
+
+          rects.appendChild(rect);
+        });
+      }
+    }.observes('SDL.SDLController.model.hapticRectData'),
   }
 );

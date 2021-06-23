@@ -51,9 +51,13 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
     timeout: null,
     endTime: null,
     areAllImagesValid: true,
+    validationMessage: null,
     childViews: [
       'backButton', 'captionText', 'softButtons', 'listOfCommands'
     ],
+    imageModeChanged: function() {
+      this.get('softButtons').setMode(SDL.SDLModel.data.imageMode);
+    }.observes('SDL.SDLModel.data.imageMode'),
     /**
      * Deactivate View
      *
@@ -80,7 +84,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
       };
 
       SDL.SDLController.scrollableMessageResponse(
-        calculate_result_code(this.areAllImagesValid), this.messageRequestId
+        calculate_result_code(this.areAllImagesValid), this.validationMessage, this.messageRequestId
       );
       SDL.SDLController.onSystemContextChange();
       SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -99,6 +103,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
 
         this.set('messageRequestId', messageRequestId);
         this.set('areAllImagesValid', true);
+        this.set('validationMessage', null);
         this.set('captionText.content', appName);
         this.softButtons.addItems(params.softButtons, params.appID);
         this.set('active', true);
@@ -116,12 +121,13 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
           var imageList = [];
           for(var i = 0; i < params.softButtons.length; i++) {
             if(params.softButtons[i].image) {
-              imageList.push(params.softButtons[i].image.value);
+              imageList.push(params.softButtons[i].image);
             }
           }
           var that = this;
-          var callback = function(failed) {
+          var callback = function(failed, info) {
             that.set('areAllImagesValid', !failed);
+            that.set('validationMessage', info);
           };
 
           SDL.SDLModel.validateImages(messageRequestId, callback, imageList);

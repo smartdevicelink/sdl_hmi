@@ -169,6 +169,26 @@ SDL.SDLModelData = Em.Object.create(
      */
     naviVideo: null,
     /**
+     * Video streaming is allowed to start
+     * @type {Boolean}
+     */
+    videoStreamingAllowed: false,
+    /**
+     * Audio streaming is allowed to start
+     * @type {Boolean}
+     */
+    audioStreamingAllowed: false,
+    /**
+     * Video streaming data is available
+     * @type {Boolean}
+     */
+    videoStreamingStarted: false,
+    /**
+     * Audio streaming data is available
+     * @type {Boolean}
+     */
+    audioStreamingStarted: false,
+    /**
      * Array of strings came in SDL.GetPolicyConfigurationData response
      *
      * @type {Object}
@@ -522,12 +542,8 @@ SDL.SDLModelData = Em.Object.create(
           'fieldText': 'mainField4'
         },
         {
-          'fieldName': 'navigationText',
-          'fieldText': 'mainField5'
-        },
-        {
           'fieldName': 'timeToDestination',
-          'fieldText': 'mainField6'
+          'fieldText': 'mainField5'
         }
       ],
       'softButtons': [
@@ -652,6 +668,11 @@ SDL.SDLModelData = Em.Object.create(
      * @type {String}
      */
     ccpuVersion: '12345_US',
+    /**
+     * Hardware version value
+     * @type {String}
+     */
+    hardwareVersion: '123.456.7890',
     /**
      * Parameter describes if performInteraction session was started on HMI
      * this flag set to true when UI.PerformInteraction request came on HMI
@@ -872,6 +893,18 @@ SDL.SDLModelData = Em.Object.create(
                   "rows": 1
                 },
                 {
+                    "name": "timeToDestination",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "turnText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
                   "name": "menuTitle",
                   "characterSet": "UTF_8",
                   "width": 10,
@@ -918,6 +951,30 @@ SDL.SDLModelData = Em.Object.create(
                   "characterSet": "UTF_8",
                   "width": 500,
                   "rows": 1
+                },
+                {
+                  'name': 'menuCommandSecondaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
+                },
+                {
+                  'name': 'menuCommandTertiaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
+                },
+                {
+                  'name': 'menuSubMenuSecondaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
+                },
+                {
+                  'name': 'menuSubMenuTertiaryText',
+                  'characterSet': 'UTF_8',
+                  'width': 500,
+                  'rows': 1
                 }
               ],
               'imageFields': [
@@ -1088,6 +1145,30 @@ SDL.SDLModelData = Em.Object.create(
                     'resolutionWidth': 105,
                     'resolutionHeight': 65
                   }
+                },
+                {
+                  'name': 'menuCommandSecondaryImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 105,
+                    'resolutionHeight': 65
+                  }
+                },
+                {
+                  'name': 'menuSubMenuSecondaryImage',
+                  'imageTypeSupported': [
+                    'GRAPHIC_BMP',
+                    'GRAPHIC_JPEG',
+                    'GRAPHIC_PNG'
+                  ],
+                  'imageResolution': {
+                    'resolutionWidth': 105,
+                    'resolutionHeight': 65
+                  }
                 }
               ],
               "imageTypeSupported": ["STATIC", "DYNAMIC"],
@@ -1231,6 +1312,27 @@ SDL.SDLModelData = Em.Object.create(
                 "imageSupported": true,
                 "textSupported": true
               }],
+              "keyboardCapabilities": {
+                "maskInputCharactersSupported": true,
+                "supportedKeyboards" : [
+                  {
+                    "keyboardLayout": "QWERTY",
+                    "numConfigurableKeys": 3
+                  },
+                  {
+                    "keyboardLayout": "QWERTZ",
+                    "numConfigurableKeys": 0
+                  },
+                  {
+                    "keyboardLayout": "AZERTY",
+                    "numConfigurableKeys": 4
+                  },
+                  {
+                    "keyboardLayout": "NUMERIC",
+                    "numConfigurableKeys": 2
+                  }
+                ]
+              },
               "dynamicUpdateCapabilities": {
                 "supportedDynamicImageFieldNames": ["subMenuIcon", "menuIcon"],
                 "supportsDynamicSubMenus": true

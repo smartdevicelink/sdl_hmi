@@ -103,6 +103,14 @@ SDL.TurnByTurnView = SDL.SDLAbstractView.create(
               );
               break;
             }
+            case 'timeToDestination':
+            {
+              this.set(
+                'timeToDestinationtext',
+                naviParams.navigationTexts[i].fieldText
+              );
+              break;
+            }
           }
         }
         this.softButtons.addItems(naviParams.softButtons, appID);
@@ -131,7 +139,6 @@ SDL.TurnByTurnView = SDL.SDLAbstractView.create(
         this.set(
           'distanceToManeuverScaletext', naviParams.distanceToManeuverScale
         );
-        this.set('timeToDestinationtext', naviParams.timeToDestination);
         this.set('activeTBT', true);
       }
     },

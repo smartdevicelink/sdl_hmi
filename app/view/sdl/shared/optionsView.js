@@ -45,6 +45,7 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
     activate: function(text) {
       this._super();
       SDL.SDLController.buttonsSort('top', SDL.SDLController.model.appID);
+      SDL.OptionsView.commands.addPageListener(this.onOptionsPageChanged);
       SDL.OptionsView.commands.refreshItems();
       SDL.SDLController.onSystemContextChange();
       SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -53,13 +54,32 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
         })
       })
     },
+    /**
+     * Listener for options page scroller
+     * @param {Integer} new_page
+     */
+    onOptionsPageChanged: function(new_page) {
+      const items_per_page = SDL.OptionsView.commands.itemsOnPage;
+      const start_index = new_page * items_per_page;
+      const end_index = Math.min(start_index + items_per_page,
+        SDL.OptionsView.commands.items.length);
+
+      let items = SDL.OptionsView.commands.items;
+      let menu_nested_items = SDL.SDLController.model?.get('commandsList') ?? {};
+      for (let i = start_index; i < end_index; ++i) {
+        const menuID = items[i].params.menuID;
+        if (menuID > 0 && menu_nested_items[menuID]?.length === 0) {
+          // Notify mobile to update submenu
+          SDL.SDLController.onUpdateSubMenu(menuID);
+        }
+      }
+    },
     // Extend deactivate window
     deactivate: function() {
       if (SDL.SDLController.model) {
         var currentSubMenuID = SDL.SDLController.model.get('currentSubMenuId');
         if (currentSubMenuID != 'top' &&
-          currentSubMenuID >= 0  && 
-          !SDL.SDLController.model.get('subMenuInitFromApp')) {
+          currentSubMenuID >= 0) {
           var commandsList = SDL.SDLController.model.get('commandsList');
           var findParentID = (commands, menuID) => {
             for (id in commands) {
@@ -76,7 +96,6 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
         } else {
           SDL.SDLController.onSubMenu('top');
           this._super();
-          SDL.SDLController.model.set('subMenuInitFromApp', false);
         }
       }
       SDL.SDLController.onSystemContextChange();
@@ -118,17 +137,9 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
             for (i = 0; i < len; i++) {
               var menuID = commands[i].menuID;
               if (menuID && menuID >= 0) {
-                if (allMenuItems[menuID].length === 0) {
-                  // Notify mobile to update submenu
-                  FFW.UI.OnUpdateSubMenu(SDL.SDLController.model.appID, menuID);
-                }
-                template = 'arrow';
-              } else if (commands[i].isTemplate){
-                template = commands[i].isTemplate ? 
-                'rightTextOverLay' : 
-                'rightText';
+                template = 'arrowExtended';
               } else {
-                template = commands[i].icon ? 'rightText' : 'text';
+                template = 'extended';
               }
               this.items.push(
                 {
@@ -139,9 +150,14 @@ SDL.OptionsView = SDL.SDLAbstractView.create(
                     commandID: commands[i].commandID,
                     menuID: menuID,
                     icon: commands[i].icon,
+                    isTemplate: commands[i].isTemplate,
                     target: 'SDL.SDLController',
                     action: 'onCommand',
-                    onDown: false
+                    onDown: false,
+                    secondaryText: commands[i].secondaryText,
+                    tertiaryText: commands[i].tertiaryText,
+                    secondaryIcon: commands[i].secondaryImage,
+                    isSecondaryTemplate: commands[i].isSecondaryTemplate 
                   }
                 }
               );

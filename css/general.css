@@ -90,6 +90,53 @@ div.glider-slide {
     background-position: bottom;
 }
 
+.ffw-button .extended-button {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+
+.ffw-button .main-text {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 59%;
+    line-height: 25px;
+    justify-content: center;
+}
+
+.ffw-button .w-100 {
+    width: 100% !important;
+}
+
+.ffw-button .w-50 {
+    width: 50% !important;
+}
+
+.ffw-button .t-small {
+    font-size: 15px;
+}
+
+.ffw-button .tertiary-text {
+    text-align: right;
+    margin-right: 10px;
+    line-height: 25px;
+}
+
+.ffw-button .end-info {
+    display: flex;
+    justify-content: flex-end;
+    flex-grow: 4;
+    right: 0px;
+    max-height: 100%;
+}
+
+.ffw-button .relative-r-0 {
+    position: relative;
+    right: 0px;
+}
+
 .windowText {
     top: 190px;
     width: 800px;

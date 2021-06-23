@@ -31,14 +31,14 @@
  * @version 1.0
  */
 
-SDL.systemCapabilities = 
+SDL.systemCapabilities = Em.Object.create(
 {
     videoStreamingCapability: {
         preferredResolution: {
             resolutionWidth: 800,
             resolutionHeight: 380
         },
-        maxBitrate: 2147483647,
+        maxBitrate: 400000,
         supportedFormats: [
             {
                 protocol:  "RAW",
@@ -49,25 +49,182 @@ SDL.systemCapabilities =
                 codec: "H264"
             },
             {
-                protocol:  "RTSP",
-                codec: "Theora"
-            },
-            {
-                protocol:  "RTMP",
-                codec: "VP8"
-            },
-            {
                 protocol:  "WEBM",
-                codec: "VP9"
+                codec: "VP8"
             }
         ],
         hapticSpatialDataSupported: true,
         diagonalScreenSize: 8,
         pixelPerInch: 96,
-        scale: 1
+        scale: 1,
+        preferredFPS: 20,
+        additionalVideoStreamingCapabilities: [
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 320,
+                    resolutionHeight: 200
+                },
+                maxBitrate: 400000,
+                hapticSpatialDataSupported: false,
+                diagonalScreenSize: 3,
+                pixelPerInch: 96,
+                scale: 1,
+                preferredFPS: 20,
+                supportedFormats: [
+                    {
+                        protocol:  "RAW",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "RTP",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
+                    }
+                ]
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 480,
+                    resolutionHeight: 320
+                },
+                maxBitrate: 400000,
+                hapticSpatialDataSupported: true,
+                diagonalScreenSize: 5,
+                pixelPerInch: 96,
+                scale: 1,
+                preferredFPS: 20,
+                supportedFormats: [
+                    {
+                        protocol:  "RAW",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "RTP",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
+                    }
+                ]
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 400,
+                    resolutionHeight: 380
+                },
+                maxBitrate: 400000,
+                hapticSpatialDataSupported: true,
+                diagonalScreenSize: 4,
+                pixelPerInch: 96,
+                scale: 1,
+                preferredFPS: 20,
+                supportedFormats: [
+                    {
+                        protocol:  "RAW",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "RTP",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
+                    }
+                ]
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 800,
+                    resolutionHeight: 240
+                },
+                maxBitrate: 400000,
+                hapticSpatialDataSupported: true,
+                diagonalScreenSize: 4,
+                pixelPerInch: 96,
+                scale: 1,
+                preferredFPS: 20,
+                supportedFormats: [
+                    {
+                        protocol:  "RAW",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "RTP",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
+                    }
+                ]
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 800,
+                    resolutionHeight: 380
+                },
+                maxBitrate: 400000,
+                hapticSpatialDataSupported: true,
+                scale: 1.5,
+                diagonalScreenSize: 5,
+                pixelPerInch: 96,
+                preferredFPS: 20,
+                supportedFormats: [
+                    {
+                        protocol:  "RAW",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "RTP",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
+                    }
+                ]
+            },
+            {
+                preferredResolution:
+                {
+                    resolutionWidth: 800,
+                    resolutionHeight: 380
+                },
+                maxBitrate: 400000,
+                hapticSpatialDataSupported: true,
+                scale: 2,
+                diagonalScreenSize: 4,
+                pixelPerInch: 96,
+                preferredFPS: 20,
+                supportedFormats: [
+                    {
+                        protocol:  "RAW",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "RTP",
+                        codec: "H264"
+                    },
+                    {
+                        protocol:  "WEBM",
+                        codec: "VP8"
+                    }
+                ]
+            }
+        ]
     },
     driverDistractionCapability: {
         menuLength: 10,
         subMenuDepth: 2
     }
-}
+});

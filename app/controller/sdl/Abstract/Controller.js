@@ -201,6 +201,9 @@ SDL.SDLController = Em.Object.extend(
      * @param appID {Number}
      */
     closeApplication: function(appID) {
+      if (SDL.States.currentState.getPath('path') === 'media.sdlmedia'){
+        SDL.SDLMediaController.onCloseApplication(appID)
+      }
       if (SDL.States.currentState.getPath('path') === 'media.sdlmedia' ||
         SDL.States.currentState.getPath('path') === 'info.nonMedia' ||
         SDL.States.currentState.getPath('path') === 'navigationApp.baseNavigation' ||
@@ -239,11 +242,11 @@ SDL.SDLController = Em.Object.extend(
      * StateManager
      */
     deactivateApp: function() {
-      SDL.SDLController.onSubMenu('top');
       if (this.model) {
+        SDL.SDLController.onSubMenu('top');
         SDL.SDLModel.onDeactivateApp(SDL.States.nextState, this.model.appID);
+        SDL.SDLController.model.set('tbtActivate', false);
       }
-      SDL.SDLController.model.set('tbtActivate', false);
       this.set('model', null);
     },
     /**
@@ -444,7 +447,8 @@ SDL.SDLController = Em.Object.extend(
                   SDL.SDLVehicleInfoModel.vehicleData[i],
                   parsedData[i]
                 )) {
-              params[i] = parsedData[i];
+              let paramKey = (i === "clusterModes") ? "clusterModeStatus" : i;
+              params[paramKey] = parsedData[i];
             }
           }
           SDL.SDLVehicleInfoModel.vehicleData = parsedData;
@@ -802,11 +806,15 @@ SDL.SDLController = Em.Object.extend(
      * Method to sent notification ABORTED for PerformInteractionChoise
      */
     interactionChoiseCloseResponse: function(appID, result, choiceID,
-      manualTextEntry) {
+      manualTextEntry, info) {
       FFW.UI.interactionResponse(
         SDL.SDLController.getApplicationModel(
           appID
-        ).activeRequests.uiPerformInteraction, result, choiceID, manualTextEntry
+        ).activeRequests.uiPerformInteraction,
+        result,
+        choiceID,
+        manualTextEntry,
+        info
       );
       SDL.SDLModel.data.set('interactionData.vrHelpTitle', null);
       SDL.SDLModel.data.set('interactionData.vrHelp', null);
@@ -876,7 +884,7 @@ SDL.SDLController = Em.Object.extend(
      * @param {Number}
      *            messageRequestId
      */
-    scrollableMessageResponse: function(result, messageRequestId) {
+    scrollableMessageResponse: function(result, info, messageRequestId) {
       if (result == SDL.SDLModel.data.resultCode.SUCCESS) {
         FFW.UI.sendUIResult(
           result,
@@ -888,7 +896,7 @@ SDL.SDLController = Em.Object.extend(
           result,
           messageRequestId,
           'UI.ScrollableMessage',
-          'Requested image(s) not found'
+          info
         );
       } else {
         FFW.UI.sendUIResult(
@@ -1011,7 +1019,6 @@ SDL.SDLController = Em.Object.extend(
               appType: params.appType,
               isMedia: 0,
               disabledToActivate: params.greyOut ? true : false,
-              displayLayout: "DEFAULT",
               dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               policyAppID: params.policyAppID,
@@ -1031,7 +1038,6 @@ SDL.SDLController = Em.Object.extend(
               isMedia: applicationType == 0 ? true : false,
               initialized: true,
               disabledToActivate: params.greyOut ? true : false,
-              displayLayout: "DEFAULT",
               dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               policyAppID: params.policyAppID,
@@ -1190,6 +1196,7 @@ SDL.SDLController = Em.Object.extend(
       params.applications.forEach(appRecord => {
         SDL.SDLModel.appIDtoPolicyAppIDMapping[appRecord.appID] = appRecord.policyAppID;
       });
+      SDL.SettingsController.runScheduledPtuIteration();
     },
     /**
      * SDL Driver Distraction ON/OFF switcher
@@ -1208,29 +1215,28 @@ SDL.SDLController = Em.Object.extend(
     onKeyboardChanges: function() {
       if (null !== SDL.SDLModel.data.keyboardInputValue) {
         var str = SDL.SDLModel.data.keyboardInputValue;
+
+        let mode = 'RESEND_CURRENT_ENTRY';
         if (SDL.SDLController.model &&
-          SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
-          switch (SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
-            case 'SINGLE_KEYPRESS':
-            {
-              FFW.UI.OnKeyboardInput(str.charAt(str.length - 1), 'KEYPRESS');
-              break;
-            }
-            case 'QUEUE_KEYPRESS':
-            {
-              break;
-            }
-            case 'RESEND_CURRENT_ENTRY':
-            {
-              if (str) {
-                FFW.UI.OnKeyboardInput(str, 'KEYPRESS');
-              }
-              break;
-            }
+            SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode) {
+          mode = SDL.SDLController.model.globalProperties.keyboardProperties.keypressMode;
+        }
+
+        switch (mode) {
+          case 'SINGLE_KEYPRESS': {
+            FFW.UI.OnKeyboardInput(str.charAt(str.length - 1), 'KEYPRESS');
+            break;
+          }
+          case 'QUEUE_KEYPRESS': {
+            break;
+          }
+          case 'RESEND_CURRENT_ENTRY': {
+            FFW.UI.OnKeyboardInput(str, 'KEYPRESS');
+            break;
           }
         }
       }
-    }.observes('SDL.SDLModel.data.keyboardInputValue'),
+    },
     /**
      * Get application model
      *
@@ -1276,13 +1282,7 @@ SDL.SDLController = Em.Object.extend(
         element.id
       );
       this.turnChangeDeviceViewBack();
-    },
-    /**
-     * Method call's request to get list of applications
-     */
-    findNewApps: function() {
-      FFW.BasicCommunication.OnFindApplications();
-    },
+    },    
     /**
      * Method activates selected registered application
      *
@@ -1504,16 +1504,16 @@ SDL.SDLController = Em.Object.extend(
     /**
      * SetAudioStreamingIndicator notification handler
      *
-     * @param {Object} params
+     * @param {Object} audioStreamingIndicator audioStreamingIndicator name
      * @constructor
      * @return {boolean}
      */
-    SetAudioStreamingIndicator: function(params) {
+    SetAudioStreamingIndicator: function(audioStreamingIndicator) {
       if (SDL.SDLController.model) {
         SDL.SDLController.model.set(
           'mediaPlayerIndicator',
           SDL.SDLModel.data.
-            mediaPlayerIndicatorEnum[params.audioStreamingIndicator]
+            mediaPlayerIndicatorEnum[audioStreamingIndicator]
         );
         return true;
       }
@@ -1750,6 +1750,53 @@ SDL.SDLController = Em.Object.extend(
       this.hideWebApps();
       let policyAppID = SDL.SDLModel.appIDtoPolicyAppIDMapping[appID];
       SDL.SDLModel.webApplicationFramesMap[policyAppID].hidden = false;
+    },
+
+    /**
+     * @function onUpdateFile
+     * @param {String} fileName
+     * @description Checks whether provided file was requested from SDL or not
+     * and sends notification if file was not requested yet
+     */
+    onUpdateFile: function(fileName) {
+      if(SDL.SDLController.model && SDL.SDLController.model.appID) {
+        let model = SDL.SDLController.model;
+        if (!model.cachedIconFileNamesList.includes(fileName)) {
+          model.cachedIconFileNamesList.push(fileName);
+          FFW.UI.OnUpdateFile(model.appID, fileName);
+        }
+      }
+    },
+
+    /**
+     * @function onUpdateSubMenu
+     * @param {Integer} menuID
+     * @description Checks whether provided menuID update was requested from SDL
+     * or not and sends notification if submenu was not updated yet
+     */
+    onUpdateSubMenu: function(menuID) {
+      if(SDL.SDLController.model && SDL.SDLController.model.appID) {
+        let model = SDL.SDLController.model;
+        if (!model.cachedSubmenuIdsList.includes(menuID)) {
+          model.cachedSubmenuIdsList.push(menuID);
+          FFW.UI.OnUpdateSubMenu(model.appID, menuID);
+        }
+      }
+    },
+
+    /**
+     * @function onDeleteSubMenu
+     * @param {Integer} menuID
+     * @description Removes menuID from application model cache if it was cached before
+     */
+    onDeleteSubMenu: function(menuID) {
+      if (SDL.SDLController.model && SDL.SDLController.model.appID) {
+        let model = SDL.SDLController.model;
+        const index = model.cachedSubmenuIdsList.indexOf(menuID);
+        if (index >= 0) {
+          model.cachedSubmenuIdsList.splice(index, 1);
+        }
+      }
     },
 
     /**
