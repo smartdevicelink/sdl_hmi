@@ -1514,7 +1514,7 @@ SDL.SDLModel = Em.Object.extend({
    */
   deactivateVr: function() {
     SDL.SDLController.vrInteractionResponse(
-        SDL.SDLModel.data.resultCode['SUCCESS']
+        SDL.SDLModel.data.resultCode.TIMED_OUT
       );
     SDL.SDLModel.data.set('VRActive', false);
 
