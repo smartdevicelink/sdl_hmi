@@ -41,6 +41,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
       'input',
       'listWrapper'
     ],
+    requestID: 0,
     didInsertElement: function() {
       SDL.SDLModel.data.interactionListWrapper = new iScroll(
         'listWrapper', {
@@ -71,7 +72,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         attributeBindings: ['disabled'],
         disabled: false,
         click: function() {
-          SDL.SDLModel.uiShowKeyboard(this);
+          SDL.SDLModel.uiShowKeyboard(this, this.requestID);
         },
         search: function() {
           FFW.UI.OnKeyboardInput(
@@ -92,10 +93,11 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         click: function() {
           if (this._parentView.active) {
             SDL.InteractionChoicesView.timerUpdate();
-            SDL.SDLController.onResetTimeout(
-              SDL.SDLController.model.appID, 'UI.PerformInteraction'
+            FFW.BasicCommunication.OnResetTimeout(
+              this.requestID, 'UI.PerformInteraction'
             );
-          }
+            }
+            SDL.ResetTimeoutPopUp.DeactivatePopUp();
         },
         naviChoises: Em.ContainerView.extend(
           {
@@ -130,8 +132,8 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         click: function() {
           if (this._parentView.active) {
             SDL.InteractionChoicesView.timerUpdate();
-            SDL.SDLController.onResetTimeout(
-              SDL.SDLController.model.appID, 'UI.PerformInteraction'
+            FFW.BasicCommunication.OnResetTimeout(
+              this.requestID, 'UI.PerformInteraction'
             );
           }
         }
@@ -153,14 +155,20 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
     /**
      * Method updates popup timer when data changes through keyboard
      */
-    timerUpdate: function() {
-      if (this.timeout) {
-        clearTimeout(this.timer);
-        var self = this;
-        this.timer = setTimeout(
+    timerUpdate: function(timer) {
+      self = SDL.InteractionChoicesView === undefined ? this : SDL.InteractionChoicesView;
+      if(timer) {
+        self.timeout = timer;
+      }
+      if (self.timeout) {
+        clearTimeout(self.timer);
+
+        self.timeout = SDL.ResetTimeoutPopUp ? SDL.ResetTimeoutPopUp.timeoutSeconds['UI.PerformInteraction'] * 1000 : self.timeout
+        
+        self.timer = setTimeout(
           function() {
-            self.deactivate('TIMED_OUT');
-          }, this.timeout
+            SDL.InteractionChoicesView.deactivate('TIMED_OUT');
+          }, self.timeout
         );
       }
     }.observes('this.input.value'),
@@ -175,6 +183,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         this.set('caption', message.params.initialText.fieldText);
       }
       this.appID = message.params.appID;
+      this.requestID = message.id;
       this.set('areAllImagesValid', true);
       this.set('imagesValidationInfo', null);
       if (message.params.interactionLayout) {
@@ -226,7 +235,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           case 'KEYBOARD' :
           {
             this.preformChoices(null, message.params.timeout);
-            SDL.SDLModel.uiShowKeyboard(this.input);
+            SDL.SDLModel.uiShowKeyboard(this.input, this.requestID);
             this.set('list', false);
             this.set('search', false);
             this.set('icon', false);
