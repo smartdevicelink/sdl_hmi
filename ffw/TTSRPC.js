@@ -142,19 +142,32 @@ FFW.TTS = FFW.RPCObserver.create(
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.TTS.onRPCRequest');
       this._super();
+      SDL.ResetTimeoutPopUp.requestIDs[request.method] =  request.id;
       switch (request.method) {
         case 'TTS.Speak':
         {
-          if (SDL.TTSPopUp.active) {
+          if (SDL.ResetTimeoutPopUp.resetTimeoutRPCs.includes(request.method)) {
             FFW.TTS.sendError(
               SDL.SDLModel.data.resultCode.REJECTED, request.id, 'TTS.Speak',
               'TTS in progress. Rejected.'
             );
           } else {
             this.requestId = request.id;
-            SDL.SDLModel.onPrompt(
-              request.params.ttsChunks, request.params.appID
-            );
+            
+            SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
+            SDL.ResetTimeoutPopUp.expandCallbacks(function(){
+              SDL.SDLController.TTSResponseHandler();
+            }, request.method);
+
+            if (SDL.ResetTimeoutPopUp.resetTimeoutRPCs.includes("UI.Alert")) {
+              SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertPopUp.setTimerTTS, request.method);
+            } else {
+              SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertManeuverPopUp.setTimerTTS, request.method);
+            }
+            
+            SDL.ResetTimeoutPopUp.ActivatePopUp();
+            
+            SDL.SDLModel.onPrompt(request.params.ttsChunks);
             if (request.params.playTone) {
               SDL.SDLModel.onPlayTone();
             }
@@ -305,6 +318,9 @@ FFW.TTS = FFW.RPCObserver.create(
      */
     sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
+      if(SDL.ResetTimeoutPopUp.active) {
+        SDL.ResetTimeoutPopUp.DeactivatePopUp();
+      }
       // send response
       var JSONMessage = {
         'jsonrpc': '2.0',
@@ -409,22 +425,6 @@ FFW.TTS = FFW.RPCObserver.create(
       var JSONMessage = {
         'jsonrpc': '2.0',
         'method': 'TTS.Started'
-      };
-      this.sendMessage(JSONMessage);
-    },
-    /**
-     * Sent OnResetTimeout notification to SDLCore to inform when
-     * HMI pronounces text longer than 10 seconds
-     */
-    OnResetTimeout: function(appID, methodName) {
-      Em.Logger.log('FFW.TTS.OnResetTimeout');
-      var JSONMessage = {
-        'jsonrpc': '2.0',
-        'method': 'TTS.OnResetTimeout',
-        'params': {
-          'appID': appID,
-          'methodName': methodName
-        }
       };
       this.sendMessage(JSONMessage);
     },
