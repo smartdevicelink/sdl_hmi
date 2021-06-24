@@ -49,6 +49,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
          *
          * @type {Number}
          */
+        defaultTimeout: 30000,
         alertRequestId: null,
         appID: null,
         content1: '',
@@ -56,28 +57,12 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         active: false,
         timer: null,
         timeout: null,
+        ttsTimer: null,
+        ttsTimeout: null,
         endTime: null,
         reason: '',
         message: undefined,
-        /**
-         * When SubtleAlert is clicked, open the app that sent the alert
-         */
-        onClick: function(event) {
-            if (document.getElementById('SubtleAlertPopUp').contains(event.target)){
-                var buttonsDiv = document.getElementById('subtleAlertSoftButtons');
-                for (var button of buttonsDiv.childNodes) {
-                    if (button.contains(event.target)) {
-                        return;
-                    }
-                }
 
-                SDL.SubtleAlertPopUp.deactivate();
-                SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
-                SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
-            } else{
-                SDL.SubtleAlertPopUp.deactivate();
-            }
-        },
         /**
          * Warning image on Subtle Alert PopUp
          */
@@ -160,7 +145,6 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                     SDL.SDLModel.data.resultCode.SUCCESS, this.alertRequestId, info
                 );
             }
-            window.removeEventListener('click', this.onClick);
             SDL.SDLController.onSystemContextChange();
             SDL.SDLModel.data.registeredApps.forEach(app => {
               app.activeWindows.forEach(widget => {
@@ -253,15 +237,37 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 }
             }
             this.set('active', true);
-            this.set('timeout', message.duration ? message.duration : 10000);
-            this.set('endTime', Date.now() + this.timeout);
-            clearTimeout(this.timer);
-            this.timer = setTimeout(
-                function () {
-                    self.deactivate(self.reason, self.message);
-                }, this.timeout
-            );
-            window.addEventListener('click', this.onClick);
+            this.setTimerUI(message.duration ? message.duration : this.defaultTimeout);
+        },
+
+        /*
+        * function setTimerTTS. Sets the active timer of the view for TTS RPC
+        */
+        setTimerTTS: function(time){
+            var self = SDL.SubtleAlertPopUp;
+            self.set('ttsTimeout', time);
+            clearTimeout(self.ttsTimer);
+            self.ttsTimer = setTimeout(
+            function() {
+                clearTimeout(self.ttsTimer);
+            }, self.ttsTimeout );
+        },
+  
+        /*
+        * function setTimerUI. Sets the active timer of the view for UI RPC
+        */
+        setTimerUI: function(time){
+            var self = SDL.SubtleAlertPopUp;
+            self.set('timeout', time);
+            clearTimeout(self.timer);
+            self.timer = setTimeout(
+            function() {
+                self.set('active', false);
+                clearTimeout(self.timer);
+                self.set('content1', '');
+                self.set('content2', '');
+          }, self.timeout
+        );
         }
     }
 );
