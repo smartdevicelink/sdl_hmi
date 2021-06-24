@@ -70,6 +70,9 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
       this.set('active', false);
       this.softButtons.set('page', 0);
       this.timeout = null;
+      if(SDL.ResetTimeoutPopUp.active) {
+        SDL.ResetTimeoutPopUp.DeactivatePopUp();
+      }
 
       let calculate_result_code = function(areAllImagesValid) {
         if (ABORTED) {
@@ -111,11 +114,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         clearTimeout(this.timer);
         this.timeout = params.timeout;
         this.set('endTime', Date.now() + this.timeout);
-        this.timer = setTimeout(
-          function() {
-            self.deactivate();
-          }, params.timeout
-        );
+        this.setTimer(this.timeout);
 
         if(params.softButtons) {
           var imageList = [];
@@ -134,6 +133,25 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         }
       }
     },
+
+    /*
+     * function setTimer. Sets the active timer of the view
+     */
+    setTimer: function(time){
+      var self = SDL.ScrollableMessage;
+      self.set('timeout', time);
+      clearTimeout(self.timer);
+      self.timer = setTimeout(
+        function() {
+          clearTimeout(self.timer);
+          self.set('active', false);
+          self.softButtons.set('page', 0);
+          self.timeout = null;
+          SDL.SDLController.onSystemContextChange();
+        }, self.timeout
+      );
+    },
+
     softButtons: SDL.MenuList.extend(
       {
         itemsOnPage: 4,
@@ -164,15 +182,11 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
          */
         click: function() {
           var self = this._parentView;
-          clearTimeout(this._parentView.timer);
-          SDL.SDLController.onResetTimeout(
-            SDL.SDLController.model.appID, 'UI.ScrollableMessage'
-          );
-          this._parentView.timer = setTimeout(
-            function() {
-              self.deactivate();
-            }, this._parentView.timeout
-          );
+          clearTimeout(self.timer);
+          self.set('endTime', Date.now() + self.timeout);
+          self.setTimer(self.timeout);
+
+          SDL.ResetTimeoutPopUp.resetTimeout();
         }
       }
     )

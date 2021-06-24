@@ -82,7 +82,8 @@ SDL.SliderView = SDL.SDLAbstractView.create(
           SDL.SDLModel.data.resultCode.SUCCESS, this.get('sliderRequestId'),
           this.get('adjustControl.sliderValue.value')
         );
-      } else {
+      }
+      else {
         FFW.UI.sendSliderResult(
           SDL.SDLModel.data.resultCode['ABORTED'], this.get('sliderRequestId'),
           this.get('adjustControl.sliderValue.value')
@@ -95,32 +96,35 @@ SDL.SliderView = SDL.SDLAbstractView.create(
         })
       })
     },
-    activate: function(text, timeout) {
-      if (text) {
-        this.set('caption', text);
-      }
-      this.set('active', true);
-      this.set('timeout', timeout);
-      this.timer = setTimeout(
+    setText: function(text) {
+      this.set('caption', text);
+    },
+    
+    activate: function(timeout) {
+      var self = SDL.SliderView;
+      self.set('active', true);
+      self.set('timeout', timeout);
+      clearTimeout(self.timer);
+      self.timer = setTimeout(
         function() {
-          if (SDL.SliderView.active) {
-            SDL.SliderView.deactivate(true);
+          if (self.active) {
+            self.deactivate(null);
           }
-        }, timeout
+        }, self.timeout
       );
     },
+ 
     dataChange: function() {
       if (this.timeout) {
         var self = this;
         clearTimeout(this.timer);
-        SDL.SDLController.onResetTimeout(
-          SDL.SDLController.model.appID, 'UI.Slider'
-        );
         this.timer = setTimeout(
           function() {
             self.deactivate(true);
           }, this.timeout
         );
+
+        SDL.ResetTimeoutPopUp.resetTimeout();
       }
     }.observes('this.adjustControl.sliderValue.value'),
     okButton: SDL.Button.extend(
@@ -130,6 +134,7 @@ SDL.SliderView = SDL.SDLAbstractView.create(
         onDown: false,
         click: function() {
           SDL.SliderView.deactivate(false);
+          SDL.ResetTimeoutPopUp.DeactivatePopUp();
         }
       }
     ),
