@@ -258,6 +258,12 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * resetTimeout function. sends to SDL OnResetTimeout
      */     
     resetTimeout: function() {
+        if(this.resetPeriod > 1000) { 
+            this.set('resetPeriod', this.defaultTimeout);
+            SDL.ControlButtons.set('resetPeriodInput', this.defaultTimeout * 1000);
+            document.getElementById('resetPeriodInput').value = this.defaultTimeout * 1000;
+            return
+        }
         self = SDL.ResetTimeoutPopUp;
         length = self.resetTimeoutRPCs.length;
         function reset(self) {
