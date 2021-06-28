@@ -413,7 +413,7 @@
     position: absolute;
     width: 150px;
     height: 30px;
-    top: 310px;
+    top: 295px;
     left: 1215px;
     -webkit-transition: 2s;
     opacity: 0;
@@ -444,13 +444,33 @@
     background: #393939;
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
 #app_controlButtons .imageModeLabel {
     top: 234px;
     left: 1215px;
     width: 150px;
 }
 
+#app_controlButtons .resetPeriodLabel {
+    top: 355px;
+    left: 1215px;
+    width: 150px;
+}
 
+#app_controlButtons .resetPeriodInput {
+    top: 375px;
+    position: absolute;
+    width: 176px;
+    left: 1215px;
+    height: 30px;
+    color: white;
+    background: #393939;
+}
 
 #app_controlButtons .languageSelect {
     position: absolute;

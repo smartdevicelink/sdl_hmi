@@ -92,9 +92,9 @@ SDL.KeyboardController = Em.Object.create({
      */
     inputChanges: function(element) {
         if (this.appModel && this.appModel.activeRequests.uiPerformInteraction) {
-          SDL.SDLController.onResetTimeout(
-            this.appModel.appID, 'UI.PerformInteraction'
-          );
+          FFW.BasicCommunication.OnResetTimeout(
+            this.requestID, 'UI.PerformInteraction'
+            );
         }
 
         switch (element.text) {
@@ -148,9 +148,9 @@ SDL.KeyboardController = Em.Object.create({
         }
 
         if (this.appModel && this.appModel.activeRequests.uiPerformInteraction) {
-          SDL.SDLController.onResetTimeout(
-            this.appModel.appID, 'UI.PerformInteraction'
-          );
+          FFW.BasicCommunication.OnResetTimeout(
+            this.requestID, 'UI.PerformInteraction'
+            );
         }
     },
 

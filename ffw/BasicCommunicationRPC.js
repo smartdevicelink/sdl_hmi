@@ -963,6 +963,46 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.sendMessage(JSONMessage);
       },
+
+    /* 
+     * OnResetTimeout function. sends to SDL OnResetTimeout
+     */     
+      OnResetTimeout: function(requestID, methodName, resetPeriod) {
+        console.log('BasicCommunication.OnResetTimeout');
+        isValidRequestID = function(ID) {
+          return ID &&  /*minRequestID*/ 0 <= ID && 
+                                              ID <= /*maxRequestID*/ 65535;
+        };
+        isValidMethodName = function(name) {
+          return null != name;
+        };
+        isValidResetPeriod = function(period) {
+          return period && /*minResetPeriod*/ 0 <= period && 
+                                          period <= /*maxResetPeriod*/ 1000000; 
+        };
+
+        if(!isValidRequestID(requestID) || !isValidMethodName(methodName)){
+          console.log('Invalid requestID (' + requestID + ') or methodName (' + 
+                                                              methodName + ')');
+          return;
+        }
+
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'method': 'BasicCommunication.OnResetTimeout',
+          'params': {
+            'requestID' : requestID,
+            'methodName' : methodName
+          }
+        };
+
+        if(isValidResetPeriod(resetPeriod)){
+          JSONMessage['params']['resetPeriod'] = resetPeriod;
+        }
+
+        this.client.send(JSONMessage);
+      },
+
       /********************* Requests END *********************/
 
       /********************* Responses BEGIN *********************/

@@ -53,6 +53,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
      *
      * @type {Number}
      */
+    defaultTimeout: 30000,
     alertRequestId: null,
     content1: '',
     content2: '',
@@ -60,6 +61,8 @@ SDL.AlertPopUp = Em.ContainerView.create(
     active: false,
     timer: null,
     timeout: null,
+    ttsTimer: null,
+    ttsTimeout: null,
     endTime: null,
     progressIndicator: false,
     reason: '',
@@ -285,19 +288,39 @@ SDL.AlertPopUp = Em.ContainerView.create(
         }
       }
       this.set('active', true);
-      this.set('timeout', message.duration ? message.duration : 30000); //default
-                                                                        // timeout
-                                                                        // defined
-                                                                        // for
-                                                                        // Alert
-                                                                        // popUp
-      this.set('endTime', Date.now() + this.timeout);
-      this.set('priority', priority);
-      clearTimeout(this.timer);
-      this.timer = setTimeout(
+      this.setTimerUI(message.duration ? message.duration : this.defaultTimeout);
+      
+    },
+
+    /*
+     * function setTimerTTS. Sets the active timer of the view for TTS RPC
+     */
+    setTimerTTS: function(time){
+      var self = SDL.AlertPopUp;
+      self.set('ttsTimeout', time);
+      clearTimeout(self.ttsTimer);
+      self.ttsTimer = setTimeout(
         function() {
-          self.deactivate(self.reason, self.message);
-        }, this.timeout
+          clearTimeout(self.ttsTimer);
+        }, self.ttsTimeout
+      );
+    },
+
+    /*
+     * function setTimerUI. Sets the active timer of the view for UI RPC
+     */
+    setTimerUI: function(time){
+      var self = SDL.AlertPopUp;
+      self.set('timeout', time);
+      clearTimeout(self.timer);
+      self.timer = setTimeout(
+        function() {
+          self.set('active', false);
+          clearTimeout(self.timer);
+          self.set('content1', '');
+          self.set('content2', '');
+          self.set('content3', '');
+        }, self.timeout
       );
     }
   }

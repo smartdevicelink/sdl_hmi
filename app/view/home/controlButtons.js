@@ -56,7 +56,9 @@ SDL.ControlButtons = Em.ContainerView.create({
     'imageMode',
     'imageModeLabel',
     'RCInfo',
-    'vehicleEmulation'
+    'vehicleEmulation',
+    'resetPeriodLabel',
+    'resetPeriodInput'
   ],
   vehicleEmulation: Em.View.create(
     {
@@ -126,6 +128,25 @@ SDL.ControlButtons = Em.ContainerView.create({
       }
     ),
   }),
+
+  resetPeriodLabel: SDL.Label.extend({
+    elementId: 'resetPeriodLabel',
+    classNames: 'resetPeriodLabel',
+    content: 'Reset period, ms:'
+  }
+),
+
+resetPeriodInput: Ember.TextField.extend(
+  {
+    elementId: 'resetPeriodInput',
+    classNames: 'resetPeriodInput',
+    value: 10000,
+    type:'number',
+        keyUp: function(event, view) {
+          SDL.ResetTimeoutPopUp.set('resetPeriod', this.value/1000);
+    }
+  }
+),
 
   imageModeLabel: SDL.Label.extend({
     elementId: 'imageModeLabel',

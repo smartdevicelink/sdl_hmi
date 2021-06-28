@@ -184,6 +184,7 @@ FFW.RC = FFW.RPCObserver.create(
      */
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.RC.onRPCRequest');
+      SDL.ResetTimeoutPopUp.requestIDs[request.method] =  request.id;
       if (this.validationCheck(request)) {
         switch (request.method) {
           case 'RC.IsReady':
