@@ -548,23 +548,31 @@ SDL.RController = SDL.SDLController.extend(
             if(allowed.length == moduleIds.length) {
               FFW.RC.GetInteriorVehicleDataConsentResponse(request, allowed);
             }
+            if(SDL.ResetTimeoutPopUp.active) {
+              SDL.ResetTimeoutPopUp.DeactivatePopUp();
+            }
           }
         );
-        
-        setTimeout(
-          function() {
-            if (popUp && popUp.active) {
-              popUp.deactivate();
-              if(!timedOutSended) {
-                FFW.RC.sendError(
-                  SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
-                  request.method, 'The resource is in use and the driver did not respond in time'
-                );
-                timedOutSended = true;
-              }
+
+        SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
+        SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(function() {
+          Em.Logger.log('Consent timeout has been reset');
+        } , request.method);
+        SDL.ResetTimeoutPopUp.setContext(request.method);
+        SDL.ResetTimeoutPopUp.expandCallbacks(function() {
+          if (popUp && popUp.active) {
+            popUp.deactivate();
+            if (!timedOutSended) {
+              FFW.RC.sendError(
+                SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
+                request.method, 'The resource is in use and the driver did not respond in time'
+              );
+              timedOutSended = true;
             }
-          }, 9500
-        ); //Magic number is timeout for RC consent popUp
+          }
+        }, request.method);
+
+        SDL.ResetTimeoutPopUp.ActivatePopUp();
       });
     },
 
