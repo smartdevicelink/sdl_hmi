@@ -38,7 +38,6 @@ FFW.Buttons = FFW.RPCObserver.create(
     onButtonSubscriptionSubscribeRequestID: -1,
     onButtonSubscriptionUnsubscribeRequestID: -1,
     // const
-    onButtonSubscriptionNotification: 'Buttons.OnButtonSubscription',
     componentName:"Buttons",
     /**
      * Contains response codes for request that should be processed but there
@@ -85,11 +84,6 @@ FFW.Buttons = FFW.RPCObserver.create(
     onRPCRegistered: function() {
       Em.Logger.log('FFW.Buttons.onRPCRegistered');
       this._super();
-      // subscribe to notifications
-      this.onButtonSubscriptionSubscribeRequestID
-        = this.subscribeToNotification(
-        this.onButtonSubscriptionNotification
-      );
     },
     /*
      * Client is unregistered - no more requests
@@ -97,11 +91,6 @@ FFW.Buttons = FFW.RPCObserver.create(
     onRPCUnregistered: function() {
       Em.Logger.log('FFW.Buttons.onRPCUnregistered');
       this._super();
-      // unsubscribe from notifications
-      this.onButtonSubscriptionUnsubscribeRequestID
-        = this.client.unsubscribeFromNotification(
-        this.onButtonSubscriptionNotification
-      );
     },
     /*
      * Client disconnected.
@@ -131,20 +120,6 @@ FFW.Buttons = FFW.RPCObserver.create(
     onRPCNotification: function(notification) {
       Em.Logger.log('FFW.Buttons.onRPCNotification');
       this._super();
-
-      if (notification.method == this.onButtonSubscriptionNotification) {
-        var model = SDL.SDLController.getApplicationModel(notification.params.appID);
-        var buttonName = notification.params.name;
-        if (!model) {
-          return;
-        }
-        if (buttonName.includes("NAV_")) {
-          model.setNavButton(buttonName, notification.params.isSubscribed);
-        }
-        else {
-          model.set(buttonName, notification.params.isSubscribed);
-        }
-      }
     },
     /*
      * handle RPC requests here
