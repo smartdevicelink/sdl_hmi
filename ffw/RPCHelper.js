@@ -52,6 +52,9 @@ FFW.RPCHelper = Em.Object.create(
      * init function. Setup helpers initial values
      */ 
     init: function() {
+      SDL.ButtonCapability.forEach((capability) => {
+        this.SubscribeButton[capability.name] = '';
+      });
       for(key in this.rpcStruct){
         this.set('defaultRpcStruct.'+key, 'SUCCESS');
       };
@@ -608,24 +611,6 @@ FFW.RPCHelper = Em.Object.create(
         fuelRange: '',
         gps: ''
     },
-    SubscribeButton: {
-      PRESET_0: '',
-      PRESET_1: '',
-      PRESET_2: '',
-      PRESET_3: '',
-      PRESET_4: '',
-      PRESET_5: '',
-      PRESET_6: '',
-      PRESET_7: '',
-      PRESET_8: '',
-      PRESET_9: '',
-      OK: '',
-      PLAY_PAUSE: '',
-      SEEKLEFT: '',
-      SEEKRIGHT: '',
-      TUNEUP: '',
-      TUNEDOWN: '',
-      CUSTOM_BUTTON: ''
-    }
+    SubscribeButton: {}
   }
 );
