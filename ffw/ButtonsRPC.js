@@ -37,17 +37,22 @@ FFW.Buttons = FFW.RPCObserver.create(
     client: FFW.RPCClient,
     onButtonSubscriptionSubscribeRequestID: -1,
     onButtonSubscriptionUnsubscribeRequestID: -1,
-    // const
-    componentName:"Buttons",
+    componentName: "Buttons",
     /**
      * Contains response codes for request that should be processed but there
      * were some kind of errors Error codes will be injected into response.
      */
     errorResponsePull: {},
+    /**
+     * @param subscribedButtons
+     * @type Object
+     * @description Container of subscribed buttons by app ID
+     */
+    subscribedButtons: {},
     /*
      * connect to RPC bus
      */
-    connect: function() {
+    connect: function () {
       this.client.connect(this.componentName, this);
     },
 
@@ -56,7 +61,7 @@ FFW.Buttons = FFW.RPCObserver.create(
      * @param {Em.Object} JSONMessage
      * @desc sending message to SDL
      */
-    sendMessage: function(JSONMessage){
+    sendMessage: function (JSONMessage) {
       this.client.send(JSONMessage, this.componentName);
     },
 
@@ -65,14 +70,14 @@ FFW.Buttons = FFW.RPCObserver.create(
      * @param {Em.Object} notification
      * @desc subscribe to notifications from SDL
      */
-    subscribeToNotification: function(notification){
+    subscribeToNotification: function (notification) {
       this.client.subscribeToNotification(notification, this.componentName);
     },
 
     /*
      * disconnect from RPC bus
      */
-    disconnect: function() {
+    disconnect: function () {
       this.onRPCUnregistered();
       this.client.disconnect();
     },
@@ -81,21 +86,21 @@ FFW.Buttons = FFW.RPCObserver.create(
      * Client is registered - we can send request starting from this point of
      * time
      */
-    onRPCRegistered: function() {
+    onRPCRegistered: function () {
       Em.Logger.log('FFW.Buttons.onRPCRegistered');
       this._super();
     },
     /*
      * Client is unregistered - no more requests
      */
-    onRPCUnregistered: function() {
+    onRPCUnregistered: function () {
       Em.Logger.log('FFW.Buttons.onRPCUnregistered');
       this._super();
     },
     /*
      * Client disconnected.
      */
-    onRPCDisconnected: function() {
+    onRPCDisconnected: function () {
     },
     /*
      * when result is received from RPC component this function is called It is
@@ -103,235 +108,187 @@ FFW.Buttons = FFW.RPCObserver.create(
      * previously store reuqestID to determine to which request repsonse belongs
      * to
      */
-    onRPCResult: function(response) {
+    onRPCResult: function (response) {
       Em.Logger.log('FFW.Buttons.onRPCResult');
       this._super();
     },
     /*
      * handle RPC erros here
      */
-    onRPCError: function(error) {
+    onRPCError: function (error) {
       Em.Logger.log('FFW.Buttons.onRPCError');
       this._super();
     },
     /*
      * handle RPC notifications here
      */
-    onRPCNotification: function(notification) {
+    onRPCNotification: function (notification) {
       Em.Logger.log('FFW.Buttons.onRPCNotification');
       this._super();
     },
     /*
      * handle RPC requests here
      */
-    onRPCRequest: function(request) {
+    onRPCRequest: function (request) {
       Em.Logger.log('FFW.Buttons.onRPCRequest');
       this._super();
-      if (request.method == 'Buttons.ButtonPress') {
-        Em.Logger.log('FFW.' + request.method + ' Reqeust');
+      switch (request.method) {
+        case 'Buttons.ButtonPress': {
+          Em.Logger.log('FFW.' + request.method + ' Reqeust');
 
-        if (!FFW.RC.consentedAppCheck(request)) {
-          this.sendError(
-            SDL.SDLModel.data.resultCode.REJECTED,
-            request.id, request.method
-          );
-          return;
+          if (!FFW.RC.consentedAppCheck(request)) {
+            this.sendError(
+              SDL.SDLModel.data.resultCode.REJECTED,
+              request.id, request.method
+            );
+            return;
+          }
+
+          var result_struct =
+            SDL.SDLController.onButtonPressEvent(request.params);
+          var result_code = result_struct.resultCode;
+          var result_info = (result_struct.resultInfo === "" ?
+            null : result_struct.resultInfo);
+
+          if (result_code == SDL.SDLModel.data.resultCode.SUCCESS) {
+            this.sendButtonsResult(
+              result_code, request.id, request.method
+            );
+          } else {
+            this.sendError(
+              result_code, request.id, request.method, result_info
+            );
+          }
+          break;
         }
-
-        var result_struct =
-          SDL.SDLController.onButtonPressEvent(request.params);
-        var result_code = result_struct.resultCode;
-        var result_info = (result_struct.resultInfo === "" ?
-                           null : result_struct.resultInfo);
-
-        if (result_code == SDL.SDLModel.data.resultCode.SUCCESS) {
-          this.sendButtonsResult(
-            result_code, request.id, request.method
-          );
-        } else {
-          this.sendError(
-            result_code, request.id, request.method, result_info
-          );
+        case 'Buttons.GetCapabilities': {
+          // send response
+          var JSONMessage = {
+            'jsonrpc': '2.0',
+            'id': request.id,
+            'result': {
+              'capabilities': [...SDL.ButtonCapability, ...SDL.NAVButtonCapability],
+              'presetBankCapabilities': {
+                'onScreenPresetsAvailable': true
+              },
+              'code': SDL.SDLModel.data.resultCode.SUCCESS,
+              'method': 'Buttons.GetCapabilities'
+            }
+          };
+          this.client.send(JSONMessage);
+          break;
+        }
+        case 'Buttons.SubscribeButton': {
+          const { buttonName, appID } = request.params;
+          if(buttonName.includes("NAV_")) {
+            this.navButtonSubscriptionToggle(appID, buttonName, true);
+            const resultCode = SDL.SDLModel.data.resultCode.SUCCESS;
+            console.log("Button " + buttonName + " " + resultCode + " resultCode");
+            this.sendButtonsResult(resultCode, request.id, request.method);
+          } else {
+            try {
+              const resultCode = this.subscribeButton(appID, buttonName);
+              console.log("Button " + buttonName + " " + resultCode + " resultCode");
+              this.sendButtonsResult(resultCode, request.id, request.method);
+            } catch (e) {
+              Em.Logger.log('Do not respond on this request');
+            }
+          }
+          break;
+        }
+        case 'Buttons.UnsubscribeButton': {
+          const { buttonName, appID } = request.params;
+          if(buttonName.includes("NAV_")) {
+            this.navButtonSubscriptionToggle(appID, buttonName, false);
+            const resultCode = SDL.SDLModel.data.resultCode.SUCCESS;
+            console.log("Button " + buttonName + " " + resultCode + " resultCode");
+            this.sendButtonsResult(resultCode, request.id, request.method);
+          } else {
+            try {
+              if (this.isButtonSubscribed(appID, buttonName)) {
+                const code = FFW.RPCHelper.getUnSubscribeButtonCustomResultCode(appID, buttonName);
+                console.log("Button " + buttonName + " " + code + " Unsubscribe");
+                this.sendButtonsResult(code, request.id, request.method);
+                if (FFW.RPCHelper.isSuccessResultCode(code)) {
+                  this.unsubscribeButton(appID, buttonName);
+                }
+              } else {
+                console.log("Button " + buttonName + " REJECTED Unsubscribe");
+                this.sendError(
+                  SDL.SDLModel.data.resultCode.REJECTED,
+                  request.id,
+                  request.method,
+                  'SDL Should not send this request more than once'
+                );
+              }
+            } catch (e) {
+              Em.Logger.log('Do not respond on this request');
+            }
+          }
+          break;
         }
       }
-      if (request.method == 'Buttons.GetCapabilities') {
-
-        // send repsonse
-        var JSONMessage = {
-          'jsonrpc': '2.0',
-          'id': request.id,
-          'result': {
-            'capabilities': [
-              {
-                'name': 'PRESET_0',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_1',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_2',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_3',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_4',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_5',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_6',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_7',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_8',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PRESET_9',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'OK',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'PLAY_PAUSE',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'SEEKLEFT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'SEEKRIGHT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'TUNEUP',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'TUNEDOWN',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'CUSTOM_BUTTON',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_CENTER_LOCATION',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_ZOOM_IN',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_ZOOM_OUT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_PAN_UP',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_PAN_UP_RIGHT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_PAN_RIGHT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_PAN_DOWN_RIGHT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_PAN_DOWN',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_PAN_DOWN_LEFT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_PAN_LEFT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_PAN_UP_LEFT',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_TILT_TOGGLE',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_ROTATE_CLOCKWISE',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_ROTATE_COUNTERCLOCKWISE',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }, {
-                'name': 'NAV_HEADING_TOGGLE',
-                'shortPressAvailable': true,
-                'longPressAvailable': true,
-                'upDownAvailable': true
-              }
-            ],
-            'presetBankCapabilities': {
-              'onScreenPresetsAvailable': true
-            },
-            'code': 0,
-            'method': 'Buttons.GetCapabilities'
-          }
-        };
-        this.sendMessage(JSONMessage);
+    },
+    /**
+     * @function navButtonSubscriptionToggle
+     * @param {Number} appID
+     * @param {String} buttonName
+     * @param {Boolean} subscribe
+     * @description Toggle navigation button subscription by app ID and button name
+     */
+    navButtonSubscriptionToggle(appID, buttonName, subscribe) {
+      const model = SDL.SDLController.getApplicationModel(appID);
+      if (!model) {
+        return;
+      }
+      model.setNavButton(buttonName, subscribe);
+    },
+    /**
+     * @function isButtonSubscribed
+     * @param {Number} appID
+     * @param {String} buttonName
+     * @returns {boolean}
+     * @description Check is button subscribed
+     */
+    isButtonSubscribed: function (appID, buttonName) {
+      return (appID in this.subscribedButtons)
+        && (buttonName in this.subscribedButtons[appID])
+        && (this.subscribedButtons[appID][buttonName] === true);
+    },
+    /**
+     * @function subscribeButton
+     * @param {Number} appID
+     * @param {String} buttonName
+     * @returns {number} Subscription result code
+     */
+    subscribeButton: function (appID, buttonName) {
+      try {
+        const code = FFW.RPCHelper.getSubscribeButtonCustomResultCode(appID, buttonName);
+        if (!FFW.RPCHelper.isSuccessResultCode(code)) {
+          return code;
+        }
+        if (!(appID in this.subscribedButtons)) {
+          this.subscribedButtons[appID] = {};
+        }
+        this.subscribedButtons[appID][buttonName] = true;
+        const model = SDL.SDLController.getApplicationModel(appID);
+        model.set(buttonName, true);
+        return code;
+      } catch(e) {
+        throw e;
+      }
+    },
+    /**
+     * @function unsubscribeButton
+     * @param {Number} appID
+     * @param {String} buttonName
+     * @description Mark the subscribed button as unsubscribed
+     */
+    unsubscribeButton: function (appID, buttonName) {
+      if (this.isButtonSubscribed(appID, buttonName)) {
+        this.subscribedButtons[appID][buttonName] = false;
+        const model = SDL.SDLController.getApplicationModel(appID);
+        model.set(buttonName, false);
       }
     },
     /**
@@ -344,9 +301,9 @@ FFW.Buttons = FFW.RPCObserver.create(
      * @param {String}
      *            method
      */
-    sendButtonsResult: function(resultCode, id, method) {
+    sendButtonsResult: function (resultCode, id, method) {
       Em.Logger.log('FFW.' + method + ' Response');
-      if (resultCode === SDL.SDLModel.data.resultCode.SUCCESS) {
+      if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
 
         // send repsonse
         var JSONMessage = {
@@ -358,6 +315,8 @@ FFW.Buttons = FFW.RPCObserver.create(
           }
         };
         this.sendMessage(JSONMessage);
+      } else {
+        this.sendError(resultCode, id, method, `${method} Error`);
       }
     },
     /**
@@ -370,7 +329,7 @@ FFW.Buttons = FFW.RPCObserver.create(
      * @param {String}
      *            method
      */
-    sendError: function(resultCode, id, method, message) {
+    sendError: function (resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + ' Response');
       if (resultCode) {
 
@@ -394,7 +353,7 @@ FFW.Buttons = FFW.RPCObserver.create(
      * when the RPC link is up or failed to connect and all the views are
      * rendered.
      */
-    buttonPressed: function(id, type) {
+    buttonPressed: function (id, type) {
       Em.Logger.log('FFW.Buttons.buttonPressed ' + type);
       var JSONMessage = {
         'jsonrpc': '2.0',
@@ -411,7 +370,7 @@ FFW.Buttons = FFW.RPCObserver.create(
      * when the RPC link is up or failed to connect and all the views are
      * rendered.
      */
-    buttonEvent: function(id, type) {
+    buttonEvent: function (id, type) {
       Em.Logger.log('FFW.Buttons.OnButtonEvent ' + type);
       var JSONMessage = {
         'jsonrpc': '2.0',
@@ -428,7 +387,7 @@ FFW.Buttons = FFW.RPCObserver.create(
      * when the RPC link is up or failed to connect and all the views are
      * rendered.
      */
-    buttonPressedCustom: function(name, type, softButtonID, appID) {
+    buttonPressedCustom: function (name, type, softButtonID, appID) {
       Em.Logger.log('FFW.Buttons.OnButtonPress ' + type);
       var JSONMessage = {
         'jsonrpc': '2.0',
@@ -447,7 +406,7 @@ FFW.Buttons = FFW.RPCObserver.create(
      * when the RPC link is up or failed to connect and all the views are
      * rendered.
      */
-    buttonEventCustom: function(name, type, softButtonID, appID) {
+    buttonEventCustom: function (name, type, softButtonID, appID) {
       Em.Logger.log('FFW.Buttons.OnButtonEvent ' + type);
       var JSONMessage = {
         'jsonrpc': '2.0',

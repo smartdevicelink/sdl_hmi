@@ -24,9 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+const SUBSCRIBE_BTN_METHOD_NAME = 'SubscribeButton';
+const UNSUBSCRIBE_BTN_METHOD_NAME = 'UnsubscribeButton';
+const DO_NOT_RESPOND_RES_CODE = 'DO_NOT_RESPOND';
+
 FFW.RPCHelper = Em.Object.create(
     {
-      
+
     /*
      * Container for handling error of RPC
      */
@@ -54,6 +58,7 @@ FFW.RPCHelper = Em.Object.create(
     init: function() {
       SDL.ButtonCapability.forEach((capability) => {
         this.SubscribeButton[capability.name] = '';
+        this.UnsubscribeButton[capability.name] = '';
       });
       for(key in this.rpcStruct){
         this.set('defaultRpcStruct.'+key, 'SUCCESS');
@@ -63,6 +68,9 @@ FFW.RPCHelper = Em.Object.create(
       };
       for(key in this.SubscribeButton){
         this.set('defaultSubscribeButton.' + key, 'SUCCESS');
+      };
+      for(key in this.UnsubscribeButton){
+        this.set('defaultUnsubscribeButton.' + key, 'SUCCESS');
       };
       this.set('SubscribeWayPoints', 'SUCCESS');
       this.set('SubscribeVehicleData', 'SUCCESS');
@@ -80,12 +88,13 @@ FFW.RPCHelper = Em.Object.create(
     addApplication: function(appID) {
       if (this.customResultCodesList.length <= 1) {
         let codes = SDL.deepCopy(SDL.SDLModel.data.resultCodes);
-        codes.push('DO_NOT_RESPOND');
+        codes.push(DO_NOT_RESPOND_RES_CODE);
         this.set('customResultCodesList', codes);
       }
       if(!(appID in this.appContainer)) {
         this.appContainer[appID] = SDL.deepCopy(this.defaultRpcStruct);
-        this.appContainer[appID]['SubscribeButton'] = SDL.deepCopy(this.defaultSubscribeButton);
+        this.appContainer[appID][SUBSCRIBE_BTN_METHOD_NAME] = SDL.deepCopy(this.defaultSubscribeButton);
+        this.appContainer[appID][UNSUBSCRIBE_BTN_METHOD_NAME] = SDL.deepCopy(this.defaultUnsubscribeButton);
       }
 
       if(this.appContainer[appID] === undefined ){
@@ -137,11 +146,24 @@ FFW.RPCHelper = Em.Object.create(
         return SDL.SDLModel.data.resultCode.SUCCESS;
       }
 
-      if ('DO_NOT_RESPOND' == code) {
+      if (DO_NOT_RESPOND_RES_CODE == code) {
         return code;
       }
 
       return SDL.SDLModel.data.resultCode[code];
+    },
+
+    getSubscribeButtonCustomResultCode: function(appID, buttonName) {
+      const resultCodeAsString = this.appContainer[appID][SUBSCRIBE_BTN_METHOD_NAME][buttonName];
+      if(resultCodeAsString === DO_NOT_RESPOND_RES_CODE) throw new Error(DO_NOT_RESPOND_RES_CODE);
+      const resultCodeAsNumber = SDL.SDLModel.data.resultCode[resultCodeAsString];
+      return resultCodeAsNumber;
+    },
+    getUnSubscribeButtonCustomResultCode: function(appID, buttonName) {
+      const resultCodeAsString = this.appContainer[appID][UNSUBSCRIBE_BTN_METHOD_NAME][buttonName];
+      if(resultCodeAsString === DO_NOT_RESPOND_RES_CODE) throw new Error(DO_NOT_RESPOND_RES_CODE);
+      const resultCodeAsNumber = SDL.SDLModel.data.resultCode[resultCodeAsString];
+      return resultCodeAsNumber;
     },
 
     /*
@@ -152,8 +174,11 @@ FFW.RPCHelper = Em.Object.create(
          this.set('rpcStruct.' + key,this.appContainer[appID][key]);
       };
       for(key in this.SubscribeButton){
-        this.set('SubscribeButton.' + key, this.appContainer[appID]['SubscribeButton'][key]);
+        this.set(`${SUBSCRIBE_BTN_METHOD_NAME}.${key}`, this.appContainer[appID][SUBSCRIBE_BTN_METHOD_NAME][key]);
       };
+      for(key in this.UnsubscribeButton){
+        this.set(`${UNSUBSCRIBE_BTN_METHOD_NAME}.${key}`, this.appContainer[appID][UNSUBSCRIBE_BTN_METHOD_NAME][key]);
+      }
       this.setCurrentAppID(appID);
     },
 
@@ -168,10 +193,14 @@ FFW.RPCHelper = Em.Object.create(
          appName
       )[0];
       for(key in this.appContainer[app.appID]){
+        if(key === SUBSCRIBE_BTN_METHOD_NAME || key === UNSUBSCRIBE_BTN_METHOD_NAME) continue;
         this.set('appContainer.'+ app.appID + '.'+key, this.rpcStruct[key]);
       };
       for(key in this.SubscribeButton){
-        this.set('appContainer.' + app.appID + '.SubscribeButton.' + key, this.SubscribeButton[key]);
+        this.set(`appContainer.${app.appID}.${SUBSCRIBE_BTN_METHOD_NAME}.${key}`, this.SubscribeButton[key]);
+      };
+      for(key in this.UnsubscribeButton) {
+        this.set(`appContainer.${app.appID}.${UNSUBSCRIBE_BTN_METHOD_NAME}.${key}`, this.UnsubscribeButton[key]);
       };
       var event = {goToState: 'rpccontrol'};
       SDL.SettingsController.onState(event);
@@ -184,11 +213,14 @@ FFW.RPCHelper = Em.Object.create(
      */
     resetButton: function() {
        for(key in this.rpcStruct){
-         this.set('rpcStruct.'+key, this.defaultRpcStruct[key]);
+         this.set(`rpcStruct.${key}`, this.defaultRpcStruct[key]);
        };
        for(key in this.SubscribeButton){
-        this.set('SubscribeButton.'+key, this.defaultSubscribeButton[key]);
+        this.set(`SubscribeButton.${key}`, this.defaultSubscribeButton[key]);
       };
+      for(key in this.UnsubscribeButton) {
+        this.set(`UnsubscribeButton.${key}`,this.defaultUnsubscribeButton[key]);
+      }
     },
 
     /*
@@ -470,7 +502,7 @@ FFW.RPCHelper = Em.Object.create(
         this.set('SubscribeWayPoints', 'SUCCESS');
       }
 
-      if ('DO_NOT_RESPOND' == code) {
+      if (DO_NOT_RESPOND_RES_CODE == code) {
         return code;
       }
 
@@ -484,7 +516,7 @@ FFW.RPCHelper = Em.Object.create(
       this.updateVehicleDataResultCodes();
 
       nextVehicleDataResultCode = this.VehicleDataResultCodes[0].SubscribeVehicleData;
-      const next_code = 'DO_NOT_RESPOND' == nextVehicleDataResultCode ? 
+      const next_code = DO_NOT_RESPOND_RES_CODE == nextVehicleDataResultCode ? 
         nextVehicleDataResultCode : SDL.SDLModel.data.resultCode[nextVehicleDataResultCode];
 
       code = {
@@ -541,7 +573,7 @@ FFW.RPCHelper = Em.Object.create(
         this.set('getIVDSubscribed', FFW.RPCHelper.subscribeDataValues[0]);
       }
 
-      if ('DO_NOT_RESPOND' == result.code) {
+      if (DO_NOT_RESPOND_RES_CODE == result.code) {
         return result;
       }
 
@@ -565,6 +597,7 @@ FFW.RPCHelper = Em.Object.create(
 
     defaultRpcStruct: {},
     defaultSubscribeButton: {},
+    defaultUnsubscribeButton: {},
     currentAppID: null,
     
     rpcStruct: {
@@ -611,6 +644,7 @@ FFW.RPCHelper = Em.Object.create(
         fuelRange: '',
         gps: ''
     },
-    SubscribeButton: {}
+    SubscribeButton: {},
+    UnsubscribeButton: {}
   }
 );

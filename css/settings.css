@@ -1021,3 +1021,30 @@ input[type=number]::-webkit-outer-spin-button {
     position: relative;
     left: 160px;
 }
+
+.rpc_settings_separate_view .UnSubscribeButton {
+    top: 720px;
+    position: absolute;
+}
+
+.rpc_settings_separate_view .UnSubscribeButton .headerUnsub {
+    position: relative;
+    left: 10px;
+    white-space: nowrap;
+}
+
+.rpc_settings_separate_view .UnSubscribeButton .UnSubscribeButtonParam {
+    position: relative;
+    top: 20px;
+    left: 58px;
+    height: 25px;
+}
+
+.rpc_settings_separate_view .UnSubscribeButton .label {
+    position: absolute;
+}
+
+.rpc_settings_separate_view .UnSubscribeButton .select {
+    position: relative;
+    left: 160px;
+}

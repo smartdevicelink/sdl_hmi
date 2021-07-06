@@ -37,7 +37,8 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
         'saveButton',
         'resetButton',
         'appNameLabel',
-        'SubscribeButton'
+        'SubscribeButton',
+        'UnSubscribeButton'
     ],
     appNameLabel: SDL.Label.extend({
         elementId: 'appNameLabel',
@@ -224,8 +225,49 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
                     select: Em.Select.extend({
                         elementId: `${param}Select`,
                         classNames: 'select',
-                        contentBinding: 'SDL.SDLModel.data.resultCodes',
+                        contentBinding: 'FFW.RPCHelper.customResultCodesList',
                         valueBinding: `FFW.RPCHelper.SubscribeButton.${param}`
+                    })
+                }));
+            }
+        }
+    }),
+    UnSubscribeButton: Em.ContainerView.create({
+        elementId: 'UnSubscribeButton',
+        classNames: 'UnSubscribeButton',
+        childViews: [
+            'headerUnsubscribe'
+        ],
+        headerUnsubscribe: SDL.Label.extend({
+            elementId: 'headerUnsub',
+            classNames: 'headerUnsub',
+            content: 'UnSubscribe Button Result Codes:'
+        }),
+        isFirstInit: true,
+        initUnSubscribeButtonView: function() {
+            if (!this.isFirstInit) {
+                return;
+            }
+            this.isFirstInit = false;
+            let childViews = this.get('childViews');
+            for (param in FFW.RPCHelper.UnsubscribeButton) {
+                childViews.pushObject(Em.ContainerView.create({
+                    elementId: `UnSubscribeButton${param}`,
+                    classNames: 'UnSubscribeButtonParam',
+                    childViews: [
+                        'label',
+                        'select'
+                    ],
+                    label: SDL.Label.extend({
+                        elementId: param + 'Label',
+                        classNames: 'label',
+                        content: param
+                    }),
+                    select: Em.Select.extend({
+                        elementId: `${param}SelectUnsub`,
+                        classNames: 'select',
+                        contentBinding: 'FFW.RPCHelper.customResultCodesList',
+                        valueBinding: `FFW.RPCHelper.UnsubscribeButton.${param}`
                     })
                 }));
             }
