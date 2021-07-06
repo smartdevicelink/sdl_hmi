@@ -2,7 +2,7 @@
 .in_light_exterior_view,
 .in_light_single_view,
 .in_light_location_view,
-.in_light_interior_view  {
+.in_light_interior_view {
     top: 48px;
     width: 800px;
     height: 382px;
@@ -14,7 +14,7 @@
 
 #settingsView .rpc_settings_separate_view {
     top: 68px;
-    left:190px;
+    left: 190px;
     width: 495px;
     height: 337px;
     background: black;
@@ -24,14 +24,14 @@
     overflow-y: scroll;
 }
 
- .appNameLabel{
+.appNameLabel {
     top: 13px;
     left: 213px;
     font-size: 200%;
     text-align: center;
 }
 
- .backControl {
+.backControl {
     top: 20px;
     width: 35px;
     height: 27px;
@@ -40,8 +40,8 @@
     left: 10px;
 }
 
- .saveButton,
- .newButton {
+.saveButton,
+.newButton {
     left: 55px;
     border: 1px solid #333;
     border-radius: 2px;
@@ -51,7 +51,7 @@
     text-align: center;
 }
 
-.removeButton{
+.removeButton {
     border: 1px solid #333;
     border-radius: 2px;
     width: 71px;
@@ -61,7 +61,7 @@
     left: 125px;
 }
 
-.previousButton{
+.previousButton {
     border: 1px solid #333;
     border-radius: 2px;
     width: 71px;
@@ -71,7 +71,7 @@
     left: 280px;
 }
 
-.nextButton{
+.nextButton {
     border: 1px solid #333;
     border-radius: 2px;
     width: 60px;
@@ -81,14 +81,14 @@
     top: 20px;
 }
 
-.counterLabel{
+.counterLabel {
     top: 55px;
     width: 60px;
     height: 27px;
     text-align: center;
 }
 
-.rpc_settings_separate_view .counterLabel{
+.rpc_settings_separate_view .counterLabel {
     top: 25px;
     left: 415px;
     width: 60px;
@@ -96,7 +96,7 @@
     text-align: center;
 }
 
- .resetButton{
+.resetButton {
     left: 125px;
     border: 1px solid #333;
     border-radius: 2px;
@@ -107,21 +107,20 @@
     font-size: 75%;
 }
 
-#settingsView .rpc_settings_separate_view
- .rpcList{ 
+#settingsView .rpc_settings_separate_view .rpcList {
     left: 170px;
     direction: rtl;
 }
 
- .vrAddComandlabel{
+.vrAddComandlabel {
     top: 60px;
 }
 
- .uiAddComandlabel{
+.uiAddComandlabel {
     top: 85px;
 }
 
- .addSubMenulabel{
+.addSubMenulabel {
     top: 110px;
 }
 
@@ -150,77 +149,81 @@
     top: 235px;
 }
 
- .subscribeWayPoints{
-       top: 185px;
-       left: -140px;
+.subscribeWayPoints {
+    top: 185px;
+    left: -140px;
 }
 
- .vehicleDataGlobal{
+.vehicleDataGlobal {
     top: 212px;
     left: -150px;
 }
 
- .subscribeVehicleData{
+.subscribeVehicleData {
     top: 260px;
     left: -140px;
 }
 
-.subscribevehicleData{
+.subscribevehicleData {
     top: 50px;
     direction: initial;
     position: absolute;
     height: 30px;
     width: 479px;
 }
-.subscribevehicleData .label{
+
+.subscribevehicleData .label {
     position: absolute;
-    left: 10px; 
+    left: 10px;
     top: 5px;
 }
-.subscribevehicleData .select{
+
+.subscribevehicleData .select {
     position: absolute;
     left: 185px;
     top: 5px;
 }
 
-.subscribevehicleDataParams{
+.subscribevehicleDataParams {
     position: relative;
     height: 850px;
     width: 479px;
     top: 80px;
 }
-.subscribevehicleDataParams .params{
+
+.subscribevehicleDataParams .params {
     top: 5px;
     position: relative;
     height: 30px;
     width: 450px;
     left: 26px;
 }
-.subscribevehicleDataParams .params .label{
+
+.subscribevehicleDataParams .params .label {
     left: 10px;
 }
-.subscribevehicleDataParams .params .select{
+
+.subscribevehicleDataParams .params .select {
     left: 205px;
     position: absolute;
 }
 
-#settingsView .rpc_settings_separate_view
- .resultCodeTracker{ 
+#settingsView .rpc_settings_separate_view .resultCodeTracker {
     left: 200px;
     direction: ltl;
 }
 
- .vrAddComandSelect{
-    top:60px;
+.vrAddComandSelect {
+    top: 60px;
     position: absolute;
 }
 
-.uiAddComandSelect{
-    top:85px;
+.uiAddComandSelect {
+    top: 85px;
     position: absolute;
 }
 
- .addSubMenuSelect{
+.addSubMenuSelect {
     top: 110px;
     position: absolute;
 }
@@ -250,7 +253,7 @@
     position: absolute;
 }
 
- .subscribeWayPointsSelect{
+.subscribeWayPointsSelect {
     top: 55px;
     left: 55px;
     width: 407px;
@@ -258,12 +261,12 @@
     position: absolute;
 }
 
- .vehicleDataGlobalSelect{
+.vehicleDataGlobalSelect {
     top: 210px;
     position: absolute;
 }
 
-.customResultCodeLabel{
+.customResultCodeLabel {
     top: 60px;
     left: 55px;
     width: 407px;
@@ -271,7 +274,7 @@
     position: absolute;
 }
 
-.getIVDSelect{
+.getIVDSelect {
     top: 80px;
     left: 55px;
     width: 407px;
@@ -286,7 +289,7 @@
     width: 190px;
 }
 
-.getIVDSubscribed{
+.getIVDSubscribed {
     position: absolute;
     top: 135px;
     left: 55px;
@@ -295,9 +298,9 @@
 
 #settingsView .in_settings_separate_view .backButton,
 .in_light_exterior_view .backButton,
-.in_light_single_view .backButton, 
+.in_light_single_view .backButton,
 .in_light_location_view .backButton,
-.in_light_interior_view .backButton  {
+.in_light_interior_view .backButton {
     top: 35px;
     width: 48px;
     height: 48px;
@@ -393,7 +396,6 @@
     top: 127px;
 }
 
-
 #settingsView .in_settings_separate_view .label.vehicleModelLabel {
     top: 170px;
 }
@@ -406,7 +408,6 @@
     top: 187px;
 }
 
-
 #settingsView .in_settings_separate_view .label.vehicleYearLabel {
     top: 230px;
 }
@@ -418,7 +419,6 @@
 #settingsView .in_settings_separate_view .vehicleYearCheckBox {
     top: 247px;
 }
-
 
 #settingsView .in_settings_separate_view .label.vehicleTrimLabel {
     top: 290px;
@@ -583,10 +583,10 @@
 }
 
 #policies_settings_sendVideoStreamingCapsView .in_app_id_container_view .appIDSelectView {
-  left: 658px;
-  top: -120px;
-  width: 130px;
-  position: absolute;
+    left: 658px;
+    top: -120px;
+    width: 130px;
+    position: absolute;
 }
 
 #settingsView .backButton .ico {
@@ -643,12 +643,14 @@
     z-index: 1001;
     margin-top: 70px;
 }
+
 #settingsView .rpc_settings_list,
 #settingsView .policies_settings_list {
     height: 251px;
     width: 598px;
     left: 10px;
 }
+
 #rpc_settings_list .list-content .ffw-button,
 #policies_settings_list .list-content .ffw-button {
     width: 537px;
@@ -716,7 +718,7 @@
     border-radius: 2px;
 }
 
-#seat .setButton{
+#seat .setButton {
     z-index: 1002;
     border: 2px solid white;
     height: 22px;
@@ -737,7 +739,6 @@
     position: relative
 }
 
-
 #seat .in_seat_heating_view .in_seat_enable_view,
 #seat .in_seat_heating_view .in_seat_level_view,
 #seat .in_seat_cooling_view .in_seat_enable_view,
@@ -750,7 +751,8 @@
 
 #seat .in_seat_heating_view .enableLabel,
 #seat .in_seat_cooling_view .enableLabel,
-#seat .in_seat_backTiltAngle_view .label,   {
+#seat .in_seat_backTiltAngle_view .label,
+{
     display: inline-block;
     position: relative;
     z-index: 1001;
@@ -770,7 +772,7 @@
 #seat .in_seat_cushionFirmnes_view .in_seat_cushion_view,
 #seat .in_seat_cushionFirmnes_view .in_seat_firmnes_view,
 #seat .in_seat_massageModes_view .in_zone_view,
-#seat .in_seat_massageModes_view .in_mode_view{
+#seat .in_seat_massageModes_view .in_mode_view {
     z-index: 1001;
     margin: 0px 0px 0px 5px;
     display: block;
@@ -778,15 +780,15 @@
 }
 
 #seat .in_seat_cushionFirmnes_view .dellButton,
-#seat .in_seat_massageModes_view .dellButton{
+#seat .in_seat_massageModes_view .dellButton {
     z-index: 1002;
     top: 1px;
     left: 499px;
     background: black;
 }
 
-#seat .in_seat_cushionFirmness_view .addButton ,
-#seat .in_seat_massageModes_view .addButton{
+#seat .in_seat_cushionFirmness_view .addButton,
+#seat .in_seat_massageModes_view .addButton {
     z-index: 1002;
     top: -11px;
     left: 481px;
@@ -820,7 +822,7 @@
 }
 
 #seat .in_seat_heating_view .levelLabel,
-#seat .in_seat_cooling_view .levelLabel{
+#seat .in_seat_cooling_view .levelLabel {
     display: inline-block;
     position: relative;
     z-index: 1001;
@@ -828,14 +830,13 @@
 }
 
 #seat .in_seat_heating_view .levelInput,
-#seat .in_seat_level_view .levelInput  {
+#seat .in_seat_level_view .levelInput {
     display: inline-block;
     position: relative;
     z-index: 1001;
     margin: 0px 0px 0px 183px;
     width: 47px;
 }
-
 
 #seat .in_seat_heating_view .enableSelect,
 #seat .in_seat_cooling_view .enableSelect {
@@ -847,7 +848,7 @@
 
 #seat .in_seat_position_view,
 #seat .in_memory_view,
-#seat .in_seat_backTiltAngle_view  {
+#seat .in_seat_backTiltAngle_view {
     z-index: 1001;
     margin: 5px;
     display: block;
@@ -877,7 +878,7 @@
     margin: 0px 0px 0px 0px
 }
 
-#seat .in_seat_backTiltAngle_view .input{
+#seat .in_seat_backTiltAngle_view .input {
     display: inline-block;
     position: relative;
     z-index: 1001;
@@ -900,7 +901,7 @@
     width: 47px;
 }
 
-#seat .in_memory_view .in_action_view .actionSelect{
+#seat .in_memory_view .in_action_view .actionSelect {
     display: inline-block;
     position: relative;
     z-index: 1001;
@@ -919,8 +920,7 @@
     position: relative;
 }
 
-
- #seat .in_memory_view .memoryInfo {
+#seat .in_memory_view .memoryInfo {
     top: 18px;
     left: 300px;
     width: 300px;
@@ -944,14 +944,15 @@
     position: relative;
     z-index: 1001;
     margin: 0px 0px 0px 22px;
-    width: 170px 
+    width: 170px
 }
 
 #settingsView .HMI_settings_list,
 #settingsView .light_list {
     height: 251px;
     width: 598px;
-    left: 10px;;
+    left: 10px;
+    ;
 }
 
 #settingsView .lightModuleCurrent {
@@ -978,7 +979,7 @@
     position: relative;
     z-index: 1001;
     margin: 5px 0px 0px 5px;
-    width: 170px 
+    width: 170px
 }
 
 #seat .in_massageEnable_view .massageEnable_enableSelect,
@@ -989,8 +990,34 @@
     margin: 0px 0px 0px 71px;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.rpc_settings_separate_view .SubscribeButton {
+    top: 265px;
+    position: absolute;
+}
+
+.rpc_settings_separate_view .SubscribeButton .header {
+    position: relative;
+    left: 10px;
+}
+
+.rpc_settings_separate_view .SubscribeButton .SubscribeButtonParam {
+    position: relative;
+    top: 20px;
+    left: 58px;
+    height: 25px;
+}
+
+.rpc_settings_separate_view .SubscribeButton .label {
+    position: absolute;
+}
+
+.rpc_settings_separate_view .SubscribeButton .select {
+    position: relative;
+    left: 160px;
 }

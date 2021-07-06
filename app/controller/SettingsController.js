@@ -101,6 +101,7 @@ SDL.SettingsController = Em.Object.create(
       SDL.States.goToStates('settings.' + event.goToState);
       if('rpccontrol.rpcconfig' === event.goToState){
         SDL.RPCControlConfigView.set('appNameLabel.content',event.appName);
+        SDL.RPCControlConfigView.SubscribeButton.initSubscribeButtonView();
         FFW.RPCHelper.updateRpc(event.appID);
       }
     },

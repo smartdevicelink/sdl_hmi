@@ -58,6 +58,9 @@ FFW.RPCHelper = Em.Object.create(
       for(key in this.vehicleDataStruct){
         this.set('vehicleDataStruct.'+key, 'SUCCESS');
       };
+      for(key in this.SubscribeButton){
+        this.set('defaultSubscribeButton.' + key, 'SUCCESS');
+      };
       this.set('SubscribeWayPoints', 'SUCCESS');
       this.set('SubscribeVehicleData', 'SUCCESS');
 
@@ -76,6 +79,10 @@ FFW.RPCHelper = Em.Object.create(
         let codes = SDL.deepCopy(SDL.SDLModel.data.resultCodes);
         codes.push('DO_NOT_RESPOND');
         this.set('customResultCodesList', codes);
+      }
+      if(!(appID in this.appContainer)) {
+        this.appContainer[appID] = SDL.deepCopy(this.defaultRpcStruct);
+        this.appContainer[appID]['SubscribeButton'] = SDL.deepCopy(this.defaultSubscribeButton);
       }
 
       if(this.appContainer[appID] === undefined ){
@@ -141,6 +148,9 @@ FFW.RPCHelper = Em.Object.create(
       for(key in this.appContainer[appID]){
          this.set('rpcStruct.' + key,this.appContainer[appID][key]);
       };
+      for(key in this.SubscribeButton){
+        this.set('SubscribeButton.' + key, this.appContainer[appID]['SubscribeButton'][key]);
+      };
       this.setCurrentAppID(appID);
     },
 
@@ -157,6 +167,9 @@ FFW.RPCHelper = Em.Object.create(
       for(key in this.appContainer[app.appID]){
         this.set('appContainer.'+ app.appID + '.'+key, this.rpcStruct[key]);
       };
+      for(key in this.SubscribeButton){
+        this.set('appContainer.' + app.appID + '.SubscribeButton.' + key, this.SubscribeButton[key]);
+      };
       var event = {goToState: 'rpccontrol'};
       SDL.SettingsController.onState(event);
       this.setCurrentAppID(null);
@@ -170,6 +183,9 @@ FFW.RPCHelper = Em.Object.create(
        for(key in this.rpcStruct){
          this.set('rpcStruct.'+key, this.defaultRpcStruct[key]);
        };
+       for(key in this.SubscribeButton){
+        this.set('SubscribeButton.'+key, this.defaultSubscribeButton[key]);
+      };
     },
 
     /*
@@ -545,6 +561,7 @@ FFW.RPCHelper = Em.Object.create(
     getIVDRequestNumber: 1,
 
     defaultRpcStruct: {},
+    defaultSubscribeButton: {},
     currentAppID: null,
     
     rpcStruct: {
@@ -590,6 +607,25 @@ FFW.RPCHelper = Em.Object.create(
         myKey: '',
         fuelRange: '',
         gps: ''
+    },
+    SubscribeButton: {
+      PRESET_0: '',
+      PRESET_1: '',
+      PRESET_2: '',
+      PRESET_3: '',
+      PRESET_4: '',
+      PRESET_5: '',
+      PRESET_6: '',
+      PRESET_7: '',
+      PRESET_8: '',
+      PRESET_9: '',
+      OK: '',
+      PLAY_PAUSE: '',
+      SEEKLEFT: '',
+      SEEKRIGHT: '',
+      TUNEUP: '',
+      TUNEDOWN: '',
+      CUSTOM_BUTTON: ''
     }
   }
 );
