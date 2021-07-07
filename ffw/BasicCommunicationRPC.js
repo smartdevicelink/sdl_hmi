@@ -639,6 +639,15 @@ FFW.BasicCommunication = FFW.RPCObserver
             );
           }
           if (request.method == 'BasicCommunication.DialNumber') {
+            if (SDL.AlertPopUp.active) {
+              FFW.BasicCommunication.sendError(
+                SDL.SDLModel.data.resultCode.REJECTED,
+                request.id,
+                request.method,
+                'Alert Active!'
+              );            
+              return;   
+            }
             SDL.PopUp.create().appendTo('body').popupActivate(
               'Would you like to dial ' + request.params.number + ' ?',
               function(result) {
