@@ -149,21 +149,20 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
   countRate: 1.0,
 
   /**
-   * Method hides sdl activation button and sdl application
-   *
-   * @param {Number}
+   * @description Callback for display image mode change.
    */
-  setMode:function(mode){
+  imageModeChanged: function() { 
+    const mode = SDL.SDLModel.data.imageMode;
     if(this.isTemplate){
       switch(mode){
         case SDL.SDLModel.data.imageModeList[0]:this.set('mode','day-mode');break;
         case SDL.SDLModel.data.imageModeList[1]:this.set('mode','night-mode');break;
         case SDL.SDLModel.data.imageModeList[2]:this.set('mode','high-lighted-mode');break;
         default:this.set('mode','');
-      }
-    }
-    else this.set('mode','');
-  },
+        }
+    }else this.set('mode','');
+  }.observes('SDL.SDLModel.data.imageMode'),
+
   onDeleteApplication: function(appID) {
 
     SDL.SDLMediaController.onDeleteApplication(appID);
