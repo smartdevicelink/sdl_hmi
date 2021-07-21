@@ -230,10 +230,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      * Deactivate PopUp
      */
     deactivate: function(message) {
-      if (SDL.TTSPopUp.active) {
-        SDL.TTSPopUp.DeactivateTTS();
-      }
-
       const resultCode = this.iconsAreValid ?
         SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
       
