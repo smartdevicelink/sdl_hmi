@@ -77,7 +77,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * play function. plays the file
      */
     play: function (files){
-        if (files != '') {
+        if (files !== '') {
             var files_to_play = files.split('\n');
             for (var i = 0; i < files_to_play.length; ++i) {
               this.player.addFile(files_to_play[i]);
@@ -90,7 +90,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
       * setContext function. sets the text displayed in the pop-up
       */
     setContext: function(msg){
-        if('string' == typeof msg) {
+        if('string' === typeof msg) {
             this.contextView.set('content',msg)
         }
     },
@@ -109,7 +109,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * list a new elements
      */ 
     extendResetTimeoutRPCs: function(resetTimeoutRPCs) {
-        if(null == resetTimeoutRPCs){
+        if(null === resetTimeoutRPCs){
             resetTimeoutRPCs = [];
         }
         this.resetTimeoutRPCs = this.resetTimeoutRPCs.concat(resetTimeoutRPCs);
@@ -128,7 +128,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * respondButton button is pressed
      */     
     expandCallbacks: function(callback, method){
-        if('function' == typeof callback) { 
+        if('function' === typeof callback) { 
             this.callbacks[method] = callback;
         }
     },
@@ -147,7 +147,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
                   elementId: this.resetTimeoutRPCs[i] + 'checkBox',
                   classNames: 'component',
                   checked: true,
-                  disabled: this.resetTimeoutRPCs[i] == 'UI.PerformInteraction' ? true : false
+                  disabled: this.resetTimeoutRPCs[i] === 'UI.PerformInteraction' ? true : false
                 }
               )),
 
@@ -166,7 +166,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
     {
         self = this;
         this.resetTimeoutRPCs.forEach(function (method) {
-            if (self.timeoutSeconds[method] == undefined) {
+            if (self.timeoutSeconds[method] === undefined) {
                 self.timeoutSeconds[method] = self.defaultTimeout;
             }            
         });
@@ -231,7 +231,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             var checked = element.checked;
             requestID = self.requestIDs[method];
             if(checked) {
-                self.timeoutSeconds[method] = method == 'UI.PerformInteraction' ? self.resetPeriod * 2 : self.resetPeriod;
+                self.timeoutSeconds[method] = method === 'UI.PerformInteraction' ? self.resetPeriod * 2 : self.resetPeriod;
                 self.resetTimeOutLabel();
                 self.resetTimeoutCallback[method](self.timeoutSeconds[method] * 1000);
                 if('UI.PerformInteraction' != method) {
@@ -278,12 +278,6 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             self.resetMoreThanOneTimeout();
             return;
         }
-        method = this.resetTimeoutRPCs[0];
-        element = document.getElementById(method + 'checkBox');
-        if(null !== element && element.checked){
-            reset(self);
-            return;
-        }
         reset(self);
     },
 
@@ -297,7 +291,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             timeoutExpired = [];
             this.resetTimeoutRPCs.forEach((method) => {
                 const TIME_OUT_EXPIRATION_SECONDS = 1;
-                if(TIME_OUT_EXPIRATION_SECONDS == this.timeoutSeconds[method]) {
+                if(TIME_OUT_EXPIRATION_SECONDS === this.timeoutSeconds[method]) {
                     timeoutExpired.push(method);
                 }
             });
@@ -317,7 +311,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
                     document.getElementById(method + 'checkBox').disabled = true;
                 }
             });
-            if(0 == this.resetTimeoutRPCs.length) {
+            if(0 === this.resetTimeoutRPCs.length) {
                 this.DeactivatePopUp();
             }
             return;
@@ -325,7 +319,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
 
         method = this.resetTimeoutRPCs[0];
 
-        if(1 == this.timeoutSeconds[method]) {
+        if(1 === this.timeoutSeconds[method]) {
             this.callbacks[method]();
             this.DeactivatePopUp();
         }

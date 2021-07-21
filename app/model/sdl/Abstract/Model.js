@@ -1600,8 +1600,8 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Object}
    *            message Object with parameters come from SDLCore
    */
-  uiShowKeyboard: function(element, messageRequestId) {
-      SDL.Keyboard.activate(element, messageRequestId);
+  uiShowKeyboard: function(element) {
+      SDL.Keyboard.activate(element);
     },
 
   /**

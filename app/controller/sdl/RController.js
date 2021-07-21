@@ -677,10 +677,10 @@ SDL.RController = SDL.SDLController.extend(
       var l = 0;
       for (var key in object) {
            if(object.hasOwnProperty(key)) {
-               ++l;
+               return false;
            }
       }
-      return l == 0;
+      return true;
    },
   }
 );

@@ -294,16 +294,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     /*
      * function setTimerTTS. Sets the active timer of the view for TTS RPC
      */
-    setTimerTTS: function(time){
-      var self = SDL.AlertManeuverPopUp;
-      self.set('ttsTimeout', time);
-      clearTimeout(self.ttsTimer);
-      self.ttsTimer = setTimeout(
-        function() {
-          clearTimeout(self.ttsTimer);
-        }, self.ttsTimeout
-      );
-    },
+    setTimerTTS: function(time){},
 
   }
 );

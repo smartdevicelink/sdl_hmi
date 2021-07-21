@@ -72,7 +72,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         attributeBindings: ['disabled'],
         disabled: false,
         click: function() {
-          SDL.SDLModel.uiShowKeyboard(this, this.requestID);
+          SDL.SDLModel.uiShowKeyboard(this);
         },
         search: function() {
           FFW.UI.OnKeyboardInput(
@@ -156,7 +156,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
      * Method updates popup timer when data changes through keyboard
      */
     timerUpdate: function(timer) {
-      self = SDL.InteractionChoicesView === undefined ? this : SDL.InteractionChoicesView;
+      self = SDL.InteractionChoicesView ?? this;
       if(timer) {
         self.timeout = timer;
       }
@@ -235,7 +235,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           case 'KEYBOARD' :
           {
             this.preformChoices(null, message.params.timeout);
-            SDL.SDLModel.uiShowKeyboard(this.input, this.requestID);
+            SDL.SDLModel.uiShowKeyboard(this.input);
             this.set('list', false);
             this.set('search', false);
             this.set('icon', false);

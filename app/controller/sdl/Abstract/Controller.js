@@ -47,7 +47,6 @@ SDL.SDLController = Em.Object.extend(
       };
       this.updateCustomVehicleDataTypesMapping();
     },
-    messageRequestId: null,
     /**
      * Active application model binding type {SDLAppModel}
      */
@@ -227,7 +226,7 @@ SDL.SDLController = Em.Object.extend(
      * params {Object}
      */
     uiShowKeyboard: function(element) {
-      SDL.SDLModel.uiShowKeyboard(element, this.messageRequestId);
+      SDL.SDLModel.uiShowKeyboard(element);
     },
     /**
      * Open commands list
@@ -680,47 +679,10 @@ SDL.SDLController = Em.Object.extend(
     keepContextSoftButton: function(element) {
       switch (element.groupName) {
         case 'AlertPopUp':
-        {
-          clearTimeout(SDL.AlertPopUp.timer);
-          SDL.AlertPopUp.timer = setTimeout(
-            function() {
-              SDL.AlertPopUp.deactivate();
-            }, SDL.AlertPopUp.timeout
-          );
-          break;
-        }
         case 'AlertManeuverPopUp':
-        {
-          clearTimeout(SDL.AlertManeuverPopUp.timer);
-          SDL.AlertManeuverPopUp.timer = setTimeout(
-            function() {
-              SDL.AlertManeuverPopUp.deactivate();
-            }, SDL.AlertManeuverPopUp.timeout
-          );
-          FFW.TTS.OnResetTimeout(element.appID, 'Navigation.AlertManeuver');
-          break;
-        }
         case 'SubtleAlertPopUp':
-        {
-          clearTimeout(SDL.SubtleAlertPopUp.timer);
-          SDL.SubtleAlertPopUp.timer = setTimeout(
-            function() {
-              SDL.SubtleAlertPopUp.deactivate();
-            }, SDL.SubtleAlertPopUp.timeout
-          );
-          this.onResetTimeout(element.appID, 'UI.SubtleAlert');
-          break;
-        }
         case 'ScrollableMessage':
-        {
-          clearTimeout(SDL.ScrollableMessage.timer);
-          SDL.ScrollableMessage.timer = setTimeout(
-            function() {
-              SDL.ScrollableMessage.deactivate();
-            }, SDL.ScrollableMessage.timeout
-          );
-          break;
-        }
+          SDL.ResetTimeoutPopUp.resetTimeout();
       }
     },
     /**
