@@ -1683,7 +1683,7 @@ SDL.SDLModel = Em.Object.extend({
   TTSStopSpeaking: function() {
       //true parameter makes send error response ABORTED
       FFW.TTS.set('aborted', true);
-      SDL.TTSPopUp.DeactivateTTS();
+      SDL.SDLController.TTSResponseHandler();
     },
 
   /**
