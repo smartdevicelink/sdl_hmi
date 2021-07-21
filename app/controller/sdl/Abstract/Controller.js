@@ -564,6 +564,7 @@ SDL.SDLController = Em.Object.extend(
             FFW.TTS.requestId, 'TTS.Speak'
           );
         }
+        FFW.TTS.Stopped();
         FFW.TTS.requestId = null;
         FFW.TTS.aborted = false;
       }
