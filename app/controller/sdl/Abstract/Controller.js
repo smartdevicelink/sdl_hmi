@@ -266,12 +266,9 @@ SDL.SDLController = Em.Object.extend(
       
       if ('PHONE_CALL' == eventName) {
         if (true == status) {
-          for (var i = SDL.SDLModel.data.registeredApps.length - 1; i >= 0; i--) {
-            if (SDL.SDLController.getApplicationModel(SDL.SDLModel.data.registeredApps[i].appID).level == 'FULL') {
-              SDL.SDLModel.data.redisplayAppID = SDL.SDLModel.data.registeredApps[i].appID;
-              FFW.BasicCommunication.OnAppDeactivated(SDL.SDLModel.data.redisplayAppID);
-            }
-            break;
+          if (SDL.SDLController.model) {
+             SDL.SDLModel.data.redisplayAppID = SDL.SDLController.model.appID;
+             FFW.BasicCommunication.OnAppDeactivated(SDL.SDLModel.data.redisplayAppID);
           }
         } else {
           if (null != SDL.SDLModel.data.redisplayAppID) {
