@@ -146,31 +146,69 @@ FFW.TTS = FFW.RPCObserver.create(
       switch (request.method) {
         case 'TTS.Speak':
         {
-          if (SDL.ResetTimeoutPopUp.resetTimeoutRPCs.includes(request.method)) {
+
+          // Verify if there is an unsupported data in request
+          if (this.errorResponsePull[request.id] != null) {
+            //
+            ////Check if there is any available data to  process the request
+            if (!('ttsChunks' in request.params)) {
+              //
+              //    this.errorResponsePull[request.id].code =
+              // SDL.SDLModel.data.resultCode["WARNINGS"]; } else { If no
+              // available data sent error response and stop process current
+              // request
+              this.sendError(
+                this.errorResponsePull[request.id].code, request.id,
+                request.method,
+                'Unsupported ' + this.errorResponsePull[request.id].type +
+                ' type. Request was not processed.'
+              );
+              this.errorResponsePull[request.id] = null;
+              //
+              return;
+            }
+          }
+          let appModel = SDL.SDLController.getApplicationModel(request.params.appID);
+          let rejectCallbacks = [];
+          if (appModel && request.params.speakType) {
+            const speak_type = request.params.speakType;
+            appModel.ttsSpeakListenerCallbacks.forEach((item, index) => {
+              if (speak_type == item.type) {
+                rejectCallbacks.push(item.callback);
+                appModel.ttsSpeakListenerCallbacks.splice(index, 1);
+              }
+            });
+          }
+
+          if (SDL.TTSPopUp.active || rejectCallbacks.length > 0) {
             FFW.TTS.sendError(
               SDL.SDLModel.data.resultCode.REJECTED, request.id, 'TTS.Speak',
               'TTS in progress. Rejected.'
             );
-          } else {
-            this.requestId = request.id;
-            
-            SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
-            SDL.ResetTimeoutPopUp.expandCallbacks(function(){
-              SDL.SDLController.TTSResponseHandler();
-            }, request.method);
+            rejectCallbacks.forEach((callback) => {
+              callback();
+            });
+            break;
+          }
 
-            if (SDL.ResetTimeoutPopUp.resetTimeoutRPCs.includes("UI.Alert")) {
-              SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertPopUp.setTimerTTS, request.method);
-            } else {
-              SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertManeuverPopUp.setTimerTTS, request.method);
-            }
-            
-            SDL.ResetTimeoutPopUp.ActivatePopUp();
-            
-            SDL.SDLModel.onPrompt(request.params.ttsChunks);
-            if (request.params.playTone) {
-              SDL.SDLModel.onPlayTone();
-            }
+          this.requestId = request.id;
+          SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
+          SDL.ResetTimeoutPopUp.expandCallbacks(function(){
+            SDL.SDLController.TTSResponseHandler();
+          }, request.method);
+
+          if (SDL.ResetTimeoutPopUp.resetTimeoutRPCs.includes("UI.Alert")) {
+            SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertPopUp.setTimerTTS, request.method);
+          } else {
+            SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertManeuverPopUp.setTimerTTS, request.method);
+          }
+
+          SDL.ResetTimeoutPopUp.ActivatePopUp();
+          SDL.SDLModel.onPrompt(
+            request.params.ttsChunks, request.params.appID
+          );
+          if (request.params.playTone) {
+            SDL.SDLModel.onPlayTone();
           }
           break;
         }
