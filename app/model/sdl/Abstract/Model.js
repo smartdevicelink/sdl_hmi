@@ -1653,7 +1653,13 @@ SDL.SDLModel = Em.Object.extend({
           files += ttsChunks[i].text + '\n';
         }
       }
+      FFW.TTS.Started();
       SDL.ResetTimeoutPopUp.play(files);
+      const TTS_TIMEOUT = 3000;
+      setTimeout(() => {
+        FFW.TTS.Stopped();
+        SDL.ResetTimeoutPopUp.setContext('');
+      }, TTS_TIMEOUT);
       if(setContext === true) SDL.ResetTimeoutPopUp.setContext(message);
     } else if(FFW.TTS.requestId){
       FFW.TTS.sendError(
