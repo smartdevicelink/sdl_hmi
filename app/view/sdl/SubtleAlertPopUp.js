@@ -62,7 +62,22 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         endTime: null,
         reason: '',
         message: undefined,
+        click(event) {
+            if (document.getElementById('SubtleAlertPopUp').contains(event.target)){
+                var buttonsDiv = document.getElementById('subtleAlertSoftButtons');
+                for (var button of buttonsDiv.childNodes) {
+                    if (button.contains(event.target)) {
+                        return;
+                    }
+                }
 
+                SDL.SubtleAlertPopUp.deactivate();
+                SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
+                SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
+            } else{
+                SDL.SubtleAlertPopUp.deactivate();
+            }
+        },
         /**
          * Warning image on Subtle Alert PopUp
          */
