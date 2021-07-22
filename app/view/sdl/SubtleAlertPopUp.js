@@ -62,7 +62,22 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         endTime: null,
         reason: '',
         message: undefined,
+        click(event) {
+            if (document.getElementById('SubtleAlertPopUp').contains(event.target)){
+                var buttonsDiv = document.getElementById('subtleAlertSoftButtons');
+                for (var button of buttonsDiv.childNodes) {
+                    if (button.contains(event.target)) {
+                        return;
+                    }
+                }
 
+                SDL.SubtleAlertPopUp.deactivate();
+                SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
+                SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
+            } else{
+                SDL.SubtleAlertPopUp.deactivate();
+            }
+        },
         /**
          * Warning image on Subtle Alert PopUp
          */
@@ -243,15 +258,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         /*
         * function setTimerTTS. Sets the active timer of the view for TTS RPC
         */
-        setTimerTTS: function(time){
-            var self = SDL.SubtleAlertPopUp;
-            self.set('ttsTimeout', time);
-            clearTimeout(self.ttsTimer);
-            self.ttsTimer = setTimeout(
-            function() {
-                clearTimeout(self.ttsTimer);
-            }, self.ttsTimeout );
-        },
+        setTimerTTS: function(time){},
   
         /*
         * function setTimerUI. Sets the active timer of the view for UI RPC

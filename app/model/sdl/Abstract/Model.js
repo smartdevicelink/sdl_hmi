@@ -31,6 +31,8 @@
  * @version 1.0
  */
 
+const RESPONSE_CORRELATION = 1000;
+
 SDL.SDLModel = Em.Object.extend({
 
   /**
@@ -1571,7 +1573,7 @@ SDL.SDLModel = Em.Object.extend({
           }
           SDL.SDLModel.data.set('VRActive', false);
         }
-      }, timer - 1000
+      }, timer - RESPONSE_CORRELATION
     );
   },
   /**
@@ -1598,8 +1600,8 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Object}
    *            message Object with parameters come from SDLCore
    */
-  uiShowKeyboard: function(element, messageRequestId) {
-      SDL.Keyboard.activate(element, messageRequestId);
+  uiShowKeyboard: function(element) {
+      SDL.Keyboard.activate(element);
     },
 
   /**
@@ -1653,7 +1655,13 @@ SDL.SDLModel = Em.Object.extend({
           files += ttsChunks[i].text + '\n';
         }
       }
+      FFW.TTS.Started();
       SDL.ResetTimeoutPopUp.play(files);
+      const TTS_TIMEOUT = 3000;
+      setTimeout(() => {
+        FFW.TTS.Stopped();
+        SDL.ResetTimeoutPopUp.setContext('');
+      }, TTS_TIMEOUT);
       if(setContext === true) SDL.ResetTimeoutPopUp.setContext(message);
     } else if(FFW.TTS.requestId){
       FFW.TTS.sendError(
@@ -1680,7 +1688,7 @@ SDL.SDLModel = Em.Object.extend({
   TTSStopSpeaking: function() {
       //true parameter makes send error response ABORTED
       FFW.TTS.set('aborted', true);
-      SDL.TTSPopUp.DeactivateTTS();
+      SDL.SDLController.TTSResponseHandler();
     },
 
   /**
