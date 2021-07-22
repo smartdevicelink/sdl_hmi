@@ -50,8 +50,7 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
      *
      * @param {Object}
      */
-    activate: function(element, messageRequestId) {
-      this.requestID = messageRequestId;
+    activate: function(element) {
       if (SDL.SDLController.model?.globalProperties?.keyboardProperties?.maskInputCharacters == 'USER_CHOICE_INPUT_KEY_MASK' 
           && !SDL.KeyboardController.maskCharacters) {
         SDL.KeyboardController.set('maskCharacters', true);
@@ -68,7 +67,6 @@ SDL.Keyboard = SDL.SDLAbstractView.create(
         SDL.KeyboardController.set('appModel', SDL.SDLController.model);
       }
     },
-    requestID: 0,
     /**
      * Extend deactivate method send SUCCESS response on deactivate with current
      * slider value

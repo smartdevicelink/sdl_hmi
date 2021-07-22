@@ -230,10 +230,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
      * Deactivate PopUp
      */
     deactivate: function(message) {
-      if (SDL.TTSPopUp.active) {
-        SDL.TTSPopUp.DeactivateTTS();
-      }
-
       const resultCode = this.iconsAreValid ?
         SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
       
@@ -294,16 +290,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     /*
      * function setTimerTTS. Sets the active timer of the view for TTS RPC
      */
-    setTimerTTS: function(time){
-      var self = SDL.AlertManeuverPopUp;
-      self.set('ttsTimeout', time);
-      clearTimeout(self.ttsTimer);
-      self.ttsTimer = setTimeout(
-        function() {
-          clearTimeout(self.ttsTimer);
-        }, self.ttsTimeout
-      );
-    },
+    setTimerTTS: function(time){},
 
   }
 );
