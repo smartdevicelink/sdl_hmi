@@ -83,6 +83,11 @@ SDL.PhoneModel = Em.Object.create({
     if (this.dialpadNumber.length) {
       this.set('dialpadNumber', this.dialpadNumber.slice(0, -1));
     }
-  }
+  },
+  
+  /**
+   * App ID to be redisplayed after the Phone call ends
+   */
+  redisplayAppID: null,
 }
 );

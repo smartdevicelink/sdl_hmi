@@ -1676,11 +1676,6 @@ SDL.SDLModelData = Em.Object.create(
       'UNAUTHORIZED_TRANSPORT_REGISTRATION': -3,
       'RESOURCE_CONSTRAINT': -4,
       'CLOSE_CLOUD_CONNECTION': -5
-    },
-    
-    /**
-     * App ID to be redisplayed after the Phone call ends
-     */
-    redisplayAppID: null,
+    }
   }
 );
