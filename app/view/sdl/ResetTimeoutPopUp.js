@@ -50,12 +50,12 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             disableScrollbar: true,
             value: true,
             items: new Array()
-          }
+        }
         ),
         textArea: Ember.TextArea.extend({
-              elementId: 'textArea',
-              classNames: 'textArea',
-              valueBinding: 'parentView.content'
+            elementId: 'textArea',
+            classNames: 'textArea',
+            valueBinding: 'parentView.content'
         }),
     }),
     resetTimeoutButton: SDL.Button.extend({
@@ -73,150 +73,173 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
 
     player: SDL.AudioPlayer.create(),
 
+    /**
+     * @function addRpc
+     * @param {Object} req
+     * @param {Function} callback
+     * @param {Function} resetTimeoutCallback
+     * @param {number} timeoutSeconds
+     * @description Function to add rpc for processing
+     */
+    addRpc(req, callback, resetTimeoutCallback, timeoutSeconds) {
+        const MS_TO_SEC = 1000;
+        this.resetTimeoutRPCs[req.id] = {
+            method: req.method,
+            timeoutSeconds: timeoutSeconds ? timeoutSeconds / MS_TO_SEC : this.defaultTimeout,
+            callback,
+            resetTimeoutCallback
+        };
+    },
+
+    /**
+     * @function getTimeoutForRpc
+     * @param {sting} rpcName
+     * @returns Current timeout value for requested rpc
+     */
+    getTimeoutForRpc(rpcName) {
+        for (const [key, value] of Object.entries(this.resetTimeoutRPCs)) {
+            const method = value.method.split('.')[1];
+            if (method.toLowerCase() === rpcName.toLowerCase().replaceAll('_', '')) return value.timeoutSeconds * 1000
+        }
+        return undefined;
+    },
+
+    /**
+     * @function includes
+     * @param {string} rpcName
+     * @returns true if rpc is in process
+     */
+    includes(rpcName) {
+        for (let key in this.resetTimeoutRPCs) {
+            if (this.resetTimeoutRPCs[key].method === rpcName) return true;
+        }
+        return false;
+    },
+
+    /**
+     * @function stopRpcProcessing
+     * @param {string} rpcName
+     * @param {Boolean} withinCallback
+     * @description Stop rpc timeout handling by rpc name and
+     * call callback if second parameter is true
+     */
+    stopRpcProcessing(rpcName, withinCallback = false) {
+        for (const [key, value] of Object.entries(this.resetTimeoutRPCs)) {
+            if (value.method === rpcName) {
+                if (withinCallback) value.callback();
+                delete this.resetTimeoutRPCs[key];
+                break;
+            }
+        }
+        if (this.getPRCsLength() === 0) {
+            this.DeactivatePopUp();
+        } else {
+            this.addCheckBox();
+        }
+    },
+
+    /**
+     * @function getPRCsLength
+     * @returns length of RPC's
+     */
+    getPRCsLength() {
+        return Object.keys(this.resetTimeoutRPCs).length;
+    },
+
     /*
      * play function. plays the file
      */
-    play: function (files){
+    play: function (files) {
         if (files !== '') {
             var files_to_play = files.split('\n');
             for (var i = 0; i < files_to_play.length; ++i) {
-              this.player.addFile(files_to_play[i]);
+                this.player.addFile(files_to_play[i]);
             }
             this.player.playFiles();
         }
     },
-    
-     /*
-      * setContext function. sets the text displayed in the pop-up
-      */
-    setContext: function(msg){
-        if('string' === typeof msg) {
-            this.contextView.set('content',msg)
+
+    /*
+     * setContext function. sets the text displayed in the pop-up
+     */
+    setContext: function (msg) {
+        if ('string' === typeof msg) {
+            this.contextView.set('content', msg)
         }
     },
     timeoutSeconds: {},
-    timeoutString:'',
+    timeoutString: '',
     defaultTimeout: 10,
     resetPeriod: 10,
     timer: null,
-    callbacks: {},
-    resetTimeoutCallback: {},
-    requestIDs: {},
-    resetTimeoutRPCs: [],
-    
-    /*
-     * extendResetTimeoutRPCs function. Appends to current resetTimeoutRPCs 
-     * list a new elements
-     */ 
-    extendResetTimeoutRPCs: function(resetTimeoutRPCs) {
-        if(null === resetTimeoutRPCs){
-            resetTimeoutRPCs = [];
-        }
-        this.resetTimeoutRPCs = this.resetTimeoutRPCs.concat(resetTimeoutRPCs);
-    },
-
-    /**
-     * extendResetTimeoutCallBack function. expand callbacks that will be called when the 
-     * resetTimeout button is pressed
-     */
-    extendResetTimeoutCallBack: function(resetTimeoutCallback, method) {
-        this.resetTimeoutCallback[method] = resetTimeoutCallback;
-    },
-
-    /*
-     * expandCallbacks function. expand callbacks that will be called when the 
-     * respondButton button is pressed
-     */     
-    expandCallbacks: function(callback, method){
-        if('function' === typeof callback) { 
-            this.callbacks[method] = callback;
-        }
-    },
+    resetTimeoutRPCs: {},
 
     /**
      * addCheckBox function for add Check box and label to the popUp view
      * for reseting the timeouts and
-     * sending the response if RPC more then one 
+     * sending the response if RPC more then one
      */
-    addCheckBox: function(length) {
+    addCheckBox: function () {
+        this.contextView.listOfRPC.list.removeAllChildren();
+        this.contextView.listOfRPC.list.refresh();
         var list = this.get('contextView.listOfRPC.list.childViews');
         list.clear();
-        for(var i=0; i<length;++i){
+        for (let key in this.resetTimeoutRPCs) {
             list.pushObject(Em.Checkbox.create(
                 {
-                  elementId: this.resetTimeoutRPCs[i] + 'checkBox',
-                  classNames: 'component',
-                  checked: true,
-                  disabled: this.resetTimeoutRPCs[i] === 'UI.PerformInteraction' ? true : false
+                    elementId: this.resetTimeoutRPCs[key].method + 'checkBox',
+                    classNames: 'component',
+                    checked: true,
+                    disabled: this.resetTimeoutRPCs[key].method === 'UI.PerformInteraction' ? true : false
                 }
-              )),
+            )),
 
-              list.pushObject(SDL.Label.create({
-                elementId: this.resetTimeoutRPCs[i] + 'Label',
-                classNames: 'component',
-                content: this.resetTimeoutRPCs[i]
-              }))
+                list.pushObject(SDL.Label.create({
+                    elementId: this.resetTimeoutRPCs[key].method + 'Label',
+                    classNames: 'component',
+                    content: this.resetTimeoutRPCs[key].method
+                }))
         }
-    },
-
-    /**
-     * setDefaultTimeout function for set default timeout
-     */
-    setDefaultTimeout: function()
-    {
-        self = this;
-        this.resetTimeoutRPCs.forEach(function (method) {
-            if (self.timeoutSeconds[method] === undefined) {
-                self.timeoutSeconds[method] = self.defaultTimeout;
-            }            
-        });
     },
 
     /*
      * ActivatePopUp function. activates pop-up
      */
-    ActivatePopUp: function(){
-        length = this.resetTimeoutRPCs.length;
-        if(1 < length) {
-            this.addCheckBox(length);
+    ActivatePopUp: function () {
+        length = this.getPRCsLength();
+        if (1 < length) {
+            this.addCheckBox();
         }
         this.set('isVisible', true);
         this.set('active', true);
-
-        this.setDefaultTimeout();            
         this.resetTimeOutLabel();
         clearInterval(this.timer);
-        
-        const self = this;
         this.timer = setInterval(
-            function() {
-                    var message = '';
-                    self.resetTimeoutRPCs.forEach(function (method) {
-                        self.timeoutSeconds[method] = self.timeoutSeconds[method] - 1;
-                        message = message + method + ": " + self.timeoutSeconds[method].toString() + '\n';
-                     });
-                    self.set('timeoutString',message);
-            }, 1000
-        ); 
+            () => {
+                let message = '';
+                for (const [key, value] of Object.entries(this.resetTimeoutRPCs)) {
+                    value.timeoutSeconds -= 1;
+                    message = message + `${value.method} : ${value.timeoutSeconds}\n`
+                }
+                this.set('timeoutString', message);
+            }
+            , 1000
+        );
     },
 
     /*
      * DeactivatePopUp function. deactivates pop-up
-     */     
-    DeactivatePopUp: function() {
+     */
+    DeactivatePopUp: function () {
         clearInterval(this.timer);
-        this.get('contextView.listOfRPC.list.childViews').clear();
-        this.get('contextView.listOfRPC.list').removeAllChildren();
+        this.contextView.listOfRPC.list.removeAllChildren();
         this.contextView.listOfRPC.list.refresh();
         this.set('isVisible', false);
         this.set('active', false);
         this.set('timer', null);
         this.set('timeoutSeconds', {});
-        this.set('requestIDs', {});
-        this.set('callbacks', {});
-        this.set('resetTimeoutCallback', {});
-        this.set('resetTimeoutRPCs', []);
-        this.contextView.set('content',"")
+        this.set('resetTimeoutRPCs', {});
+        this.contextView.set('content', "")
         this.player.stopPlaying();
         this.player.clearFiles();
     },
@@ -224,103 +247,101 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
     /**
      * resetMoreThanOneTimeout function for reset timeout if RPC more then one
      */
-    resetMoreThanOneTimeout: function() {
-        const self = this;
-        self.resetTimeoutRPCs.forEach(function (method) {
-            var element = document.getElementById(method + 'checkBox');
+    resetMoreThanOneTimeout: function () {
+        for (let [requestID, value] of Object.entries(this.resetTimeoutRPCs)) {
+            var element = document.getElementById(value.method + 'checkBox');
             var checked = element.checked;
-            requestID = self.requestIDs[method];
-            if(checked) {
-                self.timeoutSeconds[method] = method === 'UI.PerformInteraction' ? self.resetPeriod * 2 : self.resetPeriod;
-                self.resetTimeOutLabel();
-                self.resetTimeoutCallback[method](self.timeoutSeconds[method] * 1000);
-                if('UI.PerformInteraction' != method) {
-                    FFW.BasicCommunication.OnResetTimeout(requestID, method, self.resetPeriod * 1000);
+            if (checked) {
+                value.timeoutSeconds = value.method === 'UI.PerformInteraction' ? this.resetPeriod * 2 : this.resetPeriod;
+                this.resetTimeOutLabel();
+                if (value.resetTimeoutCallback !== undefined) {
+                    value.resetTimeoutCallback(value.timeoutSeconds * 1000);
+                }
+                if ('UI.PerformInteraction' != value.method) {
+                    FFW.BasicCommunication.OnResetTimeout(requestID, value.method, this.resetPeriod * 1000);
                 }
             }
-        });
+        }
     },
 
     /**
      * resetTimeOutLabel function for reset timeout label
      * on the popUp
      */
-    resetTimeOutLabel: function() {
-        var self = this;
-        var message = '';
-        self.resetTimeoutRPCs.forEach(function (method) {
-            message = message + method + ": " + self.timeoutSeconds[method].toString() + '\n';
-        });
-        self.set('timeoutString',message);
+    resetTimeOutLabel: function () {
+        let message = '';
+        for (let key in this.resetTimeoutRPCs) {
+            message = `${message} ${this.resetTimeoutRPCs[key].method} : ${this.resetTimeoutRPCs[key].timeoutSeconds}\n`
+        }
+        this.set('timeoutString', message);
     },
 
-    /* 
+    /*
      * resetTimeout function. sends to SDL OnResetTimeout
-     */     
-    resetTimeout: function() {
-        if(this.resetPeriod > 1000) { 
+     */
+    resetTimeout: function () {
+        if (this.resetPeriod > 1000) {
             this.set('resetPeriod', this.defaultTimeout);
             SDL.ControlButtons.set('resetPeriodInput', this.defaultTimeout * 1000);
             document.getElementById('resetPeriodInput').value = this.defaultTimeout * 1000;
             return
         }
-        self = SDL.ResetTimeoutPopUp;
-        length = self.resetTimeoutRPCs.length;
-        function reset(self) {
-            self.timeoutSeconds[method] = self.resetPeriod;
-            self.resetTimeoutCallback[method](self.timeoutSeconds[method] * 1000);
-            requestID = self.requestIDs[method];
-            self.resetTimeOutLabel();
-            FFW.BasicCommunication.OnResetTimeout(requestID, method, self.resetPeriod * 1000);
+
+        reset = () => {
+            const requestID = Object.keys(this.resetTimeoutRPCs)[0];
+            this.resetTimeoutRPCs[requestID].timeoutSeconds = this.resetPeriod;
+            if (this.resetTimeoutRPCs[requestID].resetTimeoutCallback !== undefined) {
+                this.resetTimeoutRPCs[requestID].resetTimeoutCallback(this.resetTimeoutRPCs[requestID].timeoutSeconds * 1000);
+            }
+            this.resetTimeOutLabel();
+            FFW.BasicCommunication.OnResetTimeout(requestID, this.resetTimeoutRPCs[requestID].method, this.resetPeriod * 1000);
         }
 
-        if(1 < length) {
-            self.resetMoreThanOneTimeout();
+        const length = this.getPRCsLength();
+        if (1 < length) {
+            this.resetMoreThanOneTimeout();
             return;
         }
-        reset(self);
+        reset();
     },
 
     /*
      * timerHandler function. deactivate popup after timeout is expired
-     */     
-    timerHandler: function() {
-        length = this.resetTimeoutRPCs.length;
-
-        if(1 < length) {
+     */
+    timerHandler: function () {
+        let length = this.getPRCsLength();
+        if (1 < length) {
             timeoutExpired = [];
-            this.resetTimeoutRPCs.forEach((method) => {
+            for (let [key, value] of Object.entries(this.resetTimeoutRPCs)) {
                 const TIME_OUT_EXPIRATION_SECONDS = 1;
-                if(TIME_OUT_EXPIRATION_SECONDS === this.timeoutSeconds[method]) {
-                    timeoutExpired.push(method);
+                if (TIME_OUT_EXPIRATION_SECONDS === value.timeoutSeconds) {
+                    // Give higher priority to TTS part of the request
+                    const tts_speak_index = value.method.indexOf('TTS.Speak');
+                    if (tts_speak_index >= 0) {
+                        timeoutExpired.unshift(key);
+                        continue;
+                    }
+                    timeoutExpired.push(key);
                 }
-            });
-
-            // Give higher priority to TTS part of the request
-            const tts_speak_index = timeoutExpired.indexOf("TTS.Speak");
-            if (tts_speak_index >= 0) {
-                timeoutExpired.splice(tts_speak_index, 1);
-                timeoutExpired = ["TTS.Speak", ...timeoutExpired];
             }
-
-            timeoutExpired.forEach((method) => {
-                this.resetTimeoutRPCs.removeObject(method);
-
-                if(method != 'VR.PerformInteraction' && method != 'UI.PerformInteraction') {
-                    this.callbacks[method]();
-                    document.getElementById(method + 'checkBox').disabled = true;
+            timeoutExpired.forEach((requestID, index) => {
+                console.log('Id' + index, requestID);
+                if (this.resetTimeoutRPCs[requestID].method != 'VR.PerformInteraction'
+                    && this.resetTimeoutRPCs[requestID].method != 'UI.PerformInteraction') {
+                    this.resetTimeoutRPCs[requestID].callback();
+                    document.getElementById(this.resetTimeoutRPCs[requestID].method + 'checkBox').disabled = true;
                 }
+                delete this.resetTimeoutRPCs[requestID];
             });
-            if(0 === this.resetTimeoutRPCs.length) {
+            length = this.getPRCsLength();
+            if (length === 0) {
                 this.DeactivatePopUp();
             }
             return;
         }
-
-        method = this.resetTimeoutRPCs[0];
-
-        if(1 === this.timeoutSeconds[method]) {
-            this.callbacks[method]();
+        let requestID = Object.keys(this.resetTimeoutRPCs)[0];
+        if (this.resetTimeoutRPCs[requestID].timeoutSeconds === 1) {
+            this.resetTimeoutRPCs[requestID].callback();
             this.DeactivatePopUp();
         }
 
@@ -330,7 +351,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * vrPerformInteractionDisableCheckBox function. deactivate checkbox for VR.PerformInteraction and activate checkbox for UI.PerformInteraction
      * after VR.PerformInteraction is closed by any reason
      */
-    vrPerformInteractionDisableCheckBox: function() {
+    vrPerformInteractionDisableCheckBox: function () {
         length = this.resetTimeoutRPCs.length
 
         if (1 < length) {
