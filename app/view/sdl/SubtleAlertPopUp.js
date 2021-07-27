@@ -55,8 +55,6 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         content1: '',
         content2: '',
         active: false,
-        timer: null,
-        timeout: null,
         ttsTimer: null,
         ttsTimeout: null,
         endTime: null,
@@ -71,11 +69,11 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                     }
                 }
 
-                SDL.SubtleAlertPopUp.deactivate();
+                this.deactivate();
                 SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
                 SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
             } else{
-                SDL.SubtleAlertPopUp.deactivate();
+                SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.SubtleAlert', true);
             }
         },
         /**
@@ -139,10 +137,10 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
          */
         deactivate: function (reason, info) {
             this.set('active', false);
-            clearTimeout(this.timer);
             this.set('endTime', null);
             this.set('content1', '');
             this.set('content2', '');
+            if(reason !== 'timeout') SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.SubtleAlert');
             if ((reason == 'timeout' &&
                 this.softbuttons.buttons._childViews.length > 0) ||
                 reason === 'ABORTED') {
@@ -235,6 +233,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             this.set('reason', 'timeout');
             this.set('message', undefined);
             this.addSoftButtons(message.softButtons, message.appID);
+            this.set('endTime', Date.now() + message.duration);
             this.set('appID', message.appID);
             this.set('icon', message.alertIcon ? message.alertIcon.value : "images/sdl/Warning.png");
             for (var i = 0; i < message.alertStrings.length; i++) {
@@ -252,29 +251,14 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 }
             }
             this.set('active', true);
-            this.setTimerUI(message.duration ? message.duration : this.defaultTimeout);
         },
 
         /*
-        * function setTimerTTS. Sets the active timer of the view for TTS RPC
+        * function resetTimeoutCallback.
         */
-        setTimerTTS: function(time){},
-  
-        /*
-        * function setTimerUI. Sets the active timer of the view for UI RPC
-        */
-        setTimerUI: function(time){
-            var self = SDL.SubtleAlertPopUp;
-            self.set('timeout', time);
-            clearTimeout(self.timer);
-            self.timer = setTimeout(
-            function() {
-                self.set('active', false);
-                clearTimeout(self.timer);
-                self.set('content1', '');
-                self.set('content2', '');
-          }, self.timeout
-        );
+        resetTimeoutCallback: function(time){
+            let self = SDL.SubtleAlertPopUp;
+            self.set('endTime', Date.now() + time);
         }
     }
 );

@@ -139,7 +139,6 @@ FFW.VR = FFW.RPCObserver.create(
 
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.VR.onRPCRequest');
-      SDL.ResetTimeoutPopUp.requestIDs[request.method] =  request.id;
       if (this.validationCheck(request)) {
         switch (request.method) {
           case 'VR.AddCommand':
@@ -244,11 +243,25 @@ FFW.VR = FFW.RPCObserver.create(
           }
           case 'VR.PerformInteraction':
           {
-            SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
-            SDL.ResetTimeoutPopUp.expandCallbacks(function()
-             {SDL.SDLModel.deactivateVr()}, request.method);
-            SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.SDLModel.vrTimeout, request.method);
-            SDL.ResetTimeoutPopUp.set('timeoutString', request.params.timeout/1000);
+            if(SDL.ResetTimeoutPopUp.includes(request.method)) {
+              this.sendError(
+                SDL.SDLModel.data.resultCode.REJECTED,
+                request.id,
+                request.method,
+                `${request.method} is already in progress`
+              )
+              return;
+            }
+            SDL.ResetTimeoutPopUp.addRpc(
+              request,
+              () => {SDL.SDLModel.deactivateVrInteraction()},
+              undefined,
+              request.params.timeout
+            );
+            // if(0 < SDL.ResetTimeoutPopUp.getPRCsLength() && !SDL.ResetTimeoutPopUp.active) {
+            //   SDL.ResetTimeoutPopUp.resetTimeOutLabel();
+            //   SDL.ResetTimeoutPopUp.ActivatePopUp();
+            // }
             SDL.SDLModel.vrPerformInteraction(request);
             break;
           }

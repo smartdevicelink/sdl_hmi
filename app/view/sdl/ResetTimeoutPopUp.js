@@ -91,6 +91,12 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         };
     },
 
+    setTimeoutByRpcName(rpcName, timeout) {
+        for (const [key, value] of Object.entries(this.resetTimeoutRPCs)) {
+            if (value.method === rpcName) value.timeoutSeconds = timeout;
+        }
+    },
+
     /**
      * @function getTimeoutForRpc
      * @param {sting} rpcName
@@ -123,18 +129,18 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * @description Stop rpc timeout handling by rpc name and
      * call callback if second parameter is true
      */
-    stopRpcProcessing(rpcName, withinCallback = false) {
+    stopRpcProcessing(rpcName, withinCallback = false, refreshCheckboxes = true, callbackParam) {
         for (const [key, value] of Object.entries(this.resetTimeoutRPCs)) {
             if (value.method === rpcName) {
-                if (withinCallback) value.callback();
+                if (withinCallback) value.callback(callbackParam);
                 delete this.resetTimeoutRPCs[key];
                 break;
             }
         }
         if (this.getPRCsLength() === 0) {
             this.DeactivatePopUp();
-        } else {
-            this.addCheckBox();
+        } else if(refreshCheckboxes) {
+            this.refreshCheckboxes();
         }
     },
 
@@ -175,11 +181,11 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
     resetTimeoutRPCs: {},
 
     /**
-     * addCheckBox function for add Check box and label to the popUp view
+     * refreshCheckboxes function for add Check box and label to the popUp view
      * for reseting the timeouts and
      * sending the response if RPC more then one
      */
-    addCheckBox: function () {
+    refreshCheckboxes: function () {
         this.contextView.listOfRPC.list.removeAllChildren();
         this.contextView.listOfRPC.list.refresh();
         var list = this.get('contextView.listOfRPC.list.childViews');
@@ -208,7 +214,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
     ActivatePopUp: function () {
         length = this.getPRCsLength();
         if (1 < length) {
-            this.addCheckBox();
+            this.refreshCheckboxes();
         }
         this.set('isVisible', true);
         this.set('active', true);
@@ -258,7 +264,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
                     value.resetTimeoutCallback(value.timeoutSeconds * 1000);
                 }
                 if ('UI.PerformInteraction' != value.method) {
-                    FFW.BasicCommunication.OnResetTimeout(requestID, value.method, this.resetPeriod * 1000);
+                    FFW.BasicCommunication.OnResetTimeout(parseInt(requestID), value.method, this.resetPeriod * 1000);
                 }
             }
         }
@@ -294,7 +300,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
                 this.resetTimeoutRPCs[requestID].resetTimeoutCallback(this.resetTimeoutRPCs[requestID].timeoutSeconds * 1000);
             }
             this.resetTimeOutLabel();
-            FFW.BasicCommunication.OnResetTimeout(requestID, this.resetTimeoutRPCs[requestID].method, this.resetPeriod * 1000);
+            FFW.BasicCommunication.OnResetTimeout(parseInt(requestID), this.resetTimeoutRPCs[requestID].method, this.resetPeriod * 1000);
         }
 
         const length = this.getPRCsLength();
@@ -303,6 +309,19 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             return;
         }
         reset();
+    },
+
+    resetTimeoutSpecificRpc(rpcName) {
+        for(const [requestID, value] of Object.entries(this.resetTimeoutRPCs)) {
+            if(value.method === rpcName) {
+                value.timeoutSeconds = this.resetPeriod;
+                if (value.resetTimeoutCallback !== undefined) {
+                    value.resetTimeoutCallback(value.timeoutSeconds * 1000);
+                }
+                this.resetTimeOutLabel();
+                FFW.BasicCommunication.OnResetTimeout(parseInt(requestID), value.method, this.resetPeriod * 1000);
+            }
+        }
     },
 
     /*
@@ -325,11 +344,12 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
                 }
             }
             timeoutExpired.forEach((requestID, index) => {
-                console.log('Id' + index, requestID);
                 if (this.resetTimeoutRPCs[requestID].method != 'VR.PerformInteraction'
                     && this.resetTimeoutRPCs[requestID].method != 'UI.PerformInteraction') {
                     this.resetTimeoutRPCs[requestID].callback();
                     document.getElementById(this.resetTimeoutRPCs[requestID].method + 'checkBox').disabled = true;
+                } else {
+                    this.resetTimeoutRPCs[requestID].callback();
                 }
                 delete this.resetTimeoutRPCs[requestID];
             });
@@ -352,9 +372,10 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * after VR.PerformInteraction is closed by any reason
      */
     vrPerformInteractionDisableCheckBox: function () {
-        length = this.resetTimeoutRPCs.length
+        length = this.getPRCsLength();
 
         if (1 < length) {
+            let t = document.getElementById('VR.PerformInteraction' + 'checkBox')
             document.getElementById('VR.PerformInteraction' + 'checkBox').disabled = true;
             document.getElementById('UI.PerformInteraction' + 'checkBox').disabled = false;
         }

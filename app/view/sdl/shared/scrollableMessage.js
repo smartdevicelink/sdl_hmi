@@ -47,8 +47,6 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
     messageRequestId: null,
     active: false,
     appID: null,
-    timer: null,
-    timeout: null,
     endTime: null,
     areAllImagesValid: true,
     validationMessage: null,
@@ -65,17 +63,13 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
      *            UI.ScrollableMessageResponse
      */
     deactivate: function(ABORTED) {
-      clearTimeout(this.timer);
       this.set('endTime', null);
       this.set('active', false);
       this.softButtons.set('page', 0);
-      this.timeout = null;
-      if(SDL.ResetTimeoutPopUp.active) {
-        SDL.ResetTimeoutPopUp.DeactivatePopUp();
-      }
 
       let calculate_result_code = function(areAllImagesValid) {
         if (ABORTED) {
+          if(SDL.ResetTimeoutPopUp.includes('UI.ScrollableMessage')) SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.ScrollableMessage');
           return SDL.SDLModel.data.resultCode.ABORTED;
         }
 
@@ -111,10 +105,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         this.softButtons.addItems(params.softButtons, params.appID);
         this.set('active', true);
         this.set('cancelID', params.cancelID);
-        clearTimeout(this.timer);
-        this.timeout = params.timeout;
-        this.set('endTime', Date.now() + this.timeout);
-        this.setTimer(this.timeout);
+        this.set('endTime', Date.now() + params.timeout);
 
         if(params.softButtons) {
           var imageList = [];
@@ -133,23 +124,12 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         }
       }
     },
-
     /*
-     * function setTimer. Sets the active timer of the view
-     */
-    setTimer: function(time){
-      var self = SDL.ScrollableMessage;
-      self.set('timeout', time);
-      clearTimeout(self.timer);
-      self.timer = setTimeout(
-        function() {
-          clearTimeout(self.timer);
-          self.set('active', false);
-          self.softButtons.set('page', 0);
-          self.timeout = null;
-          SDL.SDLController.onSystemContextChange();
-        }, self.timeout
-      );
+        * function resetTimeoutCallback.
+        */
+    resetTimeoutCallback: function(time){
+      let self = SDL.ScrollableMessage;
+      self.set('endTime', Date.now() + time);
     },
 
     softButtons: SDL.MenuList.extend(
@@ -182,13 +162,12 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
          */
         click: function() {
           var self = this._parentView;
-          clearTimeout(self.timer);
           self.set('endTime', Date.now() + self.timeout);
-          self.setTimer(self.timeout);
 
           SDL.ResetTimeoutPopUp.resetTimeout();
         }
       }
     )
   }
+  
 );

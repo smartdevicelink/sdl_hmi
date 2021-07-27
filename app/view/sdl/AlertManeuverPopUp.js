@@ -51,10 +51,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     content2: 'Text',
     activate: false,
     endTime: null,
-    timer: null,
-    ttsTimeout: 5000,
-    defaultTimeout: 5000,
-    timeout: 5000,    
     alertManeuerRequestId: 0,
     /**
      * @desc Defines whether icons paths verified successfully.
@@ -232,12 +228,12 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     deactivate: function(message) {
       const resultCode = this.iconsAreValid ?
         SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
-      
+
       if(!message) {
-        if (SDL.ResetTimeoutPopUp.resetTimeoutRPCs.includes('TTS.Speak')) {
-          SDL.SDLController.TTSResponseHandler();
-          SDL.ResetTimeoutPopUp.resetTimeoutRPCs.removeObject('TTS.Speak');
-        } 
+        if (SDL.ResetTimeoutPopUp.includes('TTS.Speak')) {
+          SDL.ResetTimeoutPopUp.stopRpcProcessing('TTS.Speak', true);
+        }
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('Navigation.AlertManeuver');
       }
       FFW.Navigation.sendNavigationResult(
         resultCode,
@@ -247,14 +243,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       );
       this.set('activate', false );
       this.set('alertManeuerRequestId', 0);
-      
-      SDL.ResetTimeoutPopUp.resetTimeoutRPCs.removeObject('Navigation.AlertManeuver');      
 
-      if(0 == SDL.ResetTimeoutPopUp.resetTimeoutRPCs.length) {
-        SDL.ResetTimeoutPopUp.DeactivatePopUp();
-      }
-      this.set('timeout', this.defaultTimeout);
-      this.set('ttsTimeout', this.defaultTimeout);
     },
 
     AlertManeuverActive: function(message) {
@@ -267,30 +256,22 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       this.addSoftButtons(message.params);
 
       this.set('activate', true );
-    },
+      SDL.ResetTimeoutPopUp.addRpc(
+        message,
+        () => {SDL.AlertManeuverPopUp.deactivate('timeout')},
+        SDL.AlertManeuverPopUp.resetTimeoutCallback,
+        SDL.AlertManeuverPopUp.timeout
+      )
 
-    /*
-     * function setTimerUI. Sets the active timer of the view for UI RPC
-     */
-    setTimerUI: function(time){
-      var self = SDL.AlertManeuverPopUp;
-      self.set('timeout', time);
-      clearTimeout(self.timer);
-      self.timer = setTimeout(
-        function() {
-          self.set('active', false);
-          clearTimeout(self.timer);
-          self.set('content1', '');
-          self.set('content2', '');
-          self.set('content3', '');
-        }, self.timeout
-      );
+      SDL.ResetTimeoutPopUp.ActivatePopUp();
     },
-
     /*
-     * function setTimerTTS. Sets the active timer of the view for TTS RPC
-     */
-    setTimerTTS: function(time){},
+    * function resetTimeoutCallback.
+    */
+    resetTimeoutCallback: function(time){
+      let self = SDL.AlertManeuverPopUp;
+      self.set('endTime', Date.now() + time);
+    }
 
   }
 );
