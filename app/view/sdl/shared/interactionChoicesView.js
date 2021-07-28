@@ -92,7 +92,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         ],
         click: function() {
           if (this._parentView.active) {
-            SDL.InteractionChoicesView.timerUpdate();
             FFW.BasicCommunication.OnResetTimeout(
               this.requestID, 'UI.PerformInteraction'
             );
@@ -131,7 +130,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         items: [],
         click: function() {
           if (this._parentView.active) {
-            SDL.InteractionChoicesView.timerUpdate();
             FFW.BasicCommunication.OnResetTimeout(
               this.requestID, 'UI.PerformInteraction'
             );
@@ -139,7 +137,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         }
       }
     ),
-    timer: null,
     timeout: null,
     endTime: null,
     search: false,
@@ -152,26 +149,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
      * Id of app initiated performInteraction request
      */
     appID: null,
-    /**
-     * Method updates popup timer when data changes through keyboard
-     */
-    timerUpdate: function(timer) {
-      self = SDL.InteractionChoicesView ?? this;
-      if(timer) {
-        self.timeout = timer;
-      }
-      if (self.timeout) {
-        clearTimeout(self.timer);
-
-        self.timeout = SDL.ResetTimeoutPopUp ? SDL.ResetTimeoutPopUp.timeoutSeconds['UI.PerformInteraction'] * 1000 : self.timeout
-        
-        self.timer = setTimeout(
-          function() {
-            SDL.InteractionChoicesView.deactivate('TIMED_OUT');
-          }, self.timeout
-        );
-      }
-    }.observes('this.input.value'),
     /**
      * Activate window and set caption text
      *
@@ -254,12 +231,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           this.set('icon', false);
           this.set('search', false);
           this.set('active', true);
-        } else {
-          this.timer = setTimeout(
-            function() {
-              SDL.InteractionChoicesView.deactivate('TIMED_OUT');
-            }, message.params.timeout
-          );
         }
       }
     },
@@ -272,11 +243,8 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
       }
       if (SDL.SDLModel.data.performInteractionSession.length > 0 &&
         result != 'ABORTED') {
-        this.timerUpdate();
       } else {
-        clearTimeout(this.timer);
         this.set('endTime', null);
-        this.timer = null;
         this.set('active', false);
         SDL.SDLController.VRMove();
         SDL.Keyboard.deactivate();
@@ -292,6 +260,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
               this.appID, SDL.SDLModel.data.resultCode['ABORTED'],
               null, null, "UI.PerformInteraction has been aborted"
             );
+            SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.PerformInteraction',false,false);
             break;
           }
           case 'TIMED_OUT':
@@ -308,6 +277,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
               this.appID, SDL.SDLModel.data.resultCode.SUCCESS, choiceID,
               this.input.value
             );
+            SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.PerformInteraction',false,false);
             break;
           }
           case 'WARNINGS':
@@ -316,6 +286,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
               this.appID, SDL.SDLModel.data.resultCode.WARNINGS, choiceID,
               this.input.value, this.imagesValidationInfo
             );
+            SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.PerformInteraction',false,false);
             break;
           }
           default:
@@ -397,12 +368,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
 
       var self = this;
       this.set('endTime', Date.now() + timeout);
-      clearTimeout(this.timer);
-      this.timer = setTimeout(
-        function() {
-          self.deactivate('TIMED_OUT');
-        }, timeout
-      );
     },
     /**
      * Update choises list with actual set id
@@ -464,12 +429,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         function() {
           SDL.SDLModel.data.interactionListWrapper.refresh();
         }, 0
-      );
-      clearTimeout(this.timer);
-      this.timer = setTimeout(
-        function() {
-          self.deactivate('TIMED_OUT');
-        }, timeout
       );
     },
 

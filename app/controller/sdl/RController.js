@@ -553,25 +553,23 @@ SDL.RController = SDL.SDLController.extend(
             }
           }
         );
-
-        SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
-        SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(function() {
-          Em.Logger.log('Consent timeout has been reset');
-        } , request.method);
-        SDL.ResetTimeoutPopUp.setContext(request.method);
-        SDL.ResetTimeoutPopUp.expandCallbacks(function() {
-          if (popUp && popUp.active) {
-            popUp.deactivate();
-            if (!timedOutSended) {
-              FFW.RC.sendError(
-                SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
-                request.method, 'The resource is in use and the driver did not respond in time'
-              );
-              timedOutSended = true;
+        SDL.ResetTimeoutPopUp.addRpc(
+          request,
+          () => {
+            if (popUp && popUp.active) {
+              popUp.deactivate();
+              if (!timedOutSended) {
+                FFW.RC.sendError(
+                  SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
+                  request.method, 'The resource is in use and the driver did not respond in time'
+                );
+                timedOutSended = true;
+              }
             }
-          }
-        }, request.method);
-
+          },
+          () => {Em.Logger.log('Consent timeout has been reset');}
+        );
+        SDL.ResetTimeoutPopUp.setContext(request.method);
         SDL.ResetTimeoutPopUp.ActivatePopUp();
       });
     },

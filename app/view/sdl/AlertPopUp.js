@@ -59,8 +59,6 @@ SDL.AlertPopUp = Em.ContainerView.create(
     content2: '',
     content3: '',
     active: false,
-    timer: null,
-    timeout: null,
     ttsTimer: null,
     ttsTimeout: null,
     endTime: null,
@@ -147,6 +145,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
       this.set('content1', '');
       this.set('content2', '');
       this.set('content3', '');
+      if(reason !== 'timeout') SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Alert');
       if ((reason == 'timeout' &&
         this.softbuttons.buttons._childViews.length > 0) ||
         reason === 'ABORTED') {
@@ -288,31 +287,13 @@ SDL.AlertPopUp = Em.ContainerView.create(
         }
       }
       this.set('active', true);
-      this.setTimerUI(message.duration ? message.duration : this.defaultTimeout);
-      
     },
-
     /*
-     * function setTimerTTS. Sets the active timer of the view for TTS RPC
-     */
-    setTimerTTS: function(time){},
-
-    /*
-     * function setTimerUI. Sets the active timer of the view for UI RPC
-     */
-    setTimerUI: function(time){
-      var self = SDL.AlertPopUp;
-      self.set('timeout', time);
-      clearTimeout(self.timer);
-      self.timer = setTimeout(
-        function() {
-          self.set('active', false);
-          clearTimeout(self.timer);
-          self.set('content1', '');
-          self.set('content2', '');
-          self.set('content3', '');
-        }, self.timeout
-      );
-    }
+        * function resetTimeoutCallback.
+        */
+    resetTimeoutCallback: function(time){
+      let self = SDL.AlertPopUp;
+      self.set('endTime', Date.now() + time);
+  }
   }
 );

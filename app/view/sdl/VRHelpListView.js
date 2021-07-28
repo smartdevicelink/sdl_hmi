@@ -58,11 +58,6 @@ SDL.VRHelpListView = SDL.SDLAbstractView.create(
 
       }
       SDL.SDLController.VRMove();
-      SDL.ResetTimeoutPopUp.resetTimeoutRPCs.removeObject('VR.PerformInteraction');
-
-      if(0 == SDL.ResetTimeoutPopUp.resetTimeoutRPCs.length) {
-        SDL.ResetTimeoutPopUp.DeactivatePopUp();
-      }
 
     },
     /**

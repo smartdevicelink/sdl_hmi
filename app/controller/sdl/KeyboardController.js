@@ -92,9 +92,7 @@ SDL.KeyboardController = Em.Object.create({
      */
     inputChanges: function(element) {
         if (this.appModel && this.appModel.activeRequests.uiPerformInteraction) {
-          FFW.BasicCommunication.OnResetTimeout(
-            this.requestID, 'UI.PerformInteraction'
-            );
+          SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.PerformInteraction');
         }
 
         switch (element.text) {

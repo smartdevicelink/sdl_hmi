@@ -142,7 +142,6 @@ FFW.TTS = FFW.RPCObserver.create(
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.TTS.onRPCRequest');
       this._super();
-      SDL.ResetTimeoutPopUp.requestIDs[request.method] =  request.id;
       switch (request.method) {
         case 'TTS.Speak':
         {
@@ -180,7 +179,7 @@ FFW.TTS = FFW.RPCObserver.create(
             });
           }
 
-          if (SDL.TTSPopUp.active || rejectCallbacks.length > 0) {
+          if (SDL.ResetTimeoutPopUp.includes(request.method) || rejectCallbacks.length > 0) {
             FFW.TTS.sendError(
               SDL.SDLModel.data.resultCode.REJECTED, request.id, 'TTS.Speak',
               'TTS in progress. Rejected.'
@@ -192,20 +191,16 @@ FFW.TTS = FFW.RPCObserver.create(
           }
 
           this.requestId = request.id;
-          SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
-          SDL.ResetTimeoutPopUp.expandCallbacks(function(){
-            SDL.SDLController.TTSResponseHandler();
-          }, request.method);
-
-          if (SDL.ResetTimeoutPopUp.resetTimeoutRPCs.includes("UI.Alert")) {
-            SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertPopUp.setTimerTTS, request.method);
-          } else {
-            SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertManeuverPopUp.setTimerTTS, request.method);
-          }
+          SDL.ResetTimeoutPopUp.addRpc(
+            request,
+            SDL.SDLController.TTSResponseHandler,
+            undefined,
+            SDL.ResetTimeoutPopUp.getTimeoutForRpc(request.params.speakType)
+          );
 
           SDL.ResetTimeoutPopUp.ActivatePopUp();
           SDL.SDLModel.onPrompt(
-            request.params.ttsChunks, request.params.appID
+            request.params.ttsChunks
           );
           if (request.params.playTone) {
             SDL.SDLModel.onPlayTone();
@@ -356,9 +351,6 @@ FFW.TTS = FFW.RPCObserver.create(
      */
     sendError: function(resultCode, id, method, message) {
       Em.Logger.log('FFW.' + method + 'Response');
-      if(SDL.ResetTimeoutPopUp.active) {
-        SDL.ResetTimeoutPopUp.DeactivatePopUp();
-      }
       // send response
       var JSONMessage = {
         'jsonrpc': '2.0',

@@ -68,9 +68,6 @@ SDL.SliderView = SDL.SDLAbstractView.create(
      */
     deactivate: function(timeout) {
       this._super();
-      this.timeout = null;
-      clearTimeout(this.timer);
-      this.timer = null;
       if (timeout === true) {
         FFW.UI.sendSliderResult(
           SDL.SDLModel.data.resultCode['TIMED_OUT'],
@@ -84,6 +81,7 @@ SDL.SliderView = SDL.SDLAbstractView.create(
         );
       }
       else {
+        if(SDL.ResetTimeoutPopUp.includes('UI.Slider')) SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Slider');
         FFW.UI.sendSliderResult(
           SDL.SDLModel.data.resultCode['ABORTED'], this.get('sliderRequestId'),
           this.get('adjustControl.sliderValue.value')
@@ -103,29 +101,11 @@ SDL.SliderView = SDL.SDLAbstractView.create(
     activate: function(timeout) {
       var self = SDL.SliderView;
       self.set('active', true);
-      self.set('timeout', timeout);
-      clearTimeout(self.timer);
-      self.timer = setTimeout(
-        function() {
-          if (self.active) {
-            self.deactivate(null);
-          }
-        }, self.timeout
-      );
     },
  
     dataChange: function() {
-      if (this.timeout) {
-        var self = this;
-        clearTimeout(this.timer);
-        this.timer = setTimeout(
-          function() {
-            self.deactivate(true);
-          }, this.timeout
-        );
-
-        SDL.ResetTimeoutPopUp.resetTimeout();
-      }
+      if(SDL.ResetTimeoutPopUp && SDL.ResetTimeoutPopUp.active)
+        SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.Slider');
     }.observes('this.adjustControl.sliderValue.value'),
     okButton: SDL.Button.extend(
       {

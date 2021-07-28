@@ -563,6 +563,7 @@ SDL.SDLController = Em.Object.extend(
             FFW.TTS.requestId, 'TTS.Speak'
           );
         }
+        SDL.ResetTimeoutPopUp.setContext('');
         FFW.TTS.Stopped();
         FFW.TTS.requestId = null;
         FFW.TTS.aborted = false;
@@ -624,7 +625,7 @@ SDL.SDLController = Em.Object.extend(
     activateVRPopUp: function() {
       if (FFW.TTS.requestId) {
         FFW.TTS.aborted = true;
-        SDL.TTSPopUp.DeactivateTTS();
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('TTS.Speak', true);
       }
       if (SDL.AlertPopUp.active) {
         SDL.AlertPopUp.deactivate('ABORTED');
@@ -688,6 +689,7 @@ SDL.SDLController = Em.Object.extend(
      * opened popUp
      */
     closePopUp: function(methodName) {
+      // SDL.ResetTimeoutPopUp.stopRpcProcessing(methodName);
       if (methodName == 'UI.Alert') {
         SDL.AlertPopUp.deactivate();
       } else if (methodName === 'UI.SubtleAlert') {
@@ -775,9 +777,6 @@ SDL.SDLController = Em.Object.extend(
       SDL.SDLController.getApplicationModel(
         appID
       ).activeRequests.uiPerformInteraction = null;
-      if (SDL.TTSPopUp.active && FFW.TTS.requestId == null) {
-        SDL.TTSPopUp.DeactivateTTS();
-      }
     },
     /**
      * Method to sent notification ABORTED for VR PerformInteraction
@@ -787,9 +786,8 @@ SDL.SDLController = Em.Object.extend(
         SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction, result,
         choiceID
       );
-      SDL.InteractionChoicesView.timerUpdate();
-      if (choiceID && SDL.TTSPopUp.active && FFW.TTS.requestId == null) {
-        SDL.TTSPopUp.DeactivateTTS();
+      if(SDL.SDLModel.data.resultCode.TIMED_OUT !== result) {
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('VR.PerformInteraction', false, false);
       }
       SDL.SDLModel.data.interactionData.helpPrompt = null;
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = null;

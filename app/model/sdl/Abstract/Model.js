@@ -1472,7 +1472,11 @@ SDL.SDLModel = Em.Object.extend({
         FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS,
           message.id, 'UI.PerformInteraction'
         );
-        return true;
+        if(SDL.ResetTimeoutPopUp.includes('VR.PerformInteraction') && !SDL.ResetTimeoutPopUp.active) {
+                SDL.ResetTimeoutPopUp.resetTimeOutLabel();
+                SDL.ResetTimeoutPopUp.ActivatePopUp();
+        }
+        return false;
       }
 
       SDL.SDLController.getApplicationModel(message.params.appID)
@@ -1512,18 +1516,18 @@ SDL.SDLModel = Em.Object.extend({
     SDL.ResetTimeoutPopUp.timeoutSeconds = defaultTimeout;
     setTimeout(function() {
         if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
-          SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
+          SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
         } else if (!message.params.grammarID &&
           SDL.SDLController.getApplicationModel(message.params.appID
           ).activeRequests.uiPerformInteraction) {
           // If UI PerformInteraction session is still active and PerformInteraction mode is MANUAL only
-          SDL.SDLModel.onPrompt(message.params.timeoutPrompt,false);
+          SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
         }
 
       }, message.params.timeout - 2000
       ); //Magic numer is a platform depended HMI behavior: -2 seconds for timeout prompt
 
-    SDL.SDLModel.onPrompt(message.params.initialPrompt);
+    SDL.SDLModel.VRonPrompt(message.params.initialPrompt);
 
     SDL.SDLModel.data.interactionData.helpPrompt = message.params.helpPrompt;
 
@@ -1531,9 +1535,6 @@ SDL.SDLModel = Em.Object.extend({
 
       this.data.set('performInteractionSession', message.params.grammarID);
       SDL.SDLModel.data.set('VRActive', true);
-      this.vrTimeout(message.params.timeout);
-
-      SDL.InteractionChoicesView.timerUpdate();
     } else {
 
       SDL.SDLController.vrInteractionResponse(
@@ -1541,41 +1542,49 @@ SDL.SDLModel = Em.Object.extend({
       );
     }
   },
-  
+
+  VRonPrompt(ttsChunks) {
+    var message = '', files = '';
+    if (ttsChunks) {
+      for (var i = 0; i < ttsChunks.length; i++) {
+        if ('TEXT' == ttsChunks[i].type) {
+          message += ttsChunks[i].text + '\n';
+        }
+        if ('FILE' == ttsChunks[i].type) {
+          files += ttsChunks[i].text + '\n';
+        }
+      }
+      FFW.TTS.Started();
+      SDL.ResetTimeoutPopUp.play(files);
+      const TTS_TIMEOUT = 3000;
+      setTimeout(() => {
+        FFW.TTS.Stopped();
+        SDL.ResetTimeoutPopUp.setContext('');
+      }, TTS_TIMEOUT);
+      SDL.ResetTimeoutPopUp.setContext(message);
+    } else if(FFW.TTS.requestId){
+      FFW.TTS.sendError(
+       SDL.SDLModel.data.resultCode.WARNINGS,
+       FFW.TTS.requestId,
+       'TTS.Speak',
+       'No TTS Chunks provided in Speak request'
+      );
+      FFW.TTS.requestId = null;
+    }
+  },
+
   /**
-   * deactivateVr function.
+   * deactivateVrInteraction function.
    */
-  deactivateVr: function() {
+  deactivateVrInteraction: function() {
     SDL.SDLController.vrInteractionResponse(
         SDL.SDLModel.data.resultCode.TIMED_OUT
       );
+    SDL.ResetTimeoutPopUp.vrPerformInteractionDisableCheckBox()
     SDL.SDLModel.data.set('VRActive', false);
 
   },
 
-  /**
-   * vrTimeout function
-   */
-  vrTimeout: function(timer) {
-    self = SDL.SDLModel;
-    clearTimeout(self.timeout);
-    self.timeout = setTimeout(function() {
-        if (SDL.SDLModel.data.VRActive) {
-          if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
-            SDL.ResetTimeoutPopUp.vrPerformInteractionDisableCheckBox()
-            SDL.SDLController.vrInteractionResponse(
-              SDL.SDLModel.data.resultCode['TIMED_OUT']
-            );
-          } else {
-            console.error(
-              'SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction is empty!'
-            );
-          }
-          SDL.SDLModel.data.set('VRActive', false);
-        }
-      }, timer - RESPONSE_CORRELATION
-    );
-  },
   /**
    * SDL UI Slider response handler show popup window
    *
@@ -1658,10 +1667,6 @@ SDL.SDLModel = Em.Object.extend({
       FFW.TTS.Started();
       SDL.ResetTimeoutPopUp.play(files);
       const TTS_TIMEOUT = 3000;
-      setTimeout(() => {
-        FFW.TTS.Stopped();
-        SDL.ResetTimeoutPopUp.setContext('');
-      }, TTS_TIMEOUT);
       if(setContext === true) SDL.ResetTimeoutPopUp.setContext(message);
     } else if(FFW.TTS.requestId){
       FFW.TTS.sendError(
@@ -1689,6 +1694,7 @@ SDL.SDLModel = Em.Object.extend({
       //true parameter makes send error response ABORTED
       FFW.TTS.set('aborted', true);
       SDL.SDLController.TTSResponseHandler();
+      SDL.ResetTimeoutPopUp.stopRpcProcessing('TTS.Speak');
     },
 
   /**

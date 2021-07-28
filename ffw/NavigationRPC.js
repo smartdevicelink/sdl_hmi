@@ -174,7 +174,6 @@ FFW.Navigation = FFW.RPCObserver.create(
      */
     onRPCRequest: function(request) {
       Em.Logger.log('FFW.Navigation.onRPCRequest');
-      SDL.ResetTimeoutPopUp.requestIDs[request.method] =  request.id;
       if (this.validationCheck(request)) {
         switch (request.method) {
           case 'Navigation.IsReady':
@@ -214,23 +213,6 @@ FFW.Navigation = FFW.RPCObserver.create(
           case 'Navigation.AlertManeuver':
           {
             SDL.AlertManeuverPopUp.AlertManeuverActive(request);
-
-            SDL.ResetTimeoutPopUp.extendResetTimeoutRPCs([request.method]);
-            SDL.ResetTimeoutPopUp.extendResetTimeoutCallBack(SDL.AlertManeuverPopUp.setTimerUI , request.method);
-            SDL.ResetTimeoutPopUp.setContext(request.method);
-            SDL.ResetTimeoutPopUp.expandCallbacks(function(){
-              SDL.AlertManeuverPopUp.deactivate('timeout');
-            }, request.method);
-
-            SDL.ResetTimeoutPopUp.set('timeoutSeconds',
-              {
-                    'Navigation.AlertManeuver': SDL.AlertManeuverPopUp.timeout/1000,
-                    'TTS.Speak': SDL.AlertManeuverPopUp.ttsTimeout/1000
-              }
-            );
-
-            SDL.ResetTimeoutPopUp.ActivatePopUp();
-
             break;
           }
           case 'Navigation.ShowConstantTBT':
