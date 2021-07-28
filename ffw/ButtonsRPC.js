@@ -206,7 +206,7 @@ FFW.Buttons = FFW.RPCObserver.create(
           } else {
             try {
               if (this.isButtonSubscribed(appID, buttonName)) {
-                const code = FFW.RPCHelper.getUnSubscribeButtonCustomResultCode(appID, buttonName);
+                const code = FFW.RPCHelper.getUnsubscribeButtonCustomResultCode(appID, buttonName);
                 console.log("Button " + buttonName + " " + code + " Unsubscribe");
                 this.sendButtonsResult(code, request.id, request.method);
                 if (FFW.RPCHelper.isSuccessResultCode(code)) {
