@@ -741,6 +741,7 @@ SDL.RCModulesController = Em.Object.create({
     updateCurrentModels: function(location_name) {
         this.set('currentClimateModel', this.getCoveringModuleModel('CLIMATE', location_name));
         this.set('currentAudioModel', this.getCoveringModuleModel('AUDIO', location_name));
+        this.set('currentSeatModel', this.getCoveringModuleModel('SEAT', location_name));
         this.set('currentRadioModel', this.getCoveringModuleModel('RADIO', location_name));
         this.set('currentHMISettingsModel', this.getCoveringModuleModel('HMI_SETTINGS', location_name));
         this.set('currentLightModel', this.getCoveringModuleModel('LIGHT', location_name));
