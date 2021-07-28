@@ -159,7 +159,7 @@ FFW.RPCHelper = Em.Object.create(
       const resultCodeAsNumber = SDL.SDLModel.data.resultCode[resultCodeAsString];
       return resultCodeAsNumber;
     },
-    getUnSubscribeButtonCustomResultCode: function(appID, buttonName) {
+    getUnsubscribeButtonCustomResultCode: function(appID, buttonName) {
       const resultCodeAsString = this.appContainer[appID][UNSUBSCRIBE_BTN_METHOD_NAME][buttonName];
       if(resultCodeAsString === DO_NOT_RESPOND_RES_CODE) throw new Error(DO_NOT_RESPOND_RES_CODE);
       const resultCodeAsNumber = SDL.SDLModel.data.resultCode[resultCodeAsString];
@@ -216,11 +216,11 @@ FFW.RPCHelper = Em.Object.create(
          this.set(`rpcStruct.${key}`, this.defaultRpcStruct[key]);
        };
        for(key in this.SubscribeButton){
-        this.set(`SubscribeButton.${key}`, this.defaultSubscribeButton[key]);
-      };
-      for(key in this.UnsubscribeButton) {
-        this.set(`UnsubscribeButton.${key}`,this.defaultUnsubscribeButton[key]);
-      }
+         this.set(`SubscribeButton.${key}`, this.defaultSubscribeButton[key]);
+       };
+       for(key in this.UnsubscribeButton) {
+         this.set(`UnsubscribeButton.${key}`,this.defaultUnsubscribeButton[key]);
+       }
     },
 
     /*

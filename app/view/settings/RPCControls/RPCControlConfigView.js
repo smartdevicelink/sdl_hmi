@@ -38,7 +38,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
         'resetButton',
         'appNameLabel',
         'SubscribeButton',
-        'UnSubscribeButton'
+        'UnsubscribeButton'
     ],
     appNameLabel: SDL.Label.extend({
         elementId: 'appNameLabel',
@@ -133,7 +133,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
         elementId: 'resultCodeTracker',
         classNames: 'resultCodeTracker',
         childViews: [
-            'vrAddComandSelect',
+            'vrAddCommandSelect',
             'uiAddComandSelect',
             'addSubMenuSelect',
             'createInteractionChoiceSetSelect',
@@ -142,9 +142,9 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
             'rcsetGlobalPropertiesSelect',
             'uiCreateWindowSelect'
         ],
-        vrAddComandSelect: Em.Select.extend({
-            elementId: 'vrAddComandSelect',
-            classNames: 'vrAddComandSelect',
+        vrAddCommandSelect: Em.Select.extend({
+            elementId: 'vrAddCommandSelect',
+            classNames: 'vrAddCommandSelect',
             contentBinding: 'FFW.RPCHelper.customResultCodesList',
             valueBinding: 'FFW.RPCHelper.rpcStruct.vrAddCommand'
         }),
@@ -232,19 +232,19 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
             }
         }
     }),
-    UnSubscribeButton: Em.ContainerView.create({
-        elementId: 'UnSubscribeButton',
-        classNames: 'UnSubscribeButton',
+    UnsubscribeButton: Em.ContainerView.create({
+        elementId: 'UnsubscribeButton',
+        classNames: 'UnsubscribeButton',
         childViews: [
             'headerUnsubscribe'
         ],
         headerUnsubscribe: SDL.Label.extend({
             elementId: 'headerUnsub',
             classNames: 'headerUnsub',
-            content: 'UnSubscribe Button Result Codes:'
+            content: 'Unsubscribe Button Result Codes:'
         }),
         isFirstInit: true,
-        initUnSubscribeButtonView: function() {
+        initUnsubscribeButtonView: function() {
             if (!this.isFirstInit) {
                 return;
             }
@@ -252,8 +252,8 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
             let childViews = this.get('childViews');
             for (param in FFW.RPCHelper.UnsubscribeButton) {
                 childViews.pushObject(Em.ContainerView.create({
-                    elementId: `UnSubscribeButton${param}`,
-                    classNames: 'UnSubscribeButtonParam',
+                    elementId: `UnsubscribeButton${param}`,
+                    classNames: 'UnsubscribeButtonParam',
                     childViews: [
                         'label',
                         'select'

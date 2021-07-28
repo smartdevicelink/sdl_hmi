@@ -213,7 +213,7 @@
     direction: ltl;
 }
 
-.vrAddComandSelect {
+.vrAddCommandSelect {
     top: 60px;
     position: absolute;
 }
@@ -952,7 +952,6 @@
     height: 251px;
     width: 598px;
     left: 10px;
-    ;
 }
 
 #settingsView .lightModuleCurrent {
@@ -1022,29 +1021,29 @@ input[type=number]::-webkit-outer-spin-button {
     left: 160px;
 }
 
-.rpc_settings_separate_view .UnSubscribeButton {
+.rpc_settings_separate_view .UnsubscribeButton {
     top: 720px;
     position: absolute;
 }
 
-.rpc_settings_separate_view .UnSubscribeButton .headerUnsub {
+.rpc_settings_separate_view .UnsubscribeButton .headerUnsub {
     position: relative;
     left: 10px;
     white-space: nowrap;
 }
 
-.rpc_settings_separate_view .UnSubscribeButton .UnSubscribeButtonParam {
+.rpc_settings_separate_view .UnsubscribeButton .UnsubscribeButtonParam {
     position: relative;
     top: 20px;
     left: 58px;
     height: 25px;
 }
 
-.rpc_settings_separate_view .UnSubscribeButton .label {
+.rpc_settings_separate_view .UnsubscribeButton .label {
     position: absolute;
 }
 
-.rpc_settings_separate_view .UnSubscribeButton .select {
+.rpc_settings_separate_view .UnsubscribeButton .select {
     position: relative;
     left: 160px;
 }
