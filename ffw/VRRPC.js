@@ -258,10 +258,6 @@ FFW.VR = FFW.RPCObserver.create(
               undefined,
               request.params.timeout
             );
-            // if(0 < SDL.ResetTimeoutPopUp.getPRCsLength() && !SDL.ResetTimeoutPopUp.active) {
-            //   SDL.ResetTimeoutPopUp.resetTimeOutLabel();
-            //   SDL.ResetTimeoutPopUp.ActivatePopUp();
-            // }
             SDL.SDLModel.vrPerformInteraction(request);
             break;
           }

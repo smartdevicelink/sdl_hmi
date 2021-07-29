@@ -164,10 +164,10 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
           var self = this._parentView;
           self.set('endTime', Date.now() + self.timeout);
 
-          SDL.ResetTimeoutPopUp.resetTimeout();
+          SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.ScrollableMessage');
         }
       }
     )
   }
-  
+
 );

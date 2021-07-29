@@ -59,8 +59,6 @@ SDL.AlertPopUp = Em.ContainerView.create(
     content2: '',
     content3: '',
     active: false,
-    ttsTimer: null,
-    ttsTimeout: null,
     endTime: null,
     progressIndicator: false,
     reason: '',

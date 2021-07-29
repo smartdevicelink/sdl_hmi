@@ -548,9 +548,6 @@ SDL.RController = SDL.SDLController.extend(
             if(allowed.length == moduleIds.length) {
               FFW.RC.GetInteriorVehicleDataConsentResponse(request, allowed);
             }
-            if(SDL.ResetTimeoutPopUp.active) {
-              SDL.ResetTimeoutPopUp.DeactivatePopUp();
-            }
           }
         );
         SDL.ResetTimeoutPopUp.addRpc(

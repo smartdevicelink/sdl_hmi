@@ -179,7 +179,9 @@ FFW.TTS = FFW.RPCObserver.create(
             });
           }
 
-          if (SDL.ResetTimeoutPopUp.includes(request.method) || rejectCallbacks.length > 0) {
+          if (SDL.ResetTimeoutPopUp.includes(request.method)
+              || SDL.TTSPopUp.active
+              || rejectCallbacks.length > 0) {
             FFW.TTS.sendError(
               SDL.SDLModel.data.resultCode.REJECTED, request.id, 'TTS.Speak',
               'TTS in progress. Rejected.'

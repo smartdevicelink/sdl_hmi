@@ -564,6 +564,7 @@ SDL.SDLController = Em.Object.extend(
           );
         }
         SDL.ResetTimeoutPopUp.setContext('');
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('TTS.Speak');
         FFW.TTS.Stopped();
         FFW.TTS.requestId = null;
         FFW.TTS.aborted = false;
@@ -660,7 +661,7 @@ SDL.SDLController = Em.Object.extend(
         }
         case 'ScrollableMessage':
         {
-          SDL.ScrollableMessage.deactivate();
+          SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.ScrollableMessage', true);
           this.onActivateSDLApp(element);
           break;
         }
@@ -680,8 +681,15 @@ SDL.SDLController = Em.Object.extend(
     keepContextSoftButton: function(element) {
       switch (element.groupName) {
         case 'AlertManeuverPopUp':
+          {
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('Navigation.AlertManeuver');
+            break;
+          }
         case 'ScrollableMessage':
-          SDL.ResetTimeoutPopUp.resetTimeout();
+          {
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.ScrollableMessage');
+            break;
+          }
       }
     },
     /**
@@ -689,7 +697,6 @@ SDL.SDLController = Em.Object.extend(
      * opened popUp
      */
     closePopUp: function(methodName) {
-      // SDL.ResetTimeoutPopUp.stopRpcProcessing(methodName);
       if (methodName == 'UI.Alert') {
         SDL.AlertPopUp.deactivate();
       } else if (methodName === 'UI.SubtleAlert') {

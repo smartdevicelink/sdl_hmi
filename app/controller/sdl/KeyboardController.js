@@ -146,9 +146,7 @@ SDL.KeyboardController = Em.Object.create({
         }
 
         if (this.appModel && this.appModel.activeRequests.uiPerformInteraction) {
-          FFW.BasicCommunication.OnResetTimeout(
-            this.requestID, 'UI.PerformInteraction'
-            );
+          SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.PerformInteraction');
         }
     },
 

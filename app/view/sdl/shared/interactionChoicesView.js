@@ -92,11 +92,9 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         ],
         click: function() {
           if (this._parentView.active) {
-            FFW.BasicCommunication.OnResetTimeout(
-              this.requestID, 'UI.PerformInteraction'
-            );
-            }
-            SDL.ResetTimeoutPopUp.DeactivatePopUp();
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.PerformInteraction');
+          }
+          SDL.ResetTimeoutPopUp.DeactivatePopUp();
         },
         naviChoises: Em.ContainerView.extend(
           {
@@ -130,9 +128,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         items: [],
         click: function() {
           if (this._parentView.active) {
-            FFW.BasicCommunication.OnResetTimeout(
-              this.requestID, 'UI.PerformInteraction'
-            );
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.PerformInteraction');
           }
         }
       }

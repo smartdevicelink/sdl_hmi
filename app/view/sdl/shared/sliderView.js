@@ -75,13 +75,14 @@ SDL.SliderView = SDL.SDLAbstractView.create(
           this.get('adjustControl.sliderValue.value')
         );
       } else if (timeout === false) {
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Slider');
         FFW.UI.sendSliderResult(
           SDL.SDLModel.data.resultCode.SUCCESS, this.get('sliderRequestId'),
           this.get('adjustControl.sliderValue.value')
         );
       }
       else {
-        if(SDL.ResetTimeoutPopUp.includes('UI.Slider')) SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Slider');
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Slider');
         FFW.UI.sendSliderResult(
           SDL.SDLModel.data.resultCode['ABORTED'], this.get('sliderRequestId'),
           this.get('adjustControl.sliderValue.value')
@@ -114,7 +115,6 @@ SDL.SliderView = SDL.SDLAbstractView.create(
         onDown: false,
         click: function() {
           SDL.SliderView.deactivate(false);
-          SDL.ResetTimeoutPopUp.DeactivatePopUp();
         }
       }
     ),
