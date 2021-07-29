@@ -55,8 +55,6 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         content1: '',
         content2: '',
         active: false,
-        ttsTimer: null,
-        ttsTimeout: null,
         endTime: null,
         reason: '',
         message: undefined,
@@ -73,7 +71,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
                 SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
             } else{
-                SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.SubtleAlert', true);
+                SDL.SubtleAlertPopUp.deactivate();
             }
         },
         /**

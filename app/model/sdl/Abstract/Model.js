@@ -71,11 +71,6 @@ SDL.SDLModel = Em.Object.extend({
 
   applicationStatusBar: '',
 
-  /**
-   * timeout for VR
-   */
-  timeout: null,
-
   updateStatusBar: function() {
 
     if (this.data.limitedExist &&
@@ -1058,6 +1053,13 @@ SDL.SDLModel = Em.Object.extend({
           SDL.SDLController.getApplicationModel(request.params.appID).appName,
           request.params, messageRequestId
         );
+        SDL.ResetTimeoutPopUp.addRpc(
+          request,
+          () => {SDL.ScrollableMessage.deactivate();},
+          SDL.ScrollableMessage.resetTimeoutCallback,
+          request.params.timeout
+        );
+        SDL.ResetTimeoutPopUp.ActivatePopUp();
       }
       return true;
     } else {
@@ -1341,12 +1343,22 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Number}
    *            alertRequestId Id of current handled request
    */
-  onUIAlert: function(message, alertRequestId) {
+  onUIAlert: function(message) {
 
-    let appModel = SDL.SDLController.getApplicationModel(message.appID)
+    let appModel = SDL.SDLController.getApplicationModel(message.params.appID)
 
     if (!SDL.AlertPopUp.active) {
-      SDL.AlertPopUp.AlertActive(message, alertRequestId, appModel.priority);
+      SDL.AlertPopUp.AlertActive(message.params, message.id, appModel.priority);
+      if(!message.params.softButtons){
+        SDL.ResetTimeoutPopUp.addRpc(
+          message,
+          () => {SDL.AlertPopUp.deactivate('timeout')},
+          SDL.AlertPopUp.resetTimeoutCallback,
+          message.params.duration
+        );
+        SDL.ResetTimeoutPopUp.ActivatePopUp();
+        SDL.ResetTimeoutPopUp.setContext('UI.Alert');
+      }
       return true;
     } else {
       let currentAlertPriority = SDL.AlertPopUp.priority
@@ -1355,16 +1367,16 @@ SDL.SDLModel = Em.Object.extend({
           if (SDL.SDLModel.data.appPriority[currentAlertPriority] > SDL.SDLModel.data.appPriority[appModel.priority]) {
             // Enum is arranged in descending order (EMERGENCY being the highest, NONE being the lowest)
             SDL.AlertPopUp.deactivate('ABORTED', 'Lower priority than the incoming alert')
-            SDL.AlertPopUp.AlertActive(message, alertRequestId, appModel.priority);
+            SDL.AlertPopUp.AlertActive(message.params, message.id, appModel.priority);
             return true;
           }
       }
 
-      if (message.alertType == "BOTH") {
+      if (message.params.alertType == "BOTH") {
         let callback = () => {
           Em.Logger.log("Received TTS.Speak for UI.Alert. Sending response");
           SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
-            alertRequestId
+            message.id
           );
         };
         appModel.ttsSpeakListenerCallbacks.push({
@@ -1376,7 +1388,7 @@ SDL.SDLModel = Em.Object.extend({
       }
 
       SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
-        alertRequestId
+        message.id
       );
       return false;
     }
@@ -1390,7 +1402,7 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Number}
    *            subtleAlertRequestId Id of current handled request
    */
-  onUISubtleAlert: function(message, subtleAlertRequestId) {
+  onUISubtleAlert: function(message) {
     let is_allowed = false;
     let info = null;
     let waitTime = 0;
@@ -1414,13 +1426,13 @@ SDL.SDLModel = Em.Object.extend({
     }
 
     if (!is_allowed) {
-      if (message.alertType == "BOTH") {
+      if (message.params.alertType == "BOTH") {
         let callback = () => {
           Em.Logger.log("Received TTS.Speak for UI.SubtleAlert. Sending response");
           SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED,
-            subtleAlertRequestId, info, waitTime);
+            message.id, info, waitTime);
         };
-        let appModel = SDL.SDLController.getApplicationModel(message.appID);
+        let appModel = SDL.SDLController.getApplicationModel(message.params.appID);
         appModel.ttsSpeakListenerCallbacks.push({
           'type': 'SUBTLE_ALERT',
           'callback': callback
@@ -1430,9 +1442,18 @@ SDL.SDLModel = Em.Object.extend({
       }
 
       SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED,
-        subtleAlertRequestId, info, waitTime);
+        message.id, info, waitTime);
     } else {
-      SDL.SubtleAlertPopUp.SubtleAlertActive(message, subtleAlertRequestId);
+      SDL.SubtleAlertPopUp.SubtleAlertActive(message.params, message.id);
+      if(!('softButtons' in message.params)){
+        SDL.ResetTimeoutPopUp.addRpc(
+          message,
+          () => {SDL.SubtleAlertPopUp.deactivate('timeout');},
+          SDL.SubtleAlertPopUp.resetTimeoutCallback,
+          message.params.duration
+        )
+        SDL.ResetTimeoutPopUp.ActivatePopUp();
+      }
     }
 
     return is_allowed;
@@ -1511,9 +1532,6 @@ SDL.SDLModel = Em.Object.extend({
       return;
     }
 
-    var appID = message.params.appID;
-    var defaultTimeout = 10;
-    SDL.ResetTimeoutPopUp.timeoutSeconds = defaultTimeout;
     setTimeout(function() {
         if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
           SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
@@ -1596,6 +1614,13 @@ SDL.SDLModel = Em.Object.extend({
     if (!SDL.SliderView.active) {
       SDL.SDLController.getApplicationModel(message.params.appID).
           onSlider(message);
+      SDL.ResetTimeoutPopUp.addRpc(
+        message,
+        () => {SDL.SliderView.deactivate(true);},
+        undefined,
+        message.params.timeout
+      );
+      SDL.ResetTimeoutPopUp.ActivatePopUp();
       return true;
     } else {
       FFW.UI.sendSliderResult(this.data.resultCode.REJECTED, message.id);
@@ -1694,7 +1719,6 @@ SDL.SDLModel = Em.Object.extend({
       //true parameter makes send error response ABORTED
       FFW.TTS.set('aborted', true);
       SDL.SDLController.TTSResponseHandler();
-      SDL.ResetTimeoutPopUp.stopRpcProcessing('TTS.Speak');
     },
 
   /**

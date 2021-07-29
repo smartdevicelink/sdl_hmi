@@ -173,7 +173,6 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             this.contextView.set('content', msg)
         }
     },
-    timeoutSeconds: {},
     timeoutString: '',
     defaultTimeout: 10,
     resetPeriod: 10,
@@ -227,7 +226,8 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
                     value.timeoutSeconds -= 1;
                     message = message + `${value.method} : ${value.timeoutSeconds}\n`
                 }
-                this.set('timeoutString', message);
+                this.timerHandler();
+                this.resetTimeOutLabel();
             }
             , 1000
         );
@@ -344,13 +344,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
                 }
             }
             timeoutExpired.forEach((requestID, index) => {
-                if (this.resetTimeoutRPCs[requestID].method != 'VR.PerformInteraction'
-                    && this.resetTimeoutRPCs[requestID].method != 'UI.PerformInteraction') {
-                    this.resetTimeoutRPCs[requestID].callback();
-                    document.getElementById(this.resetTimeoutRPCs[requestID].method + 'checkBox').disabled = true;
-                } else {
-                    this.resetTimeoutRPCs[requestID].callback();
-                }
+                this.resetTimeoutRPCs[requestID].callback();
                 delete this.resetTimeoutRPCs[requestID];
             });
             length = this.getPRCsLength();
@@ -365,7 +359,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             this.DeactivatePopUp();
         }
 
-    }.observes('this.timeoutString'),
+    },
 
     /*
      * vrPerformInteractionDisableCheckBox function. deactivate checkbox for VR.PerformInteraction and activate checkbox for UI.PerformInteraction

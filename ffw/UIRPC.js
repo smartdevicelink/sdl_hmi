@@ -167,19 +167,7 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.Alert':
           {
-            if (SDL.SDLModel.onUIAlert(request.params, request.id)) {
-              if(!request.params.softButtons){
-                SDL.ResetTimeoutPopUp.addRpc(
-                  request,
-                  () => {SDL.AlertPopUp.deactivate('timeout')},
-                  SDL.AlertPopUp.resetTimeoutCallback,
-                  request.params.duration
-                );
-                SDL.ResetTimeoutPopUp.ActivatePopUp();
-                SDL.ResetTimeoutPopUp.setContext(request.method);
-              }
-            }
-
+            SDL.SDLModel.onUIAlert(request);
             SDL.SDLController.onSystemContextChange(request.params.appID);
 
             SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -191,19 +179,7 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SubtleAlert':
           {
-            if (SDL.SDLModel.onUISubtleAlert(request.params, request.id)) {
-              if(!('softButtons' in request.params)){
-                SDL.ResetTimeoutPopUp.addRpc(
-                  request,
-                  () => {SDL.SubtleAlertPopUp.deactivate('timeout');},
-                  SDL.SubtleAlertPopUp.resetTimeoutCallback,
-                  request.params.duration
-                )
-
-                SDL.ResetTimeoutPopUp.ActivatePopUp();
-              }
-            }
-
+            SDL.SDLModel.onUISubtleAlert(request);
             SDL.SDLController.onSystemContextChange(request.params.appID);
 
             SDL.SDLModel.data.registeredApps.forEach(app => {
@@ -391,24 +367,20 @@ FFW.UI = FFW.RPCObserver.create(
                 })
               })
 
-             var increase_value = 1;
-              var array = {};
+              let timeout = request.params.timeout;
               if(SDL.SDLModel.data.get('VRActive') == true){
-                array['VR.PerformInteraction'] = request.params.timeout/1000;
-                increase_value = 2;
+                const INCREASE_UI_TIMEOUT = 2;
+                timeout *= INCREASE_UI_TIMEOUT;
               } else {
                 SDL.ResetTimeoutPopUp.stopRpcProcessing('VR.PerformInteraction');
               }
-              array['UI.PerformInteraction'] =  request.params.timeout/1000 * increase_value;
 
               SDL.ResetTimeoutPopUp.addRpc(
                 request,
                 () => {SDL.InteractionChoicesView.deactivate('TIMED_OUT')},
                 undefined,
+                timeout
               );
-              for(const [method, timeout] of Object.entries(array)) {
-                SDL.ResetTimeoutPopUp.setTimeoutByRpcName(method, timeout);
-              }
               if(0 < SDL.ResetTimeoutPopUp.getPRCsLength() && !SDL.ResetTimeoutPopUp.active) {
                 SDL.ResetTimeoutPopUp.resetTimeOutLabel();
                 SDL.ResetTimeoutPopUp.ActivatePopUp();
@@ -441,7 +413,7 @@ FFW.UI = FFW.RPCObserver.create(
               SDL.AlertPopUp.deactivate("ABORTED");
             } else if (typeID === 25 && SDL.ScrollableMessage.active
                && (targetID === undefined || targetID === SDL.ScrollableMessage.cancelID)) {
-              SDL.ScrollableMessage.deactivate(true);
+              SDL.ScrollableMessage.deactivate('ABORTED');
             } else if (typeID === 26 && SDL.SliderView.active
                && (targetID === undefined || targetID === SDL.SliderView.cancelID)) {
               SDL.SliderView.deactivate();
@@ -486,14 +458,6 @@ FFW.UI = FFW.RPCObserver.create(
           case 'UI.Slider':
           {
             if (SDL.SDLModel.uiSlider(request)) {
-              SDL.ResetTimeoutPopUp.addRpc(
-                request,
-                () => {SDL.SliderView.deactivate(true);},
-                undefined,
-                request.params.timeout
-              );
-              SDL.ResetTimeoutPopUp.ActivatePopUp();
-
               SDL.SDLController.onSystemContextChange();
               SDL.SDLModel.data.registeredApps.forEach(app => {
                 app.activeWindows.forEach(widget => {
@@ -506,13 +470,6 @@ FFW.UI = FFW.RPCObserver.create(
           case 'UI.ScrollableMessage':
           {
             if (SDL.SDLModel.onSDLScrolableMessage(request, request.id)) {
-              SDL.ResetTimeoutPopUp.addRpc(
-                request,
-                () => {SDL.ScrollableMessage.deactivate();},
-                SDL.ScrollableMessage.resetTimeoutCallback,
-                request.params.timeout
-              );
-              SDL.ResetTimeoutPopUp.ActivatePopUp();
               SDL.SDLController.onSystemContextChange();
               SDL.SDLModel.data.registeredApps.forEach(app => {
                 app.activeWindows.forEach(widget => {
