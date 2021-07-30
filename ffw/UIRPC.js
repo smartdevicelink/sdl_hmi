@@ -167,8 +167,9 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.Alert':
           {
-            SDL.SDLModel.onUIAlert(request);
-            SDL.SDLController.onSystemContextChange(request.params.appID);
+            if(SDL.SDLModel.onUIAlert(request)) {
+              SDL.SDLController.onSystemContextChange(request.params.appID);
+            }
 
             SDL.SDLModel.data.registeredApps.forEach(app => {
               app.activeWindows.forEach(widget => {
@@ -179,8 +180,9 @@ FFW.UI = FFW.RPCObserver.create(
           }
           case 'UI.SubtleAlert':
           {
-            SDL.SDLModel.onUISubtleAlert(request);
-            SDL.SDLController.onSystemContextChange(request.params.appID);
+            if(SDL.SDLModel.onUISubtleAlert(request)) {
+              SDL.SDLController.onSystemContextChange(request.params.appID);
+            }
 
             SDL.SDLModel.data.registeredApps.forEach(app => {
               app.activeWindows.forEach(widget => {
@@ -413,7 +415,7 @@ FFW.UI = FFW.RPCObserver.create(
               SDL.AlertPopUp.deactivate("ABORTED");
             } else if (typeID === 25 && SDL.ScrollableMessage.active
                && (targetID === undefined || targetID === SDL.ScrollableMessage.cancelID)) {
-              SDL.ScrollableMessage.deactivate('ABORTED');
+              SDL.ScrollableMessage.deactivate(true);
             } else if (typeID === 26 && SDL.SliderView.active
                && (targetID === undefined || targetID === SDL.SliderView.cancelID)) {
               SDL.SliderView.deactivate();

@@ -224,31 +224,38 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 }
             }
         },
-        SubtleAlertActive: function (message, alertRequestId) {
+        SubtleAlertActive: function (message) {
             var self = this;
-            this.set('alertRequestId', alertRequestId);
-            this.set('cancelID', message.cancelID);
+            this.set('alertRequestId', message.id);
+            this.set('cancelID', message.params.cancelID);
             this.set('reason', 'timeout');
             this.set('message', undefined);
-            this.addSoftButtons(message.softButtons, message.appID);
-            this.set('endTime', Date.now() + message.duration);
-            this.set('appID', message.appID);
-            this.set('icon', message.alertIcon ? message.alertIcon.value : "images/sdl/Warning.png");
-            for (var i = 0; i < message.alertStrings.length; i++) {
-                switch (message.alertStrings[i].fieldName) {
+            this.addSoftButtons(message.params.softButtons, message.params.appID);
+            this.set('endTime', Date.now() + message.params.duration);
+            this.set('appID', message.params.appID);
+            this.set('icon', message.params.alertIcon ? message.params.alertIcon.value : "images/sdl/Warning.png");
+            for (var i = 0; i < message.params.alertStrings.length; i++) {
+                switch (message.params.alertStrings[i].fieldName) {
                     case 'subtleAlertText1':
                     {
-                        this.set('content1', message.alertStrings[i].fieldText);
+                        this.set('content1', message.params.alertStrings[i].fieldText);
                         break;
                     }
                     case 'subtleAlertText2':
                     {
-                        this.set('content2', message.alertStrings[i].fieldText);
+                        this.set('content2', message.params.alertStrings[i].fieldText);
                         break;
                     }
                 }
             }
             this.set('active', true);
+            SDL.ResetTimeoutPopUp.addRpc(
+                message,
+                () => {SDL.SubtleAlertPopUp.deactivate('timeout');},
+                SDL.SubtleAlertPopUp.resetTimeoutCallback,
+                message.params.duration || this.defaultTimeout
+            )
+            SDL.ResetTimeoutPopUp.ActivatePopUp();
         },
 
         /*

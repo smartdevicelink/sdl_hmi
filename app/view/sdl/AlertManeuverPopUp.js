@@ -225,13 +225,13 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     /**
      * Deactivate PopUp
      */
-    deactivate: function(message) {
+    deactivate: function(timeout) {
       const resultCode = this.iconsAreValid ?
         SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
 
-      if(!message) {
+      if(!timeout) {
         if (SDL.ResetTimeoutPopUp.includes('TTS.Speak')) {
-          SDL.ResetTimeoutPopUp.stopRpcProcessing('TTS.Speak', true);
+          SDL.SDLController.TTSResponseHandler();
         }
         SDL.ResetTimeoutPopUp.stopRpcProcessing('Navigation.AlertManeuver');
       }
@@ -258,7 +258,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       this.set('activate', true );
       SDL.ResetTimeoutPopUp.addRpc(
         message,
-        () => {SDL.AlertManeuverPopUp.deactivate('timeout')},
+        () => {SDL.AlertManeuverPopUp.deactivate(true)},
         SDL.AlertManeuverPopUp.resetTimeoutCallback,
         SDL.AlertManeuverPopUp.timeout
       )

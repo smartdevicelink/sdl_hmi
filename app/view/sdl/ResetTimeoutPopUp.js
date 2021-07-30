@@ -221,10 +221,8 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         clearInterval(this.timer);
         this.timer = setInterval(
             () => {
-                let message = '';
                 for (const [key, value] of Object.entries(this.resetTimeoutRPCs)) {
                     value.timeoutSeconds -= 1;
-                    message = message + `${value.method} : ${value.timeoutSeconds}\n`
                 }
                 this.timerHandler();
                 this.resetTimeOutLabel();

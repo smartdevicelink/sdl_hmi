@@ -1348,17 +1348,7 @@ SDL.SDLModel = Em.Object.extend({
     let appModel = SDL.SDLController.getApplicationModel(message.params.appID)
 
     if (!SDL.AlertPopUp.active) {
-      SDL.AlertPopUp.AlertActive(message.params, message.id, appModel.priority);
-      if(!message.params.softButtons){
-        SDL.ResetTimeoutPopUp.addRpc(
-          message,
-          () => {SDL.AlertPopUp.deactivate('timeout')},
-          SDL.AlertPopUp.resetTimeoutCallback,
-          message.params.duration
-        );
-        SDL.ResetTimeoutPopUp.ActivatePopUp();
-        SDL.ResetTimeoutPopUp.setContext('UI.Alert');
-      }
+      SDL.AlertPopUp.AlertActive(message);
       return true;
     } else {
       let currentAlertPriority = SDL.AlertPopUp.priority
@@ -1367,7 +1357,7 @@ SDL.SDLModel = Em.Object.extend({
           if (SDL.SDLModel.data.appPriority[currentAlertPriority] > SDL.SDLModel.data.appPriority[appModel.priority]) {
             // Enum is arranged in descending order (EMERGENCY being the highest, NONE being the lowest)
             SDL.AlertPopUp.deactivate('ABORTED', 'Lower priority than the incoming alert')
-            SDL.AlertPopUp.AlertActive(message.params, message.id, appModel.priority);
+            SDL.AlertPopUp.AlertActive(message);
             return true;
           }
       }
@@ -1444,16 +1434,7 @@ SDL.SDLModel = Em.Object.extend({
       SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED,
         message.id, info, waitTime);
     } else {
-      SDL.SubtleAlertPopUp.SubtleAlertActive(message.params, message.id);
-      if(!('softButtons' in message.params)){
-        SDL.ResetTimeoutPopUp.addRpc(
-          message,
-          () => {SDL.SubtleAlertPopUp.deactivate('timeout');},
-          SDL.SubtleAlertPopUp.resetTimeoutCallback,
-          message.params.duration
-        )
-        SDL.ResetTimeoutPopUp.ActivatePopUp();
-      }
+      SDL.SubtleAlertPopUp.SubtleAlertActive(message);
     }
 
     return is_allowed;
