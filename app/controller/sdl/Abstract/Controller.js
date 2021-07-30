@@ -661,7 +661,7 @@ SDL.SDLController = Em.Object.extend(
         }
         case 'ScrollableMessage':
         {
-          SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.ScrollableMessage', true);
+          SDL.ScrollableMessage.deactivate(true);
           this.onActivateSDLApp(element);
           break;
         }
