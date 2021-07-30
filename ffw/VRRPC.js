@@ -252,12 +252,6 @@ FFW.VR = FFW.RPCObserver.create(
               )
               return;
             }
-            SDL.ResetTimeoutPopUp.addRpc(
-              request,
-              () => {SDL.SDLModel.deactivateVrInteraction()},
-              undefined,
-              request.params.timeout
-            );
             SDL.SDLModel.vrPerformInteraction(request);
             break;
           }

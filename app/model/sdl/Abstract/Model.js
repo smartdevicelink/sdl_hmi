@@ -1486,7 +1486,17 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.InteractionChoicesView.activate(message);
       SDL.SDLController.VRMove();
-
+      SDL.ResetTimeoutPopUp.addRpc(
+        message,
+        () => {SDL.InteractionChoicesView.deactivate('TIMED_OUT')},
+        (timeout) => SDL.InteractionChoicesView.set('timeout', timeout),
+        message.params.timeout,
+        !SDL.SDLModel.data.VRActive
+      );
+      if(0 < SDL.ResetTimeoutPopUp.getPRCsLength() && !SDL.ResetTimeoutPopUp.active) {
+        SDL.ResetTimeoutPopUp.resetTimeOutLabel();
+        SDL.ResetTimeoutPopUp.ActivatePopUp();
+      }
       return true;
     } else {
       FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
@@ -1504,6 +1514,12 @@ SDL.SDLModel = Em.Object.extend({
    */
   vrPerformInteraction: function(message) {
 
+    SDL.ResetTimeoutPopUp.addRpc(
+      message,
+      () => {SDL.SDLModel.deactivateVrInteraction()},
+      undefined,
+      message.params.timeout
+    );
     if (!SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = message.id;
     } else {

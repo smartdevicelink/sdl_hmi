@@ -81,19 +81,21 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      * @param {number} timeoutSeconds
      * @description Function to add rpc for processing
      */
-    addRpc(req, callback, resetTimeoutCallback, timeoutSeconds) {
+    addRpc(req, callback, resetTimeoutCallback, timeoutSeconds, count = true) {
         const MS_TO_SEC = 1000;
         this.resetTimeoutRPCs[req.id] = {
             method: req.method,
             timeoutSeconds: timeoutSeconds ? timeoutSeconds / MS_TO_SEC : this.defaultTimeout,
             callback,
-            resetTimeoutCallback
+            resetTimeoutCallback,
+            count
         };
     },
 
     setTimeoutByRpcName(rpcName, timeout) {
+        const MS_TO_SEC = 1000;
         for (const [key, value] of Object.entries(this.resetTimeoutRPCs)) {
-            if (value.method === rpcName) value.timeoutSeconds = timeout;
+            if (value.method === rpcName) value.timeoutSeconds = timeout/MS_TO_SEC;
         }
     },
 
@@ -150,6 +152,12 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      */
     getPRCsLength() {
         return Object.keys(this.resetTimeoutRPCs).length;
+    },
+
+    startCountTimeoutByRPCName(rpcName) {
+        for (const [key, value] of Object.entries(this.resetTimeoutRPCs)) {
+            if (value.method === rpcName) value.count = true;
+        }
     },
 
     /*
@@ -222,7 +230,8 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         this.timer = setInterval(
             () => {
                 for (const [key, value] of Object.entries(this.resetTimeoutRPCs)) {
-                    value.timeoutSeconds -= 1;
+                    if(value.count === true)
+                        value.timeoutSeconds -= 1;
                 }
                 this.timerHandler();
                 this.resetTimeOutLabel();
@@ -255,8 +264,8 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         for (let [requestID, value] of Object.entries(this.resetTimeoutRPCs)) {
             var element = document.getElementById(value.method + 'checkBox');
             var checked = element.checked;
-            if (checked) {
-                value.timeoutSeconds = value.method === 'UI.PerformInteraction' ? this.resetPeriod * 2 : this.resetPeriod;
+            if (checked && value.count) {
+                value.timeoutSeconds = this.resetPeriod;
                 this.resetTimeOutLabel();
                 if (value.resetTimeoutCallback !== undefined) {
                     value.resetTimeoutCallback(value.timeoutSeconds * 1000);
@@ -293,6 +302,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
 
         reset = () => {
             const requestID = Object.keys(this.resetTimeoutRPCs)[0];
+            if(this.resetTimeoutRPCs[requestID].count === false) return;
             this.resetTimeoutRPCs[requestID].timeoutSeconds = this.resetPeriod;
             if (this.resetTimeoutRPCs[requestID].resetTimeoutCallback !== undefined) {
                 this.resetTimeoutRPCs[requestID].resetTimeoutCallback(this.resetTimeoutRPCs[requestID].timeoutSeconds * 1000);
@@ -329,8 +339,8 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         let length = this.getPRCsLength();
         if (1 < length) {
             timeoutExpired = [];
+            const TIME_OUT_EXPIRATION_SECONDS = 1;
             for (let [key, value] of Object.entries(this.resetTimeoutRPCs)) {
-                const TIME_OUT_EXPIRATION_SECONDS = 1;
                 if (TIME_OUT_EXPIRATION_SECONDS === value.timeoutSeconds) {
                     // Give higher priority to TTS part of the request
                     const tts_speak_index = value.method.indexOf('TTS.Speak');
@@ -342,8 +352,10 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
                 }
             }
             timeoutExpired.forEach((requestID, index) => {
-                this.resetTimeoutRPCs[requestID].callback();
-                delete this.resetTimeoutRPCs[requestID];
+                if(TIME_OUT_EXPIRATION_SECONDS === this.resetTimeoutRPCs[requestID].timeoutSeconds) {
+                    this.resetTimeoutRPCs[requestID].callback();
+                    delete this.resetTimeoutRPCs[requestID];
+                }
             });
             length = this.getPRCsLength();
             if (length === 0) {

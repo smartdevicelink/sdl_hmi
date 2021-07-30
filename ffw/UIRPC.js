@@ -369,24 +369,6 @@ FFW.UI = FFW.RPCObserver.create(
                 })
               })
 
-              let timeout = request.params.timeout;
-              if(SDL.SDLModel.data.get('VRActive') == true){
-                const INCREASE_UI_TIMEOUT = 2;
-                timeout *= INCREASE_UI_TIMEOUT;
-              } else {
-                SDL.ResetTimeoutPopUp.stopRpcProcessing('VR.PerformInteraction');
-              }
-
-              SDL.ResetTimeoutPopUp.addRpc(
-                request,
-                () => {SDL.InteractionChoicesView.deactivate('TIMED_OUT')},
-                undefined,
-                timeout
-              );
-              if(0 < SDL.ResetTimeoutPopUp.getPRCsLength() && !SDL.ResetTimeoutPopUp.active) {
-                SDL.ResetTimeoutPopUp.resetTimeOutLabel();
-                SDL.ResetTimeoutPopUp.ActivatePopUp();
-              }
               if (request.params && request.params.choiceSet == null) {
                 SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.PerformInteraction', false, false);
               }

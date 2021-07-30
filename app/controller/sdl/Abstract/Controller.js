@@ -796,6 +796,7 @@ SDL.SDLController = Em.Object.extend(
       if(SDL.SDLModel.data.resultCode.TIMED_OUT !== result) {
         SDL.ResetTimeoutPopUp.stopRpcProcessing('VR.PerformInteraction', false, false);
       }
+      SDL.ResetTimeoutPopUp.startCountTimeoutByRPCName('UI.PerformInteraction');
       SDL.SDLModel.data.interactionData.helpPrompt = null;
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = null;
       SDL.SDLModel.data.set('VRActive', false);
