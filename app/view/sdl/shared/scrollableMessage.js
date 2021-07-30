@@ -69,7 +69,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
 
       let calculate_result_code = function(areAllImagesValid) {
         if (ABORTED) {
-          if(SDL.ResetTimeoutPopUp.includes('UI.ScrollableMessage')) SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.ScrollableMessage');
+          SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.ScrollableMessage');
           return SDL.SDLModel.data.resultCode.ABORTED;
         }
 
