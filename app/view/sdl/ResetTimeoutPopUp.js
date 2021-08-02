@@ -339,7 +339,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         let length = this.getPRCsLength();
         if (1 < length) {
             timeoutExpired = [];
-            const TIME_OUT_EXPIRATION_SECONDS = 1;
+            const TIME_OUT_EXPIRATION_SECONDS = 0;
             for (let [key, value] of Object.entries(this.resetTimeoutRPCs)) {
                 if (TIME_OUT_EXPIRATION_SECONDS === value.timeoutSeconds) {
                     // Give higher priority to TTS part of the request
