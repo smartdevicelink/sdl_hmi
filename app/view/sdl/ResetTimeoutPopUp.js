@@ -352,10 +352,8 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
                 }
             }
             timeoutExpired.forEach((requestID, index) => {
-                if(TIME_OUT_EXPIRATION_SECONDS === this.resetTimeoutRPCs[requestID].timeoutSeconds) {
-                    this.resetTimeoutRPCs[requestID].callback();
-                    delete this.resetTimeoutRPCs[requestID];
-                }
+                this.resetTimeoutRPCs[requestID].callback();
+                delete this.resetTimeoutRPCs[requestID];
             });
             length = this.getPRCsLength();
             if (length === 0) {
