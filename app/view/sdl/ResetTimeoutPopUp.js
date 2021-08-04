@@ -86,6 +86,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         this.resetTimeoutRPCs[req.id] = {
             method: req.method,
             timeoutSeconds: timeoutSeconds ? timeoutSeconds / MS_TO_SEC : this.defaultTimeout,
+            originalTimeout: timeoutSeconds ? timeoutSeconds / MS_TO_SEC : 0,
             callback,
             resetTimeoutCallback,
             count
@@ -265,13 +266,15 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             var element = document.getElementById(value.method + 'checkBox');
             var checked = element.checked;
             if (checked && value.count) {
-                value.timeoutSeconds = this.resetPeriod;
+                const originalTimeout = value.originalTimeout;
+                const resetPeriod = originalTimeout > this.resetPeriod ? originalTimeout : this.resetPeriod;
+                value.timeoutSeconds = resetPeriod;
                 this.resetTimeOutLabel();
                 if (value.resetTimeoutCallback !== undefined) {
                     value.resetTimeoutCallback(value.timeoutSeconds * 1000);
                 }
                 if ('UI.PerformInteraction' != value.method) {
-                    FFW.BasicCommunication.OnResetTimeout(parseInt(requestID), value.method, this.resetPeriod * 1000);
+                    FFW.BasicCommunication.OnResetTimeout(parseInt(requestID), value.method, resetPeriod * 1000);
                 }
             }
         }
@@ -303,12 +306,14 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
         reset = () => {
             const requestID = Object.keys(this.resetTimeoutRPCs)[0];
             if(this.resetTimeoutRPCs[requestID].count === false) return;
-            this.resetTimeoutRPCs[requestID].timeoutSeconds = this.resetPeriod;
+            const originalTimeout = this.resetTimeoutRPCs[requestID].originalTimeout;
+            const resetPeriod = originalTimeout > this.resetPeriod ? originalTimeout : this.resetPeriod;
+            this.resetTimeoutRPCs[requestID].timeoutSeconds = resetPeriod;
             if (this.resetTimeoutRPCs[requestID].resetTimeoutCallback !== undefined) {
                 this.resetTimeoutRPCs[requestID].resetTimeoutCallback(this.resetTimeoutRPCs[requestID].timeoutSeconds * 1000);
             }
             this.resetTimeOutLabel();
-            FFW.BasicCommunication.OnResetTimeout(parseInt(requestID), this.resetTimeoutRPCs[requestID].method, this.resetPeriod * 1000);
+            FFW.BasicCommunication.OnResetTimeout(parseInt(requestID), this.resetTimeoutRPCs[requestID].method, resetPeriod * 1000);
         }
 
         const length = this.getPRCsLength();
