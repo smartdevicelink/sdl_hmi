@@ -43,12 +43,6 @@ FFW.Buttons = FFW.RPCObserver.create(
      * were some kind of errors Error codes will be injected into response.
      */
     errorResponsePull: {},
-    /**
-     * @param subscribedButtons
-     * @type Object
-     * @description Container of subscribed buttons by app ID
-     */
-    subscribedButtons: {},
     /*
      * connect to RPC bus
      */
@@ -204,25 +198,15 @@ FFW.Buttons = FFW.RPCObserver.create(
             console.log("Button " + buttonName + " " + resultCode + " resultCode");
             this.sendButtonsResult(resultCode, request.id, request.method);
           } else {
-            if (this.isButtonSubscribed(appID, buttonName)) {
-              const code = FFW.RPCHelper.getUnsubscribeButtonCustomResultCode(appID, buttonName);
-              if(code === 'DO_NOT_RESPOND') {
-                Em.Logger.log('Do not respond on this request');
-                break;
-              }
-              console.log("Button " + buttonName + " " + code + " Unsubscribe");
-              this.sendButtonsResult(code, request.id, request.method);
-              if (FFW.RPCHelper.isSuccessResultCode(code)) {
-                this.unsubscribeButton(appID, buttonName);
-              }
-            } else {
-              console.log("Button " + buttonName + " isn't subscribed");
-              this.sendError(
-                SDL.SDLModel.data.resultCode.SUCCESS,
-                request.id,
-                request.method,
-                'SDL Should not send this request more than once'
-              );
+            const code = FFW.RPCHelper.getUnsubscribeButtonCustomResultCode(appID, buttonName);
+            if(code === 'DO_NOT_RESPOND') {
+              Em.Logger.log('Do not respond on this request');
+              break;
+            }
+            console.log("Button " + buttonName + " " + code + " Unsubscribe");
+            this.sendButtonsResult(code, request.id, request.method);
+            if (FFW.RPCHelper.isSuccessResultCode(code)) {
+              this.unsubscribeButton(appID, buttonName);
             }
           }
           break;
@@ -244,18 +228,6 @@ FFW.Buttons = FFW.RPCObserver.create(
       model.setNavButton(buttonName, subscribe);
     },
     /**
-     * @function isButtonSubscribed
-     * @param {Number} appID
-     * @param {String} buttonName
-     * @returns {boolean}
-     * @description Check is button subscribed
-     */
-    isButtonSubscribed: function (appID, buttonName) {
-      return (appID in this.subscribedButtons)
-        && (buttonName in this.subscribedButtons[appID])
-        && (this.subscribedButtons[appID][buttonName] === true);
-    },
-    /**
      * @function subscribeButton
      * @param {Number} appID
      * @param {String} buttonName
@@ -267,10 +239,6 @@ FFW.Buttons = FFW.RPCObserver.create(
       if (!FFW.RPCHelper.isSuccessResultCode(code)) {
         return code;
       }
-      if (!(appID in this.subscribedButtons)) {
-        this.subscribedButtons[appID] = {};
-      }
-      this.subscribedButtons[appID][buttonName] = true;
       const model = SDL.SDLController.getApplicationModel(appID);
       model.set(buttonName, true);
       return code;
@@ -282,11 +250,8 @@ FFW.Buttons = FFW.RPCObserver.create(
      * @description Mark the subscribed button as unsubscribed
      */
     unsubscribeButton: function (appID, buttonName) {
-      if (this.isButtonSubscribed(appID, buttonName)) {
-        this.subscribedButtons[appID][buttonName] = false;
-        const model = SDL.SDLController.getApplicationModel(appID);
-        model.set(buttonName, false);
-      }
+      const model = SDL.SDLController.getApplicationModel(appID);
+      model.set(buttonName, false);
     },
     /**
      * Send response from onRPCRequest
