@@ -155,13 +155,13 @@ FFW.RPCHelper = Em.Object.create(
 
     getSubscribeButtonCustomResultCode: function(appID, buttonName) {
       const resultCodeAsString = this.appContainer[appID][SUBSCRIBE_BTN_METHOD_NAME][buttonName];
-      if(resultCodeAsString === DO_NOT_RESPOND_RES_CODE) throw new Error(DO_NOT_RESPOND_RES_CODE);
+      if(resultCodeAsString === DO_NOT_RESPOND_RES_CODE) return DO_NOT_RESPOND_RES_CODE;
       const resultCodeAsNumber = SDL.SDLModel.data.resultCode[resultCodeAsString];
       return resultCodeAsNumber;
     },
     getUnsubscribeButtonCustomResultCode: function(appID, buttonName) {
       const resultCodeAsString = this.appContainer[appID][UNSUBSCRIBE_BTN_METHOD_NAME][buttonName];
-      if(resultCodeAsString === DO_NOT_RESPOND_RES_CODE) throw new Error(DO_NOT_RESPOND_RES_CODE);
+      if(resultCodeAsString === DO_NOT_RESPOND_RES_CODE) return DO_NOT_RESPOND_RES_CODE;
       const resultCodeAsNumber = SDL.SDLModel.data.resultCode[resultCodeAsString];
       return resultCodeAsNumber;
     },

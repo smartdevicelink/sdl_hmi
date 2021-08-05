@@ -186,13 +186,13 @@ FFW.Buttons = FFW.RPCObserver.create(
             console.log("Button " + buttonName + " " + resultCode + " resultCode");
             this.sendButtonsResult(resultCode, request.id, request.method);
           } else {
-            try {
-              const resultCode = this.subscribeButton(appID, buttonName);
-              console.log("Button " + buttonName + " " + resultCode + " resultCode");
-              this.sendButtonsResult(resultCode, request.id, request.method);
-            } catch (e) {
+            const resultCode = this.subscribeButton(appID, buttonName);
+            if(resultCode === 'DO_NOT_RESPOND') {
               Em.Logger.log('Do not respond on this request');
+              break;
             }
+            console.log("Button " + buttonName + " " + resultCode + " resultCode");
+            this.sendButtonsResult(resultCode, request.id, request.method);
           }
           break;
         }
@@ -204,25 +204,25 @@ FFW.Buttons = FFW.RPCObserver.create(
             console.log("Button " + buttonName + " " + resultCode + " resultCode");
             this.sendButtonsResult(resultCode, request.id, request.method);
           } else {
-            try {
-              if (this.isButtonSubscribed(appID, buttonName)) {
-                const code = FFW.RPCHelper.getUnsubscribeButtonCustomResultCode(appID, buttonName);
-                console.log("Button " + buttonName + " " + code + " Unsubscribe");
-                this.sendButtonsResult(code, request.id, request.method);
-                if (FFW.RPCHelper.isSuccessResultCode(code)) {
-                  this.unsubscribeButton(appID, buttonName);
-                }
-              } else {
-                console.log("Button " + buttonName + " REJECTED Unsubscribe");
-                this.sendError(
-                  SDL.SDLModel.data.resultCode.REJECTED,
-                  request.id,
-                  request.method,
-                  'SDL Should not send this request more than once'
-                );
+            if (this.isButtonSubscribed(appID, buttonName)) {
+              const code = FFW.RPCHelper.getUnsubscribeButtonCustomResultCode(appID, buttonName);
+              if(code === 'DO_NOT_RESPOND') {
+                Em.Logger.log('Do not respond on this request');
+                break;
               }
-            } catch (e) {
-              Em.Logger.log('Do not respond on this request');
+              console.log("Button " + buttonName + " " + code + " Unsubscribe");
+              this.sendButtonsResult(code, request.id, request.method);
+              if (FFW.RPCHelper.isSuccessResultCode(code)) {
+                this.unsubscribeButton(appID, buttonName);
+              }
+            } else {
+              console.log("Button " + buttonName + " REJECTED Unsubscribe");
+              this.sendError(
+                SDL.SDLModel.data.resultCode.REJECTED,
+                request.id,
+                request.method,
+                'SDL Should not send this request more than once'
+              );
             }
           }
           break;
@@ -262,21 +262,18 @@ FFW.Buttons = FFW.RPCObserver.create(
      * @returns {number} Subscription result code
      */
     subscribeButton: function (appID, buttonName) {
-      try {
-        const code = FFW.RPCHelper.getSubscribeButtonCustomResultCode(appID, buttonName);
-        if (!FFW.RPCHelper.isSuccessResultCode(code)) {
-          return code;
-        }
-        if (!(appID in this.subscribedButtons)) {
-          this.subscribedButtons[appID] = {};
-        }
-        this.subscribedButtons[appID][buttonName] = true;
-        const model = SDL.SDLController.getApplicationModel(appID);
-        model.set(buttonName, true);
+      const code = FFW.RPCHelper.getSubscribeButtonCustomResultCode(appID, buttonName);
+      if(code === 'DO_NOT_RESPOND') return code;
+      if (!FFW.RPCHelper.isSuccessResultCode(code)) {
         return code;
-      } catch(e) {
-        throw e;
       }
+      if (!(appID in this.subscribedButtons)) {
+        this.subscribedButtons[appID] = {};
+      }
+      this.subscribedButtons[appID][buttonName] = true;
+      const model = SDL.SDLController.getApplicationModel(appID);
+      model.set(buttonName, true);
+      return code;
     },
     /**
      * @function unsubscribeButton
