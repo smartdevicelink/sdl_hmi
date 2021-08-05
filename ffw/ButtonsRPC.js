@@ -216,9 +216,9 @@ FFW.Buttons = FFW.RPCObserver.create(
                 this.unsubscribeButton(appID, buttonName);
               }
             } else {
-              console.log("Button " + buttonName + " REJECTED Unsubscribe");
+              console.log("Button " + buttonName + " isn't subscribed");
               this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED,
+                SDL.SDLModel.data.resultCode.SUCCESS,
                 request.id,
                 request.method,
                 'SDL Should not send this request more than once'
