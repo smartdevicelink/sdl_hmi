@@ -180,10 +180,13 @@ FFW.Buttons = FFW.RPCObserver.create(
             console.log("Button " + buttonName + " " + resultCode + " resultCode");
             this.sendButtonsResult(resultCode, request.id, request.method);
           } else {
-            const resultCode = this.subscribeButton(appID, buttonName);
+            const resultCode = FFW.RPCHelper.getSubscribeButtonCustomResultCode(appID, buttonName);
             if(resultCode === 'DO_NOT_RESPOND') {
               Em.Logger.log('Do not respond on this request');
               break;
+            }
+            if (!FFW.RPCHelper.isSuccessResultCode(code)) {
+              this.subscribeButton(appID, buttonName);
             }
             console.log("Button " + buttonName + " " + resultCode + " resultCode");
             this.sendButtonsResult(resultCode, request.id, request.method);
@@ -231,17 +234,10 @@ FFW.Buttons = FFW.RPCObserver.create(
      * @function subscribeButton
      * @param {Number} appID
      * @param {String} buttonName
-     * @returns {number} Subscription result code
      */
     subscribeButton: function (appID, buttonName) {
-      const code = FFW.RPCHelper.getSubscribeButtonCustomResultCode(appID, buttonName);
-      if(code === 'DO_NOT_RESPOND') return code;
-      if (!FFW.RPCHelper.isSuccessResultCode(code)) {
-        return code;
-      }
       const model = SDL.SDLController.getApplicationModel(appID);
       model.set(buttonName, true);
-      return code;
     },
     /**
      * @function unsubscribeButton
