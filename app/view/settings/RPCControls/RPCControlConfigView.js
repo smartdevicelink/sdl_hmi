@@ -79,8 +79,8 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
         elementId: 'rpcList',
         classNames: 'rpcList',
         childViews: [
-            'vrAddComandlabel',
-            'uiAddComandlabel',
+            'vrAddCommandlabel',
+            'uiAddCommandlabel',
             'addSubMenulabel',
             'createInteractionChoiceSetlabel',
             'uisetGlobalPropertieslabel',
@@ -88,14 +88,14 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
             'rcsetGlobalPropertieslabel',
             'uiCreateWindowLabel'
         ],
-        vrAddComandlabel: SDL.Label.extend({
-            elementId: 'addComandlabel',
-            classNames: 'vrAddComandlabel',
+        vrAddCommandlabel: SDL.Label.extend({
+            elementId: 'addCommandlabel',
+            classNames: 'vrAddCommandlabel',
             content: 'VR.AddCommand'
         }),
-        uiAddComandlabel: SDL.Label.extend({
-            elementId: 'addComandlabel',
-            classNames: 'uiAddComandlabel',
+        uiAddCommandlabel: SDL.Label.extend({
+            elementId: 'addCommandlabel',
+            classNames: 'uiAddCommandlabel',
             content: 'UI.AddCommand'
         }),
         addSubMenulabel: SDL.Label.extend({
@@ -134,7 +134,7 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
         classNames: 'resultCodeTracker',
         childViews: [
             'vrAddCommandSelect',
-            'uiAddComandSelect',
+            'uiAddCommandSelect',
             'addSubMenuSelect',
             'createInteractionChoiceSetSelect',
             'uisetGlobalPropertiesSelect',
@@ -148,9 +148,9 @@ SDL.RPCControlConfigView = Em.ContainerView.create({
             contentBinding: 'FFW.RPCHelper.customResultCodesList',
             valueBinding: 'FFW.RPCHelper.rpcStruct.vrAddCommand'
         }),
-        uiAddComandSelect: Em.Select.extend({
-            elementId: 'uiAddComandSelect',
-            classNames: 'uiAddComandSelect',
+        uiAddCommandSelect: Em.Select.extend({
+            elementId: 'uiAddCommandSelect',
+            classNames: 'uiAddCommandSelect',
             contentBinding: 'FFW.RPCHelper.customResultCodesList',
             valueBinding: 'FFW.RPCHelper.rpcStruct.uiAddCommand'
         }),

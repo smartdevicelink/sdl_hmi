@@ -112,11 +112,11 @@
     direction: rtl;
 }
 
-.vrAddComandlabel {
+.vrAddCommandlabel {
     top: 60px;
 }
 
-.uiAddComandlabel {
+.uiAddCommandlabel {
     top: 85px;
 }
 
@@ -218,7 +218,7 @@
     position: absolute;
 }
 
-.uiAddComandSelect {
+.uiAddCommandSelect {
     top: 85px;
     position: absolute;
 }
