@@ -175,7 +175,7 @@ FFW.Buttons = FFW.RPCObserver.create(
         case 'Buttons.SubscribeButton': {
           const { buttonName, appID } = request.params;
           if(buttonName.includes("NAV_")) {
-            this.navButtonSubscriptionToggle(appID, buttonName, true);
+            this.setNavButtonSubscription(appID, buttonName, true);
             const resultCode = SDL.SDLModel.data.resultCode.SUCCESS;
             console.log("Button " + buttonName + " " + resultCode + " resultCode");
             this.sendButtonsResult(resultCode, request.id, request.method);
@@ -196,7 +196,7 @@ FFW.Buttons = FFW.RPCObserver.create(
         case 'Buttons.UnsubscribeButton': {
           const { buttonName, appID } = request.params;
           if(buttonName.includes("NAV_")) {
-            this.navButtonSubscriptionToggle(appID, buttonName, false);
+            this.setNavButtonSubscription(appID, buttonName, false);
             const resultCode = SDL.SDLModel.data.resultCode.SUCCESS;
             console.log("Button " + buttonName + " " + resultCode + " resultCode");
             this.sendButtonsResult(resultCode, request.id, request.method);
@@ -217,13 +217,13 @@ FFW.Buttons = FFW.RPCObserver.create(
       }
     },
     /**
-     * @function navButtonSubscriptionToggle
+     * @function setNavButtonSubscription
      * @param {Number} appID
      * @param {String} buttonName
      * @param {Boolean} subscribe
-     * @description Toggle navigation button subscription by app ID and button name
+     * @description Set navigation button subscription by app ID and button name
      */
-    navButtonSubscriptionToggle(appID, buttonName, subscribe) {
+    setNavButtonSubscription(appID, buttonName, subscribe) {
       const model = SDL.SDLController.getApplicationModel(appID);
       if (!model) {
         return;
