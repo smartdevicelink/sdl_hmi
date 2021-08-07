@@ -158,10 +158,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
         case SDL.SDLModel.data.imageModeList[0]:this.set('mode','day-mode');break;
         case SDL.SDLModel.data.imageModeList[1]:this.set('mode','night-mode');break;
         case SDL.SDLModel.data.imageModeList[2]:this.set('mode','high-lighted-mode');break;
-        default:this.set('mode','');
+        default:this.set('mode','day-mode');
         }
     }else this.set('mode','');
-  }.observes('SDL.SDLModel.data.imageMode'),
+  }.observes('SDL.SDLModel.data.imageMode', 'this.isTemplate'),
 
   onDeleteApplication: function(appID) {
 

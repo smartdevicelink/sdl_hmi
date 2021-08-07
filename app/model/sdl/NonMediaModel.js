@@ -97,6 +97,8 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
     this.resetGlobalProperties();
   },
 
+  isTemplate:false,
+
   /**
    * Method hides sdl activation button and sdl application
    *
@@ -245,6 +247,8 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
       } else {
         this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
       }
+
+      this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
     }
 
     // Magic number is a count of Preset Buttons on HMI = 8
@@ -272,27 +276,20 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
     return;
   },
 
-  classNameBindings: [
-    'dayMode',
-    'nightMode',
-    'highLightedMode'
-  ],
-
-  dayMode:false,
-  nightMode:false,
-  highLightedMode:false,
-
-    /**
-     * @description Method applies image mode view for model.
-     * @param {Number}
-     */
-  setMode:function(mode){
+  /**
+   * @description Callback for display image mode change.
+   */
+   imageModeChanged: function() { 
+    const mode = SDL.SDLModel.data.imageMode;
     if(this.isTemplate){
-      mode = SDL.SDLModel.data.imageModeList.includes(mode) ? mode : SDL.SDLModel.data.imageModeList[0];
-      this.set('dayMode', mode == SDL.SDLModel.data.imageModeList[0]);
-      this.set('nightMode', mode == SDL.SDLModel.data.imageModeList[1]);
-      this.set('highLightedMode', mode == SDL.SDLModel.data.imageModeList[2]);
-    }
-  },
+      switch(mode){
+        case SDL.SDLModel.data.imageModeList[0]:this.set('mode','day-mode');break;
+        case SDL.SDLModel.data.imageModeList[1]:this.set('mode','night-mode');break;
+        case SDL.SDLModel.data.imageModeList[2]:this.set('mode','high-lighted-mode');break;
+        default:this.set('mode','day-mode');
+        }
+    }else this.set('mode','');
+  }.observes('SDL.SDLModel.data.imageMode', 'this.isTemplate'),
+
 }
 );

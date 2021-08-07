@@ -221,6 +221,28 @@
 
 #info_nonMedia .app_image img {
     border: 1px solid #393939;
+    width: 150px;
+    height: 150px;
+    position: absolute;
+}
+
+#info_nonMedia .app_image img.ico-overlay.is-template {
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.4;
+    z-index: 1001;
+}
+
+#info_nonMedia .app_image img.ico-overlay.is-template.day-mode {
+    background-image: url(../images/template/imagetype-pattern-day.png) !important;
+}
+
+#info_nonMedia .app_image img.ico-overlay.is-template.night-mode {
+    background-image: url(../images/template/imagetype-pattern-night.png) !important;
+}
+
+#info_nonMedia .app_image img.ico-overlay.is-template.high-lighted-mode {
+    background-image: url(../images/template/imagetype-pattern-highlighted.png) !important;
 }
 
 #sdl_options .list {
@@ -671,7 +693,7 @@
     -webkit-border-radius: 2px;
     width: 109px;
     height: 109px;    
-    background:url(../images/template/imagetype-pattern-day.png);
+    background-image:url(../images/template/imagetype-pattern-day.png) !important;
     background-repeat: no-repeat;
     background-size: cover;
     opacity: 0.4;
@@ -685,7 +707,7 @@
     -webkit-border-radius: 2px;
     width: 109px;
     height: 109px;
-    background:url(../images/template/imagetype-pattern-night.png);
+    background-image:url(../images/template/imagetype-pattern-night.png) !important;
     background-repeat: no-repeat;
     background-size: cover;
     opacity: 0.4;
@@ -699,7 +721,7 @@
     -webkit-border-radius: 2px;
     width: 109px;
     height: 109px;
-    background:url(../images/template/imagetype-pattern-highlighted.png);
+    background-image:url(../images/template/imagetype-pattern-highlighted.png) !important;
     background-repeat: no-repeat;
     background-size: cover;
     opacity: 0.4;    
