@@ -329,12 +329,12 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             if(value.method === rpcName) {
                 const originalTimeout = value.originalTimeout;
                 const resetPeriod = originalTimeout > this.resetPeriod ? originalTimeout : this.resetPeriod;
-                value.timeoutSeconds = this.resetPeriod;
+                value.timeoutSeconds = resetPeriod;
                 if (value.resetTimeoutCallback !== undefined) {
                     value.resetTimeoutCallback(value.timeoutSeconds * 1000);
                 }
                 this.resetTimeOutLabel();
-                FFW.BasicCommunication.OnResetTimeout(parseInt(requestID), value.method, this.resetPeriod * 1000);
+                FFW.BasicCommunication.OnResetTimeout(parseInt(requestID), value.method, value.timeoutSeconds * 1000);
             }
         }
     },
