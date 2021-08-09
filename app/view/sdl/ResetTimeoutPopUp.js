@@ -327,6 +327,8 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
     resetTimeoutSpecificRpc(rpcName) {
         for(const [requestID, value] of Object.entries(this.resetTimeoutRPCs)) {
             if(value.method === rpcName) {
+                const originalTimeout = value.originalTimeout;
+                const resetPeriod = originalTimeout > this.resetPeriod ? originalTimeout : this.resetPeriod;
                 value.timeoutSeconds = this.resetPeriod;
                 if (value.resetTimeoutCallback !== undefined) {
                     value.resetTimeoutCallback(value.timeoutSeconds * 1000);
