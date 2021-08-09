@@ -388,7 +388,7 @@ SDL.templateCapabilities = {
             },
             "numCustomPresetsAvailable": 10
         },
-        "buttonCapabilities": SDL.ButtonCapability.filter(button => button.name !== 'CUSTOM_BUTTON'),
+        "buttonCapabilities": SDL.ButtonCapability,
         "softButtonCapabilities": [{
             "shortPressAvailable": true,
             "longPressAvailable": true,
@@ -767,7 +767,7 @@ SDL.templateCapabilities = {
             },
             "numCustomPresetsAvailable": 8
         },
-        "buttonCapabilities": SDL.ButtonCapability.filter(button => button.name !== 'CUSTOM_BUTTON'),
+        "buttonCapabilities": SDL.ButtonCapability,
         "softButtonCapabilities": [{
             "shortPressAvailable": true,
             "longPressAvailable": true,
@@ -1109,7 +1109,7 @@ SDL.templateCapabilities = {
                 }
             }
         },
-        "buttonCapabilities": SDL.ButtonCapability.filter(button => button.name === 'CUSTOM_BUTTON'),
+        "buttonCapabilities": [...SDL.NAVButtonCapability, ...SDL.ButtonCapability.filter(button => button.name === 'CUSTOM_BUTTON')],
         "softButtonCapabilities": [{
             "shortPressAvailable": true,
             "longPressAvailable": true,
