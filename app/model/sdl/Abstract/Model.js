@@ -31,8 +31,6 @@
  * @version 1.0
  */
 
-const RESPONSE_CORRELATION = 1000;
-
 SDL.SDLModel = Em.Object.extend({
 
   /**

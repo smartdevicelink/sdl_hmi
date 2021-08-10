@@ -49,7 +49,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
          *
          * @type {Number}
          */
-        defaultTimeout: 30000,
+        defaultTimeout: 10000,
         alertRequestId: null,
         appID: null,
         content1: '',
@@ -231,7 +231,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             this.set('reason', 'timeout');
             this.set('message', undefined);
             this.addSoftButtons(message.params.softButtons, message.params.appID);
-            this.set('endTime', Date.now() + message.params.duration);
+            this.set('endTime', Date.now() + (message.params.duration || this.defaultTimeout));
             this.set('appID', message.params.appID);
             this.set('icon', message.params.alertIcon ? message.params.alertIcon.value : "images/sdl/Warning.png");
             for (var i = 0; i < message.params.alertStrings.length; i++) {
