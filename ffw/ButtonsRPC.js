@@ -185,7 +185,7 @@ FFW.Buttons = FFW.RPCObserver.create(
               Em.Logger.log('Do not respond on this request');
               break;
             }
-            if (!FFW.RPCHelper.isSuccessResultCode(resultCode)) {
+            if (FFW.RPCHelper.isSuccessResultCode(resultCode)) {
               this.subscribeButton(appID, buttonName);
             }
             console.log("Button " + buttonName + " " + resultCode + " resultCode");
