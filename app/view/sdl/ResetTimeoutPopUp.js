@@ -344,11 +344,11 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
      */
     timerHandler: function () {
         let length = this.getPRCsLength();
+        const TIME_OUT_EXPIRATION_SECONDS = 0;
         if (1 < length) {
             timeoutExpired = [];
-            const TIME_OUT_EXPIRATION_SECONDS = 0;
             for (let [key, value] of Object.entries(this.resetTimeoutRPCs)) {
-                if (TIME_OUT_EXPIRATION_SECONDS === value.timeoutSeconds) {
+                if (TIME_OUT_EXPIRATION_SECONDS >= value.timeoutSeconds) {
                     // Give higher priority to TTS part of the request
                     const tts_speak_index = value.method.indexOf('TTS.Speak');
                     if (tts_speak_index >= 0) {
@@ -369,7 +369,7 @@ SDL.ResetTimeoutPopUp = Em.ContainerView.create({
             return;
         }
         let requestID = Object.keys(this.resetTimeoutRPCs)[0];
-        if (this.resetTimeoutRPCs[requestID].timeoutSeconds === 1) {
+        if (this.resetTimeoutRPCs[requestID].timeoutSeconds <= TIME_OUT_EXPIRATION_SECONDS) {
             this.resetTimeoutRPCs[requestID].callback();
             this.DeactivatePopUp();
         }
