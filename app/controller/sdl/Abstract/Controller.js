@@ -690,6 +690,16 @@ SDL.SDLController = Em.Object.extend(
             SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.ScrollableMessage');
             break;
           }
+        case 'AlertPopUp':
+          {
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.Alert');
+            break;
+          }
+        case 'SubtleAlertPopUp':
+          {
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.SubtleAlert');
+            break;
+          }
       }
     },
     /**
