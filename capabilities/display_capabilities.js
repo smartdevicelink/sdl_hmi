@@ -767,7 +767,7 @@ SDL.templateCapabilities = {
             },
             "numCustomPresetsAvailable": 8
         },
-        "buttonCapabilities": SDL.ButtonCapability,
+        "buttonCapabilities": SDL.ButtonCapability.filter(button => button.name !== 'PLAY_PAUSE'),
         "softButtonCapabilities": [{
             "shortPressAvailable": true,
             "longPressAvailable": true,
