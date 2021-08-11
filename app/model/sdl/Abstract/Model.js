@@ -1051,6 +1051,13 @@ SDL.SDLModel = Em.Object.extend({
           SDL.SDLController.getApplicationModel(request.params.appID).appName,
           request.params, messageRequestId
         );
+        SDL.ResetTimeoutPopUp.addRpc(
+          request,
+          () => {SDL.ScrollableMessage.deactivate();},
+          SDL.ScrollableMessage.resetTimeoutCallback,
+          request.params.timeout
+        );
+        SDL.ResetTimeoutPopUp.ActivatePopUp();
       }
       return true;
     } else {
@@ -1334,12 +1341,12 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Number}
    *            alertRequestId Id of current handled request
    */
-  onUIAlert: function(message, alertRequestId) {
+  onUIAlert: function(message) {
 
-    let appModel = SDL.SDLController.getApplicationModel(message.appID)
+    let appModel = SDL.SDLController.getApplicationModel(message.params.appID)
 
     if (!SDL.AlertPopUp.active) {
-      SDL.AlertPopUp.AlertActive(message, alertRequestId, appModel.priority);
+      SDL.AlertPopUp.AlertActive(message);
       return true;
     } else {
       let currentAlertPriority = SDL.AlertPopUp.priority
@@ -1348,16 +1355,16 @@ SDL.SDLModel = Em.Object.extend({
           if (SDL.SDLModel.data.appPriority[currentAlertPriority] > SDL.SDLModel.data.appPriority[appModel.priority]) {
             // Enum is arranged in descending order (EMERGENCY being the highest, NONE being the lowest)
             SDL.AlertPopUp.deactivate('ABORTED', 'Lower priority than the incoming alert')
-            SDL.AlertPopUp.AlertActive(message, alertRequestId, appModel.priority);
+            SDL.AlertPopUp.AlertActive(message);
             return true;
           }
       }
 
-      if (message.alertType == "BOTH") {
+      if (message.params.alertType == "BOTH") {
         let callback = () => {
           Em.Logger.log("Received TTS.Speak for UI.Alert. Sending response");
           SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
-            alertRequestId
+            message.id
           );
         };
         appModel.ttsSpeakListenerCallbacks.push({
@@ -1369,7 +1376,7 @@ SDL.SDLModel = Em.Object.extend({
       }
 
       SDL.SDLController.alertResponse(this.data.resultCode.REJECTED,
-        alertRequestId
+        message.id
       );
       return false;
     }
@@ -1383,7 +1390,7 @@ SDL.SDLModel = Em.Object.extend({
    * @param {Number}
    *            subtleAlertRequestId Id of current handled request
    */
-  onUISubtleAlert: function(message, subtleAlertRequestId) {
+  onUISubtleAlert: function(message) {
     let is_allowed = false;
     let info = null;
     let waitTime = 0;
@@ -1407,13 +1414,13 @@ SDL.SDLModel = Em.Object.extend({
     }
 
     if (!is_allowed) {
-      if (message.alertType == "BOTH") {
+      if (message.params.alertType == "BOTH") {
         let callback = () => {
           Em.Logger.log("Received TTS.Speak for UI.SubtleAlert. Sending response");
           SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED,
-            subtleAlertRequestId, info, waitTime);
+            message.id, info, waitTime);
         };
-        let appModel = SDL.SDLController.getApplicationModel(message.appID);
+        let appModel = SDL.SDLController.getApplicationModel(message.params.appID);
         appModel.ttsSpeakListenerCallbacks.push({
           'type': 'SUBTLE_ALERT',
           'callback': callback
@@ -1423,9 +1430,9 @@ SDL.SDLModel = Em.Object.extend({
       }
 
       SDL.SDLController.subtleAlertResponse(SDL.SDLModel.data.resultCode.REJECTED,
-        subtleAlertRequestId, info, waitTime);
+        message.id, info, waitTime);
     } else {
-      SDL.SubtleAlertPopUp.SubtleAlertActive(message, subtleAlertRequestId);
+      SDL.SubtleAlertPopUp.SubtleAlertActive(message);
     }
 
     return is_allowed;
@@ -1465,7 +1472,11 @@ SDL.SDLModel = Em.Object.extend({
         FFW.UI.sendUIResult(SDL.SDLModel.data.resultCode.SUCCESS,
           message.id, 'UI.PerformInteraction'
         );
-        return true;
+        if(SDL.ResetTimeoutPopUp.includes('VR.PerformInteraction') && !SDL.ResetTimeoutPopUp.active) {
+                SDL.ResetTimeoutPopUp.resetTimeOutLabel();
+                SDL.ResetTimeoutPopUp.ActivatePopUp();
+        }
+        return false;
       }
 
       SDL.SDLController.getApplicationModel(message.params.appID)
@@ -1473,7 +1484,17 @@ SDL.SDLModel = Em.Object.extend({
 
       SDL.InteractionChoicesView.activate(message);
       SDL.SDLController.VRMove();
-
+      SDL.ResetTimeoutPopUp.addRpc(
+        message,
+        () => {SDL.InteractionChoicesView.deactivate('TIMED_OUT')},
+        (timeout) => SDL.InteractionChoicesView.set('timeout', timeout),
+        message.params.timeout,
+        !SDL.SDLModel.data.VRActive
+      );
+      if(0 < SDL.ResetTimeoutPopUp.getPRCsLength() && !SDL.ResetTimeoutPopUp.active) {
+        SDL.ResetTimeoutPopUp.resetTimeOutLabel();
+        SDL.ResetTimeoutPopUp.ActivatePopUp();
+      }
       return true;
     } else {
       FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
@@ -1491,6 +1512,12 @@ SDL.SDLModel = Em.Object.extend({
    */
   vrPerformInteraction: function(message) {
 
+    SDL.ResetTimeoutPopUp.addRpc(
+      message,
+      () => {SDL.SDLModel.deactivateVrInteraction()},
+      undefined,
+      message.params.timeout
+    );
     if (!SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = message.id;
     } else {
@@ -1500,22 +1527,20 @@ SDL.SDLModel = Em.Object.extend({
       return;
     }
 
-    var appID = message.params.appID;
-
     setTimeout(function() {
         if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
-          SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
+          SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
         } else if (!message.params.grammarID &&
           SDL.SDLController.getApplicationModel(message.params.appID
           ).activeRequests.uiPerformInteraction) {
           // If UI PerformInteraction session is still active and PerformInteraction mode is MANUAL only
-          SDL.SDLModel.onPrompt(message.params.timeoutPrompt);
+          SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
         }
 
       }, message.params.timeout - 2000
       ); //Magic numer is a platform depended HMI behavior: -2 seconds for timeout prompt
 
-    SDL.SDLModel.onPrompt(message.params.initialPrompt);
+    SDL.SDLModel.VRonPrompt(message.params.initialPrompt);
 
     SDL.SDLModel.data.interactionData.helpPrompt = message.params.helpPrompt;
 
@@ -1523,31 +1548,54 @@ SDL.SDLModel = Em.Object.extend({
 
       this.data.set('performInteractionSession', message.params.grammarID);
       SDL.SDLModel.data.set('VRActive', true);
-
-      setTimeout(function() {
-            if (SDL.SDLModel.data.VRActive) {
-              if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
-                SDL.SDLController.vrInteractionResponse(
-                  SDL.SDLModel.data.resultCode['TIMED_OUT']
-                );
-              } else {
-                console.error(
-                  'SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction is empty!'
-                );
-              }
-
-              SDL.SDLModel.data.set('VRActive', false);
-            }
-          }, message.params.timeout
-        );
-
-      SDL.InteractionChoicesView.timerUpdate();
     } else {
 
       SDL.SDLController.vrInteractionResponse(
         SDL.SDLModel.data.resultCode.SUCCESS
       );
     }
+  },
+
+  VRonPrompt(ttsChunks) {
+    var message = '', files = '';
+    if (ttsChunks) {
+      for (var i = 0; i < ttsChunks.length; i++) {
+        if ('TEXT' == ttsChunks[i].type) {
+          message += ttsChunks[i].text + '\n';
+        }
+        if ('FILE' == ttsChunks[i].type) {
+          files += ttsChunks[i].text + '\n';
+        }
+      }
+      FFW.TTS.Started();
+      SDL.ResetTimeoutPopUp.play(files);
+      const TTS_TIMEOUT = 3000;
+      setTimeout(() => {
+        FFW.TTS.Stopped();
+        SDL.ResetTimeoutPopUp.setContext('');
+      }, TTS_TIMEOUT);
+      SDL.ResetTimeoutPopUp.setContext(message);
+    } else if(FFW.TTS.requestId){
+      FFW.TTS.sendError(
+       SDL.SDLModel.data.resultCode.WARNINGS,
+       FFW.TTS.requestId,
+       'TTS.Speak',
+       'No TTS Chunks provided in Speak request'
+      );
+      FFW.TTS.requestId = null;
+    }
+  },
+
+  /**
+   * deactivateVrInteraction function.
+   */
+  deactivateVrInteraction: function() {
+    SDL.SDLController.vrInteractionResponse(
+        SDL.SDLModel.data.resultCode.TIMED_OUT
+      );
+    SDL.ResetTimeoutPopUp.vrPerformInteractionDisableCheckBox()
+    SDL.SDLModel.data.set('VRActive', false);
+
   },
 
   /**
@@ -1561,6 +1609,13 @@ SDL.SDLModel = Em.Object.extend({
     if (!SDL.SliderView.active) {
       SDL.SDLController.getApplicationModel(message.params.appID).
           onSlider(message);
+      SDL.ResetTimeoutPopUp.addRpc(
+        message,
+        () => {SDL.SliderView.deactivate(true);},
+        undefined,
+        message.params.timeout
+      );
+      SDL.ResetTimeoutPopUp.ActivatePopUp();
       return true;
     } else {
       FFW.UI.sendSliderResult(this.data.resultCode.REJECTED, message.id);
@@ -1615,9 +1670,9 @@ SDL.SDLModel = Em.Object.extend({
    * Prompt activation
    *
    * @param {Object} ttsChunks
-   * @param {Number} appID
+   * @param {Boolean} setContext
    */
-  onPrompt: function(ttsChunks, appID) {
+  onPrompt: function(ttsChunks, setContext = true) {
 
     var message = '', files = '';
     if (ttsChunks) {
@@ -1629,7 +1684,10 @@ SDL.SDLModel = Em.Object.extend({
           files += ttsChunks[i].text + '\n';
         }
       }
-      SDL.TTSPopUp.ActivateTTS(message, files, appID);
+      FFW.TTS.Started();
+      SDL.ResetTimeoutPopUp.play(files);
+      const TTS_TIMEOUT = 3000;
+      if(setContext === true) SDL.ResetTimeoutPopUp.setContext(message);
     } else if(FFW.TTS.requestId){
       FFW.TTS.sendError(
        SDL.SDLModel.data.resultCode.WARNINGS,
@@ -1655,7 +1713,7 @@ SDL.SDLModel = Em.Object.extend({
   TTSStopSpeaking: function() {
       //true parameter makes send error response ABORTED
       FFW.TTS.set('aborted', true);
-      SDL.TTSPopUp.DeactivateTTS();
+      SDL.SDLController.TTSResponseHandler();
     },
 
   /**

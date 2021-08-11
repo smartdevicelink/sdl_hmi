@@ -550,12 +550,12 @@ SDL.RController = SDL.SDLController.extend(
             }
           }
         );
-        
-        setTimeout(
-          function() {
+        SDL.ResetTimeoutPopUp.addRpc(
+          request,
+          () => {
             if (popUp && popUp.active) {
               popUp.deactivate();
-              if(!timedOutSended) {
+              if (!timedOutSended) {
                 FFW.RC.sendError(
                   SDL.SDLModel.data.resultCode['TIMED_OUT'], request.id,
                   request.method, 'The resource is in use and the driver did not respond in time'
@@ -563,8 +563,11 @@ SDL.RController = SDL.SDLController.extend(
                 timedOutSended = true;
               }
             }
-          }, 9500
-        ); //Magic number is timeout for RC consent popUp
+          },
+          () => {Em.Logger.log('Consent timeout has been reset');}
+        );
+        SDL.ResetTimeoutPopUp.setContext(request.method);
+        SDL.ResetTimeoutPopUp.ActivatePopUp();
       });
     },
 
@@ -660,6 +663,19 @@ SDL.RController = SDL.SDLController.extend(
       }
 
       return properties;
-    }
+    },
+
+    /**
+     * isEmptyObject function. Checks that the object is empty
+     */
+    isEmptyObject: function(object) {
+      var l = 0;
+      for (var key in object) {
+           if(object.hasOwnProperty(key)) {
+               return false;
+           }
+      }
+      return true;
+   },
   }
 );

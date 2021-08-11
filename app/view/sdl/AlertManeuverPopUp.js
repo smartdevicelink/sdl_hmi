@@ -51,8 +51,6 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     content2: 'Text',
     activate: false,
     endTime: null,
-    timer: null,
-    timeout: 5000,
     alertManeuerRequestId: 0,
     /**
      * @desc Defines whether icons paths verified successfully.
@@ -227,16 +225,16 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
     /**
      * Deactivate PopUp
      */
-    deactivate: function(message) {
-      if (SDL.TTSPopUp.active) {
-        SDL.TTSPopUp.DeactivateTTS();
-      }
-
-      clearTimeout(this.timer);
-
+    deactivate: function(timeout) {
       const resultCode = this.iconsAreValid ?
         SDL.SDLModel.data.resultCode.SUCCESS : SDL.SDLModel.data.resultCode.WARNINGS;
 
+      if(!timeout) {
+        if (SDL.ResetTimeoutPopUp.includes('TTS.Speak')) {
+          SDL.SDLController.TTSResponseHandler();
+        }
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('Navigation.AlertManeuver');
+      }
       FFW.Navigation.sendNavigationResult(
         resultCode,
         this.alertManeuerRequestId,
@@ -245,6 +243,7 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       );
       this.set('activate', false );
       this.set('alertManeuerRequestId', 0);
+
     },
 
     AlertManeuverActive: function(message) {
@@ -257,11 +256,22 @@ SDL.AlertManeuverPopUp = Em.ContainerView.create(
       this.addSoftButtons(message.params);
 
       this.set('activate', true );
+      SDL.ResetTimeoutPopUp.addRpc(
+        message,
+        () => {SDL.AlertManeuverPopUp.deactivate(true)},
+        SDL.AlertManeuverPopUp.resetTimeoutCallback,
+        SDL.AlertManeuverPopUp.timeout
+      )
 
-      clearTimeout( this.timer );
-      this.timer = setTimeout( () => {
-        this.deactivate(message);
-      }, this.timeout);
+      SDL.ResetTimeoutPopUp.ActivatePopUp();
+    },
+    /*
+    * function resetTimeoutCallback.
+    */
+    resetTimeoutCallback: function(time){
+      let self = SDL.AlertManeuverPopUp;
+      self.set('endTime', Date.now() + time);
     }
+
   }
 );
