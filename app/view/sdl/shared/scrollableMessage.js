@@ -62,14 +62,16 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
      * @param {Object} ABORTED Parameter to indicate status for
      *            UI.ScrollableMessageResponse
      */
-    deactivate: function(ABORTED) {
+    deactivate: function(ABORTED, timeout=false) {
       this.set('endTime', null);
       this.set('active', false);
       this.softButtons.set('page', 0);
+      if (timeout === false) {
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.ScrollableMessage');
+      }
 
       let calculate_result_code = function(areAllImagesValid) {
         if (ABORTED) {
-          SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.ScrollableMessage');
           return SDL.SDLModel.data.resultCode.ABORTED;
         }
 
