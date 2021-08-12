@@ -1053,7 +1053,7 @@ SDL.SDLModel = Em.Object.extend({
         );
         SDL.ResetTimeoutPopUp.addRpc(
           request,
-          () => {SDL.ScrollableMessage.deactivate();},
+          () => {SDL.ScrollableMessage.deactivate(false, true);},
           SDL.ScrollableMessage.resetTimeoutCallback,
           request.params.timeout
         );

@@ -614,7 +614,7 @@ SDL.SDLController = Em.Object.extend(
         }
         case 'ScrollableMessage':
         {
-          SDL.ScrollableMessage.deactivate(true);
+          SDL.ScrollableMessage.deactivate();
           break;
         }
       }
@@ -661,7 +661,7 @@ SDL.SDLController = Em.Object.extend(
         }
         case 'ScrollableMessage':
         {
-          SDL.ScrollableMessage.deactivate(true);
+          SDL.ScrollableMessage.deactivate();
           this.onActivateSDLApp(element);
           break;
         }
