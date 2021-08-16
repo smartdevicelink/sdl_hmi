@@ -1406,49 +1406,46 @@
     text-overflow: ellipsis;
 }
 
-#AlertPopUp .alertPopUpImage {
-    margin: auto;
-    height: auto;
-    width: auto;
+#AlertPopUp #alertPopUpImage {
     position: absolute;
-    max-width: 120px;
-    top: 35px;
     left: 20px;
+    top: 40px;
+    width: 120px;
+    height: 120px;
+}
+
+#AlertPopUp .alertPopUpImage {
+    height: 100%;
+    width: 100%;
 }
 
 #AlertPopUp #alertPopUpImage.is-template.day-mode .ico-overlay {
-    background:url(../images/template/imagetype-pattern-day.png);
-    top: 35px;
-    left: 20px;
-    width: 80px;
-    height: 70px;
+    background:url(../images/template/imagetype-pattern-day.png);    
+    width: 100%;
+    height: 100%;
     z-index: 1001;
-    position: absolute;
-    background-repeat: round;
+    background-repeat: no-repeat;
+    background-size: cover;
     opacity: 0.4;
 }
 
 #AlertPopUp #alertPopUpImage.is-template.night-mode .ico-overlay {
     background:url(../images/template/imagetype-pattern-night.png);
-    top: 35px;
-    left: 20px;
-    width: 80px;
-    height: 70px;
+    width: 100%;
+    height: 100%;
     z-index: 1001;
-    position: absolute;
-    background-repeat: round;
+    background-repeat: no-repeat;
+    background-size: cover;
     opacity: 0.4;
 }
 
 #AlertPopUp #alertPopUpImage.is-template.high-lighted-mode .ico-overlay {
     background:url(../images/template/imagetype-pattern-highlighted.png);
-    top: 35px;
-    left: 20px;
-    width: 80px;
-    height: 70px;
+    width: 100%;
+    height: 100%;
     z-index: 1001;
-    position: absolute;
-    background-repeat: round;
+    background-repeat: no-repeat;
+    background-size: cover;
     opacity: 0.4;
 }
 
