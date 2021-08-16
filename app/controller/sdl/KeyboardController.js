@@ -54,11 +54,21 @@ SDL.KeyboardController = Em.Object.create({
     unsupportedKeyboardSymbols: [ '^' ],
 
     /**
+     * Id of app that initiated keyboard interaction
+     */
+    appID: null,
+
+    /**
+     * Model of app that initiated keyboard interaction
+     */
+    appModel: null,
+
+    /**
      * @description Closes keyboard view and cancels active interaction request
      */
     closeKeyboardView: function() {
-        if (SDL.SDLController.model &&
-            SDL.SDLController.model.activeRequests.uiPerformInteraction &&
+        if (this.appModel && 
+            this.appModel.activeRequests.uiPerformInteraction &&
             !SDL.InteractionChoicesView.active) {
           FFW.UI.OnKeyboardInput('', 'ENTRY_CANCELLED');
           SDL.InteractionChoicesView.deactivate('ABORTED');
@@ -66,16 +76,23 @@ SDL.KeyboardController = Em.Object.create({
         SDL.Keyboard.deactivate();
     },
 
+    updateModel: function() {
+      if (this.appID === null) {
+        this.appModel = SDL.SDLController.model;
+      } else {
+        this.appModel = SDL.SDLController.getApplicationModel(this.appID);
+      }
+    }.observes(
+      'this.appID'
+    ),
+
     /**
      * @description Inputs the information depending on key pressed
      * @param {Object} element key that was pressed by user
      */
     inputChanges: function(element) {
-        if (SDL.SDLController.model &&
-          SDL.SDLController.model.activeRequests.uiPerformInteraction) {
-          SDL.SDLController.onResetTimeout(
-            SDL.SDLController.model.appID, 'UI.PerformInteraction'
-          );
+        if (this.appModel && this.appModel.activeRequests.uiPerformInteraction) {
+          SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.PerformInteraction');
         }
 
         switch (element.text) {
@@ -128,11 +145,8 @@ SDL.KeyboardController = Em.Object.create({
           SDL.SDLController.onKeyboardChanges();
         }
 
-        if (SDL.SDLController.model &&
-          SDL.SDLController.model.activeRequests.uiPerformInteraction) {
-          SDL.SDLController.onResetTimeout(
-            SDL.SDLController.model.appID, 'UI.PerformInteraction'
-          );
+        if (this.appModel && this.appModel.activeRequests.uiPerformInteraction) {
+          SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.PerformInteraction');
         }
     },
 
@@ -140,36 +154,36 @@ SDL.KeyboardController = Em.Object.create({
      * @description Disables or enables characters depending on global properties
      */
     disableButtons: function() {
-        if (SDL.SDLController.model) {
-          if (!SDL.SDLController.model.globalProperties.keyboardProperties) {
-            return;
-          }
-          var list = SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList ?
-            SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList :
-            [];
-          for (var i = 0; i < list.length; i++) {
-            list[i] = list[i].toLowerCase();
-          }
+        var list = [];
+        if (this.appModel && this.appModel.globalProperties.keyboardProperties &&
+            this.appModel.globalProperties.keyboardProperties.limitedCharacterList) {
+          list = this.appModel.globalProperties.keyboardProperties.limitedCharacterList;
+        }
 
-          let disable_layout_buttons = (layout, list) => {
-            for (var i = 0; i < layout._childViews.length; ++i) {
-              let button = layout._childViews[i];
+        for (var i = 0; i < list.length; i++) {
+          list[i] = list[i].toLowerCase();
+        }
 
-              if (list.length == 0) {
-                button.set('disabled', false);
-                continue;
-              }
+        let disable_layout_buttons = (layout, list) => {
+          for (var i = 0; i < layout._childViews.length; ++i) {
+            let button = layout._childViews[i];
 
-              let button_text = button.text;
-              if (button.customKeyIndex != null) {
-                button_text = this.getCustomKey(button.customKeyIndex, button.defaultText);
-              }
-
-              const is_disabled = list.indexOf(button_text) < 0;
-              button.set('disabled', is_disabled);
+            if (list.length == 0) {
+              button.set('disabled', false);
+              continue;
             }
-          };
 
+            let button_text = button.text;
+            if (button.customKeyIndex != null) {
+              button_text = this.getCustomKey(button.customKeyIndex, button.defaultText);
+            }
+
+            const is_disabled = list.indexOf(button_text) < 0;
+            button.set('disabled', is_disabled);
+          }
+        };
+
+        if (SDL.Keyboard) {
           const layouts = [
             SDL.Keyboard.buttonsAreaQWERTY,
             SDL.Keyboard.buttonsAreaQWERTZ,
@@ -182,7 +196,9 @@ SDL.KeyboardController = Em.Object.create({
           });
         }
     }.observes(
-        'SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList.@each'
+        'SDL.SDLController.model.globalProperties.keyboardProperties.limitedCharacterList.@each',
+        'this.appModel.globalProperties.keyboardProperties.limitedCharacterList.@each',
+        'this.appID'
     ),
 
     /**
@@ -193,13 +209,13 @@ SDL.KeyboardController = Em.Object.create({
     isLayoutActive: function(layout) {
         const default_layout = "QWERTY";
 
-        if (SDL.SDLController.model == null && layout == default_layout) {
+        if (this.appModel == null && layout == default_layout) {
             return true;
         }
 
-        return SDL.SDLController.model &&
-               SDL.SDLController.model.globalProperties.keyboardProperties ?
-               SDL.SDLController.model.globalProperties.keyboardProperties.keyboardLayout == layout :
+        return this.appModel && 
+               this.appModel.globalProperties.keyboardProperties ?
+               this.appModel.globalProperties.keyboardProperties.keyboardLayout == layout :
                false;
     },
 
@@ -209,9 +225,8 @@ SDL.KeyboardController = Em.Object.create({
      */
     maskInputCharacters: function() {
         let value = 'DISABLE_INPUT_KEY_MASK';
-        if (SDL.SDLController.model &&
-            SDL.SDLController.model.globalProperties.keyboardProperties) {
-            value = SDL.SDLController.model.globalProperties.keyboardProperties.maskInputCharacters;
+        if (this.appModel && this.appModel.globalProperties.keyboardProperties) {
+            value = this.appModel.globalProperties.keyboardProperties.maskInputCharacters;
         }
 
         let is_mask_characters = false;
@@ -228,7 +243,7 @@ SDL.KeyboardController = Em.Object.create({
             case 'USER_CHOICE_INPUT_KEY_MASK': {
                 Em.Logger.log('Showing user button for masking');
                 is_show_mask_button = true;
-                is_mask_characters = SDL.SDLController.model.maskInputCharactersUserChoice;
+                is_mask_characters = this.appModel.maskInputCharactersUserChoice;
                 break;
             }
 
@@ -246,7 +261,9 @@ SDL.KeyboardController = Em.Object.create({
         this.updateInputMasking();
 
     }.observes(
-      'SDL.SDLController.model.globalProperties.keyboardProperties.maskInputCharacters'
+      'SDL.SDLController.model.globalProperties.keyboardProperties.maskInputCharacters',
+      'this.appModel.globalProperties.keyboardProperties.maskInputCharacters',
+      'this.appID'
     ),
 
     /**
@@ -256,15 +273,15 @@ SDL.KeyboardController = Em.Object.create({
      * @returns customized key according to global properties
      */
     getCustomKey: function(index, defaultKey) {
-      if (SDL.SDLController.model == null) {
+      if (this.appModel == null) {
         return defaultKey;
       }
 
-      if (SDL.SDLController.model.globalProperties.keyboardProperties.customKeys == null) {
+      if (this.appModel.globalProperties.keyboardProperties.customKeys == null) {
         return defaultKey;
       }
 
-      const keys = SDL.SDLController.model.globalProperties.keyboardProperties.customKeys;
+      const keys = this.appModel.globalProperties.keyboardProperties.customKeys;
       if (keys.length >= index + 1) {
         const customSymbol = keys[index];
         if (this.unsupportedKeyboardSymbols.includes(customSymbol)) {
@@ -317,9 +334,9 @@ SDL.KeyboardController = Em.Object.create({
      * of internal controller flags
      */
     updateInputMasking: function() {
-      if (SDL.SDLController.model) {
-        SDL.SDLController.model.set('maskInputCharactersUserChoice', SDL.KeyboardController.maskCharacters);
-        SDL.KeyboardController.sendInputKeyMaskNotification(SDL.SDLController.model.appID);
+      if (this.appModel) {
+        this.appModel.set('maskInputCharactersUserChoice', SDL.KeyboardController.maskCharacters);
+        SDL.KeyboardController.sendInputKeyMaskNotification(this.appModel.appID);
       }
       if (SDL.Keyboard) {
         if (SDL.KeyboardController.maskCharacters) {

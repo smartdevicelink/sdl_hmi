@@ -41,6 +41,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
       'input',
       'listWrapper'
     ],
+    requestID: 0,
     didInsertElement: function() {
       SDL.SDLModel.data.interactionListWrapper = new iScroll(
         'listWrapper', {
@@ -91,11 +92,9 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         ],
         click: function() {
           if (this._parentView.active) {
-            SDL.InteractionChoicesView.timerUpdate();
-            SDL.SDLController.onResetTimeout(
-              SDL.SDLController.model.appID, 'UI.PerformInteraction'
-            );
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.PerformInteraction');
           }
+          SDL.ResetTimeoutPopUp.DeactivatePopUp();
         },
         naviChoises: Em.ContainerView.extend(
           {
@@ -129,15 +128,11 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         items: [],
         click: function() {
           if (this._parentView.active) {
-            SDL.InteractionChoicesView.timerUpdate();
-            SDL.SDLController.onResetTimeout(
-              SDL.SDLController.model.appID, 'UI.PerformInteraction'
-            );
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.PerformInteraction');
           }
         }
       }
     ),
-    timer: null,
     timeout: null,
     endTime: null,
     search: false,
@@ -151,20 +146,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
      */
     appID: null,
     /**
-     * Method updates popup timer when data changes through keyboard
-     */
-    timerUpdate: function() {
-      if (this.timeout) {
-        clearTimeout(this.timer);
-        var self = this;
-        this.timer = setTimeout(
-          function() {
-            self.deactivate('TIMED_OUT');
-          }, this.timeout
-        );
-      }
-    }.observes('this.input.value'),
-    /**
      * Activate window and set caption text
      *
      * @param text: String
@@ -175,6 +156,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         this.set('caption', message.params.initialText.fieldText);
       }
       this.appID = message.params.appID;
+      this.requestID = message.id;
       this.set('areAllImagesValid', true);
       this.set('imagesValidationInfo', null);
       if (message.params.interactionLayout) {
@@ -245,12 +227,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
           this.set('icon', false);
           this.set('search', false);
           this.set('active', true);
-        } else {
-          this.timer = setTimeout(
-            function() {
-              SDL.InteractionChoicesView.deactivate('TIMED_OUT');
-            }, message.params.timeout
-          );
         }
       }
     },
@@ -263,11 +239,8 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
       }
       if (SDL.SDLModel.data.performInteractionSession.length > 0 &&
         result != 'ABORTED') {
-        this.timerUpdate();
       } else {
-        clearTimeout(this.timer);
         this.set('endTime', null);
-        this.timer = null;
         this.set('active', false);
         SDL.SDLController.VRMove();
         SDL.Keyboard.deactivate();
@@ -283,6 +256,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
               this.appID, SDL.SDLModel.data.resultCode['ABORTED'],
               null, null, "UI.PerformInteraction has been aborted"
             );
+            SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.PerformInteraction',false,false);
             break;
           }
           case 'TIMED_OUT':
@@ -299,6 +273,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
               this.appID, SDL.SDLModel.data.resultCode.SUCCESS, choiceID,
               this.input.value
             );
+            SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.PerformInteraction',false,false);
             break;
           }
           case 'WARNINGS':
@@ -307,6 +282,7 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
               this.appID, SDL.SDLModel.data.resultCode.WARNINGS, choiceID,
               this.input.value, this.imagesValidationInfo
             );
+            SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.PerformInteraction',false,false);
             break;
           }
           default:
@@ -388,12 +364,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
 
       var self = this;
       this.set('endTime', Date.now() + timeout);
-      clearTimeout(this.timer);
-      this.timer = setTimeout(
-        function() {
-          self.deactivate('TIMED_OUT');
-        }, timeout
-      );
     },
     /**
      * Update choises list with actual set id
@@ -455,12 +425,6 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
         function() {
           SDL.SDLModel.data.interactionListWrapper.refresh();
         }, 0
-      );
-      clearTimeout(this.timer);
-      this.timer = setTimeout(
-        function() {
-          self.deactivate('TIMED_OUT');
-        }, timeout
       );
     },
 

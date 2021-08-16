@@ -49,20 +49,16 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
          *
          * @type {Number}
          */
+        defaultTimeout: 10000,
         alertRequestId: null,
         appID: null,
         content1: '',
         content2: '',
         active: false,
-        timer: null,
-        timeout: null,
         endTime: null,
         reason: '',
         message: undefined,
-        /**
-         * When SubtleAlert is clicked, open the app that sent the alert
-         */
-        onClick: function(event) {
+        click(event) {
             if (document.getElementById('SubtleAlertPopUp').contains(event.target)){
                 var buttonsDiv = document.getElementById('subtleAlertSoftButtons');
                 for (var button of buttonsDiv.childNodes) {
@@ -71,7 +67,7 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                     }
                 }
 
-                SDL.SubtleAlertPopUp.deactivate();
+                this.deactivate();
                 SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
                 SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
             } else{
@@ -139,10 +135,10 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
          */
         deactivate: function (reason, info) {
             this.set('active', false);
-            clearTimeout(this.timer);
             this.set('endTime', null);
             this.set('content1', '');
             this.set('content2', '');
+            if(reason !== 'timeout') SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.SubtleAlert');
             if ((reason == 'timeout' &&
                 this.softbuttons.buttons._childViews.length > 0) ||
                 reason === 'ABORTED') {
@@ -160,7 +156,6 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                     SDL.SDLModel.data.resultCode.SUCCESS, this.alertRequestId, info
                 );
             }
-            window.removeEventListener('click', this.onClick);
             SDL.SDLController.onSystemContextChange();
             SDL.SDLModel.data.registeredApps.forEach(app => {
               app.activeWindows.forEach(widget => {
@@ -229,39 +224,46 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 }
             }
         },
-        SubtleAlertActive: function (message, alertRequestId) {
+        SubtleAlertActive: function (message) {
             var self = this;
-            this.set('alertRequestId', alertRequestId);
-            this.set('cancelID', message.cancelID);
+            this.set('alertRequestId', message.id);
+            this.set('cancelID', message.params.cancelID);
             this.set('reason', 'timeout');
             this.set('message', undefined);
-            this.addSoftButtons(message.softButtons, message.appID);
-            this.set('appID', message.appID);
-            this.set('icon', message.alertIcon ? message.alertIcon.value : "images/sdl/Warning.png");
-            for (var i = 0; i < message.alertStrings.length; i++) {
-                switch (message.alertStrings[i].fieldName) {
+            this.addSoftButtons(message.params.softButtons, message.params.appID);
+            this.set('endTime', Date.now() + (message.params.duration || this.defaultTimeout));
+            this.set('appID', message.params.appID);
+            this.set('icon', message.params.alertIcon ? message.params.alertIcon.value : "images/sdl/Warning.png");
+            for (var i = 0; i < message.params.alertStrings.length; i++) {
+                switch (message.params.alertStrings[i].fieldName) {
                     case 'subtleAlertText1':
                     {
-                        this.set('content1', message.alertStrings[i].fieldText);
+                        this.set('content1', message.params.alertStrings[i].fieldText);
                         break;
                     }
                     case 'subtleAlertText2':
                     {
-                        this.set('content2', message.alertStrings[i].fieldText);
+                        this.set('content2', message.params.alertStrings[i].fieldText);
                         break;
                     }
                 }
             }
             this.set('active', true);
-            this.set('timeout', message.duration ? message.duration : 10000);
-            this.set('endTime', Date.now() + this.timeout);
-            clearTimeout(this.timer);
-            this.timer = setTimeout(
-                function () {
-                    self.deactivate(self.reason, self.message);
-                }, this.timeout
-            );
-            window.addEventListener('click', this.onClick);
+            SDL.ResetTimeoutPopUp.addRpc(
+                message,
+                () => {SDL.SubtleAlertPopUp.deactivate('timeout');},
+                SDL.SubtleAlertPopUp.resetTimeoutCallback,
+                message.params.duration || this.defaultTimeout
+            )
+            SDL.ResetTimeoutPopUp.ActivatePopUp();
+        },
+
+        /*
+        * function resetTimeoutCallback.
+        */
+        resetTimeoutCallback: function(time){
+            let self = SDL.SubtleAlertPopUp;
+            self.set('endTime', Date.now() + time);
         }
     }
 );

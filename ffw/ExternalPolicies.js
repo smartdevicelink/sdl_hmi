@@ -159,7 +159,18 @@ FFW.ExternalPolicies = Em.Object.create({
         Em.Logger.log('ExternalPolicies onWSMessage ' + evt.data);
         this.unpackResponseReady = true;
 
-        FFW.BasicCommunication.OnReceivedPolicyUpdate(evt.data);
+        let jsonData;
+        try {
+            jsonData = JSON.parse(evt.data)
+        }
+        catch {
+            Em.Logger.log('ExternalPolicies: failed to parse JSON content from WSMessage');
+            return;
+        }
+
+        if(jsonData.requestType == 'PROPRIETARY'){
+            FFW.BasicCommunication.OnReceivedPolicyUpdate(jsonData.data);
+        }
     },
 
 });

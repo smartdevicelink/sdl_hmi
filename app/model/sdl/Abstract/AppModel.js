@@ -374,6 +374,16 @@ SDL.ABSAppModel = Em.Object.extend(
     unregisteringInProgress: false,
 
     /**
+     * @param ttsSpeakListenerCallbacks
+     * @type {Array}
+     * @description parameter to keep track of application requests listening for TTS.Speak
+     * request and execute callback function depending on their internal logic
+     * Each array element is {Object} which should contain `type` of TTS.Speal to wait for
+     * and `callback` which is the function to be called if type matches the search param
+     */
+    ttsSpeakListenerCallbacks: [],
+
+    /**
      * @type {Array}
      * @description list of already requested icon file names from SDL
      */
@@ -546,9 +556,10 @@ SDL.ABSAppModel = Em.Object.extend(
 
       this.set('maskInputCharactersUserChoice', true);
 
-      this.set('resolutionsList',
-        SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities
-      );
+      var all_resolutions = [JSON.parse(JSON.stringify(SDL.systemCapabilities.videoStreamingCapability))];
+      delete all_resolutions[0].additionalVideoStreamingCapabilities;
+      all_resolutions = all_resolutions.concat(SDL.systemCapabilities.videoStreamingCapability.additionalVideoStreamingCapabilities);
+      this.set('resolutionsList', all_resolutions);
     },
     /**
      * @description Gets app default keyboard global properties
@@ -860,14 +871,15 @@ SDL.ABSAppModel = Em.Object.extend(
       delete this.interactionChoices[message.interactionChoiceSetID];
     },
     /**
-     * SDL UI Slider response handeler open Slider window with received
+     * SDL UI Slider response handler open Slider window with received
      * parameters
      *
      * @param {Object}
      */
     onSlider: function(message) {
       SDL.SliderView.loadData(message);
-      SDL.SliderView.activate(this.appName, message.params.timeout);
+      SDL.SliderView.setText(this.appName);
+      SDL.SliderView.activate(message.params.timeout);
     },
 
     /**
@@ -894,10 +906,6 @@ SDL.ABSAppModel = Em.Object.extend(
           if (app_info.mainImage) {
             content["graphic"] = {
               "value" : app_info.mainImage
-            };
-          } else if (app_info.trackIcon) {
-            content["graphic"] = {
-              "value" : app_info.trackIcon
             };
           }
         }

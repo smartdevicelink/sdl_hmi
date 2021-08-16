@@ -434,12 +434,24 @@ FFW.BasicCommunication = FFW.RPCObserver
             const updated_caps = notification.params.appCapability.videoStreamingCapability;
             if (updated_caps.additionalVideoStreamingCapabilities) {
               let appModel = SDL.SDLController.getApplicationModel(notification.params.appID);
-
-              if (appModel && appModel.resolutionIndex > updated_caps.additionalVideoStreamingCapabilities.length - 1) {
-                appModel.set('resolutionIndex',
-                  updated_caps.additionalVideoStreamingCapabilities.length - 1
-                );
+              if (appModel) {
+                // Order of capabilities is not guaranteed. Find resolution index.
+                var current_res = SDL.NavigationController.stringifyCapabilityItem(appModel.resolutionsList[appModel.resolutionIndex]);
+                var i=0;
+                for (; i<updated_caps.additionalVideoStreamingCapabilities.length; i++) {
+                  const comp_res = SDL.NavigationController.stringifyCapabilityItem(updated_caps.additionalVideoStreamingCapabilities[i])
+                  if (current_res === comp_res) {
+                    appModel.set('resolutionIndex', i)
+                    break;
+                  }
+                }
+                if (i == updated_caps.additionalVideoStreamingCapabilities.length) {
+                  appModel.set('resolutionIndex',
+                    updated_caps.additionalVideoStreamingCapabilities.length - 1
+                  );
+                }
               }
+              
               appModel.set('resolutionsList',
                 updated_caps.additionalVideoStreamingCapabilities
               );
@@ -602,7 +614,9 @@ FFW.BasicCommunication = FFW.RPCObserver
                 fileName: request.params.fileName
               });
             } else {
-              this.OnReceivedPolicyUpdate(request.params.fileName);
+              if (request.params.requestType == 'PROPRIETARY') {
+                this.OnReceivedPolicyUpdate(request.params.fileName);
+              }
             }
 
             if (request.params.requestType == 'OEM_SPECIFIC' &&
@@ -949,6 +963,26 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.sendMessage(JSONMessage);
       },
+
+    /* 
+     * OnResetTimeout function. sends to SDL OnResetTimeout
+     */     
+      OnResetTimeout: function(requestID, methodName, resetPeriod) {
+        console.log('BasicCommunication.OnResetTimeout');
+
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'method': 'BasicCommunication.OnResetTimeout',
+          'params': {
+            requestID,
+            methodName,
+            resetPeriod
+          }
+        };
+
+        this.client.send(JSONMessage);
+      },
+
       /********************* Requests END *********************/
 
       /********************* Responses BEGIN *********************/
