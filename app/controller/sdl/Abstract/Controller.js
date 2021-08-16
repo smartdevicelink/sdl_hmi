@@ -1639,6 +1639,36 @@ SDL.SDLController = Em.Object.extend(
 
       return windowCapability;
     },
+
+    /**
+     * @function getDisplayCapabilities
+     * @param {Integer} appID
+     * @description returns string of system capabilities for selected app
+     */
+    getDisplayCapabilities: function(appID){
+      let appModel = SDL.SDLController.getApplicationModel(appID);
+      const windowTypeSupportedMain = SDL.SDLModelData.defaultWindowCapability["MAIN"].systemCapability.displayCapabilities[0].windowTypeSupported;
+      const windowTypeSupportedWidget = SDL.SDLModelData.defaultWindowCapability["WIDGET"].systemCapability.displayCapabilities[0].windowTypeSupported;
+
+      // MAIN window
+      let displayCapabilities = [SDL.templateCapabilities[appModel.templateConfiguration.template].displayCapabilities];
+      displayCapabilities[0].windowTypeSupported = windowTypeSupportedMain;
+
+      // WIDGET windows
+      appModel.getWidgetModels().forEach(element => {
+        let capability = SDL.templateCapabilities[element.content.templateConfiguration.template].displayCapabilities;
+        capability.windowTypeSupported = windowTypeSupportedWidget;
+        displayCapabilities.concat(capability)
+      });
+
+      return {
+        systemCapability: {
+          systemCapabilityType: "DISPLAYS",
+          displayCapabilities: displayCapabilities
+        },
+        appID: appID
+      }
+    },
     /**
      * @function isColorSchemesEqual
      * @param {Object} left - color scheme object
