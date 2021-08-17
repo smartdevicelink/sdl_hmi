@@ -43,6 +43,8 @@ SDL.SDLNonMediaModel = SDL.ABSAppModel.extend({
       subscribeVIData[key] = false;
     }
 
+    this.NAV_BUTTONS = SDL.deepCopy(this.NAV_BUTTONS_INITIAL);
+
     this.set('subscribedData', subscribeVIData);
 
     // init properties here

@@ -42,6 +42,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     for (var key in SDL.SDLVehicleInfoModel.vehicleData) {
       subscribeVIData[key] = false;
     }
+    this.NAV_BUTTONS = SDL.deepCopy(this.NAV_BUTTONS_INITIAL);
 
     this.set('subscribedData', subscribeVIData);
 
