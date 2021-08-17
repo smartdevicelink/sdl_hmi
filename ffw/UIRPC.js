@@ -270,7 +270,7 @@ FFW.UI = FFW.RPCObserver.create(
             SDL.SDLModel.validateImages(request.id, callback, imageList);
 
             if (sendCapabilityUpdated) {
-              let capability = SDL.SDLController.getDisplayCapabilities(request.params.appID, windowID);
+              let capability = SDL.SDLController.getDisplayCapability(request.params.appID, windowID);
               FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
             }
             break;
@@ -571,7 +571,7 @@ FFW.UI = FFW.RPCObserver.create(
               sendCapabilityUpdated = true;
             }
             if (sendCapabilityUpdated) {
-              let capability = SDL.SDLController.getDisplayCapabilities(request.params.appID, windowID);
+              let capability = SDL.SDLController.getDisplayCapability(request.params.appID, windowID);
               FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
             }
             break;
@@ -1193,7 +1193,7 @@ FFW.UI = FFW.RPCObserver.create(
 
                 this.sendUIResult(resultCode, request.id, request.method);
 
-                let capabilites = SDL.SDLController.getDisplayCapabilities(request.params.appID, request.params.windowID);
+                let capabilites = SDL.SDLController.getDisplayCapability(request.params.appID, request.params.windowID);
                 FFW.BasicCommunication.OnSystemCapabilityUpdated(capabilites);
               }
             } else {

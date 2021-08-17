@@ -1641,12 +1641,12 @@ SDL.SDLController = Em.Object.extend(
     },
 
     /**
-     * @function getDisplayCapabilities
+     * @function getDisplayCapability
      * @param {Integer} appID
      * @param {Integer} windowID
      * @description returns string of system capabilities for selected app
      */
-    getDisplayCapabilities: function(appID, windowID){
+    getDisplayCapability: function(appID, windowID){
       const appModel = SDL.SDLController.getApplicationModel(appID);
       const windowType = (windowID === undefined || windowID === 0) ? "MAIN" : "WIDGET";
       const windowTypeSupported = SDL.SDLModelData.defaultWindowCapability[windowType].systemCapability.displayCapabilities[0].windowTypeSupported;
