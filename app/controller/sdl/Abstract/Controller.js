@@ -1639,6 +1639,45 @@ SDL.SDLController = Em.Object.extend(
 
       return windowCapability;
     },
+
+    /**
+     * @function getDisplayCapability
+     * @param {Integer} appID
+     * @param {Integer} windowID
+     * @description returns string of system capabilities for selected app
+     */
+    getDisplayCapability: function(appID, windowID){
+      const appModel = SDL.SDLController.getApplicationModel(appID);
+      const windowType = (windowID === undefined || windowID === 0) ? "MAIN" : "WIDGET";
+      const windowTypeSupported = SDL.SDLModelData.defaultWindowCapability[windowType].systemCapability.displayCapabilities[0].windowTypeSupported;
+
+      let templateCapabilities = SDL.deepCopy(SDL.templateCapabilities[appModel.templateConfiguration.template])
+      let displayCapability = {
+        displayName: templateCapabilities.displayCapabilities.displayName,
+        windowCapabilities: [{
+          textFields: templateCapabilities.displayCapabilities.textFields,
+          imageFields: templateCapabilities.displayCapabilities.imageFields,
+          imageTypeSupported: templateCapabilities.displayCapabilities.imageCapabilities,
+          templatesAvailable: templateCapabilities.displayCapabilities.templatesAvailable,
+          numCustomPresetsAvailable: templateCapabilities.displayCapabilities.numCustomPresetsAvailable,
+          buttonCapabilities: templateCapabilities.buttonCapabilities,
+          softButtonCapabilities: templateCapabilities.softButtonCapabilities
+        }],
+        windowTypeSupported: windowTypeSupported
+      };
+
+      if(windowType === "WIDGET") {
+        displayCapability.windowCapabilities[0].windowID = windowID;
+      }
+      
+      return {
+        systemCapability: {
+          systemCapabilityType: "DISPLAYS",
+          displayCapabilities: [ displayCapability ]
+        },
+        appID: appID
+      }
+    },
     /**
      * @function isColorSchemesEqual
      * @param {Object} left - color scheme object
