@@ -1643,28 +1643,37 @@ SDL.SDLController = Em.Object.extend(
     /**
      * @function getDisplayCapabilities
      * @param {Integer} appID
+     * @param {Integer} windowID
      * @description returns string of system capabilities for selected app
      */
-    getDisplayCapabilities: function(appID){
-      let appModel = SDL.SDLController.getApplicationModel(appID);
-      const windowTypeSupportedMain = SDL.SDLModelData.defaultWindowCapability["MAIN"].systemCapability.displayCapabilities[0].windowTypeSupported;
-      const windowTypeSupportedWidget = SDL.SDLModelData.defaultWindowCapability["WIDGET"].systemCapability.displayCapabilities[0].windowTypeSupported;
+    getDisplayCapabilities: function(appID, windowID){
+      const appModel = SDL.SDLController.getApplicationModel(appID);
+      const windowType = (windowID === undefined || windowID === 0) ? "MAIN" : "WIDGET";
+      const windowTypeSupported = SDL.SDLModelData.defaultWindowCapability[windowType].systemCapability.displayCapabilities[0].windowTypeSupported;
 
-      // MAIN window
-      let displayCapabilities = [SDL.templateCapabilities[appModel.templateConfiguration.template].displayCapabilities];
-      displayCapabilities[0].windowTypeSupported = windowTypeSupportedMain;
+      let templateCapabilities = SDL.deepCopy(SDL.templateCapabilities[appModel.templateConfiguration.template])
+      let displayCapability = {
+        displayName: templateCapabilities.displayCapabilities.displayName,
+        windowCapabilities: [{
+          textFields: templateCapabilities.displayCapabilities.textFields,
+          imageFields: templateCapabilities.displayCapabilities.imageFields,
+          imageTypeSupported: templateCapabilities.displayCapabilities.imageCapabilities,
+          templatesAvailable: templateCapabilities.displayCapabilities.templatesAvailable,
+          numCustomPresetsAvailable: templateCapabilities.displayCapabilities.numCustomPresetsAvailable,
+          buttonCapabilities: templateCapabilities.buttonCapabilities,
+          softButtonCapabilities: templateCapabilities.softButtonCapabilities
+        }],
+        windowTypeSupported: windowTypeSupported
+      };
 
-      // WIDGET windows
-      appModel.getWidgetModels().forEach(element => {
-        let capability = SDL.templateCapabilities[element.content.templateConfiguration.template].displayCapabilities;
-        capability.windowTypeSupported = windowTypeSupportedWidget;
-        displayCapabilities.concat(capability)
-      });
-
+      if(windowType === "WIDGET") {
+        displayCapability.windowCapabilities[0].windowID = windowID;
+      }
+      
       return {
         systemCapability: {
           systemCapabilityType: "DISPLAYS",
-          displayCapabilities: displayCapabilities
+          displayCapabilities: [ displayCapability ]
         },
         appID: appID
       }

@@ -1155,15 +1155,6 @@ SDL.ABSAppModel = Em.Object.extend(
     },
 
     /**
-     * @function getWidgetModels
-     * @returns array of {Object}s 
-     * @description Returns all widget models for current app 
-     */
-    getWidgetModels: function() {
-      return this.activeWindows.concat(this.backgroundWindows, this.inactiveWindows)
-    },
-
-    /**
      * @function removeWidgets
      * @description Clear all widget after disconected app
      */
