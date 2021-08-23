@@ -63,7 +63,7 @@ SDL.ABSAppModel = Em.Object.extend(
      * navigation subscription buttons.
      * Depends on BC.SubscribeButton request.
      */    
-    NAV_BUTTONS: {
+    NAV_BUTTONS_INITIAL: {
         NAV_CENTER_LOCATION: {
           subscribed: false,
           text: "Center"
