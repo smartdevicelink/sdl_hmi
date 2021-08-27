@@ -113,7 +113,8 @@ FFW.RPCHelper = Em.Object.create(
         SDL.SDLModel.data.resultCode.WRONG_LANGUAGE,
         SDL.SDLModel.data.resultCode.RETRY,
         SDL.SDLModel.data.resultCode.SAVED,
-        SDL.SDLModel.data.resultCode.TRUNCATED_DATA
+        SDL.SDLModel.data.resultCode.TRUNCATED_DATA,
+        SDL.SDLModel.data.resultCode.UNSUPPORTED_RESOURCE
       ].includes(resultCode);
     },
 
