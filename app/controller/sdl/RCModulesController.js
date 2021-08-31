@@ -789,7 +789,7 @@ SDL.RCModulesController = Em.Object.create({
           var diff = {};
           for (var param in one) {
             if (undefined !== another[param] &&
-                SDL.SDLController.compareObjects(another[param], one[param])) {
+                SDL.SDLController.compareObjects(another[param], one[param]) > 0) {
               diff[param] = another[param];
             }
           }
