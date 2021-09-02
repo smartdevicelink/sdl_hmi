@@ -273,9 +273,9 @@ SDL.AlertPopUp = Em.ContainerView.create(
       this.set('isTemplateAlertIcon', message.params.alertIcon && message.params.alertIcon.isTemplate === true);
       this.addSoftButtons(message.params.softButtons, message.params.appID);
       this.set('progressIndicator', message.params.progressIndicator);
-      this.set(
-        'appName', SDL.SDLController.getApplicationModel(message.params.appID).appName
-      );
+      var appModel = SDL.SDLController.getApplicationModel(message.params.appID);
+      this.set('appName', appModel.appName);
+      this.set('priority', appModel.priority);
       for (var i = 0; i < message.params.alertStrings.length; i++) {
         switch (message.params.alertStrings[i].fieldName) {
           case 'alertText1':
