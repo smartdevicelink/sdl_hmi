@@ -93,6 +93,7 @@ SDL.TBTTurnList = SDL.SDLAbstractView.create(
               content: turnListArray[i].navigationText ?
                 turnListArray[i].navigationText.fieldText : '',
               classNames:turnListArray[i].turnIcon ? turnListArray[i].turnIcon.isTemplate ? ['list-item','ico-overlay'] : 'list-item':'' ,
+              classNames:turnListArray[i].navigationText ? turnListArray[i].navigationText.isTemplate ? ['list-item','ico-overlay'] : 'list-item':'' ,
               classNameBindings: 'getCurrentDisplayModeClass',
               getCurrentDisplayModeClass: function() {
                 return SDL.ControlButtons.getCurrentDisplayModeClass(
