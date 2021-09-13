@@ -377,7 +377,7 @@ button.next-home {
 }
 
 #ResetTimeoutPopUp {
-    left: 1500px;
+    left: 1450px;
     width: 302px;
     height: 147px;
     top: 10px;
@@ -444,7 +444,6 @@ button.next-home {
     height: 31px;
     top: 257px;
     white-space: pre;
-    left: 118px;
     text-align: center;
     line-height: 30px;
 }
