@@ -97,11 +97,11 @@ SDL.HmiSettingsModel = Em.Object.extend({
 
   setHmiSettingsData: function(data){
       var result = {};
-      if(data.displayMode && this.displayMode != data.displayMode) {
+      if(data.displayMode) {
         this.set('displayMode',data.displayMode);
         result.displayMode = (data.displayMode === 'AUTO' ? this.defineAutoTimeValue() : data.displayMode);
       }
-      if(data.temperatureUnit && this.temperatureUnit != data.temperatureUnit) {
+      if(data.temperatureUnit) {
         this.set('temperatureUnit',data.temperatureUnit);
         if('CELSIUS' == data.temperatureUnit){
           SDL.RCModulesController.climateModels[this.ID].temperatureUnitCelsiusEnable();
@@ -110,7 +110,7 @@ SDL.HmiSettingsModel = Em.Object.extend({
         }
         result.temperatureUnit = data.temperatureUnit;
       }
-      if(data.distanceUnit && this.distanceUnit != data.distanceUnit) {
+      if(data.distanceUnit) {
         this.set('distanceUnit',data.distanceUnit);
         result.distanceUnit = data.distanceUnit;
       }
