@@ -138,7 +138,10 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             this.set('endTime', null);
             this.set('content1', '');
             this.set('content2', '');
-            if(reason !== 'timeout') SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.SubtleAlert');
+            if(reason !== 'timeout') {
+                SDL.SDLController.TTSResponseHandler();
+                SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.SubtleAlert');
+            }
             if ((reason == 'timeout' &&
                 this.softbuttons.buttons._childViews.length > 0) ||
                 reason === 'ABORTED') {
