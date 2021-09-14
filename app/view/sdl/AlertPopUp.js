@@ -153,7 +153,10 @@ SDL.AlertPopUp = Em.ContainerView.create(
       this.set('content1', '');
       this.set('content2', '');
       this.set('content3', '');
-      if(reason !== 'timeout') SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Alert');
+      if(reason !== 'timeout') {
+          SDL.SDLController.TTSResponseHandler();
+          SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Alert');
+      }
       if ((reason == 'timeout' &&
         this.softbuttons.buttons._childViews.length > 0) ||
         reason === 'ABORTED') {
