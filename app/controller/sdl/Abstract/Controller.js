@@ -917,6 +917,7 @@ SDL.SDLController = Em.Object.extend(
      */
     performAudioPassThruResponse: function(result) {
       SDL.SDLModel.data.set('AudioPassThruState', false);
+      SDL.SDLController.TTSResponseHandler();
       if (result === SDL.SDLModel.data.resultCode.SUCCESS) {
         FFW.UI.sendUIResult(
           result,
@@ -942,6 +943,7 @@ SDL.SDLController = Em.Object.extend(
      */
     callPerformAudioPassThruPopUpErrorResponse: function(element) {
       SDL.SDLModel.data.set('AudioPassThruState', false);
+      SDL.SDLController.TTSResponseHandler();
       FFW.UI.sendError(
         element.responseResult,
         FFW.UI.performAudioPassThruRequestID,
