@@ -791,6 +791,8 @@ SDL.SDLController = Em.Object.extend(
       );
       SDL.SDLModel.data.set('interactionData.vrHelpTitle', null);
       SDL.SDLModel.data.set('interactionData.vrHelp', null);
+      clearTimeout(SDL.SDLModel.promptTimeout);
+      SDL.SDLModel.set('timeoutPromptCallback', undefined);
       SDL.SDLController.getApplicationModel(
         appID
       ).activeRequests.uiPerformInteraction = null;
