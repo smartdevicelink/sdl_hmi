@@ -68,7 +68,7 @@ SDL.SDLModel = Em.Object.extend({
   subscribedData: {},
 
   applicationStatusBar: '',
-  timeoutPromprtCallback: undefined,
+  timeoutPromptCallback: undefined,
   promptTimeout: undefined,
 
   updateStatusBar: function() {
@@ -1492,7 +1492,7 @@ SDL.SDLModel = Em.Object.extend({
         (timeout) => {
           SDL.InteractionChoicesView.set('timeout', timeout);
           clearTimeout(SDL.SDLModel.promptTimeout);
-          SDL.SDLModel.promptTimeout = setTimeout(SDL.SDLModel.timeoutPromprtCallback, timeout - 2000);
+          SDL.SDLModel.promptTimeout = setTimeout(SDL.SDLModel.timeoutPromptCallback, timeout - 2000);
         },
         message.params.timeout,
         !SDL.SDLModel.data.VRActive
@@ -1533,7 +1533,7 @@ SDL.SDLModel = Em.Object.extend({
       return;
     }
 
-    SDL.SDLModel.timeoutPromprtCallback = () => {
+    SDL.SDLModel.timeoutPromptCallback = () => {
       if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
         SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
       } else if (!message.params.grammarID &&
@@ -1543,7 +1543,7 @@ SDL.SDLModel = Em.Object.extend({
         SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
       }
     }
-    SDL.SDLModel.promptTimeout = setTimeout(SDL.SDLModel.timeoutPromprtCallback,
+    SDL.SDLModel.promptTimeout = setTimeout(SDL.SDLModel.timeoutPromptCallback,
        message.params.timeout - 2000); //Magic numer is a platform depended HMI behavior: -2 seconds for timeout prompt
 
     SDL.SDLModel.VRonPrompt(message.params.initialPrompt);
