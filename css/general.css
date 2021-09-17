@@ -1219,7 +1219,7 @@ margin-top: 90px;
     border-left: 1px solid #393939;
     border-right: 1px solid #393939;
     width: 293px;
-    height: 100px;
+    max-height: 100px;
 }
 
 /* List item */
