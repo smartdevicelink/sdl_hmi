@@ -68,6 +68,8 @@ SDL.SDLModel = Em.Object.extend({
   subscribedData: {},
 
   applicationStatusBar: '',
+  timeoutPromptCallback: undefined,
+  promptTimeout: undefined,
 
   updateStatusBar: function() {
 
@@ -1486,7 +1488,11 @@ SDL.SDLModel = Em.Object.extend({
       SDL.ResetTimeoutPopUp.addRpc(
         message,
         () => {SDL.InteractionChoicesView.deactivate('TIMED_OUT')},
-        (timeout) => SDL.InteractionChoicesView.set('timeout', timeout),
+        (timeout) => {
+          SDL.InteractionChoicesView.set('timeout', timeout);
+          clearTimeout(SDL.SDLModel.promptTimeout);
+          SDL.SDLModel.promptTimeout = setTimeout(SDL.SDLModel.timeoutPromptCallback, timeout - 2000);
+        },
         message.params.timeout,
         !SDL.SDLModel.data.VRActive
       );
@@ -1526,18 +1532,18 @@ SDL.SDLModel = Em.Object.extend({
       return;
     }
 
-    setTimeout(function() {
-        if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
-          SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
-        } else if (!message.params.grammarID &&
-          SDL.SDLController.getApplicationModel(message.params.appID
-          ).activeRequests.uiPerformInteraction) {
-          // If UI PerformInteraction session is still active and PerformInteraction mode is MANUAL only
-          SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
-        }
-
-      }, message.params.timeout - 2000
-      ); //Magic numer is a platform depended HMI behavior: -2 seconds for timeout prompt
+    SDL.SDLModel.timeoutPromptCallback = () => {
+      if (SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) { // If VR PerformInteraction session is still active
+        SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
+      } else if (!message.params.grammarID &&
+        SDL.SDLController.getApplicationModel(message.params.appID
+        ).activeRequests.uiPerformInteraction) {
+        // If UI PerformInteraction session is still active and PerformInteraction mode is MANUAL only
+        SDL.SDLModel.VRonPrompt(message.params.timeoutPrompt);
+      }
+    }
+    SDL.SDLModel.promptTimeout = setTimeout(SDL.SDLModel.timeoutPromptCallback,
+       message.params.timeout - 2000); //Magic numer is a platform depended HMI behavior: -2 seconds for timeout prompt
 
     SDL.SDLModel.VRonPrompt(message.params.initialPrompt);
 
