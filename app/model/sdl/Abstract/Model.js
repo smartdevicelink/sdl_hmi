@@ -628,6 +628,7 @@ SDL.SDLModel = Em.Object.extend({
         return model.appType.indexOf('WEB_VIEW') >= 0;
       }
       case 'NON-MEDIA':
+      case 'DEFAULT':
       {
         return true;
       }
