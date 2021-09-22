@@ -1655,10 +1655,10 @@ SDL.SDLController = Em.Object.extend(
 
       let template = appModel.templateConfiguration.template;
       if(template === 'DEFAULT') {
-        if(appModel.appType.includes('NAVIGATION')) {
-          template = 'NAV_FULLSCREEN_MAP';
-        } else if(appModel.appType.includes('WEB_VIEW')) {
+        if(appModel.appType.includes('WEB_VIEW')) {
           template = 'WEB_VIEW';
+        } else if(appModel.appType.includes('NAVIGATION') || appModel.appType.includes('PROJECTION')) {
+          template = 'NAV_FULLSCREEN_MAP';
         } else if(appModel.isMedia === true) {
           template = 'MEDIA';
         } else {
