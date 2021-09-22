@@ -1653,7 +1653,20 @@ SDL.SDLController = Em.Object.extend(
       const windowType = (windowID === undefined || windowID === 0) ? "MAIN" : "WIDGET";
       const windowTypeSupported = SDL.SDLModelData.defaultWindowCapability[windowType].systemCapability.displayCapabilities[0].windowTypeSupported;
 
-      let templateCapabilities = SDL.deepCopy(SDL.templateCapabilities[appModel.templateConfiguration.template])
+      let template = appModel.templateConfiguration.template;
+      if(template === 'DEFAULT') {
+        if(appModel.appType.includes('WEB_VIEW')) {
+          template = 'WEB_VIEW';
+        } else if(appModel.appType.includes('NAVIGATION') || appModel.appType.includes('PROJECTION')) {
+          template = 'NAV_FULLSCREEN_MAP';
+        } else if(appModel.isMedia === true) {
+          template = 'MEDIA';
+        } else {
+          template = 'NON-MEDIA';
+        }
+      }
+
+      let templateCapabilities = SDL.deepCopy(SDL.templateCapabilities[template])
       let displayCapability = {
         displayName: templateCapabilities.displayCapabilities.displayName,
         windowCapabilities: [{
