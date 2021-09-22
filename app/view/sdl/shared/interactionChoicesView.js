@@ -310,8 +310,9 @@ SDL.InteractionChoicesView = SDL.SDLAbstractView.create(
       this.listOfChoices.list.refresh();
       var length = this.get('listWrapper.naviChoises.childViews').length;
       for (var i = 0; i < length; i++) {
-        SDL.InteractionChoicesView.get('listWrapper.naviChoises.childViews')
+        const obj = SDL.InteractionChoicesView.get('listWrapper.naviChoises.childViews')
           .shiftObject();
+        obj.destroy();
       }
     },
     /**
