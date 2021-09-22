@@ -648,6 +648,24 @@ SDL.NavigationController = Em.Object.create(
             info);
       }
       SDL.SDLModel.validateImages(request.id, callback, imageList);
-    }
+    },
+
+    /**
+     * SDL Navi AlertManeuver response handler show popup window
+     * @param {Object} message message Object with incoming params from SDLCore
+     *
+     */
+      onNaviAlertManeuver: function(message) {
+        if(SDL.AlertManeuverPopUp.activate) {
+          FFW.Navigation.sendError(
+            SDL.SDLModel.data.resultCode.REJECTED,
+            message.id,
+            message.method,
+            'Another AlertManeuver is active.'
+          );
+          return;
+        }
+        SDL.AlertManeuverPopUp.AlertManeuverActive(message);
+      }
   }
 );
