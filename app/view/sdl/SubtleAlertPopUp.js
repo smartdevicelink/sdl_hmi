@@ -165,6 +165,8 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
               });
             });
+
+            window.removeEventListener('click', this.click);
         },
         /**
          * Container for softbuttons
@@ -259,6 +261,8 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 message.params.duration || this.defaultTimeout
             )
             SDL.ResetTimeoutPopUp.ActivatePopUp();
+
+            window.addEventListener('click', this.click);
         },
 
         /*
