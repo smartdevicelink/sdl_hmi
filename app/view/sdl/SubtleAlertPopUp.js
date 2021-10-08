@@ -59,6 +59,14 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         reason: '',
         message: undefined,
         click(event) {
+            const path = event.path;
+            for(const pathElement of path) {
+                if ('className' in pathElement
+                    && typeof pathElement.className === 'string'
+                    && pathElement.className.match(/resetTimeoutButton|ResetTimeoutPopUp/)) {
+                        return;
+                    }
+            }
             if (document.getElementById('SubtleAlertPopUp').contains(event.target)){
                 var buttonsDiv = document.getElementById('subtleAlertSoftButtons');
                 for (var button of buttonsDiv.childNodes) {
