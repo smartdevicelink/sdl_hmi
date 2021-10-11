@@ -517,7 +517,7 @@ FFW.UI = FFW.RPCObserver.create(
             if (displayLayout === "DEFAULT") {
               for (var i=0; i<model.appType.length; i++) {
                 if (model.appType[i] === "NAVIGATION") {
-                  displayLayout = NAV_FULLSCREEN_MAP;
+                  displayLayout = "NAV_FULLSCREEN_MAP";
                   break;
                 }
               }

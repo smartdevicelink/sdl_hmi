@@ -328,6 +328,7 @@ SDL.SeatModel = Em.Object.extend({
 
         var temp = Em.Object.create(this.dfs(SDL.deepCopy(this.tempSeatControlData),
              SDL.deepCopy(this.seatControlData)));
+
         if($.isEmptyObject(temp)) {
             return
         }

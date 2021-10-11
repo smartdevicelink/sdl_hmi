@@ -138,7 +138,10 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
             this.set('endTime', null);
             this.set('content1', '');
             this.set('content2', '');
-            if(reason !== 'timeout') SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.SubtleAlert');
+            if(reason !== 'timeout') {
+                SDL.SDLController.TTSResponseHandler();
+                SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.SubtleAlert');
+            }
             if ((reason == 'timeout' &&
                 this.softbuttons.buttons._childViews.length > 0) ||
                 reason === 'ABORTED') {
@@ -162,6 +165,8 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 SDL.SDLController.onSystemContextChange(app.appID, widget.windowID);
               });
             });
+
+            window.removeEventListener('click', this.click);
         },
         /**
          * Container for softbuttons
@@ -256,6 +261,8 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 message.params.duration || this.defaultTimeout
             )
             SDL.ResetTimeoutPopUp.ActivatePopUp();
+
+            window.addEventListener('click', this.click);
         },
 
         /*

@@ -721,7 +721,17 @@ SDL.SDLModelData = Em.Object.create(
       'EL-GR',
       'HU-HU',
       'FI-FI',
-      'SK-SK'
+      'SK-SK',
+      'EN-IN',
+      'TH-TH',
+      'EN-SA',
+      'HE-IL',
+      'RO-RO',
+      'UK-UA',
+      'ID-ID',
+      'VI-VN',
+      'MS-MY',
+      'HI-IN'
     ],
 
     /**

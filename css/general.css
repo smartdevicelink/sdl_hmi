@@ -444,7 +444,6 @@ button.next-home {
     height: 31px;
     top: 257px;
     white-space: pre;
-    left: 118px;
     text-align: center;
     line-height: 30px;
 }
@@ -1220,7 +1219,7 @@ margin-top: 90px;
     border-left: 1px solid #393939;
     border-right: 1px solid #393939;
     width: 293px;
-    height: 100px;
+    max-height: 100px;
 }
 
 /* List item */

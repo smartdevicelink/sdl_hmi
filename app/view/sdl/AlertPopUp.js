@@ -153,7 +153,10 @@ SDL.AlertPopUp = Em.ContainerView.create(
       this.set('content1', '');
       this.set('content2', '');
       this.set('content3', '');
-      if(reason !== 'timeout') SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Alert');
+      if(reason !== 'timeout') {
+          SDL.SDLController.TTSResponseHandler();
+          SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Alert');
+      }
       if ((reason == 'timeout' &&
         this.softbuttons.buttons._childViews.length > 0) ||
         reason === 'ABORTED') {
@@ -273,9 +276,9 @@ SDL.AlertPopUp = Em.ContainerView.create(
       this.set('isTemplateAlertIcon', message.params.alertIcon && message.params.alertIcon.isTemplate === true);
       this.addSoftButtons(message.params.softButtons, message.params.appID);
       this.set('progressIndicator', message.params.progressIndicator);
-      this.set(
-        'appName', SDL.SDLController.getApplicationModel(message.params.appID).appName
-      );
+      var appModel = SDL.SDLController.getApplicationModel(message.params.appID);
+      this.set('appName', appModel.appName);
+      this.set('priority', appModel.priority);
       for (var i = 0; i < message.params.alertStrings.length; i++) {
         switch (message.params.alertStrings[i].fieldName) {
           case 'alertText1':
