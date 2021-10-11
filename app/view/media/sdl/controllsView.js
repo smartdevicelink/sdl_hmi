@@ -107,6 +107,7 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
             ],
             //classNameBindings: 'SDL.SDLController.model.PLAY_PAUSE::unsubscribed',
             presetName: 'PLAY_PAUSE',
+            classNameBindings: 'SDL.SDLController.model.PLAY_PAUSE::unsubscribed',
             textBinding: 'SDL.SDLController.model.stopIndicator',
             actionUp: function() {
               SDL.SDLController.onSoftButtonOkActionUp(this.presetName);
