@@ -59,14 +59,6 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
         reason: '',
         message: undefined,
         click(event) {
-            const path = event.path;
-            for(const pathElement of path) {
-                if ('className' in pathElement
-                    && typeof pathElement.className === 'string'
-                    && pathElement.className.match(/resetTimeoutButton|ResetTimeoutPopUp/)) {
-                        return;
-                    }
-            }
             if (document.getElementById('SubtleAlertPopUp').contains(event.target)){
                 var buttonsDiv = document.getElementById('subtleAlertSoftButtons');
                 for (var button of buttonsDiv.childNodes) {
@@ -78,7 +70,8 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 this.deactivate();
                 SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
                 SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
-            } else{
+            } else if(!document.getElementById('right_view').contains(event.target)
+            && !document.getElementById('ResetTimeoutPopUp').contains(event.target)) {
                 SDL.SubtleAlertPopUp.deactivate();
             }
         },
