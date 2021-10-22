@@ -173,9 +173,9 @@ SDL.SDLModel = Em.Object.extend({
 
         if (event.originalEvent.changedTouches && (
           event.originalEvent.changedTouches[i].pageX >
-          SDL.SDLVehicleInfoModel.vehicleData.displayResolution.width ||
+          SDL.SDLVehicleInfoModel.displayResolution.width ||
           event.originalEvent.changedTouches[i].pageY >
-          SDL.SDLVehicleInfoModel.vehicleData.displayResolution.height)) {
+          SDL.SDLVehicleInfoModel.displayResolution.height)) {
           return;
         }
 
