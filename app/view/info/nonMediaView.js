@@ -96,7 +96,7 @@ SDL.InfoNonMedia = Em.ContainerView.create(
 
             template: Ember.Handlebars.compile(
               '<img {{bindAttr class="SDL.SDLController.model.isTemplate:ico-overlay"}} {{bindAttr class="SDL.SDLController.model.mode"}} {{bindAttr class="SDL.SDLController.model.isTemplate"}} />'+
-              '<img onerror="this.style.display=\'none\'" {{bindAttr src="SDL.SDLController.model.appInfo.mainImage"}}>'
+              '<img onerror="this.style.display=\'none\'" onload="this.style.display=\'block\'" {{bindAttr src="SDL.SDLController.model.appInfo.mainImage"}}>'
             )
           }
         ),
