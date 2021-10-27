@@ -53,15 +53,15 @@ SDL.AlertPopUp = Em.ContainerView.create(
      *
      * @type {Number}
      */
+    defaultTimeout: 30000,
     alertRequestId: null,
     content1: '',
     content2: '',
     content3: '',
     active: false,
-    timer: null,
-    timeout: null,
     endTime: null,
     progressIndicator: false,
+    isTemplateAlertIcon: false,
     reason: '',
     message: undefined,
     /**
@@ -70,8 +70,17 @@ SDL.AlertPopUp = Em.ContainerView.create(
     image: Em.View.extend(
       {
         elementId: 'alertPopUpImage',
+        classNameBindings: [
+          'this.parentView.isTemplateAlertIcon:is-template',
+          'getCurrentDisplayModeClass'          
+        ],
+        getCurrentDisplayModeClass: function() {
+          return SDL.ControlButtons.getCurrentDisplayModeClass(
+            SDL.ControlButtons.imageMode.selection);
+        }.property('SDL.ControlButtons.imageMode.selection'),
         template: Ember.Handlebars.compile(
-          '<img class="alertPopUpImage" \
+          '<img {{bindAttr class="SDL.AlertPopUp.isTemplateAlertIcon:ico-overlay"}} /> \
+           <img class="alertPopUpImage" \
             onerror="SDL.AlertPopUp.imageUndefined(event)"\
             onload="SDL.AlertPopUp.imageLoaded(event)"\
             {{bindAttr src="SDL.AlertPopUp.icon.value"}}>'
@@ -103,7 +112,7 @@ SDL.AlertPopUp = Em.ContainerView.create(
     progressIndicatorView: Em.View.extend(
       {
         elementId: 'progressIndicator',
-        classNameBindings: 'this.parentView.progressIndicator:progressIndicator'
+        classNameBindings: 'this.parentView.progressIndicator:progressIndicator:inactive_state'
       }
     ),
     applicationName: SDL.Label.extend(
@@ -144,6 +153,10 @@ SDL.AlertPopUp = Em.ContainerView.create(
       this.set('content1', '');
       this.set('content2', '');
       this.set('content3', '');
+      if(reason !== 'timeout') {
+          SDL.SDLController.TTSResponseHandler();
+          SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Alert');
+      }
       if ((reason == 'timeout' &&
         this.softbuttons.buttons._childViews.length > 0) ||
         reason === 'ABORTED') {
@@ -253,52 +266,54 @@ SDL.AlertPopUp = Em.ContainerView.create(
       SDL.SDLModel.validateImages(this.alertRequestId, callback, imageList);
     },
 
-    AlertActive: function(message, alertRequestId, priority) {
+    AlertActive: function(message) {
       var self = this;
-      this.set('alertRequestId', alertRequestId);
-      this.set('cancelID', message.cancelID);
+      this.set('alertRequestId', message.id);
+      this.set('cancelID', message.params.cancelID);
       this.set('reason', 'timeout');
       this.set('message', undefined);
-      this.set('icon', message.alertIcon ? message.alertIcon : { value: "images/sdl/Warning.png" });
-      this.addSoftButtons(message.softButtons, message.appID);
-      this.set('progressIndicator', message.progressIndicator);
-      this.set(
-        'appName', SDL.SDLController.getApplicationModel(message.appID).appName
-      );
-      for (var i = 0; i < message.alertStrings.length; i++) {
-        switch (message.alertStrings[i].fieldName) {
+      this.set('icon', message.params.alertIcon ? message.params.alertIcon : { value: "images/sdl/Warning.png" });
+      this.set('isTemplateAlertIcon', message.params.alertIcon && message.params.alertIcon.isTemplate === true);
+      this.addSoftButtons(message.params.softButtons, message.params.appID);
+      this.set('progressIndicator', message.params.progressIndicator);
+      var appModel = SDL.SDLController.getApplicationModel(message.params.appID);
+      this.set('appName', appModel.appName);
+      this.set('priority', appModel.priority);
+      for (var i = 0; i < message.params.alertStrings.length; i++) {
+        switch (message.params.alertStrings[i].fieldName) {
           case 'alertText1':
           {
-            this.set('content1', message.alertStrings[i].fieldText);
+            this.set('content1', message.params.alertStrings[i].fieldText);
             break;
           }
           case 'alertText2':
           {
-            this.set('content2', message.alertStrings[i].fieldText);
+            this.set('content2', message.params.alertStrings[i].fieldText);
             break;
           }
           case 'alertText3':
           {
-            this.set('content3', message.alertStrings[i].fieldText);
+            this.set('content3', message.params.alertStrings[i].fieldText);
             break;
           }
         }
       }
       this.set('active', true);
-      this.set('timeout', message.duration ? message.duration : 30000); //default
-                                                                        // timeout
-                                                                        // defined
-                                                                        // for
-                                                                        // Alert
-                                                                        // popUp
-      this.set('endTime', Date.now() + this.timeout);
-      this.set('priority', priority);
-      clearTimeout(this.timer);
-      this.timer = setTimeout(
-        function() {
-          self.deactivate(self.reason, self.message);
-        }, this.timeout
+      SDL.ResetTimeoutPopUp.addRpc(
+        message,
+        () => {SDL.AlertPopUp.deactivate('timeout')},
+        SDL.AlertPopUp.resetTimeoutCallback,
+        message.params.duration || this.defaultTimeout
       );
-    }
+      SDL.ResetTimeoutPopUp.ActivatePopUp();
+      SDL.ResetTimeoutPopUp.setContext('UI.Alert');
+    },
+    /*
+        * function resetTimeoutCallback.
+        */
+    resetTimeoutCallback: function(time){
+      let self = SDL.AlertPopUp;
+      self.set('endTime', Date.now() + time);
+  }
   }
 );

@@ -42,6 +42,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     for (var key in SDL.SDLVehicleInfoModel.vehicleData) {
       subscribeVIData[key] = false;
     }
+    this.NAV_BUTTONS = SDL.deepCopy(this.NAV_BUTTONS_INITIAL);
 
     this.set('subscribedData', subscribeVIData);
 
@@ -50,9 +51,10 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
           field1: '<field1>',
           field2: '<field2>',
           field3: '<field3>',
+          field4: '<field4>',
           title: '',
           mediaClock: '<mediaClock>',
-          trackIcon: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
+          mainImage: SDL.SDLModel.data.defaultListOfIcons.trackIcon,
           customPresets: [
             '<no definition>',
             '<no definition>',
@@ -94,6 +96,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.set('backgroundWindows', []);
     this.set('activeWindows', []);
     this.set('unregisteringInProgress', false);
+    this.set('ttsSpeakListenerCallbacks', []);
 
     this.resetGlobalProperties();
   },
@@ -147,21 +150,20 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
   countRate: 1.0,
 
   /**
-   * Method hides sdl activation button and sdl application
-   *
-   * @param {Number}
+   * @description Callback for display image mode change.
    */
-  setMode:function(mode){
+  imageModeChanged: function() { 
+    const mode = SDL.SDLModel.data.imageMode;
     if(this.isTemplate){
       switch(mode){
         case SDL.SDLModel.data.imageModeList[0]:this.set('mode','day-mode');break;
         case SDL.SDLModel.data.imageModeList[1]:this.set('mode','night-mode');break;
         case SDL.SDLModel.data.imageModeList[2]:this.set('mode','high-lighted-mode');break;
-        default:this.set('mode','');
-      }
-    }
-    else this.set('mode','');
-  },
+        default:this.set('mode','day-mode');
+        }
+    }else this.set('mode','');
+  }.observes('SDL.SDLModel.data.imageMode', 'this.isTemplate'),
+
   onDeleteApplication: function(appID) {
 
     SDL.SDLMediaController.onDeleteApplication(appID);
@@ -340,7 +342,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     this.set('statusText', '');
     this.appInfo.set('mediaClock', '');
     this.appInfo.set('mediaTrack', '');
-    this.appInfo.set('trackIcon', 'images/sdl/audio_icon.jpg');
+    this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
     this.updateSoftButtons();
     for (i = 0; i < 10; i++) {
       this.appInfo.set('customPresets.' + i, '');
@@ -454,9 +456,9 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       var isPng = image.includes(str,search_offset);
       if (isPng) {
         if (params.graphic.value != '') {
-          this.appInfo.set('trackIcon', params.graphic.value);
+          this.appInfo.set('mainImage', params.graphic.value);
         } else {
-          this.appInfo.set('trackIcon', 'images/sdl/audio_icon.jpg');
+          this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
         }
         this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
       }

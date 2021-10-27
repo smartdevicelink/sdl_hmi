@@ -68,9 +68,6 @@ SDL.SliderView = SDL.SDLAbstractView.create(
      */
     deactivate: function(timeout) {
       this._super();
-      this.timeout = null;
-      clearTimeout(this.timer);
-      this.timer = null;
       if (timeout === true) {
         FFW.UI.sendSliderResult(
           SDL.SDLModel.data.resultCode['TIMED_OUT'],
@@ -78,11 +75,14 @@ SDL.SliderView = SDL.SDLAbstractView.create(
           this.get('adjustControl.sliderValue.value')
         );
       } else if (timeout === false) {
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Slider');
         FFW.UI.sendSliderResult(
           SDL.SDLModel.data.resultCode.SUCCESS, this.get('sliderRequestId'),
           this.get('adjustControl.sliderValue.value')
         );
-      } else {
+      }
+      else {
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.Slider');
         FFW.UI.sendSliderResult(
           SDL.SDLModel.data.resultCode['ABORTED'], this.get('sliderRequestId'),
           this.get('adjustControl.sliderValue.value')
@@ -95,33 +95,18 @@ SDL.SliderView = SDL.SDLAbstractView.create(
         })
       })
     },
-    activate: function(text, timeout) {
-      if (text) {
-        this.set('caption', text);
-      }
-      this.set('active', true);
-      this.set('timeout', timeout);
-      this.timer = setTimeout(
-        function() {
-          if (SDL.SliderView.active) {
-            SDL.SliderView.deactivate(true);
-          }
-        }, timeout
-      );
+    setText: function(text) {
+      this.set('caption', text);
     },
+    
+    activate: function(timeout) {
+      var self = SDL.SliderView;
+      self.set('active', true);
+    },
+ 
     dataChange: function() {
-      if (this.timeout) {
-        var self = this;
-        clearTimeout(this.timer);
-        SDL.SDLController.onResetTimeout(
-          SDL.SDLController.model.appID, 'UI.Slider'
-        );
-        this.timer = setTimeout(
-          function() {
-            self.deactivate(true);
-          }, this.timeout
-        );
-      }
+      if(SDL.ResetTimeoutPopUp && SDL.ResetTimeoutPopUp.active)
+        SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.Slider');
     }.observes('this.adjustControl.sliderValue.value'),
     okButton: SDL.Button.extend(
       {

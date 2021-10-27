@@ -47,26 +47,28 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
     messageRequestId: null,
     active: false,
     appID: null,
-    timer: null,
-    timeout: null,
     endTime: null,
     areAllImagesValid: true,
     validationMessage: null,
     childViews: [
       'backButton', 'captionText', 'softButtons', 'listOfCommands'
     ],
+    imageModeChanged: function() {
+      this.get('softButtons').setMode(SDL.SDLModel.data.imageMode);
+    }.observes('SDL.SDLModel.data.imageMode'),
     /**
      * Deactivate View
      *
      * @param {Object} ABORTED Parameter to indicate status for
      *            UI.ScrollableMessageResponse
      */
-    deactivate: function(ABORTED) {
-      clearTimeout(this.timer);
+    deactivate: function(ABORTED, timeout=false) {
       this.set('endTime', null);
       this.set('active', false);
       this.softButtons.set('page', 0);
-      this.timeout = null;
+      if (timeout === false) {
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('UI.ScrollableMessage');
+      }
 
       let calculate_result_code = function(areAllImagesValid) {
         if (ABORTED) {
@@ -105,14 +107,7 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         this.softButtons.addItems(params.softButtons, params.appID);
         this.set('active', true);
         this.set('cancelID', params.cancelID);
-        clearTimeout(this.timer);
-        this.timeout = params.timeout;
-        this.set('endTime', Date.now() + this.timeout);
-        this.timer = setTimeout(
-          function() {
-            self.deactivate();
-          }, params.timeout
-        );
+        this.set('endTime', Date.now() + params.timeout);
 
         if(params.softButtons) {
           var imageList = [];
@@ -131,6 +126,14 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
         }
       }
     },
+    /*
+        * function resetTimeoutCallback.
+        */
+    resetTimeoutCallback: function(time){
+      let self = SDL.ScrollableMessage;
+      self.set('endTime', Date.now() + time);
+    },
+
     softButtons: SDL.MenuList.extend(
       {
         itemsOnPage: 4,
@@ -161,17 +164,12 @@ SDL.ScrollableMessage = SDL.SDLAbstractView.create(
          */
         click: function() {
           var self = this._parentView;
-          clearTimeout(this._parentView.timer);
-          SDL.SDLController.onResetTimeout(
-            SDL.SDLController.model.appID, 'UI.ScrollableMessage'
-          );
-          this._parentView.timer = setTimeout(
-            function() {
-              self.deactivate();
-            }, this._parentView.timeout
-          );
+          self.set('endTime', Date.now() + self.timeout);
+
+          SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.ScrollableMessage');
         }
       }
     )
   }
+
 );

@@ -614,7 +614,9 @@ FFW.BasicCommunication = FFW.RPCObserver
                 fileName: request.params.fileName
               });
             } else {
-              this.OnReceivedPolicyUpdate(request.params.fileName);
+              if (request.params.requestType == 'PROPRIETARY') {
+                this.OnReceivedPolicyUpdate(request.params.fileName);
+              }
             }
 
             if (request.params.requestType == 'OEM_SPECIFIC' &&
@@ -961,6 +963,26 @@ FFW.BasicCommunication = FFW.RPCObserver
         };
         this.sendMessage(JSONMessage);
       },
+
+    /* 
+     * OnResetTimeout function. sends to SDL OnResetTimeout
+     */     
+      OnResetTimeout: function(requestID, methodName, resetPeriod) {
+        console.log('BasicCommunication.OnResetTimeout');
+
+        var JSONMessage = {
+          'jsonrpc': '2.0',
+          'method': 'BasicCommunication.OnResetTimeout',
+          'params': {
+            requestID,
+            methodName,
+            resetPeriod
+          }
+        };
+
+        this.client.send(JSONMessage);
+      },
+
       /********************* Requests END *********************/
 
       /********************* Responses BEGIN *********************/

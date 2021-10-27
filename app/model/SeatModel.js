@@ -328,7 +328,7 @@ SDL.SeatModel = Em.Object.extend({
 
         var temp = Em.Object.create(this.dfs(SDL.deepCopy(this.tempSeatControlData),
              SDL.deepCopy(this.seatControlData)));
-        if(this.isEmptyObject(temp)) {
+        if(SDL.SDLController.isEmptyObject(temp)) {
             return
         }
 
@@ -435,16 +435,6 @@ SDL.SeatModel = Em.Object.extend({
         this.applySettings();
     },
 
-    isEmptyObject: function(object) {
-       var l = 0;
-       for (var key in object) {
-            if(object.hasOwnProperty(key)) {
-                ++l;
-            }
-       }
-       return l == 0;
-    },
-
     dfs:function(from, to) {
         var result = SDL.deepCopy(from);
         for (var key in from) {
@@ -460,13 +450,13 @@ SDL.SeatModel = Em.Object.extend({
                         }
 
                         var temp = this.dfs(from[key],to[key]);
-                        if (!this.isEmptyObject(temp)) {
+                        if (!SDL.SDLController.isEmptyObject(temp)) {
                             result[key] = from[key];
                             continue;
                         }
                     }
                     var temp = this.dfs(from[key], to[key]);
-                    if (!this.isEmptyObject(temp)) {
+                    if (!SDL.SDLController.isEmptyObject(temp)) {
                         result[key] = temp;
                     } else {
                         delete result[key];

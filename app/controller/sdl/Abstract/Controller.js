@@ -563,6 +563,9 @@ SDL.SDLController = Em.Object.extend(
             FFW.TTS.requestId, 'TTS.Speak'
           );
         }
+        SDL.ResetTimeoutPopUp.setContext('');
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('TTS.Speak');
+        FFW.TTS.Stopped();
         FFW.TTS.requestId = null;
         FFW.TTS.aborted = false;
       }
@@ -611,25 +614,19 @@ SDL.SDLController = Em.Object.extend(
         }
         case 'ScrollableMessage':
         {
-          SDL.ScrollableMessage.deactivate(true);
+          SDL.ScrollableMessage.deactivate();
           break;
         }
       }
     },
-    /**
-     * SDL notification call function
-     * to notify that SDL Core should reset timeout for some method
-     */
-    onResetTimeout: function(appID, methodName) {
-      FFW.UI.onResetTimeout(appID, methodName);
-    },
+
     /**
      * Action to show Voice Recognition PopUp
      */
     activateVRPopUp: function() {
       if (FFW.TTS.requestId) {
         FFW.TTS.aborted = true;
-        SDL.TTSPopUp.DeactivateTTS();
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('TTS.Speak', true);
       }
       if (SDL.AlertPopUp.active) {
         SDL.AlertPopUp.deactivate('ABORTED');
@@ -683,50 +680,26 @@ SDL.SDLController = Em.Object.extend(
      */
     keepContextSoftButton: function(element) {
       switch (element.groupName) {
-        case 'AlertPopUp':
-        {
-          clearTimeout(SDL.AlertPopUp.timer);
-          SDL.AlertPopUp.timer = setTimeout(
-            function() {
-              SDL.AlertPopUp.deactivate();
-            }, SDL.AlertPopUp.timeout
-          );
-          this.onResetTimeout(element.appID, 'UI.Alert');
-          break;
-        }
         case 'AlertManeuverPopUp':
-        {
-          clearTimeout(SDL.AlertManeuverPopUp.timer);
-          SDL.AlertManeuverPopUp.timer = setTimeout(
-            function() {
-              SDL.AlertManeuverPopUp.deactivate();
-            }, SDL.AlertManeuverPopUp.timeout
-          );
-          FFW.TTS.OnResetTimeout(element.appID, 'Navigation.AlertManeuver');
-          break;
-        }
-        case 'SubtleAlertPopUp':
-        {
-          clearTimeout(SDL.SubtleAlertPopUp.timer);
-          SDL.SubtleAlertPopUp.timer = setTimeout(
-            function() {
-              SDL.SubtleAlertPopUp.deactivate();
-            }, SDL.SubtleAlertPopUp.timeout
-          );
-          this.onResetTimeout(element.appID, 'UI.SubtleAlert');
-          break;
-        }
+          {
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('Navigation.AlertManeuver');
+            break;
+          }
         case 'ScrollableMessage':
-        {
-          clearTimeout(SDL.ScrollableMessage.timer);
-          SDL.ScrollableMessage.timer = setTimeout(
-            function() {
-              SDL.ScrollableMessage.deactivate();
-            }, SDL.ScrollableMessage.timeout
-          );
-          this.onResetTimeout(element.appID, 'UI.ScrollableMessage');
-          break;
-        }
+          {
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.ScrollableMessage');
+            break;
+          }
+        case 'AlertPopUp':
+          {
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.Alert');
+            break;
+          }
+        case 'SubtleAlertPopUp':
+          {
+            SDL.ResetTimeoutPopUp.resetTimeoutSpecificRpc('UI.SubtleAlert');
+            break;
+          }
       }
     },
     /**
@@ -818,12 +791,11 @@ SDL.SDLController = Em.Object.extend(
       );
       SDL.SDLModel.data.set('interactionData.vrHelpTitle', null);
       SDL.SDLModel.data.set('interactionData.vrHelp', null);
+      clearTimeout(SDL.SDLModel.promptTimeout);
+      SDL.SDLModel.set('timeoutPromptCallback', undefined);
       SDL.SDLController.getApplicationModel(
         appID
       ).activeRequests.uiPerformInteraction = null;
-      if (SDL.TTSPopUp.active && FFW.TTS.requestId == null) {
-        SDL.TTSPopUp.DeactivateTTS();
-      }
     },
     /**
      * Method to sent notification ABORTED for VR PerformInteraction
@@ -833,10 +805,10 @@ SDL.SDLController = Em.Object.extend(
         SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction, result,
         choiceID
       );
-      SDL.InteractionChoicesView.timerUpdate();
-      if (choiceID && SDL.TTSPopUp.active && FFW.TTS.requestId == null) {
-        SDL.TTSPopUp.DeactivateTTS();
+      if(SDL.SDLModel.data.resultCode.TIMED_OUT !== result) {
+        SDL.ResetTimeoutPopUp.stopRpcProcessing('VR.PerformInteraction', false, false);
       }
+      SDL.ResetTimeoutPopUp.startCountTimeoutByRPCName('UI.PerformInteraction');
       SDL.SDLModel.data.interactionData.helpPrompt = null;
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = null;
       SDL.SDLModel.data.set('VRActive', false);
@@ -1019,7 +991,6 @@ SDL.SDLController = Em.Object.extend(
               appType: params.appType,
               isMedia: 0,
               disabledToActivate: params.greyOut ? true : false,
-              displayLayout: "DEFAULT",
               dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               policyAppID: params.policyAppID,
@@ -1039,7 +1010,6 @@ SDL.SDLController = Em.Object.extend(
               isMedia: applicationType == 0 ? true : false,
               initialized: true,
               disabledToActivate: params.greyOut ? true : false,
-              displayLayout: "DEFAULT",
               dayColorScheme: isDayColorSchemeDefined ? params.dayColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               nightColorScheme: isNightColorSchemeDefined ? params.nightColorScheme : SDL.SDLModelData.data.defaultColorScheme,
               policyAppID: params.policyAppID,
@@ -1506,16 +1476,16 @@ SDL.SDLController = Em.Object.extend(
     /**
      * SetAudioStreamingIndicator notification handler
      *
-     * @param {Object} params
+     * @param {Object} audioStreamingIndicator audioStreamingIndicator name
      * @constructor
      * @return {boolean}
      */
-    SetAudioStreamingIndicator: function(params) {
+    SetAudioStreamingIndicator: function(audioStreamingIndicator) {
       if (SDL.SDLController.model) {
         SDL.SDLController.model.set(
           'mediaPlayerIndicator',
           SDL.SDLModel.data.
-            mediaPlayerIndicatorEnum[params.audioStreamingIndicator]
+            mediaPlayerIndicatorEnum[audioStreamingIndicator]
         );
         return true;
       }
@@ -1670,6 +1640,58 @@ SDL.SDLController = Em.Object.extend(
       }
 
       return windowCapability;
+    },
+
+    /**
+     * @function getDisplayCapability
+     * @param {Integer} appID
+     * @param {Integer} windowID
+     * @description returns string of system capabilities for selected app
+     */
+    getDisplayCapability: function(appID, windowID){
+      const appModel = SDL.SDLController.getApplicationModel(appID);
+      const windowType = (windowID === undefined || windowID === 0) ? "MAIN" : "WIDGET";
+      const windowTypeSupported = SDL.SDLModelData.defaultWindowCapability[windowType].systemCapability.displayCapabilities[0].windowTypeSupported;
+
+      let template = appModel.templateConfiguration.template;
+      if(template === 'DEFAULT') {
+        if(appModel.appType.includes('WEB_VIEW')) {
+          template = 'WEB_VIEW';
+        } else if(appModel.appType.includes('NAVIGATION') || appModel.appType.includes('PROJECTION')) {
+          template = 'NAV_FULLSCREEN_MAP';
+        } else if(appModel.isMedia === true) {
+          template = 'MEDIA';
+        } else {
+          template = 'NON-MEDIA';
+        }
+      }
+
+      let templateCapabilities = SDL.deepCopy(SDL.templateCapabilities[template])
+      let displayCapability = {
+        displayName: templateCapabilities.displayCapabilities.displayName,
+        windowCapabilities: [{
+          textFields: templateCapabilities.displayCapabilities.textFields,
+          imageFields: templateCapabilities.displayCapabilities.imageFields,
+          imageTypeSupported: templateCapabilities.displayCapabilities.imageCapabilities,
+          templatesAvailable: templateCapabilities.displayCapabilities.templatesAvailable,
+          numCustomPresetsAvailable: templateCapabilities.displayCapabilities.numCustomPresetsAvailable,
+          buttonCapabilities: templateCapabilities.buttonCapabilities,
+          softButtonCapabilities: templateCapabilities.softButtonCapabilities
+        }],
+        windowTypeSupported: windowTypeSupported
+      };
+
+      if(windowType === "WIDGET") {
+        displayCapability.windowCapabilities[0].windowID = windowID;
+      }
+      
+      return {
+        systemCapability: {
+          systemCapabilityType: "DISPLAYS",
+          displayCapabilities: [ displayCapability ]
+        },
+        appID: appID
+      }
     },
     /**
      * @function isColorSchemesEqual

@@ -221,6 +221,28 @@
 
 #info_nonMedia .app_image img {
     border: 1px solid #393939;
+    width: 150px;
+    height: 150px;
+    position: absolute;
+}
+
+#info_nonMedia .app_image img.ico-overlay.is-template {
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.4;
+    z-index: 1001;
+}
+
+#info_nonMedia .app_image img.ico-overlay.is-template.day-mode {
+    background-image: url(../images/template/imagetype-pattern-day.png) !important;
+}
+
+#info_nonMedia .app_image img.ico-overlay.is-template.night-mode {
+    background-image: url(../images/template/imagetype-pattern-night.png) !important;
+}
+
+#info_nonMedia .app_image img.ico-overlay.is-template.high-lighted-mode {
+    background-image: url(../images/template/imagetype-pattern-highlighted.png) !important;
 }
 
 #sdl_options .list {
@@ -662,6 +684,49 @@
     width: 109px;
     height: 109px;
 }
+
+#sdl_view_container .cd_logoV2.day-mode.is-template.ico-overlay {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    border: 1px solid #393939;
+    -webkit-border-radius: 2px;
+    width: 109px;
+    height: 109px;    
+    background-image:url(../images/template/imagetype-pattern-day.png) !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.4;
+}
+
+#sdl_view_container .cd_logoV2.is-template.night-mode.ico-overlay {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    border: 1px solid #393939;
+    -webkit-border-radius: 2px;
+    width: 109px;
+    height: 109px;
+    background-image:url(../images/template/imagetype-pattern-night.png) !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.4;
+}
+
+#sdl_view_container .cd_logoV2.is-template.high-lighted-mode.ico-overlay {
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    border: 1px solid #393939;
+    -webkit-border-radius: 2px;
+    width: 109px;
+    height: 109px;
+    background-image:url(../images/template/imagetype-pattern-highlighted.png) !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.4;    
+}
+
 
 #sdl_view_container .is-template.day-mode {
     background:url(../images/template/imagetype-pattern-day.png);
@@ -1406,13 +1471,47 @@
     text-overflow: ellipsis;
 }
 
+#AlertPopUp #alertPopUpImage {
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    width: 120px;
+    height: 120px;
+}
+
 #AlertPopUp .alertPopUpImage {
-    max-width: 120px;
-    margin: auto;
-    padding-top: 35px;
-    padding-left: 20px;
-    height: auto;
-    width: auto;
+    height: 100%;
+    width: 100%;
+}
+
+#AlertPopUp #alertPopUpImage.is-template.day-mode .ico-overlay {
+    background:url(../images/template/imagetype-pattern-day.png);    
+    width: 100%;
+    height: 100%;
+    z-index: 1001;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.4;
+}
+
+#AlertPopUp #alertPopUpImage.is-template.night-mode .ico-overlay {
+    background:url(../images/template/imagetype-pattern-night.png);
+    width: 100%;
+    height: 100%;
+    z-index: 1001;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.4;
+}
+
+#AlertPopUp #alertPopUpImage.is-template.high-lighted-mode .ico-overlay {
+    background:url(../images/template/imagetype-pattern-highlighted.png);
+    width: 100%;
+    height: 100%;
+    z-index: 1001;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.4;
 }
 
 #SubtleAlertPopUp .subtleAlertPopUpImage {
@@ -1574,9 +1673,9 @@
 
 
 #AlertManeuverPopUp .closeButton {
-    width: 170px;
-    top: 180px;
-    left: 110px;
+    width: 230px;
+    top: 85px;
+    left: 80px;
 }
 
 #AlertPopUp .alertSoftButtons {

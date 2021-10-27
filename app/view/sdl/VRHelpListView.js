@@ -51,11 +51,14 @@ SDL.VRHelpListView = SDL.SDLAbstractView.create(
       this._super();
       if (SDL.SDLController.model &&
         SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
+        SDL.ResetTimeoutPopUp.vrPerformInteractionDisableCheckBox()
         SDL.SDLController.vrInteractionResponse(
           SDL.SDLModel.data.resultCode['ABORTED']
         );
+
       }
       SDL.SDLController.VRMove();
+
     },
     /**
      * Clean choices caption and list before new proform

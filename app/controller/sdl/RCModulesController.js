@@ -741,6 +741,7 @@ SDL.RCModulesController = Em.Object.create({
     updateCurrentModels: function(location_name) {
         this.set('currentClimateModel', this.getCoveringModuleModel('CLIMATE', location_name));
         this.set('currentAudioModel', this.getCoveringModuleModel('AUDIO', location_name));
+        this.set('currentSeatModel', this.getCoveringModuleModel('SEAT', location_name));
         this.set('currentRadioModel', this.getCoveringModuleModel('RADIO', location_name));
         this.set('currentHMISettingsModel', this.getCoveringModuleModel('HMI_SETTINGS', location_name));
         this.set('currentLightModel', this.getCoveringModuleModel('LIGHT', location_name));
@@ -783,6 +784,18 @@ SDL.RCModulesController = Em.Object.create({
         if('no_emulation' == FLAGS.VehicleEmulationType) {
           location_name = FLAGS.VehicleEmulationType;
         }
+
+        let getDataDifference = (one, another) => {
+          var diff = {};
+          for (var param in one) {
+            if (undefined !== another[param] &&
+                SDL.SDLController.compareObjects(another[param], one[param]) > 0) {
+              diff[param] = another[param];
+            }
+          }
+
+          return diff;
+        };
 
         var dataToReturn = {};
         switch (moduleType) {
@@ -830,15 +843,18 @@ SDL.RCModulesController = Em.Object.create({
                         );
                         return;
                     } else {
-                        var radioControlData =
+                        const data_before = SDL.deepCopy(this.radioModels[location_name].getRadioControlData(false));
+                        const radioControlData =
                             this.radioModels[location_name].setRadioData(
                             data.params.moduleData.radioControlData);
                         if (this.radioModels[location_name].radioControlStruct.radioEnable) {
                             this.radioModels[location_name].saveCurrentOptions();
                         }
-                        if (Object.keys(radioControlData).length > 0) {
+
+                        const changedFields = getDataDifference(data_before, radioControlData);
+                        if (Object.keys(changedFields).length > 0) {
                             FFW.RC.onInteriorVehicleDataNotification({moduleType:'RADIO', moduleId: moduleUUId,
-                                                                    radioControlData: radioControlData});
+                                                                    radioControlData: changedFields});
                         }
                         dataToReturn.radioControlData = radioControlData;
                     }
@@ -869,12 +885,14 @@ SDL.RCModulesController = Em.Object.create({
                         return;
                       }
                     }
+                    const data_before = SDL.deepCopy(this.climateModels[location_name].generateClimateControlData());
                     var climateControlData =
                         this.climateModels[location_name].setClimateData(
                         data.params.moduleData.climateControlData);
-                    if (Object.keys(data.params.moduleData.climateControlData).length > 0) {
+                    const changedFields = getDataDifference(data_before, climateControlData);    
+                    if (Object.keys(changedFields).length > 0) {
                         FFW.RC.onInteriorVehicleDataNotification({moduleType:'CLIMATE', moduleId: moduleUUId,
-                                                                climateControlData: climateControlData});
+                                                                climateControlData: changedFields});
                     }
                     dataToReturn.climateControlData = climateControlData;
                 }
@@ -891,12 +909,15 @@ SDL.RCModulesController = Em.Object.create({
                         );
                         return;
                     } else {
+                        const data_before = SDL.deepCopy(this.audioModels[location_name].getAudioControlData());
                         var audioControlData = (data.params.moduleData.audioControlData.keepContext!=null) ?
-                        this.audioModels[location_name].setAudioControlDataWithKeepContext(data.params.moduleData.audioControlData, location_name) :
-                        this.audioModels[location_name].setAudioControlData(data.params.moduleData.audioControlData, location_name);
-                        if (Object.keys(data.params.moduleData.audioControlData).length > 0) {
+                          this.audioModels[location_name].setAudioControlDataWithKeepContext(data.params.moduleData.audioControlData, location_name) :
+                          this.audioModels[location_name].setAudioControlData(data.params.moduleData.audioControlData, location_name);
+
+                        const changedFields = getDataDifference(data_before, audioControlData);    
+                        if (Object.keys(changedFields).length > 0) {
                             FFW.RC.onInteriorVehicleDataNotification({moduleType:'AUDIO', moduleId: moduleUUId,
-                                                                    audioControlData: audioControlData});
+                                                                    audioControlData: changedFields});
                         }
                         if(data.params.moduleData.audioControlData.source === 'MOBILE_APP') {
                           FFW.RC.OnIVDNotificationWasSent = true;
@@ -909,11 +930,14 @@ SDL.RCModulesController = Em.Object.create({
             case 'HMI_SETTINGS':
             {
                 if(data.params.moduleData.hmiSettingsControlData){
+                    const data_before = SDL.deepCopy(this.hmiSettingsModels[location_name].getHmiSettingsControlData());
                     var hmiSettingsControlData = this.hmiSettingsModels[location_name].setHmiSettingsData(
                       data.params.moduleData.hmiSettingsControlData);
-                    if (Object.keys(data.params.moduleData.hmiSettingsControlData).length > 0) {
+
+                    const changedFields = getDataDifference(data_before, hmiSettingsControlData);      
+                    if (Object.keys(changedFields).length > 0) {
                     FFW.RC.onInteriorVehicleDataNotification({moduleType:'HMI_SETTINGS', moduleId: moduleUUId,
-                                                                hmiSettingsControlData: hmiSettingsControlData});
+                                                                hmiSettingsControlData: changedFields});
                     }
                     dataToReturn.hmiSettingsControlData = hmiSettingsControlData;
                 }
@@ -922,12 +946,26 @@ SDL.RCModulesController = Em.Object.create({
             case 'LIGHT':
             {
                 if(data.params.moduleData.lightControlData){
+                    const data_before_tmp = SDL.deepCopy(this.lightModels[location_name].getLightControlData());
+                    let data_before = {
+                      lightState: []
+                    };
+
                     var lightControlData = this.lightModels[location_name].setLightControlData(
                       data.params.moduleData.lightControlData);
 
-                    if (Object.keys(lightControlData).length > 0) {
-                    FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT', moduleId: moduleUUId,
-                                                                lightControlData: data.params.moduleData.lightControlData});
+                    data_before_tmp.lightState.forEach( (element_dest) => {
+                      lightControlData.lightState.forEach( (element_target) => {
+                        if (element_target.id == element_dest.id) {
+                          data_before.lightState.push(element_dest);
+                        }
+                      });
+                    });
+
+                    const changedFields = getDataDifference(data_before, lightControlData);
+                    if (Object.keys(changedFields).length > 0) {
+                      FFW.RC.onInteriorVehicleDataNotification({moduleType:'LIGHT', moduleId: moduleUUId,
+                                                                lightControlData: changedFields});
                     }
                     dataToReturn.lightControlData = lightControlData;
                 }
@@ -936,11 +974,15 @@ SDL.RCModulesController = Em.Object.create({
             case 'SEAT':
             {
                 if(data.params.moduleData.seatControlData){
+                    const data_before = SDL.deepCopy(this.seatModels[location_name].getSeatControlData());
                     var seatControlData = this.seatModels[location_name].setSeatControlData(
-                    data.params.moduleData.seatControlData);
-                    if (Object.keys(data.params.moduleData.seatControlData).length > 0) {
-                    FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT', moduleId: moduleUUId,
-                                                                seatControlData: seatControlData});
+                      data.params.moduleData.seatControlData
+                    );
+
+                    const changedFields = getDataDifference(data_before, seatControlData);
+                    if (Object.keys(changedFields).length > 0) {
+                      FFW.RC.onInteriorVehicleDataNotification({moduleType:'SEAT', moduleId: moduleUUId,
+                                                                seatControlData: changedFields});
                     }
                     dataToReturn.seatControlData = seatControlData;
                 }
