@@ -70,7 +70,8 @@ SDL.SubtleAlertPopUp = Em.ContainerView.create(
                 this.deactivate();
                 SDL.SDLController.onActivateSDLApp({ appID: SDL.SubtleAlertPopUp.appID });
                 SDL.SDLController.onSubtleAlertPressed(SDL.SubtleAlertPopUp.appID);
-            } else{
+            } else if(!document.getElementById('right_view').contains(event.target)
+            && !document.getElementById('ResetTimeoutPopUp').contains(event.target)) {
                 SDL.SubtleAlertPopUp.deactivate();
             }
         },
