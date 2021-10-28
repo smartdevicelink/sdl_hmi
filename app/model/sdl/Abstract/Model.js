@@ -615,6 +615,7 @@ SDL.SDLModel = Em.Object.extend({
   isTemplateSupported: function(model, template) {
     switch (template) {
       case 'MEDIA':
+      case 'ONSCREEN_PRESETS':
       {
         return model.isMedia === true;
       }
