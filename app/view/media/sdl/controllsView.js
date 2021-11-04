@@ -105,7 +105,6 @@ SDL.SDLMediaControlls = Em.ContainerView.create(
               'bc-item-big',
               'playcd'
             ],
-            //classNameBindings: 'SDL.SDLController.model.PLAY_PAUSE::unsubscribed',
             presetName: 'PLAY_PAUSE',
             classNameBindings: 'SDL.SDLController.model.PLAY_PAUSE::unsubscribed',
             textBinding: 'SDL.SDLController.model.stopIndicator',
