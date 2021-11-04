@@ -469,20 +469,25 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     }
 
     if('templateConfiguration' in params) {
-      if(this.templateConfiguration.template === 'ONSCREEN_PRESETS'){
-        // Magic number is a count of Preset Buttons on HMI = 8
-        for (var i = 0; i < 10; i++) {
-          if (!params.customPresets || (
-            params.customPresets[i] == '' || params.customPresets[i] == null)) {
-            this.appInfo.set('customPresets.' + i, 'PRESET_' + i);
-          } else {
-            this.appInfo.set('customPresets.' + i, params.customPresets[i]);
-          }
-        }
-      }
-      this.set('mediaPreset', (this.templateConfiguration.template === 'ONSCREEN_PRESETS'));
+      this.configurePresetButtons(this.templateConfiguration.template, params.customPresets);
       this.set('templateConfiguration', params.templateConfiguration);
     }
+  },
+
+  configurePresetButtons : function(templateName, customPresets){
+    if(templateName === 'ONSCREEN_PRESETS'){
+      // Magic number is a count of Preset Buttons on HMI = 8
+      for (var i = 0; i < 10; i++) {
+        if (!customPresets || 
+          (customPresets[i] == '' || customPresets[i] == null)) {
+          this.appInfo.set('customPresets.' + i, 'PRESET_' + i);
+        } else {
+          this.appInfo.set('customPresets.' + i, customPresets[i]);
+        }
+      }
+    }
+    this.set('mediaPreset', (templateName === 'ONSCREEN_PRESETS'));
   }
+
 }
 );
