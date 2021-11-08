@@ -529,6 +529,11 @@ FFW.UI = FFW.RPCObserver.create(
                 }
               }
             }
+
+            if (['MEDIA', 'ONSCREEN_PRESETS'].includes(displayLayout)){
+              appModel.configurePresetButtons(displayLayout)
+            }
+
             // send repsonse
             var JSONMessage = {
               'jsonrpc': '2.0',
