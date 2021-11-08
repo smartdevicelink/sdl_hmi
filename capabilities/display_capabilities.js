@@ -377,8 +377,7 @@ let mediaCapabilities = {
                 "multiTouchAvailable": true,
                 "doublePressAvailable": false
             }
-        },
-        "numCustomPresetsAvailable": 0
+        }
     },
     "buttonCapabilities": SDL.ButtonCapability.filter(button => !button.name.includes('PRESET_')),
     "softButtonCapabilities": [{
