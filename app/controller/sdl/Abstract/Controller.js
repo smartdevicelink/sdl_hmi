@@ -812,6 +812,7 @@ SDL.SDLController = Em.Object.extend(
       SDL.SDLModel.data.interactionData.helpPrompt = null;
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = null;
       SDL.SDLModel.data.set('VRActive', false);
+      SDL.SDLModel.set('allowUIPerformInteraction', true);
     },
     /**
      * Method to sent notification for Alert
