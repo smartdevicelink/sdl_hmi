@@ -67,6 +67,8 @@ SDL.SDLModel = Em.Object.extend({
    */
   subscribedData: {},
 
+  allowUIPerformInteraction: true,
+  vrRejectedCallback: null,
   applicationStatusBar: '',
   timeoutPromptCallback: undefined,
   promptTimeout: undefined,
@@ -1449,6 +1451,16 @@ SDL.SDLModel = Em.Object.extend({
    */
   uiPerformInteraction: function(message) {
 
+    if(!this.allowUIPerformInteraction) {
+      FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
+        message.method, 'UI PerformInterection REJECTED on HMI'
+      );
+      if(this.vrRejectedCallback !== null) {
+        this.vrRejectedCallback();
+        this.vrRejectedCallback = null;
+      }
+      return false;
+    }
     if (!message.params) {
       FFW.UI.sendError(SDL.SDLModel.data.resultCode.INVALID_DATA, message.id,
         message.method, 'Empty message was received for UI.PerformInteraction'
@@ -1478,6 +1490,7 @@ SDL.SDLModel = Em.Object.extend({
         if(SDL.ResetTimeoutPopUp.includes('VR.PerformInteraction') && !SDL.ResetTimeoutPopUp.active) {
                 SDL.ResetTimeoutPopUp.resetTimeOutLabel();
                 SDL.ResetTimeoutPopUp.ActivatePopUp();
+                this.set('allowUIPerformInteraction', false);
         }
         return false;
       }
@@ -1507,6 +1520,10 @@ SDL.SDLModel = Em.Object.extend({
       FFW.UI.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
         message.method, 'UI PerformInterection REJECTED on HMI'
       );
+      if(this.vrRejectedCallback !== null) {
+        this.vrRejectedCallback();
+        this.vrRejectedCallback = null;
+      }
       return false;
     }
   },
@@ -1528,9 +1545,11 @@ SDL.SDLModel = Em.Object.extend({
     if (!SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction) {
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = message.id;
     } else {
-      FFW.VR.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
-        message.method, 'VR PerformInterection REJECTED on HMI'
-      );
+      this.vrRejectedCallback = () => {
+        FFW.VR.sendError(SDL.SDLModel.data.resultCode.REJECTED, message.id,
+          message.method, 'VR PerformInterection REJECTED on HMI'
+        );
+      }
       return;
     }
 
