@@ -58,6 +58,7 @@
     border-width: 1px;
 }
 
+.softButton .ico-overlay,
 .softButton .ico {
     width: 50px;
     height: 49px;
@@ -665,6 +666,7 @@
     z-index: 1001;
 }
 
+#app_view_info .ico-overlay,
 #sdl_view_container .cd_logo {
     position: absolute;
     top: 90px;
@@ -729,21 +731,21 @@
 
 
 #sdl_view_container .is-template.day-mode {
-    background:url(../images/template/imagetype-pattern-day.png);
+    background-image:url(../images/template/imagetype-pattern-day.png) !important;
     opacity: 0.6;
     z-index: 1001;
     position: absolute;
 }
 
 #sdl_view_container .is-template.night-mode {
-    background:url(../images/template/imagetype-pattern-night.png);
+    background-image:url(../images/template/imagetype-pattern-night.png) !important;
     opacity: 0.6;
     z-index: 1001;
     position: absolute;
 }
 
 #sdl_view_container .is-template.high-lighted-mode {
-    background:url(../images/template/imagetype-pattern-highlighted.png);
+    background-image:url(../images/template/imagetype-pattern-highlighted.png) !important;
     opacity: 0.6;
     z-index: 1001;
     position: absolute;
