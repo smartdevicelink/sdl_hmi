@@ -227,33 +227,23 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     str += (
         sec < 10 ? '0' : '') + sec;
     if (this.endTime) {
-      if(this.countUp) {
-        position = this.endTime
-        hrs = parseInt(position / 3600), // hours
-          min = parseInt(position / 60) % 60, // minutes
-          sec = position % 60; // seconds
-
-        str += " / ";
-        str += (
+      const time2str = (time) => {
+        var hrs = parseInt(time / 3600);
+        var min = parseInt(time / 60) % 60;
+        var sec = time % 60;
+        var str = (
             hrs < 10 ? '0' : '') + hrs + ':';
         str += (
             min < 10 ? '0' : '') + min + ':';
         str += (
             sec < 10 ? '0' : '') + sec;
+        return str;
+      }
+      if(this.countUp) {
+        str += ` /  ${time2str(this.endTime)}`;
       } else if(this.endTime !== 0) {
         const timeRemaining = this.startTime - this.endTime - this.currTime;
-        hrs = parseInt(timeRemaining / 3600), // hours
-          min = parseInt(timeRemaining / 60) % 60, // minutes
-          sec = timeRemaining % 60; // seconds
-
-        str += " / (-";
-        str += (
-          hrs < 10 ? '0' : '') + hrs + ':';
-        str += (
-            min < 10 ? '0' : '') + min + ':';
-        str += (
-            sec < 10 ? '0' : '') + sec;
-        str += ')';
+        str += ` (-${time2str(timeRemaining)})`;
       }
 
     }
