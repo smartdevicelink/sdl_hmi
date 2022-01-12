@@ -73,7 +73,7 @@ SDL.PhoneView = Em.ContainerView.create(
                 textBinding: Em.Binding
                   .oneWay('SDL.locale.label.view_phone_phone'),
                 icon: 'images/phone/ico_phone.png',
-                action: 'onDialCall',
+                action: 'onDelete',
                 target: 'SDL.PhoneController'
               }
             )
