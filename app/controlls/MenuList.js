@@ -62,6 +62,7 @@ SDL.MenuList = Em.ContainerView.extend({
                  )
                );
       }
+      this.setMode(SDL.SDLModel.data.imageMode);
     }
   },
 
