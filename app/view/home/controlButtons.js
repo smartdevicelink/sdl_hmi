@@ -226,7 +226,7 @@ getCurrentDisplayModeClass: function() {
 
     classNames: 'appUILanguagesLabel',
 
-    content: 'application UI Languages'
+    content: 'App UI Languages'
   }
 ),
 
@@ -239,7 +239,7 @@ getCurrentDisplayModeClass: function() {
 
     classNames: 'appTTSVRLanguagesLabel',
 
-    content: 'application (TTS + VR) Languages'
+    content: 'App (TTS + VR) Languages'
   }
 ),
 
