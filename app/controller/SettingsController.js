@@ -128,8 +128,11 @@ SDL.SettingsController = Em.Object.create(
         setTimeout(
           function() {
             SDL.SDLController.onEventChanged('phoneCall', false);
-            SDL.SDLController.getApplicationModel(appID).turnOnSDL(appID);
             SDL.SDLModel.data.phoneCallActive = false;
+            if(SDL.SDLController.model && SDL.SDLController.model.appID !== appID) {
+              return;
+            }
+            SDL.SDLController.getApplicationModel(appID).turnOnSDL(appID);
           }, 20000
         ); //Magic number - 5 seconds timeout for emulating conversation call
       } else {
