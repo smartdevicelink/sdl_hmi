@@ -59,7 +59,7 @@ SDL.StreamAudio = {
     }
   },
 
-  toggleMute: function() {
-    this.audio.muted = !this.audio.muted;
+  setMuted: function(muted) {
+    this.audio.muted = muted;
   }
 };
