@@ -203,7 +203,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
   setDuration: function() {
 
-    var position, str = '', hrs = 0, min = 0, sec = 0;
+    var position, str = '';
     if (this.countUp) {
       position = this.startTime + this.currTime;
     } else {
@@ -215,31 +215,26 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       }
       position = this.startTime - this.currTime;
     }
-
-    hrs = parseInt(position / 3600), // hours
-      min = parseInt(position / 60) % 60, // minutes
-      sec = position % 60; // seconds
-
-    str = (
-        hrs < 10 ? '0' : '') + hrs + ':';
-    str += (
-        min < 10 ? '0' : '') + min + ':';
-    str += (
-        sec < 10 ? '0' : '') + sec;
-    if (this.countUp && this.endTime) {
-      str += " / "
-
-      position = this.endTime
-      hrs = parseInt(position / 3600), // hours
-        min = parseInt(position / 60) % 60, // minutes
-        sec = position % 60; // seconds
-
-      str += (
+    const time2str = (time) => {
+      const hrs = parseInt(time / 3600);
+      const min = parseInt(time / 60) % 60;
+      const sec = time % 60;
+      let str = (
           hrs < 10 ? '0' : '') + hrs + ':';
       str += (
           min < 10 ? '0' : '') + min + ':';
       str += (
           sec < 10 ? '0' : '') + sec;
+      return str;
+    }
+    str += time2str(position);
+    if (this.endTime) {
+      if(this.countUp) {
+        str += ` /  ${time2str(this.endTime)}`;
+      } else if(this.endTime !== 0) {
+        const timeRemaining = this.startTime - this.endTime - this.currTime;
+        str += ` (-${time2str(timeRemaining)})`;
+      }
 
     }
     this.appInfo.set('mediaClock', str);

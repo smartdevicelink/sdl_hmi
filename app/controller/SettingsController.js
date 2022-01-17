@@ -129,7 +129,6 @@ SDL.SettingsController = Em.Object.create(
         setTimeout(
           function() {
             SDL.SDLController.onEventChanged('phoneCall', false);
-            SDL.SDLController.getApplicationModel(appID).turnOnSDL(appID);
             SDL.SDLModel.data.phoneCallActive = false;
             SDL.StreamAudio.setMuted(false);
             if(SDL.SDLController.model && SDL.SDLController.model.appID !== appID) {

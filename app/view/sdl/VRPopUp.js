@@ -85,7 +85,11 @@ SDL.VRPopUp = Em.ContainerView.create(
                 commandID: cmdID,
                 text: vrCommands[i],
                 classNames: 'list-item',
-                templateName: 'text'
+                templateName: 'text',
+                classNameBindings: ['getCurrentDisplayModeClass'],
+                getCurrentDisplayModeClass: function() {
+                  return SDL.ControlButtons.getCurrentDisplayModeClass();
+                }.property('SDL.ControlButtons.imageMode.selection')
               }
             )
           );
@@ -120,9 +124,12 @@ SDL.VRPopUp = Em.ContainerView.create(
                     return true;
                   }
                 }.property('SDL.SDLModel.data.performInteractionSession'),
-                classNameBindings: ['this.hideButtons:hide'],
+                classNameBindings: ['this.hideButtons:hide', 'getCurrentDisplayModeClass'],
                 classNames: 'list-item',
-                templateName: 'text'
+                templateName: 'text',
+                getCurrentDisplayModeClass: function() {
+                  return SDL.ControlButtons.getCurrentDisplayModeClass();
+                }.property('SDL.ControlButtons.imageMode.selection')
               }
             )
           );

@@ -73,9 +73,8 @@ SDL.PhoneView = Em.ContainerView.create(
                 textBinding: Em.Binding
                   .oneWay('SDL.locale.label.view_phone_phone'),
                 icon: 'images/phone/ico_phone.png',
-                action: 'subState',
-                target: 'SDL.PhoneController',
-                stateName: 'dialpad'
+                action: 'onDelete',
+                target: 'SDL.PhoneController'
               }
             )
           }
