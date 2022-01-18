@@ -116,6 +116,7 @@ SDL.SettingsController = Em.Object.create(
       FFW.BasicCommunication.GetStatusUpdate();
     },
     phoneCall: function() {
+      SDL.StreamAudio.setMuted(true);
       SDL.SDLController.onEventChanged('phoneCall', true);
       SDL.SDLModel.data.phoneCallActive = true;
       var appID = null;
@@ -129,6 +130,7 @@ SDL.SettingsController = Em.Object.create(
           function() {
             SDL.SDLController.onEventChanged('phoneCall', false);
             SDL.SDLModel.data.phoneCallActive = false;
+            SDL.StreamAudio.setMuted(false);
             if(SDL.SDLController.model && SDL.SDLController.model.appID !== appID) {
               return;
             }
@@ -140,6 +142,7 @@ SDL.SettingsController = Em.Object.create(
           function() {
             SDL.SDLController.onEventChanged('phoneCall', false);
             SDL.SDLModel.data.phoneCallActive = false;
+            SDL.StreamAudio.setMuted(false);
           }, 20000
         ); //Magic number - 5 seconds timeout for emulating conversation call
       }

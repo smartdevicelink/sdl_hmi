@@ -52,6 +52,7 @@ SDL.PhoneController = Em.Object.create({
   onEndCall: function() {
 
     SDL.SDLController.onEventChanged('phoneCall', false);
+    SDL.StreamAudio.setMuted(false);
     this.model.endCall();
   },
 
@@ -61,6 +62,7 @@ SDL.PhoneController = Em.Object.create({
   onDialCall: function() {
 
     SDL.SDLController.onEventChanged('phoneCall', true);
+    SDL.StreamAudio.setMuted(true);
     this.model.dialCall();
   },
 

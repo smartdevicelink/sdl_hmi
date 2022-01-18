@@ -57,5 +57,9 @@ SDL.StreamAudio = {
       this.audio.src = '';
       this.audio.pause();
     }
+  },
+
+  setMuted: function(muted) {
+    this.audio.muted = muted;
   }
 };
