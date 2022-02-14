@@ -97,7 +97,7 @@ SDL.AudioPassThruPopUp = Em.ContainerView.create(
         text: 'Retry',
         responseResult: SDL.SDLModel.data.resultCode['RETRY'],
         actionUp: function() {
-          SDL.SDLController.callPerformAudioPassThruPopUpErrorResponse(this);
+          SDL.SDLController.callPerformAudioPassThruPopUpResponse(this);
         }
       }
     ),
