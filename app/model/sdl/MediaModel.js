@@ -445,18 +445,12 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     }
 
     if (params.graphic != null) {
-      var image = params.graphic.value;
-      var search_offset = image.lastIndexOf('.');
-      str = '.png';
-      var isPng = image.includes(str,search_offset);
-      if (isPng) {
-        if (params.graphic.value != '') {
-          this.appInfo.set('mainImage', params.graphic.value);
-        } else {
-          this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
-        }
-        this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
+      if (params.graphic.value != '') {
+        this.appInfo.set('mainImage', params.graphic.value);
+      } else {
+        this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
       }
+      this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
     }
 
     if ('softButtons' in params) {
