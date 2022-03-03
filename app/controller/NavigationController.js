@@ -582,18 +582,12 @@ SDL.NavigationController = Em.Object.create(
     validateIcons: function(request) {
       var params = request.params;
       imageList = [];
-      var nonPngCounter = 0;
 
       if(params.turnList) {
         var countList=params.turnList.length;
         for(var i = 0; i < countList; i++) {
           if(params.turnList[i].turnIcon) {
             var icon = params.turnList[i].turnIcon;
-            if(!this.isPng(icon.value)) {
-              delete params.turnList[i].turnIcon;
-              nonPngCounter++;
-              continue;
-            } 
             imageList.push(icon);
           }
         }
@@ -603,39 +597,15 @@ SDL.NavigationController = Em.Object.create(
         for(var i=0;i<countButtons;i++) {
           if(params.softButtons[i].image) {
             var icon = params.softButtons[i].image;
-            if(!this.isPng(icon.value)) {
-              delete params.softButtons[i].image;
-              nonPngCounter++;
-              continue;
-            } 
             imageList.push(icon);
           }
         }
       }
       if(params.turnIcon) {
-        if(!this.isPng(params.turnIcon.value)) {
-          delete params.turnIcon;
-          nonPngCounter++;
-        } else {
-          imageList.push(params.turnIcon);
-        }
+        imageList.push(params.turnIcon);
       } 
       if(params.nextTurnIcon) {
-        if(!this.isPng(params.nextTurnIcon.value)) {
-          delete params.nextTurnIcon;
-          nonPngCounter++;
-        } else {
-          imageList.push(params.nextTurnIcon);
-        }
-      }
-
-      if(nonPngCounter > 0) {
-        FFW.Navigation.sendNavigationResult(
-          SDL.SDLModel.data.resultCode.WARNINGS,
-          request.id,
-          request.method,
-        );
-        return;
+        imageList.push(params.nextTurnIcon);
       }
 
       var callback = function(failed, info) {
