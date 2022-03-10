@@ -411,54 +411,81 @@ SDL.SettingsController = Em.Object.create(
      * Method responsible for PolicyUpdate retry sequence
      * abort parameter if set to true means that retry sequence if finished
      *
-     * @param {Boolean} abort
+     * @param {Object} request_params
      */
-    policyUpdateRetry: function(abort) {
-      if(SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress) {
+    policyUpdateRetry: function(request_params) {
+      if (SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress) {
+        Em.Logger.log('PTU retry: iteration is in progress');
         return;
       }
+
       clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
       SDL.SDLModel.data.policyUpdateRetry.timer = null;
 
       var sendOnSystemRequest = function() {
         SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = false;
+        const default_params = {
+          requestType: 'PROPRIETARY',
+          fileName: SDL.SettingsController.policyUpdateFile,
+          url: SDL.SDLModel.data.policyURLs[0]
+        };
+        const params_to_send = request_params ? request_params : default_params;
+
         FFW.BasicCommunication.OnSystemRequest(
-          'PROPRIETARY',
-          SDL.SettingsController.policyUpdateFile,
-          SDL.SDLModel.data.policyURLs[0]
+          params_to_send.requestType,
+          params_to_send.fileName,
+          params_to_send.url,
+          params_to_send.appID
         );
       }
-      if(abort !== 'ABORT' && !SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+
+      if (!SDL.SDLModel.data.policyUpdateRetry.isRetry) {
+        Em.Logger.log('PTU retry: starting retry sequence');
         SDL.SDLModel.data.policyUpdateRetry.isRetry = true;
         return;
       }
+
       var length = SDL.SDLModel.data.policyUpdateRetry.retry.length;
-      if(length == SDL.SDLModel.data.policyUpdateRetry.try) {
+      if (length == SDL.SDLModel.data.policyUpdateRetry.try) {
+        Em.Logger.log('PTU retry: retry attempts exceeded. Sending the last system request');
         SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
-      }
-      if (abort !== 'ABORT' && SDL.SDLModel.data.policyUpdateRetry.isRetry) {           
-        
-        SDL.SDLModel.data.policyUpdateRetry.oldTimer = 
-          SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] * 1000;
-     
+        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
         SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
           function() {
             sendOnSystemRequest();
-          }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
+          }, 1000
         );
-        SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
-        SDL.SDLModel.data.policyUpdateRetry.try++;
-      } else {
-        SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
-        clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
-        SDL.SDLModel.data.policyUpdateRetry = {
-          timeout: null,
-          retry: [],
-          try: null,
-          timer: null,
-          oldTimer: 0
-        };
+        return;
       }
+
+      SDL.SDLModel.data.policyUpdateRetry.oldTimer =
+        SDL.SDLModel.data.policyUpdateRetry.retry[SDL.SDLModel.data.policyUpdateRetry.try] * 1000;
+
+      SDL.SDLModel.data.policyUpdateRetry.timer = setTimeout(
+        function() {
+          sendOnSystemRequest();
+        }, SDL.SDLModel.data.policyUpdateRetry.oldTimer
+      );
+
+      SDL.SDLModel.data.policyUpdateRetry.isIterationInProgress = true;
+      SDL.SDLModel.data.policyUpdateRetry.try++;
+      Em.Logger.log(`PTU retry: retry attempt #${SDL.SDLModel.data.policyUpdateRetry.try}`);
+    },
+
+    /**
+     * @description Aborts policy table update retry sequence
+     */
+    policyUpdateAbort: function() {
+      Em.Logger.log('PTU retry: retry sequence was aborted');
+      SDL.SDLModel.data.policyUpdateRetry.isRetry = false;
+      clearTimeout(SDL.SDLModel.data.policyUpdateRetry.timer);
+      SDL.SDLModel.data.policyUpdateRetry = {
+        timeout: null,
+        retry: [],
+        try: null,
+        timer: null,
+        oldTimer: 0
+      };
     },
 
     /**
