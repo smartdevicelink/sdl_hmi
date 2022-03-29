@@ -599,7 +599,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           key = 'clusterModes';
         }
         if (key != 'appID') {
-          if (this.vehicleData[key] != undefined) {
+          if (this.vehicleData && this.vehicleData[key] != undefined) {
             data[oldKey] = this.vehicleData[key];
           } else {
             if (!result) {
