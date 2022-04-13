@@ -1045,7 +1045,8 @@ FFW.UI = FFW.RPCObserver.create(
                 ],
                 'hmiCapabilities': {
                   'navigation': true,
-                  'phoneCall': true
+                  'phoneCall': true,
+                  'videoStreaming':true
                 },
                 'systemCapabilities': SDL.systemCapabilities,
                 'code': SDL.SDLModel.data.resultCode.SUCCESS,
