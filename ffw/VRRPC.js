@@ -243,13 +243,16 @@ FFW.VR = FFW.RPCObserver.create(
           }
           case 'VR.PerformInteraction':
           {
-            if(SDL.ResetTimeoutPopUp.includes(request.method)) {
-              this.sendError(
-                SDL.SDLModel.data.resultCode.REJECTED,
-                request.id,
-                request.method,
-                `${request.method} is already in progress`
-              )
+            if(SDL.ResetTimeoutPopUp.includes(request.method) ||
+              SDL.ResetTimeoutPopUp.includes('UI.PerformInteraction')) {
+              SDL.SDLModel.vrRejectedCallback = () => {
+                this.sendError(
+                  SDL.SDLModel.data.resultCode.REJECTED,
+                  request.id,
+                  request.method,
+                  `${request.method} is already in progress`
+                )
+              }
               return;
             }
             SDL.SDLModel.vrPerformInteraction(request);

@@ -203,7 +203,7 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
 
   setDuration: function() {
 
-    var position, str = '', hrs = 0, min = 0, sec = 0;
+    var position, str = '';
     if (this.countUp) {
       position = this.startTime + this.currTime;
     } else {
@@ -215,31 +215,26 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
       }
       position = this.startTime - this.currTime;
     }
-
-    hrs = parseInt(position / 3600), // hours
-      min = parseInt(position / 60) % 60, // minutes
-      sec = position % 60; // seconds
-
-    str = (
-        hrs < 10 ? '0' : '') + hrs + ':';
-    str += (
-        min < 10 ? '0' : '') + min + ':';
-    str += (
-        sec < 10 ? '0' : '') + sec;
-    if (this.countUp && this.endTime) {
-      str += " / "
-
-      position = this.endTime
-      hrs = parseInt(position / 3600), // hours
-        min = parseInt(position / 60) % 60, // minutes
-        sec = position % 60; // seconds
-
-      str += (
+    const time2str = (time) => {
+      const hrs = parseInt(time / 3600);
+      const min = parseInt(time / 60) % 60;
+      const sec = time % 60;
+      let str = (
           hrs < 10 ? '0' : '') + hrs + ':';
       str += (
           min < 10 ? '0' : '') + min + ':';
       str += (
           sec < 10 ? '0' : '') + sec;
+      return str;
+    }
+    str += time2str(position);
+    if (this.endTime) {
+      if(this.countUp) {
+        str += ` /  ${time2str(this.endTime)}`;
+      } else if(this.endTime !== 0) {
+        const timeRemaining = this.startTime - this.endTime - this.currTime;
+        str += ` (-${time2str(timeRemaining)})`;
+      }
 
     }
     this.appInfo.set('mediaClock', str);
@@ -450,38 +445,38 @@ SDL.SDLMediaModel = SDL.ABSAppModel.extend({
     }
 
     if (params.graphic != null) {
-      var image = params.graphic.value;
-      var search_offset = image.lastIndexOf('.');
-      str = '.png';
-      var isPng = image.includes(str,search_offset);
-      if (isPng) {
-        if (params.graphic.value != '') {
-          this.appInfo.set('mainImage', params.graphic.value);
-        } else {
-          this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
-        }
-        this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
+      if (params.graphic.value != '') {
+        this.appInfo.set('mainImage', params.graphic.value);
+      } else {
+        this.appInfo.set('mainImage', 'images/sdl/audio_icon.jpg');
       }
+      this.set('isTemplate', 'DYNAMIC' == params.graphic.imageType && params.graphic.isTemplate === true);
     }
 
     if ('softButtons' in params) {
       this.updateSoftButtons(params.softButtons);
     }
 
-    // Magic number is a count of Preset Buttons on HMI = 8
-    for (var i = 0; i < 10; i++) {
-      if (!params.customPresets || (
-        params.customPresets[i] == '' || params.customPresets[i] == null)) {
-        this.appInfo.set('customPresets.' + i, 'PRESET_' + i);
-      } else {
-        this.appInfo.set('customPresets.' + i, params.customPresets[i]);
-      }
-    }
-
     if('templateConfiguration' in params) {
+      this.configurePresetButtons(this.templateConfiguration.template, params.customPresets);
       this.set('templateConfiguration', params.templateConfiguration);
     }
-    this.set('mediaPreset', true);
+  },
+
+  configurePresetButtons : function(templateName, customPresets){
+    if(templateName === 'ONSCREEN_PRESETS'){
+      // Magic number is a count of Preset Buttons on HMI = 8
+      for (var i = 0; i < 10; i++) {
+        if (!customPresets || 
+          (customPresets[i] == '' || customPresets[i] == null)) {
+          this.appInfo.set('customPresets.' + i, 'PRESET_' + i);
+        } else {
+          this.appInfo.set('customPresets.' + i, customPresets[i]);
+        }
+      }
+    }
+    this.set('mediaPreset', (templateName === 'ONSCREEN_PRESETS'));
   }
+
 }
 );

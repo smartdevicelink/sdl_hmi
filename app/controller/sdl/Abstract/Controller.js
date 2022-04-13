@@ -812,6 +812,7 @@ SDL.SDLController = Em.Object.extend(
       SDL.SDLModel.data.interactionData.helpPrompt = null;
       SDL.SDLModel.data.vrActiveRequests.vrPerformInteraction = null;
       SDL.SDLModel.data.set('VRActive', false);
+      SDL.SDLModel.set('allowUIPerformInteraction', true);
     },
     /**
      * Method to sent notification for Alert
@@ -917,7 +918,8 @@ SDL.SDLController = Em.Object.extend(
      */
     performAudioPassThruResponse: function(result) {
       SDL.SDLModel.data.set('AudioPassThruState', false);
-      if (result === SDL.SDLModel.data.resultCode.SUCCESS) {
+      if (result === SDL.SDLModel.data.resultCode.SUCCESS
+         || result === SDL.SDLModel.data.resultCode.RETRY) {
         FFW.UI.sendUIResult(
           result,
           FFW.UI.performAudioPassThruRequestID,

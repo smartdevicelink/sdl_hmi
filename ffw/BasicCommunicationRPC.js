@@ -339,7 +339,7 @@ FFW.BasicCommunication = FFW.RPCObserver
               FFW.BasicCommunication.GetUserFriendlyMessage(
                 SDL.SettingsController.simpleParseUserFriendlyMessageData,
                 appID,
-                ['AppUnsupported']
+                ['AppUnauthorized']
               );
             } else {
               SDL.SDLController.getApplicationModel(appID)

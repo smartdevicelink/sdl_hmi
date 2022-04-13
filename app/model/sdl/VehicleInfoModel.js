@@ -332,10 +332,6 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
         'rearRecommended': 2.2E0
       },
       'cloudAppVehicleID': 'SDLVehicleNo123',
-      'displayResolution': {
-         'width': 800,
-         'height': 480
-      },
       'climateData': {
         'externalTemperature': {
           'unit': 'FAHRENHEIT',
@@ -363,6 +359,12 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
       // 'satRadioESN': '165165650',
       // 'rainSensor': 165165650,
     },
+
+    'displayResolution': {
+         'width': 800,
+         'height': 480
+      },
+
     /**
      * Method to set selected state of vehicle transmission to vehicleData
      */
@@ -597,7 +599,7 @@ SDL.SDLVehicleInfoModel = Em.Object.create(
           key = 'clusterModes';
         }
         if (key != 'appID') {
-          if (this.vehicleData[key] != undefined) {
+          if (this.vehicleData && this.vehicleData[key] != undefined) {
             data[oldKey] = this.vehicleData[key];
           } else {
             if (!result) {

@@ -212,7 +212,7 @@ FFW.Navigation = FFW.RPCObserver.create(
           }
           case 'Navigation.AlertManeuver':
           {
-            SDL.AlertManeuverPopUp.AlertManeuverActive(request);
+            SDL.NavigationController.onNaviAlertManeuver(request);
             break;
           }
           case 'Navigation.ShowConstantTBT':
