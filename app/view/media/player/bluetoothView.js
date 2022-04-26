@@ -47,7 +47,7 @@ SDL.bluetoothView = Em.ContainerView.create(
           '<div class="title">{{SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.data.selectedItem.album}}</div>' +
           '<div class="track-number" >{{SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.data.selectedItem.name}}</div>' +
           '<div class="time">{{SDL.RCModulesController.currentAudioModel.currentSelectedPlayer.formatTimeToString}}</div>' +
-          '<div id="usb_logo"></div>' +
+          '<div id="bluetooth_logo"></div>' +
           '</div>'
         )
       }
