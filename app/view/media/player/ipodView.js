@@ -81,7 +81,7 @@ SDL.ipodView = Em.ContainerView.create(
             elementId: 'media_ipod_rightmenu_repeatButton',
             classNames: ['rs-item'],
             onRepeatPressed: function() {
-              switch (SDL.RCModulesController.currentAudioModel.bluetoothModel.player.repeat) {
+              switch (SDL.RCModulesController.currentAudioModel.ipodModel.player.repeat) {
                 case 'NONE':
                   return SDL.locale.label.view_media_repeat_no;
                 case 'ALL':
@@ -90,7 +90,7 @@ SDL.ipodView = Em.ContainerView.create(
                   return SDL.locale.label.view_media_repeat_one;
               }
             }.property(
-              'SDL.IpodModel.player.repeat'
+              'SDL.RCModulesController.currentAudioModel.ipodModel.player.repeat'
             ),
             textBinding: 'onRepeatPressed',
             target: 'SDL.RCModulesController.currentAudioModel',
@@ -103,10 +103,10 @@ SDL.ipodView = Em.ContainerView.create(
             classNames: ['rs-item'],
             onIconChange: function() {
               return SDL.SDLController.getLedIndicatorImagePath(
-                SDL.RCModulesController.currentAudioModel.bluetoothModel.player.shuffle
+                SDL.RCModulesController.currentAudioModel.ipodModel.player.shuffle
               );
             }.property(
-              'SDL.IpodModel.player.shuffle'
+              'SDL.RCModulesController.currentAudioModel.ipodModel.player.shuffle'
             ),
             iconBinding: 'onIconChange',
             textBinding: Ember.Binding.oneWay(

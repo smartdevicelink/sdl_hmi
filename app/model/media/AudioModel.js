@@ -544,12 +544,12 @@ SDL.AudioModel = Em.Object.extend({
           this.changeSourceFromBluetooth(is_background);
           break;
         }
-        case 'media.player.lieIn': {
+        case 'media.player.lineIn': {
           this.changeSourceFromLineIn(is_background);
           break;
         }
         case 'media.player.ipod': {
-          this.changeSourceFromIpod(is_background);
+          this.changeSourceFromIPod(is_background);
           break;
         }
         default: {
@@ -591,11 +591,7 @@ SDL.AudioModel = Em.Object.extend({
     changeSourceFromUSB: function (is_background) {
       var old_state = SDL.States.currentState.get('path');
       this.deactivateUSB();
-      if (SDL.SDLMediaController.currentAppId != null && !is_background) {
-        SDL.SDLMediaController.activateCurrentApp();
-      } else {
-        this.turnOnRadio();
-      }
+      this.turnOnBluetooth();
       if (is_background) {
         SDL.States.goToStates(old_state);
       }
@@ -621,7 +617,7 @@ SDL.AudioModel = Em.Object.extend({
     changeSourceFromLineIn: function (is_background) {
       var old_state = SDL.States.currentState.get('path');
       this.deactivateLineIn();
-      this.turnOnIpod();
+      this.turnOnIPod();
       if (is_background) {
         SDL.States.goToStates(old_state);
       }
@@ -631,10 +627,14 @@ SDL.AudioModel = Em.Object.extend({
      * Switches to next after IPod source
      * @param is source switched from background or not
      */
-    changeSourceFromIpod: function (is_background) {
+    changeSourceFromIPod: function (is_background) {
       var old_state = SDL.States.currentState.get('path');
-      this.deactivateIpod();
-      this.turnOnIpod();
+      this.deactivateIPod();
+      if (SDL.SDLMediaController.currentAppId != null && !is_background) {
+        SDL.SDLMediaController.activateCurrentApp();
+      } else {
+        this.turnOnRadio();
+      }
       if (is_background) {
         SDL.States.goToStates(old_state);
       }
