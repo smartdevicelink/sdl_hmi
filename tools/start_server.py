@@ -99,7 +99,7 @@ class StreamingProcessHolder:
 						print('gst-launch-1.0 souphttpsrc location=' + url + ' ! decodebin ! videoconvert ! xvimagesink sync=false')
 					return -1
 
-			StreamingProcessHolder.videoStream = ffmpeg.input(url).output(stream_endpoint, vcodec="vp8", format="webm", listen=1, multiple_requests=1).run_async(pipe_stderr=True)
+			StreamingProcessHolder.videoStream = ffmpeg.input(url, framerate='20').output(stream_endpoint, vcodec="vp8", format="webm", listen=1, multiple_requests=1).run_async(pipe_stderr=True)
 			return StreamingProcessHolder.waitForInput(StreamingProcessHolder.videoStream)
 
 		if streaming_type == 'audio':
