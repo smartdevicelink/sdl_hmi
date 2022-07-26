@@ -1190,6 +1190,96 @@ SDL.templateCapabilities = {
                     "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
+                },
+                {
+                    "name": "menuName",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "secondaryText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "tertiaryText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "menuTitle",
+                    "characterSet": "UTF_8",
+                    "width": 15,
+                    "rows": 1
+                },
+                {
+                    "name": "navigationText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "navigationText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "ETA",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "totalDistance",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "timeToDestination",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "turnText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "menuTitle",
+                    "characterSet": "UTF_8",
+                    "width": 15,
+                    "rows": 1
+                },
+                {
+                    "name": "locationName",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "locationDescription",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "addressLines",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "phoneNumber",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
                 }
             ],
             "imageFields": [
