@@ -1210,12 +1210,6 @@ SDL.templateCapabilities = {
                     "rows": 1
                 },
                 {
-                    "name": "menuTitle",
-                    "characterSet": "UTF_8",
-                    "width": 15,
-                    "rows": 1
-                },
-                {
                     "name": "navigationText1",
                     "characterSet": "UTF_8",
                     "width": 500,
@@ -1378,7 +1372,55 @@ SDL.templateCapabilities = {
                       "resolutionWidth": 105,
                       "resolutionHeight": 65
                     }
-                  }
+                  },
+                  {
+                    "name": "vrHelpItem",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "turnIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "showConstantTBTIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "showConstantTBTNextTurnIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                }
             ],
             "graphicSupported": true,
             "imageCapabilities": ["DYNAMIC", "STATIC"],
