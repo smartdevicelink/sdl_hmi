@@ -83,6 +83,24 @@ let mediaCapabilities = {
                 "rows": 1
             },
             {
+                "name": "subtleAlertText1",
+                "characterSet": "UTF_8",
+                "width": 500,
+                "rows": 1
+            },
+            {
+                "name": "subtleAlertText2",
+                "characterSet": "UTF_8",
+                "width": 500,
+                "rows": 1
+            },
+            {
+                "name": "subtleAlertSoftButtonText",
+                "characterSet": "UTF_8",
+                "width": 500,
+                "rows": 1
+            },
+            {
                 "name": "scrollableMessageBody",
                 "characterSet": "UTF_8",
                 "width": 500,
@@ -476,6 +494,24 @@ SDL.templateCapabilities = {
                     "rows": 1
                 },
                 {
+                    "name": "subtleAlertText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertSoftButtonText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
                     "name": "scrollableMessageBody",
                     "characterSet": "UTF_8",
                     "width": 500,
@@ -855,6 +891,24 @@ SDL.templateCapabilities = {
                     "rows": 1
                 },
                 {
+                    "name": "subtleAlertText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertSoftButtonText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
                     "name": "scrollableMessageBody",
                     "characterSet": "UTF_8",
                     "width": 500,
@@ -1151,6 +1205,24 @@ SDL.templateCapabilities = {
                 },
                 {
                     "name": "alertText3",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertSoftButtonText",
                     "characterSet": "UTF_8",
                     "width": 500,
                     "rows": 1
