@@ -83,6 +83,24 @@ let mediaCapabilities = {
                 "rows": 1
             },
             {
+                "name": "subtleAlertText1",
+                "characterSet": "UTF_8",
+                "width": 500,
+                "rows": 1
+            },
+            {
+                "name": "subtleAlertText2",
+                "characterSet": "UTF_8",
+                "width": 500,
+                "rows": 1
+            },
+            {
+                "name": "subtleAlertSoftButtonText",
+                "characterSet": "UTF_8",
+                "width": 500,
+                "rows": 1
+            },
+            {
                 "name": "scrollableMessageBody",
                 "characterSet": "UTF_8",
                 "width": 500,
@@ -476,6 +494,24 @@ SDL.templateCapabilities = {
                     "rows": 1
                 },
                 {
+                    "name": "subtleAlertText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertSoftButtonText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
                     "name": "scrollableMessageBody",
                     "characterSet": "UTF_8",
                     "width": 500,
@@ -855,6 +891,24 @@ SDL.templateCapabilities = {
                     "rows": 1
                 },
                 {
+                    "name": "subtleAlertText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertSoftButtonText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
                     "name": "scrollableMessageBody",
                     "characterSet": "UTF_8",
                     "width": 500,
@@ -1130,6 +1184,316 @@ SDL.templateCapabilities = {
         "displayCapabilities": {
             "displayType": "GEN2_8_DMA",
             "displayName": "SDL_HMI",
+            "textFields": [
+                {
+                    "name": "templateTitle",
+                    "characterSet": "UTF_8",
+                    "width": 100,
+                    "rows": 1
+                },
+                {
+                    "name": "alertText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "alertText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "alertText3",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "subtleAlertSoftButtonText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "scrollableMessageBody",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "initialInteractionText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "audioPassThruDisplayText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "audioPassThruDisplayText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "sliderHeader",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "sliderFooter",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "menuName",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "secondaryText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "tertiaryText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "navigationText1",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "navigationText2",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "ETA",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "totalDistance",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "timeToDestination",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "turnText",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "menuTitle",
+                    "characterSet": "UTF_8",
+                    "width": 15,
+                    "rows": 1
+                },
+                {
+                    "name": "locationName",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "locationDescription",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "addressLines",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                },
+                {
+                    "name": "phoneNumber",
+                    "characterSet": "UTF_8",
+                    "width": 500,
+                    "rows": 1
+                }
+            ],
+            "imageFields": [
+                {
+                    "name": "alertIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 105,
+                        "resolutionHeight": 65
+                    }
+                },
+                {
+                    "name": "choiceImage",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "choiceSecondaryImage",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "cmdIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "subMenuIcon",
+                    "imageTypeSupported": [
+                      "GRAPHIC_BMP",
+                      "GRAPHIC_JPEG",
+                      "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                      "resolutionWidth": 64,
+                      "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "menuCommandSecondaryImage",
+                    "imageTypeSupported": [
+                      "GRAPHIC_BMP",
+                      "GRAPHIC_JPEG",
+                      "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                      "resolutionWidth": 105,
+                      "resolutionHeight": 65
+                    }
+                  },
+                  {
+                    "name": "menuSubMenuSecondaryImage",
+                    "imageTypeSupported": [
+                      "GRAPHIC_BMP",
+                      "GRAPHIC_JPEG",
+                      "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                      "resolutionWidth": 105,
+                      "resolutionHeight": 65
+                    }
+                  },
+                  {
+                    "name": "subtleAlertIcon",
+                    "imageTypeSupported": [
+                      "GRAPHIC_BMP",
+                      "GRAPHIC_JPEG",
+                      "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                      "resolutionWidth": 105,
+                      "resolutionHeight": 65
+                    }
+                  },
+                  {
+                    "name": "vrHelpItem",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "turnIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "showConstantTBTIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                },
+                {
+                    "name": "showConstantTBTNextTurnIcon",
+                    "imageTypeSupported": [
+                        "GRAPHIC_BMP",
+                        "GRAPHIC_JPEG",
+                        "GRAPHIC_PNG"
+                    ],
+                    "imageResolution": {
+                        "resolutionWidth": 64,
+                        "resolutionHeight": 64
+                    }
+                }
+            ],
             "graphicSupported": true,
             "imageCapabilities": ["DYNAMIC", "STATIC"],
             "templatesAvailable": ["MEDIA", "NON-MEDIA", "NAV_FULLSCREEN_MAP", "WEB_VIEW"],
