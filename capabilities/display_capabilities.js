@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+let templateList = ["MEDIA", "NON-MEDIA", "NAV_FULLSCREEN_MAP", "WEB_VIEW", "ONSCREEN_PRESETS"]
+
 let mediaCapabilities = {
     "displayCapabilities": {
         "displayType": "GEN2_8_DMA",
@@ -384,7 +386,7 @@ let mediaCapabilities = {
         ],
         "graphicSupported": true,
         "imageCapabilities": ["DYNAMIC", "STATIC"],
-        "templatesAvailable": ["MEDIA", "NON-MEDIA", "NAV_FULLSCREEN_MAP", "WEB_VIEW", "ONSCREEN_PRESETS"],
+        "templatesAvailable": templateList,
         "screenParams": {
             "resolution": {
                 "resolutionWidth": 800,
@@ -795,7 +797,7 @@ SDL.templateCapabilities = {
             ],
             "graphicSupported": true,
             "imageCapabilities": ["DYNAMIC", "STATIC"],
-            "templatesAvailable": ["MEDIA", "NON-MEDIA", "NAV_FULLSCREEN_MAP", "WEB_VIEW"],
+            "templatesAvailable": templateList,
             "screenParams": {
                 "resolution": {
                     "resolutionWidth": 800,
@@ -1156,7 +1158,7 @@ SDL.templateCapabilities = {
             ],
             "graphicSupported": true,
             "imageCapabilities": ["DYNAMIC", "STATIC"],
-            "templatesAvailable": ["MEDIA", "NON-MEDIA", "NAV_FULLSCREEN_MAP", "WEB_VIEW"],
+            "templatesAvailable": templateList,
             "screenParams": {
                 "resolution": {
                     "resolutionWidth": 800,
@@ -1496,7 +1498,7 @@ SDL.templateCapabilities = {
             ],
             "graphicSupported": true,
             "imageCapabilities": ["DYNAMIC", "STATIC"],
-            "templatesAvailable": ["MEDIA", "NON-MEDIA", "NAV_FULLSCREEN_MAP", "WEB_VIEW"],
+            "templatesAvailable": templateList,
             "screenParams": {
                 "resolution": {
                     "resolutionWidth": 800,
