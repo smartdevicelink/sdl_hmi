@@ -260,10 +260,14 @@ SDL.AudioModel = Em.Object.extend({
     /**
      * Turn on CD
      */
-    turnOnCD: function () {
+    turnOnCD: function (is_background=false) {
       if (!SDL.States.media.player.cd.active) {
         this.deactivateAll();
-        SDL.States.goToStates('media.player.cd');
+        if (!is_background) {
+          SDL.States.goToStates('media.player.cd');
+        } else {
+          this.transitionInBackground('media.player.cd')
+        }
       }
       this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.cdModel, 'cd');
      this.returnParameters();
@@ -272,10 +276,14 @@ SDL.AudioModel = Em.Object.extend({
     /**
      * Turn on USB
      */
-    turnOnUSB: function () {
+    turnOnUSB: function (is_background=false) {
       if (!SDL.States.media.player.usb.active) {
         this.deactivateAll();
-        SDL.States.goToStates('media.player.usb');
+        if (!is_background) {
+          SDL.States.goToStates('media.player.usb');
+        } else {
+          this.transitionInBackground('media.player.usb')
+        }
       }
       this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.usbModel, 'usb');
       this.returnParameters();
@@ -284,10 +292,14 @@ SDL.AudioModel = Em.Object.extend({
     /**
      * Turn on Radio
      */
-    turnOnRadio: function () {
+    turnOnRadio: function (is_background=false) {
       if (!SDL.States.media.player.radio.active) {
         this.deactivateAll();
-        SDL.States.goToStates('media.player.radio');
+        if (!is_background){
+          SDL.States.goToStates('media.player.radio');
+        } else {
+          this.transitionInBackground('media.player.radio')
+        }
       }
       SDL.RCModulesController.currentRadioModel.saveCurrentOptions();
       SDL.RCModulesController.currentRadioModel.set('active', true);
@@ -297,7 +309,7 @@ SDL.AudioModel = Em.Object.extend({
     /**
      * Turn on Bluetooth
      */
-    turnOnBluetooth: function () {
+    turnOnBluetooth: function (is_background=false) {
       if (!SDL.States.media.player.bluetooth.active) {
         this.deactivateAll();
         SDL.States.goToStates('media.player.bluetooth');
@@ -309,10 +321,14 @@ SDL.AudioModel = Em.Object.extend({
     /**
      * Turn on LineIn
      */
-    turnOnLineIn: function () {
+    turnOnLineIn: function (is_background=false) {
       if (!SDL.States.media.player.lineIn.active) {
         this.deactivateAll();
-        SDL.States.goToStates('media.player.lineIn');
+        if (!is_background) {
+          SDL.States.goToStates('media.player.lineIn');
+        } else {
+          this.transitionInBackground('media.player.lineIn')
+        }
       }
       this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.lineInModel, 'lineIn');
       this.returnParameters();
@@ -321,10 +337,14 @@ SDL.AudioModel = Em.Object.extend({
     /**
      * Turn on IPod
      */
-    turnOnIPod: function () {
+    turnOnIPod: function (is_background=false) {
       if (!SDL.States.media.player.ipod.active) {
         this.deactivateAll();
-        SDL.States.goToStates('media.player.ipod');
+        if (!is_background) {
+          SDL.States.goToStates('media.player.ipod');
+        } else {
+          this.transitionInBackground('media.player.ipod')
+        }
       }
       this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.ipodModel, 'ipod');
       this.returnParameters();
@@ -558,6 +578,44 @@ SDL.AudioModel = Em.Object.extend({
       }
     },
 
+    transitionInBackground(nextState){
+      SDL.RCModulesController.currentAudioModel.set('activeState', nextState);
+      if (FFW.RC.isSetVdInProgress) {
+        return;
+      }
+      let currentAudioModel = null;
+      switch (nextState) {
+        case 'media.player.radio': {
+          currentAudioModel = SDL.RCModulesController.currentRadioModel;
+          break;
+        }
+        case 'media.player.cd': {
+          currentAudioModel =  SDL.RCModulesController.currentAudioModel.cdModel;
+          break;
+        }
+        case 'media.player.usb': {
+          currentAudioModel = SDL.RCModulesController.currentAudioModel.usbModel;
+          break;
+        }
+        case 'media.player.bluetooth': {
+          currentAudioModel = SDL.RCModulesController.currentAudioModel.bluetoothModel;
+          break;
+        }
+        case 'media.player.lineIn': {
+          currentAudioModel = SDL.RCModulesController.currentAudioModel.lineInModel;
+          break;
+        }
+        case 'media.player.ipod': {
+          currentAudioModel = SDL.RCModulesController.currentAudioModel.ipodModel;
+          break;
+        }
+        default: {
+          currentAudioModel = SDL.RCModulesController.currentRadioModel;
+        }
+      }
+      currentAudioModel.sendAudioNotification();
+    },
+
     /**
      * Switches to next after radio source
      * @param is source switched from background or not
@@ -565,10 +623,7 @@ SDL.AudioModel = Em.Object.extend({
     changeSourceFromRadio: function (is_background) {
       var old_state = SDL.States.currentState.get('path');
       this.deactivateRadio();
-      this.turnOnCD();
-      if (is_background) {
-        SDL.States.goToStates(old_state);
-      }
+      this.turnOnCD(is_background);
     },
 
     /**
@@ -578,10 +633,7 @@ SDL.AudioModel = Em.Object.extend({
     changeSourceFromCD: function (is_background) {
       var old_state = SDL.States.currentState.get('path');
       this.deactivateCD();
-      this.turnOnUSB();
-      if (is_background) {
-        SDL.States.goToStates(old_state);
-      }
+      this.turnOnUSB(is_background);
     },
 
     /**
@@ -591,10 +643,7 @@ SDL.AudioModel = Em.Object.extend({
     changeSourceFromUSB: function (is_background) {
       var old_state = SDL.States.currentState.get('path');
       this.deactivateUSB();
-      this.turnOnBluetooth();
-      if (is_background) {
-        SDL.States.goToStates(old_state);
-      }
+      this.turnOnBluetooth(is_background);
     },
 
     /**
@@ -604,10 +653,7 @@ SDL.AudioModel = Em.Object.extend({
     changeSourceFromBluetooth: function (is_background) {
       var old_state = SDL.States.currentState.get('path');
       this.deactivateBluetooth();
-      this.turnOnLineIn();
-      if (is_background) {
-        SDL.States.goToStates(old_state);
-      }
+      this.turnOnLineIn(is_background);
     },
 
     /**
@@ -617,10 +663,7 @@ SDL.AudioModel = Em.Object.extend({
     changeSourceFromLineIn: function (is_background) {
       var old_state = SDL.States.currentState.get('path');
       this.deactivateLineIn();
-      this.turnOnIPod();
-      if (is_background) {
-        SDL.States.goToStates(old_state);
-      }
+      this.turnOnIPod(is_background);
     },
 
     /**
@@ -633,10 +676,7 @@ SDL.AudioModel = Em.Object.extend({
       if (SDL.SDLMediaController.currentAppId != null && !is_background) {
         SDL.SDLMediaController.activateCurrentApp();
       } else {
-        this.turnOnRadio();
-      }
-      if (is_background) {
-        SDL.States.goToStates(old_state);
+        this.turnOnRadio(is_background);
       }
     },
 
@@ -646,10 +686,7 @@ SDL.AudioModel = Em.Object.extend({
      */
     changeSourceFromUnknown: function (is_background) {
       var old_state = SDL.States.currentState.get('path');
-      this.turnOnRadio();
-      if (is_background) {
-        SDL.States.goToStates(old_state);
-      }
+      this.turnOnRadio(is_background);
     },
 
     /**
