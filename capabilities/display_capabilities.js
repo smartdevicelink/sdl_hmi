@@ -26,6 +26,8 @@
 
 let templateList = ["MEDIA", "NON-MEDIA", "NAV_FULLSCREEN_MAP", "WEB_VIEW", "ONSCREEN_PRESETS"]
 
+let mediaButtonNames = ["PLAY_PAUSE", "SEEKLEFT", "SEEKRIGHT", "TUNEUP", "TUNEDOWN"]
+
 let mediaCapabilities = {
     "displayCapabilities": {
         "displayType": "GEN2_8_DMA",
@@ -811,7 +813,7 @@ SDL.templateCapabilities = {
             },
             "numCustomPresetsAvailable": 8
         },
-        "buttonCapabilities": SDL.ButtonCapability.filter(button => button.name !== 'PLAY_PAUSE'),
+        "buttonCapabilities": SDL.ButtonCapability.filter(button => !mediaButtonNames.contains(button.name) && button.name !== "OK"),
         "softButtonCapabilities": [{
             "shortPressAvailable": true,
             "longPressAvailable": true,
