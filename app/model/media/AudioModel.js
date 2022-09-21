@@ -269,9 +269,9 @@ SDL.AudioModel = Em.Object.extend({
           this.transitionInBackground('media.player.cd')
         }
       }
-     if (!is_background) {
-      this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.cdModel, 'cd');
-     }
+      if (!is_background) {
+        this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.cdModel, 'cd');
+      }
      this.returnParameters();
     },
 
@@ -308,7 +308,7 @@ SDL.AudioModel = Em.Object.extend({
       SDL.RCModulesController.currentRadioModel.saveCurrentOptions();
       if (!is_background) {
         SDL.RCModulesController.currentRadioModel.set('active', true);
-     }
+      }
       this.returnParameters();
     },
 
