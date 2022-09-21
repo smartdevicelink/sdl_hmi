@@ -263,11 +263,7 @@ SDL.AudioModel = Em.Object.extend({
     turnOnCD: function (event=null, is_background=false) {
       if (!SDL.States.media.player.cd.active) {
         this.deactivateAll();
-        if (!is_background) {
-          SDL.States.goToStates('media.player.cd');
-        } else {
-          this.transitionInBackground('media.player.cd')
-        }
+        this.changeAudioSource('media.player.cd', is_background);
       }
       if (!is_background) {
         this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.cdModel, 'cd');
@@ -281,11 +277,7 @@ SDL.AudioModel = Em.Object.extend({
     turnOnUSB: function (event=null, is_background=false) {
       if (!SDL.States.media.player.usb.active) {
         this.deactivateAll();
-        if (!is_background) {
-          SDL.States.goToStates('media.player.usb');
-        } else {
-          this.transitionInBackground('media.player.usb')
-        }
+        this.changeAudioSource('media.player.usb', is_background);
       }
       if (!is_background) {
         this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.usbModel, 'usb');
@@ -299,11 +291,7 @@ SDL.AudioModel = Em.Object.extend({
     turnOnRadio: function (event=null, is_background=false) {
       if (!SDL.States.media.player.radio.active) {
         this.deactivateAll();
-        if (!is_background) {
-          SDL.States.goToStates('media.player.radio');
-        } else {
-          this.transitionInBackground('media.player.radio')
-        }
+        this.changeAudioSource('media.player.radio', is_background);
       }
       SDL.RCModulesController.currentRadioModel.saveCurrentOptions();
       if (!is_background) {
@@ -318,11 +306,7 @@ SDL.AudioModel = Em.Object.extend({
     turnOnBluetooth: function (event=null, is_background=false) {
       if (!SDL.States.media.player.bluetooth.active) {
         this.deactivateAll();
-        if (!is_background) {
-          SDL.States.goToStates('media.player.bluetooth');
-        } else {
-          this.transitionInBackground('media.player.bluetooth')
-        }
+        this.changeAudioSource('media.player.bluetooth', is_background);
       }
       if (!is_background) {
         this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.bluetoothModel, 'bluetooth');
@@ -336,11 +320,7 @@ SDL.AudioModel = Em.Object.extend({
     turnOnLineIn: function (event=null, is_background=false) {
       if (!SDL.States.media.player.lineIn.active) {
         this.deactivateAll();
-        if (!is_background) {
-          SDL.States.goToStates('media.player.lineIn');
-        } else {
-          this.transitionInBackground('media.player.lineIn')
-        }
+        this.changeAudioSource('media.player.lineIn', is_background);
       }
       if (!is_background) {
         this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.lineInModel, 'lineIn');
@@ -354,11 +334,7 @@ SDL.AudioModel = Em.Object.extend({
     turnOnIPod: function (event=null, is_background=false) {
       if (!SDL.States.media.player.ipod.active) {
         this.deactivateAll();
-        if (!is_background) {
-          SDL.States.goToStates('media.player.ipod');
-        } else {
-          this.transitionInBackground('media.player.ipod')
-        }
+        this.changeAudioSource('media.player.ipod', is_background);
       }
       if (!is_background) {
         this.onPlayerEnter(SDL.RCModulesController.currentAudioModel.ipodModel, 'ipod');
@@ -594,42 +570,53 @@ SDL.AudioModel = Em.Object.extend({
       }
     },
 
-    transitionInBackground(nextState){
+    /**
+     * Switch RC Audio source based on whether the app is in focus
+     * @param nextState Audio source to transition to
+     * @param isBackground
+     */
+    changeAudioSource : function (nextState, isBackground){
+      if (!isBackground) {
+        SDL.States.goToStates(nextState);
+        return;
+      } 
+
       SDL.RCModulesController.currentAudioModel.set('activeState', nextState);
       if (FFW.RC.isSetVdInProgress) {
         return;
       }
-      let currentAudioModel = null;
-      switch (nextState) {
+      let currentAudioModel = this.getAudioModel(nextState);
+      currentAudioModel.sendAudioNotification();
+    },
+
+    /**
+     * Get audio model based on state name
+     * @param stateName name of audio source state(e.g. 'media.player.ipod')
+     */
+    getAudioModel : function (stateName){
+      switch (stateName) {
         case 'media.player.radio': {
-          currentAudioModel = SDL.RCModulesController.currentRadioModel;
-          break;
+          return SDL.RCModulesController.currentRadioModel;
         }
         case 'media.player.cd': {
-          currentAudioModel =  SDL.RCModulesController.currentAudioModel.cdModel;
-          break;
+          return SDL.RCModulesController.currentAudioModel.cdModel;
         }
         case 'media.player.usb': {
-          currentAudioModel = SDL.RCModulesController.currentAudioModel.usbModel;
-          break;
+          return SDL.RCModulesController.currentAudioModel.usbModel;
         }
         case 'media.player.bluetooth': {
-          currentAudioModel = SDL.RCModulesController.currentAudioModel.bluetoothModel;
-          break;
+          return SDL.RCModulesController.currentAudioModel.bluetoothModel;
         }
         case 'media.player.lineIn': {
-          currentAudioModel = SDL.RCModulesController.currentAudioModel.lineInModel;
-          break;
+          return SDL.RCModulesController.currentAudioModel.lineInModel;
         }
         case 'media.player.ipod': {
-          currentAudioModel = SDL.RCModulesController.currentAudioModel.ipodModel;
-          break;
+          return SDL.RCModulesController.currentAudioModel.ipodModel;
         }
-        default: {
-          currentAudioModel = SDL.RCModulesController.currentRadioModel;
+        default: { // Default to RADIO
+          return SDL.RCModulesController.currentRadioModel;
         }
       }
-      currentAudioModel.sendAudioNotification();
     },
 
     /**
