@@ -119,6 +119,10 @@ SDL.RController = SDL.SDLController.extend(
             }
             break;
           }
+          case 'SOURCE': {
+            SDL.RCModulesController.currentAudioModel.changeSource();
+            break;
+          }
           case 'SHUFFLE': {
             if (SDL.RCModulesController.currentAudioModel.activeState == 'media.player.cd' ||
                 SDL.RCModulesController.currentAudioModel.activeState == 'media.player.usb') {
@@ -148,20 +152,6 @@ SDL.RController = SDL.SDLController.extend(
           }
         }
         return result_struct;
-      }
-
-      if(params.moduleType == 'AUDIO') {
-        switch(params.buttonName){
-          case 'SOURCE': {
-            SDL.RCModulesController.currentAudioModel.changeSource();
-            break;
-          }
-          default: {
-            result_struct.resultCode = SDL.SDLModel.data.resultCode.GENERIC_ERROR;
-            result_struct.resultInfo = 'Unknown audio module button';
-            return result_struct;
-          }
-        }
       }
 
       return result_struct;
