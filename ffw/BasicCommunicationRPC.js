@@ -539,7 +539,7 @@ FFW.BasicCommunication = FFW.RPCObserver
           );
           FFW.RPCHelper.addApplication(notification.params.application.appID);
           const mainWindowID = 0;
-          let capability = SDL.SDLController.getDefaultCapabilities(mainWindowID, notification.params.application.appID);
+          let capability = SDL.SDLController.getDisplayCapability(notification.params.application.appID, mainWindowID);
           FFW.BasicCommunication.OnSystemCapabilityUpdated(capability);
         }
         if (notification.method == this.onAppUnregisteredNotification) {
