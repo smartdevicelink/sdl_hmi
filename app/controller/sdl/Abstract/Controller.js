@@ -1590,61 +1590,6 @@ SDL.SDLController = Em.Object.extend(
     },
 
     /**
-     * @function getDefaultCapabilities
-     * @param {Integer} windowID
-     * @description returns string of predefined system capabilities for windowID
-     */
-    getDefaultCapabilities: function (windowID, appID) {
-      let windowType = (windowID === undefined || windowID === 0) ? "MAIN" : "WIDGET";
-
-      let windowCapability = SDL.deepCopy(SDL.SDLModelData.defaultWindowCapability[windowType]);
-      if(windowType === "WIDGET") {
-        windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["windowID"] = windowID;
-      }
-
-      if(appID) {
-        const is_web_view_template = function(model) {
-          const template = model.templateConfiguration.template;
-          if (template == "DEFAULT" && model.appType.indexOf('WEB_VIEW') >= 0) {
-            return true;
-          }
-
-          return template == "WEB_VIEW";
-        }
-
-        var appModel = this.getApplicationModel(appID);
-        if (appModel && is_web_view_template(appModel) && windowType == "MAIN") {
-          let text_fields = windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["textFields"];
-          const text_fields_to_exclude = [
-            'mainField1', 'mainField2', 'mainField3', 'mainField4',
-            'mediaClock', 'mediaTrack'
-          ];
-          for (var i = text_fields.length - 1; i >= 0; i--) {
-            if (text_fields_to_exclude.includes(text_fields[i].name)) {
-              text_fields.splice(i, 1);
-            }
-          }
-
-          let image_fields = windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["imageFields"];
-          const image_fields_to_exclude = [
-            'softButtonImage', 'menuIcon', 'graphic', 'secondaryGraphic'
-          ];
-          for (var i = image_fields.length - 1; i >= 0; i--) {
-            if (image_fields_to_exclude.includes(image_fields[i].name)) {
-              image_fields.splice(i, 1);
-            }
-          }
-
-          delete windowCapability["systemCapability"]["displayCapabilities"][0]["windowCapabilities"][0]["softButtonCapabilities"];
-        }
-
-        windowCapability["appID"] = appID;
-      }
-
-      return windowCapability;
-    },
-
-    /**
      * @function getDisplayCapability
      * @param {Integer} appID
      * @param {Integer} windowID
