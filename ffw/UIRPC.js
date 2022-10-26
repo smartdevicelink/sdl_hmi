@@ -1005,7 +1005,7 @@ FFW.UI = FFW.RPCObserver.create(
                   ],
                   'graphicSupported': true,
                   'imageCapabilities': ['DYNAMIC', 'STATIC'],
-                  'templatesAvailable': ["MEDIA", "NON-MEDIA", "DEFAULT", "NAV_FULLSCREEN_MAP", 'WEB_VIEW'],
+                  'templatesAvailable': ["MEDIA", "NON-MEDIA", "DEFAULT", "NAV_FULLSCREEN_MAP", "WEB_VIEW", "ONSCREEN_PRESETS"],
                   'screenParams': {
                     'resolution': {
                       'resolutionWidth': 800,

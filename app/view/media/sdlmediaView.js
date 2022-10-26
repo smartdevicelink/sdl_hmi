@@ -69,8 +69,9 @@ SDL.sdlView = Em.ContainerView
         .extend(
           {
             refreshItems: function() {
-              if (SDL.SDLController.model && SDL.SDLController.model.appID ==
-                SDL.SDLMediaController.currentAppId) {
+              if (SDL.SDLController.model && 
+                   (SDL.SDLController.model.appID == SDL.NonMediaController.currentAppId || 
+                    SDL.SDLController.model.templateConfiguration.template == "MEDIA")) {
                 this.addItems(
                   SDL.SDLController.model.softButtons,
                   SDL.SDLController.model.appID
@@ -79,8 +80,9 @@ SDL.sdlView = Em.ContainerView
             }.observes(
               'SDL.SDLController.model.softButtons.@each'),
             updateOptionsButton: function() {
-              if (SDL.SDLController.model && SDL.SDLController.model.appID ==
-                SDL.SDLMediaController.currentAppId) {
+              if (SDL.SDLController.model && 
+                   (SDL.SDLController.model.appID == SDL.NonMediaController.currentAppId || 
+                    SDL.SDLController.model.templateConfiguration.template == "MEDIA")) {
                 var menuTitle = SDL.SDLController.model.globalProperties.menuTitle
                 this.get('content.optionsButton').set('text', menuTitle && menuTitle.length ? menuTitle : 'Options')
                 var menuIcon = SDL.SDLController.model.globalProperties.menuIcon

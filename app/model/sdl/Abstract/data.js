@@ -1186,112 +1186,70 @@ SDL.SDLModelData = Em.Object.create(
               "templatesAvailable": ["MEDIA", "NON-MEDIA", "DEFAULT", "NAV_FULLSCREEN_MAP", 'WEB_VIEW', 'ONSCREEN_PRESETS'],
               "buttonCapabilities": [
                 {
-                  "longPressAvailable": true,
-                  "name": "AC_MAX",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_0',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "AC",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_1',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "RECIRCULATE",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_2',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "FAN_UP",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_3',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "FAN_DOWN",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_4',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "TEMP_UP",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_5',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "TEMP_DOWN",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_6',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "DEFROST_MAX",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_7',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "DEFROST",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_8',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "DEFROST_REAR",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'PRESET_9',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 },
                 {
-                  "longPressAvailable": true,
-                  "name": "UPPER_VENT",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
-                },
-                {
-                  "longPressAvailable": true,
-                  "name": "LOWER_VENT",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
-                },
-                {
-                  "longPressAvailable": true,
-                  "name": "VOLUME_UP",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
-                },
-                {
-                  "longPressAvailable": true,
-                  "name": "VOLUME_DOWN",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
-                },
-                {
-                  "longPressAvailable": true,
-                  "name": "EJECT",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
-                },
-                {
-                  "longPressAvailable": true,
-                  "name": "SOURCE",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
-                },
-                {
-                  "longPressAvailable": true,
-                  "name": "SHUFFLE",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
-                },
-                {
-                  "longPressAvailable": true,
-                  "name": "REPEAT",
-                  "shortPressAvailable": true,
-                  "upDownAvailable": false
+                  name: 'CUSTOM_BUTTON',
+                  shortPressAvailable: true,
+                  longPressAvailable: true,
+                  upDownAvailable: true
                 }
               ],
               "softButtonCapabilities": [{
